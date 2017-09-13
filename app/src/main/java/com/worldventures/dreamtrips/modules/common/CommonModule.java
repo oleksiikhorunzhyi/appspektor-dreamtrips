@@ -17,10 +17,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPrese
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
+import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerActivityModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
-import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
+import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,8 @@ import dagger.Provides;
 @Module(
       includes = {
             MediaPickerModule.class,
-            OldMediaPickerActivityModule.class
+            FacebookModule.class,
+            OldMediaPickerActivityModule.class,
       },
       injects = {
             LaunchActivity.class,
@@ -64,7 +66,7 @@ public class CommonModule {
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.FEED));
       featureManager.with(Feature.TRIPS, () -> activeComponents.add(SocialAppModule.TRIPS));
       if (!ViewUtils.isTablet(context)) {
-         featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletAppModule.WALLET));
+         featureManager.with(Feature.WALLET, () -> activeComponents.add(SmartCardModule.WALLET));
       }
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.NOTIFICATIONS));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerModule.MESSENGER));

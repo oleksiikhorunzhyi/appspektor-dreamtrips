@@ -17,8 +17,8 @@ public class WalletCardNameUtil {
          bodyStringBuilder.append(spannableRequiredFields());
       }
       if (postfixStrinResId != 0) {
-            bodyStringBuilder.append(" ")
-            .append(reduceSizeSpannable(targetTextView.getContext().getString(postfixStrinResId)));
+         bodyStringBuilder.append(" ")
+               .append(reduceSizeSpannable(targetTextView.getContext().getString(postfixStrinResId)));
       }
       setString(targetTextView, bodyStringBuilder, asHint);
    }

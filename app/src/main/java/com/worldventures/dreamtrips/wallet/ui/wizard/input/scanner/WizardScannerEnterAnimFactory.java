@@ -42,7 +42,7 @@ public class WizardScannerEnterAnimFactory extends DirectionalAnimatorFactory {
          float alphaFrom, float alphaTo, float secondaryAlphaFrom, float secondaryAlphaTo) {
 
       final AnimatorSet animatorSetTo = new AnimatorSet();
-      final View contentView = screen.contentView;
+      final View contentView = screen.getContentView();
       animatorSetTo.playTogether(
             ofFloat(contentView, View.TRANSLATION_Y, translationYFrom, translationYTo),
             ofFloat(contentView, View.SCALE_X, scaleFrom, scaleTo),

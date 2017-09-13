@@ -8,18 +8,18 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class LocationSyncManager {
+class LocationSyncManager {
    private static final long SCHEDULE_TIME = 10;
    private final SmartCardLocationInteractor locationInteractor;
    private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1);
    private ScheduledFuture scheduledLocationFuture;
 
-   public LocationSyncManager(SmartCardLocationInteractor locationInteractor) {
+   LocationSyncManager(SmartCardLocationInteractor locationInteractor) {
       this.locationInteractor = locationInteractor;
    }
 
    public void scheduleSync() {
-      if(scheduledLocationFuture == null
+      if (scheduledLocationFuture == null
             || scheduledLocationFuture.isCancelled()
             || scheduledLocationFuture.isDone()) {
          scheduledLocationFuture =
@@ -27,7 +27,7 @@ public class LocationSyncManager {
       }
    }
 
-   public void cancelSync() {
+   void cancelSync() {
       if (scheduledLocationFuture != null) scheduledLocationFuture.cancel(true);
       locationInteractor.postLocationPipe().cancelLatest();
    }

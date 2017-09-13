@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.di;
 import android.content.Context;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.janet.AnalyticsService;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.janet.TimberServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
@@ -11,6 +12,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper.CommandInjector;
 import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
 import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 import com.worldventures.dreamtrips.wallet.util.TimberLogger;
 
 import java.util.Set;
@@ -78,6 +80,18 @@ public class WalletJanetModule {
    @Named(JANET_WALLET)
    ActionService provideApiService(DreamtripsApiProvider provider) {
       return provider.createApiService();
+   }
+
+   @Singleton
+   @Provides
+   WalletAnalyticsServiceWrapper provideWalletAnalyticsServiceWrapper(AnalyticsService service) {
+      return new WalletAnalyticsServiceWrapper(new TimberServiceWrapper(service));
+   }
+
+   @Named(JANET_WALLET)
+   @Provides(type = Provides.Type.SET)
+   ActionService provideAnalyticsService(WalletAnalyticsServiceWrapper serviceWrapper) {
+      return serviceWrapper;
    }
 
    @Singleton

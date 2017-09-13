@@ -8,9 +8,10 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.techery.spares.ui.activity.InjectingActivity;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.picker.model.BaseMediaPickerViewModel;
@@ -36,6 +37,7 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 
+import butterknife.OnClick;
 import dagger.ObjectGraph;
 import rx.Observable;
 
@@ -44,6 +46,7 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    private TextView selectedCount;
    private TextView cancelButton;
    private MediaPickerContainer mediaPickerContainer;
+   private ViewFlipper pickerNavigationViewFlipper;
 
    @Inject MediaPickerDialogPresenter presenter;
 
@@ -80,22 +83,36 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       objectGraph.inject(this);
-      setOnShowListener(dialog -> {
-         initUIWithListeners();
-         mediaPickerContainer.setup(providePickerPages());
-         presenter.attachView(this);
-      });
-      setOnDismissListener(dialog -> {
-         presenter.detachView(true);
-         mediaPickerContainer.reset();
-      });
+      setOnShowListener(dialog -> onShow());
+      setOnDismissListener(dialog -> onDismiss());
       setOnKeyListener((dialog, keyCode, event) -> presenter.handleKeyPress(keyCode, event));
+   }
+
+   private void onShow() {
+      initUIWithListeners();
+      mediaPickerContainer.setup(providePickerPages());
+      mediaPickerContainer.setPickerOnPageChangedListener(this::flipNavigationButton);
+      presenter.attachView(this);
+   }
+
+   private void onDismiss() {
+      presenter.detachView(true);
+      mediaPickerContainer.reset();
+   }
+
+   private void flipNavigationButton(boolean canGoBack) {
+      final View viewFlipTo = pickerNavigationViewFlipper.findViewById(canGoBack ? R.id.btn_back : R.id.btn_cancel);
+      final int viewIndexFlipTo = pickerNavigationViewFlipper.indexOfChild(viewFlipTo);
+      if (viewIndexFlipTo != pickerNavigationViewFlipper.getDisplayedChild()) {
+         pickerNavigationViewFlipper.setDisplayedChild(viewIndexFlipTo);
+      }
    }
 
    private void initUIWithListeners() {
       selectedCount = (TextView) findViewById(R.id.tv_selected_count);
       mediaPickerContainer = (MediaPickerContainer) findViewById(R.id.picker_container);
       cancelButton = (TextView) findViewById(R.id.btn_cancel);
+      pickerNavigationViewFlipper = (ViewFlipper) findViewById(R.id.flipper_picker_navigation);
 
       findViewById(R.id.btn_done).setOnClickListener(view -> onDone());
       findViewById(R.id.btn_cancel).setOnClickListener(view -> onCancel());
@@ -146,6 +163,11 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    public void onCancel() {
       if (mediaPickerContainer.canGoBack()) goBack();
       else dismiss();
+   }
+
+   @OnClick(R.id.btn_back)
+   public void onBack() {
+      mediaPickerContainer.goBack();
    }
 
    @Override
@@ -234,7 +256,7 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
 
    @Override
    public <T> Observable.Transformer<T, T> lifecycle() {
-      return RxLifecycle.bindView(contentView);
+      return RxLifecycleAndroid.bindView(contentView);
    }
 
    public interface OnDoneListener {

@@ -41,4 +41,7 @@ public class SimpleDialogProgressView<T> extends DialogProgressView<T> {
             .cancelListener(cancelListener)
             .build();
    }
+
+   @Override
+   public void onProgressChanged(int i) { /* nothing */ }
 }

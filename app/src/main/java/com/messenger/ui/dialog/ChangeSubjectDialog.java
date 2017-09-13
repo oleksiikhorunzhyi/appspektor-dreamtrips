@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 
 import rx.functions.Action0;
@@ -55,7 +56,7 @@ public class ChangeSubjectDialog {
                   .toString()
                   .trim()))
             .distinctUntilChanged()
-            .compose(RxLifecycle.bindView(etSubject))
+            .compose(RxLifecycleAndroid.bindView(etSubject))
             .subscribe(dialog.getButton(DialogInterface.BUTTON_POSITIVE)::setEnabled);
    }
 

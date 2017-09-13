@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
+import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,16 +8,17 @@ import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.BR;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
 
 public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
    private final String recordId;
-   private final CharSequence cardName;
+   private CharSequence cardName;
    private final StackType cardType;
    private final String cardTypeName;
-   private final boolean defaultCard;
+   private boolean defaultCard;
    private final CharSequence cardLastDigitsShort;
    private final String cardHolderName;
    private final CharSequence cardLastDigitsLong;
@@ -73,6 +75,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return recordId;
    }
 
+   @Bindable
    public CharSequence getCardName() {
       return cardName;
    }
@@ -85,6 +88,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return cardTypeName;
    }
 
+   @Bindable
    public boolean isDefaultCard() {
       return defaultCard;
    }
@@ -111,6 +115,17 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
 
    public boolean isSampleCard() {
       return sampleCard;
+   }
+
+   public void setCardName(CharSequence cardName) {
+      this.cardName = cardName;
+      notifyPropertyChanged(BR.cardName);
+
+   }
+
+   public void setDefaultCard(boolean defaultCard) {
+      this.defaultCard = defaultCard;
+      notifyPropertyChanged(BR.defaultCard);
    }
 
    @BindingAdapter({"cardBackground"})

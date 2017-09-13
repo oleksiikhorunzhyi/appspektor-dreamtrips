@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.video.cell;
 
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.modules.membership.view.cell.delegate.PodcastCellDelegate;
-import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
@@ -53,7 +52,7 @@ public class ProgressVideoCellHelper {
       this.cacheModel = cacheEntity;
    }
 
-   public void onDownloadClick(VideoCellDelegate delegate) {
+   public void onDownloadClick(ProgressVideoButtonActions delegate) {
       if (delegate == null) return;
       //
       boolean cached = cachedModelHelper.isCached(cacheModel);

@@ -20,6 +20,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
@@ -113,7 +114,7 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
 
    private void bindAmenitiesErrorButton() {
       RxView.clicks(amenitiesErrorButton)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .throttleFirst(700L, TimeUnit.MILLISECONDS)
             .subscribe(aVoid -> getPresenter().retryAmenities());
    }

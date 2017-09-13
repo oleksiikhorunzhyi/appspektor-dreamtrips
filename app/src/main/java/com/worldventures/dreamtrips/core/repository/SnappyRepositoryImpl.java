@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
-import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -26,57 +26,30 @@ import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
-import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardDetails;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
-import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
-import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-
-import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 
 class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyRepository {
 
-   SnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService) {
-      super(context, snappyCrypter, executorService);
+   private final DefaultSnappyOpenHelper defaultSnappyOpenHelper;
+
+   SnappyRepositoryImpl(Context context, DefaultSnappyOpenHelper defaultSnappyOpenHelper) {
+      super(context, defaultSnappyOpenHelper.provideExecutorService());
+      this.defaultSnappyOpenHelper = defaultSnappyOpenHelper;
    }
 
    @Override
    protected DB openDbInstance(Context context) throws SnappydbException {
-      return DBFactory.open(context);
-   }
-
-   @Override
-   public <T> void putList(String key, Collection<T> list) {
-      act(db -> db.put(key, list.toArray()));
-   }
-
-   @Override
-   public <T> List<T> readList(String key, Class<T> clazz) {
-      return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
-            .or(new ArrayList<>());
+      return defaultSnappyOpenHelper.openDbInstance(context);
    }
 
    @Override
@@ -85,6 +58,16 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
          String[] keys = db.findKeys(key);
          return keys == null || keys.length == 0;
       }).or(false);
+   }
+
+   @Override
+   public <T> void putList(String key, Collection<T> list) {
+      super.putList(key, list);
+   }
+
+   @Override
+   public <T> List<T> readList(String key, Class<T> clazz) {
+      return super.readList(key, clazz);
    }
 
    @Override
@@ -205,176 +188,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public void setLastSyncAppVersion(String appVersion) {
       act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Wallet
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public void saveSmartCard(SmartCard smartCard) {
-      putEncrypted(WALLET_SMART_CARD, smartCard);
-   }
-
-   @Override
-   public SmartCard getSmartCard() {
-      return getEncrypted(WALLET_SMART_CARD, ImmutableSmartCard.class);
-   }
-
-   @Override
-   public void deleteSmartCard() {
-      act(db -> db.del(WALLET_SMART_CARD));
-   }
-
-   @Override
-   public void saveSmartCardUser(SmartCardUser smartCardUser) {
-      putEncrypted(WALLET_SMART_CARD_USER, smartCardUser);
-   }
-
-   @Override
-   public SmartCardUser getSmartCardUser() {
-      return getEncrypted(WALLET_SMART_CARD_USER, ImmutableSmartCardUser.class);
-   }
-
-   @Override
-   public void deleteSmartCardUser() {
-      act(db -> db.del(WALLET_SMART_CARD_USER));
-   }
-
-   @Override
-   public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
-      putEncrypted(WALLET_DETAILS_SMART_CARD, smartCardDetails);
-   }
-
-   @Override
-   public SmartCardDetails getSmartCardDetails() {
-      return getEncrypted(WALLET_DETAILS_SMART_CARD, ImmutableSmartCardDetails.class);
-   }
-
-   @Override
-   public void deleteSmartCardDetails() {
-      act(db -> db.del(WALLET_DETAILS_SMART_CARD));
-   }
-
-   @Override
-   public void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware) {
-      putEncrypted(WALLET_SMART_CARD_FIRMWARE, smartCardFirmware);
-   }
-
-   @Override
-   public SmartCardFirmware getSmartCardFirmware() {
-      return getEncrypted(WALLET_SMART_CARD_FIRMWARE, ImmutableSmartCardFirmware.class);
-   }
-
-   @Override
-   public void deleteSmartCardFirmware() {
-      act(db -> db.del(WALLET_SMART_CARD_FIRMWARE));
-   }
-
-   @Override
-   public void saveWalletTermsAndConditions(TermsAndConditions data) {
-      putEncrypted(WALLET_TERMS_AND_CONDITIONS, data);
-   }
-
-   @Override
-   public TermsAndConditions getWalletTermsAndConditions() {
-      return getEncrypted(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditions.class);
-   }
-
-   @Override
-   public void deleteTermsAndConditions() {
-      act(db -> db.del(WALLET_TERMS_AND_CONDITIONS));
-   }
-
-   @Override
-   public void saveFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData) {
-      putEncrypted(WALLET_FIRMWARE, firmwareUpdateData);
-   }
-
-   @Override
-   public FirmwareUpdateData getFirmwareUpdateData() {
-      return getEncrypted(WALLET_FIRMWARE, ImmutableFirmwareUpdateData.class);
-   }
-
-   @Override
-   public void deleteFirmwareUpdateData() {
-      act(db -> db.del(WALLET_FIRMWARE));
-   }
-
-   @Override
-   public void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage) {
-      act(db -> db.put(WALLET_DEVICE_STORAGE, deviceStorage));
-   }
-
-   @Override
-   public SimpleDeviceStorage getWalletDeviceStorage() {
-      return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
-   }
-
-   @Override
-   public void saveWalletLocations(List<WalletLocation> walletLocations) {
-      if (walletLocations == null) walletLocations = new ArrayList<>();
-      putList(WALLET_SMART_CARD_LOCATION, walletLocations);
-   }
-
-   @Override
-   public List<WalletLocation> getWalletLocations() {
-      return readList(WALLET_SMART_CARD_LOCATION, WalletLocation.class);
-   }
-
-   @Override
-   public void deleteWalletLocations() {
-      act(db -> db.del(WALLET_SMART_CARD_LOCATION));
-   }
-
-   @Override
-   public void saveEnabledTracking(boolean enable) {
-      act(db -> db.putBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING, enable));
-   }
-
-   @Override
-   public boolean isEnableTracking() {
-      return actWithResult(db -> db.getBoolean(WALLET_LOST_SMART_CARD_ENABLE_TRAKING)).or(false);
-   }
-
-   @Override
-   public void saveSyncRecordsStatus(SyncRecordsStatus data) {
-      act(db -> db.put(WALLET_SYNC_RECORD_STATUS, data));
-   }
-
-   @Override
-   public SyncRecordsStatus getSyncRecordsStatus() {
-      return actWithResult(db -> db.get(WALLET_SYNC_RECORD_STATUS, SyncRecordsStatus.class)).orNull();
-   }
-
-   @Override
-   public void saveShouldAskForPin(boolean shouldAsk) {
-      act(db -> db.putBoolean(WALLET_OPTIONAL_PIN, shouldAsk));
-   }
-
-   @Override
-   public boolean shouldAskForPin() {
-      return actWithResult(db -> db.getBoolean(WALLET_OPTIONAL_PIN)).or(true);
-   }
-
-   @Override
-   public void deletePinOptionChoice() {
-      act(db -> db.del(WALLET_OPTIONAL_PIN));
-   }
-
-   @Override
-   public int getSmartCardDisplayType(int defaultValue) {
-      return actWithResult(db -> db.getInt(WALLET_SMART_CARD_DISPLAY_TYPE)).or(defaultValue);
-   }
-
-   @Override
-   public void setSmartCardDisplayType(int displayType) {
-      act(db -> db.putInt(WALLET_SMART_CARD_DISPLAY_TYPE, displayType));
-   }
-
-   @Override
-   public void deleteSmartCardDisplayType() {
-      act(db -> db.del(WALLET_SMART_CARD_DISPLAY_TYPE));
    }
 
    ///////////////////////////////////////////////////////////////////////////

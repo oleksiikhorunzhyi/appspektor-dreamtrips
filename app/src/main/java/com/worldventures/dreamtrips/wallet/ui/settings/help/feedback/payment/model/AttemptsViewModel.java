@@ -46,4 +46,8 @@ public class AttemptsViewModel extends BaseObservable {
       result = 31 * result + countOfAttempts;
       return result;
    }
+
+   public boolean isDataChanged() {
+      return countOfAttempts != 1 || !isSuccessPayment;
+   }
 }

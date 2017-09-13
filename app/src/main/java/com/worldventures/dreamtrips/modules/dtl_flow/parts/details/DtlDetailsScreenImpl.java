@@ -29,6 +29,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -257,7 +258,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
                contactView.setText(contact.text);
 
                if (MerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
-                     .compose(RxLifecycle.bindView(contactView))
+                     .compose(RxLifecycleAndroid.bindView(contactView))
                      .subscribe(aVoid -> onContactClick(contact));
 
                additionalContainer.addView(contactView);
@@ -297,9 +298,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       View estimate = ButterKnife.findById(this, R.id.merchant_details_estimate_points);
 
       if (earn != null)
-         RxView.clicks(earn).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
+         RxView.clicks(earn).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
       if (estimate != null) RxView.clicks(estimate)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> getPresenter().onEstimationClick());
    }
 

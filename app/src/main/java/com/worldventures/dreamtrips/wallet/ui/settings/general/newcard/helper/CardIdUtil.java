@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.helper;
 public final class CardIdUtil {
 
    public static String pushZeroToSmartCardId(String cardId) {
-      if(cardId == null) return "";
+      if (cardId == null) return "";
       StringBuilder cardIdBuilder = new StringBuilder("0000000000");
       cardIdBuilder.replace(
             cardIdBuilder.length() - cardId.length(),

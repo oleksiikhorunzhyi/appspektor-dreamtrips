@@ -1,155 +1,313 @@
 package com.worldventures.dreamtrips.wallet.di;
 
 import android.app.Activity;
+import android.content.Context;
 
-import com.worldventures.dreamtrips.modules.picker.MediaPickerModule;
+import com.bluelinelabs.conductor.Router;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
+import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
+import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
+import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
+import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
+import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
+import com.worldventures.dreamtrips.wallet.di.external.WalletExternalActivityModule;
+import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
+import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
+import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
+import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageServiceImpl;
+import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.dreamtrips.wallet.service.lostcard.LocationTrackingManager;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.FlowNavigator;
+import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
+import com.worldventures.dreamtrips.wallet.ui.common.WalletNavigationDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegateImpl;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletNetworkDelegateImpl;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigator;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.NavigatorImpl;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.WalletProvisioningBlockedPresenter;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDeviceItemCell;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.SupportedDevicesListCell;
-import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.cell.UnsupportedDeviceInfoCell;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.add.AddCardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.add.impl.AddCardDetailsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.records.add.impl.AddCardDetailsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.ConnectionErrorPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.impl.ConnectionErrorPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.impl.ConnectionErrorScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.detail.CardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.detail.impl.CardDetailsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPresenter;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.impl.WizardChargingPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SectionDividerCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.common.cell.SettingsRadioCell;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.about.impl.AboutPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.about.impl.AboutScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.display.DisplayOptionsSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl.DisplayOptionsSettingsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl.DisplayOptionsSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.impl.WalletDownloadFirmwarePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.impl.WalletDownloadFirmwareScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.impl.WalletInstallFirmwarePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.impl.WalletInstallFirmwareScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.WalletSuccessInstallFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.impl.WalletSuccessInstallFirmwarePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.installsuccess.impl.WalletSuccessInstallFirmwareScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.WalletNewFirmwareAvailablePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.impl.WalletNewFirmwareAvailablePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.newavailable.impl.WalletNewFirmwareAvailableScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.WalletFirmwareChecksPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.impl.WalletFirmwareChecksPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.preinstalletion.impl.WalletFirmwareChecksScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.impl.WalletPuckConnectionPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.impl.WalletPuckConnectionScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.ForcePairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.impl.ForcePairKeyPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.impl.ForcePairKeyScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.ForceUpdatePowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.impl.ForceUpdatePowerOnPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.poweron.impl.ForceUpdatePowerOnScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.impl.StartFirmwareInstallPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.impl.StartFirmwareInstallScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.impl.WalletUpToDateFirmwarePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.impl.WalletUpToDateFirmwareScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.impl.WalletGeneralSettingsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.impl.WalletGeneralSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.impl.PreCheckNewCardPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.impl.PreCheckNewCardScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.impl.ExistingCardDetectPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.impl.ExistingCardDetectScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.impl.EnterPinUnassignPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.pin.impl.EnterPinUnassignScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.impl.NewCardPowerOnPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.poweron.impl.NewCardPowerOnScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.UnassignSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.impl.UnassignSuccessPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.success.impl.UnassignSuccessScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl.WalletSettingsProfilePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl.WalletSettingsProfileScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.impl.FactoryResetPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.impl.FactoryResetScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.FactoryResetSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.impl.FactoryResetSuccessPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.success.impl.FactoryResetSuccessScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.WalletHelpSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.HelpDocumentDetailPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.impl.HelpDocumentDetailPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.doc.impl.HelpDocumentDetailScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.impl.WalletHelpDocumentsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.impl.WalletHelpDocumentsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.impl.SendFeedbackPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.impl.SendFeedbackScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.impl.PaymentFeedbackPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.impl.PaymentFeedbackScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.impl.WalletHelpSettingsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.impl.WalletHelpSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoDelegate;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl.WalletHelpVideoScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.impl.WalletSettingsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.impl.WalletSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.disabledefaultcard.WalletDisableDefaultCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.AutoClearSmartCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.common.items.DisableDefaultCardItemProvider;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.WalletDisableDefaultCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl.WalletDisableDefaultCardPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.impl.WalletDisableDefaultCardScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.WalletAutoClearCardsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl.WalletAutoClearCardsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.impl.WalletAutoClearCardsScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.LostCardPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.MapPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.lostcard.impl.MapScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.WalletOfflineModeSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.removecards.WalletAutoClearCardsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPresenter;
+import com.worldventures.dreamtrips.wallet.ui.start.impl.WalletStartPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.start.impl.WalletStartScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl.WizardAssignUserPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl.WizardAssignUserScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckingPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl.WizardScanBarcodePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner.impl.WizardScanBarcodeScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl.PairKeyPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl.PairKeyScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.impl.WalletPinIsSetPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.impl.WalletPinIsSetScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.impl.EnterPinPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.impl.EnterPinScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.impl.PinProposalPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.impl.PinProposalScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.PinSetSuccessPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.impl.PinSetSuccessPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.success.impl.PinSetSuccessScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.WizardPowerOnPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.impl.WizardPowerOnPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.power_on.impl.WizardPowerOnScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl.WizardEditProfilePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl.WizardEditProfileScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.impl.WizardUploadProfilePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.impl.WizardUploadProfileScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.impl.PaymentSyncFinishPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.impl.PaymentSyncFinishScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.SyncRecordsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.impl.SyncRecordsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.records.sync.impl.SyncRecordsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl.WizardSplashPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.splash.impl.WizardSplashScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.WizardTermsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.impl.WizardTermsPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.impl.WizardTermsScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectPresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectScreenImpl;
 import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.WizardWelcomePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl.WizardWelcomePresenterImpl;
+import com.worldventures.dreamtrips.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
+import io.techery.janet.Janet;
+
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @Module(
       includes = {
-            MediaPickerModule.class
+            WalletExternalActivityModule.class,
       },
       injects = {
             WalletActivity.class,
-            WalletActivityPresenter.class,
-            WalletStartPresenter.class,
-            UnsupportedDeviceInfoCell.class,
-            SupportedDevicesListCell.class,
-            SupportedDeviceItemCell.class,
-            SettingsRadioCell.class,
-            SectionDividerCell.class,
-            WalletProvisioningBlockedPresenter.class,
-            WizardSplashPresenter.class,
-            WizardPowerOnPresenter.class,
-            WizardTermsPresenter.class,
-            WizardScanBarcodePresenter.class,
-            WizardManualInputPresenter.class,
-            WizardEditProfilePresenter.class,
-            WalletPinIsSetPresenter.class,
-            WizardChargingPresenter.class,
-            CardDetailsPresenter.class,
-            CardListPresenter.class,
-            WalletSettingsPresenter.class,
-            WalletGeneralSettingsPresenter.class,
-            WalletSecuritySettingsPresenter.class,
-            WalletHelpSettingsPresenter.class,
-            WalletSettingsProfilePresenter.class,
-            WalletOfflineModeSettingsPresenter.class,
-            WalletCustomerSupportSettingsPresenter.class,
-            DisplayOptionsSettingsPresenter.class,
-            PinSetSuccessPresenter.class,
-            AddCardDetailsPresenter.class,
-            EnterPinPresenter.class,
-            WizardWelcomePresenter.class,
-            WalletAutoClearCardsPresenter.class,
-            WalletDisableDefaultCardPresenter.class,
-            WalletUpToDateFirmwarePresenter.class,
-            WalletSuccessInstallFirmwarePresenter.class,
-            WalletFirmwareChecksPresenter.class,
-            WalletDownloadFirmwarePresenter.class,
-            FactoryResetPresenter.class,
-            FactoryResetSuccessPresenter.class,
-            WalletInstallFirmwarePresenter.class,
-            WizardCheckingPresenter.class,
-            WalletNewFirmwareAvailablePresenter.class,
-            WalletPuckConnectionPresenter.class,
-            WizardAssignUserPresenter.class,
-            AboutPresenter.class,
-            PairKeyPresenter.class,
-            ConnectionErrorPresenter.class,
-            StartFirmwareInstallPresenter.class,
-            ForceUpdatePowerOnPresenter.class,
-            ForcePairKeyPresenter.class,
-            LostCardPresenter.class,
-            ExistingCardDetectPresenter.class,
-            UnassignSuccessPresenter.class,
-            EnterPinUnassignPresenter.class,
-            SyncRecordsPresenter.class,
-            NewCardPowerOnPresenter.class,
-            PreCheckNewCardPresenter.class,
-            PaymentSyncFinishPresenter.class,
-            ExistingDeviceDetectPresenter.class,
-            WizardUploadProfilePresenter.class,
-            WalletHelpDocumentsPresenter.class,
-            SendFeedbackPresenter.class,
-            WalletHelpVideoPresenter.class,
-            HelpDocumentPresenter.class,
-            PinProposalPresenter.class,
-            PaymentFeedbackPresenter.class
+            WalletStartScreenImpl.class,
+            WalletProvisioningBlockedScreenImpl.class,
+            WizardSplashScreenImpl.class,
+            WizardPowerOnScreenImpl.class,
+            WizardTermsScreenImpl.class,
+            WizardScanBarcodeScreenImpl.class,
+            WizardManualInputScreenImpl.class,
+            WizardEditProfileScreenImpl.class,
+            WalletPinIsSetScreenImpl.class,
+            WizardChargingScreenImpl.class,
+            CardDetailsScreenImpl.class,
+            CardListScreenImpl.class,
+            WalletSettingsScreenImpl.class,
+            WalletGeneralSettingsScreenImpl.class,
+            WalletSecuritySettingsScreenImpl.class,
+            WalletHelpSettingsScreenImpl.class,
+            WalletSettingsProfileScreenImpl.class,
+            WalletOfflineModeSettingsScreenImpl.class,
+            WalletCustomerSupportSettingsScreenImpl.class,
+            DisplayOptionsSettingsScreenImpl.class,
+            PinSetSuccessScreenImpl.class,
+            AddCardDetailsScreenImpl.class,
+            EnterPinScreenImpl.class,
+            WizardWelcomeScreenImpl.class,
+            WalletAutoClearCardsScreenImpl.class,
+            WalletDisableDefaultCardScreenImpl.class,
+            WalletUpToDateFirmwareScreenImpl.class,
+            WalletSuccessInstallFirmwareScreenImpl.class,
+            WalletFirmwareChecksScreenImpl.class,
+            WalletDownloadFirmwareScreenImpl.class,
+            FactoryResetScreenImpl.class,
+            FactoryResetSuccessScreenImpl.class,
+            WalletInstallFirmwareScreenImpl.class,
+            WizardCheckingScreenImpl.class,
+            WalletNewFirmwareAvailableScreenImpl.class,
+            WalletPuckConnectionScreenImpl.class,
+            WizardAssignUserScreenImpl.class,
+            AboutScreenImpl.class,
+            PairKeyScreenImpl.class,
+            ConnectionErrorScreenImpl.class,
+            StartFirmwareInstallScreenImpl.class,
+            ForceUpdatePowerOnScreenImpl.class,
+            ForcePairKeyScreenImpl.class,
+            LostCardScreenImpl.class,
+            MapScreenImpl.class,
+            ExistingCardDetectScreenImpl.class,
+            UnassignSuccessScreenImpl.class,
+            EnterPinUnassignScreenImpl.class,
+            SyncRecordsScreenImpl.class,
+            NewCardPowerOnScreenImpl.class,
+            PreCheckNewCardScreenImpl.class,
+            PaymentSyncFinishScreenImpl.class,
+            ExistingDeviceDetectScreenImpl.class,
+            WizardUploadProfileScreenImpl.class,
+            WalletHelpDocumentsScreenImpl.class,
+            SendFeedbackScreenImpl.class,
+            WalletHelpVideoScreenImpl.class,
+            HelpDocumentDetailScreenImpl.class,
+            PinProposalScreenImpl.class,
+            PaymentFeedbackScreenImpl.class
       },
       complete = false, library = true
 )
@@ -157,13 +315,510 @@ public class WalletActivityModule {
 
    @Singleton
    @Provides
-   Navigator provideNavigator(Activity activity) {
-      return new FlowNavigator(activity);
+   Router provideRouter(Activity activity) {
+      return ((WalletActivity) activity).getRouter();
+   }
+
+   @Singleton
+   @Provides
+   Navigator provideConductorNavigator(Lazy<Router> router, CoreNavigator coreNavigator) {
+      return new NavigatorImpl(router, coreNavigator);
    }
 
    @Provides
    @Singleton
-   WalletCropImageService provideWalletCropImageDelegate(Activity activity) {
-      return new WalletCropImageServiceImpl(activity);
+   WalletCropImageService provideWalletCropImageDelegate() {
+      return new WalletCropImageServiceImpl();
+   }
+
+   @Provides
+   WalletNetworkDelegate provideWalletNetworkDelegate(WalletNetworkService walletNetworkService) {
+      return new WalletNetworkDelegateImpl(walletNetworkService);
+   }
+
+   @Provides
+   WalletDeviceConnectionDelegate provideDeviceConnectionDelegate(SmartCardInteractor smartCardInteractor) {
+      return new WalletDeviceConnectionDelegateImpl(smartCardInteractor);
+   }
+
+   @Provides
+   WalletActivityPresenter provideWalletActivityPresenter(SmartCardSyncManager smartCardSyncManager,
+         SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler, SmartCardInteractor interactor,
+         WalletBluetoothService bluetoothService, LogoutInteractor logoutInteractor) {
+      return new WalletActivityPresenterImpl(smartCardSyncManager, smartCardAnalyticErrorHandler,
+            interactor, bluetoothService, logoutInteractor);
+   }
+
+   @Provides
+   WalletStartPresenter provideWalletStartPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator,
+         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      return new WalletStartPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, firmwareInteractor,
+            walletAccessValidator, httpErrorHandlingUtil);
+   }
+
+   @Provides
+   WalletProvisioningBlockedPresenter provideWalletProvisioningBlockedPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletProvisioningBlockedPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   WizardWelcomePresenter provideWizardWelcomePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletSocialInfoProvider socialInfoProvider,
+         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+      return new WizardWelcomePresenterImpl(navigator, deviceConnectionDelegate, socialInfoProvider,
+            analyticsInteractor, wizardInteractor);
+   }
+
+   @Provides
+   WizardPowerOnPresenter provideWizardPowerOnPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, WizardInteractor wizardInteractor,
+         WalletBluetoothService walletBluetoothService, WalletAnalyticsInteractor analyticsInteractor) {
+      return new WizardPowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor,
+            walletBluetoothService, analyticsInteractor);
+   }
+
+   @Provides
+   WizardTermsPresenter provideWizardTermsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, @Named(JANET_WALLET) Janet janet) {
+      return new WizardTermsPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, janet);
+   }
+
+   @Provides
+   WizardCheckingPresenter providesWizardCheckingPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, WizardInteractor wizardInteractor,
+         WalletBluetoothService walletBluetoothService) {
+      return new WizardCheckingPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor, walletBluetoothService);
+   }
+
+   @Provides
+   WizardSplashPresenter provideWizardSplashPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WizardSplashPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor);
+   }
+
+   @Provides
+   WizardScanBarcodePresenter provideWizardScanBarcodePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher) {
+      return new WizardScanBarcodePresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
+            new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor)));
+   }
+
+   @Provides
+   PairKeyPresenter providePairKeyPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new PairKeyPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   WizardManualInputPresenter provideWizardManualInputPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+      return new WizardManualInputPresenterImpl(navigator, deviceConnectionDelegate,
+            analyticsInteractor, new InputBarcodeDelegate(navigator, wizardInteractor,
+            InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor)));
+   }
+
+   @Provides
+   ExistingDeviceDetectPresenter provideExistingDeviceDetectPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      return new ExistingDeviceDetectPresenterImpl(navigator, deviceConnectionDelegate,
+            wizardInteractor, httpErrorHandlingUtil);
+   }
+
+   @Provides
+   WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor,
+         WalletFeatureHelper walletFeatureHelper) {
+      return new WizardEditProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
+            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor, walletFeatureHelper);
+   }
+
+   @Provides
+   WizardUploadProfilePresenter provideWizardUploadProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         WizardInteractor wizardInteractor, WalletFeatureHelper walletFeatureHelper) {
+      return new WizardUploadProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
+            analyticsInteractor, walletFeatureHelper);
+   }
+
+   @Provides
+   WizardAssignUserPresenter provideWizardAssignUserPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      return new WizardAssignUserPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            wizardInteractor, recordInteractor, analyticsInteractor, httpErrorHandlingUtil);
+   }
+
+   @Provides
+   WalletPinIsSetPresenter provideWalletPinIsSetPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+      return new WalletPinIsSetPresenterImpl(navigator, deviceConnectionDelegate,
+            analyticsInteractor, wizardInteractor);
+   }
+
+   @Provides
+   PinProposalPresenter providesPinProposalPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor) {
+      return new PinProposalPresenterImpl(navigator, deviceConnectionDelegate, wizardInteractor);
+   }
+
+   @Provides
+   EnterPinPresenter provideEnterPinPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new EnterPinPresenterImpl(navigator, deviceConnectionDelegate, wizardInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   PinSetSuccessPresenter providePinSetSuccessPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      return new PinSetSuccessPresenterImpl(navigator, deviceConnectionDelegate);
+   }
+
+   @Provides
+   SyncRecordsPresenter provideSyncRecordsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new SyncRecordsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, recordInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   PaymentSyncFinishPresenter providePaymentSyncFinishPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new PaymentSyncFinishPresenterImpl(navigator, deviceConnectionDelegate,
+            wizardInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   CardListPresenter provideCardListPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, SmartCardInteractor smartCardInteractor,
+         RecordInteractor recordInteractor, FirmwareInteractor firmwareInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
+         WalletNavigationDelegate navigationDelegate, WalletFeatureHelper walletFeatureHelper,
+         LocationTrackingManager locationTrackingManager) {
+      return new CardListPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate,
+            smartCardInteractor, recordInteractor,
+            firmwareInteractor, analyticsInteractor, factoryResetInteractor,
+            navigationDelegate, walletFeatureHelper, locationTrackingManager);
+   }
+
+   @Provides
+   WalletSettingsPresenter provideWalletSettingsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
+      return new WalletSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, firmwareInteractor,
+            analyticsInteractor, walletFeatureHelper);
+   }
+
+   @Provides
+   WalletGeneralSettingsPresenter providesWalletGeneralSettingsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor,
+         FactoryResetInteractor factoryResetInteractor, WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
+      return new WalletGeneralSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, firmwareInteractor,
+            factoryResetInteractor, analyticsInteractor, walletFeatureHelper);
+   }
+
+   @Provides
+   FactoryResetPresenter provideFactoryResetPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor,
+         FactoryResetInteractor factoryResetInteractor) {
+      return new FactoryResetPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, factoryResetInteractor);
+   }
+
+   @Provides
+   FactoryResetSuccessPresenter provideFactoryResetSuccessPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new FactoryResetSuccessPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor);
+   }
+
+   @Provides
+   NewCardPowerOnPresenter provideNewCardPowerOnPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, FactoryResetInteractor factoryResetInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, WalletBluetoothService walletBluetoothService) {
+      return new NewCardPowerOnPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            factoryResetInteractor, analyticsInteractor, walletBluetoothService);
+   }
+
+   @Provides
+   PreCheckNewCardPresenter providePreCheckNewCardPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         FactoryResetInteractor factoryResetInteractor, WalletBluetoothService walletBluetoothService) {
+      return new PreCheckNewCardPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor,
+            factoryResetInteractor, walletBluetoothService);
+   }
+
+   @Provides
+   ExistingCardDetectPresenter provideExistingCardDetectPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, FactoryResetInteractor factoryResetInteractor,
+         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      return new ExistingCardDetectPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor,
+            factoryResetInteractor, httpErrorHandlingUtil);
+   }
+
+   @Provides
+   EnterPinUnassignPresenter provideEnterPinUnassignPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor,
+         FactoryResetInteractor factoryResetInteractor) {
+      return new EnterPinUnassignPresenterImpl(navigator, deviceConnectionDelegate,
+            factoryResetInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   UnassignSuccessPresenter provideUnassignSuccessPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new UnassignSuccessPresenterImpl(navigator, deviceConnectionDelegate,
+            analyticsInteractor);
+   }
+
+   @Provides
+   AboutPresenter provideAboutPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new AboutPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            recordInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   WalletSecuritySettingsPresenter provideWalletSecuritySettingsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
+      return new WalletSecuritySettingsPresenterImpl(navigator, deviceConnectionDelegate,
+            smartCardInteractor, analyticsInteractor, walletFeatureHelper);
+   }
+
+   @Provides
+   WalletHelpSettingsPresenter provideWalletHelpSettingsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      return new WalletHelpSettingsPresenterImpl(navigator, deviceConnectionDelegate);
+   }
+
+   @Provides
+   WalletSettingsProfilePresenter provideWalletSettingsProfilePresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
+         WalletSocialInfoProvider socialInfoProvider) {
+      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate,
+            smartCardInteractor, analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider);
+   }
+
+   @Provides
+   WalletCustomerSupportSettingsPresenter provideWalletCustomerSupportSettingsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletSettingsInteractor walletSettingsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      return new WalletCustomerSupportSettingsPresenterImpl(navigator, deviceConnectionDelegate,
+            walletSettingsInteractor, httpErrorHandlingUtil);
+   }
+
+   @Provides
+   LostCardPresenter provideLostCardPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         PermissionDispatcher permissionDispatcher, SmartCardLocationInteractor smartCardLocationInteractor,
+         WalletDetectLocationService walletDetectLocationService, Activity activity, WalletAnalyticsInteractor analyticsInteractor) {
+      //noinspection all
+      return new LostCardPresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
+            smartCardLocationInteractor, walletDetectLocationService,
+            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.COMPONENT_NAME), analyticsInteractor);
+   }
+
+   @Provides
+   MapPresenter provideMapPresenter(SmartCardLocationInteractor smartCardLocationInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new MapPresenterImpl(smartCardLocationInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   DisableDefaultCardItemProvider provideDisableDefaultCardItemProvider(Context context) {
+      return new DisableDefaultCardItemProvider(context);
+   }
+
+   @Provides
+   AutoClearSmartCardItemProvider provideAutoClearSmartCardItemProvider(Context context) {
+      return new AutoClearSmartCardItemProvider(context);
+   }
+
+   @Provides
+   WalletAutoClearCardsPresenter provideWalletAutoClearCardsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, AutoClearSmartCardItemProvider itemProvider) {
+      return new WalletAutoClearCardsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            analyticsInteractor, itemProvider);
+   }
+
+   @Provides
+   WalletDisableDefaultCardPresenter provideWalletDisableDefaultCardPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, DisableDefaultCardItemProvider itemProvider) {
+      return new WalletDisableDefaultCardPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            analyticsInteractor, itemProvider);
+   }
+
+   @Provides
+   WalletOfflineModeSettingsPresenter provideWalletOfflineModeSettingsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletNetworkDelegate networkDelegate, WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletOfflineModeSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            networkDelegate, analyticsInteractor);
+   }
+
+   @Provides
+   DisplayOptionsSettingsPresenter provideDisplayOptionsSettingsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         SmartCardUserDataInteractor smartCardUserDataInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         WalletSocialInfoProvider socialInfoProvider) {
+      return new DisplayOptionsSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            smartCardUserDataInteractor, analyticsInteractor, socialInfoProvider);
+   }
+
+   @Provides
+   WalletNewFirmwareAvailablePresenter provideWalletNewFirmwareAvailablePresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletNewFirmwareAvailablePresenterImpl(navigator, deviceConnectionDelegate,
+            firmwareInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   WalletPuckConnectionPresenter provideWalletPuckConnectionPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor) {
+      return new WalletPuckConnectionPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor);
+   }
+
+   @Provides
+   WalletDownloadFirmwarePresenter provideWalletDownloadFirmwarePresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor, FirmwareInteractor firmwareInteractor) {
+      return new WalletDownloadFirmwarePresenterImpl(navigator, deviceConnectionDelegate,
+            analyticsInteractor, firmwareInteractor);
+   }
+
+   @Provides
+   WalletFirmwareChecksPresenter provideWalletFirmwareChecksPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletBluetoothService walletBluetoothService,
+         FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletFirmwareChecksPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            walletBluetoothService, firmwareInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   WalletInstallFirmwarePresenter provideWalletInstallFirmwarePresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletInstallFirmwarePresenterImpl(navigator, deviceConnectionDelegate,
+            firmwareInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   WalletSuccessInstallFirmwarePresenter provideWalletSuccessInstallFirmwarePresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletSuccessInstallFirmwarePresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor);
+   }
+
+   @Provides
+   ForceUpdatePowerOnPresenter provideForceUpdatePowerOnPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, WalletNetworkDelegate networkDelegate,
+         WizardInteractor wizardInteractor,
+         WalletBluetoothService walletBluetoothService) {
+      return new ForceUpdatePowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor,
+            walletBluetoothService);
+   }
+
+   @Provides
+   ForcePairKeyPresenter provideForcePairKeyPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FirmwareInteractor firmwareInteractor) {
+      return new ForcePairKeyPresenterImpl(navigator, deviceConnectionDelegate, firmwareInteractor);
+   }
+
+   @Provides
+   StartFirmwareInstallPresenter provideStartFirmwareInstallPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FirmwareInteractor firmwareInteractor) {
+      return new StartFirmwareInstallPresenterImpl(navigator, deviceConnectionDelegate,
+            firmwareInteractor);
+   }
+
+   @Provides
+   WalletUpToDateFirmwarePresenter providesWalletUpToDateFirmwarePresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WalletUpToDateFirmwarePresenterImpl(navigator, deviceConnectionDelegate,
+            smartCardInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   WalletHelpVideoPresenter provideWalletHelpVideoPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         MemberVideosInteractor memberVideosInteractor,
+         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, Context context) {
+      return new WalletHelpVideoPresenterImpl(navigator, deviceConnectionDelegate, memberVideosInteractor,
+            cachedEntityInteractor, cachedEntityDelegate, new WalletHelpVideoDelegate(context));
+   }
+
+   @Provides
+   WalletHelpDocumentsPresenter provideWalletHelpDocumentsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         DocumentsInteractor documentsInteractor) {
+      return new WalletHelpDocumentsPresenterImpl(navigator, deviceConnectionDelegate, documentsInteractor);
+   }
+
+   @Provides
+   HelpDocumentDetailPresenter provideHelpDocumentDetailPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate) {
+      return new HelpDocumentDetailPresenterImpl(navigator, deviceConnectionDelegate);
+   }
+
+   @Provides
+   SendFeedbackPresenter providesSendFeedbackPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
+         MediaInteractor mediaInteractor) {
+      return new SendFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
+            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+   }
+
+   @Provides
+   PaymentFeedbackPresenter providePaymentFeedbackPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
+         MediaInteractor mediaInteractor) {
+      return new PaymentFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
+            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+   }
+
+   @Provides
+   WizardChargingPresenter providesWizardChargingPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
+      return new WizardChargingPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            recordInteractor, analyticsInteractor);
+   }
+
+   @Provides
+   ConnectionErrorPresenter provideConnectionErrorPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor) {
+      return new ConnectionErrorPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor);
+   }
+
+   @Provides
+   AddCardDetailsPresenter provideAddCardDetailsPresenter(Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor, WizardInteractor wizardInteractor,
+         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+      return new AddCardDetailsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor,
+            recordInteractor, wizardInteractor, httpErrorHandlingUtil);
+   }
+
+   @Provides
+   CardDetailsPresenter provideCardDetailsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         WalletNetworkDelegate networkDelegate, SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor) {
+      return new CardDetailsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            networkDelegate, recordInteractor, analyticsInteractor);
    }
 }

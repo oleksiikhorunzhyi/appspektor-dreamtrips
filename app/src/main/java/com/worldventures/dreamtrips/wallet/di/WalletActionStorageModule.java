@@ -1,18 +1,20 @@
 package com.worldventures.dreamtrips.wallet.di;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.wallet.domain.storage.AddressWithPlacesActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.DeviceStateActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.FirmwareUpdateActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardDetailsActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardFirmwareActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardUserActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.SyncRecordsStatusActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.TermsAndConditionsActionStorage;
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.AboutSmartCardDataActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.AddressWithPlacesActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.DefaultRecordIdStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.DeviceStateActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.FirmwareUpdateActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardDetailsActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardFirmwareActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardUserActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SyncRecordsStatusActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.TermsAndConditionsActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.action.WalletRecordsActionStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.disk.FirmwareDataStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 
@@ -31,7 +33,7 @@ public class WalletActionStorageModule {
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
    ActionStorage walletCardListStorage(RecordsStorage bankCardsStorage) {
-      return new WalletRecordsDiskStorage(bankCardsStorage);
+      return new WalletRecordsActionStorage(bankCardsStorage);
    }
 
    @Provides(type = Provides.Type.SET)
@@ -42,20 +44,20 @@ public class WalletActionStorageModule {
 
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionStorage smartCardActionStorage(SnappyRepository snappyRepository) {
-      return new SmartCardActionStorage(snappyRepository);
+   ActionStorage smartCardActionStorage(WalletStorage walletStorage) {
+      return new SmartCardActionStorage(walletStorage);
    }
 
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionStorage smartCardDetailsActionStorage(SnappyRepository snappyRepository) {
-      return new SmartCardDetailsActionStorage(snappyRepository);
+   ActionStorage smartCardDetailsActionStorage(WalletStorage walletStorage) {
+      return new SmartCardDetailsActionStorage(walletStorage);
    }
 
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionStorage termsAndConditionsActionStorage(SnappyRepository snappyRepository) {
-      return new TermsAndConditionsActionStorage(snappyRepository);
+   ActionStorage termsAndConditionsActionStorage(WalletStorage walletStorage) {
+      return new TermsAndConditionsActionStorage(walletStorage);
    }
 
    @Provides(type = Provides.Type.SET)
@@ -72,14 +74,14 @@ public class WalletActionStorageModule {
 
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionStorage smartCardFirmwareActionStorage(SnappyRepository snappyRepository) {
-      return new SmartCardFirmwareActionStorage(snappyRepository);
+   ActionStorage smartCardFirmwareActionStorage(WalletStorage walletStorage) {
+      return new SmartCardFirmwareActionStorage(walletStorage);
    }
 
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionStorage smartCardUserActionStorage(SnappyRepository snappyRepository) {
-      return new SmartCardUserActionStorage(snappyRepository);
+   ActionStorage smartCardUserActionStorage(WalletStorage walletStorage) {
+      return new SmartCardUserActionStorage(walletStorage);
    }
 
    @Provides(type = Provides.Type.SET)
@@ -90,7 +92,12 @@ public class WalletActionStorageModule {
 
    @Provides(type = Provides.Type.SET)
    @Named(JANET_WALLET)
-   ActionStorage syncRecordsStatusActionStorage(SnappyRepository snappyRepository) {
-      return new SyncRecordsStatusActionStorage(snappyRepository);
+   ActionStorage syncRecordsStatusActionStorage(WalletStorage walletStorage) {
+      return new SyncRecordsStatusActionStorage(walletStorage);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   ActionStorage aboutSmartCardDataActionStorage(FirmwareDataStorage persistentStorage) {
+      return new AboutSmartCardDataActionStorage(persistentStorage);
    }
 }

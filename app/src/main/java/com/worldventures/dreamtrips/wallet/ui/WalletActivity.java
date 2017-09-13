@@ -5,59 +5,95 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.widget.FrameLayout;
 
-import com.techery.spares.annotations.Layout;
+import com.bluelinelabs.conductor.Conductor;
+import com.bluelinelabs.conductor.Router;
+import com.bluelinelabs.conductor.RouterTransaction;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
-import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
-import com.worldventures.dreamtrips.wallet.di.WalletAppModule;
+import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
-import com.worldventures.dreamtrips.wallet.ui.start.WalletStartPath;
+import com.worldventures.dreamtrips.wallet.ui.common.WalletNavigationDelegate;
+import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.activity.WalletActivityView;
+import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigator;
+import com.worldventures.dreamtrips.wallet.ui.start.impl.WalletStartScreenImpl;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-import flow.History;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
-@Layout(R.layout.activity_wallet)
-public class WalletActivity extends FlowActivity<WalletActivityPresenter> implements WalletActivityPresenter.View {
+public class WalletActivity extends BaseActivity implements WalletActivityView {
 
    private static final int REQUEST_CODE_BLUETOOTH_ON = 0xF045;
 
-   private final LocationScreenComponent locationSettingsService = new LocationScreenComponent(this);
+   @Inject WalletNavigationDelegate navigationDelegate;
+   @Inject WalletCropImageService cropImageService;
+   @Inject WalletActivityPresenter presenter;
+   @Inject CoreNavigator coreNavigator;
 
-   @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-   @Inject WalletCropImageService cropImageDelegate;
-   @Inject MediaPickerFacebookService walletPickerFacebookService;
+   private final LocationScreenComponent locationSettingsService = new LocationScreenComponent(this);
+   private final PublishSubject<Void> onDetachSubject = PublishSubject.create();
+   private final PublishSubject<Void> onStopSubject = PublishSubject.create();
+
+   private Router router;
+
+   @Override
+   public void setupLayout() {
+      setContentView(R.layout.activity_wallet);
+   }
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletAppModule.WALLET));
+      presenter.attachView(this);
+
+      final FrameLayout rootContainer = findViewById(R.id.root_container);
+      router = Conductor.attachRouter(this, rootContainer, savedInstanceState);
+      if (!router.hasRootController()) {
+         router.setRoot(RouterTransaction.with(new WalletStartScreenImpl()));
+      }
+
+      navigationDelegate.init(findViewById(android.R.id.content));
+      navigationDelegate.setOnLogoutAction(() -> presenter.logout());
+   }
+
+   @Override
+   protected void onStart() {
+      super.onStart();
+      presenter.bindToBluetooth(onStopSubject.asObservable());
+   }
+
+   @Override
+   protected void onStop() {
+      onStopSubject.onNext(null);
+      super.onStop();
    }
 
    @Override
    public void onDestroy() {
-      cropImageDelegate.destroy();
+      onDetachSubject.onNext(null);
+      presenter.detachView(false);
+      cropImageService.destroy();
       super.onDestroy();
    }
 
    @Override
-   protected ComponentDescription getCurrentComponent() {
-      return rootComponentsProvider.getComponentByKey(WalletAppModule.WALLET);
+   protected void openLoginActivity() {
+      coreNavigator.openLoginActivity();
    }
 
    @Override
-   protected History provideDefaultHistory() {
-      return History.single(new WalletStartPath());
-   }
-
-   @Override
-   protected WalletActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-      return new WalletActivityPresenter();
+   protected List<Object> getModules() {
+      List<Object> modules = super.getModules();
+      modules.add(new WalletActivityModule());
+      return modules;
    }
 
    public static void startWallet(Context context) {
@@ -67,13 +103,14 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
    @Override
    public Object getSystemService(@NonNull String name) {
       if (WalletCropImageService.SERVICE_NAME.equals(name)) {
-         return cropImageDelegate;
+         return cropImageService;
       } else if (LocationScreenComponent.COMPONENT_NAME.equals(name)) {
          return locationSettingsService;
       }
       return super.getSystemService(name);
    }
 
+   @Override
    public void openBluetoothSettings() {
       Intent requestBluetoothOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
       this.startActivityForResult(requestBluetoothOn, REQUEST_CODE_BLUETOOTH_ON);
@@ -81,9 +118,34 @@ public class WalletActivity extends FlowActivity<WalletActivityPresenter> implem
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
+      if (cropImageService.onActivityResult(requestCode, resultCode, data)) return;
       if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) return;
-      if (walletPickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
       super.onActivityResult(requestCode, resultCode, data);
+   }
+
+   public Router getRouter() {
+      return router;
+   }
+
+   @Override
+   public void onBackPressed() {
+      if (!router.handleBack()) {
+         super.onBackPressed();
+      }
+   }
+
+   @Override
+   public <T> Observable.Transformer<T, T> bindToLifecycle() {
+      return tObservable -> tObservable.takeUntil(onDetachSubject.asObservable());
+   }
+
+   @Override
+   public void showConnectionStatus(ConnectionStatus connectionStatus) {
+      // nothing
+   }
+
+   @Override
+   public void showHttpConnectionStatus(boolean connected) {
+      // nothing
    }
 }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -13,7 +14,7 @@ public interface WalletCropImageService {
 
    Observable<File> observeCropper();
 
-   void cropImage(Uri uri);
+   void cropImage(Activity activity, Uri uri);
 
    void destroy();
 

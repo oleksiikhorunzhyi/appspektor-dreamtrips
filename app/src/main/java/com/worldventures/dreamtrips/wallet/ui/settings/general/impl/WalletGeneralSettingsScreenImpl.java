@@ -140,7 +140,7 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
          confirmRestartSmartCardDialog = new MaterialDialog.Builder(getContext())
                .title(R.string.wallet_card_settings_turn_off_your_sc)
                .content(R.string.wallet_card_settings_are_you_sure)
-               .positiveText(R.string.wallet_card_settings_power_off)
+               .positiveText(R.string.wallet_card_settings_power_off_dialog_ok)
                .negativeText(R.string.cancel)
                .onPositive(((dialog, which) -> getPresenter().onConfirmedRestartSmartCard()))
                .build();

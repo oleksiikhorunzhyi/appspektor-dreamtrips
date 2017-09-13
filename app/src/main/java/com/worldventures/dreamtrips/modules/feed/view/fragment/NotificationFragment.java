@@ -13,7 +13,6 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.adapter.HeaderItem;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
@@ -21,10 +20,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
@@ -64,7 +61,6 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
    @Override
    public void onResume() {
       super.onResume();
-      TrackingHelper.viewNotificationsScreen();
       getPresenter().reload();
    }
 

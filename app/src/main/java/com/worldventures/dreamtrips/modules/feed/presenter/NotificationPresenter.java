@@ -4,10 +4,11 @@ import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.LoadMoreNotificationsAnalyticAction;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewNotificationScreenAnalyticAction;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
 
@@ -23,7 +24,10 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
    @Inject NotificationFeedInteractor feedInteractor;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
-   public NotificationPresenter() {
+   @Override
+   public void onResume() {
+      super.onResume();
+      analyticsInteractor.analyticsActionPipe().send(new ViewNotificationScreenAnalyticAction());
    }
 
    @Override
@@ -81,7 +85,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
    public void loadNext() {
       feedInteractor.notificationsPipe()
             .send(GetNotificationsCommand.loadMore());
-      TrackingHelper.loadMoreNotifications();
+      analyticsInteractor.analyticsActionPipe().send(new LoadMoreNotificationsAnalyticAction());
    }
 
    public interface View extends RxView {

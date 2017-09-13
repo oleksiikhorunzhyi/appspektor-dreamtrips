@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.inspire_me;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.ShareInsparationImageAnalyticAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
@@ -48,7 +48,7 @@ public class FullscreenInspireMePresenter extends Presenter<FullscreenInspireMeP
       } else {
          view.openShare(inspiration.getUrl(), inspiration.getQuote() + " - " + inspiration.getAuthor(), type);
       }
-      TrackingHelper.insprShare(inspiration.getId(), type);
+      analyticsInteractor.analyticsActionPipe().send(new ShareInsparationImageAnalyticAction(inspiration.getId(), type));
    }
 
    public interface View extends Presenter.View {

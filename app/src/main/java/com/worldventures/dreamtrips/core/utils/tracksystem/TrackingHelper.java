@@ -26,9 +26,7 @@ public class TrackingHelper {
 
    public static final String CATEGORY_NAV_MENU = "nav_menu";
 
-   public static final String ACTION_DREAMTRIPS = "dreamtrips";
    public static final String ACTION_DREAMTRIPS_SOCIAL_DETAIL = "dreamtrips:socialdetail";
-   public static final String ACTION_DREAMTRIPS_TRIP_DETAIL = "dreamtrips:tripdetail";
    public static final String ACTION_PHOTOS_YSBH = "photos-ysbh";
    public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
    public static final String ACTION_PHOTOS_MINE = "photos-mine";
@@ -36,7 +34,6 @@ public class TrackingHelper {
 
    public static final String ACTION_PHOTOS_INSPR = "photos-inspireme";
    public static final String ACTION_INSPR_DETAILS = "inspireme_details";
-   public static final String ACTION_INSPR_SHARE = "inspireme_share";
 
    public static final String ACTION_OTA = "ota_booking";
    public static final String ACTION_REP_ENROLL = "rep_enroll";
@@ -155,34 +152,8 @@ public class TrackingHelper {
    // Tracking actions deprecated
    ///////////////////////////////////////////////////////////////////////////
 
-
-   public static void dreamTrips(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_DREAMTRIPS);
-   }
-
-   public static void trip(String id, String memberId) {
-      Map<String, Object> data = new HashMap<>();
-      data.put("view_trip", id);
-      data.put(FIELD_MEMBER_ID, memberId);
-      trackMemberAction(CATEGORY_NAV_MENU, ACTION_DREAMTRIPS, data);
-   }
-
-   public static void tripInfo(String id, String memberId) {
-      Map<String, Object> data = new HashMap<>();
-      data.put("trip_info", id);
-      data.put(FIELD_MEMBER_ID, memberId);
-      trackMemberAction(CATEGORY_NAV_MENU, ACTION_DREAMTRIPS, data);
-   }
-
    public static void insprDetails(String memberId, String id) {
       trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_INSPR, ACTION_INSPR_DETAILS, String.valueOf(id));
-   }
-
-   public static void insprShare(String id, @ShareType String type) {
-      Map<String, Object> data = new HashMap<>();
-      data.put(TYPE, resolveSharingType(type));
-      data.put(ID, id);
-      trackMemberAction(ACTION_INSPR_SHARE, null, data);
    }
 
    public static void view(TripImagesType type, String id, String memberId) {
@@ -293,11 +264,6 @@ public class TrackingHelper {
    // ---------------- DreamTrips actions
    public static final String ACTION_ACTIVITY_FEED = "activity_feed";
    public static final String ACTION_FRIENDS_ACTIVITY = "friends_activity";
-   public static final String ACTION_NOTIFICATIONS = "notifications";
-   public static final String ACTION_MEMBER_IMAGES = "member_images";
-   public static final String ACTION_MY_IMAGES = "my_images";
-   public static final String ACTION_YSHB_IMAGES = "yshb_images";
-   public static final String ACTION_INSPIRE_ME_IMAGES = "inspire_me_images";
    public static final String ACTION_360_VIDEOS = "360_videos";
    public static final String ACTION_MEMBERSHIP = "membership";
    public static final String ACTION_MEMBERSHIP_ENROLL = "membership:enroll-member";
@@ -324,9 +290,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_SEARCH = "search";
    public static final String ATTRIBUTE_FILTER = "filter";
    public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
-   public static final String ATTRIBUTE_MAP = "map";
-   public static final String ATTRIBUTE_ADD_TO_BUCKET_LIST = "add_to_bucket_list";
-   public static final String ATTRIBUTE_LOAD_MORE = "load_more";
    public static final String ATTRIBUTE_UPLOAD_PHOTO = "upload_photo";
    public static final String ATTRIBUTE_SHARE = "share";
    public static final String ATTRIBUTE_DOWNLOAD = "download";
@@ -339,10 +302,6 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_FACEBOOK = "facebook";
    public static final String ATTRIBUTE_TWITTER = "twitter";
    public static final String ATTRIBUTE_SHARING_UNRESOLVED = "unknown";
-   public static final String ATTRIBUTE_TRIP_FILTERS = "tripfilters";
-   public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
-   public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
-   public static final String ATTRIBUTE_TRIP_SEARCH = "tripsearch";
 
    // ---------------- Messenger actions
    public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
@@ -477,55 +436,6 @@ public class TrackingHelper {
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_FRIENDS_ACTIVITY, data);
    }
 
-   // ---------------- Dream Trips
-
-   public static void viewDreamTripsScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_DREAMTRIPS, ATTRIBUTE_LIST);
-   }
-
-   public static void viewTripDetails(String tripId, String tripName, String searchQuery, TripsFilterDataAnalyticsWrapper filterData) {
-      Map data = new HashMap<>();
-      data.put("trip_id", tripName + "-" + tripId);
-      data.put(ATTRIBUTE_VIEW, 1);
-      if (!TextUtils.isEmpty(searchQuery)) {
-         data.put(ATTRIBUTE_TRIP_SEARCH, searchQuery);
-      }
-      data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
-      data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegionsAnalyticString());
-      data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivitiesAnalyticString());
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS_TRIP_DETAIL, data);
-   }
-
-   public static void tapDreamTripsButton(String buttonType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_DREAMTRIPS, buttonType);
-   }
-
-   public static void actionItemDreamtrips(String eventType, String tripId, String tripName) {
-      Map data = new HashMap<>();
-      data.put("trip_id", tripName + "-" + tripId);
-      data.put(eventType, tripId);
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
-   }
-
-   public static void actionFilterTrips(TripsFilterDataAnalyticsWrapper filterData) {
-      Map data = new HashMap<>();
-      data.put(ATTRIBUTE_FILTER, 1);
-      data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
-      data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegionsAnalyticString());
-      data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivitiesAnalyticString());
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
-   }
-
-   // ---------------- Notifications
-
-   public static void viewNotificationsScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_NOTIFICATIONS, ATTRIBUTE_LIST);
-   }
-
-   public static void loadMoreNotifications() {
-      sendSimpleAttributetoAdobeTracker(ACTION_NOTIFICATIONS, ATTRIBUTE_LOAD_MORE);
-   }
-
    // ---------------- Book Travel
 
    public static void selectTripImagesTab(String tab) {
@@ -537,12 +447,6 @@ public class TrackingHelper {
       data.put("image_id", imageId);
       data.put(ATTRIBUTE_VIEW, "1");
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, tab, data);
-   }
-
-   public static void uploadTripImagePhoto(String actionTab) {
-      Map data = new HashMap<>();
-      data.put(actionTab, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
    }
 
    public static void termsConditionsAction(boolean accepted) {

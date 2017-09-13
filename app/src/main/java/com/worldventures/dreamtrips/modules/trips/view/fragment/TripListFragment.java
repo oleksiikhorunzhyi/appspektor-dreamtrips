@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
@@ -121,13 +120,6 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
             .build());
    }
 
-
-   @Override
-   public void onResume() {
-      super.onResume();
-      TrackingHelper.viewDreamTripsScreen();
-   }
-
    @Override
    protected void restoreState(Bundle savedInstanceState) {
       super.restoreState(savedInstanceState);
@@ -198,8 +190,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
             ((MainActivity) getActivity()).openRightDrawer();
             break;
          case R.id.action_map:
-            actionMap();
-            TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_MAP);
+            getPresenter().openMap();
             break;
       }
       return super.onOptionsItemSelected(item);
@@ -278,7 +269,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
       }
    }
 
-   private void actionMap() {
+   @Override
+   public void openMap() {
       router.moveTo(Route.MAP, NavigationConfigBuilder.forFragment()
             .fragmentManager(getFragmentManager())
             .containerId(R.id.container_main)

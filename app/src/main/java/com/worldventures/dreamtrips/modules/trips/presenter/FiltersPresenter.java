@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.os.Bundle;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -20,6 +18,7 @@ import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAdd
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.AcceptDreamTripsFiltersAnalyticAction;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import java.util.ArrayList;
@@ -134,7 +133,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
    public void acceptFilters() {
       tripFilterEventDelegate.post(tripFilterData);
-      TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
    }
 
    public void resetFilters() {
@@ -151,7 +149,11 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       //
       tripFilterData.reset();
       tripFilterEventDelegate.post(tripFilterData);
-      TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
+   }
+
+   private void trackApplyFilter() {
+      AcceptDreamTripsFiltersAnalyticAction action = new AcceptDreamTripsFiltersAnalyticAction(new TripsFilterDataAnalyticsWrapper(tripFilterData));
+      analyticsInteractor.analyticsActionPipe().send(action);
    }
 
    public void onRangeBarDurationEvent(int minNights, int maxNights) {

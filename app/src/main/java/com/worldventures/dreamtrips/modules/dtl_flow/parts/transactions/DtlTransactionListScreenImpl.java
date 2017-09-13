@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -21,6 +22,7 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    @InjectView(R.id.tv_title) TextView tvTitle;
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
+   @InjectView(R.id.dtlToolbarMerchantSearchInput) SearchView searchView;
 
    public DtlTransactionListScreenImpl(Context context) {
       super(context);
@@ -47,5 +49,11 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
          toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
          toolbar.setNavigationOnClickListener(view -> {Flow.get(getContext()).goBack();});
       }
+      setupSearch();
+   }
+
+   private void setupSearch(){
+      searchView.setIconifiedByDefault(false);
+
    }
 }

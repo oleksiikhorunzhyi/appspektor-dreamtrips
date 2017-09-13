@@ -29,6 +29,17 @@
             />
    </RelativeLayout>
 
+   <android.support.v7.widget.SearchView
+         android:id="@+id/dtlToolbarMerchantSearchInput"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_margin="@dimen/dtl_transaction_search_margin"
+         android:background="@drawable/bg_edittext_white"
+         android:hint="@string/dtl_all_locations"
+         android:searchIcon="@drawable/ic_dtlt_search_input"
+         android:textColorHint="@color/dtlt_input_hint_color"
+         />
+
    <ProgressBar
          android:id="@+id/progress_loader"
          style="?android:attr/progressBarStyle"

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -67,6 +68,11 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
       final InputMethodManager inputManager = (InputMethodManager) view.getContext()
             .getSystemService(INPUT_METHOD_SERVICE);
       inputManager.hideSoftInputFromWindow(null, 0);
+   }
+
+   @Override
+   public <T> Observable.Transformer<T, T> bindUntilDetach() {
+      return bindUntilEvent(ControllerEvent.DETACH);
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

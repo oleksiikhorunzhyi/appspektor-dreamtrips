@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
 import com.bluelinelabs.conductor.rxlifecycle.RxRestoreViewOnCreateController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.ui.activity.InjectingActivity;
+import com.trello.rxlifecycle.LifecycleTransformer;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.databinding.WalletIncludeMapPopupInfoBinding;
@@ -204,6 +206,11 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
                   fetchAddressWithPlacesCommand -> {
                   }))
             .build());
+   }
+
+   @Override
+   public <T> LifecycleTransformer<T> bindUntilDetach() {
+      return bindUntilEvent(ControllerEvent.DETACH);
    }
 
    @Override

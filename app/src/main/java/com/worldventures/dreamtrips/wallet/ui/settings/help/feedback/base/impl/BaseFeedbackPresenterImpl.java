@@ -26,6 +26,7 @@ import java.util.List;
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> extends WalletPresenterImpl<S> implements BaseSendFeedbackPresenter<S> {
@@ -63,7 +64,8 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
    private void observeAttachmentsPreparation() {
       mediaInteractor.mediaAttachmentPreparePipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<MediaAttachmentPrepareCommand>()
                   .onSuccess(command -> {
                      for (Uri attachmentUri : command.getResult()) {
@@ -76,7 +78,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    private void observeAttachments() {
       attachmentsManager.getAttachmentsObservable()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(holder -> {
                this.attachmentsCount = attachmentsManager.getAttachments().size();
                getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
@@ -87,7 +89,8 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
             .compose(new ActionPipeCacheWiper<>(feedbackInteractor.attachmentsRemovedPipe()))
             .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
             .map(actionState -> actionState.action.getResult())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(removedAttachments -> Queryable.from(attachmentsManager.getAttachments()).forEachR(holder -> {
                if (removedAttachments.contains(holder.entity())) {
                   attachmentsManager.remove(holder);
@@ -98,7 +101,8 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
       feedbackInteractor.uploadAttachmentPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(feedbackInteractor.uploadAttachmentPipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<UploadFeedbackAttachmentCommand>()
                   .onStart(this::updateImageAttachment)
                   .onProgress((command, integer) -> updateImageAttachment(command))
@@ -163,7 +167,8 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
    protected void sendFeedbackCommand(SendWalletFeedbackCommand feedbackCommand) {
       settingsInteractor.walletFeedbackPipe()
             .createObservable(feedbackCommand)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSendFeedback())
                   .onSuccess(command -> handleSuccessSentFeedback())
                   .onFail(this::handleFailSentFeedback)

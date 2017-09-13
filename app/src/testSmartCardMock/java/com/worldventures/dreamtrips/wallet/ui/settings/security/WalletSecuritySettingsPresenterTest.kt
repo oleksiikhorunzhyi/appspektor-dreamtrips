@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.nxtid.mobile.NxtMobileResp
+import com.trello.rxlifecycle.RxLifecycle
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor
@@ -22,6 +23,7 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import org.junit.Test
 import org.mockito.Mockito
 import rx.lang.kotlin.PublishSubject
+import rx.subjects.BehaviorSubject
 
 class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySettingsScreen, WalletSecuritySettingsPresenter>() {
 
@@ -55,6 +57,7 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
       deviceStateCommandContract.result(ImmutableSmartCardStatus.builder().build())
       walletFeatureHelper = WalletFeatureHelperFull()
       screen = mock()
+      whenever(screen.bindUntilDetach<Any>()).thenReturn(RxLifecycle.bind(BehaviorSubject.create<Any>()))
       whenever(screen.stealthModeStatus()).thenReturn(stealthToggleSubject.asObservable())
       whenever(screen.lockStatus()).thenReturn(lockToggleSubject.asObservable())
       presenter = WalletSecuritySettingsPresenterImpl(navigator, deviceConnectionDelegate,

@@ -155,7 +155,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    private void observeNewAvatar() {
       observeCropper()
-            .compose(bindToLifecycle())
+            .compose(bindUntilDetach())
             .subscribe(file -> viewModel.setChosenPhotoUri(Uri.fromFile(file).toString()));
    }
 

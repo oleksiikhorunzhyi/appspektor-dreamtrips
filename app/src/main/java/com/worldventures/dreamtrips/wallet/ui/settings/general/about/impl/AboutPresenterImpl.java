@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.about.AboutScreen
 import java.util.List;
 
 import io.techery.janet.Command;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> implements AboutPresenter {
 
@@ -55,23 +56,27 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
       smartCardInteractor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(smartCard -> getView().setSmartCardId(smartCard.smartCardId()));
       smartCardInteractor.smartCardFirmwarePipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::restoreCachedFWInfo);
       smartCardInteractor.smartCardUserPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getView()::setSmartCardUser);
       smartCardInteractor.aboutSmartCardDataCommandPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .filter(aboutSmartCardData -> aboutSmartCardData != null)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(aboutSmartCardData -> getView().setSmartCardFirmware(aboutSmartCardData.smartCardFirmware()));
    }
 
@@ -86,7 +91,8 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
    private void observePayCardsInfo() {
       recordInteractor.cardsListPipe()
             .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> bindCardList(command.getResult()));
    }
 

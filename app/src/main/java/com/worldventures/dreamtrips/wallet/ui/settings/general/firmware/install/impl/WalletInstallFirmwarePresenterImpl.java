@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<WalletInstallFirmwareScreen> implements WalletInstallFirmwarePresenter {
 
@@ -38,7 +39,8 @@ public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<Wall
       firmwareInteractor.installFirmwarePipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(firmwareInteractor.installFirmwarePipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationInstall())
                   .onStart(installFirmwareCommand -> getView().setInstallStarted(true))
                   .onSuccess(command -> openSuccess(command.getResult()))

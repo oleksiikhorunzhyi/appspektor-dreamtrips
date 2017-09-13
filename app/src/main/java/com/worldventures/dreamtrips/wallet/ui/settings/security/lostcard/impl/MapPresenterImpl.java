@@ -45,7 +45,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
    private void observeWalletLocationCommand() {
       smartCardLocationInteractor.walletLocationCommandPipe()
             .observeSuccess()
-            .compose(getView().bindToLifecycle())
+            .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()),
                   throwable -> Timber.e(throwable, ""));
@@ -66,7 +66,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
    private void fetchLastSmartCardLocation() {
       smartCardLocationInteractor.getLocationPipe()
             .createObservable(new GetLocationCommand())
-            .compose(getView().bindToLifecycle())
+            .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<GetLocationCommand>()
                   .onSuccess(getLocationCommand -> {
@@ -95,7 +95,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
       smartCardLocationInteractor
             .fetchAddressPipe()
             .createObservable(new FetchAddressWithPlacesCommand(coordinates))
-            .compose(getView().bindToLifecycle())
+            .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView(), true)
                   .onSuccess(command ->

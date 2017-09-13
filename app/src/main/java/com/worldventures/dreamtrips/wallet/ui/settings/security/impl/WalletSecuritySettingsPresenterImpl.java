@@ -30,6 +30,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.event.PinStatusEvent;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<WalletSecuritySettingsScreen> implements WalletSecuritySettingsPresenter {
@@ -60,14 +61,16 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
 
    private void observeSmartCardChanges() {
       smartCardInteractor.deviceStatePipe().observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .map(Command::getResult)
             .subscribe(this::bindSmartCard);
 
       smartCardInteractor.stealthModePipe()
             .observe()
             .throttleLast(1, TimeUnit.SECONDS)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetStealthMode())
                   .onSuccess(action -> trackSmartCardStealthMode(action.stealthModeEnabled))
                   .onFail((setStealthModeCommand, throwable) -> stealthModeFailed())
@@ -77,7 +80,8 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
       smartCardInteractor.lockPipe()
             .observe()
             .throttleLast(1, TimeUnit.SECONDS)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSeLockState())
                   .onSuccess(action -> trackSmartCardLock(action.isLock()))
                   .create());
@@ -90,7 +94,8 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
                   .observeSuccess()
                   .map(Command::getResult))
             .startWith(true)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::applyPinStatus);
    }
 
@@ -139,7 +144,8 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    private void stealthModeFailed() {
       //noinspection ConstantConditions
       smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> getView().stealthModeStatus(command.getResult().stealthMode())));
    }
@@ -148,20 +154,21 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    public void lockStatusFailed() {
       //noinspection ConstantConditions
       smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> getView().lockStatus(command.getResult().lock())));
    }
 
    private void observeStealthModeController(WalletSecuritySettingsScreen view) {
       view.stealthModeStatus()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(this::stealthModeChanged);
    }
 
    private void observeLockController(WalletSecuritySettingsScreen view) {
       view.lockStatus()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(this::lockStatusChanged);
    }
 
@@ -213,7 +220,8 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> action.call(command.getResult().connectionStatus()))
             );

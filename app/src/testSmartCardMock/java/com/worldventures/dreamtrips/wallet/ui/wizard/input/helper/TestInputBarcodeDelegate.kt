@@ -33,7 +33,7 @@ class TestInputBarcodeDelegate : BaseTest() {
    fun beforeTests() {
       view = mock()
       val progressView: ProgressView<GetSmartCardStatusCommand> = mock()
-      whenever(view.bindToLifecycle<Any>()).thenReturn(Observable.Transformer<Any, Any> { observable -> observable })
+      whenever(view.bindUntilDetach<Any>()).thenReturn(Observable.Transformer<Any, Any> { observable -> observable })
       whenever(view.provideOperationFetchCardStatus()).thenReturn(ComposableOperationView<GetSmartCardStatusCommand>(progressView))
 
       navigator = mock()

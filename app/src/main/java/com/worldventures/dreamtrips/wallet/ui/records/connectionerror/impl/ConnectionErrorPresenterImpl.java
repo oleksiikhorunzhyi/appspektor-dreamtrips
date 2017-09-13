@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.wallet.ui.records.connectionerror.Connection
 
 import java.util.concurrent.TimeUnit;
 
+import rx.android.schedulers.AndroidSchedulers;
+
 public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<ConnectionErrorScreen> implements ConnectionErrorPresenter {
 
    private final SmartCardInteractor smartCardInteractor;
@@ -33,7 +35,8 @@ public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<Connection
             .throttleLast(1, TimeUnit.SECONDS)
             .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(connectionStatus -> {
                if (connectionStatus.isConnected()) getNavigator().goWizardCharging();
             });

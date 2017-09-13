@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.util.GuaranteedProgressVisibilityTran
 import com.worldventures.dreamtrips.wallet.util.NoProgressAfterSuccessTransformer;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletCustomerSupportSettingsPresenterImpl extends WalletPresenterImpl<WalletCustomerSupportSettingsScreen> implements WalletCustomerSupportSettingsPresenter {
 
@@ -38,7 +39,8 @@ public class WalletCustomerSupportSettingsPresenterImpl extends WalletPresenterI
             .observeWithReplay()
             .compose(new NoProgressAfterSuccessTransformer<>())
             .compose(new GuaranteedProgressVisibilityTransformer<>())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> getView().bindData(command.getResult()))
                   .create());

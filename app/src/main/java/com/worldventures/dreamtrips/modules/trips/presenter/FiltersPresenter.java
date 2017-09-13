@@ -133,6 +133,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
    public void acceptFilters() {
       tripFilterEventDelegate.post(tripFilterData);
+      trackApplyFilter();
    }
 
    public void resetFilters() {
@@ -149,6 +150,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       //
       tripFilterData.reset();
       tripFilterEventDelegate.post(tripFilterData);
+      trackApplyFilter();
    }
 
    private void trackApplyFilter() {

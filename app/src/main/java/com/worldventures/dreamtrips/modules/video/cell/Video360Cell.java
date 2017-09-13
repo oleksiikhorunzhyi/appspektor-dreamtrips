@@ -11,8 +11,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -28,7 +26,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_video_360)
-public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate> {
+public class Video360Cell extends AbstractDelegateCell<Video, Video360Cell.Video360CellDelegate> {
 
    @InjectView(R.id.textViewDuration) TextView textViewDuration;
    @InjectView(R.id.tv_title) TextView textViewTitle;
@@ -36,7 +34,6 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
    @InjectView(R.id.download_progress) PinProgressButton downloadProgress;
 
    @Inject Context context;
-   @Inject ActivityRouter activityRouter;
    @Inject SessionHolder appSessionHolder;
    @Inject CachedModelHelper cachedModelHelper;
 
@@ -75,30 +72,22 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
       if (cachedModelHelper.isCached(cacheEntity)) {
          url = cachedModelHelper.getFilePath(getModelObject().getVideoUrl());
       }
-      activityRouter.open360Activity(url, video.getVideoName());
-      //
-      TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
-            .get()
-            .getUser()
-            .getUsername(), TrackingHelper.ACTION_360_PLAY, video.getVideoName());
-      TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_VIEW, video.getVideoName());
+      cellDelegate.onOpen360Video(video, url, video.getVideoName());
    }
-
 
    @OnClick(R.id.download_progress)
    public void onDownloadClick() {
       Video video = getModelObject();
-      progressVideoCellHelper.onDownloadClick(cellDelegate);
-      //
-      TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
-            .get()
-            .getUser()
-            .getUsername(), TrackingHelper.ACTION_360_LOAD_START, video.getVideoName());
-      TrackingHelper.actionTripVideo(TrackingHelper.ATTRIBUTE_DOWNLOAD, video.getVideoName());
+      progressVideoCellHelper.onDownloadClick(cellDelegate, video);
    }
 
    @Override
    public void prepareForReuse() {
       imageViewPreview.setImageResource(0);
+   }
+
+   public interface Video360CellDelegate extends VideoCellDelegate {
+
+      void onOpen360Video(Video video, String url, String name);
    }
 }

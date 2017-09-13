@@ -175,7 +175,6 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
    public void openTrip(TripModel tripModel) {
       view.moveToTripDetails(tripModel);
-
       tripFilterEventDelegate.last()
             .subscribe(tripsFilterData -> {
                ViewTripDetailsAnalyticAction analyticAction = (new ViewTripDetailsAnalyticAction(tripModel.getTripId(),

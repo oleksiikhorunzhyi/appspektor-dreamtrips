@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriend
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.FriendRelationshipAnalyticAction;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
@@ -159,6 +160,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    }
 
    public void unfriend() {
+      analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.unfriend());
       friendsInteractor.removeFriendPipe()
             .createObservable(new RemoveFriendCommand(user))
             .compose(bindView())

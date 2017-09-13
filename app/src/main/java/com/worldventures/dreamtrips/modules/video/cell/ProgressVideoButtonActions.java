@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.video.cell;
 
-import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+public interface ProgressVideoButtonActions<T> {
 
-public interface ProgressVideoButtonActions {
+      void onDownloadVideo(T entity);
 
-      void onDownloadVideo(CachedModel entity);
+      void onDeleteVideo(T entity);
 
-      void onDeleteVideo(CachedModel entity);
-
-      void onCancelCachingVideo(CachedModel entity);
+      void onCancelCachingVideo(T entity);
    }

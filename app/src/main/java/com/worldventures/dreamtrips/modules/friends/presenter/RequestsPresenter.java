@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendR
 import com.worldventures.dreamtrips.modules.friends.service.command.DeleteFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.GetRequestsCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.FriendRelationshipAnalyticAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,6 +176,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
    }
 
    public void rejectRequest(User user) {
+      analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.rejectRequest());
       friendsInteractor.rejectRequestPipe()
             .createObservable(new ActOnFriendRequestCommand.Reject(user))
             .compose(bindView())
@@ -194,6 +196,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
    }
 
    public void cancelRequest(User user) {
+      analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.cancelRequest());
       deleteRequest(user, DeleteFriendRequestCommand.Action.CANCEL);
    }
 

@@ -75,14 +75,6 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
       boolean isFavorites = getPresenter().isFilterFavorites();
       popupMenu.getMenu().getItem(isFavorites ? 1 : 0).setChecked(true);
       popupMenu.setOnMenuItemClickListener((menuItem) -> {
-         switch (menuItem.getItemId()) {
-            case R.id.action_show_all:
-               TrackingHelper.applyFilterRepTools(TrackingHelper.ATTRIBUTE_SHOW_ALL);
-               break;
-            case R.id.action_show_favorites:
-               TrackingHelper.applyFilterRepTools(TrackingHelper.ATTRIBUTE_FAVORITE);
-               break;
-         }
          getPresenter().reloadWithFilter(menuItem.getItemId());
          return false;
       });
@@ -144,7 +136,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
             return false;
          }
       });
-      search.setOnClickListener(v -> TrackingHelper.searchRepTools(TrackingHelper.ACTION_REP_TOOLS_SUCCESS_STORY));
+      search.setOnClickListener(v -> getPresenter().onSearchActivated());
       search.setIconifiedByDefault(true);
    }
 

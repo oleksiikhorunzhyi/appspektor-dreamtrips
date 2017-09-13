@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.AdobeTrainingVideosViewedAction;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.ReptoolsVideoDownloadedAction;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.ReptoolsVideoViewedAction;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
 import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
@@ -44,7 +46,7 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    }
 
    protected void sendViewTrainingVideoAnalytic() {
-      TrackingHelper.viewRepToolsTrainingVideoScreen();
+      analyticsInteractor.analyticsActionPipe().send(new AdobeTrainingVideosViewedAction());
    }
 
    @Override
@@ -120,11 +122,6 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    }
 
    @Override
-   public void sendAnalytic(String action, String name) {
-      TrackingHelper.actionRepToolsTrainingVideo(action, name);
-   }
-
-   @Override
    protected String obtainVideoLanguage(Video video) {
       String defaultLocalName = LocaleHelper.formatLocale(LocaleHelper.getDefaultLocale());
       return LocaleHelper.obtainLanguageCode(videoLanguage == null? defaultLocalName : videoLanguage.getLocaleName());
@@ -133,6 +130,16 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    @Override
    protected GetMemberVideosCommand getMemberVideosRequest() {
       return GetMemberVideosCommand.forRepVideos(videoLanguage);
+   }
+
+   @Override
+   protected void sendVideoDownloadingAnalytics(Video video) {
+      analyticsInteractor.analyticsActionPipe().send(new ReptoolsVideoDownloadedAction(video.getVideoName()));
+   }
+
+   @Override
+   protected void sendVideoStartedPlayingAnalytics(Video video) {
+      analyticsInteractor.analyticsActionPipe().send(new ReptoolsVideoViewedAction(video.getVideoName()));
    }
 
    public interface View extends PresentationVideosPresenter.View {

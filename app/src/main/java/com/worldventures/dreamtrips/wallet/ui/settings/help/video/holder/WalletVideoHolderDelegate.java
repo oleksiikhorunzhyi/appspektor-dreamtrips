@@ -14,7 +14,7 @@ public abstract class WalletVideoHolderDelegate {
 
    protected interface WalletVideoHolderHelper {
 
-      void onDownloadClick(WalletVideoCallback videoCallback);
+      void onDownloadClick(WalletVideoCallback videoCallback, WalletVideoModel walletVideoModel);
 
       void setModelObject(WalletVideoModel walletVideoModel);
 

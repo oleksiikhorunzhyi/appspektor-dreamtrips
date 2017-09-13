@@ -5,7 +5,8 @@ import com.worldventures.dreamtrips.modules.membership.view.cell.delegate.Podcas
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
 
-import static com.worldventures.dreamtrips.modules.video.model.Status.*;
+import static com.worldventures.dreamtrips.modules.video.model.Status.FAILED;
+import static com.worldventures.dreamtrips.modules.video.model.Status.IN_PROGRESS;
 
 public class ProgressVideoCellHelper {
 
@@ -52,18 +53,18 @@ public class ProgressVideoCellHelper {
       this.cacheModel = cacheEntity;
    }
 
-   public void onDownloadClick(ProgressVideoButtonActions delegate) {
+   public <T> void onDownloadClick(ProgressVideoButtonActions<T> delegate, T entity) {
       if (delegate == null) return;
       //
       boolean cached = cachedModelHelper.isCached(cacheModel);
       boolean inProgress = cacheModel.getProgress() > 0 && cacheModel.getProgress() < 100;
       boolean failed = cacheModel.getCacheStatus() == FAILED;
       if ((!cached && !inProgress) || failed) {
-         delegate.onDownloadVideo(cacheModel);
+         delegate.onDownloadVideo(entity);
       } else if (cached) {
-         delegate.onDeleteVideo(cacheModel);
+         delegate.onDeleteVideo(entity);
       } else {
-         delegate.onCancelCachingVideo(cacheModel);
+         delegate.onCancelCachingVideo(entity);
       }
    }
 

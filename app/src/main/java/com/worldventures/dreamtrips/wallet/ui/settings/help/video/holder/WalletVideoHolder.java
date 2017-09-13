@@ -42,7 +42,7 @@ public class WalletVideoHolder extends BaseHolder<WalletVideoModel> {
       });
 
       binding.downloadProgress.setOnClickListener(view -> {
-         videoHolderHelper.onDownloadClick(videoActionsCallback);
+         videoHolderHelper.onDownloadClick(videoActionsCallback, videoModel);
          videoHolderDelegate.sendMembershipVideoAction(videoModel);
       });
    }

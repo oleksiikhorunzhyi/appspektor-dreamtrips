@@ -6,11 +6,16 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.LoadCanceledAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.MemberVideosViewedAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.MembershipVideoDownloadedAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.MembershipVideoStartedDownloadingAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.MembershipVideoStartedPlayingAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.MembershipVideoViewedAction;
 import com.worldventures.dreamtrips.modules.video.model.CachedModel;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
@@ -124,15 +129,19 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
       currentItems.addAll(videos);
    }
 
-   public void sendAnalytic(String action, String name) {
-      TrackingHelper.actionMembershipVideo(action, name);
-   }
-
-   public void downloadVideo(CachedModel entity) {
+   public void downloadVideo(Video video) {
+      CachedModel entity = video.getCacheEntity();
       cachedEntityDelegate.startCaching(entity, getPathForCache(entity));
+      sendVideoDownloadingAnalytics(video);
    }
 
-   public void deleteCachedVideo(CachedModel entity) {
+   protected void sendVideoDownloadingAnalytics(Video video) {
+      analyticsInteractor.analyticsActionPipe().send(new MembershipVideoStartedDownloadingAction());
+      analyticsInteractor.analyticsActionPipe().send(new MembershipVideoDownloadedAction(video.getVideoName()));
+   }
+
+   public void deleteCachedVideo(Video video) {
+      CachedModel entity = video.getCacheEntity();
       view.onDeleteAction(entity);
    }
 
@@ -140,14 +149,14 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
       cachedEntityDelegate.deleteCache(entity, getPathForCache(entity));
    }
 
-   public void cancelCachingVideo(CachedModel entity) {
+   public void cancelCachingVideo(Video video) {
+      CachedModel entity = video.getCacheEntity();
       view.onCancelCaching(entity);
    }
 
    public void onCancelAction(CachedModel entity) {
       cachedEntityDelegate.cancelCaching(entity, getPathForCache(entity));
-      TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, getAccountUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, entity
-            .getName());
+      analyticsInteractor.analyticsActionPipe().send(new LoadCanceledAction());
    }
 
    public void onPlayVideo(Video video) {
@@ -158,6 +167,13 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
       }
 
       activityRouter.openPlayerActivity(parse, video.getVideoName(), obtainVideoLanguage(video), getClass());
+
+      sendVideoStartedPlayingAnalytics(video);
+   }
+
+   protected void sendVideoStartedPlayingAnalytics(Video video) {
+      analyticsInteractor.analyticsActionPipe().send(new MembershipVideoStartedPlayingAction());
+      analyticsInteractor.analyticsActionPipe().send(new MembershipVideoViewedAction(video.getVideoName()));
    }
 
    protected String obtainVideoLanguage(Video video) {
@@ -169,7 +185,9 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    }
 
    public void track() {
-      if (isNeedToSendAnalytics()) TrackingHelper.memberVideos(getAccountUserId());
+      if (isNeedToSendAnalytics()) {
+         analyticsInteractor.analyticsActionPipe().send(new MemberVideosViewedAction(getAccountUserId()));
+      }
    }
 
    protected boolean isNeedToSendAnalytics() {

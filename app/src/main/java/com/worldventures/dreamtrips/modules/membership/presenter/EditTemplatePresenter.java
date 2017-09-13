@@ -6,13 +6,15 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.service.InviteShareInteractor;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.InviteShareEmailAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.InviteShareSmsAction;
 import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
 
@@ -75,12 +77,8 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
    private void trackSharing() {
       InviteTemplate.Type type = template.getType();
-      if (type == InviteTemplate.Type.EMAIL) {
-         TrackingHelper.inviteShareAction(TrackingHelper.ACTION_SEND_EMAIL, template.getId(), template.getTo().size());
-      } else {
-         TrackingHelper.inviteShareAction(TrackingHelper.ACTION_SEND_SMS, template.getId(), template.getTo().size());
-      }
-
+      analyticsInteractor.analyticsActionPipe().send(type == InviteTemplate.Type.EMAIL ?
+            new InviteShareEmailAction() : new InviteShareSmsAction());
    }
 
    public void previewAction() {

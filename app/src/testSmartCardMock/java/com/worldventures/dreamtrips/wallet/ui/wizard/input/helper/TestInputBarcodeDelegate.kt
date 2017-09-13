@@ -13,7 +13,6 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.ProgressView
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 
 class TestInputBarcodeDelegate : BaseTest() {
 
@@ -31,9 +30,8 @@ class TestInputBarcodeDelegate : BaseTest() {
 
    @Before
    fun beforeTests() {
-      view = mock()
+      view = mockScreen(InputDelegateView::class.java)
       val progressView: ProgressView<GetSmartCardStatusCommand> = mock()
-      whenever(view.bindUntilDetach<Any>()).thenReturn(Observable.Transformer<Any, Any> { observable -> observable })
       whenever(view.provideOperationFetchCardStatus()).thenReturn(ComposableOperationView<GetSmartCardStatusCommand>(progressView))
 
       navigator = mock()

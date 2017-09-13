@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.manual
 
 import com.nhaarman.mockito_kotlin.*
-import com.trello.rxlifecycle.RxLifecycle
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor
@@ -16,7 +15,6 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.impl.WizardMan
 import io.techery.janet.command.test.Contract
 import org.junit.Test
 import rx.lang.kotlin.PublishSubject
-import rx.subjects.BehaviorSubject
 
 class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen, WizardManualInputPresenter>() {
 
@@ -41,8 +39,7 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
       val deviceConnectionDelegate : WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
 
-      screen = mock()
-      whenever(screen.bindUntilDetach<Any>()).thenReturn(RxLifecycle.bind(BehaviorSubject.create<Any>()))
+      screen = mockScreen(WizardManualInputScreen::class.java)
       whenever(screen.scidInput()).thenReturn(inputSubject)
       whenever(screen.scIdLength).thenReturn(5)
 

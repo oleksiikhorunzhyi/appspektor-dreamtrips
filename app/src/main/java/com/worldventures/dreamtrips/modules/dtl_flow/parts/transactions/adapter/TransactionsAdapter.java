@@ -50,9 +50,10 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       viewHolder.earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
 
       if(transactionsList.get(position).getRewardStatus()){
-         viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.ic_other_travel);
+         viewHolder.earnedPointsIcon.setVisibility(View.VISIBLE);
+         viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.success);
       } else {
-         viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.ic_other_travel);
+         viewHolder.earnedPointsIcon.setVisibility(View.INVISIBLE);
       }
 
       try {

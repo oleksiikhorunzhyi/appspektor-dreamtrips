@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
 import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
@@ -33,7 +32,6 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    @Inject protected LocaleSwitcher localeSwitcher;
 
    @Inject ReLoginInteractor reLoginInteractor;
-   @Inject LogoutInteractor logoutInteractor;
    @Inject protected AuthInteractor authInteractor;
    @Inject VersionUpdateDelegate versionUpdateDelegate;
    @Inject AppConfigurationInteractor appConfigurationInteractor;
@@ -103,7 +101,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    public void logout() {
-      logoutInteractor.logoutPipe().send(new LogoutCommand());
+      authInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    @Override

@@ -12,22 +12,16 @@ import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
-import com.worldventures.dreamtrips.core.janet.cache.LocalCacheModule;
 import com.worldventures.dreamtrips.core.repository.SnappyModule;
-import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
-import com.worldventures.dreamtrips.modules.common.SocialAppModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookAppModule;
-import com.worldventures.dreamtrips.modules.feed.FeedAppModule;
-import com.worldventures.dreamtrips.modules.flags.FlagsModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
 import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerModule;
-import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
-import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
+import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 
 import dagger.Module;
@@ -51,7 +45,6 @@ import dagger.Provides;
             RouteCreatorModule.class,
             //
             CacheActionStorageModule.class,
-            LocalCacheModule.class,
             //
             GcmModule.class,
             ActionReceiverModule.class,
@@ -65,7 +58,6 @@ import dagger.Provides;
             AppVersionNameModule.class,
             //
             MessengerModule.class,
-            FlagsModule.class,
             DtlModule.class,
             //
             JanetModule.class,
@@ -73,17 +65,12 @@ import dagger.Provides;
             AnalyticsModule.class,
             SessionProcessingModule.class,
             //
-            FlagsModule.class,
-            PodcastAppModule.class,
             MappingModule.class,
             //
             SmartCardModule.class,
             //
             DeviceModule.class,
-            BackgroundUploadingModule.class,
             FacebookAppModule.class,
-            VersionCheckModule.class,
-            FeedAppModule.class,
             OldMediaPickerModule.class,
             SocialAppModule.class,
       },

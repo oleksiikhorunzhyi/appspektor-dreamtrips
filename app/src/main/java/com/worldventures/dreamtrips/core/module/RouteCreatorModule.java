@@ -4,7 +4,6 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlTransactionRouteCreator;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
@@ -14,7 +13,6 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {ProfileRouteCreator.class},
       complete = false,
       library = true)
 public class RouteCreatorModule {

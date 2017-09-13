@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginAction;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAction;
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
@@ -33,7 +33,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject SnappyRepository db;
 
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject LoginInteractor loginInteractor;
+   @Inject AuthInteractor authInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    // Lazy dagger won't instantiate unless injected. Do not delete unused below!
@@ -54,7 +54,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
          dtlInitDone = true;
       }
 
-      loginInteractor.loginActionPipe()
+      authInteractor.loginActionPipe()
             .observeWithReplay()
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
@@ -62,13 +62,13 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                   .onStart(loginCommand -> view.showLoginProgress())
                   .onSuccess(loginCommand -> {
                      userAlreadyLoggedIn = false;
-                     loginInteractor.loginActionPipe().clearReplays();
+                     authInteractor.loginActionPipe().clearReplays();
                      launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
                      handleError(loginCommand, throwable);
                      view.dismissLoginProgress();
-                     loginInteractor.loginActionPipe().clearReplays();
+                     authInteractor.loginActionPipe().clearReplays();
                      analyticsInteractor.analyticsActionPipe().send(new LoginErrorAction());
                   }));
    }
@@ -117,7 +117,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
          return;
       }
 
-      loginInteractor.loginActionPipe().send(new LoginCommand(username, userPassword));
+      authInteractor.loginActionPipe().send(new LoginCommand(username, userPassword));
    }
 
    private void onAuthSuccess() {

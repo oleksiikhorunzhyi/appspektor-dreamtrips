@@ -57,7 +57,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    private static final int DEFAULT_RATIO_X = 3;
    private static final int DEFAULT_RATIO_Y = 1;
 
-   @Inject LogoutInteractor logoutInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject PingAssetStatusInteractor assetStatusInteractor;
    @Inject SocialCropImageManager socialCropImageManager;
@@ -231,7 +230,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    }
 
    public void logout() {
-      logoutInteractor.logoutPipe().send(new LogoutCommand());
+      authInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    void connectToCroppedImageStream() {

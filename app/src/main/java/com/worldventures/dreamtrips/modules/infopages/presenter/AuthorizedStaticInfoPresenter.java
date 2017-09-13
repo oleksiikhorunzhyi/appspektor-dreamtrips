@@ -4,7 +4,7 @@ import android.webkit.WebViewClient;
 
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +18,7 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
 
    public static final int LIFE_DURATION = 30; // mins
 
-   @Inject LoginInteractor loginInteractor;
+   @Inject AuthInteractor loginInteractor;
 
    public AuthorizedStaticInfoPresenter(String url) {
       super(url);

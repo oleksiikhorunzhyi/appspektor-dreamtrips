@@ -4,8 +4,7 @@ import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -75,9 +74,8 @@ public class LostCardModule {
    @Singleton
    @Provides
    LocationTrackingManager trackingManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         LogoutInteractor logoutInteractor, WalletDetectLocationService locationService, LostCardManager lostCardManager,
-         LoginInteractor loginInteractor, SessionHolder sessionHolder) {
-      return new LocationTrackingManager(smartCardInteractor, locationInteractor, logoutInteractor,
-            locationService, lostCardManager, loginInteractor, sessionHolder);
+         WalletDetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager, SessionHolder sessionHolder) {
+      return new LocationTrackingManager(smartCardInteractor, locationInteractor, locationService, authInteractor,
+            lostCardManager, sessionHolder);
    }
 }

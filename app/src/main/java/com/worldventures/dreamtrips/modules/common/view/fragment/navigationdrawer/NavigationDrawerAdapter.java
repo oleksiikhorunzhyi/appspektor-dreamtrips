@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.SocialAppModule;
+import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 
 import java.util.List;

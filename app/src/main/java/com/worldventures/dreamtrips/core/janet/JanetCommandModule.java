@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.janet;
 
 import com.messenger.di.MessengerJanetCommandModule;
-import com.worldventures.dreamtrips.modules.common.SocialJanetCommandModule;
+import com.worldventures.dreamtrips.social.di.SocialJanetCommandModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlJanetCommandModule;
 
 import dagger.Module;

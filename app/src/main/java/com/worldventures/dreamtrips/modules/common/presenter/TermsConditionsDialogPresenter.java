@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.LegalInteractor;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDialogPresenter.View> {
 
    @Inject StaticPageProvider provider;
-   @Inject LogoutInteractor logoutInteractor;
+   @Inject AuthInteractor authInteractor;
    @Inject LegalInteractor legalInteractor;
 
    @Override
@@ -48,7 +48,7 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
    }
 
    public void logout() {
-      logoutInteractor.logoutPipe().send(new LogoutCommand());
+      authInteractor.logoutPipe().send(new LogoutCommand());
       view.dismissDialog();
    }
 

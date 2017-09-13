@@ -103,18 +103,8 @@ public class InitializerModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   public AppInitializer provideCachedEntitiesInitializer(CachedEntityInteractor interactor) {
-      return new CachedEntityCommandInitializer(interactor);
-   }
-
-   @Provides(type = Provides.Type.SET)
    public AppInitializer provideFacebookInitializer() {
       return new FacebookInitializer();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   public AppInitializer provideVersionCheckInitializer(AppConfigurationInteractor interactor) {
-      return new VersionCheckInitializer(interactor);
    }
 
    @Provides(type = Provides.Type.SET)

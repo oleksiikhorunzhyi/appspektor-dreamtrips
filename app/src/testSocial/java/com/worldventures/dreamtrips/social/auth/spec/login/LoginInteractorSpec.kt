@@ -94,7 +94,7 @@ class LoginInteractorSpec : BaseSpec({
       val mockDB: SnappyRepository = spy()
       val deviceObservable: Observable<Device> = Observable.just(null)
 
-      lateinit var loginInteractor: LoginInteractor
+      lateinit var authInteractor: AuthInteractor
 
       init {
          setup { mockHttpServiceForLogin() }
@@ -109,17 +109,15 @@ class LoginInteractorSpec : BaseSpec({
                .addService(httpService().wrapStub().wrapCache())
                .build()
          val sessionPiperCreator = SessionActionPipeCreator(janet)
-         val authInteractor = AuthInteractor(sessionPiperCreator)
+
+         authInteractor = AuthInteractor(sessionPiperCreator)
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(SessionHolder::class.java) { sessionHolderMock }
-         daggerCommandActionService.registerProvider(LoginInteractor::class.java) { loginInteractor }
          daggerCommandActionService.registerProvider(AuthInteractor::class.java) { authInteractor }
          daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDB }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mapperyContext }
          daggerCommandActionService.registerProvider(Observable::class.java) { deviceObservable }
-
-         loginInteractor = LoginInteractor(sessionPiperCreator)
 
          `when`(mapperyContext.convert(apiSession, Session::class.java)).thenReturn(session())
 
@@ -129,7 +127,7 @@ class LoginInteractorSpec : BaseSpec({
       fun login(username: String?, userPassword: String?): TestSubscriber <ActionState<LoginCommand>> {
          val testSubscriber = TestSubscriber <ActionState<LoginCommand>>()
 
-         loginInteractor.loginActionPipe()
+         authInteractor.loginActionPipe()
                .createObservable(LoginCommand(username, userPassword))
                .subscribe(testSubscriber)
 
@@ -139,7 +137,7 @@ class LoginInteractorSpec : BaseSpec({
       fun relogin(): TestSubscriber <ActionState<LoginCommand>> {
          val testSubscriber = TestSubscriber <ActionState<LoginCommand>>()
 
-         loginInteractor.loginActionPipe()
+         authInteractor.loginActionPipe()
                .createObservable(LoginCommand())
                .subscribe(testSubscriber)
 

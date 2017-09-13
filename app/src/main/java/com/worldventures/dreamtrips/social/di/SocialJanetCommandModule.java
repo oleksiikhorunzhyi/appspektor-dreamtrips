@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common;
+package com.worldventures.dreamtrips.social.di;
 
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
@@ -65,6 +65,8 @@ import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoC
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.modules.flags.command.FlagItemCommand;
+import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.AcceptAllFriendRequestsCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
@@ -273,5 +275,7 @@ import dagger.Module;
       GetUsersMediaCommand.class,
       DeleteVideoCommand.class,
       CheckVideoProcessingStatusCommand.class,
+      GetFlagsCommand.class,
+      FlagItemCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

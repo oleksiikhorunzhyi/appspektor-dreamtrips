@@ -1,14 +1,18 @@
-package com.worldventures.dreamtrips.modules.common;
+package com.worldventures.dreamtrips.social.di;
 
 
 import android.support.annotation.DrawableRes;
 
+import com.techery.spares.module.EventDelegateModule;
+import com.techery.spares.module.SupportModule;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketTabsFragment;
+import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
+import com.worldventures.dreamtrips.modules.feed.FeedAppModule;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
@@ -28,7 +32,19 @@ import dagger.Provides;
 
 @Module(
       library = true,
-      complete = false
+      complete = false,
+      includes = {
+            BackgroundUploadingModule.class,
+            SocialDelegateModule.class,
+            SocialActionStorageModule.class,
+            SocialInteractorModule.class,
+            FeedAppModule.class,
+            VersionCheckModule.class,
+            SupportModule.class,
+            EventDelegateModule.class,
+            SocialInitializerModule.class,
+            SocialMappingModule.class,
+      }
 )
 public class SocialAppModule {
 

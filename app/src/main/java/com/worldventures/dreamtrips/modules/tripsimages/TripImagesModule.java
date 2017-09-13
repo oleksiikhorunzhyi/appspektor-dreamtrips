@@ -23,12 +23,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.inspire_me.Ins
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.ysbh.FullscreenYsbhPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.ysbh.YouShouldBeHerePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.ysbh.YsbhViewPagerPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.InspirationPhotoCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.TripImageTimestampCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.VideoMediaTimestampCell;
-import com.worldventures.dreamtrips.modules.tripsimages.view.cell.YsbhPhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullscreenPhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullscreenVideoFragment;

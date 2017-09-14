@@ -38,18 +38,6 @@
          android:visibility="gone"
          />
 
-
-   <android.support.v7.widget.AppCompatEditText
-         android:id="@+id/dtlToolbarLocationSearchInput"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         style="@style/DtlToolbarInput"
-         android:textColorHint="@color/dtlt_input_hint_color"
-         android:drawableLeft="@drawable/ic_dtlt_location_input"
-         android:imeOptions="actionDone"
-         android:hint="Search"
-         />
-
    <com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView
          android:id="@+id/container_comments_detail"
          android:layout_width="match_parent"

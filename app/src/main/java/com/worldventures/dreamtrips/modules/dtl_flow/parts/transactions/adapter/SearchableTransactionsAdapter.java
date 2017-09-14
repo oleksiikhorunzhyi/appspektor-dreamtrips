@@ -1,41 +1,54 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter;
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.TextView;
+      import android.content.Context;
+      import android.support.v7.widget.RecyclerView;
+      import android.view.LayoutInflater;
+      import android.view.View;
+      import android.view.ViewGroup;
+      import android.widget.Filter;
+      import android.widget.Filterable;
+      import android.widget.ImageView;
+      import android.widget.TextView;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
+      import com.worldventures.dreamtrips.R;
+      import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+      import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
+      import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+      import java.text.ParseException;
+      import java.util.ArrayList;
+      import java.util.Date;
+      import java.util.List;
 
-public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable{
+public class SearchableTransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable{
 
    private Context context;
-   private List<TransactionModel> transactionsList;
-   protected List<TransactionModel> originalList;
+   private List<TransactionModel> transactionsList = new ArrayList<>();
+   protected List<TransactionModel> originalList = new ArrayList<>();
 
-   public TransactionsAdapter(Context context, List<TransactionModel> transactionsList){
+   public SearchableTransactionsAdapter(Context context){
+      this.context = context;
+   }
+
+   public SearchableTransactionsAdapter(Context context, List<TransactionModel> transactionsList){
       this.context = context;
       this.transactionsList = transactionsList;
       this.originalList = transactionsList;
    }
 
+   public void setTransactionsList(List<TransactionModel> transactionsList) {
+      this.originalList = transactionsList;
+      this.transactionsList = transactionsList;
+   }
+
+   public List<TransactionModel> getAllItems() {
+      return originalList;
+   }
+
    @Override
    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_transaction, parent, false);
-      return new TransactionsAdapter.ViewHolder(itemView);
+      return new SearchableTransactionsAdapter.ViewHolder(itemView);
    }
 
    @Override
@@ -111,7 +124,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
          @Override
          protected void publishResults(CharSequence constraint, FilterResults results) {
             transactionsList = (List<TransactionModel>) results.values;
-            TransactionsAdapter.this.notifyDataSetChanged();
+            SearchableTransactionsAdapter.this.notifyDataSetChanged();
          }
 
          @Override

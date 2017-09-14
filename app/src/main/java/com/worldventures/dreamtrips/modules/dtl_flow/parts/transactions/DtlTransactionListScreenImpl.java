@@ -1,17 +1,25 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.twitter.sdk.android.core.models.Search;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.Transaction;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView;
+
+import java.util.List;
 
 import butterknife.InjectView;
 import flow.Flow;
@@ -20,6 +28,7 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
       implements DtlTransactionListScreen {
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
+   @InjectView(R.id.progress_loader) ProgressBar loader;
    @InjectView(R.id.tv_title) TextView tvTitle;
    @InjectView(R.id.emptyView) View emptyView;
    @InjectView(R.id.errorView) View errorView;
@@ -57,26 +66,82 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    }
 
    private void setupSearch() {
+      searchView.setVisibility(View.GONE);
       searchView.setIconifiedByDefault(false);
       searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
          @Override
          public boolean onQueryTextSubmit(String query) {
-            searchQuery(query);
+            getAllTransactionsFromAPI(query);
             return true;
          }
 
          @Override
          public boolean onQueryTextChange(String newText) {
-            searchQuery(newText);
+            getAllTransactionsFromAPI(newText);
             return true;
          }
       });
    }
 
-   private void searchQuery(String query) {
-      if(query.length() > 2)
-         transactionsView.filterByMerchantName(query);
-      else
+   private void getAllTransactionsFromAPI(String query) {
+      if (query.length() > 2) {
+//         if (transactionsView.hasAllItems()){
+//            transactionsView.setPageableAdapter();
+//            searchQuery(query);
+//         }
+//         else
+            getPresenter().getAllTransactionsToQuery(query);
+      } else
          transactionsView.clearSearch();
    }
+
+   @Override
+   public void searchQuery(String query) {
+      transactionsView.setSearchableAdapter();
+      transactionsView.filterByMerchantName(query);
+   }
+
+   @Override
+   public TransactionView getRunnableView() {
+      return transactionsView;
+   }
+
+   @Override
+   public void setAllTransactions(List<TransactionModel> transactions) {
+      transactionsView.setAllTransactionsList(transactions);
+   }
+
+   @Override
+   public void addTransactions(List<TransactionModel> transactions) {
+      transactionsView.loadData(transactions);
+   }
+
+   @Override
+   public void onRefreshSuccess() {
+      loader.setVisibility(View.GONE);
+      transactionsView.setVisibility(View.VISIBLE);
+      searchView.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void onRefreshProgress() {
+      transactionsView.setVisibility(View.GONE);
+      loader.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void onRefreshError(String error) {
+
+   }
+
+   @Override
+   public void showEmpty(boolean isShow) {
+
+   }
+
+   @Override
+   public void resetViewData() {
+
+   }
+
 }

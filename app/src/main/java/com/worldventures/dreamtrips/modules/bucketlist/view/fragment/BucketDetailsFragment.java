@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -34,7 +33,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.util.TranslateBucketItemViewInjector;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -258,7 +257,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
    @Override
    public void done() {
-      if (getActivity() instanceof ComponentActivity && !ViewUtils.isLandscapeOrientation(getActivity()))
+      if (getActivity() instanceof SocialComponentActivity && !ViewUtils.isLandscapeOrientation(getActivity()))
          getActivity().onBackPressed();
    }
 

@@ -28,7 +28,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -142,7 +142,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @Override
    public void showErrorMessage() {
-      ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
+      ((SocialMainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
    }
 
    @Override
@@ -187,7 +187,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.action_filter:
-            ((MainActivity) getActivity()).openRightDrawer();
+            ((SocialMainActivity) getActivity()).openRightDrawer();
             break;
          case R.id.action_map:
             getPresenter().openMap();

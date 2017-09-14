@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership;
 
-import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.PlayerPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollMerchantPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollRepPresenter;
@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenterImp
 import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;

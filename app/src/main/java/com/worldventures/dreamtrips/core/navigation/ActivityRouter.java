@@ -9,9 +9,9 @@ import android.provider.MediaStore;
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
+import com.worldventures.dreamtrips.social.ui.activity.Player360Activity;
+import com.worldventures.dreamtrips.social.ui.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 
 import java.io.File;
@@ -26,13 +26,13 @@ public class ActivityRouter extends ActivityBoundRouter {
    }
 
    public void openMain() {
-      startActivity(MainActivity.class);
+      startActivity(SocialMainActivity.class);
    }
 
    public void openMainWithComponent(String key) {
       Bundle bundle = new Bundle();
-      bundle.putString(MainActivity.COMPONENT_KEY, key);
-      startActivity(MainActivity.class, bundle);
+      bundle.putString(SocialMainActivity.COMPONENT_KEY, key);
+      startActivity(SocialMainActivity.class, bundle);
    }
 
    public void openLaunch() {

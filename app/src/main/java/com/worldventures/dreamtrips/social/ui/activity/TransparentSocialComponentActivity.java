@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.view.activity;
+package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.os.Parcelable;
 
@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 
 @Layout(R.layout.activity_component)
-public class TransparentComponentActivity extends ComponentActivity {
+public class TransparentSocialComponentActivity extends SocialComponentActivity {
 
    public void moveTo(Route route, Parcelable args) {
       router.moveTo(route, NavigationConfigBuilder.forFragment()

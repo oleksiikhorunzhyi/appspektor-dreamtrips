@@ -102,59 +102,59 @@
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value=".modules.common.view.activity.MainActivity"
+               android:value=".social.ui.activity.SocialMainActivity"
                />
       </activity>
 
       <activity
-            android:name=".modules.common.view.activity.MainActivity"
+            android:name=".social.ui.activity.SocialMainActivity"
             android:configChanges="layoutDirection|locale"
             android:label="@string/trips"
             android:windowSoftInputMode="adjustResize"
             />
       <activity
-            android:name=".modules.common.view.activity.ComponentActivity"
+            android:name=".social.ui.activity.SocialComponentActivity"
             android:configChanges="layoutDirection|locale"
             android:hardwareAccelerated="true"
-            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
             android:windowSoftInputMode="adjustResize"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value=".modules.common.view.activity.MainActivity"
+               android:value=".social.ui.activity.SocialMainActivity"
                />
       </activity>
 
       <activity
-            android:name=".modules.common.view.activity.TransparentComponentActivity"
+            android:name=".social.ui.activity.TransparentSocialComponentActivity"
             android:configChanges="layoutDirection|locale"
             android:hardwareAccelerated="true"
             android:theme="@style/TransparentActivity"
-            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
             android:windowSoftInputMode="adjustResize"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value=".modules.common.view.activity.MainActivity"
+               android:value=".social.ui.activity.SocialMainActivity"
                />
       </activity>
 
       <activity
-            android:name=".modules.common.view.activity.ConfigChangesAwareComponentActivity"
+            android:name=".social.ui.activity.ConfigChangesAwareComponentActivity"
             android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
             android:windowSoftInputMode="adjustResize"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value=".modules.common.view.activity.MainActivity"
+               android:value=".social.ui.activity.SocialMainActivity"
                />
 
       </activity>
 
       <activity
-            android:name=".modules.common.view.activity.Player360Activity"
+            android:name=".social.ui.activity.Player360Activity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             />
 
@@ -163,13 +163,13 @@
             android:value="k/oXE6R4JCQeSPhvZ4qNjiNOqL49dRMASkD4MEOLWVb3BeGX"
             />
       <activity
-            android:name=".modules.common.view.activity.PlayerActivity"
+            android:name=".social.ui.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:screenOrientation="sensorLandscape"
             />
 
       <activity
-            android:name=".modules.feed.view.activity.FeedActivity"
+            android:name=".social.ui.activity.FeedActivity"
             android:launchMode="singleTop"
             android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
             >
@@ -182,7 +182,7 @@
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               android:value="com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity"
                />
       </activity>
 
@@ -193,7 +193,7 @@
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               android:value="com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity"
                />
       </activity>
 
@@ -206,7 +206,7 @@
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               android:value="com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity"
                />
       </activity>
 

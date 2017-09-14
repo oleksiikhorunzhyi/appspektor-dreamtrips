@@ -1,8 +1,7 @@
-package com.worldventures.dreamtrips.modules.common.presenter;
+package com.worldventures.dreamtrips.social.ui.activity.presenter;
 
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 

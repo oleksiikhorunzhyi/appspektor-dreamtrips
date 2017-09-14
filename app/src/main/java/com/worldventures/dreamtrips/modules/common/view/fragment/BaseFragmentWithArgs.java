@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 public abstract class BaseFragmentWithArgs<PM extends Presenter, P extends Parcelable> extends BaseFragment<PM> {

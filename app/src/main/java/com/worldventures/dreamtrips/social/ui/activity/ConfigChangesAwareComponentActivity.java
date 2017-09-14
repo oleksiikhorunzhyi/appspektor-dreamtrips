@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.view.activity;
+package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -9,10 +9,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ToolbarActivity;
 
 @Layout(R.layout.activity_component)
-public class ComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
+public class ConfigChangesAwareComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
 
    Bundle extras;
 

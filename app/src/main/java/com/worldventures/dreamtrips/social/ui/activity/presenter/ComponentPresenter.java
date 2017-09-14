@@ -1,9 +1,10 @@
-package com.worldventures.dreamtrips.modules.common.presenter;
+package com.worldventures.dreamtrips.social.ui.activity.presenter;
 
 import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerDelegate;
 
 import javax.inject.Inject;

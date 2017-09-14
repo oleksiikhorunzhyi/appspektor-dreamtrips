@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
@@ -84,16 +84,16 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    @Override
    public void onActivityCreated(Bundle savedInstanceState) {
       super.onActivityCreated(savedInstanceState);
-      if (getActivity() instanceof MainActivity) {
-         ((MainActivity) getActivity()).disableLeftDrawer();
+      if (getActivity() instanceof SocialMainActivity) {
+         ((SocialMainActivity) getActivity()).disableLeftDrawer();
       }
    }
 
    @Override
    public void onDestroyView() {
       super.onDestroyView();
-      if (getActivity() instanceof MainActivity) {
-         ((MainActivity) getActivity()).enableLeftDrawer();
+      if (getActivity() instanceof SocialMainActivity) {
+         ((SocialMainActivity) getActivity()).enableLeftDrawer();
       }
    }
 

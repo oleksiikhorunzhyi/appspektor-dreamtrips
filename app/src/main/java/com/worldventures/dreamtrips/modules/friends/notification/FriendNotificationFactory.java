@@ -13,8 +13,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -66,7 +66,7 @@ public class FriendNotificationFactory extends NotificationFactory {
    }
 
    private PendingIntent createFriendIntent(int userId, UserBundle userBundle, boolean forAction) {
-      Intent resultIntent = new Intent(context, ComponentActivity.class);
+      Intent resultIntent = new Intent(context, SocialComponentActivity.class);
       //set args to pending intent
       Bundle args = new Bundle();
       args.putSerializable(ComponentPresenter.ROUTE, routeCreator.createRoute(userId));
@@ -77,7 +77,7 @@ public class FriendNotificationFactory extends NotificationFactory {
       resultIntent.putExtra(ComponentPresenter.COMPONENT_EXTRA, args);
       //
       TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-      stackBuilder.addParentStack(ComponentActivity.class);
+      stackBuilder.addParentStack(SocialComponentActivity.class);
       stackBuilder.addNextIntent(resultIntent);
       //
       return stackBuilder.getPendingIntent(0, forAction ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_CANCEL_CURRENT);

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.view.activity;
+package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,14 +11,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
-import com.worldventures.dreamtrips.modules.common.SocialAppModule;
-import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
+import com.worldventures.dreamtrips.social.di.SocialAppModule;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.ComponentDescriptionException;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
-import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
-import com.worldventures.dreamtrips.modules.feed.view.activity.SocialDrawerActivity;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
@@ -28,11 +26,11 @@ import butterknife.InjectView;
 import rx.schedulers.Schedulers;
 
 @Layout(R.layout.activity_main)
-public class MainActivity extends SocialDrawerActivity<MainActivityPresenter> implements MainActivityPresenter.View {
+public class SocialMainActivity extends SocialDrawerActivity<MainActivityPresenter> implements MainActivityPresenter.View {
 
    @InjectView(R.id.drawer_layout) NavigationDrawerViewImpl navigationDrawerView;
 
-   public static final String COMPONENT_KEY = "MainActivity$ComponentKey";
+   public static final String COMPONENT_KEY = "SocialMainActivity$ComponentKey";
 
    @Override
    protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {

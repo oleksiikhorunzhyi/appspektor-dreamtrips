@@ -8,7 +8,7 @@
  * 
  */
 
-package com.worldventures.dreamtrips.modules.common.view.activity;
+package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -31,8 +31,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.AnimationUtils;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PFViewMediaControls;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.VideoPlayerPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

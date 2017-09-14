@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileActivityModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsActivityModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
-import com.worldventures.dreamtrips.modules.social_common.SocialCommonActivityModule;
+import com.worldventures.dreamtrips.social.di.SocialCommonActivityModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripImagesModule;
 

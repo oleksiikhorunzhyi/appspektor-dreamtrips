@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.tripsimages.presenter;
+package com.worldventures.dreamtrips.social.ui.activity.presenter;
 
 import android.content.Intent;
 import android.content.IntentFilter;

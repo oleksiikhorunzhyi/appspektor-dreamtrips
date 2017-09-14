@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.view.activity;
+package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.app.Dialog;
 import android.net.Uri;
@@ -9,7 +9,8 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.PlayerPresenter;
+import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 
 import java.util.concurrent.TimeUnit;
 

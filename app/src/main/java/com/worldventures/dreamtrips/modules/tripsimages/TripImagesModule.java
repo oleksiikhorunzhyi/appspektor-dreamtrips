@@ -5,7 +5,7 @@ import com.messenger.ui.fragment.PhotoAttachmentPagerFragment;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketPhotoFullscreenFragment;
-import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
+import com.worldventures.dreamtrips.social.ui.activity.Player360Activity;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;

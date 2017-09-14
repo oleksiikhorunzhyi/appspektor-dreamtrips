@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.view.activity;
+package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;

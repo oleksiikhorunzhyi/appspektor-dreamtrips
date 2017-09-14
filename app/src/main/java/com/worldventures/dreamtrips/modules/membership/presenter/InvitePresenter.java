@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.model.SentInvite;
 import com.worldventures.dreamtrips.modules.membership.service.InviteShareInteractor;
 import com.worldventures.dreamtrips.modules.membership.service.analytics.AddContactInviteScreenAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.InviteShareContactsAction;
 import com.worldventures.dreamtrips.modules.membership.service.analytics.SearchInInviteScreenAction;
 import com.worldventures.dreamtrips.modules.membership.service.analytics.ViewInviteScreenAction;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneContactsCommand;
@@ -102,7 +103,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
    private void contactsLoaded() {
       inviteShareInteractor.getSentInvitesPipe().send(new GetSentInvitesCommand());
-      TrackingHelper.inviteShareContacts(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new InviteShareContactsAction());
    }
 
    private void linkHistoryWithMembers(List<SentInvite> inviteTemplates) {

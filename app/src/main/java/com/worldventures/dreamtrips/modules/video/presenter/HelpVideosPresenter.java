@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.infopages.service.analytics.ViewVideosTabAnalyticAction;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 
 import java.util.List;
@@ -35,13 +36,15 @@ public class HelpVideosPresenter extends TrainingVideosPresenter<HelpVideosPrese
    }
 
    @Override
-   public void sendAnalytic(String action, String name) {
-      // Add analytics when click to video
+   protected void sendVideoDownloadingAnalytics(Video video) {
+   }
+
+   @Override
+   protected void sendVideoStartedPlayingAnalytics(Video video) {
    }
 
    @Override
    protected void sendViewTrainingVideoAnalytic() {
-
    }
 
    @Override

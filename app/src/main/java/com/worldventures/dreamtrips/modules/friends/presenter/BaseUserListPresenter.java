@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.friends.service.command.GetUsersComm
 import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.modules.profile.service.analytics.FriendRelationshipAnalyticAction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -212,6 +213,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    protected abstract void userStateChanged(User user);
 
    public void unfriend(User user) {
+      analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.unfriend());
       friendsInteractor.removeFriendPipe()
             .createObservable(new RemoveFriendCommand(user))
             .compose(bindView())

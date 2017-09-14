@@ -11,8 +11,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
@@ -25,17 +25,21 @@ import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPres
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
 public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideosPresenter> implements
-      ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate, SelectablePagerFragment {
+      ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, Video360Cell.Video360CellDelegate, SelectablePagerFragment {
 
    @Optional @InjectView(R.id.recyclerViewFeatured) protected RecyclerView recyclerViewFeatured;
    @Optional @InjectView(R.id.recyclerViewRecent) protected RecyclerView recyclerViewRecent;
    @Optional @InjectView(R.id.recyclerViewAll) protected RecyclerView recyclerViewAll;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
+
+   @Inject ActivityRouter activityRouter;
 
    private BaseDelegateAdapter<Object> adapterFeatured;
    private BaseDelegateAdapter<Object> adapterRecent;
@@ -164,28 +168,29 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    }
 
    @Override
-   public void sendAnalytic(String action, String name) {
-      TrackingHelper.actionMembershipVideo(action, name);
+   public void onDownloadVideo(Video video) {
+      getPresenter().downloadVideo(video);
    }
 
    @Override
-   public void onDownloadVideo(CachedModel entity) {
-      getPresenter().downloadVideo(entity);
+   public void onDeleteVideo(Video video) {
+      getPresenter().deleteCachedVideo(video);
    }
 
    @Override
-   public void onDeleteVideo(CachedModel entity) {
-      getPresenter().deleteCachedVideo(entity);
-   }
-
-   @Override
-   public void onCancelCachingVideo(CachedModel entity) {
-      getPresenter().cancelCachingVideo(entity);
+   public void onCancelCachingVideo(Video video) {
+      getPresenter().cancelCachingVideo(video);
    }
 
    @Override
    public void onCellClicked(Video model) {
 
+   }
+
+   @Override
+   public void onOpen360Video(Video video, String url, String videoName) {
+      activityRouter.open360Activity(url, videoName);
+      getPresenter().onVideo360Opened(video);
    }
 
    @Override

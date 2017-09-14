@@ -5,13 +5,13 @@ import android.accounts.AccountManager;
 import android.util.Patterns;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.modules.membership.delegate.MembersSelectedEventDelegate;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.membership.service.InviteShareInteractor;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.InviteShareTemplateAction;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetInviteTemplatesCommand;
 
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
       membersSelectedEventDelegate.getReplayObservable()
             .compose(bindViewToMainComposer())
             .subscribe(newMembers -> {
-         members.clear();
-         members.addAll(newMembers);
-      });
+               members.clear();
+               members.addAll(newMembers);
+            });
    }
 
    private void subscribeToInviteTemplatesLoading(View view) {
@@ -68,7 +68,7 @@ public class SelectTemplatePresenter extends Presenter<SelectTemplatePresenter.V
          inviteTemplate.setTo(members);
          inviteTemplate.setType(members.get(0).isEmailMain() ? InviteTemplate.Type.EMAIL : InviteTemplate.Type.SMS);
          view.openTemplate(new TemplateBundle(inviteTemplate));
-         TrackingHelper.inviteShareTemplate(getAccountUserId(), inviteTemplate.getId());
+         analyticsInteractor.analyticsActionPipe().send(new InviteShareTemplateAction());
       } else {
          view.informUser(R.string.invite_select_first);
       }

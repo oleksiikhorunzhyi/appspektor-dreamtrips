@@ -6,7 +6,6 @@ import android.widget.FrameLayout;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.RequestCellDelegate;
 
 import butterknife.InjectView;
@@ -67,7 +66,6 @@ public class RequestCell extends BaseUserCell<RequestCellDelegate> {
    void onReject() {
       btnReject.setEnabled(false);
       cellDelegate.rejectRequest(getModelObject());
-      TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_REJECT_FRIEND_REQUEST);
    }
 
    @OnClick(R.id.hide)
@@ -80,7 +78,6 @@ public class RequestCell extends BaseUserCell<RequestCellDelegate> {
    void onCancel() {
       btnCancel.setEnabled(false);
       cellDelegate.cancelRequest(getModelObject());
-      TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_CANCEL_FRIEND_REQUEST);
    }
 
    private void enableButtons() {

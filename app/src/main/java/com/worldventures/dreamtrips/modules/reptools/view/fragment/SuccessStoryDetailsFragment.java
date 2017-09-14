@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
@@ -39,7 +38,6 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
    @OnClick(R.id.iv_like)
    public void onLike() {
-      TrackingHelper.favoriteSuccessStory(story.getUrl());
       getPresenter().like(story);
    }
 
@@ -70,7 +68,6 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
       updateStoryLike(story.isLiked());
 
       webView.getSettings().setUseWideViewPort(true);
-      TrackingHelper.viewSuccessStory(story.getUrl());
    }
 
    @Override
@@ -100,7 +97,6 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
    @Override
    public void showShareDialog() {
       new ShareDialog(getActivity(), type -> {
-         TrackingHelper.shareSuccessStory(type, story.getUrl());
          getPresenter().onShare(type, story);
       }).show();
    }

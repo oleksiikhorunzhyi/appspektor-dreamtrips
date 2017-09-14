@@ -3,6 +3,10 @@ package com.worldventures.dreamtrips.modules.video.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageVideo360DownloadedAction;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageVideo360StartedDownloadingAction;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageVideo360StartedPlaying;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageVideo360ViewedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImagesTabViewAnalyticsEvent;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.model.VideoCategory;
@@ -45,6 +49,17 @@ public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<Three
 
    public void onSelected() {
       analyticsInteractor.analyticsActionPipe().send(TripImagesTabViewAnalyticsEvent.for360Video());
+   }
+
+   public void onVideo360Opened(Video video) {
+      analyticsInteractor.analyticsActionPipe().send(new TripImageVideo360ViewedAction(video.getVideoName()));
+      analyticsInteractor.analyticsActionPipe().send(new TripImageVideo360StartedPlaying());
+   }
+
+   @Override
+   protected void sendVideoDownloadingAnalytics(Video video) {
+      analyticsInteractor.analyticsActionPipe().send(new TripImageVideo360StartedDownloadingAction());
+      analyticsInteractor.analyticsActionPipe().send(new TripImageVideo360DownloadedAction(video.getVideoName()));
    }
 
    public interface View extends PresentationVideosPresenter.View {}

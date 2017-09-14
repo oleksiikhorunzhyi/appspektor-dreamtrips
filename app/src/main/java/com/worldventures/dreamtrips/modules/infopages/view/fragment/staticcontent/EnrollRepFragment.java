@@ -5,9 +5,9 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.EnrollRepPresenter;
+import com.worldventures.dreamtrips.modules.infopages.service.analytics.EnrolRepViewedAction;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 @Layout(R.layout.fragment_webview)
@@ -31,8 +31,8 @@ public class EnrollRepFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
    }
 
    @Override
-   protected void sendAnalyticEvent(String actionAnalyticEvent) {
-      TrackingHelper.actionRepToolsEnrollment(actionAnalyticEvent);
+   protected void sendPageDisplayedAnalyticsEvent() {
+      analyticsInteractor.analyticsActionPipe().send(new EnrolRepViewedAction());
    }
 
 }

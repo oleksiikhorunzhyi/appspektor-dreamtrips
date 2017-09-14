@@ -4,9 +4,12 @@ import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.ApptentiveEnrolRepViewedAction;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.ApptentiveTrainingVideosViewedAction;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.ReptoolsInviteShareAction;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.SuccessStoriesViewedAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,16 +68,16 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
       FragmentItem item = screens.get(position);
       switch (item.route) {
          case TRAINING_VIDEOS:
-            TrackingHelper.trainingVideos(getAccountUserId());
+            analyticsInteractor.analyticsActionPipe().send(new ApptentiveTrainingVideosViewedAction());
             break;
          case ENROLL_REP:
-            TrackingHelper.enrollRep(getAccountUserId());
+            analyticsInteractor.analyticsActionPipe().send(new ApptentiveEnrolRepViewedAction());
             break;
          case SUCCESS_STORY_LIST:
-            TrackingHelper.successStories(getAccountUserId());
+            analyticsInteractor.analyticsActionPipe().send(new SuccessStoriesViewedAction());
             break;
          case INVITE:
-            TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_VIEW);
+            analyticsInteractor.analyticsActionPipe().send(new ReptoolsInviteShareAction());
             break;
       }
    }

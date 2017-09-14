@@ -143,23 +143,18 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
    }
 
    @Override
-   public void sendAnalytic(String action, String name) {
-      getPresenter().sendAnalytic(action, name);
+   public void onDownloadVideo(Video video) {
+      getPresenter().downloadVideo(video);
    }
 
    @Override
-   public void onDownloadVideo(CachedModel entity) {
-      getPresenter().downloadVideo(entity);
+   public void onDeleteVideo(Video video) {
+      getPresenter().deleteCachedVideo(video);
    }
 
    @Override
-   public void onDeleteVideo(CachedModel entity) {
-      getPresenter().deleteCachedVideo(entity);
-   }
-
-   @Override
-   public void onCancelCachingVideo(CachedModel entity) {
-      getPresenter().cancelCachingVideo(entity);
+   public void onCancelCachingVideo(Video video) {
+      getPresenter().cancelCachingVideo(video);
    }
 
    @Override

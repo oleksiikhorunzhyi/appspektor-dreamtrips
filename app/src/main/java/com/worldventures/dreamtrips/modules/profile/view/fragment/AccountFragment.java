@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
@@ -60,7 +59,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    @Override
    public void onResume() {
       super.onResume();
-      TrackingHelper.viewMyProfileScreen();
       startAutoplayVideos();
    }
 

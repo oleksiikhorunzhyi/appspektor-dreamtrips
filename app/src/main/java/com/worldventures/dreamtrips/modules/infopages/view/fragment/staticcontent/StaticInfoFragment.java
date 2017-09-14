@@ -36,7 +36,6 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -313,7 +312,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    protected void onReceivedHttpError(int errorCode) { }
 
-   protected void sendAnalyticEvent(String actionAnalyticEvent) {
+   protected void sendPageDisplayedAnalyticsEvent() {
    }
 
    @Override
@@ -528,7 +527,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          super.onPageStarted(view, url, favicon);
          // Ensure we don't track redirected urls
          if (!TextUtils.isEmpty(url) && url.equals(getURL())) {
-            sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
+            sendPageDisplayedAnalyticsEvent();
          }
          isLoading = true;
          weakHandler.post(() -> {

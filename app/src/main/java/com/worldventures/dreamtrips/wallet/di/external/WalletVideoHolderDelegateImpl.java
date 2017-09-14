@@ -21,18 +21,10 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
 
    @Override
    public void sendPlayVideoAction(WalletVideoModel video) {
-      TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
-            .get()
-            .getUser()
-            .getUsername(), TrackingHelper.ACTION_MEMBERSHIP_PLAY, video.getVideo().getVideoName());
    }
 
    @Override
    public void sendMembershipVideoAction(WalletVideoModel video) {
-      TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
-            .get()
-            .getUser()
-            .getUsername(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_START, video.getVideo().getVideoName());
    }
 
    @Override
@@ -49,8 +41,8 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
       }
 
       @Override
-      public void onDownloadClick(WalletVideoCallback videoCallback) {
-         progressVideoCellHelper.onDownloadClick(videoCallback);
+      public void onDownloadClick(WalletVideoCallback videoCallback, WalletVideoModel walletVideoModel) {
+         progressVideoCellHelper.onDownloadClick(videoCallback, walletVideoModel);
       }
 
       @Override

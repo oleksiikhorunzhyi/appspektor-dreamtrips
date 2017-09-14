@@ -8,6 +8,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.FilterSuccessStoriesShowAllAction;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.FilterSuccessStoriesShowFavoriteAction;
+import com.worldventures.dreamtrips.modules.reptools.service.analytics.SearchSuccessStoriesAction;
 import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessStoriesCommand;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 
@@ -76,9 +79,11 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
       switch (filterId) {
          case R.id.action_show_all:
             onlyFavorites = false;
+            analyticsInteractor.analyticsActionPipe().send(new FilterSuccessStoriesShowAllAction());
             break;
          case R.id.action_show_favorites:
             onlyFavorites = true;
+            analyticsInteractor.analyticsActionPipe().send(new FilterSuccessStoriesShowFavoriteAction());
             break;
       }
       reload();
@@ -111,6 +116,10 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
       Collections.sort(result, (lhs, rhs) -> lhs.getCategory().compareTo(rhs.getCategory()));
 
       return result;
+   }
+
+   public void onSearchActivated() {
+      analyticsInteractor.analyticsActionPipe().send(new SearchSuccessStoriesAction());
    }
 
    public interface View extends Presenter.View {

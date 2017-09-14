@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHo
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.UploadTripImageAnalyticAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
@@ -112,12 +112,15 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
                   .getVideoMaxLength())
             .subscribe(length -> {
                view.openPicker(length);
-               if (tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES) {
-                  TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
-               } else {
-                  TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
-               }
+               trackUploadAnalyticEvent();
             });
+   }
+
+   private void trackUploadAnalyticEvent() {
+      UploadTripImageAnalyticAction action = tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES ?
+            UploadTripImageAnalyticAction.fromMyImages() : UploadTripImageAnalyticAction.fromMemberImages();
+
+      analyticsInteractor.analyticsActionPipe().send(action);
    }
 
    public void pickedAttachments(MediaPickerAttachment mediaAttachment) {

@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.FriendCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
@@ -41,7 +42,11 @@ public class FriendCell extends BaseUserCell<FriendCellDelegate> {
       new FriendActionDialogDelegate(itemView.getContext())
             .onFriendPrefsAction(cellDelegate::onOpenPrefs)
             .onStartSingleChatAction(cellDelegate::onStartSingleChat)
-            .onUnfriend(cellDelegate::onUnfriend)
+            .onUnfriend(this::onUnfriend)
             .showFriendDialog(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
+   }
+
+   private void onUnfriend(User user) {
+      cellDelegate.onUnfriend(user);
    }
 }

@@ -2,13 +2,10 @@ package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
-import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.Collection;
@@ -26,47 +23,14 @@ public class TrackingHelper {
 
    public static final String CATEGORY_NAV_MENU = "nav_menu";
 
-   public static final String ACTION_DREAMTRIPS = "dreamtrips";
    public static final String ACTION_DREAMTRIPS_SOCIAL_DETAIL = "dreamtrips:socialdetail";
-   public static final String ACTION_DREAMTRIPS_TRIP_DETAIL = "dreamtrips:tripdetail";
    public static final String ACTION_PHOTOS_YSBH = "photos-ysbh";
    public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
    public static final String ACTION_PHOTOS_MINE = "photos-mine";
-   public static final String ACTION_ENROLL_MERCHANT = "membership-enroll-merchant";
-
-   public static final String ACTION_PHOTOS_INSPR = "photos-inspireme";
-   public static final String ACTION_INSPR_DETAILS = "inspireme_details";
-   public static final String ACTION_INSPR_SHARE = "inspireme_share";
-
-   public static final String ACTION_OTA = "ota_booking";
-   public static final String ACTION_REP_ENROLL = "rep_enroll";
-   public static final String ACTION_TRAINING_VIDEOS = "training_videos";
-
-   public static final String ACTION_SS = "success_stories";
-   public static final String ACTION_SS_VIEW = "success_story_view";
-   public static final String ACTION_SS_LIKE = "success_story_like";
-   public static final String ACTION_SS_UNLIKE = "success_story_like";
-
-   public static final String ACTION_INVITE_CONTACTS = "invite_share_select_contacts";
-   public static final String ACTION_TEMPLATE = "invite_share_template";
-   public static final String ACTION_SEND_EMAIL = "invite_share_send_email";
-   public static final String ACTION_SEND_SMS = "invite_share_send_sms";
 
    public static final String ACTION_BUCKET_LIST = "bucketlist";
    public static final String ACTION_BUCKET_PHOTO_UPLOAD_START = "bl_photo_upload_start";
    public static final String ACTION_BL_ITEM_VIEW = "bl_item_view";
-
-   public static final String ACTION_PROFILE = "profile";
-   public static final String ACTION_PROFILE_PHOTO_UPLOAD_START = "profile_photo_upload_start";
-   public static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "profile_photo_upload_finish";
-
-   public static final String ACTION_MEMBERSHIP_VIDEOS = "membership:videos";
-   public static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play";
-   public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
-   public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel";
-
-   public static final String ACTION_360_PLAY = "videos_360_play";
-   public static final String ACTION_360_LOAD_START = "videos_360_download_start";
 
    public static final String FIELD_MEMBER_ID = "member_id";
    public static final String TYPE = "type";
@@ -131,17 +95,6 @@ public class TrackingHelper {
       trackers.get(KEY_APPTENTIVE_TRACKER).trackEvent(category, action, data);
    }
 
-   private static void trackMemberActionAdobe(String category, String action, Map<String, Object> data) {
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(category, action, data);
-   }
-
-   private static void trackPageViewAbode(String category, String memberId, String action) {
-      Map<String, Object> data = new HashMap<>();
-      data.put(FIELD_MEMBER_ID, memberId);
-      data.put(ATTRIBUTE_VIEW, "1");
-      trackMemberActionAdobe(category, action, data);
-   }
-
    private static void trackPageView(String category, String memberId, String action) {
       Map<String, Object> data = new HashMap<>();
       data.put(FIELD_MEMBER_ID, memberId);
@@ -158,36 +111,6 @@ public class TrackingHelper {
    ///////////////////////////////////////////////////////////////////////////
    // Tracking actions deprecated
    ///////////////////////////////////////////////////////////////////////////
-
-
-   public static void dreamTrips(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_DREAMTRIPS);
-   }
-
-   public static void trip(String id, String memberId) {
-      Map<String, Object> data = new HashMap<>();
-      data.put("view_trip", id);
-      data.put(FIELD_MEMBER_ID, memberId);
-      trackMemberAction(CATEGORY_NAV_MENU, ACTION_DREAMTRIPS, data);
-   }
-
-   public static void tripInfo(String id, String memberId) {
-      Map<String, Object> data = new HashMap<>();
-      data.put("trip_info", id);
-      data.put(FIELD_MEMBER_ID, memberId);
-      trackMemberAction(CATEGORY_NAV_MENU, ACTION_DREAMTRIPS, data);
-   }
-
-   public static void insprDetails(String memberId, String id) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_INSPR, ACTION_INSPR_DETAILS, String.valueOf(id));
-   }
-
-   public static void insprShare(String id, @ShareType String type) {
-      Map<String, Object> data = new HashMap<>();
-      data.put(TYPE, resolveSharingType(type));
-      data.put(ID, id);
-      trackMemberAction(ACTION_INSPR_SHARE, null, data);
-   }
 
    public static void view(TripImagesType type, String id, String memberId) {
       if (type.equals(TripImagesType.YOU_SHOULD_BE_HERE)) {
@@ -210,72 +133,6 @@ public class TrackingHelper {
       trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_ALL_USERS);
    }
 
-   public static void enrollMember(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_ENROLL);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_ENROLL);
-   }
-
-   public static void enrollMerchant(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
-   }
-
-   public static void profile(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_PROFILE);
-   }
-
-   public static void memberVideos(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
-      trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
-   }
-
-   public static void videoAction(String action, String memberId, String label, String videoName) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, action, label, videoName);
-   }
-
-   public static void ota(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_OTA);
-   }
-
-   public static void enrollRep(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_ENROLL);
-   }
-
-   public static void trainingVideos(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_TRAINING_VIDEOS);
-   }
-
-   public static void successStories(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS);
-   }
-
-   public static void viewSS(String memberId, int id) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_VIEW, String.valueOf(id));
-   }
-
-   public static void unlikeSS(String memberId, int id) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_UNLIKE, String.valueOf(id));
-   }
-
-   public static void likeSS(String memberId, int id) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_SS, ACTION_SS_LIKE, String.valueOf(id));
-   }
-
-   public static void inviteShareContacts(String memberId) {
-      trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_INVITE_CONTACTS);
-   }
-
-   public static void inviteShareTemplate(String memberId, int templateId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE, ACTION_TEMPLATE, String.valueOf(templateId));
-   }
-
-   public static void inviteShareAction(String category, int templateId, int count) {
-      Map<String, Object> data = new HashMap<>();
-      data.put("template_id", templateId);
-      data.put("count", count);
-      trackMemberAction(category, null, data);
-   }
-
    public static void bucketList(String memberId) {
       trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_BUCKET_LIST);
    }
@@ -294,14 +151,6 @@ public class TrackingHelper {
       trackMemberAction(ACTION_BL_ITEM_VIEW, null, data);
    }
 
-   public static void profileUploadStart(String memberId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PROFILE, ACTION_PROFILE_PHOTO_UPLOAD_START, null);
-   }
-
-   public static void profileUploadFinish(String memberId) {
-      trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_PROFILE, ACTION_PROFILE_PHOTO_UPLOAD_FINISH, null);
-   }
-
    ///////////////////////////////////////////////////////////////////////////
    // Adobe tracking
    ///////////////////////////////////////////////////////////////////////////
@@ -309,18 +158,6 @@ public class TrackingHelper {
    // ---------------- DreamTrips actions
    public static final String ACTION_ACTIVITY_FEED = "activity_feed";
    public static final String ACTION_FRIENDS_ACTIVITY = "friends_activity";
-   public static final String ACTION_NOTIFICATIONS = "notifications";
-   public static final String ACTION_MEMBER_IMAGES = "member_images";
-   public static final String ACTION_MY_IMAGES = "my_images";
-   public static final String ACTION_YSHB_IMAGES = "yshb_images";
-   public static final String ACTION_INSPIRE_ME_IMAGES = "inspire_me_images";
-   public static final String ACTION_360_VIDEOS = "360_videos";
-   public static final String ACTION_MEMBERSHIP = "membership";
-   public static final String ACTION_MEMBERSHIP_ENROLL = "membership:enroll-member";
-   public static final String ACTION_REP_TOOLS_SUCCESS_STORY = "rep_tools:success_story";
-   public static final String ACTION_REP_TOOLS_TRAINING_VIDEO = "rep_tools:training_video";
-   public static final String ACTION_REP_TOOLS_REP_ENROLLMENT = "rep_tools:rep_enrollment";
-   public static final String ACTION_REP_TOOLS_INVITE_SHARE = "rep_tools:invite_share";
    public static final String ACTION_TERMS = "Terms and Conditions";
    public static final String ACTION_SETTINGS = "Settings";
    public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
@@ -337,35 +174,14 @@ public class TrackingHelper {
    public static final String ATTRIBUTE_OPEN_FRIENDS = "open_friends";
    public static final String ATTRIBUTE_ADD_FRIENDS = "add_friends";
    public static final String ATTRIBUTE_SEARCH_FRIENDS = "search_friends";
-   public static final String ATTRIBUTE_UNFRIEND = "unfriend";
-   public static final String ATTRIBUTE_REJECT_FRIEND_REQUEST = "reject_friend_request";
-   public static final String ATTRIBUTE_CANCEL_FRIEND_REQUEST = "cancel_friend_request";
-   public static final String ATTRIBUTE_SEARCH = "search";
    public static final String ATTRIBUTE_FILTER = "filter";
    public static final String ATTRIBUTE_ADD_FROM_POPULAR = "add_from_popular";
-   public static final String ATTRIBUTE_MAP = "map";
-   public static final String ATTRIBUTE_ADD_TO_BUCKET_LIST = "add_to_bucket_list";
-   public static final String ATTRIBUTE_LOAD_MORE = "load_more";
    public static final String ATTRIBUTE_UPLOAD_PHOTO = "upload_photo";
    public static final String ATTRIBUTE_SHARE = "share";
-   public static final String ATTRIBUTE_DOWNLOAD = "download";
    public static final String ATTRIBUTE_MARK_AS_DONE = "mark_as_done";
    public static final String ATTRIBUTE_TERMS = "optinoptout";
    public static final String ATTRIBUTE_COMPLETE = "complete";
-   public static final String ATTRIBUTE_FAVORITE = "favorite";
    public static final String ATTRIBUTE_VIEW_PHOTO = "view_photo";
-   public static final String ATTRIBUTE_SHOW_TRIPS = "show_trips";
-   public static final String ATTRIBUTE_SHOW_BUCKETLIST = "show_bucketlist";
-   public static final String ATTRIBUTE_NEW_POST = "new_post";
-   public static final String ATTRIBUTE_SHOW_FRIENDS = "show_friends";
-   public static final String ATTRIBUTE_SHOW_ALL = "show_all";
-   public static final String ATTRIBUTE_FACEBOOK = "facebook";
-   public static final String ATTRIBUTE_TWITTER = "twitter";
-   public static final String ATTRIBUTE_SHARING_UNRESOLVED = "unknown";
-   public static final String ATTRIBUTE_TRIP_FILTERS = "tripfilters";
-   public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
-   public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
-   public static final String ATTRIBUTE_TRIP_SEARCH = "tripsearch";
 
    // ---------------- Messenger actions
    public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
@@ -445,17 +261,6 @@ public class TrackingHelper {
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, null);
    }
 
-   public static String resolveSharingType(@ShareType String type) {
-      switch (type) {
-         case ShareType.FACEBOOK:
-            return ATTRIBUTE_FACEBOOK;
-         case ShareType.TWITTER:
-            return ATTRIBUTE_TWITTER;
-         default:
-            return ATTRIBUTE_SHARING_UNRESOLVED;
-      }
-   }
-
    public static Map prepareAttributeMap(String attribute) {
       Map data = new HashMap<>();
       if (attribute != null) data.put(attribute, "1");
@@ -494,83 +299,13 @@ public class TrackingHelper {
       sendSimpleAttributetoAdobeTracker(ACTION_FRIENDS_ACTIVITY, buttonAttribute);
    }
 
-   public static void tapMyFriendsButtonFeed(String action) {
-      sendSimpleAttributetoAdobeTracker(ACTION_FRIENDS_ACTIVITY, action);
-   }
-
    public static void filterMyFriendsFeed(String filterType) {
       Map data = new HashMap<>();
       data.put("friends_filter_" + filterType, "1");
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_FRIENDS_ACTIVITY, data);
    }
 
-   // ---------------- Dream Trips
-
-   public static void viewDreamTripsScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_DREAMTRIPS, ATTRIBUTE_LIST);
-   }
-
-   public static void viewTripDetails(String tripId, String tripName, String searchQuery, TripsFilterDataAnalyticsWrapper filterData) {
-      Map data = new HashMap<>();
-      data.put("trip_id", tripName + "-" + tripId);
-      data.put(ATTRIBUTE_VIEW, 1);
-      if (!TextUtils.isEmpty(searchQuery)) {
-         data.put(ATTRIBUTE_TRIP_SEARCH, searchQuery);
-      }
-      data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
-      data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegionsAnalyticString());
-      data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivitiesAnalyticString());
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS_TRIP_DETAIL, data);
-   }
-
-   public static void tapDreamTripsButton(String buttonType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_DREAMTRIPS, buttonType);
-   }
-
-   public static void actionItemDreamtrips(String eventType, String tripId, String tripName) {
-      Map data = new HashMap<>();
-      data.put("trip_id", tripName + "-" + tripId);
-      data.put(eventType, tripId);
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
-   }
-
-   public static void actionFilterTrips(TripsFilterDataAnalyticsWrapper filterData) {
-      Map data = new HashMap<>();
-      data.put(ATTRIBUTE_FILTER, 1);
-      data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
-      data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegionsAnalyticString());
-      data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivitiesAnalyticString());
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
-   }
-
-   // ---------------- Notifications
-
-   public static void viewNotificationsScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_NOTIFICATIONS, ATTRIBUTE_LIST);
-   }
-
-   public static void loadMoreNotifications() {
-      sendSimpleAttributetoAdobeTracker(ACTION_NOTIFICATIONS, ATTRIBUTE_LOAD_MORE);
-   }
-
    // ---------------- Book Travel
-
-   public static void selectTripImagesTab(String tab) {
-      sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_LIST);
-   }
-
-   public static void viewTripImage(String tab, String imageId) {
-      Map data = new HashMap<>();
-      data.put("image_id", imageId);
-      data.put(ATTRIBUTE_VIEW, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, tab, data);
-   }
-
-   public static void uploadTripImagePhoto(String actionTab) {
-      Map data = new HashMap<>();
-      data.put(actionTab, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
-   }
 
    public static void termsConditionsAction(boolean accepted) {
       Map data = new HashMap<>();
@@ -585,22 +320,6 @@ public class TrackingHelper {
    public static void settingsDetailed(SettingsGroup.Type type) {
       trackers.get(KEY_ADOBE_TRACKER)
             .trackEvent(null, type == SettingsGroup.Type.GENERAL ? ACTION_SETTINGS_GENERAL : ACTION_SETTINGS_NOTIFICATIONS, null);
-   }
-
-   public static void actionTripVideo(String eventType, String videoName) {
-      Map<String, Object> data = new HashMap<>();
-      data.put("video_id", videoName);
-      data.put(eventType, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_360_VIDEOS, data);
-   }
-
-   // ---------------- Membership
-
-   public static void actionMembershipVideo(String eventType, String videoName) {
-      Map<String, Object> data = new HashMap<>();
-      data.put("video_id", videoName);
-      data.put(eventType, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBERSHIP, data);
    }
 
    // ---------------- Bucket List
@@ -630,67 +349,7 @@ public class TrackingHelper {
       trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_BUCKET_LIST, data);
    }
 
-   // ---------------- My Profile
-
-   public static void viewMyProfileScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, ATTRIBUTE_VIEW);
-   }
-
-   public static void tapMyProfileButton(String buttonType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_PROFILE, buttonType);
-   }
-
    public static void clearHeaderData() {
       trackers.get(KEY_ADOBE_TRACKER).setHeaderData(null);
-   }
-
-   // ---------------- Rep Tools
-
-   public static void applyFilterRepTools(String filterCategory) {
-      sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_SUCCESS_STORY, filterCategory);
-   }
-
-   public static void searchRepTools(String tab) {
-      sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_SEARCH);
-   }
-
-   public static void viewSuccessStory(String storyId) {
-      Map data = new HashMap<>();
-      data.put("story_id", storyId);
-      data.put(ATTRIBUTE_VIEW, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
-   }
-
-   public static void shareSuccessStory(@ShareType String socialNet, String storyId) {
-      Map data = new HashMap<>();
-      data.put(resolveSharingType(socialNet), storyId);
-      data.put(ATTRIBUTE_SHARE, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
-   }
-
-   public static void favoriteSuccessStory(String storyId) {
-      Map data = new HashMap<>();
-      data.put(ATTRIBUTE_FAVORITE, storyId);
-      data.put(ATTRIBUTE_FAVORITE, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_SUCCESS_STORY, data);
-   }
-
-   public static void viewRepToolsTrainingVideoScreen() {
-      sendSimpleAttributetoAdobeTracker(ACTION_TRAINING_VIDEOS, ATTRIBUTE_LIST);
-   }
-
-   public static void actionRepToolsTrainingVideo(String action, String videoName) {
-      Map data = new HashMap<>();
-      data.put("video_id", videoName);
-      data.put(action, "1");
-      trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_TRAINING_VIDEO, data);
-   }
-
-   public static void actionRepToolsEnrollment(String eventType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_REP_ENROLLMENT, eventType);
-   }
-
-   public static void actionRepToolsInviteShare(String eventType) {
-      sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_INVITE_SHARE, eventType);
    }
 }

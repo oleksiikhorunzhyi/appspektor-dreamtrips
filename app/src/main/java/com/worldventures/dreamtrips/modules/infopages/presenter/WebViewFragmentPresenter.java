@@ -4,9 +4,11 @@ import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
+import com.worldventures.dreamtrips.modules.infopages.service.analytics.OtaViewedAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.EnrollMemberViewedAction;
+import com.worldventures.dreamtrips.modules.membership.service.analytics.EnrollMerchantViewedAction;
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
@@ -69,13 +71,13 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    public void track(Route route) {
       switch (route) {
          case OTA:
-            TrackingHelper.ota(getAccountUserId());
+            analyticsInteractor.analyticsActionPipe().send(new OtaViewedAction());
             break;
          case ENROLL_MEMBER:
-            TrackingHelper.enrollMember(getAccountUserId());
+            analyticsInteractor.analyticsActionPipe().send(new EnrollMemberViewedAction(getAccountUserId()));
             break;
          case ENROLL_MERCHANT:
-            TrackingHelper.enrollMerchant(getAccountUserId());
+            analyticsInteractor.analyticsActionPipe().send(new EnrollMerchantViewedAction(getAccountUserId()));
             break;
       }
    }

@@ -401,7 +401,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       return windowedContainer;
    }
 
-   @OnClick(R.id.video_view_video_play_pause_button)
+   @OnClick(R.id.video_view_video_play_pause_button_container)
    void onPlayPauseButtonClick() {
       playVideo();
    }
@@ -422,7 +422,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       }
    }
 
-   @OnClick(R.id.video_view_quality_text_view)
+   @OnClick(R.id.video_view_quality_text_view_container)
    void onQualityButtonClick() {
       if (currentStreamUri.equals(video.getHdUrl())) {
          currentStreamUri = video.getSdUrl();
@@ -460,7 +460,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       setVisibility(GONE);
    }
 
-   @OnClick(R.id.video_view_mute_button)
+   @OnClick(R.id.video_view_mute_button_container)
    void onMuteButtonClick() {
       setMute(!mute);
    }

@@ -71,6 +71,7 @@
 
    <dimen name="pin_progress_inner_size">28dp</dimen>
 
+   <dimen name="video_player_padding">10dp</dimen>
    <dimen name="video_creation_cell_height">200dp</dimen>
 
    <dimen name="pin_progress_button_size">48dp</dimen>

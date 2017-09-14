@@ -161,7 +161,7 @@ public class VideoViewFullscreenHandler {
    // UI related
    ///////////////////////////////////////////////////////////////////////////
 
-   @OnClick(R.id.video_view_fullscreen_button)
+   @OnClick(R.id.video_view_fullscreen_button_container)
    void onFullscreenButtonClick() {
       swapFullscreen();
    }

@@ -1,24 +1,23 @@
 package com.worldventures.dreamtrips.modules.background_uploading.service.command.video;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.api.post.CheckVideoProcessingHttpAction;
+import com.worldventures.dreamtrips.api.post.model.response.PostStatus;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.background_uploading.VideoMicroserviceModule;
 import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody;
-import com.worldventures.dreamtrips.modules.background_uploading.model.video.VideoProcessStatus;
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.http.CheckVideoProcessingHttpAction;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -31,7 +30,7 @@ import timber.log.Timber;
 @CommandAction
 public class UpdateVideoProcessStatusCommand extends Command<Void> implements InjectableAction {
 
-   @Inject @Named(VideoMicroserviceModule.JANET_QUALIFIER) Janet janet;
+   @Inject Janet janet;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject PostCompoundOperationMutator compoundOperationObjectMutator;
 
@@ -47,45 +46,50 @@ public class UpdateVideoProcessStatusCommand extends Command<Void> implements In
                      .filter(element -> element.state() == CompoundOperationState.PROCESSING)
                      .map(element -> {
                         PostWithVideoAttachmentBody postWithVideoAttachmentBody = (PostWithVideoAttachmentBody) element.body();
-                        return postWithVideoAttachmentBody.uploadId();
+                        return postWithVideoAttachmentBody.createdPost().getUid();
                      })
                      .toList();
             })
-            .flatMap(ids -> janet.createPipe(CheckVideoProcessingHttpAction.class, Schedulers.io())
-                  .createObservableResult(new CheckVideoProcessingHttpAction(ids)))
-            .map(httpAction -> httpAction.getBunchStatus().getVideoProcessStatuses())
+            .flatMap(ids -> {
+               if (ids.isEmpty()) return Observable.just(new PostStatus[0]);
+               return janet.createPipe(CheckVideoProcessingHttpAction.class, Schedulers.io())
+                     .createObservableResult(new CheckVideoProcessingHttpAction(ids.toArray(new String[0])))
+                     .map(httpAction -> httpAction.response().postStatuses());
+            })
             .doOnNext(this::updateOperationItems)
-            .subscribe(videoProcessBunchStatus -> callback.onSuccess(null), callback::onFail);
+            .subscribe(status -> callback.onSuccess(null), callback::onFail);
    }
 
-
-   private void updateOperationItems(List<VideoProcessStatus> videoProcessStatuses) {
+   private void updateOperationItems(PostStatus[] postStatuses) {
       Observable.from(operationModels)
             .flatMap(operationModel -> {
-                     VideoProcessStatus videoProcessStatus = getProcessStatusForModel(videoProcessStatuses, operationModel);
-                     if (videoProcessStatus == null ||
-                           videoProcessStatus.getAssetStatus().equals(VideoProcessStatus.STATUS_COMPLETED)) {
-                        return Observable.just(operationModel)
-                              .map(compoundOperationObjectMutator::finishedEmpty)
-                              .doOnNext(this::notifyCompoundOperationChanged)
-                              .delay(PostProcessingCommand.DELAY_TO_DELETE_COMPOUND_OPERATION,
-                                    TimeUnit.SECONDS, Schedulers.trampoline())
-                              .doOnNext(this::notifyCompoundOperationRemoved);
-                     } else if (videoProcessStatus.getAssetStatus().equals(VideoProcessStatus.STATUS_ERROR)) {
-                        return Observable.just(operationModel)
-                              .map(compoundOperationObjectMutator::failedProcessing)
-                              .doOnNext(this::notifyCompoundOperationChanged);
-                     } else return Observable.empty();
-                  }
-            ).subscribe(Actions.empty(), e -> Timber.e(e, "Failed to perform update"));
+               TextualPost post = operationModel.body().createdPost();
+               if (post == null) return Observable.empty();
+
+               PostStatus postStatus = getPostStatus(post.getUid(), postStatuses);
+               if (postStatus == null) return Observable.empty();
+
+               return updateModelStatus(operationModel, postStatus);
+            }).subscribe(Actions.empty(), e -> Timber.e(e, "Failed to perform update"));
    }
 
-   private VideoProcessStatus getProcessStatusForModel(List<VideoProcessStatus> processStatuses, PostCompoundOperationModel operationModel) {
-      return Queryable.from(processStatuses)
-            .firstOrDefault(tempStatus -> {
-               PostWithVideoAttachmentBody postWithVideoAttachmentBody = (PostWithVideoAttachmentBody) operationModel.body();
-               return tempStatus.getAssetId().equals(postWithVideoAttachmentBody.uploadId());
-            });
+   private PostStatus getPostStatus(String postUid, PostStatus[] postStatuses) {
+      return Queryable.from(postStatuses).firstOrDefault(postStatus -> postStatus.uid().equals(postUid));
+   }
+
+   private Observable<PostCompoundOperationModel> updateModelStatus(PostCompoundOperationModel model, PostStatus status) {
+      if (status.status() == PostStatus.Status.COMPLETED) {
+         return Observable.just(compoundOperationObjectMutator.finishedEmpty(model))
+               .doOnNext(this::notifyCompoundOperationChanged)
+               .delay(PostProcessingCommand.DELAY_TO_DELETE_COMPOUND_OPERATION,
+                     TimeUnit.SECONDS, Schedulers.trampoline())
+               .doOnNext(this::notifyCompoundOperationRemoved);
+      } else if (status.status() == PostStatus.Status.FAILED) {
+         return Observable.just(compoundOperationObjectMutator.failedProcessing(model))
+               .doOnNext(this::notifyCompoundOperationChanged);
+      } else {
+         return Observable.empty();
+      }
    }
 
    private void notifyCompoundOperationChanged(PostCompoundOperationModel postModel) {

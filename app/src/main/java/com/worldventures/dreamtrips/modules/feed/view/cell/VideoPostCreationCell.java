@@ -12,7 +12,6 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.VideoCreationCellDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;

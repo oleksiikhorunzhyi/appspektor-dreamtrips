@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 @CommandAction
 public class PerformUpdateVideoStatusCommand extends Command<Void> implements InjectableAction {
 
-   private static final int DELAY_START_UPDATE_COMMAND = 30;
+   private static final int DELAY_START_UPDATE_COMMAND = 60;
 
    @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;

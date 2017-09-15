@@ -67,7 +67,7 @@ public class TransactionView extends LinearLayout {
       transactionModel1.setEarnedPoints("2");
       transactionModel1.setTransactionDate("2017-09-12T14:00:00.000Z UTC");
       transactionModel1.setTransactionSuccess(false);
-      transactionModel.setRewardStatus(true);
+      transactionModel1.setRewardStatus(true);
       tempTransactionList.add(1, transactionModel1);
 
       TransactionModel transactionModel2 = new TransactionModel();
@@ -76,7 +76,7 @@ public class TransactionView extends LinearLayout {
       transactionModel2.setEarnedPoints("3");
       transactionModel2.setTransactionDate("2017-09-11T22:30:00.000Z UTC");
       transactionModel2.setTransactionSuccess(true);
-      transactionModel.setRewardStatus(false);
+      transactionModel2.setRewardStatus(false);
       tempTransactionList.add(2, transactionModel2);
 
       TransactionModel transactionModel3 = new TransactionModel();
@@ -85,7 +85,7 @@ public class TransactionView extends LinearLayout {
       transactionModel3.setEarnedPoints("3");
       transactionModel3.setTransactionDate("2017-09-07T16:30:00.000Z UTC");
       transactionModel3.setTransactionSuccess(false);
-      transactionModel.setRewardStatus(false);
+      transactionModel3.setRewardStatus(false);
       tempTransactionList.add(3, transactionModel3);
 
       TransactionModel transactionModel4 = new TransactionModel();
@@ -94,7 +94,7 @@ public class TransactionView extends LinearLayout {
       transactionModel4.setEarnedPoints("3");
       transactionModel4.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
       transactionModel4.setTransactionSuccess(true);
-      transactionModel.setRewardStatus(true);
+      transactionModel4.setRewardStatus(true);
       tempTransactionList.add(4, transactionModel4);
 
       TransactionModel transactionModel5 = new TransactionModel();
@@ -103,7 +103,7 @@ public class TransactionView extends LinearLayout {
       transactionModel5.setEarnedPoints("3");
       transactionModel5.setTransactionDate("2017-09-12T14:00:00.000Z UTC");
       transactionModel5.setTransactionSuccess(true);
-      transactionModel.setRewardStatus(false);
+      transactionModel5.setRewardStatus(false);
       tempTransactionList.add(5, transactionModel5);
 
       TransactionModel transactionModel6 = new TransactionModel();
@@ -112,17 +112,17 @@ public class TransactionView extends LinearLayout {
       transactionModel6.setEarnedPoints("3");
       transactionModel6.setTransactionDate("2017-09-11T22:30:00.000Z UTC");
       transactionModel6.setTransactionSuccess(false);
-      transactionModel.setRewardStatus(true);
+      transactionModel6.setRewardStatus(true);
       tempTransactionList.add(6, transactionModel6);
 
       TransactionModel transactionModel7 = new TransactionModel();
       transactionModel7.setMerchantName("Merchant 8");
-      transactionModel7.setSubTotalAmount("3000");
+      transactionModel7.setSubTotalAmount("8000");
       transactionModel7.setEarnedPoints("3");
       transactionModel7.setTransactionDate("Whatever heather");
       transactionModel7.setTransactionDate("2017-09-07T16:30:00.000Z UTC");
       transactionModel7.setTransactionSuccess(false);
-      transactionModel.setRewardStatus(false);
+      transactionModel7.setRewardStatus(false);
       tempTransactionList.add(7, transactionModel7);
 
       return tempTransactionList;

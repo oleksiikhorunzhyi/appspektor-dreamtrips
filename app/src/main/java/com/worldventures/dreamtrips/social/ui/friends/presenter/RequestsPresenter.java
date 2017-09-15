@@ -6,6 +6,7 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -243,6 +244,11 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
    private void onCirclesError(CommandWithError commandWithError, Throwable throwable) {
       view.hideBlockingProgress();
       handleError(commandWithError, throwable);
+   }
+
+   public void onAddFriendsPressed() {
+      analyticsInteractor.analyticsActionPipe().send(FriendsAnalyticsAction.addFriends());
+      analyticsInteractor.analyticsActionPipe().send(FriendsAnalyticsAction.searchFriends());
    }
 
    public interface View extends Presenter.View, BlockingProgressView {

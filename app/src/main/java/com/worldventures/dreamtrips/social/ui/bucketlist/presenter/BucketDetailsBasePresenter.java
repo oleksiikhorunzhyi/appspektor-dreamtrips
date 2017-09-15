@@ -2,16 +2,16 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.ViewPhotoEvent;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketCoverBody;
 import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 
 import java.util.List;
 
@@ -96,7 +96,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     */
    public void openFullScreen(int position) {
       if (isTabTrulyVisible()) {
-         TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid());
+         analyticsInteractor.analyticsActionPipe().send(new ViewPhotoEvent(bucketItem.getUid()));
          openFullScreen(bucketItem.getPhotos().get(position));
       }
    }

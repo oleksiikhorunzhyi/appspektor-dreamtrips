@@ -6,20 +6,23 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketItemAddedAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketTabViewAnalyticsAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.ApptentiveBucketListViewedAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.BucketItemAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.BucketListAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.common.BucketUtility;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.adapter.AutoCompleteAdapter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.adapter.SuggestionLoader;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +61,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      TrackingHelper.bucketList(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ApptentiveBucketListViewedAction());
    }
 
    @Override
@@ -124,13 +127,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    public void itemClicked(BucketItem bucketItem) {
       if (!isTypeCorrect(bucketItem.getType()) && !bucketItems.contains(bucketItem)) return;
 
-      TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_VIEW, bucketItem.getUid());
+      analyticsInteractor.analyticsActionPipe().send(BucketItemAction.view(bucketItem.getUid()));
       openDetails(bucketItem);
    }
 
    public void itemDoneClicked(BucketItem bucketItem) {
       if (isTypeCorrect(bucketItem.getType())) {
-         TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_COMPLETE, bucketItem.getUid());
+         analyticsInteractor.analyticsActionPipe().send(BucketItemAction.complete(bucketItem.getUid()));
          markAsDone(bucketItem);
       }
    }
@@ -161,6 +164,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
       BucketBundle bundle = new BucketBundle();
       bundle.setType(type);
       view.openPopular(bundle);
+      analyticsInteractor.analyticsActionPipe().send(BucketListAction.addFromPopular(type));
    }
 
    public void reloadWithFilter(int filterId) {
@@ -234,8 +238,8 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
       return item.isDone() ? NEW : COMPLETED;
    }
 
-   public void trackAnalyticsActionBucket(String actionAttribute) {
-      TrackingHelper.actionBucket(actionAttribute, type.getAnalyticsName());
+   public void onFilterShown() {
+      analyticsInteractor.analyticsActionPipe().send(BucketListAction.filter(type));
    }
 
    public interface View extends RxView {

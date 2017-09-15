@@ -4,15 +4,11 @@ import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.CommentAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
-import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -24,10 +20,9 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.EditCommentCo
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.List;
 
@@ -183,7 +178,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    public void editComment(Comment comment) {
       view.editComment(feedEntity, comment);
-      sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
+      analyticsInteractor.analyticsActionPipe().send(CommentAction.edit(feedEntity));
    }
 
    public void translateComment(Comment comment) {
@@ -206,7 +201,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    private void commentDeleted(DeleteCommentCommand deleteCommentCommand) {
       view.removeComment(deleteCommentCommand.getResult());
-      sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
+      analyticsInteractor.analyticsActionPipe().send(CommentAction.delete(feedEntity));
    }
 
    public void createComment(String comment) {
@@ -219,15 +214,15 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CreateCommentCommand>()
                   .onSuccess(this::commentCreated)
-                  .onFail(this::comentCreationError));
+                  .onFail(this::commentCreationError));
    }
 
    private void commentCreated(CreateCommentCommand createCommentCommand) {
       view.addComment(createCommentCommand.getResult());
-      sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
+      analyticsInteractor.analyticsActionPipe().send(CommentAction.add(feedEntity));
    }
 
-   private void comentCreationError(CreateCommentCommand createCommentCommand, Throwable e) {
+   private void commentCreationError(CreateCommentCommand createCommentCommand, Throwable e) {
       view.onPostError();
       handleError(createCommentCommand, e);
    }
@@ -250,27 +245,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    protected void back() {
       view.back();
-   }
-
-   private void sendAnalytic(String actionAttribute) {
-      String id = feedEntity.getUid();
-      FeedEntityHolder.Type type = FeedEntityHolder.Type.UNDEFINED;
-      if (feedEntity instanceof BucketItem) {
-         type = FeedEntityHolder.Type.BUCKET_LIST_ITEM;
-      }
-      if (feedEntity instanceof Photo) {
-         type = FeedEntityHolder.Type.PHOTO;
-      }
-      if (feedEntity instanceof TextualPost) {
-         type = FeedEntityHolder.Type.POST;
-      }
-      if (feedEntity instanceof TripModel) {
-         type = FeedEntityHolder.Type.TRIP;
-      }
-
-      if (type != FeedEntityHolder.Type.UNDEFINED) {
-         TrackingHelper.sendActionItemFeed(actionAttribute, id, type);
-      }
    }
 
    private void updateEntityComments(Comment comment) {

@@ -3,16 +3,17 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.BucketItemAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.BucketItemViewedAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.TranslateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedEntityHolderDelegate;
@@ -38,7 +39,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      TrackingHelper.bucketItemView(type.getName(), bucketItem.getUid());
+      analyticsInteractor.analyticsActionPipe().send(new BucketItemViewedAction());
       subscribeToTranslations();
       feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
    }
@@ -106,7 +107,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                         view.enableMarkAsDone();
                      }));
 
-         TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_MARK_AS_DONE, bucketItem.getUid());
+         analyticsInteractor.analyticsActionPipe().send(BucketItemAction.markAsDone(bucketItem.getUid()));
       }
    }
 

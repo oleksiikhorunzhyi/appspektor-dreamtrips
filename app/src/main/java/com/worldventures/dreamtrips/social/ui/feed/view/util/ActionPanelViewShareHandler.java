@@ -6,8 +6,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.BucketItemAction;
 import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
@@ -23,9 +25,11 @@ public class ActionPanelViewShareHandler {
 
    private Router router;
    private Action1<String> downloadPhotoAction;
+   private AnalyticsInteractor analyticsInteractor;
 
-   public ActionPanelViewShareHandler(Router router) {
+   public ActionPanelViewShareHandler(Router router, AnalyticsInteractor analyticsInteractor) {
       this.router = router;
+      this.analyticsInteractor = analyticsInteractor;
    }
 
    public void init(FeedActionPanelView actionView, Action1<String> downloadPhotoAction) {
@@ -65,7 +69,7 @@ public class ActionPanelViewShareHandler {
             BucketItem bucketItem = (BucketItem) feedItem.getItem();
             shareUrl = bucketItem.getUrl();
             text = context.getString(R.string.bucketlist_share, bucketItem.getName());
-            TrackingHelper.actionBucketItem(TrackingHelper.ATTRIBUTE_SHARE, bucketItem.getUid());
+            analyticsInteractor.analyticsActionPipe().send(BucketItemAction.share(bucketItem.getUid()));
             break;
       }
 

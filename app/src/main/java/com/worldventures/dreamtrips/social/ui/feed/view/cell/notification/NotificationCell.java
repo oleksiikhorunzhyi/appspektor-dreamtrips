@@ -19,18 +19,19 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
    @Inject SessionHolder appSessionHolder;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject Router router;
+   @Inject AnalyticsInteractor analyticsInteractor;
 
    public NotificationCell(View view) {
       super(view);
@@ -95,8 +97,9 @@ public class NotificationCell extends AbstractCell<FeedItem> {
    }
 
    private void openByType(Type type, FeedItem.Action action) {
-      TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem()
-            .getUid(), getModelObject().getType());
+      analyticsInteractor.analyticsActionPipe().send(ViewFeedEntityAction.view(getModelObject().getType(),
+            getModelObject().getItem().getUid()));
+
       switch (type) {
          case PHOTO:
             if (action == FeedItem.Action.TAG_PHOTO) {

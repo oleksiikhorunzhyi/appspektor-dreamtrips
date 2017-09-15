@@ -23,12 +23,12 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
@@ -56,7 +56,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDel
 import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
@@ -187,7 +186,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(friendsItem);
       friendsBadge.setOnClickListener(v -> {
          fragmentWithFeedDelegate.openFriends(new FriendMainBundle(FriendMainBundle.REQUESTS));
-         TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
+         getPresenter().onFriendsOpened();
       });
 
       MenuItem conversationItem = menu.findItem(R.id.action_unread_conversation);

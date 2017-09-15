@@ -17,15 +17,15 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import java.util.ArrayList;
@@ -139,7 +139,8 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build();
       router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, config);
-      sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
+      analyticsInteractor.analyticsActionPipe().send(ViewFeedEntityAction.view(getModelObject().getType(),
+            getModelObject().getItem().getUid()));
    }
 
    @Override

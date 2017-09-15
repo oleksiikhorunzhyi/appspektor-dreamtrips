@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.LikeAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteBucketItemCommand;
-import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
-import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
@@ -15,9 +14,11 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEnt
 import com.worldventures.dreamtrips.social.ui.feed.service.command.DeletePostCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditingView;
+import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
+import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
 
@@ -33,15 +34,18 @@ public class FeedActionHandlerDelegate {
    private TripImagesInteractor tripImagesInteractor;
    private PostsInteractor postsInteractor;
    private BucketInteractor bucketInteractor;
+   private AnalyticsInteractor analyticsInteractor;
    private FeedEntityEditingView feedEntityEditingView;
 
    public FeedActionHandlerDelegate(FeedInteractor feedInteractor, FlagsInteractor flagsInteractor,
-         TripImagesInteractor tripImagesInteractor, PostsInteractor postsInteractor, BucketInteractor bucketInteractor) {
+         TripImagesInteractor tripImagesInteractor, PostsInteractor postsInteractor, BucketInteractor bucketInteractor,
+         AnalyticsInteractor analyticsInteractor) {
       this.feedInteractor = feedInteractor;
       this.flagDelegate = new FlagDelegate(flagsInteractor);
       this.tripImagesInteractor = tripImagesInteractor;
       this.postsInteractor = postsInteractor;
       this.bucketInteractor = bucketInteractor;
+      this.analyticsInteractor = analyticsInteractor;
    }
 
    public void setFeedEntityEditingView(FeedEntityEditingView feedEntityEditingView) {
@@ -56,7 +60,7 @@ public class FeedActionHandlerDelegate {
       FeedEntityHolder.Type type = feedItem.getType();
       if (type != FeedEntityHolder.Type.UNDEFINED && !feedItem.getItem().isLiked()) {
          //send this event only if user likes item, if dislikes - skip
-         TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_LIKE, id, type);
+         analyticsInteractor.analyticsActionPipe().send(new LikeAction(type, id));
       }
    }
 

@@ -9,14 +9,13 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketTabsPresenter;
-import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketTabsPresenter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.util.PageSelectionDetector;
 
 import java.io.Serializable;
@@ -78,7 +77,7 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends R
    public void onResume() {
       super.onResume();
       notifyPosition(pager.getCurrentItem());
-      TrackingHelper.viewBucketListScreen();
+      getPresenter().onTrackListOpened();
    }
 
    private void notifyPosition(int currentSelectedTabPosition) {

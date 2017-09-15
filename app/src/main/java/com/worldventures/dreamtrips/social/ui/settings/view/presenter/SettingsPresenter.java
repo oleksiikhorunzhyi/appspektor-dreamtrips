@@ -4,13 +4,14 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.social.ui.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
 import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.social.ui.settings.service.SettingsInteractor;
+import com.worldventures.dreamtrips.social.ui.settings.service.analytics.TrackGeneralSettingsOpened;
+import com.worldventures.dreamtrips.social.ui.settings.service.analytics.TrackNotificationSettingsOpened;
 import com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.social.ui.settings.util.SettingsManager;
 
@@ -54,7 +55,18 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
    @Override
    public void onResume() {
       super.onResume();
-      TrackingHelper.settingsDetailed(group.getType());
+      trackDetailedSettingsOpened();
+   }
+
+   private void trackDetailedSettingsOpened() {
+      switch (group.getType()) {
+         case GENERAL:
+            analyticsInteractor.analyticsActionPipe().send(new TrackGeneralSettingsOpened());
+            break;
+         case NOTIFICATIONS:
+            analyticsInteractor.analyticsActionPipe().send(new TrackNotificationSettingsOpened());
+            break;
+      }
    }
 
    private void subscribeUpdateSettings() {

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.settings.view.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
+import com.worldventures.dreamtrips.social.ui.settings.service.analytics.TrackSettingsOpenedAction;
 import com.worldventures.dreamtrips.social.ui.settings.util.SettingsGroupFactory;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class SettingsGroupPresenter extends Presenter<SettingsGroupPresenter.Vie
    @Override
    public void onResume() {
       super.onResume();
-      TrackingHelper.settings();
+      analyticsInteractor.analyticsActionPipe().send(new TrackSettingsOpenedAction());
    }
 
    public void handleCellClick(SettingsGroup model) {

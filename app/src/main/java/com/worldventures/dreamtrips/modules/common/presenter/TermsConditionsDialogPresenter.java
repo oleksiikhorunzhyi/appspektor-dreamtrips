@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.LegalInteractor;
+import com.worldventures.dreamtrips.modules.common.service.analytics.TermsAndConditionsAction;
 import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
 
 import javax.inject.Inject;
@@ -29,7 +29,7 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
    }
 
    public void acceptTerms(String text) {
-      TrackingHelper.termsConditionsAction(true);
+      analyticsInteractor.analyticsActionPipe().send(new TermsAndConditionsAction(true));
       view.disableButtons();
       legalInteractor.termsPipe()
             .createObservable(new AcceptTermsCommand(text))
@@ -43,7 +43,7 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
    }
 
    public void denyTerms() {
-      TrackingHelper.termsConditionsAction(false);
+      analyticsInteractor.analyticsActionPipe().send(new TermsAndConditionsAction(false));
       logout();
    }
 

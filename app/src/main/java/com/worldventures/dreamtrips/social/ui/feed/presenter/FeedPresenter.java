@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -438,6 +439,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Override
    public void onUploadCancel(PostCompoundOperationModel compoundOperationModel) {
       uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
+   }
+
+   public void onFriendsOpened() {
+      analyticsInteractor.analyticsActionPipe().send(FriendsAnalyticsAction.openFriends());
    }
 
    public interface View extends RxView, FlagDelegate.View, TranslationDelegate.View, BlockingProgressView,

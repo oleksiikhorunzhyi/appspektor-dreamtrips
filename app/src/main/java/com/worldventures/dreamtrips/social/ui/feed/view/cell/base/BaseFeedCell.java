@@ -16,9 +16,10 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
@@ -40,6 +41,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
    @Inject protected SessionHolder sessionHolder;
    @Inject protected FragmentManager fragmentManager;
    @Inject protected Router router;
+   @Inject protected AnalyticsInteractor analyticsInteractor;
 
    @InjectView(R.id.actionView) FeedActionPanelView actionView;
    @InjectView(R.id.likers_panel) TextView likersPanel;
@@ -77,7 +79,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
       actionView.setOnFlagClickListener(feedItem -> cellDelegate.onLoadFlags(actionView));
       actionView.setOnFlagDialogClickListener((feedItem, flagReasonId, reason)
             -> cellDelegate.onFlagChosen(feedItem, flagReasonId, reason));
-      feedActionHandler = new ActionPanelViewShareHandler(router);
+      feedActionHandler = new ActionPanelViewShareHandler(router, analyticsInteractor);
       feedActionHandler.init(actionView, cellDelegate::onDownloadImage);
       //
       if (likersPanel != null) {
@@ -116,15 +118,13 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
    }
 
    protected void onDelete() {
-      sendAnalyticEvent(TrackingHelper.ATTRIBUTE_DELETE);
+      analyticsInteractor.analyticsActionPipe().send(ViewFeedEntityAction.delete(getModelObject().getType(),
+            getModelObject().getItem().getUid()));
    }
 
    protected void onEdit() {
-      sendAnalyticEvent(TrackingHelper.ATTRIBUTE_EDIT);
-   }
-
-   protected void sendAnalyticEvent(String eventType) {
-      TrackingHelper.sendActionItemFeed(eventType, getModelObject().getItem().getUid(), getModelObject().getType());
+      analyticsInteractor.analyticsActionPipe().send(ViewFeedEntityAction.edit(getModelObject().getType(),
+            getModelObject().getItem().getUid()));
    }
 
    protected void onMore() {

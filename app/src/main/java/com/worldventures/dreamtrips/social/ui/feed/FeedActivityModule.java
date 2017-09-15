@@ -8,6 +8,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
@@ -175,9 +176,10 @@ public class FeedActivityModule {
    @Provides
    @Singleton
    FeedActionHandlerDelegate provideFeedActionHandlerDelegate(FeedInteractor feedInteractor, FlagsInteractor flagsInteractor,
-         TripImagesInteractor tripImagesInteractor, PostsInteractor postsInteractor, BucketInteractor bucketInteractor) {
+         TripImagesInteractor tripImagesInteractor, PostsInteractor postsInteractor, BucketInteractor bucketInteractor,
+         AnalyticsInteractor analyticsInteractor) {
       return new FeedActionHandlerDelegate(feedInteractor, flagsInteractor, tripImagesInteractor, postsInteractor,
-            bucketInteractor);
+            bucketInteractor, analyticsInteractor);
    }
 
    @Provides

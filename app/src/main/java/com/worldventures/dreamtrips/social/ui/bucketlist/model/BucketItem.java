@@ -16,9 +16,6 @@ import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BucketItem extends BaseFeedEntity {
-   public static final String ANALYTICS_DINING = "dining";
-   public static final String ANALYTICS_ACTIVITIES = "activities";
-   public static final String ANALYTICS_LOCATIONS = "locations";
 
    public static final String NEW = "new";
    public static final String COMPLETED = "completed";
@@ -254,23 +251,9 @@ public class BucketItem extends BaseFeedEntity {
          return name;
       }
 
-      public String getAnalyticsName() {
-         switch (this) {
-            case LOCATION:
-               return ANALYTICS_LOCATIONS;
-            case ACTIVITY:
-               return ANALYTICS_ACTIVITIES;
-            case DINING:
-               return ANALYTICS_DINING;
-            default:
-               return "";
-         }
-      }
-
       @StringRes
       public int getRes() {
          return res;
       }
-
    }
 }

@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
@@ -15,6 +14,8 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.AdobeStartUploadBucketPhotoAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.ApptentiveStartUploadBucketPhotoAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
@@ -146,8 +147,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    }
 
    private void startUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
-      TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, "", bucketItem.getType());
-      TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid());
+      analyticsInteractor.analyticsActionPipe().send(new ApptentiveStartUploadBucketPhotoAction());
+      analyticsInteractor.analyticsActionPipe().send(new AdobeStartUploadBucketPhotoAction(bucketItem.getUid()));
       bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, photoStateHolder.entity()
             .getImagePath()));
    }

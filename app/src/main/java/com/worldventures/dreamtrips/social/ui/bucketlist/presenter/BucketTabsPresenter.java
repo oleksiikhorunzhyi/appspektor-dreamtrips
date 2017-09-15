@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.AdobeBucketListViewedAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
@@ -103,6 +104,10 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
       return Observable.merge(recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(LOCATION)), recentPipe
             .createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(ACTIVITY)), recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand
             .get(DINING)));
+   }
+
+   public void onTrackListOpened() {
+      analyticsInteractor.analyticsActionPipe().send(new AdobeBucketListViewedAction());
    }
 
    protected User getUser() {

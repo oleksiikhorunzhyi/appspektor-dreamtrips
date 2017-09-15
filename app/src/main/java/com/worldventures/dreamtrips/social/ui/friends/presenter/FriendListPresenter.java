@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
+import com.worldventures.dreamtrips.social.ui.friends.service.analytics.FilterFriendsFeedAction;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
@@ -52,6 +54,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
       selectedCircle = circle;
       this.position = position;
       reload();
+      analyticsInteractor.analyticsActionPipe().send(new FilterFriendsFeedAction(circle.getName()));
    }
 
    @Override
@@ -81,6 +84,11 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
             .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
                   .onSuccess(getFriendsCommand -> onSuccessAction.call(getFriendsCommand.getResult()))
                   .onFail(this::onError));
+   }
+
+   public void onAddFriendsPressed() {
+      analyticsInteractor.analyticsActionPipe().send(FriendsAnalyticsAction.addFriends());
+      analyticsInteractor.analyticsActionPipe().send(FriendsAnalyticsAction.searchFriends());
    }
 
    public interface View extends BaseUserListPresenter.View {

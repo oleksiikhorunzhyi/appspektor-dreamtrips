@@ -38,7 +38,10 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketListPresenter;
@@ -47,10 +50,6 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.view.adapter.BucketItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.BucketItemCell;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.BucketItemStaticCell;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
-import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
@@ -275,11 +274,10 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.action_filter:
-            getPresenter().trackAnalyticsActionBucket(TrackingHelper.ATTRIBUTE_FILTER);
+            getPresenter().onFilterShown();
             actionFilter();
             break;
          case R.id.action_popular:
-            getPresenter().trackAnalyticsActionBucket(TrackingHelper.ATTRIBUTE_ADD_FROM_POPULAR);
             getPresenter().popularClicked();
             break;
       }

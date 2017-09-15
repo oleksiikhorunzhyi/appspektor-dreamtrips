@@ -22,7 +22,11 @@ public class LoadMoreCell extends AbstractDelegateCell<LoadMore, CellDelegate<Lo
 
    @Override
    protected void syncUIStateWithModel() {
-      itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
+      itemView.setOnClickListener(view -> {
+         if (!getModelObject().isLoading()) {
+            cellDelegate.onCellClicked(getModelObject());
+         }
+      });
 
       caption.setText(getModelObject().isLoading() ? R.string.loading : R.string.comment_view_more);
       caption.setVisibility(getModelObject().isVisible() ? View.VISIBLE : View.GONE);

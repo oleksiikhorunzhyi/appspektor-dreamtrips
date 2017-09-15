@@ -17,22 +17,16 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -50,8 +44,6 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    @InjectView(R.id.progressBar) ProgressBar progressBar;
    @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView attachmentImagesHorizontalView;
    @InjectView(R.id.feedback_add_photos) View addPhotosButton;
-   @InjectView(R.id.add_photos_image_view) ImageView addPhotosImageView;
-   @Inject PhotoPickerDelegate photoPickerDelegate;
 
    private MenuItem doneButtonMenuItem;
    private Observable<CharSequence> messageObservable;
@@ -75,12 +67,6 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       progressBar.setVisibility(View.GONE);
       messageObservable = RxTextView.textChanges(message);
       initAttachments();
-   }
-
-   @Override
-   public void onDestroyView() {
-      super.onDestroyView();
-      photoPickerDelegate.setPhotoPickerListener(null);
    }
 
    private void setupSpinner(List<FeedbackType> apiFeedbackTypes, boolean isSpinnerEnabled) {
@@ -198,28 +184,6 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    private void initAttachments() {
       attachmentImagesHorizontalView.setPhotoCellDelegate(getPresenter()::onFeedbackAttachmentClicked);
       attachmentImagesHorizontalView.init(this);
-
-      photoPickerDelegate.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
-
-         @Override
-         public void onClosed() {
-            message.setOnFocusChangeListener(null);
-            photoPickerVisibilityObservable.onNext(false);
-         }
-
-         @Override
-         public void onOpened() {
-            clearMessageFocus();
-            message.setOnFocusChangeListener((v, hasFocus) -> {
-               if (hasFocus) {
-                  photoPickerVisibilityObservable.take(1).subscribe(photopickerVisible -> {
-                     if (photopickerVisible) router.back();
-                  });
-               }
-            });
-            photoPickerVisibilityObservable.onNext(true);
-         }
-      });
    }
 
    @OnClick(R.id.feedback_add_photos)
@@ -227,13 +191,11 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       getPresenter().onShowMediaPicker();
    }
 
-   public void showMediaPicker(int requestId, int maxImages) {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
-            .backStackEnabled(false)
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .data(new PickerBundle.Builder().setRequestId(requestId).setPhotoPickLimit(maxImages).build())
-            .build());
+   @Override
+   public void showMediaPicker(int maxImages) {
+      MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(pickerAttachment -> getPresenter().imagesPicked(pickerAttachment));
+      mediaPickerDialog.show(maxImages);
    }
 
    @Override

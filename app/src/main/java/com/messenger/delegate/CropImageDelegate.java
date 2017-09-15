@@ -40,11 +40,6 @@ public class CropImageDelegate {
       context = activity.getApplicationContext();
    }
 
-   @Deprecated
-   public void cropImage(String filePath) {
-      cropImage(Uri.parse(filePath));
-   }
-
    public void cropImage(Uri uri) {
       if (activity == null) {
          throw new IllegalStateException("You must call init() first");

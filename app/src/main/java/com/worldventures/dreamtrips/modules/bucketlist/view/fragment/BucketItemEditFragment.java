@@ -34,7 +34,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.Bucket
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 
 import java.util.Calendar;
 import java.util.List;
@@ -43,8 +43,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import icepick.State;
-
-import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter.BUCKET_MEDIA_REQUEST_ID;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
@@ -111,7 +109,6 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    private void onSaveItem() {
-      hideMediaPicker();
       getPresenter().saveItem();
    }
 
@@ -284,22 +281,10 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void hideMediaPicker() {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .build());
-   }
-
-   @Override
    public void showMediaPicker() {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
-            .backStackEnabled(false)
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.picker_container)
-            .data(new PickerBundle.Builder()
-                  .setRequestId(BUCKET_MEDIA_REQUEST_ID).setPhotoPickLimit(PHOTO_PICK_LIMIT).build())
-            .build());
+      MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(pickerAttachment -> getPresenter().imageSelected(pickerAttachment));
+      mediaPickerDialog.show(PHOTO_PICK_LIMIT);
    }
 
    @Override

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -18,17 +17,15 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteIte
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.inject.Inject;
 
 import io.techery.janet.CancelException;
 import io.techery.janet.Command;
@@ -38,14 +35,8 @@ import rx.schedulers.Schedulers;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View, EntityStateHolder<BucketPhoto>> {
 
-   public static final int BUCKET_MEDIA_REQUEST_ID = BucketItemEditPresenter.class.getSimpleName().hashCode();
-
-   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
-
    private Date selectedDate;
-
    private boolean savingItem = false;
-
    private Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
 
    public BucketItemEditPresenter(BucketBundle bundle) {
@@ -157,8 +148,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    private void startUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
       TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, "", bucketItem.getType());
       TrackingHelper.actionBucketItemPhoto(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid());
-
-      imageSelected(Uri.parse(photoStateHolder.entity().getImagePath()));
+      bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, photoStateHolder.entity()
+            .getImagePath()));
    }
 
    private void cancelUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
@@ -168,8 +159,11 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       }
    }
 
-   private void imageSelected(Uri uri) {
-      bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, uri.toString()));
+   public void imageSelected(MediaPickerAttachment mediaPickerAttachment) {
+      Queryable.from(mediaPickerAttachment.getChosenImages())
+            .map(pickerModel -> WalletFilesUtils.convertPickedPhotoToUri(pickerModel).toString())
+            .forEachR(path -> bucketInteractor.addBucketItemPhotoPipe()
+                  .send(new AddBucketItemPhotoCommand(bucketItem, path)));
    }
 
    private void bindObservables(View view) {
@@ -186,14 +180,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                if (throwable instanceof CancelException) {
                   return;
                }
-
                view.changeItemState(command.photoEntityStateHolder());
             }));
-
-      mediaPickerEventDelegate.getObservable()
-            .compose(bindView())
-            .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID)
-            .subscribe(mediaAttachment -> imageSelected(mediaAttachment.chosenImage.getUri()));
    }
 
    //////////////////////
@@ -239,8 +227,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       String getTitle();
 
       String getDescription();
-
-      void hideMediaPicker();
 
       void showMediaPicker();
 

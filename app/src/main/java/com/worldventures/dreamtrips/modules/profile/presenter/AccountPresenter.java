@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.content.Intent;
 
+import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -17,10 +18,9 @@ import com.worldventures.dreamtrips.modules.background_uploading.service.command
 import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
@@ -52,19 +52,14 @@ import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
-public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
-      implements UploadingListenerPresenter {
+public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> implements UploadingListenerPresenter {
 
-   private static final int AVATAR_MEDIA_REQUEST_ID = 155322;
-   private static final int COVER_MEDIA_REQUEST_ID = 155323;
    private static final int DEFAULT_RATIO_X = 3;
    private static final int DEFAULT_RATIO_Y = 1;
 
    @Inject LogoutInteractor logoutInteractor;
-   @Inject DownloadFileInteractor downloadFileInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject PingAssetStatusInteractor assetStatusInteractor;
-   @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
    @Inject ProfileInteractor profileInteractor;
@@ -73,9 +68,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject AccountTimelineStorageDelegate accountTimelineStorageDelegate;
    @Inject CachedModelHelper cachedModelHelper;
+   @Inject DownloadFileInteractor downloadFileInteractor;
 
    @State boolean shouldReload;
-   @State int mediaRequestId;
+   @State PickerMode pickerMode;
 
    List<PostCompoundOperationModel> postUploads;
 
@@ -94,7 +90,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
       subscribeLoadNextFeeds();
       subscribeRefreshFeeds();
       connectToCroppedImageStream();
-      subscribeToMediaPicker();
       subscribeToBackgroundUploadingOperations();
    }
 
@@ -148,15 +143,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
                      view.notifyDataSetChanged();
                   })
             );
-   }
-
-   void subscribeToMediaPicker() {
-      mediaPickerEventDelegate.getObservable()
-            .compose(bindViewToMainComposer())
-            .subscribe(mediaAttachment -> {
-               view.hideMediaPicker();
-               imageSelected(mediaAttachment);
-            }, error -> Timber.e(error, ""));
    }
 
    void subscribeRefreshFeeds() {
@@ -310,36 +296,49 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
    ////////////////////////////////////////
 
    public void onAvatarClicked() {
-      this.mediaRequestId = AVATAR_MEDIA_REQUEST_ID;
-      view.showMediaPicker(mediaRequestId);
+      pickerMode = PickerMode.AVATAR;
+      view.showMediaPicker();
    }
 
    public void onCoverClicked() {
-      this.mediaRequestId = COVER_MEDIA_REQUEST_ID;
-      view.showMediaPicker(mediaRequestId);
+      pickerMode = PickerMode.COVER;
+      view.showMediaPicker();
    }
 
-   private void imageSelected(MediaAttachment mediaAttachment) {
-      PhotoPickerModel image = mediaAttachment.chosenImage;
-      switch (mediaAttachment.requestId) {
-         case AVATAR_MEDIA_REQUEST_ID:
-            onAvatarChosen(image);
-            break;
-         case COVER_MEDIA_REQUEST_ID:
-            onCoverChosen(image);
-            break;
-      }
-   }
-
-   private void onAvatarChosen(PhotoPickerModel image) {
+   public void imageSelected(MediaPickerAttachment mediaAttachment) {
+      PhotoPickerModel image = mediaAttachment.getChosenImages().get(0);
       if (image != null) {
-         String filePath = image.getAbsolutePath();
-         if (ValidationUtils.isUrl(filePath)) {
-            cacheFacebookImage(filePath, this::uploadAvatar);
-         } else {
-            uploadAvatar(filePath);
+         switch (pickerMode) {
+            case AVATAR:
+               onAvatarChosen(image);
+               break;
+            case COVER:
+               onCoverChosen(image);
+               break;
          }
       }
+   }
+
+   private void onAvatarChosen(@NotNull PhotoPickerModel image) {
+      String imageAbsolutePath = image.getAbsolutePath();
+      if (ValidationUtils.isUrl(imageAbsolutePath)) {
+         cacheFacebookImage(imageAbsolutePath, this::uploadAvatar);
+      } else {
+         uploadAvatar(imageAbsolutePath);
+      }
+   }
+
+   private void onCoverChosen(@NotNull PhotoPickerModel image) {
+      String imageAbsolutePath = image.getAbsolutePath();
+      if (ValidationUtils.isUrl(imageAbsolutePath)) {
+         cacheFacebookImage(imageAbsolutePath, realPath -> view.cropImage(socialCropImageManager, realPath));
+      } else {
+         view.cropImage(socialCropImageManager, imageAbsolutePath);
+      }
+   }
+
+   public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+      return socialCropImageManager.onActivityResult(requestCode, resultCode, data);
    }
 
    private void cacheFacebookImage(String url, Action<String> action) {
@@ -350,25 +349,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
                   .onSuccess(downloadFileCommand -> action.action(filePath))
                   .onFail(this::handleError));
-   }
-
-   private void onCoverChosen(PhotoPickerModel image) {
-      if (image != null) {
-         String filePath = image.getAbsolutePath();
-         if (ValidationUtils.isUrl(filePath)) {
-            cacheFacebookImage(filePath, this::cropImage);
-         } else {
-            cropImage(filePath);
-         }
-      }
-   }
-
-   private void cropImage(String filePath) {
-      view.cropImage(socialCropImageManager, filePath);
-   }
-
-   public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-      return socialCropImageManager.onActivityResult(requestCode, resultCode, data);
    }
 
    @Override
@@ -408,12 +388,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View>
 
       void updateBadgeCount(int count);
 
-      void showMediaPicker(int requestId);
-
-      void hideMediaPicker();
+      void showMediaPicker();
 
       void cropImage(SocialCropImageManager socialCropImageManager, String path);
 
       void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user);
+   }
+
+   public enum PickerMode {
+      AVATAR, COVER
    }
 }

@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundO
 import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +15,6 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 @CommandAction
 public class PerformUpdateVideoStatusCommand extends Command<Void> implements InjectableAction {
@@ -23,6 +23,7 @@ public class PerformUpdateVideoStatusCommand extends Command<Void> implements In
 
    @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
+   @Inject ConnectionInfoProvider connectionInfoProvider;
 
    private CommandCallback callback;
    private int delay = DELAY_START_UPDATE_COMMAND;
@@ -54,8 +55,14 @@ public class PerformUpdateVideoStatusCommand extends Command<Void> implements In
 
    private void launchUpdateProcess() {
       Observable.timer(delay, TimeUnit.SECONDS)
-            .flatMap(v -> pingAssetStatusInteractor.updateVideoProcessStatusPipe()
-                  .createObservableResult(new UpdateVideoProcessStatusCommand()))
+            .flatMap(v -> {
+               if (!connectionInfoProvider.isConnected()) {
+                  return Observable.just(null);
+               } else {
+                  return pingAssetStatusInteractor.updateVideoProcessStatusPipe()
+                        .createObservableResult(new UpdateVideoProcessStatusCommand());
+               }
+            })
             .subscribe(v -> tryUpdateVideoStatus(), callback::onFail);
    }
 }

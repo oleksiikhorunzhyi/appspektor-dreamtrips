@@ -125,7 +125,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    public void setVideo(Video newVideo, boolean resizeVideoContainer) {
-      if (video != null && video.getUploadId().equals(newVideo.getUploadId())
+      if (playerView != null && video != null && video.getUploadId().equals(newVideo.getUploadId())
             && resizeVideoContainer == this.resizeVideoContainer) return;
 
       this.video = newVideo;
@@ -139,6 +139,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
          FullscreenMuteStrategy fullscreenMuteStrategy) {
       this.fullscreenContainer = fullscreenContainer;
       this.windowedContainer = windowedContainer;
+      windowedContainer.setVisibility(VISIBLE);
       if (fullscreenHandler == null) {
          fullscreenHandler = new VideoViewFullscreenHandler(activity, backStackDelegate, videoPlayerHolder, this);
          fullscreenHandler.initUi();
@@ -343,8 +344,16 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       ViewUtils.runTaskAfterMeasure(this, () -> setVideoThumbnailInternal(getWidth()));
    }
 
-   private void setVideoThumbnailInternal(int width) {
-      int height = (int) (width / video.getAspectRatio());
+   private void setVideoThumbnailInternal(int viewWidth) {
+      int width;
+      int height;
+      if (viewWidth > 0) {
+         width = viewWidth;
+         height = (int) (width / video.getAspectRatio());
+      } else {
+         height = getResources().getDimensionPixelSize(R.dimen.default_video_height);
+         width = (int) (height * video.getAspectRatio());
+      }
       ViewGroup.LayoutParams params = videoThumbnailContainer.getLayoutParams();
       params.height = height;
       videoThumbnailContainer.setLayoutParams(params);
@@ -401,7 +410,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       return windowedContainer;
    }
 
-   @OnClick(R.id.video_view_video_play_pause_button)
+   @OnClick(R.id.video_view_video_play_pause_button_container)
    void onPlayPauseButtonClick() {
       playVideo();
    }
@@ -422,7 +431,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       }
    }
 
-   @OnClick(R.id.video_view_quality_text_view)
+   @OnClick(R.id.video_view_quality_text_view_container)
    void onQualityButtonClick() {
       if (currentStreamUri.equals(video.getHdUrl())) {
          currentStreamUri = video.getSdUrl();
@@ -457,10 +466,11 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    public void hide() {
+      if (windowedContainer != null) windowedContainer.setVisibility(GONE);
       setVisibility(GONE);
    }
 
-   @OnClick(R.id.video_view_mute_button)
+   @OnClick(R.id.video_view_mute_button_container)
    void onMuteButtonClick() {
       setMute(!mute);
    }

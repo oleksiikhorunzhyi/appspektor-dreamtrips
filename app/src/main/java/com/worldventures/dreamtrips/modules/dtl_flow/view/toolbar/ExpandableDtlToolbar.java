@@ -30,6 +30,8 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
+import junit.framework.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,8 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    @DrawableRes int navigationIconResource;
    private boolean showNavigation;
    private boolean showFilterBar;
+
+   private TestInteface mInterface;
 
    public ExpandableDtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
@@ -344,5 +348,18 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    @Override
    public void onRestoreInstanceState(Parcelable state) {
       super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+   }
+
+   @OnClick(R.id.transaction_container)
+   public void onClick() {
+      mInterface.onClickTransactions();
+   }
+
+   public void setTestInterface(TestInteface interfaces){
+      mInterface = interfaces;
+   }
+
+   public interface TestInteface {
+      void onClickTransactions();
    }
 }

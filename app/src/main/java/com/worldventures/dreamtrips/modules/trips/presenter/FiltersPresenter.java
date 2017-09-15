@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import android.os.Bundle;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;

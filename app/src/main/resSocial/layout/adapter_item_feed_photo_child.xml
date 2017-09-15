@@ -42,7 +42,7 @@
          tools:text="Trip to the Golden Bridge Gate"
          />
 
-   <com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView
+   <com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView
          android:id="@+id/translate_view"
          android:layout_below="@+id/photo"
          android:layout_width="match_parent"

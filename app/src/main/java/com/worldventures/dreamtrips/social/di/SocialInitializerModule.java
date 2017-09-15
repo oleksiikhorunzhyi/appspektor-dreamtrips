@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.social.di;
 
 import com.techery.spares.application.AppInitializer;
-import com.worldventures.dreamtrips.core.initializer.CachedEntityCommandInitializer;
-import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.social.initializer.CachedEntityCommandInitializer;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,11 +14,4 @@ public class SocialInitializerModule {
    public AppInitializer provideCachedEntitiesInitializer(CachedEntityInteractor interactor) {
       return new CachedEntityCommandInitializer(interactor);
    }
-
-   @Provides(type = Provides.Type.SET)
-   public AppInitializer provideVersionCheckInitializer(AppConfigurationInteractor interactor) {
-      return new VersionCheckInitializer(interactor);
-   }
-
-
 }

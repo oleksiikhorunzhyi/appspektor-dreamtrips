@@ -4,8 +4,8 @@ import com.worldventures.dreamtrips.core.janet.DreamTripsCommandServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.api_lib.ErrorAnalyticAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
-import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.player.service.PodcastDownloadedAnalyticsAction;
+import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
+import com.worldventures.dreamtrips.social.ui.podcast_player.service.PodcastDownloadedAnalyticsAction;
 
 import io.techery.janet.Command;
 

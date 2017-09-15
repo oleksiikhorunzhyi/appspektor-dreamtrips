@@ -152,7 +152,7 @@
                android:visibility="gone"
                >
 
-            <com.worldventures.dreamtrips.modules.bucketlist.view.custom.LineBreakViewGroup
+            <com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.LineBreakViewGroup
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:orientation="horizontal"
@@ -178,7 +178,7 @@
                      android:gravity="center"
                      tools:text="NULL"
                      />
-            </com.worldventures.dreamtrips.modules.bucketlist.view.custom.LineBreakViewGroup>
+            </com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.LineBreakViewGroup>
 
             <TextView
                   android:id="@+id/diningAddress"
@@ -200,7 +200,7 @@
                   android:background="@color/grey_lighter"
                   />
 
-            <com.worldventures.dreamtrips.modules.bucketlist.view.custom.LineBreakViewGroup
+            <com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.LineBreakViewGroup
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:orientation="horizontal"
@@ -227,7 +227,7 @@
                      android:padding="4dp"
                      tools:text="+33 1 45 48 55"
                      />
-            </com.worldventures.dreamtrips.modules.bucketlist.view.custom.LineBreakViewGroup>
+            </com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.LineBreakViewGroup>
          </LinearLayout>
 
          <LinearLayout

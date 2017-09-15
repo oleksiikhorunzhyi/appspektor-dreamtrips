@@ -95,7 +95,7 @@
                   android:background="@color/theme_main_darker"
                   />
 
-            <com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView
+            <com.worldventures.dreamtrips.social.ui.infopages.view.custom.AttachmentImagesHorizontalView
                   android:id="@+id/feedback_attachments"
                   android:layout_width="match_parent"
                   android:layout_height="90dp"

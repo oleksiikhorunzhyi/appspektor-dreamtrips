@@ -29,7 +29,7 @@
          android:layout_below="@+id/appbar"
          >
 
-      <com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager
+      <com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

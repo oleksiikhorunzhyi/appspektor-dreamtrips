@@ -15,7 +15,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;

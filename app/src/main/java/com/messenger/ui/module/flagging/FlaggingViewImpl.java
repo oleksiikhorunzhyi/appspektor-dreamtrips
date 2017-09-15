@@ -18,7 +18,7 @@ import com.messenger.ui.module.ModuleStatefulViewImpl;
 import com.techery.spares.module.Injector;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 
 import java.util.List;
 

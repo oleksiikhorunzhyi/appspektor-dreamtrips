@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
-import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerDelegate;
+import com.worldventures.dreamtrips.social.ui.podcast_player.delegate.PodcastPlayerDelegate;
 
 import javax.inject.Inject;
 

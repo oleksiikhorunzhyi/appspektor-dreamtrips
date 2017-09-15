@@ -5,10 +5,10 @@ import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSimple
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.BucketListDiskStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.BucketMemoryStorage
 import io.techery.janet.ActionState
 import io.techery.janet.http.annotations.HttpAction
 import io.techery.janet.http.test.MockHttpActionService

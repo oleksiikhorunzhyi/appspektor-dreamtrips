@@ -5,8 +5,8 @@ import android.net.Uri;
 
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import javax.inject.Inject;
 

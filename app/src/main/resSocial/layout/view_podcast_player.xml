@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.social.ui.podcast_player.view.PodcastPlayerScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/black_semi_transparent_darker"
@@ -27,7 +27,7 @@
             android:layout_gravity="center"
             />
 
-      <com.worldventures.dreamtrips.modules.player.view.custom.DtMediaController
+      <com.worldventures.dreamtrips.social.ui.podcast_player.view.custom.DtMediaController
             android:id="@+id/media_control"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,4 +37,4 @@
    </FrameLayout>
 
 
-</com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl>
+</com.worldventures.dreamtrips.social.ui.podcast_player.view.PodcastPlayerScreenImpl>

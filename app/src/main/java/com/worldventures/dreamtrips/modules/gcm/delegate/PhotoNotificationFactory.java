@@ -15,10 +15,10 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
-import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,7 +16,7 @@
          tools:layout_height="200dp"
          />
 
-   <com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView
+   <com.worldventures.dreamtrips.social.ui.feed.view.custom.FeedActionPanelView
          android:id="@+id/actionView"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"

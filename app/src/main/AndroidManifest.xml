@@ -96,7 +96,7 @@
       </activity>
 
       <activity
-            android:name=".modules.player.PodcastPlayerActivity"
+            android:name=".social.ui.podcast_player.PodcastPlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:label="@string/app_name"
             >
@@ -212,7 +212,7 @@
 
       <!--For result activities-->
 
-      <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver" />
+      <receiver android:name=".social.ui.friends.notification.FriendRejectActionReceiver" />
 
       <activity android:name=".modules.picklocation.view.PickLocationActivity" />
 
@@ -263,7 +263,7 @@
             android:enabled="true"
             />
       <service
-            android:name=".modules.player.playback.PodcastService"
+            android:name=".social.ui.podcast_player.playback.PodcastService"
             android:exported="false"
             />
 

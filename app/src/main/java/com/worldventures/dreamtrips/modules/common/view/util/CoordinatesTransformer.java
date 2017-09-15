@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 
 import android.graphics.RectF;
 
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.Position;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.TagPosition;
 
 public class CoordinatesTransformer {
 

@@ -84,7 +84,7 @@
             tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaL  oremf ipsulm bla blabla Lorem ipsulm bla blabla Lorem ipsulm bla blabla"
             />
 
-      <com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView
+      <com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView
             android:id="@+id/comment_translate_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

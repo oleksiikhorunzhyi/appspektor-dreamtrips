@@ -11,7 +11,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.longtailvideo.jwplayer.JWPlayerView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.modules.video.view.custom.VideoView;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

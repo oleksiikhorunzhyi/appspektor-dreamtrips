@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             />
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
+      <com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder
             android:id="@+id/photo_post_taggable_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

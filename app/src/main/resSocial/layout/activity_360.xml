@@ -51,7 +51,7 @@
    </RelativeLayout>
 
    <!--Bottom bar with media controls-->
-   <com.worldventures.dreamtrips.modules.common.view.custom.PFViewMediaControls
+   <com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.PFViewMediaControls
          android:id="@+id/media_controls"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"

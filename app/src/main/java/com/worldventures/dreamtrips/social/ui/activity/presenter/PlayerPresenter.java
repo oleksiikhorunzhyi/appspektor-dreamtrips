@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.activity.presenter;
 
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.modules.tripsimages.service.ProgressAnalyticInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.ProgressAnalyticInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 
 import javax.inject.Inject;
 

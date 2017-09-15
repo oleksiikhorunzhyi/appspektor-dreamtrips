@@ -59,7 +59,7 @@
                android:src="@drawable/ic_fs_share"
                />
 
-         <com.worldventures.dreamtrips.modules.common.view.custom.FlagView
+         <com.worldventures.dreamtrips.social.ui.flags.view.FlagView
                android:id="@+id/flag"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"

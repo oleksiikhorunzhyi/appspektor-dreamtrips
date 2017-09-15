@@ -7,7 +7,6 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.api.session.model.ImmutableDevice;
 import com.worldventures.dreamtrips.core.utils.FilePathProvider;
-import com.worldventures.dreamtrips.modules.background_uploading.util.FileSplitter;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
@@ -58,11 +57,6 @@ public class DeviceModule {
    @Singleton
    AppInfoProvider provideAppInfoProvider(Context context) {
       return new AppInfoProviderImpl(context);
-   }
-
-   @Provides
-   FileSplitter provideDevice(Context context) {
-      return new FileSplitter(context.getExternalCacheDir());
    }
 
    @Singleton

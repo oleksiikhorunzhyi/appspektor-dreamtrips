@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:custom="http://schemas.android.com/apk/res-auto">
 
-   <com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView
+   <com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView
          android:id="@+id/translate_view"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"

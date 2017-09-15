@@ -15,7 +15,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
-import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.GridAutofitLayoutManager;
 import com.worldventures.dreamtrips.modules.picker.model.BaseMediaPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.presenter.base.BaseMediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.picker.util.MediaPickerStep;

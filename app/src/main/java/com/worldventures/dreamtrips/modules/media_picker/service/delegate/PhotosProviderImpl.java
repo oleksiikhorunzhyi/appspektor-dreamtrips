@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Date;

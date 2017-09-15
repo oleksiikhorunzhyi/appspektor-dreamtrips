@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
-import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,13 +16,14 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.bucketlist.model.converter.*
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider
 import com.worldventures.dreamtrips.modules.common.model.User
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider
 import com.worldventures.dreamtrips.modules.mapping.converter.*
 import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager
+import com.worldventures.dreamtrips.social.domain.mapping.*
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService

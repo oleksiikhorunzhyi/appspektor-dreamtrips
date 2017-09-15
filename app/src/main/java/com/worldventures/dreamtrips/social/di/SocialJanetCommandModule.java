@@ -1,110 +1,14 @@
 package com.worldventures.dreamtrips.social.di;
 
-import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
-import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
-import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
-import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.UploadVideoFileCommand;
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.ChangeBucketListOrderCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetCategoriesCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.GetPopularBucketItemsCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.TranslateBucketItemCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
-import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
-import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
-import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
-import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
-import com.worldventures.dreamtrips.modules.common.command.MediaCaptureCanceledCommand;
-import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
-import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.facebook.service.command.GetAlbumsCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.CreateCommentCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.CreateVideoCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.DeleteCommentCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.EditCommentCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetFeedEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.LikeEntityCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.ProcessAttachmentsAndPost;
-import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.modules.flags.command.FlagItemCommand;
-import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.AcceptAllFriendRequestsCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.AddFriendCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.DeleteFriendRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.GetFriendsCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.GetLikersCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.GetMutualFriendsCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.GetRequestsCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.GetSearchUsersCommand;
-import com.worldventures.dreamtrips.modules.friends.service.command.RemoveFriendCommand;
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand;
-import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand;
-import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
-import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
-import com.worldventures.dreamtrips.modules.membership.service.command.GetFilledInviteTemplateCommand;
-import com.worldventures.dreamtrips.modules.membership.service.command.GetInviteTemplatesCommand;
-import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneContactsCommand;
-import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
-import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
-import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
 import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
-import com.worldventures.dreamtrips.modules.player.service.SendPodcastAnalyticsIfNeedAction;
-import com.worldventures.dreamtrips.modules.profile.service.command.AddFriendToCircleCommand;
-import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
-import com.worldventures.dreamtrips.modules.profile.service.command.GetPublicProfileCommand;
-import com.worldventures.dreamtrips.modules.profile.service.command.RemoveFriendFromCircleCommand;
-import com.worldventures.dreamtrips.modules.profile.service.command.UploadAvatarCommand;
-import com.worldventures.dreamtrips.modules.profile.service.command.UploadBackgroundCommand;
-import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessStoriesCommand;
-import com.worldventures.dreamtrips.modules.reptools.service.command.LikeSuccessStoryCommand;
-import com.worldventures.dreamtrips.modules.reptools.service.command.UnlikeSuccessStoryCommand;
-import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -112,43 +16,113 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.CheckVideoProcessingStatusCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMemberMediaCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUsersMediaCommand;
-import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
-import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
-import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CreatePostCompoundOperationCommand;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.UploadVideoFileCommand;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.ChangeBucketListOrderCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.FindBucketItemByPhotoCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetPopularBucketItemsCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.TranslateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreateCommentCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePhotosCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePostCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreateVideoCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.DeleteCommentCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.DeletePostCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.EditCommentCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.EditPostCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.FeedByHashtagCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountFeedCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountTimelineCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetCommentsCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetNotificationsCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.LikeEntityCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationAsReadCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationsAsReadCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.PostCreatedCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.ProcessAttachmentsAndPost;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.SuggestedPhotoCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateTextCachedCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.social.ui.flags.command.FlagItemCommand;
+import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.AcceptAllFriendRequestsCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.DeleteFriendRequestCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetMutualFriendsCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetRequestsCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetSearchUsersCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.RemoveFriendCommand;
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand;
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetFeedbackCommand;
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.SendFeedbackCommand;
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.dreamtrips.social.ui.membership.service.command.CreateFilledInviteTemplateCommand;
+import com.worldventures.dreamtrips.social.ui.membership.service.command.GetFilledInviteTemplateCommand;
+import com.worldventures.dreamtrips.social.ui.membership.service.command.GetInviteTemplatesCommand;
+import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPhoneContactsCommand;
+import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPodcastsCommand;
+import com.worldventures.dreamtrips.social.ui.membership.service.command.GetSentInvitesCommand;
+import com.worldventures.dreamtrips.social.ui.membership.service.command.SendInvitesCommand;
+import com.worldventures.dreamtrips.social.ui.podcast_player.service.SendPodcastAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPrivateProfileCommand;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand;
+import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand;
+import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.social.ui.settings.command.SettingsCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.AddPhotoTagsCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CreatePhotoCreationItemCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.EditPhotoCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.EditPhotoWithTagsCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetInspireMePhotosCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetMemberMediaCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetUsersMediaCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSBHPhotosCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TranslatePhotoCommand;
+import com.worldventures.dreamtrips.social.ui.video.service.command.GetMemberVideosCommand;
+import com.worldventures.dreamtrips.social.ui.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.dreamtrips.social.ui.video.service.command.MigrateFromCachedEntity;
 
 import dagger.Module;
 
 @Module(injects = {
-      CopyFileCommand.class,
-      UploaderyImageCommand.class,
-      SimpleUploaderyCommand.class,
       BucketListCommand.class,
       DeleteItemPhotoCommand.class,
       FindBucketItemByPhotoCommand.class,
       AddBucketItemPhotoCommand.class,
       MergeBucketItemPhotosWithStorageCommand.class,
-      TripsFilterDataCommand.class,
       GetCirclesCommand.class,
       GetCommentsCommand.class,
-      LoginCommand.class,
-      InitializeCommand.class,
-      UpdateUserCommand.class,
       GetPodcastsCommand.class,
       SuggestedPhotoCommand.class,
       GetAccountFeedCommand.Refresh.class,
@@ -162,11 +136,9 @@ import dagger.Module;
       TranslateUidItemCommand.TranslateCommentCommand.class,
       TranslateUidItemCommand.TranslateFeedEntityCommand.class,
       TranslateTextCachedCommand.class,
-      AcceptTermsCommand.class,
       GetSuccessStoriesCommand.class,
       LikeSuccessStoryCommand.class,
       UnlikeSuccessStoryCommand.class,
-      UnsubribeFromPushCommand.class,
       GetTripDetailsCommand.class,
       GetActivitiesCommand.class,
       GetRegionsCommand.class,
@@ -174,9 +146,6 @@ import dagger.Module;
       GetTripsLocationsCommand.class,
       GetTripsByUidCommand.class,
       HashtagSuggestionCommand.class,
-      SubscribeToPushNotificationsCommand.class,
-      ClearStoragesCommand.class,
-      SubscribeToPushNotificationsCommand.class,
       SettingsCommand.class,
       CreatePostCommand.class,
       PostCreatedCommand.class,
@@ -197,10 +166,6 @@ import dagger.Module;
       GetNotificationsCommand.class,
       MarkNotificationsAsReadCommand.class,
       MarkNotificationAsReadCommand.class,
-      DeleteCachedModelCommand.class,
-      DownloadCachedModelCommand.class,
-      ResetCachedModelsInProgressCommand.class,
-      LogoutCommand.class,
       GetPrivateProfileCommand.class,
       UploadAvatarCommand.class,
       UploadBackgroundCommand.class,
@@ -246,21 +211,17 @@ import dagger.Module;
       DeleteBucketItemCommand.class,
       ChangeFeedEntityLikedStatusCommand.class,
       CreatePostCompoundOperationCommand.class,
-      CleanTempDirectoryCommand.class,
       CheckTripsByUidCommand.class,
       GetDocumentsCommand.class,
       TranslatePhotoCommand.class,
       TranslateBucketItemCommand.class,
       SendAnalyticsIfNeedAction.class,
       GetAlbumsCommand.class,
-      UpdateStatusCachedEntityCommand.class,
       SendVideoAnalyticsIfNeedAction.class,
       SendPodcastAnalyticsIfNeedAction.class,
       GetAlbumsCommand.class,
       GetPhotosFromGalleryCommand.class,
       GetVideosFromGalleryCommand.class,
-      MediaCaptureCanceledCommand.class,
-      GetVideoDurationCommand.class,
       GetMediaFromGalleryCommand.class,
       RecognizeFacesCommand.class,
       UploadVideoFileCommand.class,

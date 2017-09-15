@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.media_picker.view.fragment.BasePicke
 import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell;
-import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.GridAutofitLayoutManager;
 
 public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPresenter, Bundle> implements FacebookPhotoPresenter.View {
 

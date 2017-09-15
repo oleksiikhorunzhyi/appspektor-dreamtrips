@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.core.session.acl.Feature
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor
 import com.worldventures.dreamtrips.modules.common.model.Session
 import com.worldventures.dreamtrips.modules.common.model.User
 import io.techery.janet.ActionState

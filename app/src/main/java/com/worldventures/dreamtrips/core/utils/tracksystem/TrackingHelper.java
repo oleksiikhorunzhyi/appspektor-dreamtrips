@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
-import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImagesType;
 
 import java.util.Collection;
 import java.util.HashMap;

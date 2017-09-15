@@ -11,12 +11,12 @@ import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManag
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider;
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProviderImpl;
 import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager;
-import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PostLocationPickerCallback;
-import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.delegate.EditPhotoTagsCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.TripImagesCommandFactory;
-import com.worldventures.dreamtrips.modules.tripsimages.service.delegate.MediaRefresher;
+import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.social.ui.podcast_player.delegate.PodcastPlayerDelegate;
+import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.MediaRefresher;
 
 import javax.inject.Singleton;
 

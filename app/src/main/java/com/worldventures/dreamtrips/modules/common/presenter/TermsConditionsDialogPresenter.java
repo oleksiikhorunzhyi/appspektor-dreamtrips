@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
+import com.worldventures.dreamtrips.modules.common.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.LegalInteractor;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
 
 import javax.inject.Inject;
 

@@ -6,7 +6,6 @@ import com.messenger.di.MessengerInitializerModule;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.AnalyticsInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
-import com.worldventures.dreamtrips.core.initializer.CachedEntityCommandInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FacebookInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
@@ -17,7 +16,6 @@ import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
@@ -116,4 +114,10 @@ public class InitializerModule {
    public Initializable provideDtlFilterDataInteractor(FilterDataInteractor filterDataInteractor) {
       return filterDataInteractor;
    }
+
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideVersionCheckInitializer(AppConfigurationInteractor interactor) {
+      return new VersionCheckInitializer(interactor);
+   }
+
 }

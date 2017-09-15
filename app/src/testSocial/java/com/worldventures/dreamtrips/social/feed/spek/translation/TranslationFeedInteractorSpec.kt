@@ -8,11 +8,11 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableTranslatedText
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment
-import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor
-import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand
-import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage
+import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
+import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment
+import com.worldventures.dreamtrips.social.ui.feed.service.TranslationFeedInteractor
+import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand
+import com.worldventures.dreamtrips.social.ui.feed.service.storage.TranslationDiscStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

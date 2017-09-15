@@ -5,11 +5,9 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.media_picker.model.ImmutableVideoMetadata;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
-
+import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 
 import javax.inject.Inject;
 
@@ -41,7 +39,8 @@ public class GetVideoMetadataCommand extends Command<VideoMetadata> implements I
       }
    }
 
-   private void createFromPost(CommandCallback<VideoMetadata> commandCallback) {ImmutableVideoMetadata.Builder builder = ImmutableVideoMetadata.builder();
+   private void createFromPost(CommandCallback<VideoMetadata> commandCallback) {
+      ImmutableVideoMetadata.Builder builder = ImmutableVideoMetadata.builder();
       builder.aspectRatio(video.getAspectRatio());
       builder.duration(video.getDuration());
       builder.width(0);

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoord
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
+import com.worldventures.dreamtrips.social.ui.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*

@@ -130,7 +130,7 @@
                />
 
 
-         <com.worldventures.dreamtrips.modules.membership.view.custom.TouchyWebView
+         <com.worldventures.dreamtrips.social.ui.membership.view.custom.TouchyWebView
                android:id="@+id/wv_preview"
                android:layout_width="match_parent"
                android:layout_height="250dp"
@@ -151,7 +151,7 @@
                   android:orientation="horizontal"
                   >
 
-               <com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketHorizontalPhotosView
+               <com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.BucketHorizontalPhotosView
                      android:id="@+id/bucket_photos"
                      android:overScrollMode="never"
                      android:layout_width="64dp"

@@ -9,9 +9,9 @@ import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle
-import com.worldventures.dreamtrips.modules.infopages.ImmutableStaticPageProviderConfig
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProviderConfig
+import com.worldventures.dreamtrips.social.ui.infopages.ImmutableStaticPageProviderConfig
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProviderConfig
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import java.net.URLEncoder

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.activity.Player360Activity;
 import com.worldventures.dreamtrips.social.ui.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
+import com.worldventures.dreamtrips.social.ui.podcast_player.PodcastPlayerActivity;
 
 import java.io.File;
 

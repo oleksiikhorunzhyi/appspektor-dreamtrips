@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.wallet.di.external;
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
-import com.worldventures.dreamtrips.modules.video.cell.ProgressVideoCellHelper;
-import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
+import com.worldventures.dreamtrips.social.ui.video.cell.ProgressVideoCellHelper;
+import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.delegate.WalletVideoCallback;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.holder.WalletVideoHolderDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;

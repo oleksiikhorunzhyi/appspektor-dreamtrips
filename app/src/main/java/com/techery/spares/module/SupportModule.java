@@ -3,9 +3,9 @@ package com.techery.spares.module;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.modules.infopages.ImmutableStaticPageProviderConfig;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProviderConfig;
+import com.worldventures.dreamtrips.social.ui.infopages.ImmutableStaticPageProviderConfig;
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProviderConfig;
 
 import dagger.Module;
 import dagger.Provides;

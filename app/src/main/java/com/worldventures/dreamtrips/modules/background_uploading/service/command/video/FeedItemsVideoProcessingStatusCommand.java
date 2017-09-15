@@ -46,8 +46,7 @@ public class FeedItemsVideoProcessingStatusCommand extends Command<Void> impleme
             .flatMap(compoundOperationsCommand -> {
                return Observable.from(compoundOperationsCommand.getResult())
                      .filter(model -> model.state() == CompoundOperationState.PROCESSING)
-                     .filter(postCompoundOperationModel
-                           -> postCompoundOperationModel.body() instanceof PostWithVideoAttachmentBody)
+                     .filter(postCompoundOperationModel -> postCompoundOperationModel.body() instanceof PostWithVideoAttachmentBody)
                      .toList();
             });
       Observable.zip(videoFromFeedItemsIds, processingVideoModels,

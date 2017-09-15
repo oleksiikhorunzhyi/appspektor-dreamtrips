@@ -190,7 +190,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       feedStorageDelegate.observeStorageCommand()
             .compose(bindViewToMainComposer())
             .map(Command::getResult)
-            .subscribe(this::feedChanged, this::handleError);
+            .subscribe(feedItems1 -> feedChanged(feedItems1), this::handleError);
    }
 
    private void feedChanged(List<FeedItem> items) {

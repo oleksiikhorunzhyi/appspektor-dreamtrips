@@ -80,18 +80,37 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_marginLeft="4dp"
-               android:layout_marginRight="10dp"
+               android:layout_marginRight="6dp"
                android:layout_weight="0"
                android:text="11:01"
                android:textColor="@color/white"
                android:textSize="10sp"
                />
 
+         <FrameLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="4dp"
+               android:layout_marginBottom="4dp"
+               android:layout_marginLeft="4dp"
+               android:layout_marginRight="2dp"
+               >
+
+            <ImageView
+                  android:id="@+id/video_view_mute_button"
+                  android:layout_width="@dimen/video_player_mute_button_size"
+                  android:layout_height="@dimen/video_player_mute_button_size"
+                  android:scaleType="center"
+                  android:src="@drawable/ic_player_muted"
+                  />
+
+         </FrameLayout>
+
          <TextView
                android:id="@+id/video_view_quality_text_view"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_marginLeft="@dimen/spacing_tiny"
+               android:layout_marginLeft="2dp"
                android:layout_marginRight="@dimen/spacing_tiny"
                android:layout_weight="0"
                android:background="@drawable/background_video_view_quality_label"

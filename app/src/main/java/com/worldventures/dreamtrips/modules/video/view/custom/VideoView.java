@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoViewFullsc
 import com.worldventures.dreamtrips.modules.common.view.util.VideoDurationFormatter;
 import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.tripsimages.delegate.MediaActionPanelInfoInjector;
+import com.worldventures.dreamtrips.modules.video.utils.mute_strategy.FullscreenMuteStrategy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +67,7 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    @InjectView(R.id.video_view_duration_text_view) TextView timeLeftTextView;
    @InjectView(R.id.video_view_quality_text_view) TextView videoQualityButton;
    @InjectView(R.id.video_thumbnail) SimpleDraweeView videoThumbnail;
+   @InjectView(R.id.video_view_mute_button) ImageView muteButton;
    @InjectView(R.id.video_thumbnail_progress) View loadingProgressBar;
 
    @InjectView(R.id.iv_like) ImageView likeButton;
@@ -133,13 +135,18 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       assignVideoInfo();
    }
 
-   public void enableFullscreen(ViewGroup fullscreenContainer, ViewGroup windowedContainer) {
+   public void enableFullscreen(ViewGroup fullscreenContainer, ViewGroup windowedContainer,
+         FullscreenMuteStrategy fullscreenMuteStrategy) {
       this.fullscreenContainer = fullscreenContainer;
       this.windowedContainer = windowedContainer;
       if (fullscreenHandler == null) {
          fullscreenHandler = new VideoViewFullscreenHandler(activity, backStackDelegate, videoPlayerHolder, this);
-         fullscreenHandler.setSwapMute(mute);
          fullscreenHandler.initUi();
+         fullscreenHandler.getFullscreenStateObservable()
+               .subscribe(fullscreen -> {
+                  boolean newMuteValue = fullscreenMuteStrategy.shouldMute(fullscreenHandler.isFullscreen(), mute);
+                  setMute(newMuteValue);
+               });
       }
    }
 
@@ -157,9 +164,12 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    ///////////////////////////////////////////////////////////////////////////
    // Playing video
    ///////////////////////////////////////////////////////////////////////////
-
    public void play() {
       play(0);
+   }
+
+   private void refreshMuteButtonState() {
+      muteButton.setImageResource(mute ? R.drawable.ic_player_muted : R.drawable.ic_player_unmuted);
    }
 
    private void play(long startTimeMillis) {
@@ -350,6 +360,8 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    public void setMute(boolean mute) {
       this.mute = mute;
+      refreshMuteButtonState();
+      if (playerView != null) playerView.setMute(mute);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -366,12 +378,14 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    private void showOverlayContainer() {
-      overlayContainer.setVisibility(View.VISIBLE);
+      overlayContainer.setVisibility(VISIBLE);
+      muteButton.setVisibility(VISIBLE);
       overlayContainerVisible = true;
    }
 
    private void hideOverlayContainer() {
-      overlayContainer.setVisibility(View.GONE);
+      overlayContainer.setVisibility(GONE);
+      muteButton.setVisibility(GONE);
       overlayContainerVisible = false;
    }
 
@@ -444,6 +458,11 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    public void hide() {
       setVisibility(GONE);
+   }
+
+   @OnClick(R.id.video_view_mute_button)
+   void onMuteButtonClick() {
+      setMute(!mute);
    }
 
    ///////////////////////////////////////////////////////////////////////////

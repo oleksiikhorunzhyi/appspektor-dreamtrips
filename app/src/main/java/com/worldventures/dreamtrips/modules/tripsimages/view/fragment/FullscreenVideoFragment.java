@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 

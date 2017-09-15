@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.app.Activity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
@@ -15,11 +14,11 @@ import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRoute
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedCellListWidthProvider;
+import com.worldventures.dreamtrips.modules.feed.view.cell.util.VideoInfoInjector;
 import com.worldventures.dreamtrips.modules.video.view.custom.VideoView;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscription;
 
@@ -27,42 +26,39 @@ import rx.Subscription;
 public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem, BaseFeedCell.FeedCellDelegate<VideoFeedItem>>
    implements Focusable {
 
-   @InjectView(R.id.video_windowed_container) ViewGroup videoWindowedContainer;
    @InjectView(R.id.feed_share) ImageView share;
 
-   private ViewGroup videoFullscreenContainer;
    @InjectView(R.id.videoAttachment) VideoView videoView;
    @Inject Activity activity;
    @Inject ConfigurationInteractor configurationInteractor;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
    private FeedCellListWidthProvider feedCellListWidthProvider;
+   private VideoInfoInjector videoInfoInjector = new VideoInfoInjector();
 
    private Subscription configurationSubscription;
    private Route activeCellRoute;
-   private boolean mute = false;
+   private boolean displayingInList;
 
    public VideoFeedItemDetailsCell(View view) {
       super(view);
       feedCellListWidthProvider = new FeedCellListWidthProvider(view.getContext());
    }
 
-   public void setMute(boolean mute) {
-      this.mute = mute;
+   public void setDisplayingInList(boolean displayingInList) {
+      this.displayingInList = displayingInList;
    }
 
    @Override
    public void afterInject() {
       super.afterInject();
-      videoFullscreenContainer = ButterKnife.findById(activity, R.id.container_details_floating);
+      videoInfoInjector.init(activity, itemView);
       activeCellRoute = getCurrentRoute();
    }
 
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-      videoView.setVideo(getModelObject().getItem(), true);
-      videoView.setMute(mute);
-      videoView.enableFullscreen(videoFullscreenContainer, videoWindowedContainer);
+      videoInfoInjector.setVideo(videoView, getModelObject().getItem(), displayingInList);
       if (configurationSubscription == null || configurationSubscription.isUnsubscribed()) {
          configurationSubscription = configurationInteractor
                .configurationActionPipe()

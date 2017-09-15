@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -26,6 +25,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRoute
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.util.FeedCellListWidthProvider;
+import com.worldventures.dreamtrips.modules.feed.view.cell.util.VideoInfoInjector;
 import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
@@ -43,7 +43,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -59,18 +58,17 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @InjectView(R.id.translate) View translateButton;
    @Optional @InjectView(R.id.collage) CollageView collageView;
    @Optional @InjectView(R.id.tag) ImageView tag;
-   @Optional @InjectView(R.id.video_windowed_container) ViewGroup videoWindowedContainer;
-   private ViewGroup videoFullscreenContainer;
    @Optional @InjectView(R.id.videoAttachment) VideoView videoView;
 
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
    @Inject ConfigurationInteractor configurationInteractor;
    @Inject Activity activity;
    private FeedCellListWidthProvider feedCellListWidthProvider;
+   private VideoInfoInjector videoInfoInjector = new VideoInfoInjector();
 
    private Subscription configurationSubscription;
    private Route activeCellRoute;
-   private boolean mute = false;
+   private boolean displayingInList;
 
    public PostFeedItemCell(View view) {
       super(view);
@@ -97,8 +95,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       }
    }
 
-   public void setMute(boolean mute) {
-      this.mute = mute;
+   public void setDisplayingInList(boolean displayingInList) {
+      this.displayingInList = displayingInList;
    }
 
    private void refreshUi() {
@@ -257,9 +255,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void processVideo(Video video) {
-      videoView.setVideo(video, true);
-      videoView.setMute(mute);
-      videoView.enableFullscreen(videoFullscreenContainer, videoWindowedContainer);
+      videoInfoInjector.setVideo(videoView, video, displayingInList);
    }
 
    @Override
@@ -299,7 +295,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    public void afterInject() {
       super.afterInject();
       activeCellRoute = getCurrentRoute();
-      videoFullscreenContainer = ButterKnife.findById(activity, R.id.container_details_floating);
+      videoInfoInjector.init(activity, itemView);
    }
 
    private Route getCurrentRoute() {

@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.modules.video.view.custom.VideoView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class VideoViewFullscreenHandler {
@@ -33,9 +35,9 @@ public class VideoViewFullscreenHandler {
    @InjectView(R.id.video_view_fullscreen_button) View fullscreenButton;
    @InjectView(R.id.video_view_container) ViewGroup videoContainer;
 
-   private boolean swapMute = true;
-
    private WeakHandler weakHandler = new WeakHandler(Looper.getMainLooper());
+
+   private PublishSubject<Boolean> fullscreenStateObservable = PublishSubject.create();
 
    public VideoViewFullscreenHandler(Activity activity, BackStackDelegate backStackDelegate,
          VideoPlayerHolder videoPlayerHolder, VideoView videoView) {
@@ -50,10 +52,6 @@ public class VideoViewFullscreenHandler {
    public void initUi() {
       ButterKnife.inject(this, videoView);
       fullscreenButton.setVisibility(View.VISIBLE);
-   }
-
-   public void setSwapMute(boolean swapMute) {
-      this.swapMute = swapMute;
    }
 
    private void swapFullscreen() {
@@ -107,6 +105,10 @@ public class VideoViewFullscreenHandler {
       refreshFullscreenButton();
    }
 
+   public Observable<Boolean> getFullscreenStateObservable() {
+      return fullscreenStateObservable;
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Containers toggles
    ///////////////////////////////////////////////////////////////////////////
@@ -120,7 +122,7 @@ public class VideoViewFullscreenHandler {
    private void attachToWindowedContainer() {
       videoContainer.setLayoutParams(videoContainerWindowedLayoutParams);
       windowedContainer.addView(videoView, windowedLayoutParams);
-      if (swapMute && videoPlayerHolder.getJwPlayerView() != null) videoPlayerHolder.getJwPlayerView().setMute(true);
+      fullscreenStateObservable.onNext(false);
    }
 
    private void detachFromFullscreenContainer() {
@@ -133,7 +135,7 @@ public class VideoViewFullscreenHandler {
       videoContainer.setLayoutParams(params);
       fullscreenContainer.addView(videoView,
             new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-      if (swapMute && videoPlayerHolder.getJwPlayerView() != null) videoPlayerHolder.getJwPlayerView().setMute(false);
+      fullscreenStateObservable.onNext(true);
    }
 
    ///////////////////////////////////////////////////////////////////////////

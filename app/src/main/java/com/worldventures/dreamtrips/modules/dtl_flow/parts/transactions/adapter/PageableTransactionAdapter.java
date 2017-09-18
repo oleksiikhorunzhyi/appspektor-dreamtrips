@@ -15,10 +15,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.Tr
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
    private Context context;
    private List<TransactionModel> transactionsList = new ArrayList<>();
@@ -77,12 +76,8 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          viewHolder.earnedPointsIcon.setVisibility(View.INVISIBLE);
       }
 
-      try {
-         viewHolder.transactionDate.setText(DateTimeUtils.convertDateToUTCString(new Date(transactionsList.get(position)
-               .getTransactionDate())));
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
+      viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position)
+            .getTransactionDate()));
 
       try {
          CSTConverter converter = new CSTConverter();
@@ -99,6 +94,7 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          viewHolder.transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_failed);
       }
    }
+
 
     /*
         Helpers - Pagination

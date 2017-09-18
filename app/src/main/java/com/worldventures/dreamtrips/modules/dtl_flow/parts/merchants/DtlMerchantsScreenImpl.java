@@ -77,7 +77,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    private int idResource = R.string.dtlt_search_hint;
 
-   private int transactionCounter = 0;
+   public static int transactionCounter = 0;
 
    @Override
    protected void onFinishInflate() {
@@ -115,6 +115,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
       refreshLayout.setOnRefreshListener(() -> getPresenter().refresh());
       refreshLayout.setEnabled(true);
+
+      if (dtlToolbar == null) return;
+      ExpandableDtlToolbar.TestInteface interfaces = () -> onClickTransaction();
+      dtlToolbar.setTestInterface(interfaces);
+
    }
 
    private void initDtlToolbar() {
@@ -201,8 +206,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       }
    }
 
-   @Optional
-   @OnClick(R.id.transaction_container)
    @Override
    public void onClickTransaction() {
       getPresenter().onTransactionClick();

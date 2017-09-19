@@ -228,7 +228,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
          MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-               TrackingHelper.conversationSearchSelected();
+               getPresenter().onConversationSearchSelected();
                return true;
             }
 

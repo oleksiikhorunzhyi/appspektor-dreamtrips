@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.analytics.AddFriendsToChatAction;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
@@ -51,7 +52,6 @@ import com.messenger.util.PickLocationDelegate;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModelImpl;
@@ -404,7 +404,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
    public boolean onToolbarMenuItemClick(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.action_add:
-            TrackingHelper.addPeopleToChat();
+            analyticsInteractor.analyticsActionPipe().send(new AddFriendsToChatAction());
             Flow.get(getContext()).set(new ExistingChatPath(conversationId));
             return true;
          case R.id.action_settings:

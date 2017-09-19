@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.analytics.GroupSettingsOpenedAction;
+import com.messenger.analytics.LeaveConversationActon;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
 import com.messenger.delegate.chat.command.LeaveChatCommand;
@@ -17,7 +19,6 @@ import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
@@ -41,7 +42,7 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      TrackingHelper.groupSettingsOpened();
+      analyticsInteractor.analyticsActionPipe().send(new GroupSettingsOpenedAction());
    }
 
    @Override
@@ -69,7 +70,7 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
 
    @Override
    public void onLeaveChatClicked() {
-      TrackingHelper.leaveConversation();
+      analyticsInteractor.analyticsActionPipe().send(new LeaveConversationActon());
       chatGroupCommandsInteractor.getLeaveChatPipe()
             .createObservableResult(new LeaveChatCommand(conversationId))
             .compose(bindViewIoToMainComposer())

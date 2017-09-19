@@ -4,19 +4,20 @@ import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.command.ClearHeadersCommand;
+import com.worldventures.dreamtrips.core.utils.tracksystem.command.SetUserIdsHeadersCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginAction;
 import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAction;
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.RestoreCompoundOperationsCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.HttpResponseSnifferDelegate;
 import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.HttpResponseSnifferDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.RestoreCompoundOperationsCommand;
 
 import javax.inject.Inject;
 
@@ -105,7 +106,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    }
 
    public void loginAction() {
-      TrackingHelper.clearHeaderData();
+      analyticsInteractor.clearAdobeHeadersPipe().send(new ClearHeadersCommand());
       String username = view.getUsername();
       String userPassword = view.getUserPassword();
 
@@ -124,7 +125,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       backgroundUploadingInteractor.restoreCompoundOperationsPipe().send(new RestoreCompoundOperationsCommand());
       analyticsInteractor.analyticsActionPipe().send(new LoginAction(appSessionHolder.get()
             .get().getUser().getUsername(), userAlreadyLoggedIn));
-      TrackingHelper.setUserId(getAccount().getUsername(), Integer.toString(getAccount().getId()));
+      analyticsInteractor.setUserIdsPipe().send(new SetUserIdsHeadersCommand(getAccount().getUsername(),
+            Integer.toString(getAccount().getId())));
       messengerConnector.connect();
       view.openMain();
    }

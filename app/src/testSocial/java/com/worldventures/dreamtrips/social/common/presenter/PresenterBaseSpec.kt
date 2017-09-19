@@ -33,7 +33,6 @@ abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
          whenever(apptentiveTracker.key).thenReturn(ApptentiveTracker.TRACKER_KEY)
          val adobeTracker = mock<Tracker>()
          whenever(adobeTracker.key).thenReturn(AdobeTracker.TRACKER_KEY)
-         TrackingHelper.init(setOf(apptentiveTracker, adobeTracker))
       }
 
       fun prepareInjector(sessionHolder: SessionHolder = mock()): Injector {

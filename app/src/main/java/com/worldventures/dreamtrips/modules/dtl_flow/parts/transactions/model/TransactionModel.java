@@ -9,7 +9,6 @@ public class TransactionModel implements Parcelable {
    private String subTotalAmount;
    private String earnedPoints;
    private String transactionDate;
-   private boolean transactionSuccess;
    private boolean rewardStatus;
    private String receiptUrl;
 
@@ -49,14 +48,6 @@ public class TransactionModel implements Parcelable {
       this.transactionDate = transactionDate;
    }
 
-   public boolean isTransactionSuccess() {
-      return transactionSuccess;
-   }
-
-   public void setTransactionSuccess(boolean transactionSuccess) {
-      this.transactionSuccess = transactionSuccess;
-   }
-
    public boolean getRewardStatus() {
       return rewardStatus;
    }
@@ -78,7 +69,6 @@ public class TransactionModel implements Parcelable {
       subTotalAmount = in.readString();
       earnedPoints = in.readString();
       transactionDate = in.readString();
-      transactionSuccess = in.readByte() != 0;
       rewardStatus = in.readByte() != 0;
       receiptUrl = in.readString();
    }
@@ -89,7 +79,6 @@ public class TransactionModel implements Parcelable {
       dest.writeString(subTotalAmount);
       dest.writeString(earnedPoints);
       dest.writeString(transactionDate);
-      dest.writeByte((byte) (transactionSuccess ? 1 : 0));
       dest.writeByte((byte) (rewardStatus ? 1 : 0));
       dest.writeString(receiptUrl);
    }

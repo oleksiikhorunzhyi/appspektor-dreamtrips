@@ -32,45 +32,20 @@
                android:textColor="@color/black"/>
 
          <TextView
-               android:id="@+id/transaction_time"
+               android:id="@+id/transaction_date"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:text="3 months ago"
+               android:text="10-11-1990"
                android:gravity="end"
                android:textSize="@dimen/dtl_transaction_screen_item_title_text_size"
                android:textColor="@color/gray_btn_bg_color"/>
-
-         <LinearLayout
-               android:id="@+id/subtotal_amount_layout"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="@dimen/dtl_transaction_screen_item_title_margin_top"
-               android:orientation="horizontal"
-               android:layout_below="@+id/merchant_name">
-
-            <TextView
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="@string/dtl_transaction_screen_sub_total_text"
-                  android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
-                  android:textColor="@color/black"/>
-
-            <TextView
-                  android:id="@+id/subtotal_amount"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="100"
-                  android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
-                  android:textColor="@color/black"/>
-
-         </LinearLayout>
 
          <LinearLayout
                android:id="@+id/earned_points_layout"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:orientation="horizontal"
-               android:layout_below="@+id/subtotal_amount_layout">
+               android:layout_below="@+id/merchant_name">
 
             <TextView
                   android:layout_width="wrap_content"
@@ -93,27 +68,9 @@
                   android:layout_height="wrap_content"
                   android:layout_marginStart="@dimen/dtl_transaction_screen_item_earned_points_checker_margin_left"
                   android:layout_gravity="center_vertical"
-                  android:background="@drawable/success"/>
+                  android:background="@drawable/dt_points_big_icon"/>
 
          </LinearLayout>
-
-         <TextView
-             android:id="@+id/transaction_date"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:text="09-11-2017"
-             android:layout_below="@+id/earned_points_layout"
-             android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
-             android:textColor="@color/black"/>
-
-         <ImageView
-               android:id="@+id/transaction_status_icon"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_below="@+id/transaction_time"
-               android:layout_alignParentEnd="true"
-               android:layout_margin="@dimen/dtl_transaction_screen_item_transaction_status_icon_margin"
-               android:background="@drawable/ic_transaction_ok"/>
 
       </RelativeLayout>
 

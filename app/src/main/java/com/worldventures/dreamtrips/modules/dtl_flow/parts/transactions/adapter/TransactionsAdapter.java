@@ -46,16 +46,9 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       ViewHolder viewHolder = (ViewHolder) holder;
       viewHolder.merchantName.setText(transactionsList.get(position).getMerchantName());
       viewHolder.earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
-
-      if(transactionsList.get(position).getRewardStatus()){
-         viewHolder.earnedPointsIcon.setVisibility(View.VISIBLE);
-         viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-      } else {
-         viewHolder.earnedPointsIcon.setVisibility(View.INVISIBLE);
-      }
-
+      viewHolder.earnedPointsIcon.setVisibility(View.VISIBLE);
+      viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
       viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
-
    }
 
    public class ViewHolder extends RecyclerView.ViewHolder {

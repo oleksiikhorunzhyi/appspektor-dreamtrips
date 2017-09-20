@@ -52,6 +52,7 @@
                   android:layout_height="wrap_content"
                   android:text="@string/dtl_transaction_screen_earned_points_text"
                   android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
+                  android:layout_gravity="center_vertical"
                   android:textColor="@color/black"/>
 
             <TextView
@@ -60,6 +61,7 @@
                   android:layout_height="wrap_content"
                   android:text="20"
                   android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
+                  android:layout_gravity="center_vertical"
                   android:textColor="@color/black"/>
 
             <ImageView

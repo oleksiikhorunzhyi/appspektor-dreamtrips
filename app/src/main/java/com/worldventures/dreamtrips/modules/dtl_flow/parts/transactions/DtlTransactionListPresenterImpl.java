@@ -54,8 +54,10 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
       getView().getRunnableView().postDelayed(new Runnable() {
          @Override
          public void run() {
-            addMoreTransactions(0);
-            getView().onRefreshSuccess(false);
+            try {
+               addMoreTransactions(0);
+               getView().onRefreshSuccess(false);
+            } catch (Exception e) {}
          }
       }, 2000);
    }
@@ -69,10 +71,12 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
          getView().getRunnableView().postDelayed(new Runnable() {
             @Override
             public void run() {
-               allItems = mockItems;
-               getView().setAllTransactions(mockItems);
-               getView().onRefreshSuccess(true);
-               getView().searchQuery(query);
+               try {
+                  allItems = mockItems;
+                  getView().setAllTransactions(mockItems);
+                  getView().onRefreshSuccess(true);
+                  getView().searchQuery(query);
+               } catch (Exception e) {}
             }
          }, 3000);
 

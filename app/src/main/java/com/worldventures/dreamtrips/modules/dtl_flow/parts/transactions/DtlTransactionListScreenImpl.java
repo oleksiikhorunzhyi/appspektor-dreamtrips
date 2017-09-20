@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -11,10 +9,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.twitter.sdk.android.core.models.Search;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.Transaction;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView;
@@ -85,11 +82,6 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
 
    private void getAllTransactionsFromAPI(String query) {
       if (query.length() > 2) {
-//         if (transactionsView.hasAllItems()){
-//            transactionsView.setPageableAdapter();
-//            searchQuery(query);
-//         }
-//         else
             getPresenter().getAllTransactionsToQuery(query);
       } else
          transactionsView.clearSearch();
@@ -107,6 +99,11 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    }
 
    @Override
+   public void setEventListener(ScrollEventListener listener) {
+      transactionsView.setScrollEventListener(listener);
+   }
+
+   @Override
    public void setAllTransactions(List<TransactionModel> transactions) {
       transactionsView.setAllTransactionsList(transactions);
    }
@@ -117,7 +114,12 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    }
 
    @Override
-   public void onRefreshSuccess() {
+   public void onRefreshSuccess(boolean searchMode) {
+      if(!searchMode && transactionsView.hasTransactions()) {
+         transactionsView.showLoadingFooter(false);
+         return;
+      }
+
       loader.setVisibility(View.GONE);
       transactionsView.setVisibility(View.VISIBLE);
       searchView.setVisibility(View.VISIBLE);

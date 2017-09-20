@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.listener.PaginationScrollListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerTouchListener;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.SearchableTransactionsAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.PageableTransactionAdapter;
@@ -31,6 +31,7 @@ public class TransactionView extends LinearLayout {
    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
    private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
+   private ScrollEventListener scrollEventListener;
 
    public TransactionView(Context context) {
       this(context, null);
@@ -113,9 +114,9 @@ public class TransactionView extends LinearLayout {
       scrollingListener = new PaginationScrollListener(linearLayoutManager) {
          @Override
          protected void loadMoreItems() {
-//            showLoadingFooter(true);
+            showLoadingFooter(true);
             isLoading = true;
-//            getMoreReviewItems();
+            getMoreTransactions();
          }
 
          @Override
@@ -132,8 +133,30 @@ public class TransactionView extends LinearLayout {
       return searchableTransactionsAdapter==null? false : !searchableTransactionsAdapter.getAllItems().isEmpty();
    }
 
-   public boolean hasReviews(){
+   public boolean hasTransactions(){
       return !pageableTransactionAdapter.getCurrentItems().isEmpty();
    }
 
+   public void showLoadingFooter(boolean show) {
+      if (show)
+         pageableTransactionAdapter.addLoadingFooter();
+      else
+         pageableTransactionAdapter.removeLoadingFooter();
+   }
+
+   private void getMoreTransactions() {
+      int lastIndex = getNextItemValue();
+      recyclerView.postDelayed(new Runnable() {
+         @Override
+         public void run() {
+            if (scrollEventListener != null) scrollEventListener.onScrollBottomReached(lastIndex);
+         }
+      }, 1000);
+   }
+
+   private int getNextItemValue() { return pageableTransactionAdapter.isEmpty() ? 0 : pageableTransactionAdapter.getItemCount() - 1;}
+
+   public void setScrollEventListener(ScrollEventListener scrollEventListener) {
+      this.scrollEventListener = scrollEventListener;
+   }
 }

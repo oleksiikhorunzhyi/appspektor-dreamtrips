@@ -13,6 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
@@ -49,7 +50,7 @@ public class OfferWithReviewView extends LinearLayout {
    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
    private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
-   private IMyEventListener mEventListener;
+   private ScrollEventListener scrollEventListener;
 
    public OfferWithReviewView(Context context) {
       this(context, null);
@@ -130,19 +131,15 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView.postDelayed(new Runnable() {
          @Override
          public void run() {
-            if (mEventListener != null) mEventListener.onScrollBottomReached(lastIndex);
+            if (scrollEventListener != null) scrollEventListener.onScrollBottomReached(lastIndex);
          }
       }, 1000);
    }
 
    private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;}
 
-   public interface IMyEventListener {
-      void onScrollBottomReached(int indexOf);
-   }
-
-   public void setEventListener(IMyEventListener mEventListener) {
-      this.mEventListener = mEventListener;
+   public void setEventListener(ScrollEventListener mEventListener) {
+      this.scrollEventListener = mEventListener;
    }
 
    public List<ReviewObject> getCurrentReviews(){

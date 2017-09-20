@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
@@ -41,18 +42,41 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
 
    @Override
    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_transaction, parent, false);
-      return new PageableTransactionAdapter.ViewHolder(itemView);
+      RecyclerView.ViewHolder viewHolder = null;
+      LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+      switch (viewType) {
+         case ITEM:
+            View viewItem = inflater.inflate(R.layout.item_transaction, parent, false);
+            viewHolder = new PageableTransactionAdapter.ViewHolder(viewItem);
+            break;
+         case LOADING:
+            View viewLoading = inflater.inflate(R.layout.view_dtl_item_loading, parent, false);
+            viewHolder = new PageableTransactionAdapter.LoadingVH(viewLoading);
+            break;
+      }
+      return viewHolder;
    }
 
    @Override
    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-      drawView(holder, position);
+      switch (getItemViewType(position)) {
+         case ITEM:
+            final PageableTransactionAdapter.ViewHolder recyclerViewHolder = (PageableTransactionAdapter.ViewHolder) holder;
+            recyclerViewHolder.bind(position);
+            break;
+      }
    }
 
    @Override
    public int getItemCount() {
       return transactionsList.size();
+   }
+
+   @Override
+   public int getItemViewType(int position) {
+      String merchantName = getItem(position).getMerchantName();
+      return merchantName == null || merchantName.length() == 0 ? LOADING : ITEM;
    }
 
    public List<TransactionModel> getTransactionsList() {
@@ -62,39 +86,6 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    public void setTransactionsList(List<TransactionModel> transactionsList) {
       this.transactionsList = transactionsList;
    }
-
-   private void drawView(RecyclerView.ViewHolder holder, int position) {
-      ViewHolder viewHolder = (ViewHolder) holder;
-      viewHolder.merchantName.setText(transactionsList.get(position).getMerchantName());
-      viewHolder.subtotalAmount.setText(transactionsList.get(position).getSubTotalAmount());
-      viewHolder.earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
-
-      if (transactionsList.get(position).getRewardStatus()) {
-         viewHolder.earnedPointsIcon.setVisibility(View.VISIBLE);
-         viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.success);
-      } else {
-         viewHolder.earnedPointsIcon.setVisibility(View.INVISIBLE);
-      }
-
-      viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position)
-            .getTransactionDate()));
-
-      try {
-         CSTConverter converter = new CSTConverter();
-         String convertedTime = converter.getCorrectTimeWrote(context, transactionsList.get(position)
-               .getTransactionDate());
-         viewHolder.transactionTime.setText(convertedTime);
-      } catch (ParseException e) {
-         e.printStackTrace();
-      }
-
-      if (transactionsList.get(position).isTransactionSuccess()) {
-         viewHolder.transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_ok);
-      } else {
-         viewHolder.transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_failed);
-      }
-   }
-
 
     /*
         Helpers - Pagination
@@ -173,6 +164,43 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          transactionSuccess = (ImageView) itemView.findViewById(R.id.transaction_status_icon);
       }
 
+      public void bind(int position) {
+         merchantName.setText(transactionsList.get(position).getMerchantName());
+         subtotalAmount.setText(transactionsList.get(position).getSubTotalAmount());
+         earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
+
+         if (transactionsList.get(position).getRewardStatus()) {
+            earnedPointsIcon.setVisibility(View.VISIBLE);
+            earnedPointsIcon.setBackgroundResource(R.drawable.success);
+         } else {
+            earnedPointsIcon.setVisibility(View.INVISIBLE);
+         }
+
+         transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position)
+               .getTransactionDate()));
+
+         try {
+            CSTConverter converter = new CSTConverter();
+            String convertedTime = converter.getCorrectTimeWrote(context, transactionsList.get(position)
+                  .getTransactionDate());
+            transactionTime.setText(convertedTime);
+         } catch (ParseException e) {
+            e.printStackTrace();
+         }
+
+         if (transactionsList.get(position).isTransactionSuccess()) {
+            transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_ok);
+         } else {
+            transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_failed);
+         }
+      }
+
+   }
+
+   protected class LoadingVH extends RecyclerView.ViewHolder {
+      public LoadingVH(View itemView) {
+         super(itemView);
+      }
    }
 
 }

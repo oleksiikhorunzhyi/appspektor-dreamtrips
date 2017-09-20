@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.android.gms.gcm.Task;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
@@ -16,6 +17,13 @@ import java.util.TimerTask;
 
 public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransactionListScreen, ViewState.EMPTY> implements DtlTransactionListPresenter {
 
+   ScrollEventListener listener = new ScrollEventListener() {
+      @Override
+      public void onScrollBottomReached(int indexOf) {
+         addMoreTransactions(indexOf);
+      }
+   };
+
    public DtlTransactionListPresenterImpl(Context context, Injector injector) {
       super(context);
       injector.inject(this);
@@ -24,6 +32,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      getView().setEventListener(listener);
       generateMockObjects(28);
       loadFirstPage();
    }
@@ -46,7 +55,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
          @Override
          public void run() {
             addMoreTransactions(0);
-            getView().onRefreshSuccess();
+            getView().onRefreshSuccess(false);
          }
       }, 2000);
    }
@@ -54,7 +63,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
    @Override
    public void getAllTransactionsToQuery(String query) {
       if (allItems.isEmpty()) {
-         //TODDO go for all transactions to API
+         //TODO request all transactions from API
          //Faking loading Time
          getView().onRefreshProgress();
          getView().getRunnableView().postDelayed(new Runnable() {
@@ -62,7 +71,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
             public void run() {
                allItems = mockItems;
                getView().setAllTransactions(mockItems);
-               getView().onRefreshSuccess();
+               getView().onRefreshSuccess(true);
                getView().searchQuery(query);
             }
          }, 3000);
@@ -74,6 +83,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
 
    @Override
    public void addMoreTransactions(int indexOf) {
+      getView().onRefreshSuccess(false);
       getView().addTransactions(getMockObjects(indexOf, 10));
    }
 

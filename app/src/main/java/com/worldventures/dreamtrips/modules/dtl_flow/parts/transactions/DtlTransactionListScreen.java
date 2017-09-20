@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.Transaction;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView;
@@ -11,7 +12,7 @@ public interface DtlTransactionListScreen extends DtlScreen {
 
    void addTransactions(List<TransactionModel> transactions);
 
-   void onRefreshSuccess();
+   void onRefreshSuccess(boolean searchMode);
 
    void onRefreshProgress();
 
@@ -22,6 +23,8 @@ public interface DtlTransactionListScreen extends DtlScreen {
    void searchQuery(String query);
 
    TransactionView getRunnableView();
+
+   void setEventListener(ScrollEventListener listener);
 
    void setAllTransactions(List<TransactionModel> transactions);
 

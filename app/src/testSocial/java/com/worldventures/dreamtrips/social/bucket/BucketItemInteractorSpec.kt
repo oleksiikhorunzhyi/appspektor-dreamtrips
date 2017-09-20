@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.create
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import io.techery.janet.ActionState
 import io.techery.janet.http.annotations.HttpAction.Method
 import io.techery.janet.http.test.MockHttpActionService
@@ -348,7 +349,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
       val testUploaderyPhoto: UploaderyImage = mock()
 
       val mockMemoryStorage: BucketMemoryStorage = spy()
-      val mockDb: SnappyRepository = spy()
+      val mockDb: SocialSnappyRepository = spy()
 
       val uploadControllerStorage: UploadBucketPhotoInMemoryStorage = mock()
 

@@ -6,13 +6,14 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateTextCachedCommand;
 
 public class TranslationDiscStorage implements ActionStorage<String> {
 
-   private final SnappyRepository snappyRepository;
+   private final SocialSnappyRepository snappyRepository;
 
-   public TranslationDiscStorage(SnappyRepository snappyRepository) {
+   public TranslationDiscStorage(SocialSnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 

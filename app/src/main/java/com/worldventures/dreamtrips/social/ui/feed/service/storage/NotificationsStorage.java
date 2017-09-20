@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetNotificationsCommand;
 
@@ -17,10 +18,10 @@ public class NotificationsStorage implements ActionStorage<List<FeedItem>>, Clea
 
    public static final String REFRESH = "REFRESH";
 
-   private final SnappyRepository snappyRepository;
+   private final SocialSnappyRepository snappyRepository;
    private final NotificationMemoryStorage memoryStorage;
 
-   public NotificationsStorage(SnappyRepository snappyRepository, NotificationMemoryStorage memoryStorage) {
+   public NotificationsStorage(SocialSnappyRepository snappyRepository, NotificationMemoryStorage memoryStorage) {
       this.snappyRepository = snappyRepository;
       this.memoryStorage = memoryStorage;
    }

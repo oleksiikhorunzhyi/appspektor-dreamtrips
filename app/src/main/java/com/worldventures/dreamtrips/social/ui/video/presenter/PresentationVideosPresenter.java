@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.LoadCanceledAction;
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.MemberVideosViewedAction;
@@ -38,6 +39,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    @Inject CachedEntityDelegate cachedEntityDelegate;
    @Inject CachedModelHelper cachedModelHelper;
    @Inject protected SnappyRepository db;
+   @Inject protected SocialSnappyRepository socialDb;
    @Inject protected MemberVideosInteractor memberVideosInteractor;
 
    protected List<Object> currentItems;

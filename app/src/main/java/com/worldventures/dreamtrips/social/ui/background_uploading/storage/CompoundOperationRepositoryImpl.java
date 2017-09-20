@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.background_uploading.storage;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 
 import java.util.ArrayList;
@@ -13,9 +14,9 @@ public class CompoundOperationRepositoryImpl implements CompoundOperationReposit
 
    private String COMPOUND_OBJECT_POSTS = "COMPOUND_OBJECT_POSTS";
 
-   private SnappyRepository snappyRepository;
+   private SocialSnappyRepository snappyRepository;
 
-   public CompoundOperationRepositoryImpl(SnappyRepository snappyRepository) {
+   public CompoundOperationRepositoryImpl(SocialSnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 

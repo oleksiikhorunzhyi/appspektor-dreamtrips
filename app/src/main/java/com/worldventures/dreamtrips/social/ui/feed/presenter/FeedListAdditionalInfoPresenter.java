@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -27,7 +28,7 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
 
    private static final int PAGE_SIZE = 100;
 
-   @Inject SnappyRepository db;
+   @Inject SocialSnappyRepository db;
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
 

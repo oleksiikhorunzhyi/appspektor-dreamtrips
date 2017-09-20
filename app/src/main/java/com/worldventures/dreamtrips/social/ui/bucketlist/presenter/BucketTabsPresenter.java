@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.AdobeBucketListViewedAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand;
@@ -26,7 +27,7 @@ import static com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
 import static com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.BucketType.LOCATION;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
-   @Inject SnappyRepository db;
+   @Inject SocialSnappyRepository db;
 
    @Inject BucketInteractor bucketInteractor;
 
@@ -71,8 +72,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
             .createObservable(new GetCategoriesCommand())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCategoriesCommand>()
-                  .onSuccess(getCategoriesCommand -> db.putList(SnappyRepository.CATEGORIES,
-                        getCategoriesCommand.getResult()))
+                  .onSuccess(getCategoriesCommand -> db.saveBucketListCategories(getCategoriesCommand.getResult()))
                   .onFail(this::handleError)
             );
    }

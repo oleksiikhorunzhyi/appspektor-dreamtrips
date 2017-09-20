@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
@@ -54,7 +53,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    public void onResume() {
       super.onResume();
       selectedDate = bucketItem.getTargetDate();
-      List<CategoryItem> list = db.readList(SnappyRepository.CATEGORIES, CategoryItem.class);
+      List<CategoryItem> list = db.getBucketListCategories();
       if (!list.isEmpty()) {
          view.setCategoryItems(list, bucketItem.getCategory());
       }

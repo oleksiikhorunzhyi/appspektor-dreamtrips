@@ -10,12 +10,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
@@ -30,6 +29,7 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedAction
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.SuggestedPhotoInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedAction;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountFeedCommand;
@@ -41,6 +41,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
+import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
@@ -63,6 +64,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       FeedEditEntityPresenter, UploadingListenerPresenter {
 
    @Inject SnappyRepository db;
+   @Inject SocialSnappyRepository socialDb;
    @Inject TranslationDelegate translationDelegate;
    @Inject UnreadConversationObservable unreadConversationObservable;
    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
@@ -117,7 +119,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    void restoreCircle() {
-      filterCircle = db.getFilterCircle();
+      filterCircle = socialDb.getFilterCircle();
       if (filterCircle == null) filterCircle = createDefaultFilterCircle();
    }
 
@@ -144,7 +146,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
    public void applyFilter(Circle selectedCircle) {
       filterCircle = selectedCircle;
-      db.saveFilterCircle(selectedCircle);
+      socialDb.saveFilterCircle(selectedCircle);
       refreshFeed();
    }
 
@@ -373,7 +375,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
 
    public void removeSuggestedPhotos() {
-      db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
+      socialDb.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
       shouldShowSuggestionItems = false;
       suggestedPhotoHelper.reset();
       refreshFeedItems();

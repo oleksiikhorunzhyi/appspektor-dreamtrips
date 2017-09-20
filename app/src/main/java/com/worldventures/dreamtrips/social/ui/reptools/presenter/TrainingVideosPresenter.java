@@ -39,8 +39,8 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
 
    @Override
    public void onResume() {
-      videoLocale = db.getLastSelectedVideoLocale();
-      videoLanguage = db.getLastSelectedVideoLanguage();
+      videoLocale = socialDb.getLastSelectedVideoLocale();
+      videoLanguage = socialDb.getLastSelectedVideoLanguage();
       super.onResume();
       sendViewTrainingVideoAnalytic();
    }
@@ -94,8 +94,8 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    public void onLanguageSelected(VideoLocale videoLocale, VideoLanguage videoLanguage) {
       this.videoLocale = videoLocale;
       this.videoLanguage = videoLanguage;
-      db.saveLastSelectedVideoLocale(videoLocale);
-      db.saveLastSelectedVideoLanguage(videoLanguage);
+      socialDb.saveLastSelectedVideoLocale(videoLocale);
+      socialDb.saveLastSelectedVideoLanguage(videoLanguage);
       reload();
       setHeaderLocale();
    }

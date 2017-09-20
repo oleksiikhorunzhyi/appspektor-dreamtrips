@@ -44,6 +44,7 @@ import dagger.Provides;
             EventDelegateModule.class,
             SocialInitializerModule.class,
             SocialMappingModule.class,
+            SocialSnappyModule.class,
       }
 )
 public class SocialAppModule {

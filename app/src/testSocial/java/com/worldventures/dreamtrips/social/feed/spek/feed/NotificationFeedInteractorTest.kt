@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.storage.Notifications
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter
 import com.worldventures.dreamtrips.social.domain.mapping.ShortProfilesConverter
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -43,7 +44,7 @@ import kotlin.test.assertTrue
 
 class NotificationFeedInteractorTest : BaseSpec({
    describe("Notification feed actions", {
-      setup({ setOf(NotificationsStorage(mockDb, mockMemoryStorage)) }) { mockHttpService() }
+      setup({ setOf(NotificationsStorage(socialDb, mockMemoryStorage)) }) { mockHttpService() }
 
       context("Refresh notifications") {
          context("Notifications cache is empty") {
@@ -125,7 +126,7 @@ class NotificationFeedInteractorTest : BaseSpec({
    })
 }) {
    companion object FeedCompanion {
-      val mockDb: SnappyRepository = spy()
+      val socialDb: SocialSnappyRepository = spy()
       val mockMemoryStorage: NotificationMemoryStorage = spy()
 
       lateinit var feedInteractor: NotificationFeedInteractor

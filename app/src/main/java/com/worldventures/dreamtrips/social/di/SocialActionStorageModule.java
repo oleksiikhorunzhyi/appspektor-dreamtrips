@@ -6,6 +6,15 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
+import com.worldventures.dreamtrips.modules.trips.service.storage.RegionsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
+import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationRepository;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationRepositoryImpl;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationStorage;
@@ -30,14 +39,6 @@ import com.worldventures.dreamtrips.social.ui.infopages.service.storage.Document
 import com.worldventures.dreamtrips.social.ui.infopages.service.storage.FeedbackTypeStorage;
 import com.worldventures.dreamtrips.social.ui.membership.storage.PodcastsDiskStorage;
 import com.worldventures.dreamtrips.social.ui.membership.storage.PodcastsStorage;
-import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
-import com.worldventures.dreamtrips.modules.trips.service.storage.RegionsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.InspireMeStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.TripImageStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.YsbhPhotoStorage;
@@ -52,19 +53,20 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideBucketListStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideBucketListStorage(SocialSnappyRepository snappyRepository) {
       return new BucketListDiskStorage(new BucketMemoryStorage(), snappyRepository);
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideTranslationStorage(SnappyRepository snappyRepository) {
+
+   ActionStorage provideTranslationStorage(SocialSnappyRepository snappyRepository) {
       return new TranslationDiscStorage(snappyRepository);
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideNotificationStorage(SnappyRepository snappyRepository) {
+   ActionStorage provideNotificationStorage(SocialSnappyRepository snappyRepository) {
       return new NotificationsStorage(snappyRepository, new NotificationMemoryStorage());
    }
 
@@ -94,7 +96,7 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideCirclesStorage(SnappyRepository db) {
+   ActionStorage provideCirclesStorage(SocialSnappyRepository db) {
       return new CirclesStorage(db);
    }
 
@@ -106,7 +108,7 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage providePodcastsStorage(SnappyRepository snappyRepository) {
+   ActionStorage providePodcastsStorage(SocialSnappyRepository snappyRepository) {
       return new PodcastsStorage(new PaginatedMemoryStorage<>(), new PodcastsDiskStorage(snappyRepository));
    }
 
@@ -160,7 +162,7 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideFeedbackStorage(SnappyRepository db) {
+   ActionStorage provideFeedbackStorage(SocialSnappyRepository db) {
       return new FeedbackTypeStorage(db);
    }
 
@@ -172,7 +174,7 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides
-   CompoundOperationRepository provideCompoundOperationRepository(SnappyRepository snappyRepository) {
+   CompoundOperationRepository provideCompoundOperationRepository(SocialSnappyRepository snappyRepository) {
       return new CompoundOperationRepositoryImpl(snappyRepository);
    }
 

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -23,7 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View<T>, T> extends Presenter<V> {
 
-   @Inject protected SnappyRepository db;
+   @Inject protected SocialSnappyRepository db;
    @Inject protected BucketInteractor bucketInteractor;
 
    @State BucketItem.BucketType type;

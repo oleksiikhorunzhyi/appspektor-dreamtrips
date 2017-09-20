@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.*
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
@@ -68,7 +69,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
       describe("Restore filter circle") {
          it("Should not be null if filter circle is not cached") {
-            doReturn(null).whenever(snappy).filterCircle
+            doReturn(null).whenever(socialSnappy).filterCircle
 
             presenter.restoreCircle()
             assert(presenter.filterCircle != null)
@@ -76,7 +77,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
          it("Should be same as cached filter circle") {
             val cachedCircle = Circle()
-            doReturn(cachedCircle).whenever(snappy).filterCircle
+            doReturn(cachedCircle).whenever(socialSnappy).filterCircle
             presenter.restoreCircle()
             assert(presenter.filterCircle == cachedCircle)
          }
@@ -127,7 +128,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             presenter.applyFilter(circles[0])
 
             assert(presenter.filterCircle == circles[0])
-            verify(snappy, VerificationModeFactory.times(1)).saveFilterCircle(presenter.filterCircle)
+            verify(socialSnappy, VerificationModeFactory.times(1)).saveFilterCircle(presenter.filterCircle)
             testSubscriber.assertValueCount(1)
          }
 
@@ -375,6 +376,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
       val feedActionHandlerDelegate: FeedActionHandlerDelegate = mock()
       val snappy: SnappyRepository = mock()
+      val socialSnappy: SocialSnappyRepository = mock()
       val feedStorageDelegate: FeedStorageDelegate = mock()
       val translationDelegate: TranslationDelegate = mock()
       val suggestedPhotoCellHelper: SuggestedPhotoCellPresenterHelper = mock()
@@ -409,6 +411,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
          prepareInjector().apply {
             registerProvider(SnappyRepository::class.java, { snappy })
+            registerProvider(SocialSnappyRepository::class.java, { socialSnappy })
             registerProvider(FeedStorageDelegate::class.java, { feedStorageDelegate })
             registerProvider(FeedInteractor::class.java, { feedInteractor })
             registerProvider(PingAssetStatusInteractor::class.java, { assetStatusInteractor })

@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 
 import javax.inject.Inject;
 
@@ -17,7 +18,7 @@ public class SuggestedPhotoCommand extends Command<Boolean> implements Injectabl
    private static final int SUGGESTION_ITEM_CHUNK = 1;
 
    @Inject MediaInteractor mediaInteractor;
-   @Inject SnappyRepository snappyRepository;
+   @Inject SocialSnappyRepository snappyRepository;
 
    @Override
    protected void run(CommandCallback<Boolean> callback) throws Throwable {

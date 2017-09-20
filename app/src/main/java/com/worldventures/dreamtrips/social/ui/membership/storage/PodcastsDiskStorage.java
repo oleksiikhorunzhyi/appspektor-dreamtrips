@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.membership.storage;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedDiskStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 
 import java.util.List;
@@ -11,9 +12,9 @@ import rx.functions.Func0;
 
 public class PodcastsDiskStorage extends PaginatedDiskStorage<Podcast> {
 
-   private SnappyRepository db;
+   private SocialSnappyRepository db;
 
-   public PodcastsDiskStorage(SnappyRepository db) {
+   public PodcastsDiskStorage(SocialSnappyRepository db) {
       this.db = db;
    }
 

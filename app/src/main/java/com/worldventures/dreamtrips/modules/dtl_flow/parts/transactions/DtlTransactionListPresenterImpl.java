@@ -98,7 +98,6 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
          transactionModel.setSubTotalAmount(String.valueOf(500 + new Random().nextInt(500)));
          transactionModel.setEarnedPoints(String.valueOf(1 + new Random().nextInt(4)));
          transactionModel.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
-         transactionModel.setTransactionSuccess(new Random().nextBoolean());
          transactionModel.setRewardStatus(new Random().nextBoolean());
          mockItems.add(transactionModel);
       }

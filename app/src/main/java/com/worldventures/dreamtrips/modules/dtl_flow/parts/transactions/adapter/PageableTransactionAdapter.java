@@ -146,53 +146,25 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
 
    public class ViewHolder extends RecyclerView.ViewHolder {
       public TextView merchantName;
-      public TextView subtotalAmount;
       public TextView earnedPoints;
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
-      public TextView transactionTime;
-      public ImageView transactionSuccess;
+
 
       public ViewHolder(View itemView) {
          super(itemView);
          merchantName = (TextView) itemView.findViewById(R.id.merchant_name);
-         subtotalAmount = (TextView) itemView.findViewById(R.id.subtotal_amount);
          earnedPoints = (TextView) itemView.findViewById(R.id.earned_points);
          earnedPointsIcon = (ImageView) itemView.findViewById(R.id.earned_points_icon);
          transactionDate = (TextView) itemView.findViewById(R.id.transaction_date);
-         transactionTime = (TextView) itemView.findViewById(R.id.transaction_time);
-         transactionSuccess = (ImageView) itemView.findViewById(R.id.transaction_status_icon);
       }
 
       public void bind(int position) {
          merchantName.setText(transactionsList.get(position).getMerchantName());
-         subtotalAmount.setText(transactionsList.get(position).getSubTotalAmount());
          earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
-
-         if (transactionsList.get(position).getRewardStatus()) {
-            earnedPointsIcon.setVisibility(View.VISIBLE);
-            earnedPointsIcon.setBackgroundResource(R.drawable.success);
-         } else {
-            earnedPointsIcon.setVisibility(View.INVISIBLE);
-         }
-
-         transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position)
-               .getTransactionDate()));
-
-         try {
-            CSTConverter converter = new CSTConverter();
-            String convertedTime = converter.getCorrectTimeWrote(context, transactionsList.get(position)
-                  .getTransactionDate());
-            transactionTime.setText(convertedTime);
-         } catch (ParseException e) {
-            e.printStackTrace();
-         }
-
-         if (transactionsList.get(position).isTransactionSuccess()) {
-            transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_ok);
-         } else {
-            transactionSuccess.setBackgroundResource(R.drawable.ic_transaction_failed);
-         }
+         earnedPointsIcon.setVisibility(View.VISIBLE);
+         earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
+         transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
       }
 
    }

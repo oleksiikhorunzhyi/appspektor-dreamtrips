@@ -90,10 +90,6 @@ public class TransactionView extends LinearLayout {
       setPageableAdapter();
    }
 
-   private void setActiveScrollListener(boolean active){
-
-   }
-
    private void initRecycler() {
       recyclerView.setLayoutManager(linearLayoutManager);
       recyclerView.addItemDecoration(new MarginDecoration(getContext()));
@@ -159,4 +155,5 @@ public class TransactionView extends LinearLayout {
    public void setScrollEventListener(ScrollEventListener scrollEventListener) {
       this.scrollEventListener = scrollEventListener;
    }
+
 }

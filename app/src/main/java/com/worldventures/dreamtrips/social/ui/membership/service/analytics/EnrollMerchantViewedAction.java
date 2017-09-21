@@ -2,13 +2,11 @@ package com.worldventures.dreamtrips.social.ui.membership.service.analytics;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 
-@AnalyticsEvent(action = "membership:enroll-member",
-                category = "nav_menu",
-                trackers = {AdobeTracker.TRACKER_KEY, ApptentiveTracker.TRACKER_KEY})
+@AnalyticsEvent(action = "membership-enroll-merchant",
+                trackers = AdobeTracker.TRACKER_KEY)
 public class EnrollMerchantViewedAction extends BaseAnalyticsAction {
 
    @Attribute("member_id")

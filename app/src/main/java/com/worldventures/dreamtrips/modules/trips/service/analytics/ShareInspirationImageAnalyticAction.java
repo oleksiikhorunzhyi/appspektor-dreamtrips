@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 
-@AnalyticsEvent(action = "inspireme_share", trackers = ApptentiveTracker.TRACKER_KEY)
+@AnalyticsEvent(category = "inspireme_share", trackers = ApptentiveTracker.TRACKER_KEY)
 public class ShareInspirationImageAnalyticAction extends BaseAnalyticsAction {
 
 }

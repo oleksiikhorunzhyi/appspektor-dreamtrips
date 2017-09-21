@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 
-@AnalyticsEvent(action = "membership-enroll-merchant",
+@AnalyticsEvent(action = "membership:enroll-member",
                 category = "nav_menu",
                 trackers = {AdobeTracker.TRACKER_KEY, ApptentiveTracker.TRACKER_KEY})
 public class EnrollMemberViewedAction extends BaseAnalyticsAction {

@@ -6,6 +6,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
 
 @AnalyticsEvent(action = "membership",
                 category = "nav_menu",
-                trackers = {ApptentiveTracker.TRACKER_KEY})
+                trackers = ApptentiveTracker.TRACKER_KEY)
 public class TripImageVideo360StartedDownloadingAction extends BaseAnalyticsAction {
 }

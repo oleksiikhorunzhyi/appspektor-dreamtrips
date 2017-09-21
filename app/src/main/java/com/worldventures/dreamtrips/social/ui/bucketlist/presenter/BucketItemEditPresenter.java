@@ -137,7 +137,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       switch (state) {
          case FAIL:
             view.deleteImage(photoStateHolder);
-            startUpload(photoStateHolder);
+            startUpload(photoStateHolder.entity().getImagePath());
             break;
          case PROGRESS:
             view.deleteImage(photoStateHolder);
@@ -146,11 +146,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       }
    }
 
-   private void startUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
+   private void startUpload(String path) {
       analyticsInteractor.analyticsActionPipe().send(new ApptentiveStartUploadBucketPhotoAction());
       analyticsInteractor.analyticsActionPipe().send(new AdobeStartUploadBucketPhotoAction(bucketItem.getUid()));
-      bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, photoStateHolder.entity()
-            .getImagePath()));
+      bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, path));
    }
 
    private void cancelUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
@@ -163,8 +162,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    public void imageSelected(MediaPickerAttachment mediaPickerAttachment) {
       Queryable.from(mediaPickerAttachment.getChosenImages())
             .map(pickerModel -> WalletFilesUtils.convertPickedPhotoToUri(pickerModel).toString())
-            .forEachR(path -> bucketInteractor.addBucketItemPhotoPipe()
-                  .send(new AddBucketItemPhotoCommand(bucketItem, path)));
+            .forEachR(this::startUpload);
    }
 
    private void bindObservables(View view) {

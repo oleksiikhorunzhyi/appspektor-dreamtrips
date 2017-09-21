@@ -38,7 +38,7 @@
                      android:textStyle="bold"
                      />
 
-               <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+               <android.support.v7.widget.RecyclerView
                      android:id="@+id/recyclerViewFeatured"
                      android:layout_width="match_parent"
                      android:layout_height="@dimen/video_three_sixty_height"
@@ -53,7 +53,7 @@
                      android:textStyle="bold"
                      />
 
-               <com.worldventures.dreamtrips.modules.tripsimages.view.custom.HotFixRecyclerView
+               <android.support.v7.widget.RecyclerView
                      android:id="@+id/recyclerViewRecent"
                      android:layout_width="match_parent"
                      android:layout_height="@dimen/video_three_sixty_height_small"

@@ -6,7 +6,7 @@
       android:layout_height="match_parent"
       >
 
-   <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ImageryView
+   <com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ImageryView
          android:id="@+id/iv_image"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

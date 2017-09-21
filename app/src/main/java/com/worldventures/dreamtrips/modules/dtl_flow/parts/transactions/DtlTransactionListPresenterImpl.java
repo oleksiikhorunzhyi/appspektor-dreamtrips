@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.Tr
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.StringJoiner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,7 +52,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
    public void loadFirstPage() {
       getView().onRefreshProgress();
       getView().resetViewData();
-      getView().getRunnableView().postDelayed(new Runnable() {
+      if (getView().getRunnableView() != null) getView().getRunnableView().postDelayed(new Runnable() {
          @Override
          public void run() {
             try {
@@ -68,14 +69,11 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
          //TODO request all transactions from API
          //Faking loading Time
          getView().onRefreshProgress();
-         getView().getRunnableView().postDelayed(new Runnable() {
+         if (getView().getRunnableView() != null) getView().getRunnableView().postDelayed(new Runnable() {
             @Override
             public void run() {
                try {
-                  allItems = mockItems;
-                  getView().setAllTransactions(mockItems);
-                  getView().onRefreshSuccess(true);
-                  getView().searchQuery(query);
+                  searchQuery(query);
                } catch (Exception e) {}
             }
          }, 3000);
@@ -83,6 +81,13 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
       } else
          getView().searchQuery(query);
 
+   }
+
+   public void searchQuery(String query) {
+      allItems = mockItems;
+      getView().setAllTransactions(mockItems);
+      getView().onRefreshSuccess(true);
+      getView().searchQuery(query);
    }
 
    @Override

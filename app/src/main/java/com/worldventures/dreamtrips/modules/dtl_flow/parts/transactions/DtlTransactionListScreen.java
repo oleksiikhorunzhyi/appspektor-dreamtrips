@@ -30,4 +30,6 @@ public interface DtlTransactionListScreen extends DtlScreen {
 
    void resetViewData();
 
+   void setTransactionsView(TransactionView transactionsView);
+
 }

@@ -146,4 +146,9 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
 
    }
 
+   @Override
+   public void setTransactionsView(TransactionView transactionsView) {
+      this.transactionsView = transactionsView;
+   }
+
 }

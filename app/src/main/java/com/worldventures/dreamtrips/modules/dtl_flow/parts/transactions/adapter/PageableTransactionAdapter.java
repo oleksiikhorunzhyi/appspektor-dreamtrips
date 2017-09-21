@@ -161,10 +161,16 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
 
       public void bind(int position) {
          merchantName.setText(transactionsList.get(position).getMerchantName());
-         earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
+         earnedPoints.setText(getEarnedPointText(transactionsList.get(position).getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
          transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
+      }
+
+      private String getEarnedPointText(String earnedPoints) {
+         if (earnedPoints == null) return "";
+
+         return "+" + earnedPoints + "pt";
       }
 
    }

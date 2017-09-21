@@ -349,5 +349,6 @@
    <dimen name="dtl_transaction_screen_item_earned_points_checker_margin_left">4dp</dimen>
    <dimen name="dtl_transaction_screen_item_transaction_status_icon_margin">4dp</dimen>
    <dimen name="dtl_transaction_search_margin">12sp</dimen>
+   <dimen name="left_transaction_space">8dp</dimen>
 
 </resources>

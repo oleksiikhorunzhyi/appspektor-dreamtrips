@@ -157,6 +157,6 @@
    <string name="dtl_no_transaction_message">You do not have any transaction so far.</string>
    <!-- DTL Transactions Screen strings -->
    <string name="dtl_transaction_screen_sub_total_text">Sub Total amount: $</string>
-   <string name="dtl_transaction_screen_earned_points_text">Earned Points:&#160;</string>
+   <string name="dtl_transaction_screen_earned_points_text">You earned </string>
    <string name="dtl_all_locations">All locations</string>
 </resources>

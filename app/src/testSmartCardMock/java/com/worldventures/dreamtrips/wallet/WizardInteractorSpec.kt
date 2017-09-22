@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
+import com.worldventures.dreamtrips.social.ui.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.WalletRecordToSmartCardRecordConverter

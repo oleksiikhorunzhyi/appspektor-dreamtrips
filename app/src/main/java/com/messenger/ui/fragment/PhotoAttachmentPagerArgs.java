@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.messenger.entities.PhotoAttachment;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 
 import java.util.List;
 

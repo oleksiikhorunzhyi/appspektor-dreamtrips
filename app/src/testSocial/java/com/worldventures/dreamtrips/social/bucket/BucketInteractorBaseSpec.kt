@@ -16,13 +16,15 @@ import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.bucketlist.model.converter.*
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider
 import com.worldventures.dreamtrips.modules.common.model.User
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider
 import com.worldventures.dreamtrips.modules.mapping.converter.*
 import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager
+import com.worldventures.dreamtrips.social.domain.mapping.*
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
@@ -44,7 +46,7 @@ abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSp
       lateinit var bucketInteractor: BucketInteractor
 
       fun setup(storageSet: () -> Set<ActionStorage<*>>,
-                mockDb: SnappyRepository,
+                mockDb: SocialSnappyRepository,
                 httpService: () -> MockHttpActionService) {
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
@@ -57,7 +59,7 @@ abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSp
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { getMappery() }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(SocialSnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
          daggerCommandActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
          daggerCommandActionService.registerProvider(UploaderyInteractor::class.java) { UploaderyInteractor(janet) }

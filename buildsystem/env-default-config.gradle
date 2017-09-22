@@ -5,6 +5,7 @@ ext {
                DreamTripsApi          : [String: '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"'],
                BACKOFFICE_URL         : [String: '"https://backoffice.qa-worldventures.biz"'],
                UPLOADERY_API_URL      : [String: '"http://techery-dt-staging-uploadery.techery.io"'],
+               FORGOT_PASSWORD_URL    : [String: '"https://qaforgotlogin.wvhservices.com"'],
                VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader-qa.dreamtrips.com"'],
                API_VERSION            : [String: '"2"'],
                API_TIMEOUT_SEC        : [long: '60'],

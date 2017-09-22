@@ -5,20 +5,20 @@ import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
-public class TripImageConverter implements Converter<TripImage, com.worldventures.dreamtrips.modules.tripsimages.model.TripImage> {
+public class TripImageConverter implements Converter<TripImage, com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage> {
    @Override
    public Class<TripImage> sourceClass() {
       return TripImage.class;
    }
 
    @Override
-   public Class<com.worldventures.dreamtrips.modules.tripsimages.model.TripImage> targetClass() {
-      return com.worldventures.dreamtrips.modules.tripsimages.model.TripImage.class;
+   public Class<com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage> targetClass() {
+      return com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage.class;
    }
 
    @Override
-   public com.worldventures.dreamtrips.modules.tripsimages.model.TripImage convert(MapperyContext mapperyContext, TripImage sourceTripImage) {
-      com.worldventures.dreamtrips.modules.tripsimages.model.TripImage tripImage = new com.worldventures.dreamtrips.modules.tripsimages.model.TripImage();
+   public com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage convert(MapperyContext mapperyContext, TripImage sourceTripImage) {
+      com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage tripImage = new com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage();
       tripImage.setId(sourceTripImage.id());
       tripImage.setUrl(sourceTripImage.url());
       tripImage.setOriginUrl(sourceTripImage.originUrl());

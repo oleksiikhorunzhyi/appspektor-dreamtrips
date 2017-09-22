@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.trips;
 
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
-import com.worldventures.dreamtrips.modules.infopages.presenter.OtaPresenter;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.OtaPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;

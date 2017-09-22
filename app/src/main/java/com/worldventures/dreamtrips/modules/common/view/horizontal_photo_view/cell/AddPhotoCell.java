@@ -9,7 +9,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoModel;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.AddPhotoModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

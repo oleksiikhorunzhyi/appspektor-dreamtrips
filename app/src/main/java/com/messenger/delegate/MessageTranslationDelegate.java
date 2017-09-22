@@ -1,5 +1,6 @@
 package com.messenger.delegate;
 
+import com.messenger.analytics.TranslateMessageAction;
 import com.messenger.api.TranslationInteractor;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataTranslation;
@@ -10,9 +11,8 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
 import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,12 +26,15 @@ public class MessageTranslationDelegate {
    private TranslationsDAO translationsDAO;
    private SessionHolder sessionHolder;
    private TranslationInteractor translationInteractor;
+   private AnalyticsInteractor analyticsInteractor;
 
    @Inject
-   public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO, SessionHolder sessionHolder) {
+   public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO,
+         SessionHolder sessionHolder, AnalyticsInteractor analyticsInteractor) {
       this.translationInteractor = translationInteractor;
       this.translationsDAO = translationsDAO;
       this.sessionHolder = sessionHolder;
+      this.analyticsInteractor = analyticsInteractor;
    }
 
    public void translateMessage(DataMessage message) {
@@ -43,7 +46,7 @@ public class MessageTranslationDelegate {
             return;
          }
          if (dataTranslation != null && dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED) {
-            TrackingHelper.translateMessage(translateToLocale);
+            analyticsInteractor.analyticsActionPipe().send(new TranslateMessageAction(translateToLocale));
             dataTranslation.setTranslateStatus(TranslationStatus.TRANSLATED);
             translationsDAO.save(dataTranslation);
          }
@@ -60,7 +63,7 @@ public class MessageTranslationDelegate {
                   .toLanguage(toLocale)
                   .build()))
             .subscribe(new ActionStateSubscriber<TranslateTextHttpAction>().onSuccess(translateTextAction -> {
-               TrackingHelper.translateMessage(toLocale);
+               analyticsInteractor.analyticsActionPipe().send(new TranslateMessageAction(toLocale));
                onTranslatedText(dataTranslation, translateTextAction.getTranslatedText());
             }).onFail((translateTextAction, throwable) -> onError(dataTranslation, throwable)));
    }

@@ -8,10 +8,10 @@ import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.util.chat.ChatTimestampFormatter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
 
 import java.io.IOException;
 

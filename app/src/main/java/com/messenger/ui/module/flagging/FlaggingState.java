@@ -3,7 +3,7 @@ package com.messenger.ui.module.flagging;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 
 import java.util.ArrayList;
 import java.util.List;

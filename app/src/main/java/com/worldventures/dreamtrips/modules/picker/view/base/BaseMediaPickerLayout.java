@@ -15,7 +15,7 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
-import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.GridAutofitLayoutManager;
 import com.worldventures.dreamtrips.modules.picker.model.BaseMediaPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.presenter.base.BaseMediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.picker.util.MediaPickerStep;
@@ -42,6 +42,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
    private GridAutofitLayoutManager layoutManager;
    private OnNextClickListener onNextClickListener;
    private OnBackClickListener onBackClickListener;
+   private OnAttachedListener onAttachedListener;
    private Bundle arguments;
 
    public BaseMediaPickerLayout(@NonNull Context context) {
@@ -99,6 +100,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       getPresenter().attachView(this);
+      if (onAttachedListener != null) onAttachedListener.onAttached();
    }
 
    @Override
@@ -122,6 +124,14 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    public void setOnBackClickListener(OnBackClickListener onBackClickListener) {
       this.onBackClickListener = onBackClickListener;
+   }
+
+   public OnAttachedListener getOnAttachedListener() {
+      return onAttachedListener;
+   }
+
+   public void setOnAttachedListener(OnAttachedListener onAttachedListener) {
+      this.onAttachedListener = onAttachedListener;
    }
 
    public Bundle getArguments() {
@@ -185,5 +195,9 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    public interface OnBackClickListener {
       void onBackClick();
+   }
+
+   public interface OnAttachedListener {
+      void onAttached();
    }
 }

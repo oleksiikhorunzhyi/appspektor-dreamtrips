@@ -7,7 +7,7 @@
       android:orientation="vertical"
       >
 
-   <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ProgressiveDraweeView
+   <com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ProgressiveDraweeView
          android:id="@+id/iv_bg"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

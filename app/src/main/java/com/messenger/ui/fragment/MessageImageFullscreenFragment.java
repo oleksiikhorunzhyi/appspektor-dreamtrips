@@ -20,12 +20,12 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
-import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
-import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ScaleImageView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

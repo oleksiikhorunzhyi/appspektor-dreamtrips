@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.di.external;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
+import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.holder.WalletVideoHolderDelegate;
 

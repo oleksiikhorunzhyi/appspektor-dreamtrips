@@ -17,22 +17,23 @@ import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImage
 import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.*
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.*
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.BucketBody
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketBody
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.BucketListDiskStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.BucketMemoryStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.create
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import io.techery.janet.ActionState
 import io.techery.janet.http.annotations.HttpAction.Method
 import io.techery.janet.http.test.MockHttpActionService
@@ -348,7 +349,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
       val testUploaderyPhoto: UploaderyImage = mock()
 
       val mockMemoryStorage: BucketMemoryStorage = spy()
-      val mockDb: SnappyRepository = spy()
+      val mockDb: SocialSnappyRepository = spy()
 
       val uploadControllerStorage: UploadBucketPhotoInMemoryStorage = mock()
 

@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
-import com.worldventures.dreamtrips.modules.background_uploading.VideoMicroserviceModule;
+import com.worldventures.dreamtrips.social.ui.background_uploading.VideoMicroserviceModule;
 
 import java.net.CookieManager;
 import java.util.List;

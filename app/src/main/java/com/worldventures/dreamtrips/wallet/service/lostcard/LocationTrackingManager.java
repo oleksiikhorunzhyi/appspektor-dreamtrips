@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
@@ -19,8 +17,7 @@ public class LocationTrackingManager {
 
    private final SmartCardInteractor smartCardInteractor;
    private final SmartCardLocationInteractor locationInteractor;
-   private final LogoutInteractor logoutInteractor;
-   private final LoginInteractor loginInteractor;
+   private final AuthInteractor authInteractor;
    private final WalletDetectLocationService locationService;
    private final LostCardManager lostCardManager;
    private final SessionHolder sessionHolder;
@@ -29,14 +26,13 @@ public class LocationTrackingManager {
    private Subscription reloginSubscription;
 
    LocationTrackingManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         LogoutInteractor logoutInteractor, WalletDetectLocationService locationService, LostCardManager lostCardManager,
-         LoginInteractor loginInteractor, SessionHolder sessionHolder) {
+         WalletDetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager,
+         SessionHolder sessionHolder) {
       this.smartCardInteractor = smartCardInteractor;
       this.locationInteractor = locationInteractor;
-      this.logoutInteractor = logoutInteractor;
       this.locationService = locationService;
+      this.authInteractor = authInteractor;
       this.lostCardManager = lostCardManager;
-      this.loginInteractor = loginInteractor;
       this.sessionHolder = sessionHolder;
    }
 
@@ -46,11 +42,11 @@ public class LocationTrackingManager {
 
       final Observable<Object> stopper = Observable.merge(
             smartCardInteractor.wipeSmartCardDataPipe().observeSuccess().map(command -> (Void) null),
-            logoutInteractor.logoutPipe().observeSuccess().map(command -> (Void) null));
+            authInteractor.logoutPipe().observeSuccess().map(command -> (Void) null));
 
       trackSubscription = Observable.combineLatest(
             locationService.observeLocationSettingState().startWith(locationService.isEnabled()),
-            loginInteractor.loginActionPipe().observeSuccessWithReplay()
+            authInteractor.loginActionPipe().observeSuccessWithReplay()
                   .map(Command::getResult).startWith(sessionHolder.get().orNull()),
             locationInteractor.updateTrackingStatusPipe().observeSuccessWithReplay()
                   .map(Command::getResult)
@@ -68,7 +64,7 @@ public class LocationTrackingManager {
    }
 
    private void observeRelogin() {
-      reloginSubscription = loginInteractor.loginActionPipe()
+      reloginSubscription = authInteractor.loginActionPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .subscribe(session -> track());

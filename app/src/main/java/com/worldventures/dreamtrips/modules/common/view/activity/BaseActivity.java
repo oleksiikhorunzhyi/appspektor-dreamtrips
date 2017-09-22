@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
 
 import java.util.List;
@@ -27,7 +27,7 @@ import rx.schedulers.Schedulers;
 public abstract class BaseActivity extends InjectingActivity {
 
    @Inject protected AnalyticsInteractor analyticsInteractor;
-   @Inject protected LogoutInteractor logoutInteractor;
+   @Inject protected AuthInteractor authInteractor;
    @Inject protected PermissionDispatcher permissionDispatcher;
    @Inject protected MediaPickerFacebookService pickerFacebookService;
 
@@ -43,7 +43,7 @@ public abstract class BaseActivity extends InjectingActivity {
    }
 
    private void subscribeToLogoutEvents() {
-      logoutSubscription = logoutInteractor.logoutPipe().observe()
+      logoutSubscription = authInteractor.logoutPipe().observe()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<LogoutCommand>()
                .onProgress((logoutCommand, integer) -> {

@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.common.service;
 
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
+import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCommand;
+import com.worldventures.dreamtrips.modules.common.command.ClearStoragesCommand;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.list_storage.operation;
 
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 
 import java.util.List;
 

@@ -44,6 +44,7 @@ import rx.Observable;
 public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerDialogView {
 
    private TextView selectedCount;
+   private TextView cancelButton;
    private MediaPickerContainer mediaPickerContainer;
    private ViewFlipper pickerNavigationViewFlipper;
 
@@ -110,24 +111,30 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    private void initUIWithListeners() {
       selectedCount = (TextView) findViewById(R.id.tv_selected_count);
       mediaPickerContainer = (MediaPickerContainer) findViewById(R.id.picker_container);
+      cancelButton = (TextView) findViewById(R.id.btn_cancel);
       pickerNavigationViewFlipper = (ViewFlipper) findViewById(R.id.flipper_picker_navigation);
 
       findViewById(R.id.btn_done).setOnClickListener(view -> onDone());
-      findViewById(R.id.btn_cancel).setOnClickListener(view -> dismiss());
+      findViewById(R.id.btn_cancel).setOnClickListener(view -> onCancel());
    }
 
    private TreeMap<MediaPickerStep, BaseMediaPickerLayout> providePickerPages() {
       final TreeMap<MediaPickerStep, BaseMediaPickerLayout> pages = new TreeMap<>();
+
       final GalleryMediaPickerLayout gallery = new GalleryMediaPickerLayout(mediaPickerStaticItemsStrategy,
             photoPickLimitStrategy, videoPickLimitStrategy, getContext());
       gallery.setOnNextClickListener((args) -> mediaPickerContainer.goNext());
+      gallery.setOnAttachedListener(() -> cancelButton.setText(R.string.cancel));
       objectGraph.inject(gallery);
       pages.put(gallery.getStep(), gallery);
+
       final FacebookAlbumsPickerLayout facebookAlbums = new FacebookAlbumsPickerLayout(getContext());
       facebookAlbums.setOnNextClickListener((args) -> mediaPickerContainer.goNext(args));
       facebookAlbums.setOnBackClickListener(() -> mediaPickerContainer.goBack());
+      facebookAlbums.setOnAttachedListener(() -> cancelButton.setText(R.string.nav_back));
       objectGraph.inject(facebookAlbums);
       pages.put(facebookAlbums.getStep(), facebookAlbums);
+
       final FacebookPhotosPickerLayout facebookPhotos = new FacebookPhotosPickerLayout(photoPickLimitStrategy,
             getContext());
       objectGraph.inject(facebookPhotos);
@@ -151,6 +158,11 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
          onDoneListener.onDone(presenter.providePickerResult());
       }
       dismiss();
+   }
+
+   public void onCancel() {
+      if (mediaPickerContainer.canGoBack()) goBack();
+      else dismiss();
    }
 
    @OnClick(R.id.btn_back)

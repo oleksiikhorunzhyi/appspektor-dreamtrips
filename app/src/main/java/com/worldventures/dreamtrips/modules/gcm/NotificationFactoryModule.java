@@ -6,7 +6,7 @@ import com.messenger.notification.MessengerNotificationFactory;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.modules.friends.notification.FriendNotificationFactory;
+import com.worldventures.dreamtrips.social.ui.friends.notification.FriendNotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.delegate.MerchantNotficationFactory;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactoryHolder;
 import com.worldventures.dreamtrips.modules.gcm.delegate.PhotoNotificationFactory;

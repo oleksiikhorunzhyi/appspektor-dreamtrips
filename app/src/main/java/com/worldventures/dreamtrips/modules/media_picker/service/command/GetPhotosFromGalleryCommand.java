@@ -5,7 +5,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.delegate.PhotosProvider;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import java.util.Date;
 import java.util.List;

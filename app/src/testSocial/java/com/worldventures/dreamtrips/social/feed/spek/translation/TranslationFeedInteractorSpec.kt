@@ -7,12 +7,12 @@ import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableTranslatedText
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment
-import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor
-import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand
-import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
+import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
+import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment
+import com.worldventures.dreamtrips.social.ui.feed.service.TranslationFeedInteractor
+import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand
+import com.worldventures.dreamtrips.social.ui.feed.service.storage.TranslationDiscStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -80,7 +80,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
    }
 }) {
    companion object BaseCompanion {
-      lateinit var mockDb: SnappyRepository
+      lateinit var mockDb: SocialSnappyRepository
 
       val languageTo = "en-US"
       val translationFromNetwork = "translationFromNetwork"
@@ -104,7 +104,7 @@ class TranslationFeedInteractorSpec : BaseSpec({
                .build()
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(SocialSnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(TranslationFeedInteractor::class.java) { translateFeedInteractor }
          daggerCommandActionService.registerProvider(TranslationInteractor::class.java) { translationInteractor }
 

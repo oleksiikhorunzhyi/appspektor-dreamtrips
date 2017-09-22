@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetad
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;

@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Image;
 
 import java.util.Date;
 

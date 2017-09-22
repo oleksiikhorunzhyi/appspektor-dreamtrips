@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.impl;
 
 
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;

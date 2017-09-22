@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
 
 public class ShareDialog extends MaterialDialog {
 

@@ -9,15 +9,15 @@ import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackReason
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedbackReason
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackTypeConverter
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetFeedbackCommand
-import com.worldventures.dreamtrips.modules.infopages.service.storage.FeedbackTypeStorage
 import com.worldventures.dreamtrips.modules.mapping.converter.Converter
-import com.worldventures.dreamtrips.modules.mapping.converter.FeedbackImageAttachmentConverter
+import com.worldventures.dreamtrips.social.domain.mapping.FeedbackImageAttachmentConverter
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
+import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment
+import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackType
+import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackTypeConverter
+import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetFeedbackCommand
+import com.worldventures.dreamtrips.social.ui.infopages.service.storage.FeedbackTypeStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -27,7 +27,6 @@ import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xdescribe
 import org.junit.Assert
 import org.mockito.ArgumentMatchers.anyList
 import rx.observers.TestSubscriber
@@ -50,7 +49,7 @@ class FeedbackInteractorSpec : BaseSpec({
 
       it("should restore feedback reasons from DB") {
          feedbackInteractor.feedbackPipe.send(GetFeedbackCommand())
-         verify(mockDb, times(1)).feedbackTypes = anyList()
+         verify(mockSocialDb, times(1)).feedbackTypes = anyList()
       }
    }
 
@@ -70,16 +69,16 @@ class FeedbackInteractorSpec : BaseSpec({
 
 }) {
    companion object {
-      lateinit var mockDb: SnappyRepository
+      lateinit var mockSocialDb: SocialSnappyRepository
       val stubFeedbackReasons: List<FeedbackReason> = makeStubFeedbackReasons()
 
       lateinit var feedbackInteractor: FeedbackInteractor
 
       fun setup(httpService: ActionService) {
-         mockDb = spy()
+         mockSocialDb = spy()
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
-               .bindStorageSet(setOf(FeedbackTypeStorage(mockDb)))
+               .bindStorageSet(setOf(FeedbackTypeStorage(mockSocialDb)))
                .wrapDagger()
          val janet = Janet.Builder()
                .addService(daggerCommandActionService)

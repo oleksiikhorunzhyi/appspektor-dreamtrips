@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
-import com.worldventures.dreamtrips.modules.settings.service.SettingsInteractor
+import com.worldventures.dreamtrips.social.ui.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.action.DefaultRecordIdStorage

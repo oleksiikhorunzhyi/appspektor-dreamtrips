@@ -6,26 +6,29 @@ import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.post.model.response.ImmutablePostStatus
+import com.worldventures.dreamtrips.api.post.model.response.PostStatus
+import com.worldventures.dreamtrips.api.post.model.response.PostStatuses
 import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationMutator
-import com.worldventures.dreamtrips.modules.background_uploading.model.video.VideoProcessBunchStatus
-import com.worldventures.dreamtrips.modules.background_uploading.model.video.VideoProcessStatus
-import com.worldventures.dreamtrips.modules.background_uploading.service.CompoundOperationsInteractor
-import com.worldventures.dreamtrips.modules.background_uploading.service.PingAssetStatusInteractor
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.DeleteCompoundOperationsCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.QueryCompoundOperationsCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.UpdateCompoundOperationCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.PerformUpdateVideoStatusCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.video.UpdateVideoProcessStatusCommand
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost
-import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem
-import com.worldventures.dreamtrips.modules.feed.model.video.Video
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationMutator
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.video.VideoProcessBunchStatus
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.video.VideoProcessStatus
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.DeleteCompoundOperationsCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.UpdateCompoundOperationCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.PerformUpdateVideoStatusCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.UpdateVideoProcessStatusCommand
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem
+import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
+import com.worldventures.dreamtrips.social.ui.feed.model.VideoFeedItem
+import com.worldventures.dreamtrips.social.ui.feed.model.video.Video
 import com.worldventures.dreamtrips.social.background_uploading.spec.createPostBodyWithUploadedVideo
 import com.worldventures.dreamtrips.social.background_uploading.spec.createPostCompoundOperationModel
 import io.techery.janet.ActionService
@@ -45,7 +48,7 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
 
    describe("PingAssetStatusIndicator") {
       it("should delete compound completed operation on success") {
-         initJanet(getProcessingCompoundOperation(), VideoProcessStatus.STATUS_COMPLETED)
+         initJanet(getProcessingCompoundOperation(futurePostUid = FUTURE_POST_UID), getPostStatusesList( arrayOf(FUTURE_POST_UID)) )
 
          val deleteOperationSubscriber = TestSubscriber<ActionState<CompoundOperationsCommand>>()
          compoundOperationsInteractor.compoundOperationsPipe()
@@ -61,8 +64,8 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
          AssertUtil.assertStatusCount(deleteOperationSubscriber, ActionState.Status.START, 1)
       }
 
-      it("should refresh compound completed operation on fail") {
-         initJanet(getProcessingCompoundOperation(), VideoProcessStatus.STATUS_ERROR)
+      it("shouldn't refresh compound completed operation if post is not created on server") {
+         initJanet(getProcessingCompoundOperation(futurePostUid = FUTURE_POST_UID), emptyArray())
 
          val updateOperationSubscriber = TestSubscriber<ActionState<CompoundOperationsCommand>>()
          compoundOperationsInteractor.compoundOperationsPipe()
@@ -75,11 +78,11 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
                .subscribe(updateVideoStatusSubscriber)
 
          AssertUtil.assertActionSuccess(updateVideoStatusSubscriber) { true }
-         AssertUtil.assertStatusCount(updateOperationSubscriber, ActionState.Status.START, 1)
+         AssertUtil.assertStatusCount(updateOperationSubscriber, ActionState.Status.START, 0)
       }
 
-      it("should perform update video status command if there are some processing items") {
-         initJanet(getProcessingCompoundOperation(), VideoProcessStatus.STATUS_COMPLETED)
+      it("should delete 1 compound completed operation from 2 if there only one post is created on server") {
+         initJanet(getProcessingCompoundOperationList(), getPostStatusesList( arrayOf(FUTURE_POST_UID, FUTURE_POST_UID_2)) )
          val updateOperationSubscriber = TestSubscriber<ActionState<UpdateVideoProcessStatusCommand>>()
          assetStatusInteractor.updateVideoProcessStatusPipe()
                .createObservable(UpdateVideoProcessStatusCommand())
@@ -96,14 +99,14 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
       }
 
       it("should remove processing operations if there are such items in the feed") {
-         initJanet(getProcessingCompoundOperation(VIDEO_UID), VideoProcessStatus.STATUS_COMPLETED)
+         initJanet(getProcessingCompoundOperation(VIDEO_UID, FUTURE_POST_UID),  getPostStatusesList( arrayOf(FUTURE_POST_UID)) )
          val deleteOperationSubscriber = TestSubscriber<ActionState<CompoundOperationsCommand>>()
          compoundOperationsInteractor.compoundOperationsPipe()
                .observe()
                .filter { it.action is DeleteCompoundOperationsCommand }
                .subscribe(deleteOperationSubscriber)
 
-         val feedItemsVideoProcessingSubscriber = makeFeedItemsWithVideo(VIDEO_UID)
+         val feedItemsVideoProcessingSubscriber = makeFeedItemsWithVideo(VIDEO_UID, FUTURE_POST_UID)
          val feedItemsSubscriber = TestSubscriber<ActionState<FeedItemsVideoProcessingStatusCommand>>()
          assetStatusInteractor.feedItemsVideoProcessingPipe()
                .createObservable(FeedItemsVideoProcessingStatusCommand(feedItemsVideoProcessingSubscriber))
@@ -117,17 +120,23 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
    companion object {
       const val ASSET_ID = "Uxa1"
       const val VIDEO_UID = "1fab63"
+      const val FUTURE_POST_UID = "9379992"
+
+      const val ASSET_ID_2 = "2Uxa1"
+      const val VIDEO_UID_2 = "21fab63"
+      const val FUTURE_POST_UID_2 = "29379992"
+
       lateinit var assetStatusInteractor: PingAssetStatusInteractor
       lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
 
-      fun initJanet(contracts: List<Contract>, videoProcessStatus: String) {
+      fun initJanet(contracts: List<Contract>, statuses: Array<PostStatus>) {
          val daggerCommandActionService = CommandActionService().wrapDagger()
 
          val janet = Janet.Builder()
                .addService(mockActionService(daggerCommandActionService, contracts))
                .addService(MockHttpActionService.Builder().apply {
-                  bind(MockHttpActionService.Response(200).body(makeBunchVideoProcessingStatus(videoProcessStatus))) {
-                     it.url.contains("api/v1/Asset/Status")
+                  bind(MockHttpActionService.Response(200).body(makeBunchVideoProcessingStatus(statuses))) {
+                     it.url.contains("api/social/posts/exists")
                   }
                   }.build())
                .addService(MockAnalyticsService())
@@ -150,15 +159,10 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
             }
             .build()
 
-      fun makeBunchVideoProcessingStatus(videoProcessStatus: String): VideoProcessBunchStatus {
-         val bunchStatus = mock<VideoProcessBunchStatus>()
-
-         val status = mock<VideoProcessStatus>()
-         whenever(status.assetStatus).thenReturn(videoProcessStatus)
-         whenever(status.assetId).thenReturn(ASSET_ID)
-
-         whenever(bunchStatus.videoProcessStatuses).thenReturn(listOf(status))
-         return bunchStatus
+      fun makeBunchVideoProcessingStatus(statuses: Array<PostStatus>): PostStatuses {
+         val postStatus = mock<PostStatuses>()
+         whenever(postStatus.postStatuses()).thenReturn(statuses)
+         return postStatus
       }
 
       fun mockSessionHolder(): SessionHolder {
@@ -168,21 +172,35 @@ class PingAssetStatusIndicatorSpec : BaseSpec ({
          return sessionHolder
       }
 
-      fun getProcessingCompoundOperation(videoUid:String? = null): List<Contract> {
+      fun getProcessingCompoundOperation(videoUid:String? = null, futurePostUid: String? = null): List<Contract> {
          System.out.print("getProcessingCompoundOperationContract")
-         return listOf(BaseContract.of(QueryCompoundOperationsCommand::class.java).result(
-               listOf(createPostCompoundOperationModel(
-                     createPostBodyWithUploadedVideo(ASSET_ID, videoUid),
-                     CompoundOperationState.PROCESSING))))
+         val compoundOperationList = listOf(createPostCompoundOperationModel(
+               createPostBodyWithUploadedVideo(ASSET_ID, videoUid, futurePostUid),
+               CompoundOperationState.PROCESSING))
+         return listOf(BaseContract.of(QueryCompoundOperationsCommand::class.java).result(compoundOperationList))
       }
 
-      fun makeFeedItemsWithVideo(uid: String):List<FeedItem<TextualPost>> {
+      fun getProcessingCompoundOperationList(): List<Contract> {
+         val compoundOperationList = listOf(
+               createPostCompoundOperationModel(createPostBodyWithUploadedVideo(ASSET_ID, VIDEO_UID, FUTURE_POST_UID),
+                     CompoundOperationState.PROCESSING),
+               createPostCompoundOperationModel(createPostBodyWithUploadedVideo(ASSET_ID_2, VIDEO_UID_2, FUTURE_POST_UID_2),
+                     CompoundOperationState.PROCESSING))
+         return listOf(BaseContract.of(QueryCompoundOperationsCommand::class.java).result(compoundOperationList))
+      }
+
+      fun getPostStatusesList(ids: Array<String>) =
+            Array<PostStatus>(ids.size, {
+               ImmutablePostStatus.builder().uid(ids[it]).status(PostStatus.Status.COMPLETED).build()})
+
+      fun makeFeedItemsWithVideo(videoUid: String, postUid: String):List<FeedItem<TextualPost>> {
          val item = FeedItem<TextualPost>()
          val post = TextualPost()
+         post.uid = postUid
          item.item = post
          val feedEntityHolder = VideoFeedItem()
          val video = Video()
-         video.uid = uid
+         video.uid = videoUid
          feedEntityHolder.item = video
          post.attachments = listOf(feedEntityHolder)
          return listOf(item)

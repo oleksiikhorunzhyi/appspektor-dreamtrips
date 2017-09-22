@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.wallet.di.external;
 
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
-import com.worldventures.dreamtrips.modules.video.cell.ProgressVideoCellHelper;
-import com.worldventures.dreamtrips.modules.video.utils.CachedModelHelper;
+import com.worldventures.dreamtrips.social.ui.video.cell.ProgressVideoCellHelper;
+import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.delegate.WalletVideoCallback;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.holder.WalletVideoHolderDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
@@ -21,18 +20,10 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
 
    @Override
    public void sendPlayVideoAction(WalletVideoModel video) {
-      TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
-            .get()
-            .getUser()
-            .getUsername(), TrackingHelper.ACTION_MEMBERSHIP_PLAY, video.getVideo().getVideoName());
    }
 
    @Override
    public void sendMembershipVideoAction(WalletVideoModel video) {
-      TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get()
-            .get()
-            .getUser()
-            .getUsername(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_START, video.getVideo().getVideoName());
    }
 
    @Override
@@ -49,8 +40,8 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
       }
 
       @Override
-      public void onDownloadClick(WalletVideoCallback videoCallback) {
-         progressVideoCellHelper.onDownloadClick(videoCallback);
+      public void onDownloadClick(WalletVideoCallback videoCallback, WalletVideoModel walletVideoModel) {
+         progressVideoCellHelper.onDownloadClick(videoCallback, walletVideoModel);
       }
 
       @Override

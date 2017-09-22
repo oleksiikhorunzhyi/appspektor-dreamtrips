@@ -9,8 +9,7 @@ import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand
@@ -41,14 +40,13 @@ class LocationTrackingManagerTest : BaseTest() {
 
    private lateinit var smartCardInteractor: SmartCardInteractor
    private lateinit var locationInteractor: SmartCardLocationInteractor
-   private lateinit var logoutInteractor: LogoutInteractor
-   private lateinit var loginInteractor: LoginInteractor
+   private lateinit var authInteractor: AuthInteractor
 
    private val sessionHolder: SessionHolder = mock()
 
    private fun createLocationTrackingManager(lostCardManager: LostCardManager) = LocationTrackingManager(
-         smartCardInteractor, locationInteractor, logoutInteractor, MockWalletLocationService(), lostCardManager,
-         loginInteractor, sessionHolder)
+         smartCardInteractor, locationInteractor, MockWalletLocationService(), authInteractor, lostCardManager,
+         sessionHolder)
 
    private fun createUserSession() {
       val userSession: UserSession = mock()
@@ -59,8 +57,7 @@ class LocationTrackingManagerTest : BaseTest() {
    fun createInteractors() {
       smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
       locationInteractor = interactorBuilder.createInteractor(SmartCardLocationInteractor::class)
-      logoutInteractor = interactorBuilder.createInteractor(LogoutInteractor::class)
-      loginInteractor = interactorBuilder.createInteractor(LoginInteractor::class)
+      authInteractor = interactorBuilder.createInteractor(AuthInteractor::class)
       whenever(sessionHolder.get()).thenReturn(Optional.absent())
    }
 
@@ -98,7 +95,7 @@ class LocationTrackingManagerTest : BaseTest() {
       val trackManager = createLocationTrackingManager(lostCardManager)
       trackManager.track()
 
-      loginInteractor.loginActionPipe().send(LoginCommand("", ""))
+      authInteractor.loginActionPipe().send(LoginCommand("", ""))
 
       verify(lostCardManager, times(1)).connect()
       verify(lostCardManager, times(1)).disconnect()
@@ -112,7 +109,7 @@ class LocationTrackingManagerTest : BaseTest() {
       val trackManager = createLocationTrackingManager(lostCardManager)
       trackManager.track()
 
-      loginInteractor.loginActionPipe().send(LoginCommand("", ""))
+      authInteractor.loginActionPipe().send(LoginCommand("", ""))
 
       verify(lostCardManager, times(0)).connect()
       verify(lostCardManager, times(1)).disconnect()
@@ -127,7 +124,7 @@ class LocationTrackingManagerTest : BaseTest() {
       val trackManager = createLocationTrackingManager(lostCardManager)
       trackManager.track()
 
-      logoutInteractor.logoutPipe().send(LogoutCommand())
+      authInteractor.logoutPipe().send(LogoutCommand())
 
       verify(lostCardManager, times(1)).connect()
       verify(lostCardManager, times(1)).disconnect()
@@ -142,7 +139,7 @@ class LocationTrackingManagerTest : BaseTest() {
       val trackManager = createLocationTrackingManager(lostCardManager)
       trackManager.track()
 
-      logoutInteractor.logoutPipe().send(LogoutCommand())
+      authInteractor.logoutPipe().send(LogoutCommand())
 
       verify(lostCardManager, times(0)).connect()
       verify(lostCardManager, times(2)).disconnect()

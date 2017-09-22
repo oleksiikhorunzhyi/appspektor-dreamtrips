@@ -9,10 +9,10 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.ActivityEvent;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.command.ConfigurationCommand;
+import com.worldventures.dreamtrips.social.ui.video.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
-import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
+import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 

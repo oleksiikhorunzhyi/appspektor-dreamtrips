@@ -10,6 +10,7 @@ import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.storage.dao.MediaDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.TranslationsDAO;
+import com.messenger.ui.fragment.PhotoAttachmentPagerArgs;
 import com.messenger.util.Utils;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -18,10 +19,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -63,17 +60,12 @@ public class ChatUserInteractionHelper {
                }
                return new Pair<>(photoAttachments, 0);
             })
-            .map(listIntegerPair -> new FullScreenImagesBundle.Builder().position(listIntegerPair.second)
-                  .type(TripImagesType.FIXED)
-                  .route(Route.MESSAGE_IMAGE_FULLSCREEN)
-                  .fixedList(new ArrayList<>(listIntegerPair.first))
-                  .build())
-            .map(bundle -> NavigationConfigBuilder.forActivity()
-                  .data(bundle)
+            .map(listIntegerPair -> NavigationConfigBuilder.forActivity()
+                  .data(new PhotoAttachmentPagerArgs(listIntegerPair.first, listIntegerPair.second))
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                   .build())
             .compose(new IoToMainComposer<>())
-            .subscribe(navigationConfig -> router.moveTo(Route.FULLSCREEN_PHOTO_LIST, navigationConfig));
+            .subscribe(navigationConfig -> router.moveTo(Route.MESSENGER_FULLSCREEN_IMAGES, navigationConfig));
    }
 
    public void copyToClipboard(Context context, String messageId) {

@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedActionHandlerDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
@@ -17,6 +18,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityEditing
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 
 import javax.inject.Inject;
 
@@ -78,7 +80,6 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
       feedItem.setItem(feedEntity);
       checkCommentsAndLikesToLoad();
       refreshFeedItem();
-      view.showAdditionalInfo(feedEntity.getOwner());
    }
 
    private void subscribeForTripsDetails() {
@@ -156,6 +157,11 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
    }
 
    @Override
+   public void onDeleteVideo(Video video) {
+      feedInteractor.deleteVideoPipe().send(new DeleteVideoCommand(video));
+   }
+
+   @Override
    public void onEditPhoto(Photo photo) {
       feedActionHandlerDelegate.onEditPhoto(photo);
    }
@@ -180,7 +186,5 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
       void setFeedItem(FeedItem feedItem);
 
       void updateFeedItem(FeedItem feedItem);
-
-      void showAdditionalInfo(User user);
    }
 }

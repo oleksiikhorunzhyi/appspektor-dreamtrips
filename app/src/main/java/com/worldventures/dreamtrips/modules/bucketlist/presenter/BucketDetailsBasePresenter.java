@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -13,11 +12,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBu
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -108,22 +103,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
    public void openFullScreen(BucketPhoto selectedPhoto) {
       if ((bucketItem.getPhotos().contains(selectedPhoto)) && bucketItem.getOwner() != null) {
-         ArrayList<IFullScreenObject> photos = new ArrayList<>();
-         if (bucketItem.getCoverPhoto() != null) {
-            Queryable.from(bucketItem.getPhotos()).forEachR(photo -> photo.setIsCover(photo.getFSId()
-                  .equals(bucketItem.getCoverPhoto().getFSId())));
-         }
-         photos.addAll(bucketItem.getPhotos());
-
-         FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(photos.indexOf(selectedPhoto))
-               .type(TripImagesType.FIXED)
-               .route(Route.BUCKET_PHOTO_FULLSCREEN)
-               .userId(bucketItem.getOwner().getId())
-               .fixedList(photos)
-               .foreign(bucketItem.getOwner().getId() != appSessionHolder.get().get().getUser().getId())
-               .build();
-
-         view.openFullscreen(data);
+         view.openFullscreen(new BucketViewPagerBundle(bucketItem, bucketItem.getPhotos().indexOf(selectedPhoto)));
       }
    }
 
@@ -133,7 +113,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
                   .id(bucketItem.getUid())
                   .status(bucketItem.getStatus())
                   .type(bucketItem.getType())
-                  .coverId(photo.getFSId())
+                  .coverId(photo.getUid())
                   .build()))
             .observeOn(AndroidSchedulers.mainThread()))
             .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onSuccess(action -> {
@@ -160,7 +140,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
       void done();
 
-      void openFullscreen(FullScreenImagesBundle data);
+      void openFullscreen(BucketViewPagerBundle data);
 
       void setImages(List<T> photos);
    }

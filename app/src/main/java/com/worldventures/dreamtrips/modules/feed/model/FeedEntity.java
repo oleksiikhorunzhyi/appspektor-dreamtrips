@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public interface FeedEntity extends Serializable, UidItem, TranslatableItem {
@@ -45,4 +46,6 @@ public interface FeedEntity extends Serializable, UidItem, TranslatableItem {
    String getLanguage();
 
    boolean contentSame(FeedEntity feedEntity);
+
+   Date getCreatedAt();
 }

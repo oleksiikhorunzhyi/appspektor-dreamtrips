@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.media_picker.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
@@ -23,7 +24,7 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
    public void onPhotoPickerModelSelected(MediaPickerModel model) {
       if (getCheckedVideosCount() > 0) {
          resetModelState(model);
-         view.informUser(context.getString(R.string.picker_erros_photos_and_videos));
+         view.informUser(context.getString(R.string.picker_two_media_type_error));
          return;
       }
       if (!view.isPhotosMultiPickEnabled()) {
@@ -35,7 +36,8 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
          if (isPhotoPickLimitReached(getCheckedModelsCount())) {
             model.setChecked(false);
             view.informUser(String.format(context.getResources()
-                  .getString(R.string.photo_limitation_message), photoPickLimit));
+                  .getString(QuantityHelper.chooseResource(photoPickLimit, R.string.picker_photo_limit,
+                        R.string.picker_photo_limit_plural), photoPickLimit)));
          }
       }
       view.updatePickedItemsCount(Queryable.from(mediaPickerModels).count(MediaPickerModel::isChecked));

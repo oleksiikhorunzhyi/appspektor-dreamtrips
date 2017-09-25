@@ -53,7 +53,7 @@
             android:layout_marginTop="9dp"
             android:background="@drawable/custom_button_filters_map_focused"
             android:stateListAnimator="@null"
-            android:text="@string/filter_merchant_spa"
+            android:text="@string/filter_merchant_spas"
             android:textAllCaps="true"
             android:textColor="@color/dtl_text_color_disabled_filters"
             android:textSize="13sp"

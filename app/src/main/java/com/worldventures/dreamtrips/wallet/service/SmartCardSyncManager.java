@@ -202,7 +202,7 @@ public class SmartCardSyncManager {
    }
 
    private void connectSyncSmartCard() {
-      if (!featureHelper.isCardSyncSupported()) return;
+      if (featureHelper.isSampleCardMode()) return;
       Observable.interval(WalletConstants.AUTO_SYNC_PERIOD_MINUTES, TimeUnit.MINUTES)
             .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
@@ -216,8 +216,7 @@ public class SmartCardSyncManager {
             .flatMap(aLong -> interactor.smartCardSyncPipe()
                   .createObservableResult(new SyncSmartCardCommand()))
             .retry(1)
-            .subscribe(command -> {
-            }, throwable -> Timber.e(throwable, ""));
+            .subscribe(command -> {/*nothing*/}, throwable -> Timber.e(throwable, ""));
    }
 
    private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {

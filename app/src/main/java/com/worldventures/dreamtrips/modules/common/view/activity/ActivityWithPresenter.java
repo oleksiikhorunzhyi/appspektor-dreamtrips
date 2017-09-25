@@ -58,6 +58,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    protected void afterCreateView(Bundle savedInstanceState) {
       super.afterCreateView(savedInstanceState);
       this.presenter.takeView(this);
+      this.presenter.onViewTaken();
    }
 
    @Override

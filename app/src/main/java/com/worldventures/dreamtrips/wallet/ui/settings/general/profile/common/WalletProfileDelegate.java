@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 
+import java.util.Locale;
+
 public class WalletProfileDelegate {
 
    private AnalyticsInteractor analyticsInteractor;
@@ -34,7 +36,9 @@ public class WalletProfileDelegate {
       if (ProjectTextUtils.isEmpty(model.getPhoneCode()) || ProjectTextUtils.isEmpty(model.getPhoneNumber())) {
          return null;
       } else {
-         return SmartCardUserPhone.of(model.getPhoneCode(), model.getPhoneNumber());
+         return SmartCardUserPhone.of(
+               String.format(Locale.getDefault(), "+%s", model.getPhoneCode()),
+               model.getPhoneNumber());
       }
    }
 
@@ -54,7 +58,7 @@ public class WalletProfileDelegate {
       model.setLastName(user.lastName());
 
       if (phone != null) {
-         model.setPhoneCode(phone.code());
+         model.setPhoneCode(phone.code().replace("+", ""));
          model.setPhoneNumber(phone.number());
       }
       model.setChosenPhotoUri(photo != null ? photo.uri() : null);

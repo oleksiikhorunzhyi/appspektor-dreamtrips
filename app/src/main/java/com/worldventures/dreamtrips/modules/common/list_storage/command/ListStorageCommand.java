@@ -25,12 +25,14 @@ public class ListStorageCommand<T> extends Command<List<T>> implements CachedAct
 
    @Override
    protected void run(CommandCallback<List<T>> callback) throws Throwable {
-      callback.onSuccess(operation.perform(items));
+      if (operation != null) {
+         callback.onSuccess(operation.perform(items));
+      }
    }
 
    @Override
    public List<T> getCacheData() {
-      return new ArrayList<T>(items);
+      return new ArrayList<>(items);
    }
 
    @Override

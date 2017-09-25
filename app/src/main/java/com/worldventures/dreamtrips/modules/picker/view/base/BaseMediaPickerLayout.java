@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -37,10 +36,10 @@ import rx.Observable;
 public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, M extends BaseMediaPickerViewModel> extends FrameLayout
       implements BaseMediaPickerView<M>, ProgressView, ErrorView {
 
-   @InjectView(R.id.picker_recycler_view) PickerGridRecyclerView pickerRecyclerView;
    @InjectView(R.id.picker_progress) ProgressBar progressBar;
    @InjectView(R.id.picker_error_view) FrameLayout pickerErrorLayout;
    @InjectView(R.id.tv_picker_error) TextView tvPickerError;
+   @InjectView(R.id.picker_recycler_view) protected PickerGridRecyclerView pickerRecyclerView;
    private MediaPickerAdapter<M> adapter;
    private GridAutofitLayoutManager layoutManager;
    private OnNextClickListener onNextClickListener;
@@ -65,9 +64,6 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
             .getDimension(R.dimen.photo_picker_size));
       pickerRecyclerView.setLayoutManager(layoutManager);
       pickerRecyclerView.setAdapter(adapter);
-      final DefaultItemAnimator gridAnimator = new DefaultItemAnimator();
-      gridAnimator.setSupportsChangeAnimations(false);
-      pickerRecyclerView.setItemAnimator(gridAnimator);
       pickerRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
             (view, position) -> handleItemClick(position)));
    }
@@ -91,7 +87,6 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    @Override
    public void addItems(List<M> items) {
-      pickerRecyclerView.scheduleLayoutAnimation();
       adapter.updateItems(items);
    }
 

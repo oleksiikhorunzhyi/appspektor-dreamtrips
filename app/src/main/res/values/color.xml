@@ -12,7 +12,6 @@
 
    <color name="grey">#A0A0A0</color>
    <color name="grey_lighter">#e6e6e6</color>
-   <color name="feed_post_create_text_color">#929292</color>
 
    <color name="comment_button_disabled">#858585</color>
 
@@ -229,4 +228,7 @@
    <color name="merchant_landscape_home_text_color">#222222</color>
    <color name="merchant_landscape_title_color">#252525</color>
 
+   <color name="photo_strip_error_message_color">#fa2d46</color>
+   <color name="create_post_description_background_color">#99000000</color>
+>>>>>>> release/1.22
 </resources>

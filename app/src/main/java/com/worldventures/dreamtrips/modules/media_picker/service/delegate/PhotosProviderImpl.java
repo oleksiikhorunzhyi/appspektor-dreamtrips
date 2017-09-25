@@ -5,9 +5,10 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import timber.log.Timber;
@@ -21,18 +22,19 @@ public class PhotosProviderImpl implements PhotosProvider {
    }
 
    @Override
-   public List<PhotoPickerModel> provide() {
+   public List<PhotoPickerModel> provide(Date maxDateTaken, int count) {
       Cursor cursor = null;
       try {
          String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
          List<PhotoPickerModel> photos = new ArrayList<>();
          cursor = MediaStore.Images.Media.query(context
                      .getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projectionPhotos,
-               MediaStore.Images.Media.MIME_TYPE + " != ?", new String[]{ImageUtils.MIME_TYPE_GIF},
+               selectionArgs(), new String[]{String.valueOf(maxDateTaken.getTime()), ImageUtils.MIME_TYPE_GIF},
                MediaStore.Images.Media.DATE_TAKEN + " DESC");
          int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
          int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-         while (cursor.moveToNext()) {
+         while (cursor.moveToNext() && count > 0) {
+            count--;
             String path = cursor.getString(dataColumn);
             long dateTaken = cursor.getLong(dateColumn);
             photos.add(new PhotoPickerModel(path, dateTaken));
@@ -47,5 +49,10 @@ public class PhotosProviderImpl implements PhotosProvider {
             }
          }
       }
+   }
+
+   private String selectionArgs() {
+      return MediaStore.Images.Media.DATE_TAKEN + " < " +
+            " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
    }
 }

@@ -340,4 +340,11 @@
    <dimen name="dtl_item_review_images_margin">10dp</dimen>
    <dimen name="dtl_item_review_images_separation">6dp</dimen>
 
+   <dimen name="photo_strip_item_size">72dp</dimen>
+   <dimen name="photo_strip_space_between_items">2dp</dimen>
+   <dimen name="photo_strip_error_message_height">55dp</dimen>
+   <dimen name="photo_strip_error_message_text_size">14sp</dimen>
+
+   <dimen name="photo_cell_title_height">40dp</dimen>
+
 </resources>

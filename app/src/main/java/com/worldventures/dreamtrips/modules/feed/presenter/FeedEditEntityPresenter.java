@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public interface FeedEditEntityPresenter {
@@ -9,6 +10,8 @@ public interface FeedEditEntityPresenter {
    void onEditTextualPost(TextualPost textualPost);
 
    void onDeleteTextualPost(TextualPost textualPost);
+
+   void onDeleteVideo(Video video);
 
    void onEditPhoto(Photo photo);
 

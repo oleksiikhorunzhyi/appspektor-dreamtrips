@@ -8,6 +8,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.services.cognitoidentity.model.InvalidParameterException;
 import com.crashlytics.android.Crashlytics;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -27,14 +28,17 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action0;
+import timber.log.Timber;
 
 public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
    @Inject Context context;
    @Inject DtlTransactionInteractor transactionInteractor;
+   @Inject @Global EventBus eventBus;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
    //
    private final Merchant merchant;
@@ -47,6 +51,11 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
    @Override
    public void takeView(View view) {
       super.takeView(view);
+      try {
+         eventBus.registerSticky(this);
+      } catch (Exception ignored) {
+         Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
+      }
       apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> view.hideProgress()));
       //
       view.setMerchant(merchant);
@@ -262,6 +271,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
    @Override
    public void dropView() {
       super.dropView();
+      if (eventBus.isRegistered(this)) eventBus.unregister(this);
       transactionInteractor.earnPointsActionPipe().clearReplays();
       if (transferObserver != null) transferObserver.setTransferListener(null);
    }

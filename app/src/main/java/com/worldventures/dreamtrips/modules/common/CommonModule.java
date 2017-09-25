@@ -8,7 +8,6 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
@@ -23,23 +22,24 @@ import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
-import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.PlayerPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.SharePresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.ConfigChangesAwareComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ConfigChangesAwareComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.view.activity.TransparentComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
@@ -48,22 +48,22 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmen
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
-import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.feed.view.activity.FeedActivity;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
+import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPlayerPresenter;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
+import com.worldventures.dreamtrips.modules.tripsimages.TripImageModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
-import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
@@ -101,6 +101,7 @@ import dagger.Provides;
             PodcastPlayerPresenter.class,
             DtlActivity.class,
             ComponentActivity.class,
+            TransparentComponentActivity.class,
             ConfigChangesAwareComponentActivity.class,
             ComponentPresenter.class,
             CopyFileCommand.class,
@@ -154,7 +155,7 @@ public class CommonModule {
       featureManager.with(Feature.DTL, () -> activeComponents.add(DtlActivityModule.DTL));
       featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
 
-      activeComponents.add(TripsImagesModule.TRIP_IMAGES);
+      activeComponents.add(TripImageModule.TRIP_IMAGES);
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
 
       activeComponents.add(BucketListModule.BUCKETLIST);

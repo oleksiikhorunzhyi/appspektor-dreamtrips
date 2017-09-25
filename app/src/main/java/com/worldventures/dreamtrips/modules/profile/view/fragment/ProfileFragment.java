@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.BaseFeedCell;
@@ -39,8 +40,8 @@ import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
 import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCellDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    @Override
    public void onPause() {
       super.onPause();
+      statePaginatedRecyclerViewManager.stopAutoplayVideos();
       setToolbarAlpha(100);
    }
 
@@ -143,7 +145,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
    @Override
    public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.notifyDataSetChanged(statePaginatedRecyclerViewManager.findFocusedPosition());
    }
 
    @Override
@@ -162,7 +164,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
+   public void openTripImages(Route route, TripImagesArgs tripImagesBundle) {
       fragmentWithFeedDelegate.openTripImages(route, tripImagesBundle);
    }
 
@@ -258,6 +260,12 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(VideoFeedItem.class, delegate);
+   }
+
+   @Override
+   public void notifyDataSetChanged() {
+      fragmentWithFeedDelegate.notifyDataSetChanged();
    }
 
    @Override

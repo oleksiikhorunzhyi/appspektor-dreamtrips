@@ -3,21 +3,21 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketItemHttpAction;
+import com.worldventures.dreamtrips.api.multimedia.GetVideoHttpAction;
 import com.worldventures.dreamtrips.api.photos.GetPhotoHttpAction;
 import com.worldventures.dreamtrips.api.post.GetPostHttpAction;
 import com.worldventures.dreamtrips.api.trip.GetTripHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -66,6 +66,13 @@ public class GetFeedEntityCommand extends CommandWithError<FeedEntity> implement
                   .createObservableResult(new GetPostHttpAction(uid))
                   .map(GetPostHttpAction::response)
                   .map(post -> mappery.convert(post, TextualPost.class))
+                  .subscribe(callback::onSuccess, callback::onFail);
+            break;
+         case VIDEO:
+            janet.createPipe(GetVideoHttpAction.class)
+                  .createObservableResult(new GetVideoHttpAction(uid))
+                  .map(GetVideoHttpAction::response)
+                  .map(video -> mappery.convert(video, Video.class))
                   .subscribe(callback::onSuccess, callback::onFail);
             break;
       }

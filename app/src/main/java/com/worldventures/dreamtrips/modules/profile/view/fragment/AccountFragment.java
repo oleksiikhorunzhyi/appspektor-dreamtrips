@@ -77,11 +77,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
-   public void notifyDataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
-   }
-
-   @Override
    public void openAvatarPicker() {
       if (isVisibleOnScreen()) {
          getPresenter().onAvatarClicked();

@@ -4,12 +4,14 @@ package com.worldventures.dreamtrips.modules.picker.view.gallery;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.picker.model.GalleryMediaPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.model.IrregularPhotoPickerViewModel;
@@ -50,14 +52,43 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
    }
 
    @Override
+   protected void initView() {
+      super.initView();
+
+      final DefaultItemAnimator gridAnimator = new DefaultItemAnimator();
+      gridAnimator.setSupportsChangeAnimations(false);
+      pickerRecyclerView.setItemAnimator(gridAnimator);
+   }
+
+   @Override
+   public void addItems(List<GalleryMediaPickerViewModel> items) {
+      pickerRecyclerView.scheduleLayoutAnimation();
+      super.addItems(items);
+   }
+
+   @Override
    public void handleItemClick(int position) {
       if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_photo_gallery
             || getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_video_gallery) {
-         updateItem(position);
-         presenter.attachMedia();
+         getPresenter().itemPicked(getAdapter().getItem(position), position, videoPickLimitStrategy, photoPickLimitStrategy);
       } else if (getAdapter().getItemViewType(position) == R.layout.picker_adapter_item_static) {
          handleAlternateSourcesClick(position);
       }
+   }
+
+   @Override
+   public void updateItem(int position) {
+      getAdapter().updateItem(position);
+   }
+
+   @Override
+   public void updateItemWithSwap(int position) {
+      getAdapter().updateItem(position);
+      GalleryMediaPickerViewModel modelToRevert =
+            Queryable.from(getChosenMedia())
+                  .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
+      int modelToRevertPosition = getAdapter().getPositionFromItem(modelToRevert);
+      getAdapter().updateItem(modelToRevertPosition);
    }
 
    private void handleAlternateSourcesClick(int position) {
@@ -67,28 +98,6 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
       } else if (item.getAttachType() == IrregularPhotoPickerViewModel.FACEBOOK) {
          if (getOnNextClickListener() != null) {
             getOnNextClickListener().onNextClick(null);
-         }
-      }
-   }
-
-   private boolean isLimitReached(int count) {
-      return photoPickLimitStrategy.photoPickLimit() > 0 && count > photoPickLimitStrategy.photoPickLimit();
-   }
-
-   private void updateItem(int position) {
-      getAdapter().updateItem(position);
-      boolean isLimitReached = isLimitReached(getChosenMedia().size());
-      if (isLimitReached) {
-         if (photoPickLimitStrategy.photoPickLimit() > 1) {
-            Toast.makeText(getContext(), getContext().getString(R.string.media_picker_limit_reached,
-                  String.valueOf(photoPickLimitStrategy.photoPickLimit())), Toast.LENGTH_SHORT).show();
-            getAdapter().updateItem(position);
-         } else {
-            GalleryMediaPickerViewModel modelToRevert =
-                  Queryable.from(getChosenMedia())
-                        .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
-            int modelToRevertPosition = getAdapter().getPositionFromItem(modelToRevert);
-            getAdapter().updateItem(modelToRevertPosition);
          }
       }
    }
@@ -158,8 +167,30 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
    }
 
    @Override
-   public void showVideoLimitReached(int limitLength) {
-      Toast.makeText(getContext(), getContext().getString(R.string.picker_video_duration_limit, limitLength), Toast.LENGTH_SHORT).show();
+   public void showWrongType() {
+      Toast.makeText(getContext(), getContext().getString(R.string.picker_two_media_type_error), Toast.LENGTH_SHORT)
+            .show();
+
+   }
+
+   @Override
+   public void showPhotoLimitReached(int count) {
+      Toast.makeText(getContext(), getContext().getString(QuantityHelper.chooseResource(count, R.string.picker_photo_limit,
+            R.string.picker_photo_limit_plural), count), Toast.LENGTH_SHORT).show();
+   }
+
+   @Override
+   public void showVideoDurationLimitReached(int limitLength) {
+      Toast.makeText(getContext(), getContext().getString(R.string.picker_video_length_limit, limitLength), Toast.LENGTH_SHORT)
+            .show();
+
+   }
+
+   @Override
+   public void showVideoLimitReached(int count) {
+      Toast.makeText(getContext(), getContext().getString(QuantityHelper.chooseResource(count, R.string.picker_video_limit,
+            R.string.picker_video_limit_plural), count), Toast.LENGTH_SHORT)
+            .show();
    }
 
    @Override

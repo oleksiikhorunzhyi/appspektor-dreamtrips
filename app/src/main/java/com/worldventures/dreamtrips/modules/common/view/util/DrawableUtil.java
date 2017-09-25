@@ -53,21 +53,8 @@ public class DrawableUtil {
          w = optionsForGettingDimensions.outWidth;
          l = optionsForGettingDimensions.outHeight;
 
-         ExifInterface exif = new ExifInterface(fileImage);
+         int rotate = obtainRotation(fileImage);
 
-         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-         int rotate = 0;
-         switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_270:
-               rotate = -90;
-               break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-               rotate = 180;
-               break;
-            case ExifInterface.ORIENTATION_ROTATE_90:
-               rotate = 90;
-               break;
-         }
          BitmapFactory.Options options = new BitmapFactory.Options();
          options.inSampleSize = getInSampleSize(w, l, scale);
          options.inJustDecodeBounds = false;
@@ -132,6 +119,26 @@ public class DrawableUtil {
          Timber.e(e.getMessage());
          return null;
       }
+   }
+
+   public int obtainRotation(String fileImage) throws IOException {
+      ExifInterface exif = new ExifInterface(fileImage);
+
+      int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+      int rotate = 0;
+      switch (orientation) {
+         case ExifInterface.ORIENTATION_ROTATE_270:
+            rotate = -90;
+            break;
+         case ExifInterface.ORIENTATION_ROTATE_180:
+            rotate = 180;
+            break;
+         case ExifInterface.ORIENTATION_ROTATE_90:
+            rotate = 90;
+            break;
+      }
+
+      return rotate;
    }
 
    public void removeCacheImages(List<String> filteredPathes) {

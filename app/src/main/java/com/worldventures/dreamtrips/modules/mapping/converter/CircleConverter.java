@@ -21,7 +21,6 @@ public class CircleConverter implements Converter<com.worldventures.dreamtrips.a
       Circle circle = new Circle();
       circle.setId(apiCircle.id());
       circle.setName(apiCircle.name());
-      circle.setPredefined(apiCircle.predefined());
       return circle;
    }
 

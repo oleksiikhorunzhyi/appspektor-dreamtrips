@@ -5,8 +5,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.service.delegate.PhotosProvider;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,9 +20,25 @@ public class GetPhotosFromGalleryCommand extends Command<List<PhotoPickerModel>>
 
    @Inject PhotosProvider photosProvider;
 
+   private final int count;
+   private final Date date;
+
+   public GetPhotosFromGalleryCommand() {
+      this(Integer.MAX_VALUE, new Date());
+   }
+
+   public GetPhotosFromGalleryCommand(int count) {
+      this(count, new Date());
+   }
+
+   public GetPhotosFromGalleryCommand(int count, Date date) {
+      this.count = count;
+      this.date = date;
+   }
+
    @Override
    protected void run(CommandCallback<List<PhotoPickerModel>> callback) throws Throwable {
-      List<PhotoPickerModel> photos = photosProvider.provide();
+      List<PhotoPickerModel> photos = photosProvider.provide(date, count);
       photos = Queryable.from(photos).filter((element, index) ->
             !ImageUtils.getImageExtensionFromPath(element.getAbsolutePath()).contains("gif")).toList();
       callback.onSuccess(photos);

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
@@ -53,7 +53,7 @@ class DisplayOptionsViewHolder {
       SmartCardUserPhoto userPhoto = user.userPhoto();
       SmartCardUserPhone userPhone = user.phoneNumber();
       String phone = (userPhone == null) ? String.format(Locale.US, "(%s)", rootView.getResources()
-            .getString(R.string.wallet_settings_general_display_phone_required)) : "+" + userPhone.fullPhoneNumber();
+            .getString(R.string.wallet_settings_general_display_phone_required)) : userPhone.fullPhoneNumber();
 
       title.setText(titleRes);
 

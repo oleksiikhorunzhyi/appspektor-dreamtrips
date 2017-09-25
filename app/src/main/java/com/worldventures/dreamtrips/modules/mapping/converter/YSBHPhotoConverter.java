@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 
 import io.techery.mappery.MapperyContext;
@@ -10,9 +9,10 @@ public class YSBHPhotoConverter implements Converter<com.worldventures.dreamtrip
 
    @Override
    public YSBHPhoto convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.ysbh.model.YSBHPhoto apiPhoto) {
-      com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto ysbhPhoto = new YSBHPhoto();
+      YSBHPhoto ysbhPhoto = new YSBHPhoto();
+      ysbhPhoto.setId(apiPhoto.id());
       ysbhPhoto.setTitle(apiPhoto.title());
-      ysbhPhoto.setImages(mapperyContext.convert(apiPhoto.image(), Image.class));
+      ysbhPhoto.setUrl(apiPhoto.image().url());
       return ysbhPhoto;
    }
 

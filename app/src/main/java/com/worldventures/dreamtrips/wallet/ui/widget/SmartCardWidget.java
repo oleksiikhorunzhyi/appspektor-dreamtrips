@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder;
 
@@ -101,7 +101,7 @@ public class SmartCardWidget extends ConstraintLayout {
          case DISPLAY_PHONE_AND_NAME:
             final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber()) ?
                   String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
-                  : "+" + holder.phoneNumber();
+                  : holder.phoneNumber();
             tvPhotoFullName.setText(photoFullName + "\n\n" + phoneNumber);
             break;
       }

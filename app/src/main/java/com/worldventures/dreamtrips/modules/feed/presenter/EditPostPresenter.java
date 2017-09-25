@@ -4,22 +4,28 @@ import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
+import com.worldventures.dreamtrips.modules.feed.model.ImmutableVideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.EditPostCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import javax.inject.Inject;
 
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 
 public class EditPostPresenter extends ActionEntityPresenter<ActionEntityPresenter.View> {
 
    @Inject PostsInteractor postsInteractor;
 
-   private TextualPost post;
+   protected TextualPost post;
 
    public EditPostPresenter(TextualPost post) {
       this.post = post;
@@ -32,10 +38,18 @@ public class EditPostPresenter extends ActionEntityPresenter<ActionEntityPresent
          Queryable.from(post.getAttachments())
                .forEachR(attachment -> cachedCreationItems.add(createItemFromPhoto((Photo) attachment.getItem())));
       } else if (hasVideoAttachments()) {
-         selectedVideoPathUri = Uri.parse(((Video)post.getAttachments().get(0).getItem()).getThumbnail());
+         selectedVideoPathUri = Uri.parse(((Video) post.getAttachments().get(0).getItem()).getThumbnail());
       }
       super.takeView(view);
       if (location == null) updateLocation(post.getLocation());
+   }
+
+   @Override
+   protected Observable<VideoCreationModel> getVideoMetadata() {
+      return mediaMetadataInteractor.videoMetadataCommandActionPipe()
+            .createObservableResult(new GetVideoMetadataCommand((Video) post.getAttachments().get(0).getItem()))
+            .map(Command::getResult)
+            .map(this::getVideoCreationModel);
    }
 
    @Override
@@ -98,5 +112,10 @@ public class EditPostPresenter extends ActionEntityPresenter<ActionEntityPresent
    private boolean hasVideoAttachments() {
       return post.getAttachments() != null && post.getAttachments().size() > 0
             && post.getAttachments().get(0).getItem() instanceof Video;
+   }
+
+   @Override
+   protected boolean canDeleteVideo() {
+      return false;
    }
 }

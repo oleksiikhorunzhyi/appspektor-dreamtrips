@@ -58,7 +58,7 @@ public class ActivityModule {
 
    @Provides
    @Singleton
-   public VideoPlayerHolder provideVideoPlayerHolder(Activity activity, BackStackDelegate backStackDelegate) {
-      return new VideoPlayerHolder(activity, backStackDelegate);
+   public VideoPlayerHolder provideVideoPlayerHolder() {
+      return new VideoPlayerHolder();
    }
 }

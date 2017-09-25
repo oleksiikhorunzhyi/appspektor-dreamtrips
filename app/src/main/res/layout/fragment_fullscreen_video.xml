@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/black"
+      >
+
+   <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ImageryView
+         android:id="@+id/videoThumbnail"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         fresco:actualImageScaleType="fitCenter"
+         fresco:placeholderImage="@drawable/fullscreen_placeholder"
+         fresco:placeholderImageScaleType="fitCenter"
+         />
+
+</FrameLayout>

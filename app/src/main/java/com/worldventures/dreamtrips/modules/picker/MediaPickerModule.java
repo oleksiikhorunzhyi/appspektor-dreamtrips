@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.picker;
 import android.app.Activity;
 
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.facebook.FacebookHelper;
 import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
@@ -18,7 +19,6 @@ import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog
 import com.worldventures.dreamtrips.modules.picker.view.facebook.albums.FacebookAlbumsPickerLayout;
 import com.worldventures.dreamtrips.modules.picker.view.facebook.photos.FacebookPhotosPickerLayout;
 import com.worldventures.dreamtrips.modules.picker.view.gallery.GalleryMediaPickerLayout;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
 import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookServiceImpl;
 

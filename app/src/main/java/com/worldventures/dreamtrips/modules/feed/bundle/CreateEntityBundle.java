@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.modules.feed.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 
 public class CreateEntityBundle implements Parcelable {
 
-   private MediaAttachment mediaAttachment;
+   private MediaPickerAttachment mediaAttachment;
    private boolean showPickerImmediately;
    private Origin origin; // origin is needed for analytics
 
@@ -16,12 +16,12 @@ public class CreateEntityBundle implements Parcelable {
       this.origin = origin;
    }
 
-   public CreateEntityBundle(MediaAttachment mediaAttachment, Origin origin) {
+   public CreateEntityBundle(MediaPickerAttachment mediaAttachment, Origin origin) {
       this.mediaAttachment = mediaAttachment;
       this.origin = origin;
    }
 
-   public MediaAttachment getMediaAttachment() {
+   public MediaPickerAttachment getMediaAttachment() {
       return mediaAttachment;
    }
 
@@ -47,7 +47,7 @@ public class CreateEntityBundle implements Parcelable {
    }
 
    protected CreateEntityBundle(Parcel in) {
-      this.mediaAttachment = in.readParcelable(MediaAttachment.class.getClassLoader());
+      this.mediaAttachment = in.readParcelable(MediaPickerAttachment.class.getClassLoader());
       this.showPickerImmediately = in.readByte() != 0;
    }
 

@@ -11,7 +11,7 @@ ext {
                NXT_API                : [String: '"https://demo.nxt-security.com/api/services/evtservice/v2"'],
          ],
          messenger: [
-               MESSENGER_API_URL : [String: '"dtmsgapp-dev.worldventures.biz"'],
+               MESSENGER_API_URL : [String: '"dtmsgapp-qa.worldventures.biz"'],
                MESSENGER_API_PORT: [int: '5222'],
          ],
          amazon   : [

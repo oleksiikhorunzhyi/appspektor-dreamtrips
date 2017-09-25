@@ -74,7 +74,7 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
          return new TargetClassInfo(FeedEntityHolder.Type.BUCKET_LIST_ITEM,
                com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.class);
       }
-      if (entity instanceof VideoAttachment) {
+      if (entity instanceof com.worldventures.dreamtrips.api.multimedia.model.Video) {
          return new TargetClassInfo(FeedEntityHolder.Type.VIDEO, Video.class);
       }
       return new TargetClassInfo(FeedEntityHolder.Type.UNDEFINED, null);

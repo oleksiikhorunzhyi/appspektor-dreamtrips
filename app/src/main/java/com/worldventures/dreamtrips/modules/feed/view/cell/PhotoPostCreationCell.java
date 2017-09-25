@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -33,7 +34,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_photo_post)
-public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
+public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> implements ResizeableCell{
+
+   private static final int DEGREE_PER_ONE_ROTATION = 90;
 
    @Inject SessionHolder<UserSession> userSessionHolder;
 
@@ -44,18 +47,29 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.remove) View remove;
 
+   private volatile int previousWidth;
+   private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+
    public PhotoPostCreationCell(View view) {
       super(view);
+
+      globalLayoutListener = () -> {
+         if (itemView.getWidth() != previousWidth) {
+            resizePhotoComponents();
+         }
+      };
    }
 
    @Override
    public void onAttachedToWindow(View v) {
       super.onAttachedToWindow(v);
       photoTitle.addTextChangedListener(textWatcher);
+
       photoTitle.setOnFocusChangeListener((view, hasFocus) -> {
          if (!hasFocus) photoContainer.requestFocus();
          cellDelegate.onPhotoTitleFocusChanged(hasFocus);
       });
+      itemView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
    }
 
    private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
@@ -68,7 +82,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    };
 
    @Override
-   protected void syncUIStateWithModel() {
+   public void syncUIStateWithModel() {
       if (itemView.getWidth() > 0) {
          updateUi();
       } else {
@@ -78,9 +92,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
    }
 
    private void updateUi() {
-      photoContainer.getLayoutParams().width = itemView.getWidth();
-      photoContainer.getLayoutParams().height = calculateHeight();
-      photoContainer.requestLayout();
+      resizePhotoComponents();
       photoContainer.post(() -> {
          itemView.setVisibility(View.VISIBLE);
          photoTagHolder.removeAllViews();
@@ -90,17 +102,31 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          invalidateAddTagBtn();
       });
 
-      attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(
-            Uri.parse(getModelObject().getFileUri() == null
-                  ? getModelObject().getOriginUrl()
-                  : getModelObject().getFileUri()
-            ), attachedPhoto.getController()));
       photoTitle.setText(getModelObject().getTitle());
       boolean titleChangesEnabled = getModelObject().isCanEdit();
       photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle()) ? View.VISIBLE : View.GONE);
       photoTitle.setEnabled(titleChangesEnabled);
       invalidateAddTagBtn();
       invalidateDeleteBtn();
+   }
+
+   private void resizePhotoComponents() {
+      int width = itemView.getWidth();
+      int height = calculateHeight();
+
+      photoContainer.getLayoutParams().width = width;
+      photoContainer.getLayoutParams().height = height;
+      photoContainer.requestLayout();
+      previousWidth = width;
+
+      attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(getPhotoUri(),
+            attachedPhoto.getController(), width, height));
+   }
+
+   private Uri getPhotoUri() {
+      return Uri.parse(getModelObject().getFileUri() == null
+            ? getModelObject().getOriginUrl()
+            : getModelObject().getFileUri());
    }
 
    private int calculateHeight() {
@@ -112,7 +138,10 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
          width = cellWidth;
          height = cellWidth;
       }
-      return (int) (cellWidth / (float) width * height);
+
+      boolean normalRotationPosition = (getModelObject().getRotation() / DEGREE_PER_ONE_ROTATION) % 2 == 0;
+      double aspectRatio = normalRotationPosition ? (double) height / width :  (double) width / height;
+      return (int) (cellWidth * aspectRatio);
    }
 
    private void showTagViewGroup() {
@@ -163,6 +192,14 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
       super.clearResources();
       photoTitle.removeTextChangedListener(textWatcher);
       photoTitle.setOnFocusChangeListener(null);
+      itemView.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+   }
+
+   @Override
+   public void checkSize() {
+      if (itemView.getWidth() != previousWidth) {
+         resizePhotoComponents();
+      }
    }
 
    private void invalidateTags() {

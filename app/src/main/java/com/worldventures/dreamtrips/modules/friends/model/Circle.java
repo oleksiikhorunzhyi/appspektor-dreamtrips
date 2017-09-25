@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.modules.friends.model;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class Circle implements Serializable, Comparable<Circle> {
 
-   public static Circle all(String title) {
+   public static Circle withTitle(String title) {
       Circle all = new Circle();
       all.name = title;
       return all;
@@ -12,7 +14,6 @@ public class Circle implements Serializable, Comparable<Circle> {
 
    private String id;
    private String name;
-   private boolean predefined;
 
    public Circle() {
    }
@@ -25,10 +26,6 @@ public class Circle implements Serializable, Comparable<Circle> {
       return name;
    }
 
-   public boolean isPredefined() {
-      return predefined;
-   }
-
    public void setId(String id) {
       this.id = id;
    }
@@ -37,17 +34,13 @@ public class Circle implements Serializable, Comparable<Circle> {
       this.name = name;
    }
 
-   public void setPredefined(boolean predefined) {
-      this.predefined = predefined;
-   }
-
    @Override
    public String toString() {
       return name;
    }
 
    @Override
-   public int compareTo(Circle another) {
+   public int compareTo(@NonNull Circle another) {
       return name.compareTo(another.getName());
    }
 

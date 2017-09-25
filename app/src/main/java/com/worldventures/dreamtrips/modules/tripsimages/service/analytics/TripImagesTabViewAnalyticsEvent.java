@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.ActionPart;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesArgs;
 
 @AnalyticsEvent(action = "trip_images:${tabName}",
                 trackers = AdobeTracker.TRACKER_KEY)
@@ -16,7 +16,8 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction{
       this.tabName = tabName;
    }
 
-   public static TripImagesTabViewAnalyticsEvent forTripImages(TripImagesType tripImagesType) {
+   public static TripImagesTabViewAnalyticsEvent forTripImages(TripImagesArgs tripImagesArgs) {
+/*
       switch (tripImagesType) {
          case MEMBERS_IMAGES:
             return new TripImagesTabViewAnalyticsEvent("member_images");
@@ -27,6 +28,8 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction{
          default:
             return new TripImagesTabViewAnalyticsEvent("my_images");
       }
+*/
+      return new TripImagesTabViewAnalyticsEvent("member_images");
    }
 
    public static TripImagesTabViewAnalyticsEvent for360Video() {

@@ -12,7 +12,6 @@ ext {
          { o -> o.maven { url 'https://maven.fabric.io/public' } },
          { o -> o.maven { url 'https://clojars.org/repo/' } },
          { o -> o.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
-         { o -> o.maven { url 'http://nexus.idamob.ru/content/groups/public' } },
          { o -> o.maven { url 'https://github.com/shaubert/maven-repo/raw/master/snapshots' } },
          { o -> o.maven { url 'http://repository.jetbrains.com/all' } },
          { o -> o.flatDir { dirs 'libs' } }

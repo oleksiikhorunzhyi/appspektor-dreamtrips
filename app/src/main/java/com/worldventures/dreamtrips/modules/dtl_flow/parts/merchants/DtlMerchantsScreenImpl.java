@@ -33,6 +33,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.ClearableSelectionMana
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
@@ -46,6 +48,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
       implements DtlMerchantsScreen, MerchantCellDelegate {
@@ -72,6 +77,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    public static String currentSelectedFilter = null;
 
    private int idResource = R.string.dtlt_search_hint;
+
+   public static int transactionCounter = 0;
 
    @Override
    protected void onFinishInflate() {
@@ -109,6 +116,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
       refreshLayout.setOnRefreshListener(() -> getPresenter().refresh());
       refreshLayout.setEnabled(true);
+
+      if (dtlToolbar == null) return;
+      ExpandableDtlToolbar.TestInteface interfaces = () -> onClickTransaction();
+      dtlToolbar.setTestInterface(interfaces);
+
    }
 
    private void initDtlToolbar() {
@@ -193,6 +205,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
       }
+   }
+
+   @Override
+   public void onClickTransaction() {
+      getPresenter().onTransactionClick();
    }
 
    @OnClick(R.id.btn_filter_merchant_entertainment)
@@ -456,7 +473,35 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       getPresenter().loadAmenities(merchantType);
    }
 
-   private void setCurrentSearchFilter(int stringResource){
+   private void setCurrentSearchFilter(int stringResource) {
       currentSelectedFilter = getContext().getString(stringResource);
+   }
+
+   @Override
+   public int getTransactionNumber() {
+      if (transactionCounter == 0) {
+         transactionCounter++;
+         return 0;
+      }
+      return transactionCounter;
+   }
+
+   @Override
+   public void showNoTransactionMessage() {
+      SweetAlertDialog errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.dtl_no_transaction_message));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
+   @Override
+   public void goToTransactionPage() {
+      Path path = new DtlTransactionListPath(FlowUtil.currentMaster(getContext()));
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      historyBuilder.push(path);
+      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
    }
 }

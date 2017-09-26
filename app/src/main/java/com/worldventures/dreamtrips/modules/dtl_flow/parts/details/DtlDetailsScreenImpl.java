@@ -168,7 +168,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.tv_read_all_review)
    public void onClickReadAllReviews() {
-      getPresenter().showAllReviews();
+      if (mContainerComments.hasReviews()) getPresenter().showAllReviews();
    }
 
    @OnClick(R.id.layout_rating_reviews_detail)

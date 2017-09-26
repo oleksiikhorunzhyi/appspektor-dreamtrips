@@ -229,4 +229,5 @@
    <color name="merchant_landscape_home_text_color">#222222</color>
    <color name="merchant_landscape_title_color">#252525</color>
 
+   <color name="transaction_color_points">#90B1BE</color>
 </resources>

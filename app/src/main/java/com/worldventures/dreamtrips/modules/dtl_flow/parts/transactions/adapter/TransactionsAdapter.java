@@ -45,10 +45,16 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
    private void drawView(RecyclerView.ViewHolder holder, int position){
       ViewHolder viewHolder = (ViewHolder) holder;
       viewHolder.merchantName.setText(transactionsList.get(position).getMerchantName());
-      viewHolder.earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
+      viewHolder.earnedPoints.setText(getEarnedText(transactionsList.get(position).getEarnedPoints()));
       viewHolder.earnedPointsIcon.setVisibility(View.VISIBLE);
       viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
       viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
+   }
+
+   private String getEarnedText(String earnedPoints) {
+      if (earnedPoints == null) return "";
+
+      return "+" + earnedPoints + "pt";
    }
 
    public class ViewHolder extends RecyclerView.ViewHolder {

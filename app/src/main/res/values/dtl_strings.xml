@@ -69,8 +69,8 @@
    <string name="perks_terms">Terms &amp; Condition</string>
    <string name="perks_formatted">%1$d Perks</string>
    <string name="dtl_show_offers_only">Offers only</string>
-   <string name="dtl_show_transaction">TRANSACTIONS</string>
-   <string name="dtl_show_transaction_toolbar">MY TRANSACTIONS</string>
+   <string name="dtl_show_transaction">Payment History</string>
+   <string name="dtl_show_transaction_toolbar">Payment History</string>
    <string name="dtl_earn_points">Earn DreamTrips points</string>
    <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
    <string name="distance_caption_format" translatable="false">%1$.1f %2$s</string>
@@ -157,5 +157,5 @@
    <string name="dtl_no_transaction_message">You do not have any transaction so far.</string>
    <!-- DTL Transactions Screen strings -->
    <string name="dtl_transaction_screen_sub_total_text">Sub Total amount: $</string>
-   <string name="dtl_transaction_screen_earned_points_text">Earned Points:&#160;</string>
+   <string name="dtl_transaction_screen_earned_points_text">You earned</string>
 </resources>

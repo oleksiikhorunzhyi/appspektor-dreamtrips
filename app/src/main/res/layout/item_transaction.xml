@@ -53,6 +53,7 @@
                   android:text="@string/dtl_transaction_screen_earned_points_text"
                   android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
                   android:layout_gravity="center_vertical"
+                  android:textStyle="bold"
                   android:textColor="@color/black"/>
 
             <TextView
@@ -62,7 +63,9 @@
                   android:text="20"
                   android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
                   android:layout_gravity="center_vertical"
-                  android:textColor="@color/black"/>
+                  android:textColor="@color/transaction_color_points"
+                  android:layout_marginLeft="@dimen/left_transaction_space"
+                  android:textStyle="bold"/>
 
             <ImageView
                   android:id="@+id/earned_points_icon"

@@ -2,7 +2,7 @@ ext {
    envConfig = [:]
    envConfig.appParams = [
          api      : [
-               DreamTripsApi          : [String: '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"'],
+               DreamTripsApi          : [String: '"http://dtapp-dev.worldventures.biz/"'],
                BACKOFFICE_URL         : [String: '"https://backoffice.qa-worldventures.biz"'],
                UPLOADERY_API_URL      : [String: '"http://techery-dt-staging-uploadery.techery.io"'],
                VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader-qa.dreamtrips.com"'],

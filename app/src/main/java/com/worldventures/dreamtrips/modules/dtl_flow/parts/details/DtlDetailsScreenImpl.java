@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -355,8 +354,18 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       Button earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
 
-      if (earn != null) earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
+      if (earn != null) earn.setText(dtlTransaction != null ? thrstFlow(earn) : getTextNormalFlow(earn));
       if (checkedIn != null) ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+   }
+
+   private int getTextNormalFlow(Button earn) {
+      earn.setTextAppearance(R.style.DtlButtonGreenTheme);
+      return R.string.dtl_check_in;
+   }
+
+   private int thrstFlow(Button earn) {
+      earn.setTextAppearance(R.style.ThemeThrstButton);
+      return R.string.dtl_thrst_text_button;
    }
 
    @Override

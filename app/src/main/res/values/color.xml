@@ -231,4 +231,7 @@
    <color name="photo_strip_error_message_color">#fa2d46</color>
    <color name="create_post_description_background_color">#99000000</color>
    <color name="transaction_color_points">#90B1BE</color>
+
+   <color name="thrst_merchant_button_unpressed">#6C008D</color>
+   <color name="thrst_merchant_button_pressed">#5C006D</color>
 </resources>

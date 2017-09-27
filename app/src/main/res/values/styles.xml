@@ -158,6 +158,12 @@
       <item name="android:textColorPrimary">@android:color/white</item>
    </style>
 
+   <style name="ThemeThrstButton" parent="Base.Widget.AppCompat.Button">
+      <item name="colorButtonNormal">@color/thrst_merchant_button_unpressed</item>
+      <item name="colorControlHighlight">@color/thrst_merchant_button_pressed</item>
+      <item name="android:textColorPrimary">@android:color/white</item>
+   </style>
+
    <style name="SuggestMerchantInput">
       <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
       <item name="met_baseColor">@color/suggest_merchant_input_text</item>

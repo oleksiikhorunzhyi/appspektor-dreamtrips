@@ -157,4 +157,5 @@
    <!-- DTL Transactions Screen strings -->
    <string name="dtl_transaction_screen_sub_total_text">Sub Total amount: $</string>
    <string name="dtl_transaction_screen_earned_points_text">You earned</string>
+   <string name="dtl_thrst_text_button">Pay in app</string>
 </resources>

@@ -65,6 +65,7 @@ ext {
                      api : [
                            DreamTripsApi          : [String: '"http://dtapp-perf.worldventures.biz"'],
                            BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
+                           FORGOT_PASSWORD_URL    : [String: '"https://forgotlogin.wvhservices.com/"'],
                            UPLOADERY_API_URL      : [String: '"dtappupload-perf.wvholdings.com"'],
                            VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader-perf.dreamtrips.com"'],
                      ],
@@ -90,8 +91,9 @@ ext {
                      api      : [
                            DreamTripsApi          : [String: '"https://dtapp.worldventures.biz"'],
                            BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
+                           FORGOT_PASSWORD_URL    : [String: '"https://forgotlogin.wvhservices.com/"'],
                            UPLOADERY_API_URL      : [String: '"http://dtappuploads.wvholdings.com"'],
-                           VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.dreamtrips.com"'],
+                           VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.wvhservices.com"'],
                            API_TIMEOUT_SEC        : [long: '15'],
                            NXT_API                : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
                      ],

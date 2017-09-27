@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <integer name="messenger_max_message_length">3000</integer>
+   <integer name="messenger_pick_image_limit">15</integer>
+   <integer name="messenger_max_flagging_reason_length">255</integer>
+
+</resources>

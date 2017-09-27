@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
 import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
@@ -21,7 +21,9 @@ import com.worldventures.dreamtrips.modules.config.service.command.Configuration
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.http.exception.HttpException;
 import timber.log.Timber;
 
 public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presenter<VT> {
@@ -29,7 +31,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    @Inject protected Activity activity;
    @Inject protected LocaleSwitcher localeSwitcher;
 
-   @Inject LogoutInteractor logoutInteractor;
+   @Inject ReLoginInteractor reLoginInteractor;
    @Inject protected AuthInteractor authInteractor;
    @Inject VersionUpdateDelegate versionUpdateDelegate;
    @Inject AppConfigurationInteractor appConfigurationInteractor;
@@ -47,6 +49,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
       super.takeView(view);
       checkTermsAndConditionFromHolder();
       subscribeToUserUpdate();
+      subscribeToLoginErrors();
    }
 
    @Override
@@ -55,6 +58,18 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
       //Some third-party libraries can change the locale.
       setupUserLocale();
       subscribeToAppVersionUpdates();
+   }
+
+   private void subscribeToLoginErrors() {
+      reLoginInteractor.loginHttpActionPipe().observe()
+            .compose(bindViewToMainComposer())
+            .subscribe(state -> {
+               if (state.status == ActionState.Status.FAIL) {
+                  if (isLoginError(state.exception)) {
+                     logout();
+                  }
+               }
+            });
    }
 
    private void subscribeToAppVersionUpdates() {
@@ -74,8 +89,19 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
       }
    }
 
+   private boolean isLoginError(Throwable error) {
+      if (error == null) return false;
+      if (error instanceof HttpException) { // for janet-http
+         HttpException cause = (HttpException) error;
+         return cause.getResponse() != null && cause.getResponse().getStatus() == 422;
+      } else if (error.getCause() != null) {
+         return isLoginError(error.getCause());
+      }
+      return false;
+   }
+
    public void logout() {
-      logoutInteractor.logoutPipe().send(new LogoutCommand());
+      authInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    @Override

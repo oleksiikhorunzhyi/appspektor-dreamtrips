@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.common.helper2.error;
 
-import com.worldventures.dreamtrips.util.HttpUploaderyException;
+import com.worldventures.dreamtrips.core.utils.HttpUploaderyException;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -97,11 +97,11 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
       }
 
       public void show() {
-         if(errorView != null) errorView.showError(t, throwable);
+         if (errorView != null) errorView.showError(t, throwable);
       }
 
       public void hide() {
-         if(errorView != null) errorView.hideError();
+         if (errorView != null) errorView.hideError();
       }
 
       public boolean isVisible() {

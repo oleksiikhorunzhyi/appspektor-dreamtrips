@@ -16,6 +16,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
@@ -73,7 +74,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    private DistanceType distanceType;
    private boolean expanded;
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    public DtlMerchantExpandableCell(View view) {
       super(view);
@@ -136,7 +137,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
          ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
          Observable.fromCallable(() -> getModelObject().asMerchantAttributes()
                .provideFormattedOperationalTime(itemView.getContext(), false))
-               .compose(RxLifecycle.bindView(itemView))
+               .compose(RxLifecycleAndroid.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
    }

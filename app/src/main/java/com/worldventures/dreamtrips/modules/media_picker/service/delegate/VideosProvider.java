@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface VideosProvider {
 
-   List<VideoPickerModel> provide();
+   List<VideoPickerModel> provide(int count);
 }

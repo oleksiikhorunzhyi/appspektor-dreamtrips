@@ -73,6 +73,7 @@ public class MediaPickerDialogPresenterImpl extends MvpBasePresenter<MediaPicker
          } else if (model.getType() == MediaPickerModel.Type.PHOTO){
             mediaPickerModel = new PhotoPickerModel(model.getAbsolutePath(), model.getDateTaken());
          }
+         mediaPickerModel.setSource(model.getSource());
          attachment.addMedia(mediaPickerModel);
       }
       return attachment;

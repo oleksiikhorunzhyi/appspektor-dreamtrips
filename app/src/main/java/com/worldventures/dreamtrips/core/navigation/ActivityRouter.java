@@ -5,15 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.provider.Settings;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
+import com.worldventures.dreamtrips.social.ui.activity.Player360Activity;
+import com.worldventures.dreamtrips.social.ui.activity.PlayerActivity;
+import com.worldventures.dreamtrips.social.ui.podcast_player.PodcastPlayerActivity;
 
 import java.io.File;
 
@@ -27,13 +26,13 @@ public class ActivityRouter extends ActivityBoundRouter {
    }
 
    public void openMain() {
-      startActivity(MainActivity.class);
+      startActivity(SocialMainActivity.class);
    }
 
    public void openMainWithComponent(String key) {
       Bundle bundle = new Bundle();
-      bundle.putString(MainActivity.COMPONENT_KEY, key);
-      startActivity(MainActivity.class, bundle);
+      bundle.putString(SocialMainActivity.COMPONENT_KEY, key);
+      startActivity(SocialMainActivity.class, bundle);
    }
 
    public void openLaunch() {
@@ -83,20 +82,5 @@ public class ActivityRouter extends ActivityBoundRouter {
       intent.setData(Uri.parse(url));
       intent.putExtra(PodcastPlayerActivity.PODCAST_NAME_KEY, name);
       startActivityIntent(intent);
-   }
-
-   public void openMarket() {
-      String appPackageName = "com.worldventures.dreamtrips";
-      try {
-         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-      } catch (android.content.ActivityNotFoundException exception) {
-         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-      }
-   }
-
-   public void openSettings() {
-      Intent intent = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      startActivity(intent);
    }
 }

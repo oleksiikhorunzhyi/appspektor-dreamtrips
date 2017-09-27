@@ -19,7 +19,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
+import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager;
 
 import java.util.Calendar;
 import java.util.Date;

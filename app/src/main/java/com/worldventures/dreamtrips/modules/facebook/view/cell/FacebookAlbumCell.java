@@ -31,4 +31,9 @@ public class FacebookAlbumCell extends AbstractCell<FacebookAlbum> {
       String accessToken = AccessToken.getCurrentAccessToken().getToken();
       ivBg.setImageURI(Uri.parse(getModelObject().getCoverUrl(accessToken)));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

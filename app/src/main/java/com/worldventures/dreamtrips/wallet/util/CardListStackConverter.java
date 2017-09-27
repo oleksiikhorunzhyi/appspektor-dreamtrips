@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CardGroupHeaderModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
 
@@ -20,14 +20,17 @@ import static com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.Common
 
 public class CardListStackConverter {
 
-   private WalletRecordUtil utils;
+   private final WalletRecordUtil utils;
+   private final WalletFeatureHelper featureHelper;
+
    private int index = 0;
 
-   public CardListStackConverter(Context context) {
-      this.utils = new WalletRecordUtil(context);
+   public CardListStackConverter(WalletRecordUtil recordUtil, WalletFeatureHelper featureHelper) {
+      this.utils = recordUtil;
+      this.featureHelper = featureHelper;
    }
 
-   public ArrayList<BaseViewModel> mapToViewModel(List<Record> loadedCards, @Nullable String defaultCardId) {
+   public ArrayList<BaseViewModel> mapToViewModel(final Context context, List<Record> loadedCards, @Nullable String defaultCardId) {
 
       if (loadedCards == null) {
          return new ArrayList<>();
@@ -39,7 +42,7 @@ public class CardListStackConverter {
                   .sort((o1, o2) -> o1.recordType().compareTo(o2.recordType()))
                   .sort((o1, o2) -> compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
                   .map(loadedCard -> {
-                     CommonCardViewModel model = createCommonCardViewModel(loadedCard, isCardDefault(defaultCardId, loadedCard));
+                     CommonCardViewModel model = createCommonCardViewModel(context, loadedCard, isCardDefault(defaultCardId, loadedCard));
                      index++;
                      return model;
                   })
@@ -63,7 +66,7 @@ public class CardListStackConverter {
    }
 
    @NonNull
-   private CommonCardViewModel createCommonCardViewModel(Record loadedCard, boolean isDefault) {
+   private CommonCardViewModel createCommonCardViewModel(Context context, Record loadedCard, boolean isDefault) {
       return new CommonCardViewModel(
             loadedCard.id(),
             utils.toBoldSpannable(loadedCard.nickName()),
@@ -73,13 +76,14 @@ public class CardListStackConverter {
             utils.obtainShortCardNumber(loadedCard.numberLastFourDigits()),
             WalletRecordUtil.fetchFullName(loadedCard),
             utils.obtainFullCardNumber(loadedCard.numberLastFourDigits()),
-            utils.goodThrough(loadedCard.expDate()),
-            getCardBackGroundResId()
+            utils.goodThrough(context, loadedCard.expDate()),
+            getCardBackGroundResId(),
+            featureHelper.isSampleCardMode()
       );
    }
 
    private int getCardBackGroundResId() {
-      return index % 2 == 0 ? R.drawable.background_card_dark_blue : R.drawable.background_card_blue;
+      return index % 2 == 0 ? R.drawable.wallet_card_dark_blue_background : R.drawable.wallet_card_blue_background;
    }
 
    private CommonCardViewModel.StackType setCardType(String name) {

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.model;
 
+import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,26 +8,27 @@ import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.BaseViewModel;
+import com.worldventures.dreamtrips.BR;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
 
 public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
-   private String recordId;
+   private final String recordId;
    private CharSequence cardName;
-   private StackType cardType;
-   private String cardTypeName;
+   private final StackType cardType;
+   private final String cardTypeName;
    private boolean defaultCard;
-   private CharSequence cardLastDigitsShort;
-   private String cardHolderName;
-   private CharSequence cardLastDigitsLong;
-   private CharSequence goodThrough;
-   private @DrawableRes int cardBackGround;
-   private boolean sampleCard = false;
+   private final CharSequence cardLastDigitsShort;
+   private final String cardHolderName;
+   private final CharSequence cardLastDigitsLong;
+   private final CharSequence goodThrough;
+   private final @DrawableRes int cardBackGround;
+   private final boolean sampleCard;
 
    public CommonCardViewModel(String recordId, CharSequence cardName, StackType cardType, String cardTypeName,
          boolean defaultCard, CharSequence cardLastDigitsShort, String cardHolderName,
-         CharSequence cardLastDigitsLong, CharSequence goodThrough, @DrawableRes int cardBackGround) {
+         CharSequence cardLastDigitsLong, CharSequence goodThrough, @DrawableRes int cardBackGround, boolean sampleCard) {
       this.recordId = recordId;
       this.cardName = cardName;
       this.cardType = cardType;
@@ -37,6 +39,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       this.cardLastDigitsLong = cardLastDigitsLong;
       this.goodThrough = goodThrough;
       this.cardBackGround = cardBackGround;
+      this.sampleCard = sampleCard;
       modelId = recordId + cardTypeName + cardName;
    }
 
@@ -52,6 +55,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       cardLastDigitsLong = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
       goodThrough = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(in);
       cardBackGround = in.readInt();
+      sampleCard = in.readByte() != 0;
       modelId = recordId + cardTypeName + cardName;
    }
 
@@ -71,6 +75,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return recordId;
    }
 
+   @Bindable
    public CharSequence getCardName() {
       return cardName;
    }
@@ -83,6 +88,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       return cardTypeName;
    }
 
+   @Bindable
    public boolean isDefaultCard() {
       return defaultCard;
    }
@@ -109,6 +115,17 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
 
    public boolean isSampleCard() {
       return sampleCard;
+   }
+
+   public void setCardName(CharSequence cardName) {
+      this.cardName = cardName;
+      notifyPropertyChanged(BR.cardName);
+
+   }
+
+   public void setDefaultCard(boolean defaultCard) {
+      this.defaultCard = defaultCard;
+      notifyPropertyChanged(BR.defaultCard);
    }
 
    @BindingAdapter({"cardBackground"})
@@ -142,6 +159,7 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
       TextUtils.writeToParcel(cardLastDigitsLong, dest, 0);
       TextUtils.writeToParcel(goodThrough, dest, 0);
       dest.writeInt(cardBackGround);
+      dest.writeByte((byte) (sampleCard ? 1 : 0));
    }
 
    @Override

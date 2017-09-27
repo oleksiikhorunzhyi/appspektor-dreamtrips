@@ -10,9 +10,10 @@ import com.messenger.storage.dao.TranslationsDAO;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
+import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 
 import org.junit.Before;
@@ -44,11 +45,11 @@ import static org.mockito.Mockito.when;
 // where Status - status which we receive from server side success/failed
 // type - status of Translation notTranslated/Translating/Error/Reverted
 
-@PrepareForTest({MessengerDatabase.class, TrackingHelper.class, LocaleHelper.class})
+@PrepareForTest({MessengerDatabase.class, LocaleHelper.class})
 public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
    TranslationsDAO translationsDAO;
-   SessionHolder<UserSession> userSessionHolder;
+   SessionHolder userSessionHolder;
    Janet janet;
 
    DataMessage testMessage;
@@ -84,7 +85,6 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
 
       PowerMockito.verifyStatic(times(0));
-      TrackingHelper.translateMessage(anyString());
 
       assertSubscriberWithoutErrorAndValues(testSubscriber);
    }
@@ -109,7 +109,6 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
 
       PowerMockito.verifyStatic();
-      TrackingHelper.translateMessage(anyString());
 
       assertSubscriberWithoutErrorAndValues(testSubscriber);
    }
@@ -135,7 +134,6 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
 
       PowerMockito.verifyStatic();
-      TrackingHelper.translateMessage(anyString());
 
       assertSubscriberWithoutErrorAndValues(testSubscriber);
    }
@@ -169,7 +167,6 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
       verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
 
       PowerMockito.verifyStatic(times(0));
-      TrackingHelper.translateMessage(anyString());
 
       assertSubscriberWithoutErrorAndValues(testSubscriber);
    }
@@ -179,7 +176,8 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
    //////////////////////////////////////////////////////////////////////////////////////////////
 
    private void translateMessage() {
-      MessageTranslationDelegate delegate = new MessageTranslationDelegate(new TranslationInteractor(janet), translationsDAO, userSessionHolder);
+      MessageTranslationDelegate delegate = new MessageTranslationDelegate(new TranslationInteractor(janet),
+            translationsDAO, userSessionHolder, new AnalyticsInteractor(new SessionActionPipeCreator(janet)));
       delegate.translateMessage(testMessage);
    }
 
@@ -246,7 +244,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
    //////// Mock Objects
    //////////////////////////////////////////////////////////////////////////////////////////////
 
-   private SessionHolder<UserSession> obtainMockUserSession() {
+   private SessionHolder obtainMockUserSession() {
       UserSession userSession = mock(UserSession.class);
       doReturn("en-us").when(userSession).getLocale();
 
@@ -254,7 +252,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
       doReturn(true).when(optionalMock).isPresent();
       doReturn(userSession).when(optionalMock).get();
 
-      SessionHolder<UserSession> userHolderMock = mock(SessionHolder.class);
+      SessionHolder userHolderMock = mock(SessionHolder.class);
       doReturn(optionalMock).when(userHolderMock).get();
 
       return userHolderMock;

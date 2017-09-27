@@ -4,9 +4,9 @@ package com.worldventures.dreamtrips.wallet.analytics;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 
 import javax.inject.Inject;
 
@@ -16,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class PaycardAnalyticsCommand extends Command<Void> implements InjectableAction {
 
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject RecordInteractor recordInteractor;
 
    private final BaseCardDetailsWithDefaultAction cardDetailsWithDefaultAction;
@@ -35,7 +35,7 @@ public class PaycardAnalyticsCommand extends Command<Void> implements Injectable
             .flatMap(command -> {
                boolean isDefault = TextUtils.equals(record.id(), command.getResult());
                cardDetailsWithDefaultAction.fillPaycardInfo(record, isDefault);
-               return analyticsInteractor.walletAnalyticsCommandPipe()
+               return analyticsInteractor.walletAnalyticsPipe()
                      .createObservableResult(new WalletAnalyticsCommand(cardDetailsWithDefaultAction));
             })
             .map(Command::getResult)

@@ -1,99 +1,25 @@
 package com.worldventures.dreamtrips.wallet.ui.records.swiping;
 
-import android.content.Context;
-import android.graphics.PointF;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.animation.Animation;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
-import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.records.swiping.anim.ChargingSwipingAnimations;
+import com.worldventures.dreamtrips.wallet.service.command.http.CreateRecordCommand;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
-import butterknife.InjectView;
+import io.techery.janet.operationsubscriber.view.OperationView;
+import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 
-public class WizardChargingScreen extends WalletLinearLayout<WizardChargingPresenter.Screen, WizardChargingPresenter, WizardChargingPath> implements WizardChargingPresenter.Screen {
+public interface WizardChargingScreen extends WalletScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.smart_card) View smartCard;
-   @InjectView(R.id.credit_card) View creditCard;
-   @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
+   void showSwipeError();
 
-   private final OperationScreen operationScreen = new DialogOperationScreen(this);
-   private final ChargingSwipingAnimations swipingAnimations = new ChargingSwipingAnimations();
+   void trySwipeAgain();
 
-   public WizardChargingScreen(Context context) {
-      super(context);
-   }
+   void showSwipeSuccess();
 
-   public WizardChargingScreen(Context context, AttributeSet attrs) {
-      super(context, attrs);
-   }
+   void userPhoto(@Nullable SmartCardUserPhoto photo);
 
-   @Override
-   protected void onFinishInflate() {
-      super.onFinishInflate();
-      if (isInEditMode()) return;
+   OperationView<CreateRecordCommand> provideOperationCreateRecord();
 
-      toolbar.setNavigationOnClickListener(v -> navigateClick());
-      userPhoto.getHierarchy().setActualImageFocusPoint(new PointF(0f, .5f));
-      ImageUtils.applyGrayScaleColorFilter(userPhoto);
-   }
-
-   @Override
-   protected void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      if (isInEditMode()) return;
-
-      swipingAnimations.animateSmartCard(smartCard);
-      swipingAnimations.animateBankCard(creditCard, Animation.INFINITE);
-   }
-
-   @NonNull
-   @Override
-   public WizardChargingPresenter createPresenter() {
-      return new WizardChargingPresenter(getContext(), getInjector());
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return operationScreen;
-   }
-
-   private void navigateClick() {
-      presenter.goBack();
-   }
-
-   @Override
-   public void showSwipeError() {
-      operationScreen.showError(getString(R.string.wallet_wizard_charging_swipe_error), o -> {
-      });
-   }
-
-   @Override
-   public void trySwipeAgain() {
-      operationScreen.showError(getString(R.string.wallet_receive_data_error), o -> {
-      });
-   }
-
-   @Override
-   public void showSwipeSuccess() {
-      operationScreen.showProgress(getString(R.string.wallet_add_card_swipe_success));
-   }
-
-   @Override
-   public void userPhoto(@Nullable SmartCardUserPhoto photo) {
-      if (photo != null) {
-         userPhoto.setImageURI(photo.uri());
-      } // TODO: 5/23/17 add placeholder
-   }
+   OperationView<StartCardRecordingAction> provideOperationStartCardRecording();
 }

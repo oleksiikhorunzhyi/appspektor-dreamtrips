@@ -12,7 +12,7 @@
             />
    </data>
 
-   <com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
+   <com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout
          xmlns:app="http://schemas.android.com/apk/res-auto"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -40,6 +40,6 @@
             android:src="@{photoFacebookModel.checked ? @drawable/add_photo_icon_selected : @drawable/add_photo_icon}"
             />
 
-   </com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>
+   </com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout>
 
 </layout>

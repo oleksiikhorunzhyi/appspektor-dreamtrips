@@ -1,24 +1,16 @@
 package com.worldventures.dreamtrips.modules.media_picker.presenter;
 
-import android.util.Pair;
-
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
-import com.worldventures.dreamtrips.modules.common.command.VideoCapturedCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -42,6 +34,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject MediaInteractor mediaInteractor;
    @Inject DrawableUtil drawableUtil;
+   @Inject CapturedRowMediaHelper capturedRowMediaHelper;
 
    public MediaPickerPresenter(int requestId, int videoLengthLimit) {
       this.requestId = requestId;
@@ -56,18 +49,12 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    }
 
    private void subscribeToVideoAttachment(View view) {
-      mediaInteractor.videoCapturedPipe()
-            .observeSuccess()
-            .map(VideoCapturedCommand::getUri)
-            .flatMap(uri -> mediaInteractor.getVideoDurationPipe()
-                  .createObservableResult(new GetVideoDurationCommand(uri)))
+      capturedRowMediaHelper.videoModelFromCameraObservable()
             .compose(bindViewToMainComposer())
-            .subscribe(getDurationCommand -> {
-               VideoPickerModel videoPickerModel = new VideoPickerModel(getDurationCommand.getUri().getPath(),
-                     getDurationCommand.getResult());
+            .subscribe(videoPickerModel -> {
                int videoDurationSec = (int) (videoPickerModel.getDuration() / 1000);
                if (videoDurationSec > videoLengthLimit) {
-                  view.informUser(context.getString(R.string.picker_video_duration_limit, videoLengthLimit));
+                  view.informUser(context.getString(R.string.picker_video_length_limit, videoLengthLimit));
                } else {
                   mediaPickerEventDelegate.post(new MediaAttachment(videoPickerModel, MediaAttachment.Source.CAMERA, requestId));
                   closeMediaPicker();
@@ -76,17 +63,10 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    }
 
    private void subsbribeToPhotoAttachments() {
-      mediaInteractor.imageCapturedPipe()
-            .observeSuccess()
-            .map(imageCapturedCommand -> {
-               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, imageCapturedCommand.getResult());
-               return Collections.singletonList(new PhotoPickerModel(pair.first, pair.second));
-            })
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindView())
-            .subscribe(photoGalleryModels -> {
-               mediaPickerEventDelegate.post(new MediaAttachment(photoGalleryModels, MediaAttachment.Source.CAMERA, requestId));
+      capturedRowMediaHelper.photoModelFromCameraObservable()
+            .compose(bindViewToMainComposer())
+            .subscribe(photoGalleryModel -> {
+               mediaPickerEventDelegate.post(new MediaAttachment(photoGalleryModel, MediaAttachment.Source.CAMERA, requestId));
                closeMediaPicker();
             });
    }
@@ -118,15 +98,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    private Observable<MediaAttachment> getPhotosAttachmentsObservable(List<MediaPickerModel> pickedImages, MediaAttachment.Source source) {
       if (pickedImages == null || pickedImages.isEmpty()) return Observable.empty();
       return Observable.from(pickedImages)
-            .map(element -> {
-               Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getAbsolutePath());
-               return new PhotoPickerModel(pair.first, pair.second);
-            })
-            .map(photoGalleryModel -> {
-               ArrayList<PhotoPickerModel> chosenImages = new ArrayList<>();
-               chosenImages.add(photoGalleryModel);
-               return new MediaAttachment(chosenImages, source, requestId);
-            });
+            .map(element -> capturedRowMediaHelper.processPhotoModel(element.getAbsolutePath()))
+            .map(photoGalleryModel -> new MediaAttachment(photoGalleryModel, source, requestId));
    }
 
    private Observable<MediaAttachment> getVideoAttachmentsObservable(VideoPickerModel videoPickerModel, MediaAttachment.Source source) {

@@ -8,7 +8,7 @@ import android.animation.ObjectAnimator;
 import android.view.View;
 import android.view.animation.Animation;
 
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -87,7 +87,7 @@ public class ChargingSwipingAnimations {
          Observable.just(remainRepeat)
                .filter(repeatCounter -> repeatCounter > 0 || repeatCounter < Animation.INFINITE)
                .delay(BANKCARD_DELAY_BETWEEN_ANIMATIONS, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-               .compose(RxLifecycle.bindView(animatedView))
+               .compose(RxLifecycleAndroid.bindView(animatedView))
                .subscribe(remainRepeat -> animateBankCard(animatedView, remainRepeat));
       }
 

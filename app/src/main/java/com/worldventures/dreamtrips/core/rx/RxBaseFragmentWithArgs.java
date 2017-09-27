@@ -5,8 +5,8 @@ import android.os.Parcelable;
 import android.support.annotation.CallSuper;
 import android.view.View;
 
-import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 
@@ -28,24 +28,24 @@ public abstract class RxBaseFragmentWithArgs<PM extends Presenter, P extends Par
 
    @Override
    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.STOP));
    }
 
    @Override
    public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
    }
 
    protected <T>Observable.Transformer<T, T> bindUntilStopViewComposer() {
-      return RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP);
+      return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.STOP);
    }
 
    protected <T>Observable.Transformer<T, T> bindUntilDropViewComposer() {
-      return RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW);
+      return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW);
    }
 
    protected <T>Observable.Transformer<T, T> bindUntilResumeComposer() {
-      return RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.RESUME);
+      return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.RESUME);
    }
 
    @Override

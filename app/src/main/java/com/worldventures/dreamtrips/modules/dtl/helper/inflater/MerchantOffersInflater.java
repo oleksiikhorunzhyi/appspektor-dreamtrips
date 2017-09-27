@@ -21,6 +21,7 @@ import com.jakewharton.rxbinding.view.ViewLayoutChangeEvent;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -59,7 +60,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.perk_divider) View perkDivider;
    @InjectView(R.id.rating_header) LinearLayout ratingHeader;
 
-   @Inject protected SessionHolder<UserSession> sessionHolder;
+   @Inject protected SessionHolder sessionHolder;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
    private Map<String, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
@@ -120,7 +121,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       if (media == null) return;
       //
       RxView.layoutChangeEvents(cover)
-            .compose(RxLifecycle.bindView(rootView))
+            .compose(RxLifecycleAndroid.bindView(rootView))
             .subscribe(event -> onLayoutImage(event, media));
    }
 
@@ -205,7 +206,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       if (media == null) return;
       //
       image.setImageURI(Uri.parse(media.getImagePath()));
-      RxView.clicks(image).compose(RxLifecycle.bindView(image)).subscribe(aVoid -> notifyOfferClickListeners(perk));
+      RxView.clicks(image).compose(RxLifecycleAndroid.bindView(image)).subscribe(aVoid -> notifyOfferClickListeners(perk));
    }
 
    private static void bindInfo(TextView view, String description) {

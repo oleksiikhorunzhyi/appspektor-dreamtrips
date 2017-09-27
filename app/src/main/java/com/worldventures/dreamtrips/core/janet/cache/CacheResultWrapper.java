@@ -32,7 +32,12 @@ public class CacheResultWrapper extends ActionServiceWrapper {
 
          if (options.restoreFromCache()) {
             Class actionClass = holder.action().getClass();
-            Object data = getStorage(actionClass).get(options.params());
+            Object data;
+            try {
+               data = getStorage(actionClass).get(options.params());
+            } catch (Throwable throwable) {
+               throw new JanetException("Action cannot be restored", throwable);
+            }
             if (data != null) {
                action.onRestore(holder, data);
                return !options.sendAfterRestore();

@@ -10,6 +10,9 @@ public class PhotoPickerModel extends MediaPickerModelImpl {
 
    private Size size;
 
+   public PhotoPickerModel() {
+   }
+
    public PhotoPickerModel(String absolutePath, Size size) {
       this(absolutePath, 0);
       this.size = size;
@@ -17,6 +20,16 @@ public class PhotoPickerModel extends MediaPickerModelImpl {
 
    public PhotoPickerModel(String absolutePath, long dateTaken) {
       super(absolutePath, dateTaken);
+   }
+
+   public PhotoPickerModel copy() {
+      PhotoPickerModel copy = new PhotoPickerModel(this.absolutePath, this.dateTaken);
+      copy.checked = this.checked;
+      copy.size = this.size;
+      copy.pickedTime = this.pickedTime;
+      copy.uri = this.uri;
+      copy.source = this.source;
+      return copy;
    }
 
    @Nullable

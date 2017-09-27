@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.messenger.delegate.CropImageDelegate;
-import com.messenger.di.MessengerActivityModule;
+import com.messenger.di.MessengerModule;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
@@ -16,13 +16,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
-import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerDelegate;
+import com.worldventures.dreamtrips.social.ui.podcast_player.delegate.PodcastPlayerDelegate;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
 import flow.Flow;
 import flow.History;
 
@@ -31,7 +29,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
    public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
-   @InjectView(R.id.chat_photo_picker) PhotoPickerLayout photoPickerLayout;
    @Inject PodcastPlayerDelegate podcastPlayerDelegate;
    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject PickLocationDelegate pickLocationDelegate;
@@ -47,9 +44,7 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
       //
       MonitoringHelper.setInteractionName(this);
       //
-      initPickerLayout();
-      //
-      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(MessengerActivityModule.MESSENGER));
+      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(MessengerModule.MESSENGER));
    }
 
    @Override
@@ -61,14 +56,7 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
    @Override
    protected ComponentDescription getCurrentComponent() {
-      return rootComponentsProvider.getComponentByKey(MessengerActivityModule.MESSENGER);
-   }
-
-   //TODO photo picker should be fully reworked to fit UI needs
-   private void initPickerLayout() {
-      inject(photoPickerLayout);
-      photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
-      photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
+      return rootComponentsProvider.getComponentByKey(MessengerModule.MESSENGER);
    }
 
    @Override

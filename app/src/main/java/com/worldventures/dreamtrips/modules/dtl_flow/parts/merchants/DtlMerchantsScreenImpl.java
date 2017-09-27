@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -69,6 +70,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
    LayoutManagerScrollPersister scrollStatePersister = new LayoutManagerScrollPersister();
+   public static String currentSelectedFilter = null;
 
    private int idResource = R.string.dtlt_search_hint;
 
@@ -115,23 +117,23 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
       RxDtlToolbar.actionViewClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openLeftDrawer());
       RxDtlToolbar.navigationClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> getPresenter().mapClicked());
       RxDtlToolbar.merchantSearchApplied(dtlToolbar)
             .filter(s -> !dtlToolbar.isCollapsed())
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(getPresenter()::applySearch);
       RxDtlToolbar.locationInputFocusChanges(dtlToolbar)
             .skip(1)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .filter(Boolean::booleanValue) // only true -> only focus gains
             .subscribe(aBoolean -> getPresenter().locationChangeRequested());
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
    }
 
@@ -221,7 +223,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                idResource = R.string.filter_merchant_entertainment;
             } else if (type.get(0).equals(FilterData.SPAS)) {
                filterSpa.setSelected(true);
-               idResource = R.string.filter_merchant_spa;
+               idResource = R.string.filter_merchant_spas;
             }
          } else {
             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
@@ -293,7 +295,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (dtlToolbar == null) return;
 
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
@@ -446,8 +448,16 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
+      if (null != dtlToolbar) {
+         dtlToolbar.removeSearchFieldFocus();
+      }
+      setCurrentSearchFilter(stringResource);
       updateFiltersView(stringResource);
       getPresenter().setMerchantType(merchantType);
       getPresenter().loadAmenities(merchantType);
+   }
+
+   private void setCurrentSearchFilter(int stringResource){
+      currentSelectedFilter = getContext().getString(stringResource);
    }
 }

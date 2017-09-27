@@ -9,6 +9,7 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 
 import rx.functions.Action1;
@@ -60,7 +61,7 @@ public class ImageryDraweeView extends SimpleDraweeView {
       if (cannotSizeView()) {
          if (getWidth() == 0 || getHeight() == 0) {
             RxView.layoutChangeEvents(this)
-                  .compose(RxLifecycle.bindView(this))
+                  .compose(RxLifecycleAndroid.bindView(this))
                   .subscribe(aVoid -> onSizeDeterminedAction.call(formatImageUri(url)));
          } else {
             onSizeDeterminedAction.call(formatImageUri(url));

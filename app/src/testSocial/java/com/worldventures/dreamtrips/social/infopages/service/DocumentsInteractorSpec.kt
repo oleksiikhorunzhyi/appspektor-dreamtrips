@@ -11,10 +11,10 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedDi
 import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValueStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.infopages.model.Document
-import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand
-import com.worldventures.dreamtrips.modules.infopages.service.storage.DocumentsStorage
+import com.worldventures.dreamtrips.social.ui.infopages.model.Document
+import com.worldventures.dreamtrips.social.ui.infopages.service.DocumentsInteractor
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand
+import com.worldventures.dreamtrips.social.ui.infopages.service.storage.DocumentsStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

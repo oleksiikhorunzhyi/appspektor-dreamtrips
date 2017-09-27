@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.worldventures.dreamtrips.AssertUtil
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostBody
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithPhotoAttachmentBody
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostWithVideoAttachmentBody
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.CompoundOperationsCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithPhotoAttachmentBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithVideoAttachmentBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.PostProcessingCommand
 import io.techery.janet.ActionState
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe

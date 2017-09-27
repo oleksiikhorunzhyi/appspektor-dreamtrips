@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.delegate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
-import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
 
 import java.io.File;
 import java.util.ArrayList;

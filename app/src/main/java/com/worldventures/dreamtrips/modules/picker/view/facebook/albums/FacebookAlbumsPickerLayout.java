@@ -76,7 +76,7 @@ public class FacebookAlbumsPickerLayout extends FacebookMediaPickerLayout<Facebo
    @Override
    public void showError(Object o, Throwable throwable) {
       final Throwable causeThrowable = throwable.getCause();
-      if(!(causeThrowable instanceof FacebookAccessTokenException)) {
+      if (!(causeThrowable instanceof FacebookAccessTokenException)) {
          super.showError(o, throwable);
       }
    }
@@ -92,4 +92,7 @@ public class FacebookAlbumsPickerLayout extends FacebookMediaPickerLayout<Facebo
          getOnBackClickListener().onBackClick();
       }
    }
+
+   @Override
+   public void onProgressChanged(int i) { /* nothing */ }
 }

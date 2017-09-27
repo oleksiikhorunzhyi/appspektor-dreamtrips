@@ -12,9 +12,10 @@ import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.ConfigChangesAwareComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.TransparentSocialComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.ConfigChangesAwareComponentActivity;
 
 import timber.log.Timber;
 
@@ -58,9 +59,14 @@ public class RouterImpl implements Router {
       Bundle args = getArgs(config);
       args.putSerializable(ComponentPresenter.ROUTE, route);
       Class<? extends InjectingActivity> clazz = config.isManualOrientationActivity() ?
-            ConfigChangesAwareComponentActivity.class : ComponentActivity.class;
+            ConfigChangesAwareComponentActivity.class :
+            config.getTransparentBackground()? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
 
       activityRouter.startActivityWithArgs(clazz, args, config.getFlags());
+
+      if (config.animationConfig != null) {
+         activity.overridePendingTransition(config.animationConfig.getAnimationEnter(), config.animationConfig.getAnimationExit());
+      }
    }
 
    private void openFragment(Route route, NavigationConfig config) {
@@ -79,6 +85,7 @@ public class RouterImpl implements Router {
       fragmentCompass.setContainerId(config.getContainerId());
       fragmentCompass.setFragmentManager(fragmentManager);
       fragmentCompass.setBackStackEnabled(config.isBackStackEnabled());
+      fragmentCompass.setAnimationConfig(config.getAnimationConfig());
       fragmentCompass.replace(route, getArgs(config), config.getTargetFragment());
    }
 

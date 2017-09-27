@@ -44,6 +44,11 @@ public class HeaderThemeCell extends AbstractDelegateCell<ThemeHeaderModel, Head
       cellDelegate.toggleVisibility();
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public interface Delegate extends CellDelegate<ThemeHeaderModel> {
       void toggleVisibility();
 

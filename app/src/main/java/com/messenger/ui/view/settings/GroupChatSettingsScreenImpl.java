@@ -16,24 +16,19 @@ import com.messenger.ui.dialog.LeaveChatDialog;
 import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenterImpl;
-import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.functions.Action0;
 
 public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends BaseChatSettingsScreen<GroupChatSettingsScreen, GroupChatSettingsScreenPresenter, P> implements GroupChatSettingsScreen {
 
    @InjectView(R.id.chat_settings_group_avatars_view_progress_bar) ProgressBar groupAvatarsViewProgressBar;
-
-   @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
 
    private ChatSettingsRow membersSettingsRow;
 
@@ -49,18 +44,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ba
    protected void initUi() {
       injector.inject(this);
       super.initUi();
-   }
-
-   @Override
-   protected void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      messengerMediaPickerDelegate.register();
-   }
-
-   @Override
-   protected void onDetachedFromWindow() {
-      super.onDetachedFromWindow();
-      messengerMediaPickerDelegate.unregister();
    }
 
    @Override
@@ -104,12 +87,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ba
       return new GroupChatSettingsScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
    }
 
-   @Override
-   public Observable<String> getAvatarImagePathsStream() {
-      return messengerMediaPickerDelegate.getImagePathsStream();
-   }
-
-
    @OnClick(R.id.chat_settings_leave_chat_button)
    void onLeaveChatButtonClicked() {
       getPresenter().onLeaveButtonClick();
@@ -126,16 +103,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ba
 
    private void onSubjectEntered(String subject) {
       getPresenter().applyNewChatSubject(subject);
-   }
-
-   @Override
-   public void showAvatarPhotoPicker() {
-      messengerMediaPickerDelegate.showPhotoPicker();
-   }
-
-   @Override
-   public void hideAvatarPhotoPicker() {
-      messengerMediaPickerDelegate.hidePhotoPicker();
    }
 
    @Override
@@ -156,5 +123,13 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ba
    @Override
    public void showMessage(@StringRes int text, Action0 action) {
       Snackbar.make(this, text, Snackbar.LENGTH_SHORT).setAction(R.string.retry, v -> action.call()).show();
+   }
+
+   @Override
+   public void openPicker() {
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(pickerAttachment ->
+            getPresenter().onImagePicked(pickerAttachment.getChosenImages().get(0)));
+      mediaPickerDialog.show(1);
    }
 }

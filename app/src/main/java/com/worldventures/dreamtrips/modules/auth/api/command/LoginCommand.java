@@ -12,9 +12,9 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
 import com.worldventures.dreamtrips.modules.common.model.Session;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
-import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
+import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
+import com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.social.ui.settings.util.SettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
 public class LoginCommand extends CommandWithError<UserSession> implements InjectableAction {
 
    @Inject Janet janet;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject MapperyContext mapperyContext;
    @Inject AuthInteractor authInteractor;
    @Inject SnappyRepository db;

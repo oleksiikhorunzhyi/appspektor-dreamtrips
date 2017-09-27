@@ -32,7 +32,7 @@ public class ApiConfigModule {
 
    @Singleton
    @Provides
-   AuthDataProvider<MonolithAuthData> provideMonolithAuthDataProvider(SessionHolder<UserSession> sessionHolder) {
+   AuthDataProvider<MonolithAuthData> provideMonolithAuthDataProvider(SessionHolder sessionHolder) {
       return new MonolithAuthDataProvider(sessionHolder);
    }
 

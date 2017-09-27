@@ -19,7 +19,7 @@ public class SessionUtil {
       return userSession;
    }
 
-   public static boolean isUserSessionTokenExist(SessionHolder<UserSession> sessionHolder) {
+   public static boolean isUserSessionTokenExist(SessionHolder sessionHolder) {
       try {
          UserSession userSession = sessionHolder.get().isPresent() ? sessionHolder.get().get() : null;
          return userSession != null && userSession.getApiToken() != null;

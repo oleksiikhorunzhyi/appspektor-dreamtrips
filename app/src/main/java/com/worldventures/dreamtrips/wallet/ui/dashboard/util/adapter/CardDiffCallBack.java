@@ -3,12 +3,11 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter;
 
 import android.support.v7.util.DiffUtil;
 
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CardGroupHeaderModel;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
+import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 
 import java.util.List;
 
-public class CardDiffCallBack<T extends BaseViewModel> extends DiffUtil.Callback{
+public class CardDiffCallBack<T extends BaseViewModel> extends DiffUtil.Callback {
 
    private List<T> oldList;
    private List<T> newList;

@@ -17,11 +17,6 @@ public class TripCell extends AbstractDelegateCell<TripModel, TripCellDelegate> 
 
    public TripCell(View view) {
       super(view);
-   }
-
-   @Override
-   public void afterInject() {
-      super.afterInject();
       tripFeedViewInjector = new TripFeedViewInjector(itemView);
    }
 
@@ -48,5 +43,10 @@ public class TripCell extends AbstractDelegateCell<TripModel, TripCellDelegate> 
    @OnClick(R.id.itemLayout)
    void actionItemClick() {
       cellDelegate.onCellClicked(getModelObject());
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 }

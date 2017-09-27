@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.model;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 
@@ -11,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 
 import java.io.Serializable;
 import java.util.ArrayList;

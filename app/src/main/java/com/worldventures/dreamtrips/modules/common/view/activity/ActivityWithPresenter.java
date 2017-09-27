@@ -1,19 +1,18 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.ActivityEvent;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.command.ConfigurationCommand;
+import com.worldventures.dreamtrips.social.ui.video.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
-import com.worldventures.dreamtrips.modules.common.service.ConfigurationInteractor;
+import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 
@@ -23,7 +22,7 @@ import icepick.Icepick;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends BaseActivity implements ActivityPresenter.View {
+public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extends LegacyBaseActivity implements ActivityPresenter.View {
 
    private PM presenter;
    private final PublishSubject<ActivityEvent> lifecycleSubject = PublishSubject.create();
@@ -58,6 +57,7 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    protected void afterCreateView(Bundle savedInstanceState) {
       super.afterCreateView(savedInstanceState);
       this.presenter.takeView(this);
+      this.presenter.onViewTaken();
    }
 
    @Override
@@ -147,11 +147,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    }
 
    @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(requestCode, resultCode, data);
-   }
-
-   @Override
    public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
       presenter.onConfigurationChanged(newConfig);
@@ -166,16 +161,16 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
    @Override
    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.STOP));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycleSubject, ActivityEvent.STOP));
    }
 
    @Override
    public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycleSubject, ActivityEvent.DESTROY));
    }
 
    protected <T> Observable.Transformer<T, T> bindView() {
-      return input -> input.compose(RxLifecycle.bindUntilActivityEvent(lifecycleSubject, ActivityEvent.DESTROY));
+      return input -> input.compose(RxLifecycle.bindUntilEvent(lifecycleSubject, ActivityEvent.DESTROY));
    }
 
    protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {

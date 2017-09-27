@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.wallet.domain.entity;
 
 import org.immutables.value.Value;
 
+import java.util.Locale;
+
 @Value.Style(visibility = Value.Style.ImplementationVisibility.PACKAGE)
 @Value.Immutable
 public abstract class SmartCardUserPhone {
@@ -18,6 +20,6 @@ public abstract class SmartCardUserPhone {
 
    @Value.Derived
    public String fullPhoneNumber() {
-      return code() + number();
+      return String.format(Locale.US, "%s%s", code(), number());
    }
 }

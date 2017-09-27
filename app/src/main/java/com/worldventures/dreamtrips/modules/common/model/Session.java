@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
 
 import java.util.List;
 

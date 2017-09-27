@@ -17,7 +17,7 @@ import io.techery.janet.smartcard.action.support.GetCardAnalyticLogsAction;
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class GetOnCardAnalyticsCommand extends Command<List<AnalyticsLog>> implements InjectableAction {

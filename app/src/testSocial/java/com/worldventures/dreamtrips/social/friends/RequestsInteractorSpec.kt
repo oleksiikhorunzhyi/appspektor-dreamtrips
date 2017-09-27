@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.modules.common.model.User
-import com.worldventures.dreamtrips.modules.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.modules.friends.service.command.GetRequestsCommand
-import com.worldventures.dreamtrips.modules.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetRequestsCommand
+import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService

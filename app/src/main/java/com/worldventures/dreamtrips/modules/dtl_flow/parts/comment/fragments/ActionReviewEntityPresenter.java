@@ -3,19 +3,14 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
-import com.worldventures.dreamtrips.modules.feed.service.CreatePostBodyInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.CreatePostBodyInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
 
 import java.util.ArrayList;
 import java.util.List;

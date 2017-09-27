@@ -5,10 +5,12 @@ import android.databinding.Bindable;
 
 import com.worldventures.dreamtrips.BR;
 
+import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.isNotEmpty;
+
 public class MerchantViewModel extends BaseObservable {
 
    private int selectedTypeIndex = 0;
-   private String merchantType;
+   private String merchantType; //it's value of selectedTypeIndex
    private String merchantName;
    private String addressLine1;
    private String addressLine2;
@@ -111,5 +113,15 @@ public class MerchantViewModel extends BaseObservable {
       result = 31 * result + (state != null ? state.hashCode() : 0);
       result = 31 * result + (zip != null ? zip.hashCode() : 0);
       return result;
+   }
+
+   public boolean isDataChanged() {
+      return selectedTypeIndex != 0
+            || isNotEmpty(merchantName)
+            || isNotEmpty(addressLine1)
+            || isNotEmpty(addressLine2)
+            || isNotEmpty(city)
+            || isNotEmpty(state)
+            || isNotEmpty(zip);
    }
 }

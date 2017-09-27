@@ -1,17 +1,15 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.BookItAction;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsApptentiveAnalyticAction;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundle;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +34,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      TrackingHelper.trip(String.valueOf(trip.getTripId()), getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ViewDreamTripsApptentiveAnalyticAction());
       subscribeForTripsDetails();
       loadTripDetails();
    }
@@ -71,11 +69,11 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
                   .onProgress((command, progress) -> tripLoaded(command.getCachedModel()))
                   .onSuccess(command -> {
                      tripLoaded(command.getResult());
-                     TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
+                     analyticsInteractor.analyticsActionPipe().send(new ViewDreamTripsApptentiveAnalyticAction());
                   }).onFail((command, e) -> {
                      if (command.getCacheData() == null || command.getCacheData().getContent() == null)
                         view.setContent(null);
-                        handleError(command, e);
+                     handleError(command, e);
                   }));
    }
 
@@ -86,13 +84,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    }
 
    public void onItemClick(int position) {
-      FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(position)
-            .route(Route.TRIP_PHOTO_FULLSCREEN)
-            .type(TripImagesType.FIXED)
-            .fixedList(new ArrayList<>(filteredImages))
-            .build();
-
-      view.openFullscreen(data);
+      view.openFullscreen(new TripViewPagerBundle(filteredImages, position));
    }
 
    public List<TripImage> getFilteredImages() {
@@ -115,7 +107,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
 
       void showSignUp();
 
-      void openFullscreen(FullScreenImagesBundle data);
+      void openFullscreen(TripViewPagerBundle data);
 
       void openBookIt(String url);
    }

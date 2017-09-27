@@ -6,16 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.NxtSessionHolder;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.nxt.CreateNxtSessionHttpAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.ImmutableMultiRequestBody;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.NxtSession;
 
@@ -41,7 +40,7 @@ public class NxtHttpService extends ActionServiceWrapper {
 
    @Inject NxtSessionHolder nxtSessionHolder;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject WalletSocialInfoProvider socialInfoProvider;
    @Inject MapperyContext mapperyContext;
 
    private NxtAuthRetryPolicy nxtAuthRetryPolicy;
@@ -144,9 +143,8 @@ public class NxtHttpService extends ActionServiceWrapper {
       action.setApiVersionForAccept(BuildConfig.API_VERSION);
       action.setAppPlatformHeader(String.format("android-%d", Build.VERSION.SDK_INT));
       //
-      if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
-         UserSession userSession = appSessionHolder.get().get();
-         ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
+      if (action instanceof AuthorizedHttpAction && socialInfoProvider.hasUser()) {
+         ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + socialInfoProvider.apiToken());
       }
    }
 }

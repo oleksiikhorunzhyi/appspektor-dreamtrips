@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbs
 import java.util.List;
 
 import io.techery.janet.http.exception.HttpException;
+import io.techery.janet.http.exception.HttpServiceException;
 import rx.functions.Func0;
 import timber.log.Timber;
 
@@ -18,9 +19,9 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 public class AuthRetryPolicy {
 
-   private final SessionHolder<UserSession> appSessionHolder;
+   private final SessionHolder appSessionHolder;
 
-   public AuthRetryPolicy(SessionHolder<UserSession> appSessionHolder) {
+   public AuthRetryPolicy(SessionHolder appSessionHolder) {
       this.appSessionHolder = appSessionHolder;
    }
 
@@ -37,7 +38,8 @@ public class AuthRetryPolicy {
 
    private boolean shouldRetry(Throwable error) {
       Timber.d("Check retry");
-      return isLoginError(error) && isCredentialExist(appSessionHolder);
+      boolean wrapperException = error instanceof HttpServiceException && error.getCause() != null;
+      return isLoginError(wrapperException? error.getCause() : error) && isCredentialExist(appSessionHolder);
    }
 
    private void handleSession(Session session) {
@@ -74,7 +76,7 @@ public class AuthRetryPolicy {
       return false;
    }
 
-   public static boolean isCredentialExist(SessionHolder<UserSession> appSessionHolder) {
+   public static boolean isCredentialExist(SessionHolder appSessionHolder) {
       Optional<UserSession> userSessionOptional = appSessionHolder.get();
       if (userSessionOptional.isPresent()) {
          UserSession userSession = appSessionHolder.get().get();

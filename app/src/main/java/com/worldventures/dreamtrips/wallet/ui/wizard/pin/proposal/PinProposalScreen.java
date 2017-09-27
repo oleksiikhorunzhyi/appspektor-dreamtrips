@@ -1,101 +1,33 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.View;
 
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.PinProposalDialog;
-
-import butterknife.InjectView;
-import butterknife.OnClick;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 
-public class PinProposalScreen extends WalletLinearLayout<PinProposalPresenter.Screen, PinProposalPresenter, PinProposalPath>
-      implements PinProposalPresenter.Screen {
+public interface PinProposalScreen extends WalletScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.not_now_button) TextView btnSkip;
-   @InjectView(R.id.txt_pin_proposal_label) TextView tvLabel;
-   @InjectView(R.id.linear_layout_bottom_sheet_pin_proposal) LinearLayout bottomSheetLinearLayout;
-   private PinProposalDialog pinProposalDialog;
+   void setLabel();
 
-   public PinProposalScreen(Context context) {
-      this(context, null);
-   }
+   void setLabelWithCardName(String cardNickName);
 
-   public PinProposalScreen(Context context, AttributeSet attrs) {
-      super(context, attrs);
-   }
+   void setToolbarTitle(int toolbarTitleResId);
 
-   @Override
-   public PinProposalPresenter createPresenter() {
-      return new PinProposalPresenter(getContext(), getInjector(), getPath());
-   }
+   void setSkipButtonLabel(int skipButtonResId);
 
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return null;
-   }
+   void preparePinOptionalDialog(PinProposalDelegate pinProposalDelegate);
 
-   @Override
-   public void setLabel() {
-      tvLabel.setText(getString(R.string.wallet_wizard_setup_pin_proposal_label));
-   }
+   void showSkipPinDialog();
 
-   @Override
-   public void setLabelWithCardName(String cardNickName) {
-      tvLabel.setText(getString(R.string.wallet_add_card_details_pin_proposal_label, cardNickName));
-   }
+   void hideSkipPinDialog();
 
-   @Override
-   public void setToolbarTitle(int toolbarTitleResId) {
-      toolbar.setTitle(toolbarTitleResId);
-   }
+   void disableToolbarNavigation();
 
-   @Override
-   public void setSkipButtonLabel(int skipButtonResId) {
-      btnSkip.setText(skipButtonResId);
-   }
+   void setupToolbarNavigation();
 
-   @Override
-   public void preparePinOptionalDialog(PinProposalDelegate pinProposalDelegate) {
-      pinProposalDialog = pinProposalDelegate.createPinDialog(presenter, bottomSheetLinearLayout, getContext());
-   }
+   PinProposalAction getPinProposalAction();
 
-   @Override
-   public void showSkipPinDialog() {
-      pinProposalDialog.showDialog();
-   }
+   String getCardNickName();
 
-   @Override
-   public void hideSkipPinDialog() {
-      pinProposalDialog.hideDialog();
-   }
-
-   @Override
-   public void disableToolbarNavigation() {
-      toolbar.setNavigationIcon(new ColorDrawable(Color.TRANSPARENT));
-   }
-
-   @Override
-   public void setupToolbarNavigation() {
-      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
-   }
-
-   @OnClick(R.id.create_pin_button)
-   void onCreatePinClick() {
-      presenter.handleCreatePin();
-   }
-
-   @OnClick(R.id.not_now_button)
-   void onNotNowClick() {
-      presenter.handleSkipPinCreation();
-   }
+   View getView();
 }

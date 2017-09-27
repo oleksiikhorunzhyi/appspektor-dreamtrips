@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.wallet.analytics.oncard.action;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
-
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
 
 public abstract class SmartCardUserAction extends SmartCardAnalyticsAction {
@@ -10,7 +8,7 @@ public abstract class SmartCardUserAction extends SmartCardAnalyticsAction {
       super(logEntry);
    }
 
-   public abstract void setUser(User user);
+   public abstract void setUserId(int userId);
 
    @Override
    protected void processLog(int type, AnalyticsLog logEntry) {

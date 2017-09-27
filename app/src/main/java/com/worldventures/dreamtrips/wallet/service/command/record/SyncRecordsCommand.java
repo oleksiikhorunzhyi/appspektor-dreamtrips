@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.wallet.service.command.record;
 
+import android.support.v4.util.Pair;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
-import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class SyncRecordsCommand extends Command<Void> implements InjectableAction {
@@ -37,7 +37,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    @Inject RecordInteractor recordInteractor;
    @Inject SmartCardInteractor interactor;
    @Inject NxtInteractor nxtInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 
@@ -84,32 +84,34 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    private Observable<Void> sync(SyncBundle bundle, CommandCallback<Void> callback) {
       final List<Observable<Void>> operations = new ArrayList<>();
 
-      // All SmartCard records -> prepare for local storage -> save (override) local storage
-      if (!bundle.deviceRecords.isEmpty()) {
-         operations.add(prepareRecordsForLocalStorage(Queryable.from(bundle.deviceRecords)
-               .map(deviceOnlyRecord -> ImmutableRecord.copyOf(deviceOnlyRecord).withNumberLastFourDigits(
-                     WalletRecordUtil.obtainLastCardDigits(deviceOnlyRecord.number())))
-               .toList())
-               .flatMap(this::saveRecords));
-      }
+      // All SmartCard records -> prepare for local storage
+      Observable<Record> smartCardToApp = bundle.deviceRecords.isEmpty() ?
+            Observable.empty() : prepareRecordsForLocalStorage(bundle.deviceRecords);
 
-      // Local only records -> prepare for SmartCard -> push to SmartCard
-      List<Record> localOnlyRecords = Queryable.from(bundle.localRecords)
+      // Local only records -> prepare for SmartCard -> send to SmartCard
+      Observable<Record> appToSmartCard = Observable.empty();
+
+      final List<Record> localOnlyRecords = Queryable.from(bundle.localRecords)
             .filter(localRecord -> !bundle.deviceRecords.contains(localRecord))
             .toList();
       if (!localOnlyRecords.isEmpty()) {
          localOnlyRecordsCount = localOnlyRecords.size();
+         callback.onProgress(0);
 
-         final ActionPipe<AddRecordAction> addRecordActionActionPipe = janet.createPipe(AddRecordAction.class);
-         for (int i = 0; i < localOnlyRecordsCount; i++) {
-            final int progress = i + 1;
-            operations.add(prepareRecordForSmartCard(localOnlyRecords.get(i))
-                  .doOnSubscribe(() -> callback.onProgress(progress))
-                  .flatMap(recordForSmartCard -> addRecordActionActionPipe
-                        .createObservableResult(new AddRecordAction(recordForSmartCard))
-                        .map(value -> null)));
-         }
+         final ActionPipe<AddRecordAction> addRecordActionPipe = janet.createPipe(AddRecordAction.class);
+         appToSmartCard = prepareRecordsForSmartCard(localOnlyRecords)
+               .concatMap(indexRecordPair -> addRecordActionPipe
+                     .createObservableResult(new AddRecordAction(indexRecordPair.second))
+                     .map(action -> mapperyContext.convert(action.record, Record.class))
+                     .doOnSubscribe(() -> callback.onProgress(indexRecordPair.first)))
+               .toList()
+               .flatMap(this::prepareRecordsForLocalStorage);
       }
+
+      // Save records to local storage
+      operations.add(Observable.concat(smartCardToApp, appToSmartCard)
+            .toList()
+            .flatMap(this::saveRecords));
 
       // Sync default record id
       if (bundle.deviceDefaultRecordId != null && bundle.localDefaultRecordId == null) {
@@ -128,21 +130,26 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
             .map(voids -> null);
    }
 
-   private Observable<List<Record>> prepareRecordsForLocalStorage(List<? extends Record> records) {
+   private Observable<Record> prepareRecordsForLocalStorage(List<Record> records) {
       return recordInteractor.secureMultipleRecordsPipe()
             .createObservableResult(SecureMultipleRecordsCommand.Builder.prepareRecordForLocalStorage(records)
                   .skipTokenizationErrors(true)
                   .create())
-            .map(Command::getResult);
+            .map(Command::getResult)
+            .flatMap(Observable::from);
    }
 
-   private Observable<io.techery.janet.smartcard.model.Record> prepareRecordForSmartCard(Record record) {
-      return recordInteractor.secureRecordPipe()
-            .createObservableResult(SecureRecordCommand.Builder.prepareRecordForSmartCard(record)
+   private Observable<Pair<Integer, io.techery.janet.smartcard.model.Record>> prepareRecordsForSmartCard(List<Record> records) {
+      return recordInteractor.secureMultipleRecordsPipe().createObservableResult(
+            SecureMultipleRecordsCommand.Builder.prepareRecordForSmartCard(records)
                   .withAnalyticsActionType(ActionType.RESTORE)
                   .create())
             .map(Command::getResult)
-            .map(detokenizedRecord -> mapperyContext.convert(detokenizedRecord, io.techery.janet.smartcard.model.Record.class));
+            .map(detokenizedRecords -> Queryable.from(detokenizedRecords)
+                  .map((detokenizedRecord, i) -> new Pair<>(i + 1, mapperyContext.convert(
+                        detokenizedRecord, io.techery.janet.smartcard.model.Record.class)))
+                  .toList())
+            .flatMap(Observable::from);
    }
 
    private Observable<Void> saveRecords(List<Record> records) {

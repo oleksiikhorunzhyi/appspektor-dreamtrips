@@ -1,28 +1,28 @@
 package com.worldventures.dreamtrips.wallet.service.firmware;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 
 class DiskFirmwareRepository implements FirmwareRepository {
 
-   private final SnappyRepository snappyRepository;
+   private final WalletStorage walletStorage;
 
-   DiskFirmwareRepository(SnappyRepository snappyRepository) {
-      this.snappyRepository = snappyRepository;
+   DiskFirmwareRepository(WalletStorage walletStorage) {
+      this.walletStorage = walletStorage;
    }
 
    @Override
    public synchronized FirmwareUpdateData getFirmwareUpdateData() {
-      return snappyRepository.getFirmwareUpdateData();
+      return walletStorage.getFirmwareUpdateData();
    }
 
    @Override
    public synchronized void setFirmwareUpdateData(FirmwareUpdateData firmwareUpdateData) {
-      snappyRepository.saveFirmwareUpdateData(firmwareUpdateData);
+      walletStorage.saveFirmwareUpdateData(firmwareUpdateData);
    }
 
    @Override
    public synchronized void clear() {
-      snappyRepository.deleteFirmwareUpdateData();
+      walletStorage.deleteFirmwareUpdateData();
    }
 }

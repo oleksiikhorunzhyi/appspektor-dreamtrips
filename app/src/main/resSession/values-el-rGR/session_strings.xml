@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="user_password_hint">Κωδικός πρόσβασης μέλους της WV</string>
+   <string name="log_in">Σύνδεση</string>
+   <string name="user_id_hint">Id μέλους της WV</string>
+   <string name="error_fail_to_login">Αποτυχία εισόδου</string>
+   <string name="logout_dialog_title">Αποσύνδεση</string>
+   <string name="logout_dialog_message">Είστε σίγουροι ότι θέλετε να αποσυνδεθείτε;</string>
+   <string name="logout_dialog_positive_btn">Αποσύνδεση</string>
+   <string name="logout_dialog_negative_btn">Ακύρωση</string>
+   <string name="terms_and_conditions_title">Όροι και Προϋποθέσεις</string>
+   <string name="terms_and_conditions_subtitle">Διαβάστε και αποδεχτείτε τους παρακάτω όρους και τις προϋποθέσεις για να συνεχίσετε</string>
+   <string name="terms_and_conditions_checkbox">Κάντε κλικ εδώ για να αποδεχτείτε τους όρους και τις προϋποθέσεις</string>
+   <string name="terms_and_conditions_accept">Συγκατάθεση</string>
+   <string name="terms_and_conditions_reject">Όχι τώρα</string>
+   <string name="error_failed_to_accept_terms_and_conditions">Αποτυχία αποδοχής όρων και προϋποθέσεων</string>
+</resources>

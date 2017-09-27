@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocat
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
@@ -52,7 +53,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      apiErrorPresenter.setView(getView());
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(getView(), () -> getView().hideProgress()));
       //
       tryHideNearMeButton();
       //
@@ -149,7 +150,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
    }
 
    private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
-      if(throwable instanceof CancelException) return;
+      if (throwable instanceof CancelException) return;
       getView().informUser(action.getErrorMessage());
       getView().hideProgress();
    }

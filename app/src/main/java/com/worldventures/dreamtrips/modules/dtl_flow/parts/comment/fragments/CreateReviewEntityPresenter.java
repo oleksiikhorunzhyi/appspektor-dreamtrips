@@ -4,31 +4,31 @@ import android.net.Uri;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
-import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.modules.background_uploading.service.BackgroundUploadingInteractor;
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.CreatePostCompoundOperationCommand;
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto;
-import com.worldventures.dreamtrips.modules.feed.model.SelectedPhoto;
-import com.worldventures.dreamtrips.modules.feed.service.PostsInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.FetchLocationFromExifCommand;
+import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableSelectedPhoto;
+import com.worldventures.dreamtrips.social.ui.feed.model.SelectedPhoto;
+import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.FetchLocationFromExifCommand;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
 import io.techery.janet.Command;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -110,7 +110,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
             .subscribe(creationItems ->
                   postsInteractor.createPostCompoundOperationPipe()
                         .send(new CreatePostCompoundOperationCommand(cachedText, getSelectionPhotos(creationItems),
-                              location, origin))
+                              origin, location))
             );
    }
 
@@ -136,12 +136,15 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    public boolean removeImage(PhotoReviewCreationItem item) {
-      boolean removed = cachedCreationItems.remove(item);
-      if (removed) {
-         invalidateDynamicViews();
-         updatePickerState();
+      try {
+         cachedCreationItems.remove(item);
+      } catch (Exception e){
+         e.printStackTrace();
+         return false;
       }
-      return removed;
+      return true;
+
+
    }
 
    public void attachImages(MediaAttachment mediaAttachment) {
@@ -188,7 +191,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
       }
    }
 
-   private Observable<PhotoReviewCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel,
+   private Observable<PhotoReviewCreationItem> convertPhotoCreationItem(PhotoPickerModel photoGalleryModel,
          MediaAttachment.Source source) {
       return tripImagesInteractor.createReviewPhotoCreationItemPipe()
             .createObservableResult(new CreateReviewPhotoCreationItemCommand(photoGalleryModel, source))

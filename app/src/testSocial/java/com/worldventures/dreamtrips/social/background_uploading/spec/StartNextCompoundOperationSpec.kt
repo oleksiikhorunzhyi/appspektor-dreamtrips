@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.worldventures.dreamtrips.AssertUtil
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.PostProcessingCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.PostProcessingCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.StartNextCompoundOperationCommand
 import io.techery.janet.ActionState
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -14,30 +15,26 @@ class StartNextCompoundOperationSpec : BaseUploadingInteractorSpec({
       context("Has scheduled and doesn't have started compound operations") {
          initJanet(compoundOperationsHasScheduledAndDontHaveStarted())
 
-         context("Starting next compound operation") {
-            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
+         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
 
-            backgroundUploadingInteractor.postProcessingPipe().observe().subscribe(testSubscriber)
-            backgroundUploadingInteractor.startNextCompoundPipe().send(StartNextCompoundOperationCommand())
+         backgroundUploadingInteractor.postProcessingPipe().observe().take(1).subscribe(testSubscriber)
+         backgroundUploadingInteractor.startNextCompoundPipe().send(StartNextCompoundOperationCommand())
 
-            it("Should start new post processing command") {
-               AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 1)
-            }
+         it("Should start new post processing command") {
+            AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 1)
          }
       }
 
       context("Has scheduled and has started compound operations") {
          initJanet(compoundOperationsHasScheduledAndHasStarted())
 
-         context("Starting next compound operation") {
-            val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand>>()
+         val testSubscriber = TestSubscriber<ActionState<PostProcessingCommand<PostBody>>>()
 
-            backgroundUploadingInteractor.postProcessingPipe().observe().subscribe(testSubscriber)
-            backgroundUploadingInteractor.startNextCompoundPipe().send(StartNextCompoundOperationCommand())
+         backgroundUploadingInteractor.postProcessingPipe().observe().subscribe(testSubscriber)
+         backgroundUploadingInteractor.startNextCompoundPipe().send(StartNextCompoundOperationCommand())
 
-            it("Should not start new post processing command") {
-               AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 0)
-            }
+         it("Should not start new post processing command") {
+            AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 0)
          }
       }
    }

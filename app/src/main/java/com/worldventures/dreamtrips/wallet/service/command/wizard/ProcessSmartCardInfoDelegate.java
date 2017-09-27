@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
@@ -9,10 +8,8 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
-
-import java.io.File;
 
 import io.techery.janet.Janet;
 import io.techery.mappery.MapperyContext;
@@ -20,12 +17,12 @@ import rx.Observable;
 
 class ProcessSmartCardInfoDelegate {
 
-   private final SnappyRepository snappyRepository;
+   private final WalletStorage walletStorage;
    private final Janet janetWallet;
    private MapperyContext mappery;
 
-   ProcessSmartCardInfoDelegate(SnappyRepository snappyRepository, Janet janetWallet, MapperyContext mappery) {
-      this.snappyRepository = snappyRepository;
+   ProcessSmartCardInfoDelegate(WalletStorage walletStorage, Janet janetWallet, MapperyContext mappery) {
+      this.walletStorage = walletStorage;
       this.janetWallet = janetWallet;
       this.mappery = mappery;
    }
@@ -51,9 +48,8 @@ class ProcessSmartCardInfoDelegate {
 
       if (user.displayPhoto() != null) {
          final String photoUrl = user.displayPhoto();
-         return janetWallet.createPipe(SmartCardAvatarCommand.class)
-               .createObservableResult(SmartCardAvatarCommand.fromUrl(photoUrl))
-               .map(command -> changeUserPhoto(scUser, command.getResult()));
+         return Observable.just(photoUrl)
+               .map(s -> changeUserPhoto(scUser, SmartCardUserPhoto.of(s)));
       } else {
          return Observable.just(scUser);
       }
@@ -68,8 +64,8 @@ class ProcessSmartCardInfoDelegate {
    }
 
    private SmartCardUser changeUserPhoto(SmartCardUser user, SmartCardUserPhoto smartCardUserPhoto) {
-      final File originalFile = smartCardUserPhoto.original();
-      if (originalFile != null) {
+      final String uri = smartCardUserPhoto.uri();
+      if (uri != null) {
          return ImmutableSmartCardUser.builder()
                .from(user)
                .userPhoto(smartCardUserPhoto)
@@ -80,8 +76,8 @@ class ProcessSmartCardInfoDelegate {
    }
 
    private Observable<Void> save(Result result) {
-      snappyRepository.saveSmartCardDetails(result.details);
-      snappyRepository.saveSmartCardUser(result.user);
+      walletStorage.saveSmartCardDetails(result.details);
+      walletStorage.saveSmartCardUser(result.user);
 
       //saving smart card
       return janetWallet.createPipe(ActiveSmartCardCommand.class)

@@ -25,31 +25,25 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    @Inject MapperyContext mapperyContext;
 
    private final RequestReviewParams actionParams;
-   private final String userEmail;
-   private final String userNickName;
    private final String reviewText;
    private final String rating;
    private final Boolean verified;
-   private final String userId;
    private final String deviceFingerprint;
    private final String authorIpAddress;
    private final List<PhotoReviewCreationItem> selectedImagesList;
 
-   public static AddReviewAction create(RequestReviewParams params, String userEmail, String userNickName, String reviewText,
-         String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress, List<PhotoReviewCreationItem> selectedImagesList) {
-      return new AddReviewAction(params, userEmail, userNickName, reviewText,
-            rating, verified, userId, deviceFingerprint, authorIpAddress, selectedImagesList);
+   public static AddReviewAction create(RequestReviewParams params, String reviewText,
+         String rating, Boolean verified, String deviceFingerprint, String authorIpAddress, List<PhotoReviewCreationItem> selectedImagesList) {
+      return new AddReviewAction(params, reviewText,
+            rating, verified, deviceFingerprint, authorIpAddress, selectedImagesList);
    }
 
-   public AddReviewAction(RequestReviewParams params, String userEmail, String userNickName, String reviewText,
-         String rating, Boolean verified, String userId, String deviceFingerprint, String authorIpAddress, List<PhotoReviewCreationItem> selectedImagesList) {
+   public AddReviewAction(RequestReviewParams params, String reviewText,
+         String rating, Boolean verified, String deviceFingerprint, String authorIpAddress, List<PhotoReviewCreationItem> selectedImagesList) {
       this.actionParams = params;
-      this.userEmail = userEmail;
-      this.userNickName = userNickName;
       this.reviewText = reviewText;
       this.rating = rating;
       this.verified = verified;
-      this.userId = userId;
       this.deviceFingerprint = deviceFingerprint;
       this.authorIpAddress = authorIpAddress;
       this.selectedImagesList = selectedImagesList;
@@ -61,12 +55,9 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
 
       janet.createPipe(AddReviewHttpAction.class)
             .createObservableResult(new AddReviewHttpActionBuilder().setActionParams(actionParams)
-                  .setEmail(userEmail)
-                  .setNickname(userNickName)
                   .setReviewText(reviewText)
                   .setRating(rating)
                   .setVerified(verified.toString())
-                  .setUserId(userId)
                   .setDeviceFingerPrint(deviceFingerprint)
                   .setAuthorIpAddress(authorIpAddress)
                   .addFiles(selectedImagesList)
@@ -79,28 +70,15 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    //TODO Refactor AddReviewHttpAction to support constructor with  ellipsis instead of overload
    private class AddReviewHttpActionBuilder {
       private RequestReviewParams actionParams;
-      private String email;
-      private String nickName;
       private String reviewText;
       private String rating;
       private String verified;
-      private String userId;
       private String deviceFingerPrint;
       private String authorIpAddress;
       private List<File> files = new ArrayList<>();
 
       public AddReviewHttpActionBuilder setActionParams(RequestReviewParams actionParams) {
          this.actionParams = actionParams;
-         return this;
-      }
-
-      public AddReviewHttpActionBuilder setEmail(String email) {
-         this.email = email;
-         return this;
-      }
-
-      public AddReviewHttpActionBuilder setNickname(String nickName) {
-         this.nickName = nickName;
          return this;
       }
 
@@ -119,11 +97,6 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
          return this;
       }
 
-      public AddReviewHttpActionBuilder setUserId(String userId) {
-         this.userId = userId;
-         return this;
-      }
-
       public AddReviewHttpActionBuilder setDeviceFingerPrint(String deviceFingerPrint) {
          this.deviceFingerPrint = deviceFingerPrint;
          return this;
@@ -135,7 +108,6 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
       }
 
       public AddReviewHttpActionBuilder addFiles(List<PhotoReviewCreationItem> imagesList) {
-
          if (imagesList != null) {
             for (PhotoReviewCreationItem photo : imagesList) {
                files.add(new File(photo.getFilePath()));
@@ -145,32 +117,8 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
       }
 
       public AddReviewHttpAction build() throws IOException {
-         AddReviewHttpAction action = null;
-
-         if (files.size() == 1) {
-            action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0));
-         } else if (files.size() == 2) {
-            action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
-                  .get(1));
-         } else if (files.size() == 3) {
-            action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
-                  .get(1), files.get(2));
-         } else if (files.size() == 4) {
-            action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
-                  .get(1), files.get(2), files.get(3));
-         } else if (files.size() == 5) {
-            action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress, files.get(0), files
-                  .get(1), files.get(2), files.get(3), files.get(4));
-         } else {
-            action = new AddReviewHttpAction(this.actionParams, this.email, this.nickName, this.reviewText,
-                  this.rating, this.verified, this.userId, this.deviceFingerPrint, this.authorIpAddress);
-         }
-         return action;
+         return new AddReviewHttpAction(this.actionParams, this.reviewText,
+               this.rating, this.verified, this.deviceFingerPrint, this.authorIpAddress, files);
       }
    }
 }

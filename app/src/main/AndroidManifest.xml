@@ -96,46 +96,84 @@
       </activity>
 
       <activity
-            android:name=".modules.player.PodcastPlayerActivity"
+            android:name=".social.ui.podcast_player.PodcastPlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:label="@string/app_name"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value=".modules.common.view.activity.MainActivity"
+               android:value=".social.ui.activity.SocialMainActivity"
                />
       </activity>
 
       <activity
-            android:name=".modules.common.view.activity.MainActivity"
+            android:name=".social.ui.activity.SocialMainActivity"
             android:configChanges="layoutDirection|locale"
             android:label="@string/trips"
             android:windowSoftInputMode="adjustResize"
             />
       <activity
-            android:name=".modules.common.view.activity.ComponentActivity"
+            android:name=".social.ui.activity.SocialComponentActivity"
             android:configChanges="layoutDirection|locale"
             android:hardwareAccelerated="true"
-            android:parentActivityName=".modules.common.view.activity.MainActivity"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
             android:windowSoftInputMode="adjustResize"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value=".modules.common.view.activity.MainActivity"
+               android:value=".social.ui.activity.SocialMainActivity"
+               />
+      </activity>
+
+      <activity
+            android:name=".social.ui.activity.TransparentSocialComponentActivity"
+            android:configChanges="layoutDirection|locale"
+            android:hardwareAccelerated="true"
+            android:theme="@style/TransparentActivity"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".social.ui.activity.SocialMainActivity"
+               />
+      </activity>
+
+      <activity
+            android:name=".social.ui.activity.ConfigChangesAwareComponentActivity"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".social.ui.activity.SocialMainActivity"
                />
 
       </activity>
 
       <activity
-            android:name=".modules.common.view.activity.Player360Activity"
+            android:name=".social.ui.activity.Player360Activity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             />
 
+      <meta-data
+            android:name="JW_LICENSE_KEY"
+            android:value="k/oXE6R4JCQeSPhvZ4qNjiNOqL49dRMASkD4MEOLWVb3BeGX"
+            />
       <activity
-            android:name=".modules.common.view.activity.PlayerActivity"
+            android:name=".social.ui.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:screenOrientation="sensorLandscape"
             />
+
+      <activity
+            android:name=".social.ui.activity.FeedActivity"
+            android:launchMode="singleTop"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            >
+      </activity>
 
       <!--Chat activities-->
       <activity
@@ -144,7 +182,7 @@
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               android:value="com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity"
                />
       </activity>
 
@@ -155,7 +193,7 @@
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               android:value="com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity"
                />
       </activity>
 
@@ -163,17 +201,18 @@
       <activity
             android:name=".wallet.ui.WalletActivity"
             android:launchMode="singleTop"
+            android:theme="@style/WalletTheme"
             android:screenOrientation="portrait"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
-               android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"
+               android:value="com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity"
                />
       </activity>
 
       <!--For result activities-->
 
-      <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver" />
+      <receiver android:name=".social.ui.friends.notification.FriendRejectActionReceiver" />
 
       <activity android:name=".modules.picklocation.view.PickLocationActivity" />
 
@@ -211,8 +250,7 @@
       <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="${applicationId}.com.facebook.app.FacebookContentProvider761062457321921"
-            android:exported="false"
-            />
+            android:exported="false"/>
 
       <activity
             android:name="com.yalantis.ucrop.UCropActivity"
@@ -225,7 +263,7 @@
             android:enabled="true"
             />
       <service
-            android:name=".modules.player.playback.PodcastService"
+            android:name=".social.ui.podcast_player.playback.PodcastService"
             android:exported="false"
             />
 

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.janet.cache.storage;
 
-import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearStoragesCommand;
+import com.worldventures.dreamtrips.modules.common.command.ClearStoragesCommand;
 
 public interface ClearableStorage {
    /**

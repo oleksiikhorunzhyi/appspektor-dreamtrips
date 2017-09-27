@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.wallet.analytics.oncard.action;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
 
@@ -14,9 +13,7 @@ class SmartCardUserAssignAction extends SmartCardUserAction {
    }
 
    @Override
-   public void setUser(User user) {
-      if (user != null) {
-         attributeMap.put("ocmemassigned", String.valueOf(user.getId()));
-      }
+   public void setUserId(int userId) {
+      if (userId != 0) attributeMap.put("ocmemassigned", String.valueOf(userId));
    }
 }

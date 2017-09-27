@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <declare-styleable name="PinProgressButton">
+      <attr name="pinned" format="boolean" />
+      <attr name="progress" format="integer" />
+      <attr name="max" format="integer" />
+      <attr name="circleColor" format="color" />
+      <attr name="progressColor" format="color" />
+   </declare-styleable>
+
+   <declare-styleable name="SquareLayout">
+      <attr name="side_priority" format="enum">
+         <enum name="height" value="0" />
+         <enum name="width" value="1" />
+      </attr>
+   </declare-styleable>
+
+   <declare-styleable name="CollageView">
+      <attr name="padding" format="dimension" />
+      <attr name="moreTextSize" format="dimension" />
+      <attr name="moreIcon" format="reference" />
+   </declare-styleable>
+
+   <declare-styleable name="TranslateView">
+      <attr name="translatedTextColor" format="reference"/>
+   </declare-styleable>
+
+   <declare-styleable name="PhotoStripView">
+      <attr name="errorPlankHeight" format="dimension"/>
+      <attr name="errorTextSize" format="dimension"/>
+      <attr name="errorPlankColor" format="color"/>
+      <attr name="errorTextColor" format="color"/>
+      <attr name="stripColor" format="color"/>
+   </declare-styleable>
+
+</resources>

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.janet;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionServiceWrapper;
@@ -13,10 +13,13 @@ import io.techery.janet.JanetException;
 public class DreamTripsCommandService extends ActionServiceWrapper {
 
    private Context appContext;
+   private HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   public DreamTripsCommandService(Context appContext) {
+
+   public DreamTripsCommandService(Context appContext, HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(new CommandActionService());
       this.appContext = appContext;
+      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
    }
 
    @Override
@@ -49,8 +52,7 @@ public class DreamTripsCommandService extends ActionServiceWrapper {
       if (holder.action() instanceof CommandWithError) {
          CommandWithError commandAction = (CommandWithError) holder.action();
          String fallbackMessage = appContext.getString(commandAction.getFallbackErrorMessage());
-         String errorMessage = JanetHttpErrorHandlingUtils.handleJanetHttpError(appContext, commandAction,
-               e, fallbackMessage);
+         String errorMessage = httpErrorHandlingUtil.handleJanetHttpError(commandAction, e, fallbackMessage);
          commandAction.setErrorMessage(errorMessage);
       }
 

@@ -23,20 +23,20 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 
 import javax.inject.Inject;
 
@@ -65,7 +65,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @InjectView(R.id.photos) RecyclerView mRecycler;
 
    @Inject MerchantsInteractor merchantInteractor;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    private static final String BRAND_ID = "1";
    private User user;
@@ -109,11 +109,16 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    protected void showMediaPicker() {
+      PickerBundle pickerBundle = new PickerBundle.Builder()
+            .setRequestId(0)
+            .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
+            .build();
+
       router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(0, getPresenter().getRemainingPhotosCount()))
+            .data(pickerBundle)
             .build());
    }
 
@@ -434,12 +439,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
                         .brandId(BRAND_ID)
                         .productId(getMerchantId())
                         .build(),
-                  user.getEmail(),
-                  user.getFullName(),
                   getDescription(),
                   String.valueOf(getRatingBar()),
                   isVerified(),
-                  String.valueOf(user.getId()),
                   getFingerprintId(),
                   getIpAddress(), getPresenter().getSelectedImagesList()))
             .observeOn(AndroidSchedulers.mainThread())
@@ -452,16 +454,6 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @Override
    public boolean isTabletLandscape() {
       return false;
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-
    }
 
    @Override
@@ -540,7 +532,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       if (merchant.reviews().total().equals("") || merchant.reviews().total().equals("0")) {
          navigateToDetail(getContext().getString(R.string.snack_review_success));
       } else {
-         Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+         Path path = new DtlReviewsPath(Flow.get(getContext()).getHistory().top(), merchant, getContext().getString(R.string.snack_review_success));
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
          historyBuilder.pop();
          historyBuilder.pop();

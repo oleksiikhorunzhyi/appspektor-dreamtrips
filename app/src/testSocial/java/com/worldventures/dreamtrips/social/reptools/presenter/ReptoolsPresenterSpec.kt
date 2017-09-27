@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
-import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter
+import com.worldventures.dreamtrips.social.ui.reptools.presenter.RepToolsPresenter
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -31,19 +31,19 @@ class ReptoolsPresenterSpec: PresenterBaseSpec({
          }
       }
 
-      it ("should provide 4 screens with Invite screen") {
+      it ("should provide 5 screens with Invite screen") {
          init()
          doReturn(true).whenever(presenter).showInvite()
          val screens = presenter.provideScreens()
-         assertEquals(presenter.provideScreens().size, 4)
+         assertEquals(presenter.provideScreens().size, 5)
          assert(screens.filter{ it.route == Route.INVITE }.count() == 1)
       }
 
-      it ("should provide 3 screens without Invite screen") {
+      it ("should provide 4 screens without Invite screen") {
          init()
          doReturn(false).whenever(presenter).showInvite()
          val screens = presenter.provideScreens()
-         assertEquals(presenter.provideScreens().size, 3)
+         assertEquals(presenter.provideScreens().size, 4)
          assert(screens.filter{ it.route == Route.INVITE }.count() == 0)
       }
    }

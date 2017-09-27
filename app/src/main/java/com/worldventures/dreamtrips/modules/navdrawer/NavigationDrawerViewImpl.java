@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.modules.navdrawer;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -9,13 +12,14 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.trello.rxlifecycle.RxLifecycle;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.CommonModule;
+import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.NpaLinearLayoutManager;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationHeader;
 
@@ -23,7 +27,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Observable;
 
 public class NavigationDrawerViewImpl extends LinearLayout implements NavigationDrawerView, NavigationDrawerListener {
 
@@ -33,7 +36,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
    private NavigationDrawerPresenter navigationDrawerPresenter;
 
    private NavigationDrawerAdapter adapter;
-   //
+
    private ComponentDescription currentComponent;
 
    public NavigationDrawerViewImpl(Context context) {
@@ -51,6 +54,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
       init(context);
    }
 
+   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
    public NavigationDrawerViewImpl(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
       super(context, attrs, defStyleAttr, defStyleRes);
       init(context);
@@ -58,19 +62,24 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    private void init(Context context) {
       ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_navigation_drawer, this, true));
-      //
-      recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+      recyclerView.setLayoutManager(new NpaLinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
       setVersion();
+      setupViews();
+   }
+
+   public void setupViews() {
+      if (ViewUtils.isLandscapeOrientation(getContext())) {
+         recyclerView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.bg_tablet_menu));
+         version.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
+      } else {
+         recyclerView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+         version.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+      }
    }
 
    @Override
    public void setNavigationDrawerPresenter(NavigationDrawerPresenter navigationDrawerPresenter) {
       this.navigationDrawerPresenter = navigationDrawerPresenter;
-   }
-
-   @Override
-   public <T> Observable<T> bind(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindView(this));
    }
 
    @Override
@@ -93,7 +102,8 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    private void setVersion() {
       try {
-         version.setText(getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName);
+         version.setText(getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName
+               + "-" + BuildConfig.versionBuild);
       } catch (PackageManager.NameNotFoundException e) {
          e.printStackTrace();
       }
@@ -105,7 +115,7 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    @Override
    public void onNavigationDrawerItemSelected(ComponentDescription newComponent) {
-      if (newComponent.getKey().equals(CommonModule.LOGOUT)) {
+      if (newComponent.getKey().equals(SocialAppModule.LOGOUT)) {
          navigationDrawerPresenter.onLogout();
          return;
       }

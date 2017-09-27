@@ -24,11 +24,9 @@ public class MerchantTypeUtil {
     }
 
     public static int getStringResource(String type) {
-
-        int stringResource = R.string.dtlt_search_hint;
-
+        int stringResource = R.string.filter_merchant_dining;
         if (type.equals(FilterData.SPAS)) {
-            stringResource = R.string.text_to_filter_by_spa;
+            stringResource = R.string.filter_merchant_spas;
         } else if (type.equals(FilterData.ENTERTAINMENT)) {
             stringResource = R.string.filter_merchant_entertainment;
         }
@@ -38,11 +36,6 @@ public class MerchantTypeUtil {
     public static int filterMapDrawable(View view) {
         return view.isSelected() ?
                 R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused;
-    }
-
-    public static int filterMerchantDrawable(View view) {
-        return view.isSelected() ?
-                R.drawable.circle_merchant_button_selected : R.drawable.circle_merchant_button;
     }
 
     public static int filterMerchantColor(View view) {

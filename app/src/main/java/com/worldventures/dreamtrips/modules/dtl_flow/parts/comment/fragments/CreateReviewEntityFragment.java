@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -97,11 +97,16 @@ public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragm
    }
 
    protected void showMediaPicker() {
+      PickerBundle pickerBundle = new PickerBundle.Builder()
+            .setRequestId(0)
+            .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
+            .build();
+
       router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
-            .data(new PickerBundle(0, getPresenter().getRemainingPhotosCount()))
+            .data(pickerBundle)
             .build());
    }
 

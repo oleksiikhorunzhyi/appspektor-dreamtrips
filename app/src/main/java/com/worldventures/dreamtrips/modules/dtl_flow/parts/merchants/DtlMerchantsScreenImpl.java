@@ -8,9 +8,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -36,7 +38,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelp
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -61,10 +62,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @InjectView(R.id.btn_filter_merchant_entertainment) View filterEntertainment;
    @InjectView(R.id.btn_filter_merchant_spa) View filterSpa;
 
-   @InjectView(R.id.id_view_food) View backgroundFood;
-   @InjectView(R.id.id_view_entertainment) View backgroundEntertainment;
-   @InjectView(R.id.id_view_spas) View backgroundSpa;
-
    @Inject MerchantsAdapterDelegate delegate;
 
    ScrollingManager scrollingManager;
@@ -73,9 +70,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    PaginationManager paginationManager;
    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
    LayoutManagerScrollPersister scrollStatePersister = new LayoutManagerScrollPersister();
+   public static String currentSelectedFilter = null;
 
    private int idResource = R.string.dtlt_search_hint;
-   public static List<String> merchantType = new ArrayList<>();
 
    @Override
    protected void onFinishInflate() {
@@ -120,23 +117,23 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
       RxDtlToolbar.actionViewClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openLeftDrawer());
       RxDtlToolbar.navigationClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> getPresenter().mapClicked());
       RxDtlToolbar.merchantSearchApplied(dtlToolbar)
             .filter(s -> !dtlToolbar.isCollapsed())
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(getPresenter()::applySearch);
       RxDtlToolbar.locationInputFocusChanges(dtlToolbar)
             .skip(1)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .filter(Boolean::booleanValue) // only true -> only focus gains
             .subscribe(aBoolean -> getPresenter().locationChangeRequested());
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
    }
 
@@ -196,8 +193,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterFood.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.RESTAURANT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.RESTAURANT), MerchantTypeUtil.getStringResource(FilterData.RESTAURANT));
-
-         setStatusMerchantType(FilterData.RESTAURANT);
       }
    }
 
@@ -207,8 +202,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterEntertainment.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.ENTERTAINMENT);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.ENTERTAINMENT), MerchantTypeUtil.getStringResource(FilterData.ENTERTAINMENT));
-
-         setStatusMerchantType(FilterData.ENTERTAINMENT);
       }
    }
 
@@ -218,18 +211,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!filterSpa.isSelected()) {
          MerchantTypeUtil.toggleState(filterFood, filterEntertainment, filterSpa, FilterData.SPAS);
          loadMerchantsAndAmenities(MerchantTypeUtil.getMerchantTypeList(FilterData.SPAS), MerchantTypeUtil.getStringResource(FilterData.SPAS));
-
-         setStatusMerchantType(FilterData.SPAS);
       }
-   }
-
-   public static List<String> getFilterType() {
-      return merchantType;
-   }
-
-   private static void setStatusMerchantType(String type) {
-      merchantType.clear();
-      merchantType = MerchantTypeUtil.getMerchantTypeList(type);
    }
 
    @Override
@@ -241,7 +223,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                idResource = R.string.filter_merchant_entertainment;
             } else if (type.get(0).equals(FilterData.SPAS)) {
                filterSpa.setSelected(true);
-               idResource = R.string.filter_merchant_spa;
+               idResource = R.string.filter_merchant_spas;
             }
          } else {
             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
@@ -313,7 +295,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (dtlToolbar == null) return;
 
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
@@ -447,11 +429,17 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    private void updateFiltersView(int stringResource) {
 
-      ViewUtils.setCompatDrawable(backgroundFood, MerchantTypeUtil.filterMerchantDrawable(filterFood));
+      ViewUtils.setCompatDrawable(filterFood, MerchantTypeUtil.filterMapDrawable(filterFood));
 
-      ViewUtils.setCompatDrawable(backgroundEntertainment, MerchantTypeUtil.filterMerchantDrawable(filterEntertainment));
+      ViewUtils.setCompatDrawable(filterEntertainment, MerchantTypeUtil.filterMapDrawable(filterEntertainment));
 
-      ViewUtils.setCompatDrawable(backgroundSpa, MerchantTypeUtil.filterMerchantDrawable(filterSpa));
+      ViewUtils.setCompatDrawable(filterSpa, MerchantTypeUtil.filterMapDrawable(filterSpa));
+
+      ViewUtils.setTextColor((Button) filterFood, MerchantTypeUtil.filterMerchantColor(filterFood));
+
+      ViewUtils.setTextColor((Button) filterEntertainment, MerchantTypeUtil.filterMerchantColor(filterEntertainment));
+
+      ViewUtils.setTextColor((Button) filterSpa, MerchantTypeUtil.filterMerchantColor(filterSpa));
 
       if (stringResource != 0 && dtlToolbar != null) {
          dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
@@ -460,8 +448,16 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
+      if (null != dtlToolbar) {
+         dtlToolbar.removeSearchFieldFocus();
+      }
+      setCurrentSearchFilter(stringResource);
       updateFiltersView(stringResource);
-      getPresenter().setMerchantType(merchantType, getActivity().getString(stringResource));
+      getPresenter().setMerchantType(merchantType);
       getPresenter().loadAmenities(merchantType);
+   }
+
+   private void setCurrentSearchFilter(int stringResource){
+      currentSelectedFilter = getContext().getString(stringResource);
    }
 }

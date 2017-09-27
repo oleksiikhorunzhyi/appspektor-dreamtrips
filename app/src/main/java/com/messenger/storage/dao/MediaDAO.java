@@ -18,7 +18,7 @@ import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Image;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,7 +87,6 @@ public class MediaDAO extends BaseDAO {
 
       Image image = new Image();
       image.setUrl(url.replace(" ", "%20"));
-      image.setFromFile(false);
       User user = new User(userSocialId);
       user.setUsername(userName);
 

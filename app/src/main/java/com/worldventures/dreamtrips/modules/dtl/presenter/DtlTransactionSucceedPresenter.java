@@ -2,14 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
 
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.dtl.merchants.AddRatingHttpAction;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionRatingEvent;
@@ -19,9 +17,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import javax.inject.Inject;
+
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
@@ -29,7 +30,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject LocationDelegate locationDelegate;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
 
    @State int stars;
 
@@ -50,7 +51,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
             .map(DtlTransactionAction::getResult)
             .compose(bindViewIoToMainComposer())
             .subscribe(transaction -> view.showShareDialog((int) transaction.getDtlTransactionResult()
-                  .getEarnedPoints(), merchant), apiErrorPresenter::handleError);
+                  .getEarnedPoints(), merchant), apiErrorViewAdapter::handleError);
    }
 
    public void done() {
@@ -65,7 +66,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorPresenter.setView(view);
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> {}));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
@@ -80,14 +81,14 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
                               .send(DtlAnalyticsCommand.create(new TransactionSuccessEvent(
                                     merchant.asMerchantAttributes(), transaction, location)));
                      }, e -> {});
-            }, apiErrorPresenter::handleError);
+            }, apiErrorViewAdapter::handleError);
       bindApiPipe();
    }
 
    private void bindApiPipe() {
       transactionInteractor.rateActionPipe()
             .observe()
-            .subscribe(new ActionStateSubscriber<AddRatingHttpAction>().onFail(apiErrorPresenter::handleActionError));
+            .subscribe(new ActionStateSubscriber<AddRatingHttpAction>().onFail(apiErrorViewAdapter::handleError));
    }
 
    public void trackSharing(@ShareType String type) {
@@ -96,7 +97,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
                   ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
-   public interface View extends ApiErrorView, RxView {
+   public interface View extends InformView, RxView {
       void showShareDialog(int amount, Merchant merchant);
 
       void setCongratulations(DtlTransactionResult result);

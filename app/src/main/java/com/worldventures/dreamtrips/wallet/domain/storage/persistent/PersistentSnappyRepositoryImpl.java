@@ -6,14 +6,11 @@ import android.support.annotation.Nullable;
 import com.snappydb.DB;
 import com.snappydb.SnappyDB;
 import com.snappydb.SnappydbException;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.repository.BaseSnappyRepository;
 import com.worldventures.dreamtrips.core.repository.SnappyAction;
-import com.worldventures.dreamtrips.core.repository.SnappyCrypter;
 import com.worldventures.dreamtrips.core.repository.SnappyResult;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.wallet.domain.storage.SnappyCrypter;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletBaseSnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
 
 import java.util.concurrent.ExecutorService;
@@ -25,14 +22,14 @@ public class PersistentSnappyRepositoryImpl implements SnappyStorage {
 
    private final SnappyStorage internalSnappyRepository;
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final PersistentStorageNameProvider storageNameProvider;
 
    @Nullable
    private String persistentStorageFolderName;
 
    public PersistentSnappyRepositoryImpl(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService,
-         SessionHolder<UserSession> sessionHolder) {
-      this.sessionHolder = sessionHolder;
+         PersistentStorageNameProvider storageNameProvider) {
+      this.storageNameProvider = storageNameProvider;
 
       internalSnappyRepository = new PersistentInternalSnappyRepository(context, snappyCrypter, executorService);
    }
@@ -59,21 +56,13 @@ public class PersistentSnappyRepositoryImpl implements SnappyStorage {
    }
 
    private void updateStorageFolderName() {
-      String userId = getUserId();
-
-      persistentStorageFolderName = (userId != null) ? String.valueOf((userId).hashCode()) : null;
-   }
-
-   @Nullable
-   private String getUserId() {
-      User user = sessionHolder.get().isPresent() ? sessionHolder.get().get().getUser() : null;
-      return (user != null) ? String.valueOf(user.getId()) : null;
+      persistentStorageFolderName = storageNameProvider.folderName();
    }
 
    /**
     * Provides SnappyDB instance located in internal storage. It must be always available for I/O.
     */
-   private class PersistentInternalSnappyRepository extends BaseSnappyRepository {
+   private class PersistentInternalSnappyRepository extends WalletBaseSnappyRepository {
 
       PersistentInternalSnappyRepository(Context context, SnappyCrypter snappyCrypter, ExecutorService executorService) {
          super(context, snappyCrypter, executorService);

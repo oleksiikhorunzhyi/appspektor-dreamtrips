@@ -7,7 +7,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
+import com.worldventures.dreamtrips.social.ui.feed.model.PostDescription;
 
 import butterknife.InjectView;
 

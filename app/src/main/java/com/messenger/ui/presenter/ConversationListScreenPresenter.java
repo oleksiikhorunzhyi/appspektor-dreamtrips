@@ -22,6 +22,8 @@ public interface ConversationListScreenPresenter extends MessengerPresenter<Conv
 
    void onConversationsDropdownSelected(ChatTypeItem selectedItem);
 
+   void onConversationSearchSelected();
+
    void onConversationsSearchFilterSelected(String searchFilter);
 
    class ChatTypeItem {

@@ -34,7 +34,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
     @Inject
     MerchantsInteractor merchantInteractor;
     @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    SessionHolder appSessionHolder;
 
     private final Merchant merchant;
     private static final String BRAND_ID = "1";
@@ -75,7 +75,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
     @Override
     public void navigateToListReview(String message) {
-        Path path = new DtlReviewsPath(merchant, message);
+        Path path = new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, message);
         History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
         historyBuilder.push(path);
         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
@@ -152,7 +152,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
         if (merchant.reviews().total().equals("")){
             navigateToDetail(getContext().getString(R.string.snack_review_success));
         } else {
-            Path path = new DtlReviewsPath(merchant, getContext().getString(R.string.snack_review_success));
+            Path path = new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, getContext().getString(R.string.snack_review_success));
             History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
             historyBuilder.pop();
             if (getView().isFromListReview()){

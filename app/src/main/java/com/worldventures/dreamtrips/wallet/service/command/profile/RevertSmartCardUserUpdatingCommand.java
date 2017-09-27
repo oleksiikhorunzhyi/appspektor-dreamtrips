@@ -2,17 +2,12 @@ package com.worldventures.dreamtrips.wallet.service.command.profile;
 
 import android.support.v4.util.Pair;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
-import com.worldventures.dreamtrips.util.SmartCardAvatarHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
-
-import java.io.File;
-import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,20 +16,18 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.user.UpdateUserAction;
-import io.techery.janet.smartcard.action.user.UpdateUserPhotoAction;
 import io.techery.janet.smartcard.model.ImmutableUser;
 import io.techery.janet.smartcard.model.User;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
 
    @Inject UpdateDataHolder updateDataHolder;
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject SessionHolder<UserSession> userSessionHolder;
-   @Inject SmartCardAvatarHelper smartCardAvatarHelper;
+   @Inject WalletSocialInfoProvider socialInfoProvider;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -69,18 +62,11 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
    }
 
    private Observable<Void> revertPhoto(ChangedFields changedFields, SmartCardUser user) {
-      if (changedFields.photo() == null) return Observable.just(null);
-      return Observable
-            .fromCallable(() -> getAvatarAsByteArray(user.userPhoto().original()))
-            .flatMap(bytes ->  janet.createPipe(UpdateUserPhotoAction.class)
-                  .createObservableResult(new UpdateUserPhotoAction(bytes)))
+      final SmartCardUserPhoto userPhoto = user.userPhoto();
+      if (changedFields.photo() == null || userPhoto == null) return Observable.just(null);
+      return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
+            .createObservableResult(new UpdateSmartCardUserPhotoCommand(userPhoto.uri()))
             .map(action -> null);
-   }
-
-   private byte[] getAvatarAsByteArray(File originalFile) throws IOException {
-      final int[][] ditheredImageArray =
-            smartCardAvatarHelper.toMonochrome(originalFile, ImageUtils.DEFAULT_IMAGE_SIZE);
-      return smartCardAvatarHelper.convertBytesForUpload(ditheredImageArray);
    }
 
    private User createUser(SmartCardUser user, String smartCardId) {
@@ -89,9 +75,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
             .middleName(user.middleName())
             .lastName(user.lastName())
             .isUserAssigned(true)
-            .memberId(userSessionHolder.get().get().getUser().getId())
+            .memberId(socialInfoProvider.userId())
             .barcodeId(Long.parseLong(smartCardId))
-            .memberStatus(UserSmartCardUtils.obtainMemberStatus(userSessionHolder))
+            .memberStatus(socialInfoProvider.memberStatus())
             .build();
    }
 }

@@ -9,9 +9,10 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.VerifyAmountEvent;
@@ -21,7 +22,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 
 import javax.inject.Inject;
 
@@ -37,10 +39,12 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PickImageDelegate pickImageDelegate;
    @Inject MediaInteractor mediaInteractor;
+   @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
    //
    @State double amount;
    //
    private final Merchant merchant;
+   //
 
    public DtlScanReceiptPresenter(Merchant merchant) {
       this.merchant = merchant;
@@ -55,7 +59,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .compose(bindViewToMainComposer())
             .subscribe(this::receiptScanned);
 
-      apiErrorPresenter.setView(view);
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> view.hideProgress()));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
@@ -71,7 +75,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   this.amount = transaction.getBillTotal();
                }
                checkVerification(transaction);
-            }, apiErrorPresenter::handleError);
+            }, apiErrorViewAdapter::handleError);
 
       view.showCurrency(merchant.asMerchantAttributes().defaultCurrency());
 
@@ -88,7 +92,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::checkVerification, apiErrorPresenter::handleError);
+            .subscribe(this::checkVerification, apiErrorViewAdapter::handleError);
    }
 
    private void checkVerification(DtlTransaction transaction) {
@@ -105,7 +109,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .takeUntil(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>().onStart(action -> view.showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+                  .onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(action -> attachDtPoints(action.estimatedPoints().points())));
    }
 
@@ -124,7 +128,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                         .build())))
             .compose(bindViewIoToMainComposer())
             .subscribe(action -> {
-            }, apiErrorPresenter::handleError);
+            }, apiErrorViewAdapter::handleError);
    }
 
    private void attachDtPoints(Double points) {
@@ -179,10 +183,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   .withUploadTask(uploadTask)))
             .subscribeOn(Schedulers.io())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onSuccess(action -> checkVerification(action.getResult()))
-                  .onFail(apiErrorPresenter::handleActionError));
+                  .onFail(apiErrorViewAdapter::handleError));
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView, InformView {
       void openVerify(DtlTransaction dtlTransaction);
 
       void hideScanButton();
@@ -194,6 +198,8 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       void disableVerification();
 
       void showProgress();
+
+      void hideProgress();
 
       void preSetBillAmount(double amount);
 

@@ -7,9 +7,9 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class FeatureManager {
 
-   private SessionHolder<UserSession> sessionHolder;
+   private SessionHolder sessionHolder;
 
-   public FeatureManager(SessionHolder<UserSession> sessionHolder) {
+   public FeatureManager(SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
    }
 

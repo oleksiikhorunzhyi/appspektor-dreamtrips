@@ -5,23 +5,17 @@ import android.content.Context;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
-import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
-import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
-import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
-import com.worldventures.dreamtrips.wallet.util.TimberLogger;
+import com.worldventures.dreamtrips.social.ui.background_uploading.VideoMicroserviceModule;
 
 import java.net.CookieManager;
 import java.util.List;
@@ -34,30 +28,26 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.ActionService;
-import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
-import io.techery.janet.SmartCardActionService;
-import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
-import io.techery.janet.smartcard.client.SmartCardClient;
 
 @Module(
       includes = {
             JanetCommandModule.class,
             JanetServiceModule.class,
+            VideoMicroserviceModule.class,
             CacheActionStorageModule.class,
-            SmartCardModule.class
+            MobileSdkJanetModule.class,
       },
       complete = false, library = true)
 public class JanetModule {
 
    public static final String JANET_QUALIFIER = "JANET";
-   public static final String JANET_WALLET = "JANET_WALLET";
 
    @Singleton
    @Provides
-   DreamTripsCommandServiceWrapper provideCommandService(@ForApplication Context context) {
-      return new DreamTripsCommandServiceWrapper(context);
+   DreamTripsCommandServiceWrapper provideCommandService(@ForApplication Context context, HttpErrorHandlingUtil util) {
+      return new DreamTripsCommandServiceWrapper(context, util);
    }
 
    @Singleton
@@ -67,38 +57,24 @@ public class JanetModule {
    }
 
    @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionService provideHttpService(@ForApplication Injector injector, HttpClient httpClient) {
-      return new NewDreamTripsHttpService(injector, BuildConfig.DreamTripsApi, httpClient,
-            new GsonConverter(new GsonProvider()
-                  .provideBuilder()
-                  .registerTypeAdapterFactory(new GsonAdaptersNearbyResponse())
-                  .create()));
-   }
-
-   @Singleton
    @Provides
    AnalyticsService provideAnalyticsService(Set<Tracker> trackers) {
       return new AnalyticsService(trackers);
    }
 
-   @Singleton
-   @Provides
-   WalletAnalyticsServiceWrapper provideWalletAnalyticsServiceWrapper(AnalyticsService service) {
-      return new WalletAnalyticsServiceWrapper(service);
-   }
-
-   @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionService provideAnalyticsService(WalletAnalyticsServiceWrapper serviceWrapper) {
-      return serviceWrapper;
+   ActionService provideAnalyticsService(AnalyticsService analyticsService) {
+      return analyticsService;
    }
 
    @Singleton
    @Provides
-   Janet provideJanet(Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
-         Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
+   Janet provideJanet(@ForApplication Context context,
+         Set<ActionService> services,
+         Set<ActionStorage> cacheStorageSet,
+         Set<MultipleActionStorage> multipleActionStorageSet) {
       Janet.Builder builder = new Janet.Builder();
+
       for (ActionService service : services) {
          service = new TimberServiceWrapper(service);
          service = new CacheResultWrapper(service) {{
@@ -142,7 +118,7 @@ public class JanetModule {
    @Provides
    Interceptor interceptor() {
       HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-      logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+      logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
       return logging;
    }
 
@@ -151,63 +127,4 @@ public class JanetModule {
    HttpClient provideJanetHttpClient(@Named(JANET_QUALIFIER) OkHttpClient okHttpClient) {
       return new io.techery.janet.okhttp.OkClient(okHttpClient);
    }
-
-   @Singleton
-   @Provides
-   @Named(JANET_WALLET)
-   Janet provideWalletJanet(
-         @Named(JANET_WALLET) Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
-         Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
-      Janet.Builder builder = new Janet.Builder();
-      for (ActionService service : services) {
-         service = new TimberServiceWrapper(service);
-         service = new DaggerActionServiceWrapper(service, context);
-         service = new CacheResultWrapper(service) {{
-            for (ActionStorage storage : cacheStorageSet) {
-               bindStorage(storage.getActionClass(), storage);
-            }
-
-            for (MultipleActionStorage storage : multipleActionStorageSet) {
-               List<Class<? extends CachedAction>> cachedActions = storage.getActionClasses();
-               for (Class clazz : cachedActions) {
-                  bindStorage(clazz, storage);
-               }
-            }
-         }};
-         builder.addService(service);
-      }
-
-      return builder.build();
-   }
-
-   @Singleton
-   @Provides
-   SmartCardActionService provideSmartCardService(SmartCardClient client) {
-      return new SmartCardActionService.Builder(client)
-            .addDefaults()
-            .setLogger(new TimberLogger("SC_ABS_LAYER"))
-            .setResponseTimeout(TimeUnit.MINUTES.toMillis(2L))
-            .build();
-   }
-
-   @Singleton
-   @Provides
-   SmartCardErrorServiceWrapper provideSmartCardErrorServiceWrapper(SmartCardActionService service) {
-      return new SmartCardErrorServiceWrapper(service);
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   @Named(JANET_WALLET)
-   ActionService provideSmartCardService(SmartCardErrorServiceWrapper serviceWrapper) {
-      return serviceWrapper;
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   @Named(JANET_WALLET)
-   ActionService provideWalletCommandService() {
-      return new CommandActionService();
-   }
-
 }

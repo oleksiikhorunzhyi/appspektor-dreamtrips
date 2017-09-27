@@ -9,7 +9,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
@@ -52,7 +52,6 @@ import flow.path.Path;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
@@ -62,8 +61,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject PresentationInteractor presentationInteractor;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject AttributesInteractor attributesInteractor;
+   @Inject DeviceInfoProvider deviceInfoProvider;
 
    @State boolean initialized;
    @State FullMerchantParamsHolder actionParamsHolder;
@@ -169,23 +169,23 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                   .onFail(this::onMerchantsLoadingError));
    }
 
-   private void onStartMerchantsLoad(MerchantsAction action) {
+   void onStartMerchantsLoad(MerchantsAction action) {
       if (action.isRefresh()) getView().clearMerchants();
    }
 
-   private void onMerchantsLoaded(MerchantsAction action) {
+   void onMerchantsLoaded(MerchantsAction action) {
       if (action.isRefresh()) getView().onRefreshSuccess();
       else getView().onLoadNextSuccess();
 
       setItemsOrRedirect(action.merchants());
    }
 
-   private void onMerchantsLoading(MerchantsAction action, Integer progress){
+   void onMerchantsLoading(MerchantsAction action, Integer progress){
       if (action.isRefresh()) getView().onRefreshProgress();
       else getView().onLoadNextProgress();
    }
 
-   private void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
+   void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
       if (!action.isRefresh()) getView().setRefreshedItems(action.merchants());
       if (action.isRefresh()) getView().onRefreshError(action.getErrorMessage());
       else getView().onLoadNextError();
@@ -252,8 +252,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void setMerchantType(List<String> merchantType, String searchQuery) {
-      filterDataInteractor.searchMerchantType(merchantType, searchQuery);
+   public void setMerchantType(List<String> merchantType) {
+      filterDataInteractor.searchMerchantType(merchantType);
    }
 
    @Override
@@ -366,7 +366,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    public void navigateToRatingList(Merchant merchant) {
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
    }
 
    protected void sendAnalyticsAction(DtlAnalyticsAction action) {

@@ -11,17 +11,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
-import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerViewHolder> {
+public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
    private ArrayList<ReviewObject> mItems = new ArrayList<>();
    private Context context;
@@ -30,26 +32,36 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
       this.context = context;
    }
 
-   @Override
-   public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review, parent, false);
-      return new RecyclerViewHolder(v);
-   }
-
-   public void addAll(List<ReviewObject> items) {
-      int pos = getItemCount();
-      mItems.addAll(items);
-      notifyItemRangeInserted(pos, mItems.size());
-   }
-
-   public void clear() {
-      mItems.clear();
-      notifyDataSetChanged();
-   }
+   // View Types
+   private static final int ITEM = 0;
+   private static final int LOADING = 1;
 
    @Override
-   public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-      holder.bind(position);
+   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+      RecyclerView.ViewHolder viewHolder = null;
+      LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+      switch (viewType) {
+         case ITEM:
+            View viewItem = inflater.inflate(R.layout.item_review, parent, false);
+            viewHolder = new RecyclerViewHolder(viewItem);
+            break;
+         case LOADING:
+            View viewLoading = inflater.inflate(R.layout.view_dtl_item_loading, parent, false);
+            viewHolder = new LoadingVH(viewLoading);
+            break;
+      }
+      return viewHolder;
+   }
+
+   @Override
+   public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+      switch (getItemViewType(position)) {
+         case ITEM:
+            final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
+            recyclerViewHolder.bind(position);
+            break;
+      }
    }
 
    @Override
@@ -57,8 +69,77 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
       return mItems.size();
    }
 
+   @Override
+   public int getItemViewType(int position) {
+      String reviewId = getItem(position).getReviewId();
+      return reviewId == null || reviewId.length() == 0 ? LOADING : ITEM;
+   }
 
-   class RecyclerViewHolder extends RecyclerView.ViewHolder {
+     /*
+        Helpers - Pagination
+   _________________________________________________________________________________________________
+    */
+
+   public void add(ReviewObject r) {
+      mItems.add(r);
+      notifyItemInserted(mItems.size() - 1);
+   }
+
+   public void addItems(List<ReviewObject> reviewResults) {
+      for (ReviewObject review : reviewResults) {
+         add(review);
+      }
+   }
+
+   public List<ReviewObject> getAllItems() {
+      return mItems;
+   }
+
+   public void remove(ReviewObject r) {
+      int position = mItems.indexOf(r);
+      if (position > -1) {
+         mItems.remove(position);
+         notifyItemRemoved(position);
+      }
+   }
+
+   public void clear() {
+      while (getItemCount() > 0) {
+         remove(getItem(0));
+      }
+   }
+
+   public boolean isEmpty() {
+      return getItemCount() == 0;
+   }
+
+   public void addLoadingFooter() {
+      add(new ReviewObject());
+   }
+
+   public void removeLoadingFooter() {
+      if (mItems == null || mItems.isEmpty()) return;
+
+      int position = mItems.size() - 1;
+
+      if (getItemViewType(position) == ITEM) return;
+
+      ReviewObject reviewObject = getItem(position);
+
+      if (reviewObject != null) {
+         mItems.remove(position);
+         notifyItemRemoved(position);
+      }
+   }
+
+   public ReviewObject getItem(int position) {
+      return mItems.get(position);
+   }
+
+   /**
+    * Main list's content ViewHolder
+    */
+   protected class RecyclerViewHolder extends RecyclerView.ViewHolder {
       private SimpleDraweeView mAvatar;
       private TextView mUserName;
       private TextView mCommentWrote;
@@ -99,7 +180,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
 
          setVerifiedReview(mItems.get(position).isVerifiedReview());
 
-         if(mItems.get(position).getUrlReviewImages().size() > 0){
+         if (mItems.get(position).getUrlReviewImages().size() > 0) {
             mPhotosNumber.setText(String.valueOf(mItems.get(position).getUrlReviewImages().size()));
          } else {
             mPhotosIndicatorLayout.setVisibility(View.INVISIBLE);
@@ -107,7 +188,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
       }
 
       private void setVerifiedReview(boolean isVerified) {
-         if (isVerified){
+         if (isVerified) {
             changeVisibility(mTvVerifiedReview, View.VISIBLE);
             changeVisibility(mIvVerifiedReview, View.VISIBLE);
          } else {
@@ -116,8 +197,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.RecyclerVi
          }
       }
 
-      private void changeVisibility(@NonNull View view, int type){
+      private void changeVisibility(@NonNull View view, int type) {
          view.setVisibility(type);
+      }
+   }
+
+   protected class LoadingVH extends RecyclerView.ViewHolder {
+      public LoadingVH(View itemView) {
+         super(itemView);
       }
    }
 }

@@ -9,9 +9,12 @@ import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
 import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
+import com.worldventures.dreamtrips.social.ui.infopages.ImmutableStaticPageProviderConfig
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProviderConfig
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
+import java.net.URLEncoder
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -81,12 +84,30 @@ class StaticPageProviderSpec: BaseSpec({
          val params = parseParamsFromUrl(actualUrl)
          checkEnrollMerchantParams(params)
       }
+
+      it ("should provide correct backoffice url") {
+         val encodedPart = URLEncoder.encode("/Marketing/WorldVenturesAdvantage", "UTF-8")
+         val expectedUrl = "$BACKOFFICE_URL/Account/Dispatch?url=$encodedPart"
+         assertEquals(expectedUrl, provider.wvAdvantageUrl)
+      }
+
+      it ("should provide correct forgot password url") {
+         val expectedUrl = "$FORGOT_PASSWORD_URL?dreamtrips"
+         assertEquals(expectedUrl, provider.forgotPasswordUrl)
+      }
+
+      it ("should provide correct forgot member id url") {
+         val expectedUrl = "$FORGOT_PASSWORD_URL/forgotLoginId?dreamtrips"
+         assertEquals(expectedUrl, provider.forgotMemberIdUrl)
+      }
    }
 
 }) {
    companion object {
-      val API_URL = "http://some-api.io/";
-      val UPLOADERY_URL = "http://some-uploadery-api.io";
+      val API_URL = "http://some-api.io/"
+      val BACKOFFICE_URL = "http://backoffice.io/"
+      val FORGOT_PASSWORD_URL = "http://forgot-password.io/"
+      val UPLOADERY_URL = "http://some-uploadery-api.io"
 
       val USERNAME = "515661"
       val TRIP_ID = "12410101"
@@ -95,9 +116,18 @@ class StaticPageProviderSpec: BaseSpec({
       val LOCALE = "en-us"
       val MERCHANT_ID = "10191"
 
-      val mockSessionHolder: SessionHolder<UserSession> = mock()
+      val mockSessionHolder: SessionHolder = mock()
       val deviceInfoProvider: DeviceInfoProvider = mock()
-      val provider = StaticPageProvider(mockSessionHolder, deviceInfoProvider, API_URL, UPLOADERY_URL)
+      val staticPageProviderConfig: StaticPageProviderConfig =
+            ImmutableStaticPageProviderConfig.builder()
+                  .appSessionHolder(mockSessionHolder)
+                  .deviceInfoProvider(deviceInfoProvider)
+                  .apiUrl(API_URL)
+                  .backofficeUrl(BACKOFFICE_URL)
+                  .uploaderyUrl(UPLOADERY_URL)
+                  .forgotPasswordUrl(FORGOT_PASSWORD_URL)
+                  .build()
+      val provider = StaticPageProvider(staticPageProviderConfig)
       val userSession: UserSession = mock()
 
       init {

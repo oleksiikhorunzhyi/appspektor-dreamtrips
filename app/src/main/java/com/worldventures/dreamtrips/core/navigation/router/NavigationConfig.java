@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
+import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 
 public class NavigationConfig {
@@ -20,6 +21,10 @@ public class NavigationConfig {
    int gravity = 0x0000;
    int flags = -1;
    Fragment targetFragment;
+   boolean manualOrientationActivity = false;
+
+   Boolean transparentBackground = false;
+   AnimationConfig animationConfig = null;
 
    NavigationConfig(NavigationType type) {
       navigationType = type;
@@ -45,6 +50,18 @@ public class NavigationConfig {
 
    public int getContainerId() {
       return containerId;
+   }
+
+   public AnimationConfig getAnimationConfig() {
+      return animationConfig;
+   }
+
+   public Boolean getTransparentBackground() {
+      return transparentBackground;
+   }
+
+   public boolean isManualOrientationActivity() {
+      return manualOrientationActivity;
    }
 
    public boolean isBackStackEnabled() {

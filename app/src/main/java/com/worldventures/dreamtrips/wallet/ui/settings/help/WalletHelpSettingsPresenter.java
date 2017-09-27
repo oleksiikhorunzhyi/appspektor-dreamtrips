@@ -1,48 +1,19 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help;
 
-import android.content.Context;
-import android.os.Parcelable;
-
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.WalletHelpDocumentsPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.SendFeedbackPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPath;
-import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoPath;
 
-import javax.inject.Inject;
+public interface WalletHelpSettingsPresenter extends WalletPresenter<WalletHelpSettingsScreen> {
 
-public class WalletHelpSettingsPresenter extends WalletPresenter<WalletHelpSettingsPresenter.Screen, Parcelable> {
+   void goBack();
 
-   @Inject Navigator navigator;
+   void openDocumentsScreen();
 
-   WalletHelpSettingsPresenter(Context context, Injector injector) {
-      super(context, injector);
-   }
+   void openPaymentFeedbackScreen();
+   void openVideoScreen();
 
-   public void goBack() {
-      navigator.goBack();
-   }
+   void handleVariantFeedback();
 
-   void openSendFeedbackSection() {
-      navigator.go(new SendFeedbackPath(SendFeedbackPath.FeedbackType.SmartCardFeedback));
-   }
+   void openCustomerSupportScreen();
 
-   void openVideoSection() {
-      navigator.go(new WalletHelpVideoPath());
-   }
-
-   public void openCustomerSupportScreen() {
-      navigator.go(new WalletCustomerSupportSettingsPath());
-   }
-
-   public interface Screen extends WalletScreen {
-
-   }
-
-   public void openDocuments() {
-      navigator.go(new WalletHelpDocumentsPath());
-   }
+   void openOtherFeedbackScreen();
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RadioButton xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackground"
+      android:button="@null"
+      android:drawableEnd="?android:attr/listChoiceIndicatorSingle"
+      android:padding="@dimen/spacing_normal"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      tools:text="@string/wallet_settings_disable_default_card_4_hours"
+      />

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder;
 
 import com.techery.spares.adapter.HeaderItem;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 
 import org.immutables.value.Value;
 
@@ -28,7 +29,17 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    }
 
    @Value.Default
-   public String fullname() {
+   public String firstName() {
+      return "";
+   }
+
+   @Value.Default
+   public String middleName() {
+      return "";
+   }
+
+   @Value.Default
+   public String lastName() {
       return "";
    }
 
@@ -38,10 +49,15 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    }
 
    @Value.Default
-   public boolean firmwareUpdateAvailable() {
-      return false;
+   public String phoneNumber() {
+      return "";
    }
 
    @Value.Default
    public int cardCount() { return 0;}
+
+   @Value.Default
+   public int displayType() {
+      return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
+   }
 }

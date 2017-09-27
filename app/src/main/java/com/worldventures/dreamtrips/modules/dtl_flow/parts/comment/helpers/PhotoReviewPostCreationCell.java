@@ -14,18 +14,15 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewCreationItem;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewPostCreationDelegate;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,20 +33,15 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import mbanje.kurt.fabbutton.CircleImageView;
-import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_photo_post)
 public class PhotoReviewPostCreationCell extends AbstractDelegateCell<PhotoReviewCreationItem, PhotoReviewPostCreationDelegate> {
 
    @Inject @ForActivity Injector injector;
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject SessionHolder userSessionHolder;
 
-   @InjectView(R.id.shadow) View shadow;
    @InjectView(R.id.photo_container) View photoContainer;
-   @InjectView(R.id.fab_progress) FabButton fabProgress;
    @InjectView(R.id.attached_photo) SimpleDraweeView attachedPhoto;
-   @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
    @InjectView(R.id.tag_btn) TextView tagButton;
    @InjectView(R.id.photo_title) EditText photoTitle;
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;

@@ -13,7 +13,7 @@ import io.techery.janet.http.annotations.Url;
 import static io.techery.janet.http.annotations.HttpAction.Method.GET;
 
 @HttpAction(method = GET)
-public class PlacesNearbyHttpAction {
+public class PlacesNearbyHttpAction extends BaseThirdPartyHttpAction {
 
    @Url String loadPlacesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
 

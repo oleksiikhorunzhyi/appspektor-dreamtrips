@@ -6,20 +6,24 @@ import android.util.Pair;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import org.jetbrains.annotations.Nullable;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.JanetException;
 
-import static com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils.*;
+import static com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil.isNoInternetConnectionError;
+import static com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil.obtainHttpErrorMessage;
+import static com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil.obtainHttpErrorPath;
+import static com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil.obtainHttpException;
 
 public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
 
    private HttpFailListener failListener;
 
-   public DreamTripsCommandServiceWrapper(Context appContext) {
-      super(appContext);
+   public DreamTripsCommandServiceWrapper(Context appContext, HttpErrorHandlingUtil util) {
+      super(appContext, util);
    }
 
    public void setFailListener(HttpFailListener failListener) {

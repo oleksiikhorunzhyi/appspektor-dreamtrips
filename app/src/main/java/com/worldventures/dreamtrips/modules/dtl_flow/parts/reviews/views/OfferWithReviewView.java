@@ -6,35 +6,34 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.PaginationScrollListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import flow.Flow;
 
 public class OfferWithReviewView extends LinearLayout {
 
-   private RecyclerView recyclerAdapter;
+   private RecyclerView recyclerView;
    private RatingBar ratingBar2;
-   private TextView tvReview;
    private TextView tvReviewCount;
-   private View lineSeparator;
    private ReviewAdapter mAdapter;
-   private RelativeLayout reviewHeader;
-   private boolean isTablet = false;
 
    public static final String ARRAY = "arrayList";
    public static final String RATING_MERCHANT = "ratingMerchant";
@@ -43,12 +42,19 @@ public class OfferWithReviewView extends LinearLayout {
    public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
    public static String IS_TABLET = "isTablet";
 
-   private ArrayList<ReviewObject> mArrayInfo = new ArrayList<>();
+   private List<ReviewObject> mArrayInfo = new ArrayList<>();
 
    private float mRatingMerchant;
    private int mCountReview;
    private String mMerchantName;
    private boolean mIsFromListReview = false;
+
+   private boolean isLoading = false;
+
+   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private RecyclerView.OnItemTouchListener onItemTouchListener;
+   private RecyclerView.OnScrollListener scrollingListener;
+   private IMyEventListener mEventListener;
 
    public OfferWithReviewView(Context context) {
       this(context, null);
@@ -60,40 +66,37 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void init() {
-      mAdapter = new ReviewAdapter(getContext());
       final View v = LayoutInflater.from(getContext()).inflate(R.layout.activity_offer_with_review, this, true);
-      recyclerAdapter = (RecyclerView) v.findViewById(R.id.recycler_adapter);
+      recyclerView = (RecyclerView) v.findViewById(R.id.recycler_adapter);
       ratingBar2 = (RatingBar) v.findViewById(R.id.ratingBar2);
-      tvReview = (TextView) v.findViewById(R.id.tv_Review);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
-      lineSeparator = v.findViewById(R.id.line_separator);
-      reviewHeader = (RelativeLayout) v.findViewById(R.id.reviews_header);
 
       initRecycler();
-      initAdapter();
-      initListener();
+      resetViewData();
+   }
+
+   public void loadFirstPage(){
+      resetViewData();
+      getMoreReviewItems();
+   }
+
+   public void loadData(Bundle bundle) {
+      loadPage(bundle);
+   }
+
+   private void loadPage(Bundle bundle) {
+      List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
+      mAdapter.addItems(reviewObjects);
+
+      setUpInfo(bundle);
+
+      isLoading = false;
 
    }
 
-   public void addBundle(Bundle bundle) {
-      mArrayInfo.clear();
-      mAdapter.clear();
-      mArrayInfo.addAll(bundle.<ReviewObject>getParcelableArrayList(ARRAY));
-      mAdapter.addAll(mArrayInfo);
-
-      mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
-      mCountReview = bundle.getInt(COUNT_REVIEW, 0);
-      mMerchantName = bundle.getString(MERCHANT_NAME, "");
-      mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
-      isTablet = bundle.getBoolean(IS_TABLET, false);
-
-      /** if statement must be removed when optimizing to tablet **/
-      if (isTablet) {
-         recyclerAdapter.setVisibility(View.GONE);
-         reviewHeader.setVisibility(View.GONE);
-      }
-
-      setUpInfo();
+   public void resetViewData() {
+      mAdapter = new ReviewAdapter(getContext());
+      recyclerView.setAdapter(mAdapter);
    }
 
    public void showNoComments() {
@@ -101,25 +104,12 @@ public class OfferWithReviewView extends LinearLayout {
       LayoutInflater.from(getContext()).inflate(R.layout.offer_details_no_review, this, true);
    }
 
-   private void initListener() {
-      recyclerAdapter.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerAdapter,
-            new RecyclerClickListener() {
-               @Override
-               public void onClick(View view, int position) {
-                  Flow.get(getContext()).set(new DtlDetailReviewPath(mMerchantName, mArrayInfo.get(position), mArrayInfo
-                        .get(position)
-                        .getReviewId(), mIsFromListReview));
-               }
+   private void setUpInfo(Bundle bundle) {
+      mRatingMerchant = bundle.getFloat(RATING_MERCHANT, 0f);
+      mCountReview = bundle.getInt(COUNT_REVIEW, 0);
+      mMerchantName = bundle.getString(MERCHANT_NAME, "");
+      mIsFromListReview = bundle.getBoolean(IS_FROM_LIST_REVIEW, false);
 
-               @Override
-               public void onLongClick(View view, int position) {
-
-               }
-            })
-      );
-   }
-
-   private void setUpInfo() {
       setUpRating();
       setUpCommentReview();
    }
@@ -137,18 +127,89 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void setUpRating() {
-      if (null != ratingBar2 && mRatingMerchant > 0) {
-         ratingBar2.setRating(mRatingMerchant);
-      }
+      ratingBar2.setRating(mRatingMerchant);
+   }
+
+   private void getMoreReviewItems() {
+      int lastIndex = getNextItemValue();
+      recyclerView.postDelayed(new Runnable() {
+         @Override
+         public void run() {
+            if (mEventListener != null) mEventListener.onScrollBottomReached(lastIndex);
+         }
+      }, 1000);
+   }
+
+   private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;}
+
+   public interface IMyEventListener {
+      void onScrollBottomReached(int indexOf);
+   }
+
+   public void setEventListener(IMyEventListener mEventListener) {
+      this.mEventListener = mEventListener;
+   }
+
+   public List<ReviewObject> getCurrentReviews(){
+      return mAdapter.getAllItems();
+   }
+
+   public void removeLoadingActions() {
+      if (isLoading) mAdapter.removeLoadingFooter();
+      recyclerView.removeOnScrollListener(scrollingListener);
+   }
+
+   public void showLoadingFooter(boolean show) {
+      if (show)
+         mAdapter.addLoadingFooter();
+      else
+         mAdapter.removeLoadingFooter();
    }
 
    private void initRecycler() {
-      recyclerAdapter.setLayoutManager(new LinearLayoutManager(getContext()));
-      recyclerAdapter.addItemDecoration(new MarginDecoration(getContext()));
-      recyclerAdapter.setHasFixedSize(false);
+      recyclerView.setLayoutManager(linearLayoutManager);
+      recyclerView.addItemDecoration(new MarginDecoration(getContext()));
+      recyclerView.setHasFixedSize(false);
+
+      onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
+            new RecyclerClickListener() {
+               @Override
+               public void onClick(View view, int position) {
+                  DtlDetailReviewPath path = new DtlDetailReviewPath(FlowUtil.currentMaster(getContext()), mMerchantName, mAdapter
+                        .getAllItems()
+                        .get(position), mAdapter.getAllItems()
+                        .get(position)
+                        .getReviewId(), mIsFromListReview);
+                  Flow.get(getContext()).set(path);
+               }
+
+               @Override
+               public void onLongClick(View view, int position) {
+
+               }
+            });
+      recyclerView.addOnItemTouchListener(onItemTouchListener);
+
+      scrollingListener = new PaginationScrollListener(linearLayoutManager) {
+         @Override
+         protected void loadMoreItems() {
+            showLoadingFooter(true);
+            isLoading = true;
+            getMoreReviewItems();
+         }
+
+         @Override
+         public boolean isLoading() {
+            return isLoading;
+         }
+      };
+
+      recyclerView.addOnScrollListener(scrollingListener);
+
    }
 
-   private void initAdapter() {
-      recyclerAdapter.setAdapter(mAdapter);
+   public boolean hasReviews(){
+      return !mAdapter.getAllItems().isEmpty();
    }
+
 }

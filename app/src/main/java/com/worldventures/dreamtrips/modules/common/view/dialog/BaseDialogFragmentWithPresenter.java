@@ -56,6 +56,7 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
       afterCreateView(view);
 
       this.presenter.takeView(this);
+      this.presenter.onViewTaken();
    }
 
    @Override

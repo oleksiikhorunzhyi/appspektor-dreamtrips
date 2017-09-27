@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.widget.EditText;
 
-public class KeyCallbackEditText extends EditText {
+public class KeyCallbackEditText extends AppCompatEditText {
 
    private OnKeyPreImeListener onKeyPreImeListener;
 

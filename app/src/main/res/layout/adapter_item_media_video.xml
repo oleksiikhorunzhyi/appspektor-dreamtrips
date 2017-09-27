@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<custom:com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:custom="http://schemas.android.com/apk/res-auto"
+      xmlns:fresco="http://schemas.android.com/apk/res-auto"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      custom:side_priority="width"
+      >
+
+   <com.facebook.drawee.view.SimpleDraweeView
+         android:id="@+id/videoThumbnail"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_gravity="center_horizontal"
+         android:layout_margin="@dimen/spacing_tiniest"
+         fresco:actualImageScaleType="focusCrop"
+         fresco:placeholderImage="@drawable/trip_images_placeholder"
+         fresco:placeholderImageScaleType="fitXY"
+         />
+
+   <ImageView
+         android:layout_width="32dp"
+         android:layout_height="32dp"
+         android:layout_gravity="center"
+         android:src="@drawable/ic_video_play"
+         />
+
+   <TextView
+         android:id="@+id/timestamp"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="bottom"
+         android:background="@drawable/background_timestamp_trip_images"
+         android:padding="@dimen/spacing_small"
+         android:textColor="@color/white"
+         android:textSize="12sp"
+         android:textStyle="bold"
+         android:visibility="gone"
+         />
+
+</custom:com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout>

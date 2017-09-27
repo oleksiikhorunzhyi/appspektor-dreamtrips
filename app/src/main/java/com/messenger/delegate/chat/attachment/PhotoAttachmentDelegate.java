@@ -27,11 +27,11 @@ public class PhotoAttachmentDelegate {
    private final ActionPipe<SendImageAttachmentCommand> sendImagePipe;
 
    private final PhotoDAO photoDAO;
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final AttachmentDelegateHelper attachmentDelegateHelper;
 
    @Inject
-   public PhotoAttachmentDelegate(PhotoDAO photoDAO, SessionHolder<UserSession> sessionHolder, Janet janet) {
+   public PhotoAttachmentDelegate(PhotoDAO photoDAO, SessionHolder sessionHolder, Janet janet) {
       this.sessionHolder = sessionHolder;
       this.photoDAO = photoDAO;
       this.sendImagePipe = janet.createPipe(SendImageAttachmentCommand.class, Schedulers.io());

@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.support.percent.PercentFrameLayout;
-import android.support.percent.PercentLayoutHelper;
+import android.support.percent.PercentLayoutHelper.PercentLayoutParams;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -21,16 +21,14 @@ import com.worldventures.dreamtrips.R;
 
 import java.io.IOException;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import timber.log.Timber;
 
 public class WizardVideoView extends PercentFrameLayout implements TextureView.SurfaceTextureListener {
 
    public static final long CROSSFADE_DURATION = 1000;
 
-   @InjectView(R.id.textureView) TextureView textureView;
-   @InjectView(R.id.crossFade) View crossfadeView;
+   private TextureView textureView;
+   private View crossfadeView;
    private MediaPlayer mediaPlayer;
    private Uri videoUri;
 
@@ -44,11 +42,12 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
    }
 
    private void setup() {
-      LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_wizard_video, this);
-      ButterKnife.inject(this);
+      final View view = LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_video, this);
+      textureView = view.findViewById(R.id.textureView);
       textureView.setBackgroundColor(Color.WHITE);
       textureView.setSurfaceTextureListener(this);
-      crossfadeView.setOnClickListener(view -> {
+      crossfadeView = view.findViewById(R.id.crossFade);
+      crossfadeView.setOnClickListener(crossFade -> {
          mediaPlayer.seekTo(0);
          mediaPlayer.start();
       });
@@ -101,16 +100,30 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
       try {
          MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
          metaRetriever.setDataSource(getContext(), videoUri);
-         String width = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-         String height = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+         float width = Float.parseFloat(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+         float height = Float.parseFloat(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
 
-         float aspectRatio = Float.parseFloat(width) / Float.parseFloat(height);
-
-         ((PercentLayoutHelper.PercentLayoutParams) textureView.getLayoutParams()).getPercentLayoutInfo().aspectRatio = aspectRatio;
-         ((PercentLayoutHelper.PercentLayoutParams) crossfadeView.getLayoutParams()).getPercentLayoutInfo().aspectRatio = aspectRatio;
+         float aspectRatio = width / height;
+         ((PercentLayoutParams) textureView.getLayoutParams()).getPercentLayoutInfo().aspectRatio = aspectRatio;
+         ((PercentLayoutParams) crossfadeView.getLayoutParams()).getPercentLayoutInfo().aspectRatio = aspectRatio;
+         alignVideoToBottom();
       } catch (Exception e) {
          Timber.e(e, "%s", e.getMessage());
       }
+   }
+
+   private void alignVideoToBottom() {
+      post(() -> {
+         int containerHeight = getMeasuredHeight();
+         int textureHeight = textureView.getMeasuredHeight();
+
+         if (textureHeight >= containerHeight) return;
+
+         int marginTop = containerHeight - textureHeight;
+         ((MarginLayoutParams) textureView.getLayoutParams()).topMargin = marginTop;
+         ((MarginLayoutParams) crossfadeView.getLayoutParams()).topMargin = marginTop;
+         requestLayout();
+      });
    }
 
    @Override

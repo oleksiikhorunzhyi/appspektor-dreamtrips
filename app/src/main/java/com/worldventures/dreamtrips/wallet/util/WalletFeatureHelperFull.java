@@ -4,12 +4,11 @@ import android.content.Context;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.WalletGeneralSettingsScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.security.WalletSecuritySettingsScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalPath;
 
 import rx.Observable;
 import rx.functions.Action0;
@@ -17,12 +16,12 @@ import rx.functions.Action0;
 public class WalletFeatureHelperFull implements WalletFeatureHelper {
 
    @Override
-   public void prepareSettingsScreen(WalletSettingsPresenter.Screen view) {
+   public void prepareSettingsScreen(WalletSettingsScreen view) {
       // do nothing
    }
 
    @Override
-   public void prepareSettingsGeneralScreen(WalletGeneralSettingsPresenter.Screen view) {
+   public void prepareSettingsGeneralScreen(WalletGeneralSettingsScreen view) {
       // do nothing
    }
 
@@ -32,7 +31,7 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public void prepareSettingsSecurityScreen(WalletSecuritySettingsPresenter.Screen view) {
+   public void prepareSettingsSecurityScreen(WalletSecuritySettingsScreen view) {
       // do nothing
    }
 
@@ -42,7 +41,7 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public void prepareDashboardScreen(CardListPresenter.Screen view) {
+   public void prepareDashboardScreen(CardListScreen view) {
       // do nothing
    }
 
@@ -67,17 +66,12 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user) {
-      navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
+   public void navigateFromSetupUserScreen(Navigator navigator) {
+      navigator.goPinProposalUserSetup(PinProposalAction.WIZARD);
    }
 
    @Override
-   public boolean isCardDetailSupported() {
-      return true;
-   }
-
-   @Override
-   public boolean isCardSyncSupported() {
-      return true;
+   public boolean isSampleCardMode() {
+      return false;
    }
 }

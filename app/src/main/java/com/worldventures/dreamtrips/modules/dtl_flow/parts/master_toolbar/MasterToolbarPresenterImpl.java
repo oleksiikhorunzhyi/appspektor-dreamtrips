@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.google.android.gms.maps.model.LatLng;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -23,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCom
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
+import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
 
@@ -80,7 +80,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      apiErrorPresenter.setView(getView());
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(getView(), () -> getView().hideProgress()));
 
       updateToolbarTitles();
 
@@ -251,7 +251,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SearchLocationAction>()
                   .onStart(command -> getView().showProgress())
-                  .onFail(apiErrorPresenter::handleActionError)
+                  .onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(this::onSearchFinished));
    }
 
@@ -271,7 +271,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       }
 
       gpsLocationDelegate.getLastKnownLocation()
-            .compose(new IoToMainComposer<>())
+            .compose(bindViewIoToMainComposer())
             .subscribe(this::onLocationObtained, this::onLocationError);
    }
 
@@ -287,7 +287,7 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
       }
 
       gpsLocationDelegate.requestLocationUpdate()
-            .compose(new IoToMainComposer<>())
+            .compose(bindViewIoToMainComposer())
             .subscribe(locationInteractor::requestNearbyLocations, throwable -> getView().hideProgress());
    }
 

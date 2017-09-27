@@ -1,39 +1,44 @@
 package com.worldventures.dreamtrips.wallet.ui.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.TextUtils;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import java.util.Locale;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
+import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME;
+import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
+import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY;
 
-public class SmartCardWidget extends FrameLayout {
+public class SmartCardWidget extends ConstraintLayout {
 
-   @InjectView(R.id.cardListSCAvatar) SimpleDraweeView scAvatar;
-   @InjectView(R.id.bankLabel) TextView bankLabel;
-   @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
-   @InjectView(R.id.batteryView) BatteryView batteryView;
-   @InjectView(R.id.batteryLevel) TextView batteryLevel;
-   @InjectView(R.id.settings_button) View settingsButton;
+   private static final float WIDGET_SIZE_RATIO = 195 / 320f;
 
-   @InjectView(R.id.stealth_indicator) View stealthIndicator;
-   @InjectView(R.id.lock_indicator) ImageView lockIndicator;
-   @InjectView(R.id.link_indicator) ImageView linkIndicator;
-   @InjectView(R.id.smartcard_badge) BadgeView badgeView;
+   private View photoContainer;
+   private SimpleDraweeView scAvatar;
+   private TextView tvPhotoFullName;
+   private TextView tvPhotoFirstName;
+   private TextView tvFullName;
+   private TextView tvCardsLoaded;
+   private BatteryView batteryView;
+   private TextView tvBatteryLevel;
+   private View stealthIndicator;
+   private ImageView lockIndicator;
+   private ImageView linkIndicator;
 
    public SmartCardWidget(Context context) {
       this(context, null);
@@ -45,54 +50,127 @@ public class SmartCardWidget extends FrameLayout {
    }
 
    private void setup() {
-      LayoutInflater.from(getContext()).inflate(R.layout.custom_view_wallet_smartcard, this);
+      final View view = LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_smartcard, this);
       if (isInEditMode()) return;
-      ButterKnife.inject(this);
-      ImageUtils.applyGrayScaleColorFilter(scAvatar);
+      photoContainer = view.findViewById(R.id.photo_container);
+      scAvatar = view.findViewById(R.id.cardListSCAvatar);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(scAvatar);
+      tvPhotoFullName = view.findViewById(R.id.tv_photo_full_name);
+      tvPhotoFirstName = view.findViewById(R.id.tv_photo_first_name);
+      tvFullName = view.findViewById(R.id.tv_full_name);
+      tvCardsLoaded = view.findViewById(R.id.tv_cards_loaded);
+      batteryView = view.findViewById(R.id.battery_indicator);
+      tvBatteryLevel = view.findViewById(R.id.battery_indicator_text);
+      stealthIndicator = view.findViewById(R.id.stealth_indicator);
+      lockIndicator = view.findViewById(R.id.lock_indicator);
+      linkIndicator = view.findViewById(R.id.link_indicator);
       setVisibility(INVISIBLE);
    }
 
+   @Override
+   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+      int originalWidth = MeasureSpec.getSize(widthMeasureSpec);
+      int calculatedHeight = (int) (originalWidth * WIDGET_SIZE_RATIO);
+
+      super.onMeasure(
+            MeasureSpec.makeMeasureSpec(originalWidth, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(calculatedHeight, MeasureSpec.EXACTLY));
+   }
+
+   @SuppressLint("SetTextI18n")
    public void bindCard(CardStackHeaderHolder holder) {
-      if (!TextUtils.isEmpty(holder.photoUrl())) {
-         scAvatar.setImageURI(holder.photoUrl());
+      final int type = getNormalizedType(holder);
+
+      final StringBuilder fullNameBuilder = new StringBuilder(holder.firstName());
+      if (!holder.middleName().isEmpty()) fullNameBuilder.append("\n").append(holder.middleName());
+      if (!holder.lastName().isEmpty()) fullNameBuilder.append("\n").append(holder.lastName());
+
+      final String photoFullName = fullNameBuilder.toString();
+      final String fullName = photoFullName.replace("\n", " ");
+
+      tvFullName.setText(fullName);
+
+      switch (type) {
+         case DISPLAY_PICTURE_ONLY:
+            scAvatar.setImageURI(holder.photoUrl());
+            break;
+         case DISPLAY_PICTURE_AND_NAME:
+            scAvatar.setImageURI(holder.photoUrl());
+            tvPhotoFirstName.setText(holder.firstName());
+            break;
+         case DISPLAY_NAME_ONLY:
+            tvPhotoFullName.setText(photoFullName);
+            break;
+         case DISPLAY_PHONE_AND_NAME:
+            final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber()) ?
+                  String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
+                  : holder.phoneNumber();
+            tvPhotoFullName.setText(photoFullName + "\n\n" + phoneNumber);
+            break;
       }
-      if (!TextUtils.isEmpty(holder.fullname())) {
-         bankLabel.setText(holder.fullname());
-      }
-      batteryView.setLevel(holder.batteryLevel());
-      batteryLevel.setText(String.format(Locale.US, "%d%%", holder.batteryLevel()));
-      stealthIndicator.setVisibility(holder.stealthMode() ? VISIBLE : GONE);
-      bindLockStatus(holder.lock());
-      bindConnectionStatus(holder.connected());
-      if (holder.firmwareUpdateAvailable()) {
-         badgeView.setText("1"); // maybe we should show count of available firmware versions. Need contract with the server
-         badgeView.show();
-      } else {
-         badgeView.hide();
-      }
-      bindCount(holder.cardCount());
+
+      tvPhotoFirstName.setVisibility(type == DISPLAY_PICTURE_AND_NAME ? View.VISIBLE : View.GONE);
+      tvPhotoFullName.setVisibility((type == DISPLAY_NAME_ONLY || type == DISPLAY_PHONE_AND_NAME) ? View.VISIBLE : View.GONE);
+      scAvatar.setVisibility((type == DISPLAY_PICTURE_AND_NAME || type == DISPLAY_PICTURE_ONLY) ? View.VISIBLE : View.GONE);
+
+      bindCardLoadedCount(holder.cardCount());
+
+      bindConnectionIndicator(holder.connected());
+      bindStealthModeIndicator(holder.stealthMode());
+      bindLockIndicator(holder.lock());
+      bindBatteryIndicator(holder.batteryLevel());
+
       setVisibility(VISIBLE);
    }
 
-   private void bindLockStatus(boolean lock) {
-      lockIndicator.setImageResource(lock ? R.drawable.ic_wallet_lock_indicator : R.drawable.ic_wallet_unlock_indicator);
+   /**
+    * Fallback to default type if there is not enough user information or display type is invalid.
+    */
+   private int getNormalizedType(CardStackHeaderHolder holder) {
+      final int displayType = holder.displayType();
+      switch (displayType) {
+         case DISPLAY_PICTURE_ONLY:
+         case DISPLAY_PICTURE_AND_NAME:
+            if (ProjectTextUtils.isEmpty(holder.photoUrl())) break;
+            else return displayType;
+         case DISPLAY_PHONE_AND_NAME:
+            if (ProjectTextUtils.isEmpty(holder.phoneNumber())) break;
+            else return displayType;
+         case DISPLAY_NAME_ONLY:
+            return displayType;
+      }
+      return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
    }
 
-   private void bindConnectionStatus(boolean connected) {
-      linkIndicator.setImageResource(connected ? R.drawable.ic_wallet_link_indicator : R.drawable.ic_wallet_unlink_indicator);
+   private void bindConnectionIndicator(boolean connected) {
+      linkIndicator.setImageResource(connected ? R.drawable.ic_wallet_vector_link_indicator : R.drawable.ic_wallet_vector_unlink_indicator);
    }
 
-   public void bindCount(int cardCount) {
+   private void bindStealthModeIndicator(boolean stealthModeEnabled) {
+      stealthIndicator.setVisibility(stealthModeEnabled ? VISIBLE : GONE);
+
+   }
+
+   private void bindLockIndicator(boolean lock) {
+      lockIndicator.setImageResource(lock ? R.drawable.ic_wallet_vector_lock_indicator : R.drawable.ic_wallet_vector_unlock_indicator);
+   }
+
+   private void bindBatteryIndicator(int batteryLevel) {
+      batteryView.setLevel(batteryLevel);
+      tvBatteryLevel.setText(String.format(Locale.US, "%d%%", batteryLevel));
+   }
+
+   private void bindCardLoadedCount(int cardCount) {
       if (cardCount > 0) {
          int resId = QuantityHelper.chooseResource(cardCount, R.string.wallet_card_list_record_connected, R.string.wallet_card_list_records_connected);
-         connectedCardsCount.setText(getResources().getString(resId, cardCount));
-         connectedCardsCount.setVisibility(VISIBLE);
+         tvCardsLoaded.setText(getResources().getString(resId, cardCount));
+         tvCardsLoaded.setVisibility(VISIBLE);
       } else {
-         connectedCardsCount.setVisibility(INVISIBLE);
+         tvCardsLoaded.setVisibility(INVISIBLE);
       }
    }
 
-   public void setOnSettingsClickListener(View.OnClickListener listener) {
-      settingsButton.setOnClickListener(listener);
+   public void setOnPhotoClickListener(View.OnClickListener listener) {
+      photoContainer.setOnClickListener(listener);
    }
 }

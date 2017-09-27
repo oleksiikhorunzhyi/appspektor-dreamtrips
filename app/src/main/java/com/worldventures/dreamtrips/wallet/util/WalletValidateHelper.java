@@ -6,22 +6,31 @@ import java.util.regex.Pattern;
 
 public class WalletValidateHelper {
 
-   private static final Pattern CARD_NAME_PATTERN = Pattern.compile("^[ -a-zA-Z0-9]((\\s|-)*[a-zA-Z0-9- ])*$");
-   private static final Pattern FIRST_NAME_PATTERN = Pattern.compile("^[\\p{L}]{2,21}+");
-   private static final Pattern MIDDLE_NAME_PATTERN = Pattern.compile("^[\\p{L}]{0,21}+");
-   private static final Pattern LAST_NAME_PATTERN = Pattern.compile("^[a-zA-Z\\s]{2,21}+");
+   private static final Pattern CARD_NAME_PATTERN = Pattern.compile("^[\\-a-zA-Z0-9](?:(?:\\s|-)*[\\-a-zA-Z0-9\\s])*$");
+   private static final Pattern FIRST_NAME_PATTERN = Pattern.compile("^\\s*[a-zA-Z][a-zA-Z\\-]{0,19}[a-zA-Z]\\s*$");
+   private static final Pattern MIDDLE_NAME_PATTERN = Pattern.compile("^[a-zA-Z]{0,21}+");
+   private static final Pattern LAST_NAME_PATTERN = Pattern.compile("^\\s*[a-zA-Z][a-zA-Z\\-\\s]*[a-zA-Z]\\.?\\s*$");
    private static final Pattern SCID_PATTERN = Pattern.compile("^\\d+$");
 
    public static void validateUserFullNameOrThrow(@NonNull String firstName, @NonNull String middleName, @NonNull String lastName) throws FormatException {
-      if (!FIRST_NAME_PATTERN.matcher(firstName).matches()) {
+      if (!isValidFirstName(firstName)) {
          throw new FirstNameException();
       }
       if (!MIDDLE_NAME_PATTERN.matcher(middleName).matches()) {
          throw new MiddleNameException();
       }
-      if (!LAST_NAME_PATTERN.matcher(lastName).matches()) {
+      if (!isValidLastName(lastName)) {
          throw new LastNameException();
       }
+   }
+
+   public static boolean isValidFirstName(String firstName) {
+      return FIRST_NAME_PATTERN.matcher(firstName).matches();
+   }
+
+   public static boolean isValidLastName(String lastName) {
+      if (lastName == null || lastName.length() > 21 || lastName.length() < 2) return false;
+      return LAST_NAME_PATTERN.matcher(lastName).matches();
    }
 
    public static void validateSCIdOrThrow(String scid) throws FormatException {

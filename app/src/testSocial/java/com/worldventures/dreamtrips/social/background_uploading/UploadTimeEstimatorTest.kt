@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.background_uploading
 
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator
+import com.worldventures.dreamtrips.social.ui.background_uploading.util.UploadTimeEstimator
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 
@@ -21,10 +21,8 @@ class UploadTimeEstimatorTest : BaseSpec({
          uploadTimeEstimator.onUploadingStarted(uploadingTimeStart)
 
          val remainingTime = uploadTimeEstimator.estimate(6, uploadingTimeEndForFirstIteration)
-         val averageSpeedCondition = uploadTimeEstimator.averageUploadSpeed <= 150 + AVERAGE_SPEED_MEASUREMENT_RESERVE
-               && uploadTimeEstimator.averageUploadSpeed >= 150 - AVERAGE_SPEED_MEASUREMENT_RESERVE
-         val remainingTimeCondition = remainingTime == 66467000L
-         assert(averageSpeedCondition && remainingTimeCondition)
+
+         assert(remainingTime == 332000L)
       }
 
       it("should return correct speed and time for second iteration") {
@@ -35,11 +33,7 @@ class UploadTimeEstimatorTest : BaseSpec({
          uploadTimeEstimator.estimate(6, uploadingTimeEndForFirstIteration)
          val remainingTime = uploadTimeEstimator.estimate(12, uploadingTimeEndForSecondIteration)
 
-         val averageSpeedCondition = uploadTimeEstimator.averageUploadSpeed <= 299 + AVERAGE_SPEED_MEASUREMENT_RESERVE
-               && uploadTimeEstimator.averageUploadSpeed >= 299 - AVERAGE_SPEED_MEASUREMENT_RESERVE
-         val remainingTimeCondition = remainingTime == 33216000L
-
-         assert(averageSpeedCondition && remainingTimeCondition)
+         assert(remainingTime == 331000L)
       }
 
       it("should return correct speed and time for third iteration") {
@@ -51,15 +45,7 @@ class UploadTimeEstimatorTest : BaseSpec({
          uploadTimeEstimator.estimate(12, uploadingTimeEndForSecondIteration)
          val remainingTime = uploadTimeEstimator.estimate(18, uploadingTimeEndForThirdIteration)
 
-         val averageSpeedCondition = uploadTimeEstimator.averageUploadSpeed <= 447 + AVERAGE_SPEED_MEASUREMENT_RESERVE
-               && uploadTimeEstimator.averageUploadSpeed >= 447 - AVERAGE_SPEED_MEASUREMENT_RESERVE
-         val remainingTimeCondition = remainingTime == 22133000L
-
-         assert(averageSpeedCondition && remainingTimeCondition)
+         assert(remainingTime == 330000L)
       }
    }
-}) {
-   companion object {
-      const val AVERAGE_SPEED_MEASUREMENT_RESERVE = 5
-   }
-}
+})

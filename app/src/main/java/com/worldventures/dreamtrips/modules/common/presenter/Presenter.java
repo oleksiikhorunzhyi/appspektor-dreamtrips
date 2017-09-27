@@ -5,29 +5,27 @@ import android.os.Bundle;
 
 import com.github.pwittchen.reactivenetwork.library.Connectivity;
 import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.util.JanetHttpErrorHandlingUtils;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import io.techery.janet.CancelException;
 import rx.Observable;
@@ -35,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
+import static com.worldventures.dreamtrips.core.utils.ThrowableUtils.getCauseByType;
 
 public class Presenter<VT extends Presenter.View> {
 
@@ -43,17 +41,14 @@ public class Presenter<VT extends Presenter.View> {
 
    @Inject protected Context context;
    @Inject protected ActivityRouter activityRouter;
-   @Inject @Global protected EventBus eventBus;
-   @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject protected SessionHolder appSessionHolder;
    @Inject protected AnalyticsInteractor analyticsInteractor;
    @Inject protected FeatureManager featureManager;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject protected OfflineErrorInteractor offlineErrorInteractor;
-
-   protected int priorityEventBus = 0;
-
-   protected ApiErrorPresenter apiErrorPresenter;
+   @Inject ConnectionInfoProvider connectionInfoProvider;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
    private PublishSubject<Void> pauseViewStopper = PublishSubject.create();
@@ -62,11 +57,6 @@ public class Presenter<VT extends Presenter.View> {
    protected PublishSubject<ConnectionState> connectionStatePublishSubject = PublishSubject.create();
 
    public Presenter() {
-      apiErrorPresenter = provideApiErrorPresenter();
-   }
-
-   protected ApiErrorPresenter provideApiErrorPresenter() {
-      return new ApiErrorPresenter();
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -87,11 +77,9 @@ public class Presenter<VT extends Presenter.View> {
 
    public void takeView(VT view) {
       this.view = view;
-      try {
-         eventBus.registerSticky(this, priorityEventBus);
-      } catch (Exception ignored) {
-         Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
-      }
+   }
+
+   public void onViewTaken() {
       initConnectionOverlay();
    }
 
@@ -112,8 +100,6 @@ public class Presenter<VT extends Presenter.View> {
    public void dropView() {
       destroyViewStopper.onNext(null);
       this.view = null;
-      apiErrorPresenter.dropView();
-      if (eventBus.isRegistered(this)) eventBus.unregister(this);
    }
 
    public void onStart() {
@@ -163,7 +149,7 @@ public class Presenter<VT extends Presenter.View> {
    }
 
    public boolean isConnected() {
-      return Utils.isConnected(context);
+      return connectionInfoProvider.isConnected();
    }
 
    public void handleError(Throwable error) {
@@ -177,7 +163,7 @@ public class Presenter<VT extends Presenter.View> {
          view.informUser(((CommandWithError) action).getErrorMessage());
          return;
       }
-      String message = JanetHttpErrorHandlingUtils.handleJanetHttpError(context,
+      String message = httpErrorHandlingUtil.handleJanetHttpError(
             action, error, context.getString(R.string.smth_went_wrong));
       view.informUser(message);
    }

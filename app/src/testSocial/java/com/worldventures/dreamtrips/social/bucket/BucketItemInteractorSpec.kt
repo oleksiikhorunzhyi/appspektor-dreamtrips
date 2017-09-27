@@ -17,22 +17,23 @@ import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImage
 import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.*
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateBucketItemCommand
-import com.worldventures.dreamtrips.modules.bucketlist.service.command.*
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.BucketBody
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketBody
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.BucketListDiskStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.BucketMemoryStorage
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.create
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import io.techery.janet.ActionState
 import io.techery.janet.http.annotations.HttpAction.Method
 import io.techery.janet.http.test.MockHttpActionService
@@ -43,6 +44,9 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import java.util.*
+
+typealias ApiBucketPhoto = com.worldventures.dreamtrips.api.bucketlist.model.BucketPhoto
+typealias ApiBucketType = com.worldventures.dreamtrips.api.bucketlist.model.BucketType
 
 class BucketItemInteractorSpec : BucketInteractorBaseSpec({
    describe("bucket actions on item") {
@@ -63,7 +67,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
             whenever(testBucketItem.name).thenReturn(title)
             whenever(testBucketItem.type).thenReturn(type)
             testBucketItemApi = getStubbedApiBucketSocialized()
-                  .type(com.worldventures.dreamtrips.api.bucketlist.model.BucketType.LOCATION)
+                  .type(ApiBucketType.LOCATION)
                   .name(title)
                   .status(BucketStatus.NEW)
                   .build()
@@ -95,7 +99,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                whenever(testBucketItem.type).thenReturn(type)
                whenever(testBucketItem.status).thenReturn(NEW)
                testBucketItemApi = getStubbedApiBucketSocialized()
-                     .type(com.worldventures.dreamtrips.api.bucketlist.model.BucketType.LOCATION)
+                     .type(ApiBucketType.LOCATION)
                      .status(BucketStatus.NEW)
                      .name("test")
                      .id(popularId)
@@ -133,7 +137,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                testBucketItemApi = getStubbedApiBucketSocialized()
                      .name(testName)
                      .id(tripId)
-                     .type(com.worldventures.dreamtrips.api.bucketlist.model.BucketType.LOCATION)
+                     .type(ApiBucketType.LOCATION)
                      .status(BucketStatus.NEW)
                      .build()
                setup()
@@ -340,12 +344,12 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
       var testBucketItemApi: BucketItemSocialized = getStubApiBucketSocialized(TEST_BUCKET_ID).build()
       var testBucketItemSocializedApi: BucketItemSocialized = getStubApiBucketSocialized(TEST_BUCKET_ID).build()
       val testBucketPhoto: BucketPhoto = makeStubBucketPhoto(TEST_BUCKET_PHOTO_UID)
-      val testBucketPhotoApi: com.worldventures.dreamtrips.api.bucketlist.model.BucketPhoto = makeStubApiBucketPhoto(TEST_BUCKET_PHOTO_UID)
+      val testBucketPhotoApi: ApiBucketPhoto = makeStubApiBucketPhoto(TEST_BUCKET_PHOTO_UID)
       val testPhotoUploadResponse: UploaderyImageResponse = mock()
       val testUploaderyPhoto: UploaderyImage = mock()
 
       val mockMemoryStorage: BucketMemoryStorage = spy()
-      val mockDb: SnappyRepository = spy()
+      val mockDb: SocialSnappyRepository = spy()
 
       val uploadControllerStorage: UploadBucketPhotoInMemoryStorage = mock()
 
@@ -429,7 +433,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
          return bucketPhoto;
       }
 
-      fun makeStubApiBucketPhoto(uid: String): com.worldventures.dreamtrips.api.bucketlist.model.BucketPhoto {
+      fun makeStubApiBucketPhoto(uid: String): ApiBucketPhoto {
          return ImmutableBucketPhoto.builder()
                .id(Integer.parseInt(uid))
                .uid("$uid")
@@ -439,7 +443,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
       }
 
       fun comparePhotos(bucketPhoto: BucketPhoto,
-                        apiBucketPhoto: com.worldventures.dreamtrips.api.bucketlist.model.BucketPhoto): Boolean {
+                        apiBucketPhoto: ApiBucketPhoto): Boolean {
          Assert.assertTrue(bucketPhoto.uid.equals(apiBucketPhoto.uid()))
          return true;
       }
@@ -462,7 +466,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                .creationDate(Date())
                .link("")
                .name("$id")
-               .type(com.worldventures.dreamtrips.api.bucketlist.model.BucketType.ACTIVITY)
+               .type(ApiBucketType.ACTIVITY)
                .status(BucketStatus.NEW)
                .bucketPhoto(emptyList())
                .tags(emptyList())

@@ -311,8 +311,7 @@
                   style="@style/DtlRateButton"
                   />
 
-            <include layout="@layout/read_all_rating_review"
-                android:visibility="invisible"/>
+            <include layout="@layout/read_all_rating_review"/>
 
          </LinearLayout>
 

@@ -8,17 +8,17 @@ import android.util.AttributeSet;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
+import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.AddPhotoCell;
 import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
-import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoModel;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.AddPhotoModel;
 
 import java.util.List;
 
-public class StatefulHorizontalPhotosView<T extends IFullScreenObject, D extends CellDelegate<EntityStateHolder<T>>>
+public class StatefulHorizontalPhotosView<T extends ImagePathHolder, D extends CellDelegate<EntityStateHolder<T>>>
       extends RecyclerView {
 
    private IgnoreFirstItemAdapter imagesAdapter;
@@ -39,7 +39,6 @@ public class StatefulHorizontalPhotosView<T extends IFullScreenObject, D extends
 
    public void init(Injector injector) {
       if (isInEditMode()) return;
-      injector.inject(this);
       if (imagesAdapter != null) return;
 
       imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);

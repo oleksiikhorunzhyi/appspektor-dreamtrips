@@ -7,12 +7,12 @@ import android.widget.TextView;
 
 import com.techery.spares.module.Injector;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.ValidateReviewUtil;
 
 import javax.inject.Inject;
@@ -67,7 +67,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
 
       if (merchantAttributes.hasOperationDays()) {
          Observable.fromCallable(() -> merchantAttributes.provideFormattedOperationalTime(rootView.getContext(), true))
-               .compose(RxLifecycle.bindView(rootView))
+               .compose(RxLifecycleAndroid.bindView(rootView))
                .subscribe(operationalTime::setText, ex -> operationalTime.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(operationalTime, View.GONE);
 

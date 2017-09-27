@@ -1,27 +1,25 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
-import android.net.Uri;
-
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
+import com.worldventures.dreamtrips.wallet.util.CachedPhotoUtil;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
-import timber.log.Timber;
 
 @CommandAction
 public class RemoveSmartCardDataCommand extends Command<Void> implements InjectableAction {
 
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
    @Inject RecordsStorage recordsStorage;
    @Inject LostCardRepository lostCardRepository;
+   @Inject CachedPhotoUtil cachedPhotoUtil;
 
    private final ResetOptions factoryResetOptions;
 
@@ -33,11 +31,12 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    protected void run(CommandCallback<Void> callback) throws Throwable {
       if (factoryResetOptions.isWithPaymentCards()) deletePaymentsData();
       if (factoryResetOptions.isWithUserSmartCardData()) deleteUserData();
-      snappyRepository.deleteSmartCardFirmware();
-      snappyRepository.deleteSmartCardDetails();
-      snappyRepository.deleteSmartCard();
-      snappyRepository.deleteTermsAndConditions();
-      snappyRepository.deletePinOptionChoice();
+      walletStorage.deleteSmartCardFirmware();
+      walletStorage.deleteSmartCardDetails();
+      walletStorage.deleteSmartCard();
+      walletStorage.deleteTermsAndConditions();
+      walletStorage.deletePinOptionChoice();
+      walletStorage.deleteSmartCardDisplayType();
       lostCardRepository.clear();
       callback.onSuccess(null);
    }
@@ -48,17 +47,15 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    }
 
    private void deleteUserData() {
-      final SmartCardUser smartCardUser = snappyRepository.getSmartCardUser();
+      final SmartCardUser smartCardUser = walletStorage.getSmartCardUser();
       clearUserImageCache(smartCardUser.userPhoto());
-      snappyRepository.deleteSmartCardUser();
+      walletStorage.deleteSmartCardUser();
    }
 
 
    private void clearUserImageCache(SmartCardUserPhoto photo) {
-      try {
-         Fresco.getImagePipeline().evictFromCache(Uri.parse(photo.photoUrl()));
-      } catch (Exception e) {
-         Timber.e(e, "");
+      if (photo != null) {
+         cachedPhotoUtil.removeCachedPhoto(photo.uri());
       }
    }
 }

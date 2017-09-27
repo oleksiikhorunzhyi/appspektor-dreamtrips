@@ -8,20 +8,29 @@ import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.util.chat.ChatTimestampFormatter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
-public class MessageImageFullscreenPresenter extends FullScreenPresenter<PhotoAttachment, MessageImageFullscreenPresenter.View> {
+import io.techery.janet.helper.ActionStateSubscriber;
+
+public class MessageImageFullscreenPresenter extends Presenter<MessageImageFullscreenPresenter.View> {
 
    @ForActivity @Inject Injector injector;
-   private ChatTimestampFormatter timestampFormatter;
-   protected FlaggingPresenter flaggingPresenter;
    @Inject MessageDAO messageDAO;
+   @Inject TripImagesInteractor tripImagesInteractor;
+   private ChatTimestampFormatter timestampFormatter;
+   private FlaggingPresenter flaggingPresenter;
 
-   public MessageImageFullscreenPresenter(PhotoAttachment photo, TripImagesType type) {
-      super(photo, type);
+   private PhotoAttachment photoAttachment;
+
+   public MessageImageFullscreenPresenter(PhotoAttachment photo) {
+      this.photoAttachment = photo;
    }
 
    @Override
@@ -34,25 +43,56 @@ public class MessageImageFullscreenPresenter extends FullScreenPresenter<PhotoAt
    public void takeView(View view) {
       super.takeView(view);
       flaggingPresenter = view.getFlaggingView().getPresenter();
-      //
-      view.setShowFlag(photo.isFlaggingEnabled());
-      messageDAO.getMessage(photo.getMessageId()).take(1).subscribe(message -> {
+      view.setContent(photoAttachment);
+      view.setShowFlag(photoAttachment.isFlaggingEnabled());
+      messageDAO.getMessage(photoAttachment.getMessageId()).take(1).subscribe(message -> {
          int messageStatus = message.getStatus();
          if (messageStatus == MessageStatus.ERROR || messageStatus == MessageStatus.SENDING) {
             return;
          }
-         if (photo.getDate() != null) {
-            String dateLabel = timestampFormatter.getMessageTimestamp(photo.getDate().getTime());
+         if (photoAttachment.getDate() != null) {
+            String dateLabel = timestampFormatter.getMessageTimestamp(photoAttachment.getDate().getTime());
             view.setDateLabel(dateLabel);
          }
       });
    }
 
    public void onFlagPressed() {
-      flaggingPresenter.flagMessage(photo.getConversationId(), photo.getMessageId());
+      flaggingPresenter.flagMessage(photoAttachment.getConversationId(), photoAttachment.getMessageId());
    }
 
-   public interface View extends FullScreenPresenter.View {
+   public void onShareAction() {
+      if (!isConnected()) {
+         reportNoConnectionWithOfflineErrorPipe(new IOException());
+         return;
+      }
+
+      view.onShowShareOptions();
+   }
+
+   public void onShareOptionChosen(@ShareType String type) {
+      if (!isConnected()) {
+         reportNoConnection();
+         return;
+      }
+      if (type.equals(ShareType.EXTERNAL_STORAGE)) {
+         tripImagesInteractor.downloadImageActionPipe()
+               .createObservable(new DownloadImageCommand(photoAttachment.getUrl()))
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
+                     .onFail(this::handleError));
+      } else {
+         view.openShare(photoAttachment.getUrl(), "", type);
+      }
+   }
+
+   public interface View extends Presenter.View {
+      void setContent(PhotoAttachment photoAttachment);
+
+      void onShowShareOptions();
+
+      void openShare(String imageUrl, String text, @ShareType String type);
+
       void setDateLabel(String dateLabel);
 
       FlaggingView getFlaggingView();

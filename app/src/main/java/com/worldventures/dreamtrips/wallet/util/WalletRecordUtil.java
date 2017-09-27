@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -10,21 +11,21 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 
-import com.techery.spares.module.qualifier.ForApplication;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
+
+import java.util.List;
 
 import static java.lang.String.format;
 
 public class WalletRecordUtil {
 
-   private final Context context;
-
-   public WalletRecordUtil(@ForApplication Context appContext) {
-      this.context = appContext;
+   public WalletRecordUtil() {
    }
 
    public static String obtainLastCardDigits(String cardNumber) {
@@ -49,7 +50,7 @@ public class WalletRecordUtil {
       return cardNumber.length() == 15 && amexPrefix;
    }
 
-   public String obtainFinancialServiceType(FinancialService financialService) {
+   public String obtainFinancialServiceType(Context context, FinancialService financialService) {
       switch (financialService) {
          case VISA:
             return context.getString(R.string.wallet_card_financial_service_visa);
@@ -67,18 +68,18 @@ public class WalletRecordUtil {
       }
    }
 
-   public String financialServiceWithCardNumber(Record record) {
-      return format("%s •••• %s", obtainFinancialServiceType(record.financialService()), record.numberLastFourDigits());
+   public String financialServiceWithCardNumber(Context context, Record record) {
+      return format("%s •••• %s", obtainFinancialServiceType(context, record.financialService()), record.numberLastFourDigits());
    }
 
-   public String bankNameWithCardNumber(Record record) {
+   public static String bankNameWithCardNumber(Record record) {
       String bankName = record.bankName();
       bankName = (bankName == null) ? "" : bankName;
       return format("%s •••• %s", bankName, record.numberLastFourDigits());
    }
 
    // utils
-   public String obtainRecordType(RecordType cardType) {
+   public String obtainRecordType(Context context, RecordType cardType) {
       if (cardType == null) {
          return null;
       }
@@ -154,8 +155,21 @@ public class WalletRecordUtil {
       return recordId != null;
    }
 
+   @Deprecated
    public static boolean equals(String recordId, Record record) {
-      return (recordId != null && record != null) && record.id().equals(recordId);
+      return equalsRecordId(recordId, record);
+   }
+
+   public static boolean equalsRecordId(String recordId, Record record) {
+      return (recordId != null && record != null) && equalsRecordId(recordId, record.id());
+   }
+
+   public static boolean equalsRecordId(@NonNull String recordId1, @Nullable String recordId2) {
+      return recordId2 != null && recordId2.equals(recordId1);
+   }
+
+   public static Record findRecord(List<Record> records, String recordId) throws IllegalStateException {
+      return Queryable.from(records).first(card -> equalsRecordId(recordId, card.id()));
    }
 
    public static String fetchFullName(Record card) {
@@ -170,12 +184,19 @@ public class WalletRecordUtil {
       return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(number);
    }
 
-   public CharSequence goodThrough(String date) {
+   public CharSequence goodThrough(Context context, String date) {
       SpannableString goodThru = new SpannableString(context.getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
       return new SpannableStringBuilder()
             .append(goodThru)
             .append(" ")
             .append(date);
+   }
+
+   public static RecordViewModel prepareRecordViewModel(Record record) {
+      final int cvvLength = obtainRequiredCvvLength(record.number());
+      final String ownerName = fetchFullName(record);
+      return new RecordViewModel(record.id(), cvvLength, record.nickName(), ownerName, record.numberLastFourDigits(),
+            record.expDate(), record.recordType());
    }
 }

@@ -16,6 +16,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
@@ -73,7 +74,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    private DistanceType distanceType;
    private boolean expanded;
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    public DtlMerchantExpandableCell(View view) {
       super(view);
@@ -97,14 +98,6 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       // TODO :: please tear off my hands
       setExpandedArea();
       ValidateReviewUtil.setUpRating(itemView.getContext(), getModelObject().reviewSummary(), mRatingBar, textViewRating);
-
-      /**This must be removed once we start optimizing for tablets **/
-      if (deviceInfoProvider.isTablet()) {
-         layoutRatingsReview.setVisibility(View.GONE);
-      } else {
-         layoutRatingsReview.setVisibility(View.VISIBLE);
-      }
-
    }
 
    private void setSelection(View view) {
@@ -144,7 +137,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
          ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
          Observable.fromCallable(() -> getModelObject().asMerchantAttributes()
                .provideFormattedOperationalTime(itemView.getContext(), false))
-               .compose(RxLifecycle.bindView(itemView))
+               .compose(RxLifecycleAndroid.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
    }
@@ -248,17 +241,19 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
 
    @OnClick(R.id.layout_rating_reviews)
    void onClickRateView() {
-      if (isReviewCached()) {
-         if (userHasReviews()) {
-            cellDelegate.sendToRatingReview(getModelObject());
+      if (!deviceInfoProvider.isTablet()) {
+         if (isReviewCached()) {
+            if (userHasReviews()) {
+               cellDelegate.sendToRatingReview(getModelObject());
+            } else {
+               cellDelegate.userHasPendingReview();
+            }
          } else {
-            cellDelegate.userHasPendingReview();
-         }
-      } else {
-         if (!userHasPendingReview() || userHasReviews()) {
-            cellDelegate.sendToRatingReview(getModelObject());
-         } else {
-            cellDelegate.userHasPendingReview();
+            if (!userHasPendingReview() || userHasReviews()) {
+               cellDelegate.sendToRatingReview(getModelObject());
+            } else {
+               cellDelegate.userHasPendingReview();
+            }
          }
       }
    }

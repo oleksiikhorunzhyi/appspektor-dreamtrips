@@ -15,13 +15,14 @@ import dagger.Provides;
 @Module(
       includes = {
             // base helpers and drivers
-            EventBusModule.class, EventDelegateModule.class, AndroidServicesModule.class, SupportModule.class, StorageModule.class},
+            EventBusModule.class,
+            StorageModule.class},
       library = true,
       complete = false)
 public class InjectingApplicationModule {
 
    @Provides
-   public Application provideApplication(Application application) {
+   Application provideApplication(Application application) {
       return application;
    }
 

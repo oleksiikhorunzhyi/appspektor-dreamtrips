@@ -2,8 +2,12 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import android.support.v4.util.Pair;
 
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
+import com.worldventures.dreamtrips.wallet.domain.entity.AboutSmartCardData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
+import com.worldventures.dreamtrips.wallet.service.command.AboutSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchCardPropertiesCommand;
@@ -16,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCom
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.LoadFirmwareFilesCommand;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
@@ -25,7 +30,6 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
-import io.techery.janet.smartcard.action.support.ConnectAction;
 import io.techery.janet.smartcard.event.PinStatusEvent;
 import io.techery.janet.smartcard.model.ConnectionType;
 import rx.Observable;
@@ -46,7 +50,8 @@ public class SmartCardSyncManager {
    private volatile boolean syncDisabled = false;
 
    public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor,
-         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor, WalletFeatureHelper featureHelper) {
+         FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor,
+         WalletFeatureHelper featureHelper) {
       this.janet = janet;
       this.interactor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
@@ -67,8 +72,7 @@ public class SmartCardSyncManager {
    }
 
    private void observeConnection() {
-      // // TODO: 2/20/17 create pipe in interactor
-      janet.createPipe(ConnectAction.class)
+      interactor.connectionActionPipe()
             .observeSuccess()
             .throttleLast(1, TimeUnit.SECONDS)
             .subscribe(connectAction -> cardConnected(connectAction.type == ConnectionType.DFU ? DFU : CONNECTED),
@@ -106,6 +110,7 @@ public class SmartCardSyncManager {
       interactor.setSmartCardTimePipe().send(new SetSmartCardTimeCommand());
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
       interactor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
+      interactor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));
       recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();
@@ -156,6 +161,7 @@ public class SmartCardSyncManager {
             .observeSuccess()
             .map(Command::getResult)
             .subscribe(firmware -> {
+                     saveFirmwareDataForAboutScreen(firmware);
                      interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(firmware));
                      firmwareInteractor.fetchFirmwareInfoPipe().send(new FetchFirmwareInfoCommand(firmware));
                   }
@@ -181,6 +187,13 @@ public class SmartCardSyncManager {
             );
    }
 
+   private void saveFirmwareDataForAboutScreen(SmartCardFirmware firmware) {
+      if (!firmware.isEmpty()) {
+         interactor.aboutSmartCardDataCommandPipe()
+               .send(AboutSmartCardDataCommand.save(AboutSmartCardData.of(firmware)));
+      }
+   }
+
    private void setupBatteryObserver() {
       Observable.interval(0, 1, TimeUnit.MINUTES)
             .takeUntil(interactor.disconnectPipe().observeSuccess())
@@ -188,7 +201,7 @@ public class SmartCardSyncManager {
             .doOnNext(aLong -> Timber.d("setupBatteryObserver = %s", aLong))
             .subscribe(value ->
                         interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
-                  throwable -> Timber.e("", throwable));
+                  throwable -> Timber.e(throwable, ""));
    }
 
    private void setupChargerEventObserver() {
@@ -201,13 +214,13 @@ public class SmartCardSyncManager {
    }
 
    private void connectSyncSmartCard() {
-      if (!featureHelper.isCardSyncSupported()) return;
-      Observable.interval(10, TimeUnit.MINUTES)
+      if (featureHelper.isSampleCardMode()) return;
+      Observable.interval(WalletConstants.AUTO_SYNC_PERIOD_MINUTES, TimeUnit.MINUTES)
             .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))
             .compose(new FilterActiveConnectedSmartCard(interactor))
             .filter(smartCard -> !syncDisabled)
-            .throttleFirst(10, TimeUnit.MINUTES)
+            .throttleFirst(WalletConstants.AUTO_SYNC_PERIOD_MINUTES, TimeUnit.MINUTES)
             .flatMap(aLong -> recordInteractor.syncRecordStatusPipe()
                   .createObservableResult(SyncRecordStatusCommand.fetch()))
             .map(Command::getResult)
@@ -215,8 +228,7 @@ public class SmartCardSyncManager {
             .flatMap(aLong -> interactor.smartCardSyncPipe()
                   .createObservableResult(new SyncSmartCardCommand()))
             .retry(1)
-            .subscribe(command -> {
-            }, throwable -> Timber.e("", throwable));
+            .subscribe(command -> {/*nothing*/}, throwable -> Timber.e(throwable, ""));
    }
 
    private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {

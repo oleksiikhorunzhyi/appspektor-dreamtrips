@@ -3,7 +3,8 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 import android.os.Bundle;
 import android.view.View;
 
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
+import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import java.util.List;
@@ -46,7 +47,8 @@ public class PhotoPickerDelegate {
 
    public void onDone() {
       if (doneClickListener != null && selectedPhotosProvider != null) {
-         doneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos(), selectedPhotosProvider.getType());
+         doneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos(),
+               selectedPhotosProvider.provideSelectedVideo(), selectedPhotosProvider.getType());
       }
    }
 
@@ -72,7 +74,9 @@ public class PhotoPickerDelegate {
 
    public interface SelectedPhotosProvider {
 
-      List<BasePhotoPickerModel> provideSelectedPhotos();
+      List<MediaPickerModel> provideSelectedPhotos();
+
+      VideoPickerModel provideSelectedVideo();
 
       int getType();
    }

@@ -1,19 +1,55 @@
 package com.worldventures.dreamtrips.core.navigation;
 
+import java.util.LinkedList;
+
 public class BackStackDelegate {
 
    private BackPressedListener listener;
 
-   public boolean handleBackPressed() {
-      return listener != null && listener.onBackPressed();
+   private final LinkedList<BackPressedListener> listeners;
+
+   public BackStackDelegate() {
+      this.listeners = new LinkedList<>();
    }
 
+   public boolean handleBackPressed() {
+      return (listener != null && listener.onBackPressed()) || (!listeners.isEmpty() && executeListeners());
+   }
+
+   private boolean executeListeners() {
+      boolean supportNext = false;
+      for (BackPressedListener listener : listeners) {
+         if (listener.onBackPressed()) {
+            supportNext = true;
+         }
+      }
+      return supportNext;
+   }
+
+   @Deprecated
    public void setListener(BackPressedListener listener) {
       this.listener = listener;
    }
 
+   @Deprecated
    public void clearListener() {
-      setListener(null);
+      listener = null;
+   }
+
+   public void clearListeners() {
+      listeners.clear();
+   }
+
+   public void addListener(BackPressedListener listener) {
+      if (!listeners.contains(listener)) {
+         listeners.add(listener);
+      }
+   }
+
+   public void removeListener(BackPressedListener listener) {
+      if (listeners.contains(listener)) {
+         listeners.remove(listener);
+      }
    }
 
    public interface BackPressedListener {

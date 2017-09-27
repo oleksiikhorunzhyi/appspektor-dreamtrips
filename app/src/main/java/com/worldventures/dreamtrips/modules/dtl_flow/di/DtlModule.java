@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.component.ComponentDescription;
+
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
       includes = {
@@ -9,4 +13,19 @@ import dagger.Module;
             DtlDelegatesModule.class},
       complete = false, library = true)
 public class DtlModule {
+
+   public static final String DTL = "DTL";
+
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideDtlComponent() {
+      return new ComponentDescription.Builder()
+            .key(DTL)
+            .navMenuTitle(R.string.dtl_local)
+            .toolbarTitle(R.string.dtl_local)
+            .icon(R.drawable.ic_dtl)
+            .skipGeneralToolbar(true)
+            .shouldFinishMainActivity(true)
+            .build();
+   }
+
 }

@@ -1,23 +1,23 @@
 package com.worldventures.dreamtrips.wallet.service.provisioning;
 
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 
 public class PinOptionalStorageImpl implements PinOptionalStorage {
 
-   private final SnappyRepository snappyRepository;
+   private final WalletStorage walletStorage;
 
-   public PinOptionalStorageImpl(SnappyRepository snappyRepository) {
-      this.snappyRepository = snappyRepository;
+   public PinOptionalStorageImpl(WalletStorage walletStorage) {
+      this.walletStorage = walletStorage;
    }
 
    @Override
    public boolean shouldAskForPin() {
-      return snappyRepository.shouldAskForPin();
+      return walletStorage.shouldAskForPin();
    }
 
    @Override
    public void saveShouldAskForPin(boolean shouldAskForPin) {
-      snappyRepository.saveShouldAskForPin(shouldAskForPin);
+      walletStorage.saveShouldAskForPin(shouldAskForPin);
    }
 }

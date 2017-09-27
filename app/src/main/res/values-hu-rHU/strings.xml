@@ -1,66 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="membership">Tagság</string>
-   <string name="trip_images">Úti képek</string>
-   <string name="bucket_list">Bakancslista</string>
-   <string name="my_profile">Saját profil</string>
-   <string name="terms_of_service">Szolgáltatási feltételek</string>
-   <string name="privacy">Adatvédelmi irányelvek</string>
-   <string name="cookie">Cookie-kra vonatkozó irányelv</string>
-   <string name="action_quick_input">Gyors hozzáadás</string>
-   <string name="action_popular_string">Hozzáadás a népszerűek közül</string>
    <string name="action_done">Kész</string>
    <string name="action_cancel">Mégse</string>
    <string name="action_filter">Szűrés</string>
-   <string name="action_map">Térkép</string>
    <string name="action_like">Tetszik</string>
    <string name="trips">DreamTrips</string>
    <string name="drawer_open">Menü megnyitva</string>
    <string name="drawer_close">Menü bezárva</string>
-   <string name="logout_dialog_title">Kijelentkezés</string>
-   <string name="logout_dialog_message">Biztos, hogy kijelentkezik?</string>
-   <string name="logout_dialog_positive_btn">Kijelentkezés</string>
-   <string name="logout_dialog_negative_btn">Mégse</string>
-   <string name="member_images">Tagok képei</string>
-   <string name="my_images">Saját képek</string>
-   <string name="you_should_be_here">Itt kellene lennie</string>
-   <string name="duration">%1$d éjszaka</string>
    <string name="smth_went_wrong">Valamilyen hiba történt =(</string>
-   <string name="inspire_me">Ösztönzést kérek</string>
-   <string name="three_sixty">360 élmény</string>
-   <string name="member_images_new_item">%1$s Új Tétel</string>
-   <string name="member_images_new_items">%1$s Új Tételek</string>
-   <string name="member_images_new_items_plus">%1$s+ Új Tételek</string>
-   <string name="book_it">Foglalja le!</string>
-   <string name="reload_trip_details">Út részletes adatainak újbóli betöltése</string>
-   <string name="user_id_hint">WV-tag azonosítója</string>
-   <string name="user_password_hint">WV-tag jelszava</string>
    <string name="type_your_reason">Írja be az okot</string>
-   <string name="filter_region_header">RÉGIÓ</string>
-   <string name="filter_duration_header">IDŐTARTAM (ÉJSZAKÁK)</string>
-   <string name="filter_price_header">ÁR ($)</string>
-   <string name="filter_select_all">AZ ÖSSZES KIJELÖLÉSE</string>
-   <string name="filter_show_sold_out">„ELFOGYOTT” JELÖLÉSŰ UTAK MEGJELENÍTÉSE</string>
-   <string name="filter_theme_header">TÉMA</string>
-   <string name="filter_no_results">Elnézést, nem találhatók a feltételeinek megfelelő eredmények</string>
    <string name="filter_apply_all">SZŰRŐK ALKALMAZÁSA</string>
    <string name="filter_reset_all">AZ ÖSSZES VISSZAÁLLÍTÁSA</string>
-   <string name="filter_reset">Szűrők visszaállítása</string>
-   <string name="trip_details">út részletek</string>
-   <string name="trip_featured">KIEMELT ÚT</string>
-   <string name="profile_from_hint">Innen</string>
-   <string name="profile_enroll_hint">Belépés dátuma</string>
-   <string name="profile_birth_hint">Születési dátum</string>
-   <string name="profile_user_id_hint">Felhasználóazonosító</string>
-   <string name="bucket_locations">Helyek</string>
-   <string name="bucket_activities">Tevékenységek</string>
-   <string name="bucket_restaurants">Étkezés</string>
-   <string name="photo_deleted">A fénykép törölve</string>
-   <string name="delete_photo_title">Fénykép törlése</string>
-   <string name="delete_photo_text">Biztos, hogy törli a fényképet?</string>
-   <string name="delete_photo_positiove">Törlés</string>
-   <string name="delete_photo_negative">Mégse</string>
    <string name="flag_photo_second">Folytatja?</string>
    <string name="flag_photo_title">Megerősítés</string>
    <string name="flag_photo_positive">Küldés</string>
@@ -68,7 +19,6 @@
    <string name="flag_description_title">Jelölés</string>
    <string name="flag_description_positive">Elfogadás</string>
    <string name="flag_description_negative">Mégse</string>
-   <string name="log_in">Bejelentkezés</string>
    <string name="facebook_error_loading_albums">albumok betöltése sikertelen</string>
    <string name="facebook_error_loading_photos">fotók betöltése sikertelen </string>
    <string name="facebook_login_error">Facebook belépés sikertelen</string>
@@ -88,56 +38,9 @@
    <string name="username_not_valid">A felhasználónév érvénytelen</string>
    <string name="password_empty">A jelszó üres</string>
    <string name="password_not_valid">A jelszó érvénytelen</string>
-   <string name="bucket_list_location_popular">Népszerű bakancslisták</string>
-   <string name="bucket_list_edit_header">Bakancslistatétel szerkesztése</string>
-   <string name="bucket_list_add">%1$s hozzáadása a bakancslistához</string>
-   <string name="bucket_list_create_message">Jelenleg nincsenek bakancslistatételei. Választhat a népszerű bakancslistatételek közül, vagy létrehozhat saját célokat.</string>
-   <string name="bucket_list_choose">Válasszon a népszerű tételekből</string>
-   <string name="bucket_list_create_new">Saját lista létrehozása</string>
-   <string name="bucket_list_action_create_error">Nem sikerült frissíteni a bakancslitsa tételt</string>
-   <string name="bucket_list_action_change_order_error">Nem sikerült megváltoztatni a bakancslista tételt</string>
-   <string name="bucket_list_action_delete_error">Nem sikerült törölni a bakancslista tételt</string>
-   <string name="bucket_hint_title">Cím</string>
-   <string name="bucket_hint_description">Leírás</string>
-   <string name="bucket_hint_description_text">Írja ide a leírást</string>
-   <string name="bucket_hint_time">Idő</string>
-   <string name="bucket_hint_time_text">Mikor szeretné teljesíteni ezt a célt?</string>
-   <string name="bucket_hint_people">Emberek</string>
-   <string name="bucket_hint_people_text">Adja hozzá azokat az embereket, akikkel teljesíteni szeretné ezt a célt</string>
-   <string name="bucket_hint_tags">Címkék</string>
-   <string name="bucket_hint_tags_text">Adja hozzá a bakancslista tételét leíró címkéket</string>
-   <string name="category">Kategória</string>
-   <string name="bucket_added">%1$s hozzáadva a bakancslistához</string>
-   <string name="trip_liked">%1$s hozzáadva a kedvencekhez</string>
-   <string name="trip_unliked">%1$s eltávolítva a kedvencek közül</string>
-   <string name="congrats">Gratulálunk!</string>
-   <string name="show_all">Összes megjelenítése</string>
-   <string name="show_completed">Kész megjelenítése</string>
-   <string name="show_to_do">TEENDŐ megjelenítése</string>
-   <string name="rep_tools">Képviselői eszközök</string>
-   <string name="success_stories">Sikertörténetek</string>
    <string name="action_share">Megosztás</string>
-   <string name="recent_header">Legutóbb hozzáadott 360 élmény</string>
-   <string name="recently_added">Legutóbb hozzáadott</string>
-   <string name="featured_header">Kiemelt 360 élmény</string>
-   <string name="ss_has_been_added_to_favorites">A sikertörténet hozzáadva a kedvencekhez</string>
-   <string name="ss_has_been_removed_from_favorites">A sikertörténet eltávolítva a kedvencek közül</string>
-   <string name="ss_filter_show_favorites">Kedvencek megjelenítése</string>
-   <string name="other_travel">Utazás lefoglalása</string>
-   <string name="training_videos">Oktatóvideók</string>
-   <string name="like">%1$d embernek tetszik</string>
-   <string name="likes">%1$d felhasználónak tetszik</string>
-   <string name="comment_single">%1$d megjegyzés</string>
-   <string name="comments">%1$d megjegyzés</string>
-   <string name="someday">Egy napon</string>
-   <string name="who">Ki: </string>
-   <string name="tags">Címkék: </string>
    <string name="today">Ma</string>
-   <string name="rep_enrollment">Képviselő beléptetése</string>
    <string name="no_connection">Nincs internetkapcsolat</string>
-   <string name="popular_add">HOZZÁADÁS</string>
-   <string name="popular_done">KÉSZ</string>
-   <string name="see_more">Továbbiak</string>
    <string name="alert">Figyelmeztetés</string>
    <string name="OK">OK</string>
    <string name="share_error">A fájl nem osztható meg</string>
@@ -154,105 +57,13 @@
       <item>Egy napon</item>
    </string-array>
    <string name="choose_gallery">Válasszon fényképet</string>
-   <string name="uploading_photo">Fénykép feltöltése</string>
-   <string name="bucket_photo_cover">Beállítás borítóként</string>
-   <string name="bucket_photo_delete">Törlés</string>
-   <string name="add_pictures">Képek hozzáadása</string>
-   <string name="bucket_photo_dialog">Bakancslista fényképe</string>
-   <string name="delete_cached_video_title">Videó</string>
-   <string name="delete_cached_video_text">Biztos, hogy törli a videót a helyi gyorsítótárból?</string>
-   <string name="fail">Hiba</string>
-   <string name="cancel_cached_video_title">Videó</string>
-   <string name="cancel_cached_video_text">Biztos, hogy megszakítja a fájl letöltését?</string>
-   <string name="cancel_photo_positiove">Igen</string>
-   <string name="cancel_photo_negative">Nem</string>
-   <string name="presentations">Videók</string>
-   <string name="enroll_member">Tag beléptetése</string>
-   <string name="invite_and_share">Meghívás és megosztás</string>
-   <string name="add_contact">Kapcsolattartó hozzáadása</string>
-   <string name="add">Hozzáadás</string>
-   <string name="invite_add_name">Név</string>
-   <string name="invite_email">E-mail</string>
-   <string name="invite_phone">Telefon</string>
-   <string name="invite_add_message">Személyes üzenet hozzáadása</string>
-   <string name="action_send">Küldés</string>
-   <string name="action_preview">Előnézet</string>
-   <string name="title_edit_template">Sablon szerkesztése</string>
-   <string name="invitation_continue">Tovább</string>
-   <string name="invitation_select_contacts">Kapcsolattartók kiválasztása</string>
-   <string name="invitation_select_template">Meghívósablon választása</string>
-   <string name="invitation_select">Válasszon</string>
-   <string name="invitation_from">Innen:</string>
-   <string name="invitation_to">Záró:</string>
-   <string name="invitation_subject">Tárgy:</string>
 
-   <string name="selected">%1$d kiválasztva</string>
    <string name="email_is_not_valid">Az e-mail cím érvénytelen</string>
-   <string name="invitation_deselect_all">Összes kijelölés törlése</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Üdv, %1$s! %2$s <br/>Nézze meg itt.<br/>%3$s]]></string>
-   <string name="invite_add_photo">Fénykép hozzáadása</string>
-   <string name="invite_select_first">Előbb válasszon kapcsolattartókat</string>
-   <string name="filters_show_favorite">KEDVENC UTAK MEGJELENÍTÉSE</string>
-   <string name="filter_recently_added">LEGUTÓBB HOZZÁADOTT</string>
-   <string name="bucketlist_share" formatted="false">A bakancslistámon: %1$s</string>
-   <string name="last_sent">Utoljára elküldött</string>
-   <string name="search_trips">Utak keresése</string>
-   <string name="search">Keresés</string>
 
-   <string name="profile_zero_trip_images">Úti képek</string>
-   <string name="profile_zero_bucket_list">Bakancslistatételek</string>
-   <string name="profile_trip_images">%1$d úti kép</string>
-   <string name="profile_bucket_list">%1$d bakancslistatétel</string>
-   <string name="profile_friends">Barátok</string>
-   <string name="profile_platinum">Platinum tag</string>
-   <string name="profile_golden">Gold tag</string>
-   <string name="profile_dt_points">&lt;b&gt;%1$s&lt;/b&gt; DT-pont</string>
-   <string name="profile_rovia_bucks">&lt;b&gt;%1$s&lt;/b&gt; Rovia Bucks</string>
-
-   <string name="action_add_to_bucket">Hozzáadás a bakancslistához</string>
-   <string name="profile_add_friend">Barát hozzáadása</string>
-   <string name="profile_friend_request" formatted="false">%1$s „barát” kérést küldött Önnek</string>
-   <string name="profile_respond">Válasz</string>
-   <string name="profile_waiting">Várakozik</string>
-   <string name="social_my_friends">Barátaim</string>
-   <string name="social_requests">Kérések</string>
    <string name="social_add_friend_yes">Igen</string>
    <string name="social_add_friend_no">Nem</string>
-   <string name="social_postfix_mutual_friends_one">%1$d közös barát</string>
-   <string name="social_postfix_mutual_friends">%1$d közös barát</string>
-   <string name="social_user_wrapper_cell_actions">Műveletek</string>
-   <string name="social_remove_friend_title">Nem barát</string>
-   <string name="friend_search_placeholder">Nevek, csoportok keresése</string>
-   <string name="friend_reject">Elutasítás</string>
-   <string name="friend_accept">Elfogadás</string>
-   <string name="friend_hide">Elrejtés</string>
-   <string name="friend_cancel">Mégse</string>
-   <string name="friend_global_search">Összes tag keresése</string>
-   <string name="friend_add_to">Hozzáadás:</string>
-   <string name="bucket_current_cover">Aktuális borító</string>
-   <string name="bucket_item_edit_completed">Megjelölés készként</string>
-   <string name="reload_feed">Hírcsatorna újbóli betöltése</string>
-   <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
-   <string name="added">hozzáadta ezt:</string>
-   <string name="booked">lefoglalta ezt:</string>
-   <string name="shared">megosztotta ezt:</string>
-   <string name="updated">frissítette ezt:</string>
-   <string name="liked">kedvelte ezt:</string>
-   <string name="feed_trip">Út</string>
-   <string name="feed_photo">Fénykép</string>
-   <string name="feed_bucket">Bakancslistatétel</string>
    <string name="coming_soon">Hamarosan</string>
    <string name="loading">Betöltés…</string>
-   <string name="filter_video_title_language">Válasszon nyelvet</string>
-   <string name="filter_video_title_country">Válasszon országot</string>
-   <string name="comments_title">Megjegyzések</string>
-   <string name="comment_add_hint">Megjegyzés hozzáadása</string>
-   <string name="comment_post_btn_title">Poszt</string>
-   <string name="comment_view_more">További megjegyzések megtekintése</string>
-   <string name="save">Mentés</string>
-   <string name="comment_delete">Megjegyzés törlése</string>
-   <string name="comment_delete_caption">Biztos, hogy törli a megjegyzését?</string>
-   <string name="comment_delete_confirm">Igen, töröljük!</string>
    <string name="post_visibility_public">Nyilvános</string>
    <string name="post">Poszt</string>
 
@@ -270,19 +81,10 @@
    <string name="last_year">Elmúlt év</string>
    <string name="yesterday">Tegnap</string>
 
-   <string name="social_friend_preference_title">Barátokra vonatkozó beállítások szerkesztése</string>
-   <string name="friend_pref_create_new_list">Új lista létrehozása</string>
-   <string name="friend_pref_lists_title">Listák</string>
-   <string name="friend_pref_lists_header">Barátok beállításai</string>
-   <string name="social_unfriend_confirmation_title">Biztos, hogy törli a felhasználót a barátok közül?</string>
-   <string name="social_unfriend_confiramation_accept">Igen</string>
-   <string name="social_unfriend_confiramation_cancel">Nem</string>
-   <string name="feed_title">Tevékenységek hírcsatornája</string>
    <string name="post_cancel_message">Biztos, hogy elveti a változtatásokat?</string>
-   <string name="bucket_list_foreign_message">Ennek a felhasználónak jelenleg nincsenek bakancslistatételei. </string>
 
-   <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
-   <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
+   <string name="user_name">&lt;b&gt;%1$s&lt;/b&gt;</string>
+   <string name="user_name_with_company">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
    <string name="email_app_choose_dialog_title">Válasszon alkalmazást</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt; felhasználónak tetszik ez:</string>
@@ -290,254 +92,52 @@
    <string name="users_who_liked_with_first_single" formatted="false">&lt;b&gt;%1$s felhasználónak és %2$d más&lt;/b&gt; felhasználónak tetszik ez:</string>
    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;%1$s felhasználónak és %2$d más&lt;/b&gt; felhasználónak tetszik ez:</string>
 
-   <string name="users_who_liked_title">Azok az emberek, akiknek tetszett</string>
-   <string name="notifications_title">Értesítések</string>
-   <string name="accept_request">elfogadta a kérését</string>
-   <string name="reject_request">elutasította a kérését</string>
-   <string name="comment">megjegyzést írt ehhez:</string>
-   <string name="send_request">„barát” kérést küldött Önnek</string>
-
-   <string name="post_delete">Poszt törlése</string>
-   <string name="post_delete_caption">Biztos, hogy törli a posztot?</string>
-   <string name="post_delete_confirm">Igen, töröljük!</string>
-
-   <string name="photo_delete">Fénykép törlése</string>
-   <string name="photo_delete_caption">Biztos, hogy törli a fényképet?</string>
-   <string name="photo_edit_error">Nem sikerült módosítani a fotót</string>
-
-   <string name="bucket_delete">Bakancslistatétel törlése</string>
-   <string name="bucket_delete_caption">Biztos, hogy törli a bakancslistatételt?</string>
-
-   <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; és &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
-   <string name="feed_header_many" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; és &lt;b&gt;%3$s barát&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
-
-   <string name="player_error_header">Lejátszási hiba</string>
-   <string name="player_error">Sajnos nem tudjuk most lejátszani a videót. Ellenőrizze a kapcsolatot, és próbálja újra.</string>
-
    <string name="retry">Újra</string>
-
-   <string name="no_notifications">Még nincs értesítése</string>
-   <string name="notification_message_friend_accepted">%1$s elfogadta a „barát” kérését</string>
-   <string name="notification_message_friend_request">%1$s „barát” kérést küldött Önnek</string>
-   <string name="notification_message_tagged_on_photo">%1$s {1}megjelölte Önt a fényképen</string>
+   <string name="cancel">Mégse</string>
 
    <string name="error_webview_no_internet">Nincs internetkapcsolat. Javítsa ki a hibát, és töltse be újból az oldalt.</string>
    <string name="error_webview_default">Csatlakozási probléma. Próbálja meg újból betölteni az oldalt.</string>
 
-   <string name="notifaction_new">Új</string>
-   <string name="notifaction_older">Korábbi</string>
-
-   <string name="all">Mind</string>
-   <string name="you">Ön</string>
-
-   <string name="likes_count_one">%1$d embernek tetszik</string>
-   <string name="likes_count_other">%1$d embernek tetszik</string>
-
-   <string name="comments_count_one">%1$d megjegyzés</string>
-   <string name="comments_count_other">%1$d megjegyzés</string>
-
-   <string name="feed_edit_item">Szerkesztés</string>
-   <string name="feed_delete_item">Törlés</string>
-
-   <string name="liked_foreign">kedvelte ezt:</string>
-   <string name="comment_foreign">megjegyzést írt ehhez:</string>
-
-   <string name="no_feed">Itt fogja látni barátjának tevékenységét.\n Barátok kereséséhez kattintson az alábbi hivatkozásra</string>
-   <string name="search_friends">Barátok keresése</string>
-
-   <string name="feed_share_post">Poszt megosztása</string>
-   <string name="feed_share_photos">Fénykép megosztása</string>
-   <string name="feed_view_profile_btn">Profil megtekintése</string>
-   <string name="start_searching">Kezdje el a beírást a keresés elkezdéséhez</string>
-
-   <string name="people_liked_one">%1$s embernek tetszik</string>
-   <string name="people_liked_other">%1$s embernek tetszik</string>
-
-   <string name="terms_and_conditions_title">Használati feltételek</string>
-   <string name="terms_and_conditions_subtitle">A folytatáshoz olvassa el és fogadja el az alábbi feltételeket</string>
-   <string name="terms_and_conditions_checkbox">Kattintson ide a feltételek elfogadásához</string>
-   <string name="terms_and_conditions_accept">Feliratkozás</string>
-   <string name="terms_and_conditions_reject">Most nem</string>
+   <string name="feed_share_post_button">Ossz meg egy képet, videót vagy ötletet</string>
 
    <string name="camera">Kamera</string>
+   <string name="library">Könyvtár</string>
+   <string name="camera_take_a_picture">Készíts képet</string>
+   <string name="camera_record_a_video">Vegyél fel egy videót</string>
    <string name="add_from_facebook">Hozzáadás a Facebookból</string>
 
    <string name="photos_selected">%1$d kiválasztva</string>
 
-   <string name="no_friends">Még nincsenek barátai ebben a listában</string>
-   <string name="feed_add_friends">Barátok hozzáadása</string>
-   <string name="all_friends">Az összes barát</string>
-   <string name="accept_all">Az összes elfogadása</string>
-   <string name="request_count_desc">%1$d bejövő „barát” kérése van</string>
+   <string name="media_picker_error_contents">A(z) %1$s betöltése sikertelen.</string>
+   <string name="media_picker_gallery_action">médiagaléria</string>
+   <string name="media_picker_fb_albums_actions">facebook-albumok</string>
+   <string name="media_picker_fb_photos_actions">facebook-képek</string>
+   <string name="media_picker_limit_reached">Max. %1$s képet választhat</string>
 
-   <string name="user_mutual_friends">Közös barátok</string>
-   <string name="no_mutual_friends">Nincsenek közös barátai</string>
-
-   <string name="photo_limitation_message">Legfeljebb %1$d fényképet válasszon</string>
-   <string name="pending">Függőben...</string>
-
-   <string name="back">Vissza</string>
    <string name="logout_component">Kijelentkezés</string>
-   <string name="start_typing_name">Kezdje el beírni a nevet</string>
-
-   <string name="multiple_dates">Több dátumot, %1$s ...</string>
-
-   <string name="tag_photo">megjelölte Önt itt:</string>
-
-   <string name="photo_tag_title">Koppintson bárhova az emberek megjelöléséhez</string>
-   <string name="profile_friend_formatter">%1$d barát</string>
-   <string name="profile_friends_formatter">%1$d barát</string>
-
-   <string name="send_feedback">Visszajelzés küldése</string>
-   <string name="working_hard">Keményen dolgozunk azon, hogy a DreamTrips még jobb legyen. Kérjük, segítse a fejlődésünket.</string>
-   <string name="feedback_message_hint">Írja be ide az üzenetet</string>
-   <string name="message_can_not_be_empty">Az üzenet nem lehet üres</string>
-   <string name="feedback_has_been_sent">Visszajelzésének elküldése megtörtént. Köszönjük!</string>
-   <string name="feedback_send_btn">Küldés</string>
-   <string name="feedback_select_category">Kategória választás</string>
-   <string name="feedback_add_photos">Fénykép hozzáadása</string>
-   <string name="feedback_could_not_load_attachment">Nem sikerült betölteni a mellékletet</string>
-   <string name="feedback_attachment_failed_item_retry">Újra</string>
-   <string name="feedback_attachment_failed_item_remove">eltávolít</string>
-   <string name="feedback_fullscreen_attachments_format">%1$d/%2$d</string>
-   <string name="feedback_fullscreen_attachments_remove">eltávolít</string>
 
    <string name="years_ago">%1$d évvel ezelőtt</string>
-   <string name="invitation_template">Sablon kiválasztása</string>
 
    <string name="settings">Beállítások</string>
-   <string name="notifications">Értesítések</string>
-   <string name="general">Általános</string>
 
-   <string name="what_notifications_get">Milyen értesítéseket kaphat?</string>
-
-   <string name="settings_distance_units">Távolság mértékegysége</string>
-   <string name="settings_friend_requests">„Barát” kérések</string>
-   <string name="settings_new_message">Új üzenet</string>
-   <string name="settings_photo_tagging">Fénykép címkézése</string>
-
-   <string name="abbreviated_miles">mérföld</string>
-   <string name="abbreviated_kilometers">kilométer</string>
-   <string name="show_distance_in">Távolság mértékegysége:</string>
-   <string name="settings_kilometers">Kilométer</string>
-   <string name="settings_miles">Mérföld</string>
-
-   <string name="save_changes_before_proceed">Menti a módosításokat a folytatás előtt?</string>
-   <string name="discard">Elvetés</string>
-
-   <string name="error_fail_to_load_success_stories">Siker történetek betöltése sikertelen</string>
-   <string name="error_fail_to_like_success_story">Siker történet like-olása sikertelen</string>
-   <string name="error_fail_to_unlike_success_story">Siker történet nem-likeolása sikertelen</string>
-   <string name="error_fail_to_update_settings">Beállítások frissítése sikertelen</string>
-   <string name="error_fail_to_load_categories">Kategória betöltés sikertelen</string>
-   <string name="error_fail_to_load_suggestions">Javaslatok betöltése sikertelen</string>
-   <string name="error_fail_to_load_popular_bl">Népszerű bakancslista tételek betöltése sikertelen</string>
-   <string name="error_fail_to_load_circles">körök betöltése sikertelen</string>
-   <string name="error_fail_to_load_feed">hírfolyam betöltése sikertelen</string>
-   <string name="error_fail_to_load_item_details">Tétel részletek betöltése sikertelen</string>
    <string name="error_fail_to_create_post">poszt létrehozás sikertelen</string>
    <string name="error_fail_to_update_post">poszt frissítés sikertelen</string>
    <string name="error_fail_to_delete_post">poszt törlés sikertelen</string>
-   <string name="error_fail_to_load_comments">Megjegyzés betöltés sikertelen</string>
-   <string name="error_fail_to_post_comment">megjegyzés posztolása sikertelen</string>
-   <string name="error_fail_to_delete_comment">Megjegyzés törlése sikertelen</string>
-   <string name="error_fail_to_edit_comment">Megjegyzés szerkesztése sikertelen</string>
    <string name="error_fail_to_load_flag_reason">Megjelölt okok betöltése sikertelen</string>
    <string name="error_fail_to_flag_item">Tétel megjelölés sikertelen</string>
-   <string name="error_fail_to_accept_friend_request">Barát kérés elfogadása sikertelen</string>
-   <string name="error_fail_to_reject_friend_request">Barát kérések elutasítása sikertelen</string>
-   <string name="error_fail_to_hide_friend_request">Barát kérés eltüntetés sikertelen</string>
-   <string name="error_fail_to_cancel_friend_request">Barát kérések visszavonása sikertelen</string>
-   <string name="error_failed_to_send_friend_request">Barát kérés elküldése sikertelen</string>
-   <string name="error_failed_to_load_friend_requests">Barát kérések betöltése sikertelen</string>
-   <string name="error_failed_to_load_friends">Barátok betöltése sikertelen</string>
-   <string name="error_failed_to_unfriend_user">Felhasználó barátság törlése sikertelen</string>
-   <string name="error_failed_to_add_user_to_circle">Felhasználó körhöz adása sikertelen</string>
-   <string name="error_failed_to_remove_user_from_circle">Felhasználó eltávolítása a körből sikertelen</string>
-   <string name="error_failed_to_load_people_who_liked">Like-oló emberek betöltése sikertelen</string>
-   <string name="error_failed_to_load_mutual_friends">Közös barátok betöltése sikertelen</string>
-   <string name="error_failed_to_load_notifications">Értesítések betöltése sikertelen</string>
-   <string name="error_failed_to_accept_terms_and_conditions">Szerződési feltételek elfogadása sikertelen</string>
-   <string name="error_failed_to_load_member_images">Tagok képeinek betöltése sikertelen</string>
-   <string name="error_failed_to_load_inspire_images">Ösztönző képek betöltése sikertelen</string>
-   <string name="error_failed_to_delete_image">Kép törlés sikertelen</string>
-   <string name="string_failed_to_load_trips">Utak betöltése sikertelen</string>
-   <string name="error_failed_to_load_activities">Tevékenységek betöltése sikertelen</string>
-   <string name="error_failed_to_load_users">Felhasználók betöltése sikertelen</string>
-   <string name="error_fail_to_delete_tag">Megjelölés törlése sikertelen</string>
-   <string name="error_fail_to_load_feedback_reasons">Visszajelzések betöltése sikertelen</string>
-   <string name="error_fail_to_send_feedback">Visszajelzés küldése sikertelen</string>
-   <string name="error_fail_to_load_timeline">Idővonal betöltés sikertelen</string>
-   <string name="error_fail_to_get_invitations">Meghívások megkapása sikertelen</string>
-   <string name="error_fail_to_invitation_templates">Meghívás sablon megszerzés sikertelen</string>
-   <string name="error_fail_to_get_preview_for_template">Sablon előnézet megtekintés sikertelen</string>
-   <string name="error_fail_to_locales">Helyek betöltése sikertelen</string>
-   <string name="error_fail_to_login">Belépés sikertelen</string>
-   <string name="error_fail_to_load_profile_info">Fiók infó betöltése sikertelen</string>
-   <string name="error_fail_to_update_avatar">Logó frissítése sikertelen</string>
-   <string name="error_fail_to_update_cover_photo">Borítókép frissítés sikertelen</string>
-   <string name="error_fail_to_load_videos">Videók betöltése sikertelen</string>
-   <string name="error_fail_to_like_item">Tétel like-olása sikertelen</string>
-   <string name="error_fail_to_unlike_item">Tétel vissza like-olása sikertelen</string>
-   <string name="error_fail_to_load_documents">Nem sikerült betölteni a dokumentumokat</string>
-   <string name="tag_people">Emberek megjelölése</string>
 
-   <string name="uploading_post_status_progress_singular">Fotó feltöltése ...</string>
-   <string name="uploading_post_status_progress_plural">%1$d kép feltöltés ...</string>
-   <string name="uploading_post_status_paused">Feltöltés szünetel</string>
-   <string name="uploading_post_status_waiting">Várakozik</string>
-   <string name="uploading_post_status_failed_connection">A kapcsolat megszakadt</string>
-   <string name="uploading_post_status_uploaded">Hozzászólás sikeresen feltöltve!</string>
-   <string name="uploading_post_time_left_posting">Közzététel ...</string>
-   <string name="uploading_post_time_time_left">elhagyta</string>
-   <string name="uploading_post_time_left_seconds">m</string>
-   <string name="uploading_post_time_left_minutes">p</string>
-   <string name="uploading_post_time_left_hours">ó</string>
-   <string name="uploading_post_time_left_more_than_one_day">Több mint 1 nap ...</string>
-   <string name="uploading_post_cancel_upload_message">Feltöltés visszavonása?</string>
-   <string name="uploading_post_cancel_upload_positive_button">Igen</string>
-   <string name="uploading_post_cancel_upload_negative_button">Nem</string>
-
-   <string name="update">Frissítés</string>
    <string name="add_location">Hely hozzáadás</string>
    <string name="find_your_location">Helyzet megtalálása</string>
 
    <string name="who_is_this">Ki ez?</string>
-   <string name="dream_trips_points">DreamTrip pontok:</string>
-   <string name="rovia_bucks">Rovia Bucks:</string>
-
-   <string name="suggested_photo">Új képeid vannak</string>
-   <string name="suggested_photo_selected_one">%1$d fotó kiválasztva</string>
-   <string name="suggested_photo_selected_multiple">%1$d képek kiválasztva</string>
-   <string name="share_recent_photos">Képek megosztása</string>
-
-   <string name="legal_terms">Jogi feltételek</string>
 
    <string name="location_picker_title">Helyzet kiválasztása</string>
    <string name="location_picker_no_play_services">Sajnáljuk, de annak érdekében, hogy lásd a térképet, telepítened kell a Google Play szolgáltatásait a készülékedre.</string>
    <string name="location_picker_could_not_get_location">Nem található a jelenlegi helyzeted</string>
 
-   <string name="request_incoming_long">Bejövő kérések</string>
-   <string name="request_outgoing_long">Kimenő kérések</string>
-
-   <string name="add_title">Cím hozzáadás</string>
    <string name="flag_sent_success_msg">A tartalom meg lett jelölve</string>
 
    <string name="location_name_length_message">A helyszín neve ne legyen hosszabb 255 karakternél.</string>
-
-   <string name="featured_trip">KIEMELT ÚT</string>
-   <string name="sold_out_trip">Elfogyott</string>
-
-   <string name="podcasts">Podcastok</string>
-   <string name="delete_cached_podcast_title">Podcast</string>
-   <string name="delete_cached_podcast_text">Biztos, hogy törli a podcastot a helyi gyorsítótárból?</string>
-   <string name="cancel_cached_podcast_title">Podcast</string>
-   <string name="cancel_cached_podcast_text">Biztos, hogy megszakítja a fájl letöltését?</string>
-   <string name="audio_app_not_found_exception">Nem talált hangot lejátszó alkalmazást</string>
-   <string name="error_fail_to_load_podcast">Podcast betöltés sikertelen</string>
-   <string name="podcasts_button_resume">Visszatérés</string>
-   <string name="podcasts_button_pause">Szünet</string>
-   <string name="podcasts_button_stop">Stop</string>
 
    <string name="app_update_alert_title">Elérhető frissítés</string>
    <string name="app_update_alert_neutral_button">Most nem</string>
@@ -545,28 +145,11 @@
    <string name="app_update_alert_optional_update_message">A szoftverfrissítések készen állnak a DreamTrips-alkalmazáshoz. A továbbfejlesztett élményért még a következő időpont előtt telepítsd: %1$s.</string>
    <string name="app_update_alert_force_update_message">A szoftverfrissítések készen állnak a DreamTrips-alkalmazáshoz. A frissítés telepítése mindössze néhány percet vesz igénybe.</string>
 
-   <string name="min">perc</string>
    <string name="post_hint_with_hashtag">Mondj valamit, add hozzá #hashtags</string>
    <string name="add_text">Szöveg hozzáadás</string>
-   <string name="action_search_by_hashtag">Keresés hashtag alapján</string>
-   <string name="error_fail_to_load_feeds_by_hashtag">Nem sikerült betölteni hashtag alapján</string>
-   <string name="no_feed_by_hashtag">Nem találhatók posztok</string>
-
-   <string name="friends_loading_info_text">Barátok betöltése</string>
-
-   <string name="hashtag_one_post">%1$d poszt</string>
-   <string name="hashtag_multiple_posts">%1$d posztok</string>
 
    <string name="error_webview_secure_connection">Sajnáljuk, de a DreamTrips alkalmazás nem tudott biztonságos kapcsolatot létesíteni.\nFeljegyeztük ezt a problémát és hamarosan megnézzük.\n\nKérjük, lépj kapcsolatba az ügyfélszolgálattal gyorsabb megoldásért.</string>
 
-   <string name="translate">Fordítás</string>
-   <string name="translated_from">Lefordítva %1$s -ról</string>
-
-   <string name="error_fail_to_translate_text">Nem sikerült lefordítani a szöveget</string>
-
-   <string name="book_it_disabled">DreamTrips klubtagnak kell lenni az út foglalásához. </string>
-
-   <string name="error_fail_to_load_filters">Sajnáljuk, nem sikerült betölteni a szűrőket</string>
    <string name="flag_content_message">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt a tartalmat </string>
    <string name="try_again">Próbálja újra</string>
 
@@ -574,17 +157,16 @@
    <string name="offline_warning_dialog_message">A hozzáférés korlátozott</string>
    <string name="offline_indicator_description">Nincs internetkapcsolat</string>
 
-   <string name="merchant_message_text" formatted="false">Gratulálunk! %1$s DreamTrips pontot szereztél @ %2$s , %3$s</string>
+   <string name="merchant_message_text">Gratulálunk! %1$s DreamTrips pontot szereztél @ %2$s , %3$s</string>
 
    <string name="beta_label">Béta</string>
 
-   <string name="documents">dokumentumok</string>
-   <string name="documents_empty_text">Dokumentumokat nem lehet betölteni jelenleg.</string>
+   <string name="picker_two_media_type_error">Válasszon ki képeket vagy egy videót</string>
+   <string name="picker_photo_limit">Max. %1$d képet választhat ki</string>
+   <string name="picker_photo_limit_plural">Max. %1$d képet választhat ki</string>
+   <string name="picker_video_limit">Max. %1$d videót választhat ki</string>
+   <string name="picker_video_limit_plural">Max. %1$d videót választhat ki</string>
+   <string name="picker_video_length_limit">Nem választhatsz ki %1$d másodpercnél hosszabb videókat</string>
 
-   <string name="show_original">Eredeti mutatása</string>
-   <string name="error_fail_to_translate_bucket_item">Bakancslista tétel fordítása sikertelen</string>
-
-   <string name="n_friends_accepted">%1$d ismerős elfogadva.</string>
-   <string name="friends_will_appear_momentarily">Rövid ideig az Ismerőseim között fognak megjelenni.</string>
-
+   <string name="photo_strip_read_storage_permission_explanation">A tárhely beolvasásához és médiatartalom ajánlásához engedélyre van szükség</string>
 </resources>

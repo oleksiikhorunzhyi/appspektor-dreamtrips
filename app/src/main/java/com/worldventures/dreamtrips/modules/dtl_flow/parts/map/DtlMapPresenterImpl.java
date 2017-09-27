@@ -193,7 +193,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    public void navigateToRatingList(Merchant merchant) {
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
    }
 
    private boolean isNeedShowBlockingProgress(MerchantsAction action) {

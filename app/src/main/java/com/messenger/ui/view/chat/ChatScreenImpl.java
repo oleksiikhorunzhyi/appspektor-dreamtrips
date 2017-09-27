@@ -3,7 +3,6 @@ package com.messenger.ui.view.chat;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -46,8 +45,7 @@ import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 
 import java.util.List;
 
@@ -59,13 +57,11 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath> implements ChatScreen {
 
    private static final int THRESHOLD = 5;
 
-   @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject ChatTimestampInflater chatTimestampInflater;
    @Inject ChatTimestampFormatter chatTimestampFormatter;
 
@@ -84,9 +80,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
    private ChatAdapter adapter;
    private LinearLayoutManager linearLayoutManager;
    private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
-
-   private Handler handler = new Handler();
-   private final Runnable openPikerTask = this::openPicker;
 
    private ProgressDialog progressDialog;
    private FlaggingView flaggingView;
@@ -150,13 +143,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
       scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
-      initPhotoPicker();
-
-      messageEditText.setOnFocusChangeListener((view, hasFocus) -> {
-         if (hasFocus) photoPickerLayoutDelegate.hidePicker();
-      });
-      photoPickerLayoutDelegate.disableEditTextUntilPickerIsShown(messageEditText);
-
       // Mosby's presenter is created in super.onAttachedToWindow()
       // and restore instace state is called before onAttachedToWindow() also.
       // Make sure to have the view prepared before this.
@@ -174,17 +160,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
       recyclerView.setAdapter(adapter = createAdapter(chatTimestampInflater));
       recyclerView.setItemAnimator(new TimestampItemAnimator(chatTimestampInflater));
       inflateToolbarMenu(toolbar);
-   }
-
-   @Override
-   protected void onDetachedFromWindow() {
-      handler.removeCallbacks(openPikerTask);
-      try {
-         photoPickerLayoutDelegate.hidePicker();
-      } catch (Exception e) {
-         Timber.d(e, "Error while rotate screen");
-      }
-      super.onDetachedFromWindow();
    }
 
    protected ChatAdapter createAdapter(ChatTimestampInflater chatTimestampInflater) {
@@ -447,28 +422,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
       adapter.refreshTimestampView(position);
    }
 
-   ////////////////////////////////////////
-   /////// Photo picking
-   ////////////////////////////////////////
-
-   //TODO Feb 4, 2016 Refactor this part after new picker implemented
-   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
-      @Override
-      public void onClosed() {
-         MarginLayoutParams params = (MarginLayoutParams) inputHolder.getLayoutParams();
-         params.bottomMargin = 0;
-         inputHolder.setLayoutParams(params);
-      }
-
-      @Override
-      public void onOpened() {
-         messageEditText.clearFocus();
-         MarginLayoutParams params = (MarginLayoutParams) inputHolder.getLayoutParams();
-         params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.picker_panel_height);
-         inputHolder.setLayoutParams(params);
-      }
-   };
-
    ///////////////////////////////////////////////////////////////////////////
    // Location picking
    ///////////////////////////////////////////////////////////////////////////
@@ -482,13 +435,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
    // Photo picking
    ///////////////////////////////////////////////////////////////////////////
 
-   private void initPhotoPicker() {
-      photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
-   }
-
-   private void openPicker() {
-      //noinspection all
-      photoPickerLayoutDelegate.showPicker(true, getResources().getInteger(R.integer.messenger_pick_image_limit));
+   @Override
+   public void showPicker() {
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(pickerAttachment -> getPresenter().imagesPicked(pickerAttachment));
+      mediaPickerDialog.show(getResources().getInteger(R.integer.messenger_pick_image_limit));
    }
 
    @Override

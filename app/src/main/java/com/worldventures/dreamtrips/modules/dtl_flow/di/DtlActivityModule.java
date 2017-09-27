@@ -1,9 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
-import com.techery.spares.adapter.expandable.BaseExpandableAdapter;
-import com.techery.spares.adapter.expandable.BaseExpandableDelegateAdapter;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
@@ -37,6 +33,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstScanReceip
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
@@ -75,10 +72,10 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartScreenI
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
       injects = {
+            DtlActivity.class,
             DtlLocationsSearchScreenImpl.class,
             DtlLocationsSearchPresenterImpl.class,
             DtlLocationsScreenImpl.class,
@@ -134,8 +131,6 @@ import dagger.Provides;
             DtlThrstThankYouScreenPresenter.class,
             MerchantWorkingHoursAdapter.class,
             ThinMerchantsAdapter.class,
-            BaseExpandableAdapter.class,
-            BaseExpandableDelegateAdapter.class,
             DtlReviewsPresenterImpl.class,
             DtlReviewsScreenImpl.class,
             DtlCommentReviewScreenImpl.class,
@@ -154,11 +149,4 @@ import dagger.Provides;
       },
       complete = false, library = true)
 public class DtlActivityModule {
-
-   public static final String DTL = "DTL";
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideDtlComponent() {
-      return new ComponentDescription(DTL, R.string.dtl_local, R.string.dtl_local, R.drawable.ic_dtl, true, null);
-   }
 }

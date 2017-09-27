@@ -110,7 +110,7 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
     public void navigateToListReview(String message) {
         try{
             //TODO add merchant
-            Path path = new DtlReviewsPath(null, message);
+            Path path = new DtlReviewsPath(FlowUtil.currentMaster(getContext()), null, message);
             History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
             historyBuilder.pop();
             historyBuilder.push(path);

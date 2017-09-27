@@ -60,6 +60,10 @@ android {
          dimension "stream"
          applicationIdSuffix = 'smartcard'
       }
+      smartcardemulmode {
+         dimension "stream"
+         applicationIdSuffix = 'smartcard'
+      }
       smartcardnxtid {
          dimension "stream"
          applicationIdSuffix = 'smartcard'
@@ -141,14 +145,10 @@ android {
    }
    dexOptions {
       javaMaxHeapSize "4g"
-      keepRuntimeAnnotatedClasses false
       preDexLibraries = project.ext.androidConfig.preDex
    }
    lintOptions {
-      disable 'MissingTranslation' // otherwise generated strings fucks you up
-      abortOnError false
-      checkReleaseBuilds false
-      // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
+      disable 'MissingTranslation', 'RestrictedApi', 'GradleCompatible'
    }
    packagingOptions {
       exclude 'LICENSE.txt'
@@ -189,6 +189,10 @@ android {
       social {
          test.java.srcDirs += 'src/testSocial/java'
       }
+      main.res.srcDirs += 'src/main/resSocial'
+      main.res.srcDirs += 'src/main/resMessenger'
+      main.res.srcDirs += 'src/main/resSession'
+      main.res.srcDirs += 'src/main/resWallet'
    }
 
 }
@@ -223,7 +227,6 @@ tasks.whenTaskAdded { task ->
 tasks.withType(JavaCompile) {
    options.compilerArgs << "-Xmaxerrs" << "400"
 }
-
 // configuration & dependencies
 
 def deps = project.ext.moduleDependencies
@@ -236,6 +239,7 @@ configurations.all {
    }
    exclude group: 'xpp3', module: 'xpp3'
    exclude group: 'org.jetbrains', module: 'annotations-java5'
+   exclude group: 'org.jetbrains', module: 'annotations'
 }
 
 repositories {
@@ -252,9 +256,7 @@ dependencies {
       it.value != deps.di.daggerProguard
    })
    deps.applyAll(owner, deps.data)
-   deps.applyAll(owner, deps.networking.findAll {
-      it.value != deps.networking.apiMonolith
-   })
+   deps.applyAll(owner, deps.networking)
    deps.applyAll(owner, deps.smartcard)
    deps.applyAll(owner, deps.services)
    deps.applyAll(owner, deps.media)

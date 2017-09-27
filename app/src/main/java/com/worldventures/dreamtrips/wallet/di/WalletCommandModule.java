@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.di;
 
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
@@ -30,7 +30,6 @@ import com.worldventures.dreamtrips.wallet.service.command.SetPinEnabledCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.CreateNxtSessionCommand;
@@ -54,9 +53,15 @@ import com.worldventures.dreamtrips.wallet.service.command.record.UpdateRecordCo
 import com.worldventures.dreamtrips.wallet.service.command.reset.RemoveSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.SaveDisplayTypeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SmartCardFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.service.command.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
@@ -70,6 +75,7 @@ import dagger.Module;
             UpdateProfileModule.class
       },
       injects = {
+            SmartCardUploaderyCommand.class,
             GetCompatibleDevicesCommand.class,
             RecordListCommand.class,
             SecureRecordCommand.class,
@@ -79,7 +85,6 @@ import dagger.Module;
             DeleteRecordCommand.class,
             SyncSmartCardCommand.class,
             SyncRecordsCommand.class,
-            SmartCardAvatarCommand.class,
             SetupUserDataCommand.class,
             DefaultRecordIdCommand.class,
             ActivateSmartCardCommand.class,
@@ -99,6 +104,10 @@ import dagger.Module;
             GetCustomerSupportContactCommand.class,
             SmartCardFeedbackCommand.class,
             CustomerSupportFeedbackCommand.class,
+            SaveDisplayTypeCommand.class,
+            GetDisplayTypeCommand.class,
+            RestoreDefaultDisplayTypeCommand.class,
+            ValidateDisplayTypeDataCommand.class,
             CreateRecordCommand.class,
             AssociateCardUserCommand.class,
             WizardCompleteCommand.class,
@@ -130,6 +139,7 @@ import dagger.Module;
             SwitchOfflineModeCommand.class,
             SetPinEnabledCommand.class,
             GetDocumentsCommand.class,
+            PaymentFeedbackCommand.class,
             AddDummyRecordCommand.class,
       },
       complete = false, library = true)

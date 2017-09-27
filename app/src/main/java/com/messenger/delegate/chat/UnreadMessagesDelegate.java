@@ -20,13 +20,13 @@ public class UnreadMessagesDelegate {
 
    private final MessageDAO messageDAO;
    private final ConversationsDAO conversationsDAO;
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final CreateChatHelper createChatHelper;
    private Observable<DataConversation> conversationObservable;
    private Observable<Chat> chatObservable;
 
    @Inject
-   UnreadMessagesDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder) {
+   UnreadMessagesDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder sessionHolder) {
       this.createChatHelper = createChatHelper;
       this.messageDAO = messageDAO;
       this.conversationsDAO = conversationsDAO;
@@ -44,6 +44,7 @@ public class UnreadMessagesDelegate {
       this.chatObservable = createChatHelper.createChat(conversationId).replay(1).autoConnect();
    }
 
+   // // TODO: 7/10/17 unused method
    public void tryMarkAsReadMessage(DataMessage lastMessage) {
       if (MessageHelper.isUserMessage(lastMessage) && lastMessage.getStatus() == MessageStatus.READ) return;
       conversationObservable.take(1)
@@ -51,7 +52,7 @@ public class UnreadMessagesDelegate {
             .flatMap(chat -> chat.sendReadStatus(lastMessage.getId()))
             .flatMap(msgId -> markMessagesAsRead(lastMessage))
             .flatMap(this::changeUnreadCounter)
-            .subscribe(count -> Timber.d("%s messages was marked"), throwable -> Timber.e(throwable, "Error while marking message as read"));
+            .subscribe(count -> Timber.d("%s messages was marked", count), throwable -> Timber.e(throwable, "Error while marking message as read"));
    }
 
    private Observable<Integer> changeUnreadCounter(int markCount) {

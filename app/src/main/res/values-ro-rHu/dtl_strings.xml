@@ -27,6 +27,7 @@
    <string name="dtl_perks_description">Beneficii</string>
    <string name="dtl_description">Descriere</string>
    <string name="ok">OK</string>
+   <string name="continue_option">Continuați</string>
    <string name="permission_camera_rationale"> Este nevoie de acces la camera foto pentru a putea detecta </string>
    <string name="permission_location_rationale">Este nevoie de acces la locație pentru a putea detecta </string>
    <string name="no_camera_permission">Această aplicație nu poate funcționa deoarece nu are acces la camera foto. Aplicația se va închide.</string>
@@ -48,7 +49,7 @@
    <string name="dtl_earn">Câștigați</string>
    <string name="dtl_dt_points">%1$d puncte DreamTrips Points</string>
    <string name="suggest_merchant">Sugerați comerciant</string>
-   <string name="suggest_merchant_title">Instrumente locale DT</string>
+   <string name="dt_local_tools">Instrumente locale DT</string>
    <string name="dtl_details_share_title">Voi câștiga puncte Dreamtrips în %1$s</string>
    <string name="dtl_wait_for_receipt">Așteptați… Se încarcă nota de plată</string>
    <string name="dtl_wait_for_earn">Așteptați… Se colectează punctele</string>
@@ -79,7 +80,7 @@
    <string name="merchant_working_hours_caption">ore</string>
    <string name="filter_amenities_error_caption">Facilitățile nu au putut fi încărcate de data aceasta</string>
    <string name="merchants_no_results">Nu a fost găsit niciun rezultat \n Încercați să vă modificați filtrele sau introduceți o locație nouă.</string>
-   <string name="merchants_no_results_offers_only">Ne pare rău, deocamdată nu sunt oferte disponibile în zona dvs.\n Dezactivați ofertele pentru a vizualiza restaurante din apropiere.</string>
+   <string name="merchants_no_results_offers_only">Ne pare rău, deocamdată nu sunt oferte disponibile în zona dvs.</string>
    <string name="dtl_try_again">Încercați din nou</string>
    <string name="dtl_load_more">Încărcați mai mult</string>
 
@@ -88,7 +89,59 @@
    <string name="dtl_load_merchant_error_caption">Rezultatele nu au putut fi încărcate în acest moment.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Mâncare și băuturi</string>
+   <string name="dtlt_search_hint">Dining</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filtre</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_dining">Dining</string>
+   <string name="filter_merchant_entertainment">Divertisment</string>
+   <string name="filter_merchant_spas">Centre SPA</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">Evaluează și scrie o recenzie</string>
+   <string name="first_reviews_text">Fiți primul care evaluează această locație</string>
+   <string name="format_review_text">%1$d Recenzie</string>
+   <string name="format_reviews_text">%1$d Recenzii</string>
+   <string name="reviews_text">Recenzii</string>
+   <string name="without_reviews_text">0 Recenzii</string>
+   <string name="years_ago_text">acum %1$d ani</string>
+   <string name="months_ago_text">acum %1$d luni</string>
+   <string name="weeks_ago_text">acum %1$d săptămâni</string>
+   <string name="days_ago_text">acum %1$d zile</string>
+   <string name="hours_ago_text">acum %1$d ore</string>
+   <string name="min_ago_text">%%1$d%1$d min în urmă</string>
+   <string name="sec_ago_text">%1$d sec în urmă</string>
+   <string name="total_reviews_text"> Citește toate recenziile (%1$d)</string>
+   <string name="to_be_first_reviews">Fii primul care adaugă o recenzie</string>
+   <string name="tvVerifiedReview">Cumpărător verificat</string>
+   <string name="review_comment_minor_letter">Evaluarea dvs. trebuie să fie de cel puțin %1$dcaractere.</string>
+   <string name="review_comment_major_letter">Evaluarea dvs. trebuie să fie mai scurtă de %1$dcaractere.</string>
+   <string name="review_comment_discard_changes">Sigur dorești să ștergi această recenzie?</string>
+   <string name="titleReview">Scrie o recenzie</string>
+   <string name="hint_comment_review">Cum au fost deservirea, atmosfera, preparatele, etc.?</string>
+   <string name="snack_review_success">Recenzia ta a fost trimisă și va fi postată după aprobare.</string>
+   <string name="menu_post">Postați</string>
+   <string name="tv_read_more">Citiți mai multe</string>
+   <string name="action_add_review">Scrie o Recenzie</string>
+   <string name="text_awaiting_approval_review">Ai o recenzie nouă pentru această locație care nu a fost aprobată .\n După aprobare, vei putea evalua din nou această locație.</string>
+   <string name="comment_review_title_sorry">Ne pare rău</string>
+   <string name="comment_review_profanity_text">\"Recenzia conține vulgaritate, prin urmare nu a putut fi trimisă. Editați recenzia și încercați din nou.\"</string>
+   <string name="comment_review_no_internet_message">A intervenit o problemă de comunicare cu serverele DreamTrips. Încercați din nou.</string>
+   <string name="comment_review_no_internet_confirm_text">Încercați din nou</string>
+   <string name="comment_review_no_internet_cancel_text">Anulați</string>
+   <string name="comment_review_error_unknown_title">Ne pare rău</string>
+   <string name="comment_review_error_unknown_text">A intervenit o problemă de comunicare cu serverele DreamTrips. Încercați din nou.</string>
+   <string name="comment_review_error_unknown_confirm">Încercați din nou</string>
+   <string name="comment_review_error_unknown_cancel">Anulați</string>
+   <string name="comment_review_error_limited_reached_content">Momentan, toate serverele noastre sunt ocupate. Vă rugăm să încercați din nou într-un minut</string>
+   <string name="comment_review_unrecognized_error_content">Ups, am stricat ceva Lucrăm la remedierea problemei. Încercați din nou mâine.</string>
+   <string name="comment_review_confirm_text">OK</string>
+   <string name="comment_review_error_limited_reached_confirm">OK</string>
+   <string name="comment_review_unrecognized_error_confirm">OK</string>
+
+   <string name="flag_text_menu">Marcați</string>
+   <string name="review_min_char">min %1$d </string>
+   <string name="review_max_char">max. %1$d</string>
+   <string name="input_major_limit">Recenzia ta a atins limita. A fost prescurtată pentru a încăpea.</string>
+
+   <string name="text_add_photos_and_videos">Adăugați fotografii</string>
 </resources>

@@ -41,6 +41,7 @@ import io.techery.janet.http.HttpClient;
             VideoMicroserviceModule.class,
             CacheActionStorageModule.class,
             MobileSdkJanetModule.class,
+            AutomationQaConfigModule.class
       },
       complete = false, library = true)
 public class JanetModule {

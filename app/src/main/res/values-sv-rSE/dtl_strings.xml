@@ -86,13 +86,13 @@
    <string name="dtl_load_merchant_error_caption">Det gick inte att läsa in resultaten just nu.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Middagar</string>
+   <string name="dtlt_search_hint">Middagsbjudning</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filter</string>
    <!-- DtlFilterButton Options Merchants Type strings -->
-   <string name="filter_merchant_dining">Middagar</string>
+   <string name="filter_merchant_dining">Middagsbjudning</string>
    <string name="filter_merchant_entertainment">Underhållning</string>
-   <string name="filter_merchant_spas">Span</string>
+   <string name="filter_merchant_spas">Spas</string>
    <!-- Reviews Merchants -->
    <string name="rate_and_reviews_text">Betygsätt och ge ditt omdöme</string>
    <string name="first_reviews_text">Bli den första att recensera denna plats</string>
@@ -100,10 +100,15 @@
    <string name="format_reviews_text">%1$d Omdömen</string>
    <string name="reviews_text">Omdömen</string>
    <string name="without_reviews_text">0 Omdömen</string>
+   <string name="year_ago_text">%1$d år sedan</string>
    <string name="years_ago_text">%1$d år sedan</string>
+   <string name="month_ago_text">%1$d månader sedan</string>
    <string name="months_ago_text">%1$d månader sedan</string>
+   <string name="week_ago_text">%1$d veckor sedan</string>
    <string name="weeks_ago_text">%1$d veckor sedan</string>
+   <string name="day_ago_text">%1$d dagar sedan</string>
    <string name="days_ago_text">%1$d dagar sedan</string>
+   <string name="hour_ago_text">%1$d timmar sedan</string>
    <string name="hours_ago_text">%1$d timmar sedan</string>
    <string name="min_ago_text">%1$d minuter sedan</string>
    <string name="sec_ago_text">%1$d sekunder sedan</string>

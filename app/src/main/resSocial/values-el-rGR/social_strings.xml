@@ -9,7 +9,7 @@
    <string name="action_map">Χάρτης</string>
    <string name="member_images">Εικόνες μελών</string>
    <string name="my_images">Οι εικόνες μου</string>
-   <string name="you_should_be_here">You Should Be Here (Εδώ θα έπρεπε να είστε)</string>
+   <string name="trip_images_you_should_be_here">You Should Be Here</string>
    <string name="duration">%1$d νύχτες</string>
    <string name="inspire_me">Δώσ\' μου έμπνευση</string>
    <string name="three_sixty">Εμπειρία 360</string>
@@ -379,4 +379,6 @@
    <string name="error_failed_to_delete_video">Απέτυχε η διαγραφή του βίντεο</string>
    <string name="type_video">Βίντεο</string>
    <string name="type_post">Δημοσίευση</string>
+   <string name="forgot_member_id">Ξεχάσατε το Αναγνωριστικό Μέλους;</string>
+   <string name="forgot_password">Ξεχάσατε τον Κωδικό;</string>
 </resources>

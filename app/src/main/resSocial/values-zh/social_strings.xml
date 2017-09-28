@@ -9,7 +9,7 @@
    <string name="action_map">地图</string>
    <string name="member_images">会员图片</string>
    <string name="my_images">我的图片</string>
-   <string name="you_should_be_here">You Should Be Here</string>
+   <string name="trip_images_you_should_be_here">You Should Be Here</string>
    <string name="duration">%1$d夜</string>
    <string name="inspire_me">鼓舞我</string>
    <string name="three_sixty">360体验</string>
@@ -379,4 +379,6 @@
    <string name="error_failed_to_delete_video">删除视频失败</string>
    <string name="type_video">视频</string>
    <string name="type_post">帖子</string>
+   <string name="forgot_member_id">忘记会员ID？</string>
+   <string name="forgot_password">忘记密码？</string>
 </resources>

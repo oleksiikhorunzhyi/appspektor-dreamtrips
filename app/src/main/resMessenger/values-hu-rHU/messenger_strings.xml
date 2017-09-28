@@ -148,6 +148,9 @@
    <string name="sent_location">elküldött helyzet</string>
    <string name="unread_conversation">Beszélgetések</string>
 
+   <string name="connection_overlay_disconnected_message">A kapcsolat megszakadt</string>
+   <string name="connection_overlay_connecting_message">Csatlakozás</string>
+
    <string name="warning_no_internet_connection">Nincs internetkapcsolat</string>
 
    <string name="chat_update_proposition"><![CDATA[A csatolmány megtekintéséhez, kérjük, töltsd le a legújabb DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">alkalmazást</a>]]></string>

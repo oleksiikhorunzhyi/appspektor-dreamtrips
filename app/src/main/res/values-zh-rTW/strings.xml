@@ -58,7 +58,7 @@
    <string name="social_add_friend_yes">是</string>
    <string name="social_add_friend_no">不是</string>
    <string name="coming_soon">即將推出</string>
-   <string name="loading">載入中...</string>
+   <string name="loading">載入中…</string>
    <string name="post_visibility_public">公開</string>
    <string name="post">帖子</string>
 
@@ -98,6 +98,8 @@
    <string name="library">圖書館</string>
 
 
+
+   <string name="nav_back">回去</string>
 
    <string name="logout_component">退出</string>
 

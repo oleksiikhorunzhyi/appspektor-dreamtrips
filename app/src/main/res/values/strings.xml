@@ -171,11 +171,6 @@
    <string name="picker_video_limit_plural">You can select up to %d videos</string>
    <string name="picker_video_length_limit">You are not allowed to select videos more that %d sec length</string>
 
-   <string name="show_original">Show original</string>
-   <string name="error_fail_to_translate_bucket_item">Failed to translate bucket item</string>
-
-   <string name="n_friends_accepted">%d friends accepted</string>
-   <string name="friends_will_appear_momentarily">They will appear in My Friends momentarily.</string>
    <string name="dtl_thrst_flow_title">Thrst</string>
    <string name="order_from_menu">Order From Menu</string>
    <string name="open_order_from_menu_msg">This is a pilot feature outside of DTL &amp; will not earn you points. You will be taken to an external site that opens in a separate browser outside the app</string>

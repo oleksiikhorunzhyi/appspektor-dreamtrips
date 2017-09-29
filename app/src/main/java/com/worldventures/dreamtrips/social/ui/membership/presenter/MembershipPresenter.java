@@ -52,7 +52,7 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
       screens.add(new FragmentItem(Route.PRESENTATION_VIDEOS, context.getString(R.string.presentations)));
       screens.add(new FragmentItem(Route.ENROLL_MEMBER, context.getString(R.string.enroll_member)));
       if (showEnrollMerchant()) {
-         screens.add(new FragmentItem(Route.ENROLL_MERCHANT, context.getString(R.string.suggest_merchant_title)));
+         screens.add(new FragmentItem(Route.ENROLL_MERCHANT, context.getString(R.string.dt_local_tools)));
       }
       if (showInvite()) {
          screens.add(new FragmentItem(Route.INVITE, context.getString(R.string.invite_and_share)));

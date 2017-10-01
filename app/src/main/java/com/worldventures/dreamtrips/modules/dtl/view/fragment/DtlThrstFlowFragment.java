@@ -70,6 +70,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
 
    @Override
    public void onApiCallFailed() {
+      
    }
 
    @Override

@@ -5,16 +5,19 @@ import android.content.Context;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.TimberServiceWrapper;
+import com.worldventures.core.janet.cache.CacheResultWrapper;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.core.service.analytics.AnalyticsService;
+import com.worldventures.core.service.analytics.Tracker;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
-import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.social.ui.background_uploading.VideoMicroserviceModule;
 
 import java.net.CookieManager;
@@ -59,7 +62,7 @@ public class JanetModule {
    @Singleton
    @Provides
    AnalyticsService provideAnalyticsService(Set<Tracker> trackers) {
-      return new AnalyticsService(trackers);
+      return new AnalyticsService(trackers, BuildConfig.ANALYTICS_LOG_ENABLED);
    }
 
    @Provides(type = Provides.Type.SET)

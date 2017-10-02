@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotoTagParams;
 import com.worldventures.dreamtrips.api.photos.model.ImmutableTagPosition;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
 import com.worldventures.dreamtrips.api.photos.model.TagPosition;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.Position;
 

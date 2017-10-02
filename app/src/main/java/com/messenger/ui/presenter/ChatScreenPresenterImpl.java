@@ -49,12 +49,12 @@ import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.ExternalMapLauncher;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.PickLocationDelegate;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModelImpl;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

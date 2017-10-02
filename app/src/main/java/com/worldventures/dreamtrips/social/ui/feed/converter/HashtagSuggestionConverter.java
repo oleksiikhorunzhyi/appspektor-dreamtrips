@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.hashtags.model.HashTagExtended;
-import com.worldventures.dreamtrips.api.hashtags.model.HashTagSimple;
-import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.Hashtag;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.HashtagSuggestion;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

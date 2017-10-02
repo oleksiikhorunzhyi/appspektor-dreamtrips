@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -79,7 +79,8 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
             R.layout.adapter_item_notification_divider, item -> () -> createHeaderString(item));
       StickyHeadersItemDecoration decoration = new StickyHeadersBuilder().setAdapter(adapter)
             .setStickyHeadersAdapter(headerAdapter, false)
-            .setOnHeaderClickListener((header, headerId) -> {})// make sticky header clickable to make items below it not clickable
+            .setOnHeaderClickListener((header, headerId) -> {
+            })// make sticky header clickable to make items below it not clickable
             .setRecyclerView(statePaginatedRecyclerViewManager.stateRecyclerView)
             .build();
       statePaginatedRecyclerViewManager.addItemDecoration(decoration);

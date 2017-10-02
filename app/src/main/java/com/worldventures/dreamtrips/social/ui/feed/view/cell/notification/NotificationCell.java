@@ -6,11 +6,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -18,9 +19,8 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
@@ -45,7 +45,7 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_notification)
-public class NotificationCell extends AbstractCell<FeedItem> {
+public class NotificationCell extends BaseAbstractCell<FeedItem> {
 
    @Optional @InjectView(R.id.notification_avatar) SmartAvatarView notificationAvatar;
    @Optional @InjectView(R.id.notification_owner) TextView notificationOwner;
@@ -74,7 +74,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
       int currentAccountId = appSessionHolder.get().get().getUser().getId();
       notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources(), currentAccountId)));
-      notificationTime.setText(DateTimeUtils.getRelativeTimeSpanString(itemView.getResources(),
+      notificationTime.setText(TimeUtils.getRelativeTimeSpanString(itemView.getResources(),
             getModelObject().getCreatedAt().getTime()));
 
       if (getModelObject().getType() == Type.UNDEFINED || getModelObject().getType() == Type.POST) {

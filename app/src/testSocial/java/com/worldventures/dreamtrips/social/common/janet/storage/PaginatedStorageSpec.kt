@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.social.common.janet.storage
 
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl
-import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage
+import com.worldventures.core.janet.cache.CacheBundle
+import com.worldventures.core.janet.cache.CacheBundleImpl
+import com.worldventures.core.janet.cache.storage.PaginatedStorage
 import org.assertj.core.api.Assertions
-import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertEquals

@@ -1,11 +1,11 @@
 package com.messenger.delegate;
 
 import com.messenger.entities.DataUser;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
 import javax.inject.Inject;

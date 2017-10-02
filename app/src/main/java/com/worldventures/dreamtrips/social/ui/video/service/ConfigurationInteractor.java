@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.video.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.video.service.command.ConfigurationCommand;
 
 import io.techery.janet.ActionPipe;

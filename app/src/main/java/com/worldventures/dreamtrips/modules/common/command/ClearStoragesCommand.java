@@ -1,23 +1,21 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.storage.ClearableStorage;
+import com.worldventures.core.janet.cache.storage.Storage;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.Storage;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class ClearStoragesCommand extends Command<Void> implements InjectableAction {
 
-   @Inject Janet janet;
    @Inject Set<ActionStorage> storageSet;
    @Inject Set<MultipleActionStorage> multipleActionStorageSet;
 

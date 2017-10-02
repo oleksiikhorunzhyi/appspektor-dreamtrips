@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.storage;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 

@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableMerchant;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutablePaymentFeedback;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutablePaymentTerminal;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.Merchant;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.PaymentTerminal;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackAttachmentsManager;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.infopages.service.FeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.MerchantViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentFeedbackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentTerminalViewModel;

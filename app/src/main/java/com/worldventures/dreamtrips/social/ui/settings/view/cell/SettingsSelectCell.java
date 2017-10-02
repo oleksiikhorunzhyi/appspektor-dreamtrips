@@ -5,11 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.modules.settings.model.SelectSetting;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.settings.dialog.SelectDialog;
-import com.worldventures.dreamtrips.social.ui.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.social.ui.settings.util.SettingsManager;
 import com.worldventures.dreamtrips.social.ui.settings.view.cell.delegate.SettingsSelectCellDelegate;
 
@@ -19,7 +19,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_settings_select)
-public class SettingsSelectCell extends AbstractDelegateCell<SelectSetting, SettingsSelectCellDelegate> {
+public class SettingsSelectCell extends BaseAbstractDelegateCell<SelectSetting, SettingsSelectCellDelegate> {
 
    @InjectView(R.id.settings_title) TextView settingsTitle;
    @InjectView(R.id.settings_value) TextView settingsValue;

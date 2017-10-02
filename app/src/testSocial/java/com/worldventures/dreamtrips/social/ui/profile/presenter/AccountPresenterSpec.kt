@@ -2,13 +2,14 @@ package com.worldventures.dreamtrips.social.ui.profile.presenter
 
 import com.nhaarman.mockito_kotlin.*
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.User
+import com.worldventures.core.modules.auth.service.AuthInteractor
+import com.worldventures.core.modules.video.utils.CachedModelHelper
+import com.worldventures.core.service.DownloadFileInteractor
 import com.worldventures.dreamtrips.common.Injector
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor
-import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager
-import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
@@ -22,7 +23,6 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.AccountTimel
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand
-import com.worldventures.dreamtrips.social.util.CachedModelHelper
 import io.techery.janet.command.test.Contract
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
@@ -50,7 +50,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestBody()) {
 
       override fun makePresenter() = AccountPresenter()
 
-      override fun makeView(): AccountPresenter.View  = mock()
+      override fun makeView(): AccountPresenter.View = mock()
 
       override fun makeExtendedSuite(): SpecBody.() -> Unit {
          return {

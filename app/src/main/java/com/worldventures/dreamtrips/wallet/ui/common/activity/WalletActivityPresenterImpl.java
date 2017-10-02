@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.common.activity;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.auth.api.command.LogoutCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
@@ -40,7 +40,7 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    public void attachView(WalletActivityView view) {
       interactor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
-            .compose(view.bindToLifecycle())
+            .compose(view.bindUntilDetach())
             .map(Command::getResult)
             .filter(smartCard -> smartCard.cardStatus().isActive())
             .flatMap(smartCard -> interactor.connectActionPipe()
@@ -62,7 +62,7 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    }
 
    @Override
-   public void detachView(boolean retainInstance) {
+   public void detachView() {
       auxiliaryDisconnectSmartCard();
    }
 

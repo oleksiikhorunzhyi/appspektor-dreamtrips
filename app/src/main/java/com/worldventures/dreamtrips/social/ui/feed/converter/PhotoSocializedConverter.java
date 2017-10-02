@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.converter;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.photos.model.PhotoSocialized;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 

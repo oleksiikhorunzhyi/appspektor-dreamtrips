@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketItemAddedAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketTabViewAnalyticsAction;

@@ -17,14 +17,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.social.ui.flags.view.FlagPopupMenu;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.popup.FeedItemMenuBuilder;
+import com.worldventures.dreamtrips.social.ui.flags.view.FlagPopupMenu;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 
 import java.util.List;

@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.ForeignBucketTabPresenter;

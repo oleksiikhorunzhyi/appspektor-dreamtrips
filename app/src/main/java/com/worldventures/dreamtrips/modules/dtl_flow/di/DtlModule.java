@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.core.component.ComponentDescription;
 
 import dagger.Module;
 import dagger.Provides;

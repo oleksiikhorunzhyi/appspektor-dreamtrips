@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.command;
 
-import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 
 import org.jetbrains.annotations.Nullable;
 

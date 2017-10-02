@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.friends.view.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.FriendCellDelegate;
 

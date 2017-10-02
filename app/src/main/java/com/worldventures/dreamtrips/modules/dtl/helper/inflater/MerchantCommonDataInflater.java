@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;

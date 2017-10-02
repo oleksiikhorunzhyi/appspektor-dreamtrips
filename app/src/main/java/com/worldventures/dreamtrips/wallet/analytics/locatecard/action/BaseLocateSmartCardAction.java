@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.analytics.locatecard.action;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 

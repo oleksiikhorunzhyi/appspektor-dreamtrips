@@ -9,10 +9,10 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;

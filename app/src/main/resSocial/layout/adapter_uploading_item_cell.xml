@@ -28,6 +28,7 @@
             android:layout_width="@dimen/uploading_cell_width"
             android:layout_height="@dimen/uploading_cell_height"
             >
+
          <RelativeLayout
                android:id="@+id/uploading_cell_video_details"
                android:layout_width="match_parent"
@@ -40,12 +41,14 @@
                android:layout_gravity="bottom"
                android:visibility="gone"
                >
+
             <ImageView
                   android:layout_width="16dp"
                   android:layout_height="16dp"
                   android:src="@drawable/video_ic_small"
                   android:layout_centerVertical="true"
                   />
+
             <TextView
                   android:id="@+id/uploading_cell_duration"
                   android:layout_width="wrap_content"
@@ -58,7 +61,6 @@
          </RelativeLayout>
 
       </FrameLayout>
-
 
 
       <RelativeLayout

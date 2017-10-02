@@ -1,11 +1,17 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.HashtagInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.HashtagFeedStorageCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFeedStorageInteractor;
+import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 
 import javax.inject.Inject;
 
@@ -17,8 +23,11 @@ public class HashtagFeedStorageDelegate extends BaseFeedStorageDelegate<HashtagF
 
    private String hashtag;
 
-   public HashtagFeedStorageDelegate(HashtagFeedStorageInteractor hashtagFeedStorageInteractor, Injector injector) {
-      super(hashtagFeedStorageInteractor, injector);
+   public HashtagFeedStorageDelegate(HashtagFeedStorageInteractor hashtagFeedStorageInteractor, FeedInteractor feedInteractor,
+         PostsInteractor postsInteractor, TripsInteractor tripsInteractor, TripImagesInteractor tripImagesInteractor,
+         BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
+      super(hashtagFeedStorageInteractor, feedInteractor, postsInteractor, tripsInteractor, tripImagesInteractor,
+            bucketInteractor, friendsInteractor, commentsInteractor);
    }
 
    @Override

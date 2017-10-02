@@ -2,15 +2,14 @@ package com.worldventures.dreamtrips.social.ui.profile.presenter;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.Feature;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
@@ -22,9 +21,10 @@ import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate;
+import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -28,9 +28,6 @@
    <string name="dtl_description">Descripción</string>
    <string name="ok">Aceptar</string>
    <string name="continue_option">Continuar</string>
-   <string name="permission_camera_rationale">Acceso a la cámara requerido para la detección</string>
-   <string name="permission_location_rationale">Acceso a la locación requerido para la detección</string>
-   <string name="no_camera_permission">Esta aplicación no pude correr porque no tiene permiso de la cámara.  La aplicación se cerrará ahora.</string>
    <string name="no_location_permission">Esta aplicación no puede correr porque no tiene permiso de locación. La aplicación se cerrará ahora.</string>
    <string name="dtl_checkin_location_error">Debería estar activados los servicios de ubicación para hacer el registro</string>
    <string name="dtl_barcode_title">Escanea el código QR</string>

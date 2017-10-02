@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_cancel">Avbryt</string>
+   <string name="action_done">Klar</string>
+   <string name="action_retry">Försök igen</string>
+   <string name="camera_record_a_video">Spela in en video</string>
+   <string name="camera_take_a_picture">Ta en bild</string>
+   <string name="error_fail_to_load_documents">Det gick inte att läsa in dokument</string>
+   <string name="error_fail_to_load_feedback_reasons">Det gick inte att ladda feedback</string>
+   <string name="error_fail_to_load_videos">Det gick inte att ladda videoklipp</string>
+   <string name="error_fail_to_locales">Det gick inte att hämta språk</string>
+   <string name="error_fail_to_login">Det gick inte att logga in</string>
+   <string name="error_fail_to_send_feedback">Det gick inte att skicka feedback</string>
+   <string name="error_fail_to_update_settings">Det gick inte att uppdatera inställningar</string>
+   <string name="facebook_error_loading_albums">Kunde inte ladda album</string>
+   <string name="facebook_error_loading_photos">Kunda inte ladda bilder</string>
+   <string name="facebook_login_error">Kunda inte logga in på Facebook</string>
+   <string name="fail">Misslyckades</string>
+   <string name="feedback_could_not_load_attachment">Det gick inte att läsa in bilaga</string>
+   <string name="media_picker_error_contents">Inläsning av %1$s misslyckades.</string>
+   <string name="media_picker_fb_albums_actions">Facebook-album</string>
+   <string name="media_picker_fb_photos_actions">Facebook-bilder</string>
+   <string name="media_picker_gallery_action">Media-galleri</string>
+   <string name="media_picker_limit_reached">Du kan bara välja upp till %1$s bilder</string>
+   <string name="no_camera_permission">Denna applikation kan inte startas eftersom den inte har kameratillstånd. Programmet kommer nu att avslutas. </string>
+   <string name="permission_camera_rationale">Åtkomst till kameran krävs för detektion</string>
+   <string name="permission_location_rationale">Tillgång till platsen krävs för detektion</string>
+   <string name="photos_selected">Valt: %1$d</string>
+   <string name="picker_photo_limit">Du kan välja upp till %1$d foto</string>
+   <string name="picker_photo_limit_plural">Du kan välja upp till %1$d foton</string>
+   <string name="picker_static_add_from_fb">Lägg till från Facebook</string>
+   <string name="picker_static_take_from_camera">Kamera</string>
+   <string name="picker_two_media_type_error">Välj antingen foton eller en video</string>
+   <string name="picker_video_length_limit">Du har inte tillåtelse att välja videor och foton som är mer än %1$d sekunder långa</string>
+   <string name="picker_video_limit">Du kan välja upp till %1$d videoklipp</string>
+   <string name="picker_video_limit_plural">Du kan välja upp till %1$d videoklipp</string>
+</resources>

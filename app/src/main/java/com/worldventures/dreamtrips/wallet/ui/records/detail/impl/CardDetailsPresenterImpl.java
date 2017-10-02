@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.records.detail.impl;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
@@ -34,6 +34,7 @@ import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -76,7 +77,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
       recordInteractor.updateRecordPipe()
             .observe()
             .filter(state -> equalsRecordId(recordDetailViewModel.getRecordId(), state.action.getRecord()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(view.provideOperationSaveCardData()).create());
    }
 
@@ -100,7 +102,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .createObservable(OfflineModeStatusCommand.fetch())
             .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
             .map(actionState -> actionState.action.getResult())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(action);
    }
 
@@ -113,7 +116,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
       recordInteractor.deleteRecordPipe()
             .observeWithReplay()
             .filter(state -> state.action.getRecordId().equals(recordDetailViewModel.getRecordId()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(new ActionPipeCacheWiper<>(recordInteractor.deleteRecordPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationDeleteRecord())
                   .onSuccess(deleteRecordAction -> getNavigator().goCardList())
@@ -123,7 +127,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private void connectToSetDefaultCardIdPipe() {
       recordInteractor.setDefaultCardOnDeviceCommandPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetDefaultOnDevice())
                   .onSuccess(command -> getView()
                         .defaultCardChanged(equalsRecordId(recordDetailViewModel.getRecordId(), command.getResult())))
@@ -133,7 +138,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private void connectSetPaymentCardPipe() {
       recordInteractor.setPaymentCardPipe()
             .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(new ActionPipeCacheWiper<>(recordInteractor.setPaymentCardPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetPaymentCardAction())
                   .onSuccess(action -> getView().showCardIsReadyDialog(recordDetailViewModel.getRecordName().trim()))
@@ -251,7 +257,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
       recordInteractor.cardsListPipe()
             .createObservableResult(RecordListCommand.fetch())
             .map(command -> findRecord(command.getResult(), recordId))
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(recordAction, throwable -> Timber.e(throwable, ""));
    }
 
@@ -259,7 +265,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
       smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
             .map(Command::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .map(SmartCardStatus::connectionStatus)
             .subscribe(action, throwable -> Timber.e(throwable, ""));
    }
@@ -278,7 +285,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
                }
             })
             .onErrorReturn(null)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(action, throwable -> Timber.e(throwable, ""));
    }
 }

@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.facebook.presenter;
 
+import com.worldventures.core.modules.facebook.FacebookHelper;
+import com.worldventures.core.modules.facebook.model.FacebookPhoto;
+import com.worldventures.core.modules.facebook.service.FacebookInteractor;
+import com.worldventures.core.modules.facebook.service.command.GetPhotosCommand;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.BasePickerPresenter;
-import com.worldventures.dreamtrips.modules.facebook.FacebookHelper;
-import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
-import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
-import com.worldventures.dreamtrips.modules.facebook.service.command.GetPhotosCommand;
 
 import java.util.ArrayList;
 import java.util.List;

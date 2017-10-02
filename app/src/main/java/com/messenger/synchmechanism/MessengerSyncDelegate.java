@@ -3,7 +3,7 @@ package com.messenger.synchmechanism;
 import com.messenger.command.LoginToMessengerServerCommand;
 import com.messenger.delegate.conversation.command.SyncConversationsCommand;
 import com.messenger.delegate.roster.LoadContactsCommand;
-import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.modules.auth.service.ReLoginInteractor;
 
 import javax.inject.Inject;
 

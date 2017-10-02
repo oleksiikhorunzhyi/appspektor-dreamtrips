@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 
 import java.io.Serializable;
 import java.util.ArrayList;

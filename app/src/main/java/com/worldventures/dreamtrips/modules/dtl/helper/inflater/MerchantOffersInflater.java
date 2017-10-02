@@ -18,23 +18,20 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.view.ViewLayoutChangeEvent;
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
 
 import java.lang.ref.WeakReference;
@@ -217,7 +214,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       List<OperationDay> operDays = perk.operationDays();
       if (operationDays == null) return;
       //
-      String concatDays = DateTimeUtils.concatOperationDays(resources, operDays);
+      String concatDays = OperationalHoursUtils.concatOperationDays(operDays, resources.getString(R.string.everyday));
       operationDays.setText(concatDays);
    }
 }

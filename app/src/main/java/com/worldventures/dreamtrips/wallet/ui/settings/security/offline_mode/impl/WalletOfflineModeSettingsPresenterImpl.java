@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<WalletOfflineModeSettingsScreen> implements WalletOfflineModeSettingsPresenter {
 
@@ -78,14 +79,16 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
    private void observeOfflineModeState() {
       smartCardInteractor.offlineModeStatusPipe()
             .observeSuccess()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .map(Command::getResult)
             .subscribe(isOfflineModeEnabled -> getView().setOfflineModeState(isOfflineModeEnabled));
 
       smartCardInteractor.switchOfflineModePipe()
             .observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onProgress((command, progress) -> waitingForNetwork = false)
                   .onSuccess(command -> trackStateChange(command.getResult()))
@@ -100,13 +103,13 @@ public class WalletOfflineModeSettingsPresenterImpl extends WalletPresenterImpl<
 
    private void observeOfflineModeSwitcher() {
       getView().observeOfflineModeSwitcher()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(this::onOfflineModeSwitcherChanged);
    }
 
    private void observeNetworkState() {
       networkDelegate.observeConnectedState()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .filter(networkAvailable -> networkAvailable && waitingForNetwork)
             .subscribe(networkAvailable -> switchOfflineMode());
    }

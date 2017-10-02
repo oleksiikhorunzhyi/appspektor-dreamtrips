@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.checkStorageAvailability;
 
@@ -48,7 +49,8 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
       firmwareInteractor.fetchFirmwareUpdateDataCommandActionPipe()
             .observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> bindDataToView(command.getResult()))
                   .create());
@@ -89,7 +91,8 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
    @Override
    public void downloadButtonClicked() {
       firmwareInteractor.firmwareInfoCachedPipe().createObservable(FirmwareInfoCachedCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<FirmwareInfoCachedCommand>()
                   .onSuccess(command -> checkStoreAndNavigateToDownLoadScreen(command.getResult())));
    }

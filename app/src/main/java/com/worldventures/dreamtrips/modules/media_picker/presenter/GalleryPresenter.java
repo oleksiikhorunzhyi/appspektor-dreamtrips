@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.media_picker.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View> {
 
    @Inject PickImageDelegate pickImageDelegate;
-   @Inject MediaInteractor mediaInteractor;
+   @Inject MediaPickerInteractor mediaPickerInteractor;
    private boolean videoPickingEnabled;
    private int videoLengthLimit;
 
@@ -84,7 +84,7 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
          view.addItems(mediaPickerModels);
          return;
       }
-      mediaInteractor.getMediaFromGalleryPipe().createObservable(new GetMediaFromGalleryCommand(videoPickingEnabled))
+      mediaPickerInteractor.getMediaFromGalleryPipe().createObservable(new GetMediaFromGalleryCommand(videoPickingEnabled))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetMediaFromGalleryCommand>()
                   .onSuccess(getMediaFromGalleryCommand -> updateData(getMediaFromGalleryCommand.getResult())));

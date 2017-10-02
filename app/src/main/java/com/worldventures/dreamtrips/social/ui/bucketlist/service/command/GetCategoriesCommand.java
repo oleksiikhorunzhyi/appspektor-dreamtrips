@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
-
+import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListCategoriesHttpAction;
-import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
 
 import java.util.List;

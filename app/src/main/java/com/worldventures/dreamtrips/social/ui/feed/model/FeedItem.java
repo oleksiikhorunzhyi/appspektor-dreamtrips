@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.core.model.BaseEntity;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.Calendar;

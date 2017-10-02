@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.picklocation.presenter.LocationPickerToolbarPresenter;

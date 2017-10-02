@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.messenger.di.MessengerInitializerModule;
-import com.techery.spares.application.AppInitializer;
+import com.worldventures.core.di.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.AnalyticsInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;

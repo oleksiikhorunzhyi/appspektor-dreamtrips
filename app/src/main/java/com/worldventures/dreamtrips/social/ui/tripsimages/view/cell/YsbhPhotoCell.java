@@ -5,17 +5,17 @@ import android.net.Uri;
 import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_photo)
-public class YsbhPhotoCell extends AbstractDelegateCell<YSBHPhoto, CellDelegate<YSBHPhoto>> {
+public class YsbhPhotoCell extends BaseAbstractDelegateCell<YSBHPhoto, CellDelegate<YSBHPhoto>> {
 
    @InjectView(R.id.imageViewPhoto) SimpleDraweeView draweeView;
 

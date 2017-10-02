@@ -10,10 +10,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -22,7 +23,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CommentableBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.SingleCommentBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;

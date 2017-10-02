@@ -1,10 +1,15 @@
 package com.worldventures.dreamtrips.core.janet;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.janet.TimberServiceWrapper;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.service.NewDreamTripsHttpService;
+import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
-import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
+import com.worldventures.dreamtrips.api.session.model.Device;
+import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 
 import java.net.CookieManager;
 import java.util.concurrent.TimeUnit;
@@ -19,12 +24,19 @@ import io.techery.janet.Janet;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 import io.techery.janet.okhttp3.OkClient;
+import io.techery.mappery.MapperyContext;
 import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import rx.Observable;
 
-@Module(complete = false, library = true)
+@Module(injects = {
+      UploaderyImageCommand.class,
+      SimpleUploaderyCommand.class,
+      },
+        complete = false,
+        library = true)
 public class JanetUploaderyModule {
 
    public static final String JANET_UPLOADERY = "JANET_UPLOADERY";
@@ -67,8 +79,11 @@ public class JanetUploaderyModule {
 
    @Provides
    @Named(JANET_UPLOADERY)
-   ActionService provideUploaderyActionService(@ForApplication Injector injector, @Named(JANET_UPLOADERY) HttpClient httpClient) {
-      return new NewDreamTripsHttpService(injector, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider()
-            .provideGson()));
+   ActionService provideUploaderyActionService(SessionHolder appSessionHolder, AppVersionNameBuilder appVersionNameBuilder,
+         MapperyContext mapperyContext, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource,
+         @Named(JANET_UPLOADERY) HttpClient httpClient) {
+      return new NewDreamTripsHttpService(appSessionHolder, appVersionNameBuilder, mapperyContext, reLoginInteractor,
+            deviceSource, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider().provideGson()),
+            BuildConfig.API_VERSION);
    }
 }

@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
-
 import android.text.TextUtils;
 
+import com.worldventures.dreamtrips.core.utils.AnalyticsInteractorProxy;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.ViewBookTravelAnalytics;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
-import com.worldventures.dreamtrips.core.utils.AnalyticsInteractorProxy;
 
 import javax.inject.Inject;
 

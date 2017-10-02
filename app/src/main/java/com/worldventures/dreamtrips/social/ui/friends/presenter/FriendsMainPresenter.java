@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
 
 import javax.inject.Inject;
 
-import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.INCOMING_REQUEST;
+import static com.worldventures.core.model.User.Relationship.INCOMING_REQUEST;
 
 public class FriendsMainPresenter extends Presenter<FriendsMainPresenter.View> {
 

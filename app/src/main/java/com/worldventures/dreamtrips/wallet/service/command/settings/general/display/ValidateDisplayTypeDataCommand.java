@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.settings.general.display;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;

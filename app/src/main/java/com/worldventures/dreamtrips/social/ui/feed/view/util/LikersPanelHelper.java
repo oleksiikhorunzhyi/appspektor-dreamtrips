@@ -6,8 +6,8 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
 
+import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 
 public class LikersPanelHelper {

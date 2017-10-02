@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.wallet.di.external;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.social.ui.settings.model.FlagSetting;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
+import com.worldventures.core.modules.settings.model.FlagSetting;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.modules.settings.storage.SettingsStorage;
 
 import java.util.List;
 
 public class WalletTrackingStatusStorageImpl implements WalletTrackingStatusStorage {
 
-   private final SnappyRepository snappyRepository;
+   private final SettingsStorage snappyRepository;
 
-   public WalletTrackingStatusStorageImpl(SnappyRepository snappyRepository) {
+   public WalletTrackingStatusStorageImpl(SettingsStorage snappyRepository) {
       this.snappyRepository = snappyRepository;
    }
 

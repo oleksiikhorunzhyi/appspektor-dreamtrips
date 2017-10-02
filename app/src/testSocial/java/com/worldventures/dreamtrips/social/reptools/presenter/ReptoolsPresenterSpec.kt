@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.social.reptools.presenter
 
 import com.nhaarman.mockito_kotlin.*
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
-import com.worldventures.dreamtrips.social.ui.reptools.presenter.RepToolsPresenter
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.ui.reptools.presenter.RepToolsPresenter
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract

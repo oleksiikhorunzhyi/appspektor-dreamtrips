@@ -3,15 +3,15 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.net.Uri;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.api.dtl.merchants.EstimatePointsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -22,8 +22,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
-import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PickImageDelegate pickImageDelegate;
-   @Inject MediaInteractor mediaInteractor;
+   @Inject MediaPickerInteractor mediaPickerInteractor;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
    //
    @State double amount;
@@ -52,7 +52,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      mediaInteractor
+      mediaPickerInteractor
             .imageCapturedPipe().observeSuccess()
             .map(Command::getResult)
             .compose(bindViewToMainComposer())
@@ -113,7 +113,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    }
 
    public void verify() {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new VerifyAmountEvent(merchant.asMerchantAttributes(), amount)));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
@@ -158,14 +158,14 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    }
 
    private void savePhotoIfNeeded(String filePath) {
-      mediaInteractor.copyFilePipe()
+      mediaPickerInteractor.copyFilePipe()
             .createObservableResult(new CopyFileCommand(context, filePath))
             .compose(bindViewToMainComposer())
             .subscribe(command -> attachPhoto(command.getResult()), e -> Timber.e(e, "Failed to copy file"));
    }
 
    private void attachPhoto(String filePath) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant.asMerchantAttributes())));
       view.attachReceipt(Uri.parse(filePath));
 

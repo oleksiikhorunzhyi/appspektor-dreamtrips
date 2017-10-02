@@ -94,7 +94,6 @@
    <string name="bucket_photo_dialog">Foto från favoritresmål</string>
    <string name="delete_cached_video_title">Video</string>
    <string name="delete_cached_video_text">Är du säker på att du vill ta bort videon från det lokala cacheminnet?</string>
-   <string name="fail">Misslyckades</string>
    <string name="cancel_cached_video_title">Video</string>
    <string name="cancel_cached_video_text">Är du säker på att du vill avbryta filhämtningen?</string>
    <string name="cancel_photo_positiove">Ja</string>
@@ -250,7 +249,6 @@
    <string name="feedback_send_btn">Skicka</string>
    <string name="feedback_select_category">Välj kategori</string>
    <string name="feedback_add_photos">Lägg till foton</string>
-   <string name="feedback_could_not_load_attachment">Det gick inte att läsa in bilaga</string>
    <string name="feedback_attachment_failed_item_retry">Försök igen</string>
    <string name="feedback_attachment_failed_item_remove">Ta bort</string>
    <string name="feedback_fullscreen_attachments_format">%1$d av %2$d</string>
@@ -273,7 +271,6 @@
    <string name="error_fail_to_load_success_stories">Det gick inte att ladda framgångshistorier</string>
    <string name="error_fail_to_like_success_story">Det gick inte att gilla framgångshistoria</string>
    <string name="error_fail_to_unlike_success_story">Det gick inte att ogilla framgångshistoria</string>
-   <string name="error_fail_to_update_settings">Det gick inte att uppdatera inställningar</string>
    <string name="error_fail_to_load_categories">Det gick inte att ladda kategorier</string>
    <string name="error_fail_to_load_suggestions">Det gick inte att ladda förslag</string>
    <string name="error_fail_to_load_popular_bl">Det gick inte att ladda populära objekt för önskelista</string>
@@ -304,20 +301,15 @@
    <string name="error_failed_to_load_activities">Det gick inte att ladda aktiviteter</string>
    <string name="error_failed_to_load_users">Det gick inte att ladda användare</string>
    <string name="error_fail_to_delete_tag">Det gick inte att ta bort tagg</string>
-   <string name="error_fail_to_load_feedback_reasons">Det gick inte att ladda feedback</string>
-   <string name="error_fail_to_send_feedback">Det gick inte att skicka feedback</string>
    <string name="error_fail_to_load_timeline">Det gick inte att ladda tidslinje</string>
    <string name="error_fail_to_get_invitations">Det gick inte att hämta inbjudningar</string>
    <string name="error_fail_to_invitation_templates">Det gick inte att hämta inbjudningsmallar</string>
    <string name="error_fail_to_get_preview_for_template">Det gick inte att hämta förhandsgranskning för mall</string>
-   <string name="error_fail_to_locales">Det gick inte att hämta språk</string>
    <string name="error_fail_to_load_profile_info">Det gick inte att ladda profilinformation</string>
    <string name="error_fail_to_update_avatar">Det gick inte att uppdatera avatar</string>
    <string name="error_fail_to_update_cover_photo">Det gick inte att uppdatera omslagsfoto</string>
-   <string name="error_fail_to_load_videos">Det gick inte att ladda videoklipp</string>
    <string name="error_fail_to_like_item">Det gick inte att gilla objekt</string>
    <string name="error_fail_to_unlike_item">Det gick inte att ogilla objekt</string>
-   <string name="error_fail_to_load_documents">Det gick inte att läsa in dokument</string>
    <string name="tag_people">Tagga personer</string>
    <string name="uploading_post_status_progress_singular">Fotot överförs …</string>
    <string name="uploading_post_status_progress_plural">Överför %1$d foton…</string>

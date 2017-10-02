@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.reptools.service.command;
 
+import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.success_stories.GetSuccessStoriesHttpAction;
-import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;
 
 import java.util.List;

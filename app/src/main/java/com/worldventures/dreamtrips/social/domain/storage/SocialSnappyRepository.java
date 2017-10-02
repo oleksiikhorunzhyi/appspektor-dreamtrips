@@ -1,13 +1,10 @@
 package com.worldventures.dreamtrips.social.domain.storage;
 
+import com.worldventures.core.model.Circle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLocale;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,14 +31,6 @@ public interface SocialSnappyRepository {
 
    long getLastSuggestedPhotosSyncTime();
 
-   void saveLastSelectedVideoLocale(VideoLocale videoLocale);
-
-   VideoLocale getLastSelectedVideoLocale();
-
-   void saveLastSelectedVideoLanguage(VideoLanguage videoLocale);
-
-   VideoLanguage getLastSelectedVideoLanguage();
-
    void saveTranslation(String originalText, String translation, String toLanguage);
 
    String getTranslation(String originalText, String toLanguage);
@@ -57,10 +46,6 @@ public interface SocialSnappyRepository {
    Circle getFeedFriendPickedCircle();
 
    void saveFeedFriendPickedCircle(Circle circle);
-
-   List<FeedbackType> getFeedbackTypes();
-
-   void setFeedbackTypes(List<FeedbackType> types);
 
    void saveNotifications(List<FeedItem> notifications);
 

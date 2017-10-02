@@ -2,8 +2,9 @@ package com.worldventures.dreamtrips.core.janet;
 
 import android.content.Context;
 
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.core.janet.CommandWithError;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionServiceWrapper;
@@ -52,7 +53,8 @@ public class DreamTripsCommandService extends ActionServiceWrapper {
       if (holder.action() instanceof CommandWithError) {
          CommandWithError commandAction = (CommandWithError) holder.action();
          String fallbackMessage = appContext.getString(commandAction.getFallbackErrorMessage());
-         String errorMessage = httpErrorHandlingUtil.handleJanetHttpError(commandAction, e, fallbackMessage);
+         String noConnectionMessage = appContext.getString(R.string.no_connection);
+         String errorMessage = httpErrorHandlingUtil.handleJanetHttpError(commandAction, e, fallbackMessage, noConnectionMessage);
          commandAction.setErrorMessage(errorMessage);
       }
 

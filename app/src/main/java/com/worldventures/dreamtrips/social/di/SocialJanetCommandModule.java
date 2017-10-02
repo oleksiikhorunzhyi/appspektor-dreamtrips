@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.social.di;
 
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.modules.auth.api.command.LogoutAction;
+import com.worldventures.dreamtrips.modules.common.command.ClearStoragesCommand;
+import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
-import com.worldventures.dreamtrips.modules.facebook.service.command.GetAlbumsCommand;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
-import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
@@ -58,8 +57,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.SuggestedPhot
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.UnlikeEntityCommand;
-import com.worldventures.dreamtrips.social.ui.flags.command.FlagItemCommand;
-import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.AcceptAllFriendRequestsCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand;
@@ -71,10 +68,6 @@ import com.worldventures.dreamtrips.social.ui.friends.service.command.GetMutualF
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetRequestsCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetSearchUsersCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.RemoveFriendCommand;
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand;
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetFeedbackCommand;
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.SendFeedbackCommand;
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetInviteTemplatesCommand;
@@ -92,7 +85,6 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBack
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand;
-import com.worldventures.dreamtrips.social.ui.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CreatePhotoCreationItemCommand;
@@ -109,11 +101,11 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSB
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TranslatePhotoCommand;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetMemberVideosCommand;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetVideoLocalesCommand;
-import com.worldventures.dreamtrips.social.ui.video.service.command.MigrateFromCachedEntity;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(injects = {
       BucketListCommand.class,
@@ -146,7 +138,7 @@ import dagger.Module;
       GetTripsLocationsCommand.class,
       GetTripsByUidCommand.class,
       HashtagSuggestionCommand.class,
-      SettingsCommand.class,
+      ClearStoragesCommand.class,
       CreatePostCommand.class,
       PostCreatedCommand.class,
       EditPostCommand.class,
@@ -170,13 +162,8 @@ import dagger.Module;
       UploadAvatarCommand.class,
       UploadBackgroundCommand.class,
       GetPublicProfileCommand.class,
-      SendFeedbackCommand.class,
-      GetFeedbackCommand.class,
-      UploadFeedbackAttachmentCommand.class,
       CreatePhotoCreationItemCommand.class,
       CreateReviewPhotoCreationItemCommand.class,
-      GetMemberVideosCommand.class,
-      GetVideoLocalesCommand.class,
       GetInspireMePhotosCommand.class,
       GetYSBHPhotosCommand.class,
       DeletePhotoCommand.class,
@@ -212,31 +199,32 @@ import dagger.Module;
       ChangeFeedEntityLikedStatusCommand.class,
       CreatePostCompoundOperationCommand.class,
       CheckTripsByUidCommand.class,
-      GetDocumentsCommand.class,
       TranslatePhotoCommand.class,
       TranslateBucketItemCommand.class,
       SendAnalyticsIfNeedAction.class,
-      GetAlbumsCommand.class,
       SendVideoAnalyticsIfNeedAction.class,
       SendPodcastAnalyticsIfNeedAction.class,
-      GetAlbumsCommand.class,
-      GetPhotosFromGalleryCommand.class,
-      GetVideosFromGalleryCommand.class,
-      GetMediaFromGalleryCommand.class,
       RecognizeFacesCommand.class,
       UploadVideoFileCommand.class,
-      MigrateFromCachedEntity.class,
       CreateVideoCommand.class,
-      MigrateFromCachedEntity.class,
       FeedItemsVideoProcessingStatusCommand.class,
       GetVideoMetadataCommand.class,
       LoadConfigurationCommand.class,
-      MediaAttachmentPrepareCommand.class,
       GetMemberMediaCommand.class,
       GetUsersMediaCommand.class,
       DeleteVideoCommand.class,
       CheckVideoProcessingStatusCommand.class,
-      GetFlagsCommand.class,
-      FlagItemCommand.class,
 }, complete = false, library = true)
-public class SocialJanetCommandModule {}
+public class SocialJanetCommandModule {
+
+   @Provides
+   @Singleton
+   ClearStoragesInteractor provideClearStoragesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new ClearStoragesInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   LogoutAction provideClearStoragesInteractorLogoutAction(ClearStoragesInteractor clearStoragesInteractor) {
+      return () -> clearStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearStoragesCommand());
+   }
+}

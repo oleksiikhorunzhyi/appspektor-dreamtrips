@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 
 import javax.inject.Inject;

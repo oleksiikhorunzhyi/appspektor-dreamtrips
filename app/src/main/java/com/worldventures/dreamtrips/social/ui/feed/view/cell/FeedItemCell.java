@@ -5,17 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
@@ -36,7 +36,7 @@ import timber.log.Timber;
 
 @Layout(R.layout.adapter_feed_item_cell)
 public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>>
-      extends AbstractDelegateCell<ITEM, DELEGATE> implements Focusable {
+      extends BaseAbstractDelegateCell<ITEM, DELEGATE> implements Focusable {
 
    @InjectView(R.id.cell_container) ViewGroup cellContainer;
    @Inject @ForActivity Provider<Injector> injectorProvider;

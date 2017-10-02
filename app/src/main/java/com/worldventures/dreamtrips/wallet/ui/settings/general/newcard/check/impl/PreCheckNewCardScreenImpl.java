@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;

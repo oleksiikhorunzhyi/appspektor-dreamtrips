@@ -28,9 +28,6 @@
    <string name="dtl_description">Leírás</string>
    <string name="ok">OK</string>
    <string name="continue_option">Tovább</string>
-   <string name="permission_camera_rationale">A felismeréshez szükséges a kamerához való hozzáférés engedélyezése </string>
-   <string name="permission_location_rationale">A felismeréshez szükséges a helyzethez való hozzáférés engedélyezése </string>
-   <string name="no_camera_permission">Az alkalmazás nem futtatható, mivel nem rendelkezik a kamerához való hozzáférési engedéllyel. Az alkalmazás most kilép. </string>
    <string name="no_location_permission">Az alkalmazás nem futtatható, mivel nem rendelkezik a helyzethez való hozzáférési engedéllyel. Az alkalmazás most kilép. </string>
    <string name="dtl_checkin_location_error">A bejelentkezéshez engedélyezni kell a helyszolgáltatásokat</string>
    <string name="dtl_barcode_title">QR-kód beolvasása</string>

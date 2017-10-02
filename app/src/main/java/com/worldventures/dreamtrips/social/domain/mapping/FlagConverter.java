@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.flagging.model.FlagReason;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 
 import io.techery.mappery.MapperyContext;

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.ApptentiveTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.ApptentiveTracker;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 @AnalyticsEvent(action = "bucketlist",
                 category = "nav_menu",

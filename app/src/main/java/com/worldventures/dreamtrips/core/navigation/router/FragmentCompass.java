@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
 

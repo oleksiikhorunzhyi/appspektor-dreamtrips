@@ -12,12 +12,12 @@ import com.facebook.login.LoginManager;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.techery.spares.annotations.Layout;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.share.presenter.SharePresenter;
-import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.presenter.SharePresenter;
 
 import java.util.Collection;
 

@@ -1,0 +1,53 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+   compileSdkVersion project.ext.androidConfig.compileSdk
+   buildToolsVersion project.ext.androidConfig.buildTools
+
+   defaultConfig {
+      minSdkVersion project.ext.androidConfig.minSdk
+      targetSdkVersion project.ext.androidConfig.targetSdk
+      //
+      multiDexEnabled true
+   }
+
+   dataBinding{
+      enabled = true
+   }
+
+   buildTypes {
+      release {
+         minifyEnabled false
+         proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      }
+   }
+
+   compileOptions {
+      sourceCompatibility project.ext.pluginDependencies.languages.java
+      targetCompatibility project.ext.pluginDependencies.languages.java
+   }
+
+}
+
+def deps = project.ext.coreDependencies
+
+repositories {
+   deps.repos.each { it.call(owner) }
+}
+
+dependencies {
+   compile fileTree(dir: 'libs', include: ['*.jar'])
+   applyDependencies(owner, deps.di)
+   applyDependencies(owner, deps.ui)
+   applyDependencies(owner, deps.domain)
+   applyDependencies(owner, deps.immutables)
+   applyDependencies(owner, deps.networking)
+   applyDependencies(owner, deps.analytics)
+   applyDependencies(owner, deps.util)
+   applyDependencies(owner, deps.rx)
+}

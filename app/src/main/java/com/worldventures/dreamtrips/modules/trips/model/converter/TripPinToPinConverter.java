@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.model.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.trip.model.TripPinWrapper;
 import com.worldventures.dreamtrips.modules.common.model.Coordinates;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 
 import java.util.ArrayList;

@@ -122,7 +122,7 @@
                   android:textSize="@dimen/font_small"
                   />
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+            <com.worldventures.core.ui.view.custom.BadgeView
                   android:id="@+id/badge"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"

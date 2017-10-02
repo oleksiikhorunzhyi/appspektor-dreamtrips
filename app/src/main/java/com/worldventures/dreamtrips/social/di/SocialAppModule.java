@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.social.di;
 
-
 import android.support.annotation.DrawableRes;
 
 import com.techery.spares.module.EventDelegateModule;
-import com.techery.spares.module.SupportModule;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
-import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
 import com.worldventures.dreamtrips.social.ui.feed.FeedAppModule;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.NotificationFragment;
@@ -23,8 +23,6 @@ import com.worldventures.dreamtrips.social.ui.membership.view.fragment.Membershi
 import com.worldventures.dreamtrips.social.ui.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.social.ui.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.social.ui.settings.view.fragment.SettingsGroupFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesTabFragment;
 
 import dagger.Module;
@@ -40,7 +38,6 @@ import dagger.Provides;
             SocialInteractorModule.class,
             FeedAppModule.class,
             VersionCheckModule.class,
-            SupportModule.class,
             EventDelegateModule.class,
             SocialInitializerModule.class,
             SocialMappingModule.class,
@@ -111,6 +108,7 @@ public class SocialAppModule {
             .fragmentClass(NotificationFragment.class)
             .build();
    }
+
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTripImagesComponent() {
       return new ComponentDescription.Builder()
@@ -132,6 +130,7 @@ public class SocialAppModule {
             .fragmentClass(SettingsGroupFragment.class)
             .build();
    }
+
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMapTripsComponent(SessionHolder sessionHolder) {
       return new ComponentDescription.Builder()

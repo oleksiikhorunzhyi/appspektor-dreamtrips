@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CommentReviewConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.CoordinatesConverter;
@@ -26,7 +27,6 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewsConverte
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.UserImageConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import javax.inject.Singleton;
 

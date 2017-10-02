@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
+import com.worldventures.core.janet.ValueCommandAction;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlUndefinedLocation;

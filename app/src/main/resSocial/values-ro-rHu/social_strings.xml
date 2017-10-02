@@ -94,7 +94,6 @@
    <string name="bucket_photo_dialog">Fotografie Listă de dorințe</string>
    <string name="delete_cached_video_title">Videoclip</string>
    <string name="delete_cached_video_text">Sigur doriți să ștergeți videoclipul din cache-ul local?</string>
-   <string name="fail">Eroare</string>
    <string name="cancel_cached_video_title">Videoclip</string>
    <string name="cancel_cached_video_text">Sigur doriți să anulați descărcarea fișierului?</string>
    <string name="cancel_photo_positiove">Da</string>
@@ -250,7 +249,6 @@
    <string name="feedback_send_btn">Trimiteți</string>
    <string name="feedback_select_category">Alegeți categoria</string>
    <string name="feedback_add_photos">Adăugați fotografii</string>
-   <string name="feedback_could_not_load_attachment">Fișierul atașat nu s-a putut încărca</string>
    <string name="feedback_attachment_failed_item_retry">Reîncercați</string>
    <string name="feedback_attachment_failed_item_remove">Eliminați</string>
    <string name="feedback_fullscreen_attachments_format">%1$d din %2$d</string>
@@ -273,7 +271,6 @@
    <string name="error_fail_to_load_success_stories">Nu s-au putut încărca poveștile de succes</string>
    <string name="error_fail_to_like_success_story">Nu s-a putut aprecia povestea de succes</string>
    <string name="error_fail_to_unlike_success_story">Nu s-a putut anula aprecierea poveștii de succes</string>
-   <string name="error_fail_to_update_settings">Nu s-au putut actualiza setările</string>
    <string name="error_fail_to_load_categories">Categoriile nu s-au putut încărca</string>
    <string name="error_fail_to_load_suggestions">Nu s-au putut încărca sugestiile</string>
    <string name="error_fail_to_load_popular_bl">Nu s-au putut încărca elementele populare de pe Lista dorințelor</string>
@@ -304,20 +301,15 @@
    <string name="error_failed_to_load_activities">Nu s-au putut încărca activitățile</string>
    <string name="error_failed_to_load_users">Nu s-au putut încărca utilizatorii</string>
    <string name="error_fail_to_delete_tag">Nu s-a putut șterge eticheta</string>
-   <string name="error_fail_to_load_feedback_reasons">Nu s-au putut încărca motivele pentru feedback</string>
-   <string name="error_fail_to_send_feedback">Nu s-a putut trimite feedback</string>
    <string name="error_fail_to_load_timeline">Nu s-a putut încărca cronologia</string>
    <string name="error_fail_to_get_invitations">Nu s-au putut obține invitațiile</string>
    <string name="error_fail_to_invitation_templates">Nu s-au putut obține șabloanele de invitație</string>
    <string name="error_fail_to_get_preview_for_template">Nu s-a putut obține previzualizarea pentru șablon</string>
-   <string name="error_fail_to_locales">Nu s-au putut obține parametrii locali</string>
    <string name="error_fail_to_load_profile_info">Nu s-au putut încărca informațiile de profil</string>
    <string name="error_fail_to_update_avatar">Nu s-a putut actualiza avatarul</string>
    <string name="error_fail_to_update_cover_photo">Nu s-a putut actualiza fotografia de copertă</string>
-   <string name="error_fail_to_load_videos">Nu s-au putut încărca videoclipurile</string>
    <string name="error_fail_to_like_item">Nu s-a putut aprecia elementul</string>
    <string name="error_fail_to_unlike_item">Nu s-a putut anula aprecierea pentru element</string>
-   <string name="error_fail_to_load_documents">Încărcarea documentelor a eșuat</string>
    <string name="tag_people">Etichetați persoane</string>
    <string name="uploading_post_status_progress_singular">Se încarcă fotografia…</string>
    <string name="uploading_post_status_progress_plural">Se încarcă %1$d fotografii…</string>

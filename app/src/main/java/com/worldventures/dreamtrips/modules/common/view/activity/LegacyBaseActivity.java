@@ -7,30 +7,34 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.messenger.di.MessengerActivityModule;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
+import com.worldventures.core.ui.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.core.module.LegacyActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.social.ui.bucketlist.BucketListModule;
-import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.config.VersionCheckActivityModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
+import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
+import com.worldventures.dreamtrips.modules.trips.TripsModule;
+import com.worldventures.dreamtrips.social.di.SocialCommonActivityModule;
+import com.worldventures.dreamtrips.social.ui.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.social.ui.feed.FeedActivityModule;
 import com.worldventures.dreamtrips.social.ui.friends.FriendsModule;
 import com.worldventures.dreamtrips.social.ui.infopages.InfoActivityModule;
 import com.worldventures.dreamtrips.social.ui.membership.MembershipModule;
-import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
 import com.worldventures.dreamtrips.social.ui.profile.ProfileActivityModule;
 import com.worldventures.dreamtrips.social.ui.reptools.ReptoolsActivityModule;
 import com.worldventures.dreamtrips.social.ui.settings.SettingsModule;
-import com.worldventures.dreamtrips.social.di.SocialCommonActivityModule;
-import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.social.ui.tripsimages.TripImagesModule;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
 
 public abstract class LegacyBaseActivity extends BaseActivity {
 
@@ -39,6 +43,12 @@ public abstract class LegacyBaseActivity extends BaseActivity {
    @Inject protected PickImageDelegate pickImageDelegate;
    @Inject protected Router router;
    @Inject protected ActivityRouter activityRouter;
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      ButterKnife.inject(this);
+   }
 
    @Override
    protected void openLoginActivity() {
@@ -64,6 +74,7 @@ public abstract class LegacyBaseActivity extends BaseActivity {
       modules.add(new LocationPickerModule());
       modules.add(new VersionCheckActivityModule());
       modules.add(new SocialCommonActivityModule());
+      modules.add(new LegacyActivityModule(this));
       return modules;
    }
 

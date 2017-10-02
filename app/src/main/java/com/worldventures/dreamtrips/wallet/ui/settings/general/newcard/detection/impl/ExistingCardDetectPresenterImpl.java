@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.newcard.detection.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.new_smartcard.ExistSmartCardAction;
@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<ExistingCardDetectScreen> implements ExistingCardDetectPresenter {
 
@@ -59,7 +60,8 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    private void fetchSmartCardId() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> bindSmartCardId(command.getResult().smartCardId()))
             );
@@ -72,7 +74,8 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    private void observerSmartCardConnectedStatus() {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideDeviceStateOperationView())
                   .onSuccess(command -> handleConnectedResult(command.getResult().connectionStatus()))
                   .create());
@@ -98,7 +101,8 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    public void prepareUnassignCard() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
                   .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().smartCardId()))
                   .create());
@@ -108,7 +112,8 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    public void prepareUnassignCardOnBackend() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
                   .onSuccess(command -> {
                      sendAnalyticAction(new ExistSmartCardDontHaveCardAction());
@@ -124,7 +129,8 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)
                   .build()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
                   .onSuccess(activeSmartCardCommand -> {
                      sendAnalyticAction(new ExistSmartCardDontHaveCardContinueAction());

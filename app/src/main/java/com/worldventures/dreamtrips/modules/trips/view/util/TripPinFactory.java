@@ -9,8 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 
 public class TripPinFactory {

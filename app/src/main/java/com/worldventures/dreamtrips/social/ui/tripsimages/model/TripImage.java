@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
+import com.worldventures.core.model.ImagePathHolder;
+import com.worldventures.core.utils.ImageUtils;
 
 public class TripImage implements Parcelable, ImagePathHolder {
 

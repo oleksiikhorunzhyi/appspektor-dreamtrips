@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.service.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AttributeMap;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
@@ -21,8 +21,7 @@ public class CommentAction extends BaseAnalyticsAction {
    public static final String ATTRIBUTE_DELETE_COMMENT = "delete_comment";
    public static final String ATTRIBUTE_EDIT_COMMENT = "edit_comment";
 
-   @AttributeMap
-   final Map<String, String> attributeMap = new HashMap<>();
+   @AttributeMap final Map<String, String> attributeMap = new HashMap<>();
 
    public CommentAction(String actionAttributeName, FeedEntity feedEntity) {
       attributeMap.put(actionAttributeName, "1");

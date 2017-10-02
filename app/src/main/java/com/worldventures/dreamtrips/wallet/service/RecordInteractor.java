@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;

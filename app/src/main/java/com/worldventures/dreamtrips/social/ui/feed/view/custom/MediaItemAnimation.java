@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.custom;
 
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -45,6 +45,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
    private static class MoveInfo {
       public ViewHolder holder;
       public int fromX, fromY, toX, toY;
+
       private MoveInfo(ViewHolder holder, int fromX, int fromY, int toX, int toY) {
          this.holder = holder;
          this.fromX = fromX;
@@ -57,10 +58,12 @@ public class MediaItemAnimation extends SimpleItemAnimator {
    private static class ChangeInfo {
       public ViewHolder oldHolder, newHolder;
       public int fromX, fromY, toX, toY;
+
       private ChangeInfo(ViewHolder oldHolder, ViewHolder newHolder) {
          this.oldHolder = oldHolder;
          this.newHolder = newHolder;
       }
+
       private ChangeInfo(ViewHolder oldHolder, ViewHolder newHolder,
             int fromX, int fromY, int toX, int toY) {
          this(oldHolder, newHolder);
@@ -297,6 +300,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
          public void onAnimationStart(View view) {
             dispatchMoveStarting(holder);
          }
+
          @Override
          public void onAnimationCancel(View view) {
             if (deltaX != 0) {
@@ -306,6 +310,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
                ViewCompat.setTranslationY(view, 0);
             }
          }
+
          @Override
          public void onAnimationEnd(View view) {
             animation.setListener(null);
@@ -362,6 +367,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
             public void onAnimationStart(View view) {
                dispatchChangeStarting(changeInfo.oldHolder, true);
             }
+
             @Override
             public void onAnimationEnd(View view) {
                oldViewAnim.setListener(null);
@@ -382,22 +388,27 @@ public class MediaItemAnimation extends SimpleItemAnimator {
          ViewCompat.setTranslationX(newView, 0);
          ViewCompat.setTranslationY(newView, 0);
 
-         newViewAnimation.scaleX(1.0f).scaleY(1.0f).setDuration(getChangeDuration()).setListener(new VpaListenerAdapter() {
-            @Override
-            public void onAnimationStart(View view) {
-               dispatchChangeStarting(changeInfo.newHolder, false);
-            }
-            @Override
-            public void onAnimationEnd(View view) {
-               newViewAnimation.setListener(null);
-               ViewCompat.setAlpha(newView, 1);
-               ViewCompat.setTranslationX(newView, 0);
-               ViewCompat.setTranslationY(newView, 0);
-               dispatchChangeFinished(changeInfo.newHolder, false);
-               mChangeAnimations.remove(changeInfo.newHolder);
-               dispatchFinishedWhenDone();
-            }
-         }).start();
+         newViewAnimation.scaleX(1.0f)
+               .scaleY(1.0f)
+               .setDuration(getChangeDuration())
+               .setListener(new VpaListenerAdapter() {
+                  @Override
+                  public void onAnimationStart(View view) {
+                     dispatchChangeStarting(changeInfo.newHolder, false);
+                  }
+
+                  @Override
+                  public void onAnimationEnd(View view) {
+                     newViewAnimation.setListener(null);
+                     ViewCompat.setAlpha(newView, 1);
+                     ViewCompat.setTranslationX(newView, 0);
+                     ViewCompat.setTranslationY(newView, 0);
+                     dispatchChangeFinished(changeInfo.newHolder, false);
+                     mChangeAnimations.remove(changeInfo.newHolder);
+                     dispatchFinishedWhenDone();
+                  }
+               })
+               .start();
       }
    }
 
@@ -605,19 +616,25 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       cancelAll(mChangeAnimations);
       dispatchAnimationsFinished();
    }
+
    void cancelAll(List<ViewHolder> viewHolders) {
       for (int i = viewHolders.size() - 1; i >= 0; i--) {
          ViewCompat.animate(viewHolders.get(i).itemView).cancel();
       }
    }
+
    private static class VpaListenerAdapter implements ViewPropertyAnimatorListener {
       @Override
       public void onAnimationStart(View view) {}
+
       @Override
       public void onAnimationEnd(View view) {}
+
       @Override
       public void onAnimationCancel(View view) {}
-   };
+   }
+
+   ;
 
    private static final int AnimDuration = 500;
 

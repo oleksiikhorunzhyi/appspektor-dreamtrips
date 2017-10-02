@@ -21,7 +21,7 @@ import com.messenger.ui.view.conversation.ConversationListScreen;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.viewstate.ConversationListViewState;
 import com.messenger.util.OpenedConversationTracker;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;

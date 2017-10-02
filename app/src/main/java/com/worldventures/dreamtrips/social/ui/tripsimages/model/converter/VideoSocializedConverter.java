@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.model.converter;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.multimedia.model.VideoSocialized;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import io.techery.mappery.MapperyContext;
 
 public class VideoSocializedConverter extends BaseVideoConverter<VideoSocialized> {
+
    @Override
    public Class<VideoSocialized> sourceClass() {
       return VideoSocialized.class;

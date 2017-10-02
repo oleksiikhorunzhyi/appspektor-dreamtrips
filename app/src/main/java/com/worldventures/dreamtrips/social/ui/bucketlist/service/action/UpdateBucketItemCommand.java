@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.action;
 
+import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.UpdateBucketItemHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketUpdateBody;
-import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketBody;
 

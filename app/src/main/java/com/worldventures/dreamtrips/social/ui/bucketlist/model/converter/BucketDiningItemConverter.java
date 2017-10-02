@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.model.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketListDining;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.DiningItem;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
-public class BucketDiningItemConverter implements Converter<com.worldventures.dreamtrips.api.bucketlist.model.BucketListDining, DiningItem> {
+public class BucketDiningItemConverter implements Converter<BucketListDining, DiningItem> {
 
    @Override
    public Class<BucketListDining> sourceClass() {

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketStatus;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketBody;
 
 public abstract class BaseReverseBucketBodyConverter<T extends BucketBody, S> implements Converter<T, S> {

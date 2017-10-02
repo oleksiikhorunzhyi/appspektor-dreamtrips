@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.assign.impl;
 
 
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPres
 import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAssignUserScreen> implements WizardAssignUserPresenter {
 
@@ -59,7 +60,8 @@ public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAss
    private void observeComplete() {
       wizardInteractor.completePipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> wizardAssignDelegate.onAssignUserSuccess(getView()))
                   .create());

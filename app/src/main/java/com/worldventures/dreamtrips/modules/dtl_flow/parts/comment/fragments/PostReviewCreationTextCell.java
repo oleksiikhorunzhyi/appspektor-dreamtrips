@@ -3,16 +3,15 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.feed.model.PostDescription;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_review_item_post_text)
-public class PostReviewCreationTextCell extends AbstractDelegateCell<PostReviewDescription, PostReviewCreationTextCell.Delegate> {
+public class PostReviewCreationTextCell extends BaseAbstractDelegateCell<PostReviewDescription, PostReviewCreationTextCell.Delegate> {
 
    @InjectView(R.id.post) TextView post;
 

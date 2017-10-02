@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
 import com.bluelinelabs.conductor.rxlifecycle.RxRestoreViewOnCreateController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,11 +24,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.techery.spares.ui.activity.InjectingActivity;
+import com.trello.rxlifecycle.LifecycleTransformer;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.view.custom.ToucheableMapView;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.databinding.WalletIncludeMapPopupInfoBinding;
-import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletPlace;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
@@ -73,7 +75,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       final View view = layoutInflater.inflate(R.layout.subscreen_wallet_settings_lostcard_map, viewGroup, false);
       //noinspection all
       final ObjectGraph objectGraph = (ObjectGraph) view.getContext()
-            .getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
+            .getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
       mapView = view.findViewById(R.id.map_view);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
@@ -204,6 +206,11 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
                   fetchAddressWithPlacesCommand -> {
                   }))
             .build());
+   }
+
+   @Override
+   public <T> LifecycleTransformer<T> bindUntilDetach() {
+      return bindUntilEvent(ControllerEvent.DETACH);
    }
 
    @Override

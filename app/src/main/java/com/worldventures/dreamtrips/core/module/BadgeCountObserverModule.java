@@ -2,8 +2,9 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.BadgeCountObserver;
@@ -30,6 +31,11 @@ public class BadgeCountObserverModule {
    @Singleton
    BadgeUpdater provideBadgeUpdater(@ForApplication Context context) {
       return count -> ShortcutBadger.with(context).count(count);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   LogoutAction provideBadgeUpdaterLogoutAction(BadgeUpdater badgeUpdater) {
+      return () -> badgeUpdater.updateBadge(0);
    }
 
 }

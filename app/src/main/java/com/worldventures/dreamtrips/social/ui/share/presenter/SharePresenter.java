@@ -9,13 +9,13 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.modules.facebook.FacebookHelper;
+import com.worldventures.core.modules.video.utils.CachedModelHelper;
+import com.worldventures.core.service.DownloadFileInteractor;
+import com.worldventures.core.service.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.facebook.FacebookHelper;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 
 import java.io.File;
 import java.util.Collection;

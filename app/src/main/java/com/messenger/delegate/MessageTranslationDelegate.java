@@ -7,12 +7,12 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.util.SessionHolderHelper;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
 import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.feed.MarkFeedNotificationReadHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;

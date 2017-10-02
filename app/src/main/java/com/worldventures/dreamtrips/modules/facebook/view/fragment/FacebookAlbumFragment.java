@@ -6,16 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.modules.facebook.model.FacebookAlbum;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
+import com.worldventures.core.ui.view.custom.GridAutofitLayoutManager;
+import com.worldventures.core.ui.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
-import com.worldventures.dreamtrips.modules.facebook.model.FacebookAlbum;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookAlbumPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookAlbumCell;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.GridAutofitLayoutManager;
 
 import java.util.List;
 

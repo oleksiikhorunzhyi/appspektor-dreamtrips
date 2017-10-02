@@ -39,7 +39,7 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
       val deviceConnectionDelegate : WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
 
-      screen = mock()
+      screen = mockScreen(WizardManualInputScreen::class.java)
       whenever(screen.scidInput()).thenReturn(inputSubject)
       whenever(screen.scIdLength).thenReturn(5)
 

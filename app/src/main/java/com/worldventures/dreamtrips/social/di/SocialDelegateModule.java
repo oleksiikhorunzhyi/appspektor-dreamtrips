@@ -2,15 +2,8 @@ package com.worldventures.dreamtrips.social.di;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
+import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider;
-import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProviderImpl;
-import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.social.ui.podcast_player.delegate.PodcastPlayerDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.EditPhotoTagsCallback;
@@ -35,36 +28,6 @@ public class SocialDelegateModule {
    @Provides
    TripImagesCommandFactory provideTripImagesCommandFactory() {
       return new TripImagesCommandFactory();
-   }
-
-   @Provides
-   @Singleton
-   UploadingFileManager provideUploadingFileManager(Context context) {
-      return new UploadingFileManager(context.getFilesDir());
-   }
-
-   @Provides
-   @Singleton
-   UriPathProvider provideUriPathProvider(Context context) {
-      return new UriPathProviderImpl(context);
-   }
-
-   @Provides
-   @Singleton
-   CachedEntityDelegate provideDownloadFileDelegate(CachedEntityInteractor cachedEntityInteractor) {
-      return new CachedEntityDelegate(cachedEntityInteractor);
-   }
-
-   @Provides
-   @Singleton
-   CachedEntityInteractor provideDownloadCachedEntityInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new CachedEntityInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
-   DownloadFileInteractor provideDownloadFileInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new DownloadFileInteractor(sessionActionPipeCreator);
    }
 
    @Provides

@@ -5,19 +5,19 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.AttributeMap;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithPhotoAttachmentBody;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.Hashtag;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.HashMap;
@@ -58,11 +58,11 @@ public abstract class SharePhotoPostAction extends BaseAnalyticsAction {
 
       sharePostAction.uploadCount = String.valueOf(photos.size());
       sharePostAction.photoMethodCam = String.valueOf(Queryable.from(photos)
-            .count(item -> item.selectedPhoto().source() == MediaAttachment.Source.CAMERA));
+            .count(item -> item.selectedPhoto().source() == MediaPickerAttachment.Source.CAMERA));
       sharePostAction.photoMethodFb = String.valueOf(Queryable.from(photos)
-            .count(item -> item.selectedPhoto().source() == MediaAttachment.Source.FACEBOOK));
+            .count(item -> item.selectedPhoto().source() == MediaPickerAttachment.Source.FACEBOOK));
       sharePostAction.photoMethodGallery = String.valueOf(Queryable.from(photos)
-            .count(item -> item.selectedPhoto().source() == MediaAttachment.Source.GALLERY));
+            .count(item -> item.selectedPhoto().source() == MediaPickerAttachment.Source.GALLERY));
 
       int photosTaggedCount = Queryable.from(textualPost.getAttachments())
             .filter(feedEntityHolder -> feedEntityHolder.getType() == FeedEntityHolder.Type.PHOTO)

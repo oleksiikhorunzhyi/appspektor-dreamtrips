@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="action_done">完成</string>
-   <string name="action_cancel">取消</string>
    <string name="action_filter">篩選</string>
    <string name="action_like">點贊</string>
    <string name="trips">DreamTrips</string>
@@ -19,9 +17,6 @@
    <string name="flag_description_title">檢舉</string>
    <string name="flag_description_positive">接受</string>
    <string name="flag_description_negative">取消</string>
-   <string name="facebook_error_loading_albums">無法加載相冊</string>
-   <string name="facebook_error_loading_photos">無法加載照片</string>
-   <string name="facebook_login_error">無法登錄至Facebook</string>
    <string name="fab_posted">成功發布至臉書</string>
    <string name="facebook_posting_error">無法發佈至Facebook</string>
    <string-array name="share_dialog_items">
@@ -100,19 +95,9 @@
 
    <string name="feed_share_post_button">分享一張照片，一個視頻或者想法</string>
 
-   <string name="camera">相機</string>
    <string name="library">圖書館</string>
-   <string name="camera_take_a_picture">拍攝一張照片</string>
-   <string name="camera_record_a_video">錄製一個視頻</string>
-   <string name="add_from_facebook">添加來自臉書</string>
 
-   <string name="photos_selected">%1$d已選擇</string>
 
-   <string name="media_picker_error_contents">加載 %1$s 失敗</string>
-   <string name="media_picker_gallery_action">媒體庫</string>
-   <string name="media_picker_fb_albums_actions">facebook 相冊</string>
-   <string name="media_picker_fb_photos_actions">facebook 圖片</string>
-   <string name="media_picker_limit_reached">您只可以選擇 %1$s 張圖片</string>
 
    <string name="logout_component">退出</string>
 
@@ -161,12 +146,6 @@
 
    <string name="beta_label">Beta版</string>
 
-   <string name="picker_two_media_type_error">選擇照片或者是一個視頻</string>
-   <string name="picker_photo_limit">您可以選擇最多 %1$d 張照片</string>
-   <string name="picker_photo_limit_plural">您可以選擇最多 %1$d 張照片</string>
-   <string name="picker_video_limit">您可以選擇最多 %1$d 個視頻</string>
-   <string name="picker_video_limit_plural">您可以選擇最多 %1$d 個視頻</string>
-   <string name="picker_video_length_limit">您無權選擇時長超過%1$d秒的視頻</string>
 
    <string name="photo_strip_read_storage_permission_explanation">需要許可讀取存儲空間，才能建議媒體內容</string>
 </resources>

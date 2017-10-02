@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationMutator;
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;

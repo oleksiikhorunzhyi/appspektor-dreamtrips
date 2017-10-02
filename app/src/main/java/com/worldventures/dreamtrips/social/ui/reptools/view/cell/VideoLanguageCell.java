@@ -3,15 +3,15 @@ package com.worldventures.dreamtrips.social.ui.reptools.view.cell;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 
 import butterknife.InjectView;
 
 @Layout(android.R.layout.simple_list_item_1)
-public class VideoLanguageCell extends AbstractDelegateCell<VideoLanguage, CellDelegate<VideoLanguage>> {
+public class VideoLanguageCell extends BaseAbstractDelegateCell<VideoLanguage, CellDelegate<VideoLanguage>> {
 
    @InjectView(android.R.id.text1) TextView text;
 

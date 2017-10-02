@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.feed.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.api.entity.model.EntityHolder;
 import com.worldventures.dreamtrips.api.photos.model.Photo;
 import com.worldventures.dreamtrips.api.post.model.response.Post;
 import com.worldventures.dreamtrips.api.trip.model.Trip;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
@@ -17,8 +19,6 @@ import com.worldventures.dreamtrips.social.ui.feed.model.UndefinedFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import io.techery.mappery.MapperyContext;
 

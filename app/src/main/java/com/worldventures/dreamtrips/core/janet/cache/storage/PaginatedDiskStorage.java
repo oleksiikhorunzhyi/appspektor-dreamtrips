@@ -2,7 +2,8 @@ package com.worldventures.dreamtrips.core.janet.cache.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.storage.PaginatedStorage;
 
 import java.util.ArrayList;
 import java.util.List;

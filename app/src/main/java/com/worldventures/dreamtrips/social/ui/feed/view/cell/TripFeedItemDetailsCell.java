@@ -2,20 +2,18 @@ package com.worldventures.dreamtrips.social.ui.feed.view.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.trips.view.util.TripFeedViewInjector;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.FeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.trips.view.util.TripFeedViewInjector;
 
 import javax.inject.Inject;
 

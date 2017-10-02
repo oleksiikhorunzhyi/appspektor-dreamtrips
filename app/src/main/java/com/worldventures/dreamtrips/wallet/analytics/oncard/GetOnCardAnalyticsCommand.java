@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.analytics.oncard;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.util.TimeUtils;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:custom="http://schemas.android.com/apk/res-auto">
+      xmlns:custom="http://schemas.android.com/apk/res-auto"
+      >
 
    <com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView
          android:id="@+id/translate_view"

@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.video.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.video.model.Video;
+import com.worldventures.core.modules.video.model.VideoCategory;
+import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.TripImageVideo360DownloadedAction;
@@ -8,9 +11,6 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.Trip
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.TripImageVideo360StartedPlaying;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.TripImageVideo360ViewedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.TripImagesTabViewAnalyticsEvent;
-import com.worldventures.dreamtrips.social.ui.video.model.Video;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoCategory;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetMemberVideosCommand;
 
 import java.util.ArrayList;
 import java.util.List;

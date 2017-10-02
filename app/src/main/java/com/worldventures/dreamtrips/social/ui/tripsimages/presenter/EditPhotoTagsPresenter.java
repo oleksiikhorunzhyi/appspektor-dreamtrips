@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;

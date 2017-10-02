@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableUserImage;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.UserImage;
+
 import io.techery.mappery.MapperyContext;
 
 public class UserImageConverter implements Converter<com.worldventures.dreamtrips.api.dtl.merchants.model.UserImage, UserImage> {

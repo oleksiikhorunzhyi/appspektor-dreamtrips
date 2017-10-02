@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.SendOnCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;

@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
 import android.os.Bundle;
 
-import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;

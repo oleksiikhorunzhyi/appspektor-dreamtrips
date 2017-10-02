@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantStaticPageProvider;
 
 import javax.inject.Inject;
 
 public class EnrollMerchantPresenter extends AuthorizedStaticInfoPresenter {
 
-   @Inject protected StaticPageProvider provider;
+   @Inject protected MerchantStaticPageProvider provider;
 
    private MerchantIdBundle merchantBundle;
 

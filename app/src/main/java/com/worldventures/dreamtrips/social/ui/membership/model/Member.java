@@ -4,7 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+import com.worldventures.core.model.Filterable;
+
 
 public class Member implements Parcelable, Filterable {
 

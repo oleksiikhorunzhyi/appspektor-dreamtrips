@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForFragment;
+import com.worldventures.core.di.qualifier.ForFragment;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import dagger.Module;

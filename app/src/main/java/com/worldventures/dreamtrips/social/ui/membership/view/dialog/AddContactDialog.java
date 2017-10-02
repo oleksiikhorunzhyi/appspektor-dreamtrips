@@ -7,13 +7,13 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.social.ui.membership.model.Member;
 
 import butterknife.ButterKnife;
 
-import static com.techery.spares.utils.ValidationUtils.VResult;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isEmailValid;
 
 public class AddContactDialog {
@@ -56,7 +56,7 @@ public class AddContactDialog {
          @Override
          public void afterTextChanged(Editable s) {
 
-            VResult emailValid = isEmailValid(etEmail.getText().toString());
+            ValidationUtils.VResult emailValid = isEmailValid(etEmail.getText().toString());
             boolean emailExist = !TextUtils.isEmpty(etEmail.getText());
             boolean nameExist = !TextUtils.isEmpty(etName.getText());
             boolean phoneExist = !TextUtils.isEmpty(etPhone.getText());

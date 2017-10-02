@@ -26,7 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.core.flow.animation.AnimatorFactory;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;

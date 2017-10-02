@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.social.ui.reptools.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.modules.video.model.Video;
+import com.worldventures.core.modules.video.model.VideoCategory;
+import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.core.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.AdobeTrainingVideosViewedAction;
 import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ReptoolsVideoDownloadedAction;
 import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ReptoolsVideoViewedAction;
-import com.worldventures.dreamtrips.social.ui.video.model.Video;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoCategory;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLocale;
 import com.worldventures.dreamtrips.social.ui.video.presenter.PresentationVideosPresenter;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetMemberVideosCommand;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetVideoLocalesCommand;
 
 import java.util.List;
 import java.util.Locale;
@@ -39,8 +39,8 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
 
    @Override
    public void onResume() {
-      videoLocale = socialDb.getLastSelectedVideoLocale();
-      videoLanguage = socialDb.getLastSelectedVideoLanguage();
+      videoLocale = mediaModelStorage.getLastSelectedVideoLocale();
+      videoLanguage = mediaModelStorage.getLastSelectedVideoLanguage();
       super.onResume();
       sendViewTrainingVideoAnalytic();
    }
@@ -94,8 +94,8 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    public void onLanguageSelected(VideoLocale videoLocale, VideoLanguage videoLanguage) {
       this.videoLocale = videoLocale;
       this.videoLanguage = videoLanguage;
-      socialDb.saveLastSelectedVideoLocale(videoLocale);
-      socialDb.saveLastSelectedVideoLanguage(videoLanguage);
+      mediaModelStorage.saveLastSelectedVideoLocale(videoLocale);
+      mediaModelStorage.saveLastSelectedVideoLanguage(videoLanguage);
       reload();
       setHeaderLocale();
    }
@@ -124,7 +124,7 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    @Override
    protected String obtainVideoLanguage(Video video) {
       String defaultLocalName = LocaleHelper.formatLocale(LocaleHelper.getDefaultLocale());
-      return LocaleHelper.obtainLanguageCode(videoLanguage == null? defaultLocalName : videoLanguage.getLocaleName());
+      return LocaleHelper.obtainLanguageCode(videoLanguage == null ? defaultLocalName : videoLanguage.getLocaleName());
    }
 
    @Override

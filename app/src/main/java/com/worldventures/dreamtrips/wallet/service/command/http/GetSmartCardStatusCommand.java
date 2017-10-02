@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.status.SmartCardStatusHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.status.model.SmartCardStatus;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

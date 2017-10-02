@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.fragment.navigationdraw
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 
 public class NavigationHeader {
    protected Uri userCover;

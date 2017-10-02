@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.flags.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.flags.command.FlagItemCommand;
 import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
 

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;

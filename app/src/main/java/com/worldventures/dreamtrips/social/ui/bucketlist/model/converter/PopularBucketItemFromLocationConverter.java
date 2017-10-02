@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.model.converter;
 
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.PopularBucketItem;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

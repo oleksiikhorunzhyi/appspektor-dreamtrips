@@ -2,11 +2,14 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.TimberServiceWrapper;
+import com.worldventures.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
-import com.worldventures.dreamtrips.core.janet.TimberServiceWrapper;
-import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
+import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtHttpService;
@@ -32,6 +35,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 import io.techery.janet.okhttp3.OkClient;
+import io.techery.mappery.MapperyContext;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -97,9 +101,11 @@ public class JanetNxtModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    @Named(JANET_NXT)
-   ActionService provideNxtActionService(@ForApplication Context appContext, @Named(JANET_NXT) HttpClient httpClient) {
-      return new NxtHttpService(appContext, BuildConfig.NXT_API, httpClient, new GsonConverter(
-            new GsonProvider().provideBuilder()
+   ActionService provideNxtActionService(NxtSessionHolder nxtSessionHolder, AppVersionNameBuilder appVersionNameBuilder,
+         WalletSocialInfoProvider socialInfoProvider, MapperyContext mapperyContext, @Named(JANET_NXT) HttpClient httpClient) {
+      return new NxtHttpService(nxtSessionHolder, appVersionNameBuilder, socialInfoProvider, mapperyContext,
+            BuildConfig.NXT_API, httpClient, new GsonConverter(
+                  new GsonProvider().provideBuilder()
                   .registerTypeAdapterFactory(new GsonAdaptersMultiRequestBody())
                   .registerTypeAdapterFactory(new GsonAdaptersMultiRequestElement())
                   .registerTypeAdapterFactory(new GsonAdaptersMultiResponseBody())

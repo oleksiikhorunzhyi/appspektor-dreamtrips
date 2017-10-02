@@ -8,14 +8,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
+import com.worldventures.dreamtrips.social.di.SocialAppModule;
 
 import butterknife.InjectView;
 

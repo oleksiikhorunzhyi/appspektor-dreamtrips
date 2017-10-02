@@ -5,13 +5,13 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCom
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ClearMerchantsStorageAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 
 import dagger.Module;
 

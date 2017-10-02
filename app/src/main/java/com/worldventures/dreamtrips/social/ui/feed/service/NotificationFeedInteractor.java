@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetNotificationsCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationsAsReadCommand;

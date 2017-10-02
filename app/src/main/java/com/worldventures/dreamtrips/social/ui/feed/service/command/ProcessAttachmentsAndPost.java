@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
-
 import android.net.Uri;
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.utils.Size;
+import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CreatePostCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
-import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.FetchLocationFromExifCommand;
 

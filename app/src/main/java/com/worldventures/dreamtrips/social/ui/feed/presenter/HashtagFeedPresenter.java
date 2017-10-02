@@ -8,7 +8,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -26,6 +25,7 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.HashtagFeedS
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditingView;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate;
+import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 

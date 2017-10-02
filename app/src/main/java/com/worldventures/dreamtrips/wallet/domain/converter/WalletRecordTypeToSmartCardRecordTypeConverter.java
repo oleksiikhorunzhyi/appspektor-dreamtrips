@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
 
 import io.techery.mappery.MapperyContext;

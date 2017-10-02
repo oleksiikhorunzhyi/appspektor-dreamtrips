@@ -2,7 +2,7 @@ package com.messenger.ui.module.flagging;
 
 import android.view.View;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.flags.view.FlagPopupMenu;
 import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;

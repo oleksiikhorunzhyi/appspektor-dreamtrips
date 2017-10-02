@@ -2,9 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewImages;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.UserImage;
+
 import java.util.ArrayList;
 import java.util.List;
 

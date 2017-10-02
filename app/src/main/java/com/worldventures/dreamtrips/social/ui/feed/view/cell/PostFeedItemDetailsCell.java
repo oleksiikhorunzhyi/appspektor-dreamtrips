@@ -5,20 +5,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
    }
 
    private void openFullsreenPhoto(Photo model) {
-       router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()
                   .currentItemPosition(getPositionOfPhoto(model))
                   .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())

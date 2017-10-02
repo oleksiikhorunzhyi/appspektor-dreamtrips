@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.config.service.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.AdobeTracker;
 
 @AnalyticsEvent(action = "new version available", trackers = AdobeTracker.TRACKER_KEY)
 public class UpdateAppAction extends BaseAnalyticsAction {

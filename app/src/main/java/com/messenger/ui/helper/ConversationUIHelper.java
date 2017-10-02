@@ -11,8 +11,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.List;
 

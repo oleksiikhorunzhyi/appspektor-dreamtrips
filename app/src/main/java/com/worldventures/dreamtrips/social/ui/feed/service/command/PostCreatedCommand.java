@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.janet.ValueCommandAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 

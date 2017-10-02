@@ -28,9 +28,6 @@
    <string name="dtl_description">描述</string>
    <string name="ok">好</string>
    <string name="continue_option">继续</string>
-   <string name="permission_camera_rationale">需要连接相机进行检测</string>
-   <string name="permission_location_rationale">需要访问位置进行检测</string>
-   <string name="no_camera_permission">这个应用程序不能运行，因为它不具有相机权限。应用程序现在将退出。</string>
    <string name="no_location_permission">这个应用程序不能运行，因为它不具有位置权限。应用程序现在将退出。</string>
    <string name="dtl_checkin_location_error">启动位置服务方可报到</string>
    <string name="dtl_barcode_title">扫描QR码</string>

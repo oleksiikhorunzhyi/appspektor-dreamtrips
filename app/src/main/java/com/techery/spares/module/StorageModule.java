@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.techery.spares.storage.complex_objects.ComplexStorageBuilder;
-import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.core.storage.complex_objects.ComplexStorageBuilder;
+import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 
 import javax.inject.Singleton;
 

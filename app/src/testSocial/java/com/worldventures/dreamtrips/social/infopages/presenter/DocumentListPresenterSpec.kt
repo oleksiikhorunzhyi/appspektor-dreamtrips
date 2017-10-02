@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.social.infopages.presenter
 
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.modules.infopages.model.Document
+import com.worldventures.core.modules.infopages.service.DocumentsInteractor
+import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand
 import com.worldventures.dreamtrips.common.Injector
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.social.ui.infopages.model.Document
-import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter
-import com.worldventures.dreamtrips.social.ui.infopages.service.DocumentsInteractor
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract

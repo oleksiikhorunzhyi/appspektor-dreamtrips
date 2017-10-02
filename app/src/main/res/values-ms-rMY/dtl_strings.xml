@@ -28,9 +28,6 @@
    <string name="dtl_description">Huraian</string>
    <string name="ok">OK</string>
    <string name="continue_option">Teruskan</string>
-   <string name="permission_camera_rationale">Akses ke kamera diperlukan untuk pengesanan</string>
-   <string name="permission_location_rationale">Akses ke lokasi diperlukan untuk pengesanan</string>
-   <string name="no_camera_permission">Aplikasi ini tidak boleh berjalan kerana ia tidak mempunyai kebenaran kamera. Aplikasi kini akan keluar.</string>
    <string name="no_location_permission">Aplikasi ini tidak boleh berjalan kerana ia tidak mempunyai kebenaran lokasi.  Aplikasi kini akan keluar.</string>
    <string name="dtl_checkin_location_error">Perkhidmatan lokasi seharusnya dibolehkan untuk mendaftar masuk</string>
    <string name="dtl_barcode_title">Imbas Kod QR</string>

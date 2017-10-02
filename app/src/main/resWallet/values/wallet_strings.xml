@@ -134,7 +134,8 @@
    <string name="wallet_card_settings_set_up_new_sc">Set up new Smart Card</string>
    <string name="wallet_card_settings_factory_reset_sc">Reset</string>
    <string name="wallet_card_settings_return_sc_factory_settings">Return your Smart Card to it\'s factory settings</string>
-   <string name="wallet_card_settings_power_off">OK</string>
+   <string name="wallet_card_settings_power_off">Power Off</string>
+   <string name="wallet_card_settings_power_off_dialog_ok">OK</string>
    <string name="wallet_card_settings_turn_off_your_sc">Power off your Smart Card</string>
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Manage payment cards without internet connection</string>

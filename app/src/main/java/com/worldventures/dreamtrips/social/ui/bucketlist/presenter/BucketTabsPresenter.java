@@ -1,15 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.AdobeBucketListViewedAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
 import java.util.List;

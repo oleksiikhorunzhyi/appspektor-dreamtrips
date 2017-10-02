@@ -5,20 +5,20 @@ import android.text.TextUtils;
 
 import com.messenger.di.MessengerModule;
 import com.messenger.ui.activity.MessengerActivity;
-import com.messenger.util.CrashlyticsTracker;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.service.analytics.LifecycleEvent;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.utils.CrashlyticsTracker;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
-import com.worldventures.dreamtrips.social.di.SocialAppModule;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.ComponentDescriptionException;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
+import com.worldventures.dreamtrips.social.di.SocialAppModule;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 
@@ -93,7 +93,7 @@ public class SocialMainActivity extends SocialDrawerActivity<MainActivityPresent
 
    private void logComponentDescriptionException(String keyComponent) {
       StringBuilder exceptionMessage = new StringBuilder("The key ").append(keyComponent).append(" is not found in");
-      for (ComponentDescription componentDescription: rootComponentsProvider.getActiveComponents()) {
+      for (ComponentDescription componentDescription : rootComponentsProvider.getActiveComponents()) {
          exceptionMessage.append(" ").append(componentDescription.getKey()).append(",");
       }
       CrashlyticsTracker.trackError(new ComponentDescriptionException(exceptionMessage.toString()));

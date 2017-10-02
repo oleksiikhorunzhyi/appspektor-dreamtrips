@@ -4,12 +4,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
 
 import butterknife.InjectView;
@@ -17,7 +17,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_header)
 public class DtlFilterAttributeHeaderCell
-      extends AbstractDelegateCell<SelectableHeaderItem, CellDelegate<SelectableHeaderItem>> implements SelectableCell {
+      extends BaseAbstractDelegateCell<SelectableHeaderItem, CellDelegate<SelectableHeaderItem>> implements SelectableCell {
 
    private SelectableDelegate selectableDelegate;
 

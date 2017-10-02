@@ -1,11 +1,9 @@
 package com.messenger.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
-
-import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
+import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AttributeMap;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +20,7 @@ public class OpenConversationAction extends BaseAnalyticsAction {
    private static final String MESSENGER_VALUE_TRIP_CHAT = "DreamTrip-%d";
    private static final String MESSENGER_VALUE_TRIP_CHAT_WITH_HOST = "DreamTrip-InDestination-Group-%d";
 
-   @AttributeMap
-   final Map<String, String> attributeMap = new HashMap<>();
+   @AttributeMap final Map<String, String> attributeMap = new HashMap<>();
 
    protected OpenConversationAction(String conversationType, String conversationName) {
       this(conversationType);

@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListActivitiesHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListDiningsHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListLocationsHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.PopularBucketItem;
 

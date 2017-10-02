@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.config.delegate;
 
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.config.service.analytics.UpdateAppAction;
 import com.worldventures.dreamtrips.modules.config.util.VersionComparator;

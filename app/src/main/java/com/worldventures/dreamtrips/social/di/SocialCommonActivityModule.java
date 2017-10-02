@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.social.di;
 
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
-import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
-import com.worldventures.dreamtrips.social.ui.share.presenter.SharePresenter;
-import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
-import com.worldventures.dreamtrips.social.ui.activity.ConfigChangesAwareComponentActivity;
-import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
-import com.worldventures.dreamtrips.social.ui.activity.TransparentSocialComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
+import com.worldventures.dreamtrips.social.ui.activity.ConfigChangesAwareComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
+import com.worldventures.dreamtrips.social.ui.activity.TransparentSocialComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
+import com.worldventures.dreamtrips.social.ui.share.presenter.SharePresenter;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 
 import dagger.Module;
 

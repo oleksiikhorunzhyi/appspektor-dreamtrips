@@ -27,6 +27,7 @@
    <string name="dtl_perks_description">好處</string>
    <string name="dtl_description">描述</string>
    <string name="ok">好</string>
+   <string name="continue_option">繼續</string>
    <string name="permission_camera_rationale">需要連接相機方可進行檢測</string>
    <string name="permission_location_rationale">需要訪問位置方可檢測</string>
    <string name="no_camera_permission">這個應用程序不能運行，因為它不具有相機權限。應用程序現在將退出。</string>
@@ -48,15 +49,15 @@
    <string name="dtl_earn">賺取</string>
    <string name="dtl_dt_points">%1$d DreamTrip點數</string>
    <string name="suggest_merchant">推薦商家</string>
-   <string name="suggest_merchant_title">DT Local 工具</string>
+   <string name="dt_local_tools">DT Local 工具</string>
    <string name="dtl_details_share_title">我將賺取%1$sDreamTrips點數</string>
    <string name="dtl_wait_for_receipt">稍候…上傳收據</string>
    <string name="dtl_wait_for_earn">稍候…賺取點數</string>
    <string name="dtl_estimator_explanation">點數根據在商家最低消費金額和一周哪天計算</string>
    <string name="dtl_photo_upload_error">上傳錯誤。如果問題仍然存在，請聯繫會員服務</string>
    <string name="dtl_open_now">現在營業</string>
-   <string name="dtl_closed_now">休息中</string>
-   <string name="dtl_closed">休息中</string>
+   <string name="dtl_closed_now">現在停業</string>
+   <string name="dtl_closed">現在停業</string>
    <string name="directions">路線</string>
    <string name="checked_in">您已成功簽入</string>
    <string name="point_estimator">點數估計</string>
@@ -77,7 +78,9 @@
    <string name="help">幫助</string>
    <string name="merchants_list_empty_text_additional">- 或 -</string>
    <string name="merchant_working_hours_caption">小時</string>
-   <string name="merchants_no_results_offers_only">對不起，您所在的地區暫無優惠報價提供。\n關閉優惠報價來查看您附近的餐廳。</string>
+   <string name="filter_amenities_error_caption">此次無法加載設施</string>
+   <string name="merchants_no_results">找不到結果\n嘗試調整您的篩選條件或輸入一個新的地址。</string>
+   <string name="merchants_no_results_offers_only">對不起，在您的地區暫時還沒有優惠信息</string>
    <string name="dtl_try_again">請重試</string>
    <string name="dtl_load_more">加載更多</string>
 
@@ -86,7 +89,64 @@
    <string name="dtl_load_merchant_error_caption">此次無法加載結果。</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">食品及飲料</string>
+   <string name="dtlt_search_hint">餐飲</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">篩選</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_dining">餐飲</string>
+   <string name="filter_merchant_entertainment">娛樂</string>
+   <string name="filter_merchant_spas">水療中心</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">評分 &amp; 評論</string>
+   <string name="first_reviews_text">做第一個評價此地的人</string>
+   <string name="format_review_text">%1$d 評價</string>
+   <string name="format_reviews_text">%1$d 評價</string>
+   <string name="reviews_text">評價</string>
+   <string name="without_reviews_text">尚無評價</string>
+   <string name="year_ago_text">%1$d年前</string>
+   <string name="years_ago_text">%1$d年前</string>
+   <string name="month_ago_text">%1$d個月前</string>
+   <string name="months_ago_text">%1$d個月前</string>
+   <string name="week_ago_text">%1$d週前</string>
+   <string name="weeks_ago_text">%1$d週前</string>
+   <string name="day_ago_text">%1$d天前</string>
+   <string name="days_ago_text">%1$d天前</string>
+   <string name="hour_ago_text">%1$d小時前</string>
+   <string name="hours_ago_text">%1$d小時前</string>
+   <string name="min_ago_text">%1$d 分鐘前</string>
+   <string name="sec_ago_text">%1$d 秒前</string>
+   <string name="total_reviews_text"> 閱讀所有評價 (%1$d)</string>
+   <string name="to_be_first_reviews">成為第一個評價的人</string>
+   <string name="tvVerifiedReview">通過驗證的買家</string>
+   <string name="review_comment_minor_letter">您的評價至少需要 %1$d 個字。</string>
+   <string name="review_comment_major_letter">您的評價最多只能 %1$d 個字。</string>
+   <string name="review_comment_discard_changes">您確定想要刪除此評論嗎？</string>
+   <string name="titleReview">評論</string>
+   <string name="hint_comment_review">服務，環境，食物等怎麼樣？</string>
+   <string name="snack_review_success">您的評論已提交，一經通過，就會發佈。</string>
+   <string name="menu_post">帖子</string>
+   <string name="tv_read_more">閱讀更多</string>
+   <string name="action_add_review">添加評價</string>
+   <string name="text_awaiting_approval_review">您在此地點有一個之前的評論等待通過。\n 一旦通過，您就可以再次評論此地點。</string>
+   <string name="comment_review_title_sorry">我們很抱歉</string>
+   <string name="comment_review_profanity_text">“您的評論包含褻瀆內容，無法提交。請編輯您的評論并再次嘗試。”</string>
+   <string name="comment_review_no_internet_message">與 DreamTrips 的服務器連接有問題。請再試一次。</string>
+   <string name="comment_review_no_internet_confirm_text">請重試</string>
+   <string name="comment_review_no_internet_cancel_text">取消</string>
+   <string name="comment_review_error_unknown_title">我們很抱歉</string>
+   <string name="comment_review_error_unknown_text">與 DreamTrips 的服務器連接有問題。請再試一次。</string>
+   <string name="comment_review_error_unknown_confirm">請重試</string>
+   <string name="comment_review_error_unknown_cancel">取消</string>
+   <string name="comment_review_error_limited_reached_content">我們所有的服務器現在都處於繁忙狀態。請稍後再試</string>
+   <string name="comment_review_unrecognized_error_content">糟糕，我們弄壞了一些東西。我們正在努力修復。請明天再嘗試。</string>
+   <string name="comment_review_confirm_text">好</string>
+   <string name="comment_review_error_limited_reached_confirm">好</string>
+   <string name="comment_review_unrecognized_error_confirm">好</string>
+
+   <string name="flag_text_menu">檢舉</string>
+   <string name="review_min_char">最少 %1$d </string>
+   <string name="review_max_char">最多 %1$d</string>
+   <string name="input_major_limit">您的評論已經達到我們的上限。 它已被縮短以適應。</string>
+
+   <string name="text_add_photos_and_videos">添加照片</string>
 </resources>

@@ -3,10 +3,11 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.jaredrummler.android.device.DeviceName;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.api.session.model.ImmutableDevice;
-import com.worldventures.dreamtrips.modules.background_uploading.util.FileSplitter;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProviderImpl;
 
 import javax.inject.Singleton;
 
@@ -36,7 +37,9 @@ public class DeviceModule {
    }
 
    @Provides
-   FileSplitter provideDevice(Context context) {
-      return new FileSplitter(context.getExternalCacheDir());
+   @Singleton
+   AppInfoProvider provideAppInfoProvider(Context context) {
+      return new AppInfoProviderImpl(context);
    }
+
 }

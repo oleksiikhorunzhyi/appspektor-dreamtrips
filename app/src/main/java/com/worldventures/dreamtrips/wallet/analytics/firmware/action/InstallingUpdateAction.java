@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.analytics.firmware.action;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.AdobeTracker;
 
 @AnalyticsEvent(action = "wallet:settings:general:SmartCard Update:Step 4:Installing Update",
                 navigationState = true,

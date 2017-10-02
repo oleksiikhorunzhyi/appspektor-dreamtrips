@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.core.ui.fragment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.core.model.ImagePathHolder;
+
 public class ImageBundle<T extends ImagePathHolder> implements Parcelable {
 
    public final T imagePathHolder;

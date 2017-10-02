@@ -1,13 +1,12 @@
 package com.worldventures.dreamtrips.modules.common.delegate;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 @Singleton

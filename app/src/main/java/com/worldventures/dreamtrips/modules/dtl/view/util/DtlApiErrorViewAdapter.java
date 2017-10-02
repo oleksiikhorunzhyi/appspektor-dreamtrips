@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.view.util;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import io.techery.janet.CancelException;
 import io.techery.janet.helper.JanetActionException;
@@ -53,7 +53,8 @@ public class DtlApiErrorViewAdapter {
    public void handleError(Object action, Throwable exception) {
       if (unhandled(exception)) return;
       //
-      view.informUser(errorHandlingUtils.handleJanetHttpError(action, exception, context.getString(R.string.smth_went_wrong)));
+      view.informUser(errorHandlingUtils.handleJanetHttpError(action, exception, context.getString(R.string.smth_went_wrong),
+            context.getString(R.string.no_connection)));
       view.onApiError();
    }
 

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base;
 
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 
 import java.util.List;

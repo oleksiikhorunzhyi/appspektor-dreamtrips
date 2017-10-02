@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.messenger.util.CrashlyticsTracker;
-import com.techery.spares.adapter.ListAdapter;
+import com.worldventures.core.ui.view.adapter.ListAdapter;
+import com.worldventures.core.utils.CrashlyticsTracker;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 
 import java.util.ArrayList;

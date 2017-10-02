@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;

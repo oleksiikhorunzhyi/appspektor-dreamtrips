@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.modules.trips.model.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.trip.model.Trip;
 import com.worldventures.dreamtrips.api.trip.model.TripDates;
 import com.worldventures.dreamtrips.api.trip.model.TripLocation;
 import com.worldventures.dreamtrips.api.trip.model.TripPrice;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.trips.model.Price;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import io.techery.mappery.MapperyContext;
 

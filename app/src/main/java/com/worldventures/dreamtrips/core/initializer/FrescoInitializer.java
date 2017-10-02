@@ -8,8 +8,8 @@ import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFacto
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 import com.squareup.okhttp.OkHttpClient;
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
 
 import javax.inject.Inject;
 

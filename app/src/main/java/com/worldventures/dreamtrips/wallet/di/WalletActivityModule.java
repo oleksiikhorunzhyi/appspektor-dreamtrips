@@ -4,15 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.bluelinelabs.conductor.Router;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.modules.video.service.MemberVideosInteractor;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.infopages.service.DocumentsInteractor;
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.video.service.MemberVideosInteractor;
+import com.worldventures.core.service.CachedEntityDelegate;
+import com.worldventures.core.service.CachedEntityInteractor;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalActivityModule;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
@@ -344,9 +344,9 @@ public class WalletActivityModule {
    @Provides
    WalletActivityPresenter provideWalletActivityPresenter(SmartCardSyncManager smartCardSyncManager,
          SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler, SmartCardInteractor interactor,
-         WalletBluetoothService bluetoothService, LogoutInteractor logoutInteractor) {
+         WalletBluetoothService bluetoothService, AuthInteractor authInteractor) {
       return new WalletActivityPresenterImpl(smartCardSyncManager, smartCardAnalyticErrorHandler,
-            interactor, bluetoothService, logoutInteractor);
+            interactor, bluetoothService, authInteractor);
    }
 
    @Provides
@@ -777,18 +777,18 @@ public class WalletActivityModule {
    SendFeedbackPresenter providesSendFeedbackPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaInteractor mediaInteractor) {
+         MediaPickerInteractor mediaPickerInteractor) {
       return new SendFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
    }
 
    @Provides
    PaymentFeedbackPresenter providePaymentFeedbackPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaInteractor mediaInteractor) {
+         MediaPickerInteractor mediaPickerInteractor) {
       return new PaymentFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
    }
 
    @Provides

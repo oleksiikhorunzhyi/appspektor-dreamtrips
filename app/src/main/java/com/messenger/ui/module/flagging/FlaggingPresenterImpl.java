@@ -2,14 +2,14 @@ package com.messenger.ui.module.flagging;
 
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.modules.flags.command.GetFlagsCommand;
-import com.worldventures.dreamtrips.modules.flags.service.FlagsInteractor;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.ui.module.ModuleStatefulPresenterImpl;
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
+import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 
 import javax.inject.Inject;
 

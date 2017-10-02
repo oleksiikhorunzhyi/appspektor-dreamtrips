@@ -2,12 +2,13 @@ package com.worldventures.dreamtrips.core.api.uploadery;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.infopages.StaticPageProvider;
+import com.worldventures.core.service.UriPathProvider;
+import com.worldventures.core.utils.HttpUploaderyException;
 import com.worldventures.dreamtrips.api.uploadery.UploadImageHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.core.utils.HttpUploaderyException;
 
 import java.io.File;
 
@@ -26,6 +27,7 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
    @ForApplication @Inject Context context;
    @Inject @Named(JanetUploaderyModule.JANET_UPLOADERY) Janet janet;
    @Inject StaticPageProvider staticPageProvider;
+   @Inject UriPathProvider uriPathProvider;
 
    private final String fileUri;
 
@@ -52,6 +54,11 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
       String uploaderyUrl = staticPageProvider.getUploaderyUrl();
       return janet.createPipe(UploadImageHttpAction.class, Schedulers.io())
             .createObservable(new UploadImageHttpAction(uploaderyUrl, file));
+   }
+
+   @Override
+   public UriPathProvider getUriPathProvider() {
+      return uriPathProvider;
    }
 
    protected abstract Observable.Transformer<ActionState<UploadImageHttpAction>, T> nextAction();

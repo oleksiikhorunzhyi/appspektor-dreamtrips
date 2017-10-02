@@ -8,8 +8,8 @@ import com.messenger.initializer.MessengerInitializer;
 import com.messenger.initializer.PresenceListenerInitializer;
 import com.messenger.initializer.RosterListenerInitializer;
 import com.messenger.initializer.StorageInitializer;
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.di.qualifier.ForApplication;
 
 import dagger.Module;
 import dagger.Provides;

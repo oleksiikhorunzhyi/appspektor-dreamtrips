@@ -4,6 +4,9 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.analytics.GroupSettingsOpenedAction;
+import com.messenger.analytics.LeaveConversationActon;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
 import com.messenger.delegate.chat.command.LeaveChatCommand;
 import com.messenger.entities.DataConversation;
@@ -14,9 +17,10 @@ import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import java.util.List;
 
@@ -29,6 +33,7 @@ import timber.log.Timber;
 public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> implements GroupChatSettingsScreenPresenter {
 
    @Inject ChatGroupCommandsInteractor chatGroupCommandsInteractor;
+   @Inject CropImageDelegate cropImageDelegate;
 
    public BaseGroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
       super(context, injector, conversationId);
@@ -37,7 +42,7 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      TrackingHelper.groupSettingsOpened();
+      analyticsInteractor.analyticsActionPipe().send(new GroupSettingsOpenedAction());
    }
 
    @Override
@@ -55,8 +60,18 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
    }
 
    @Override
+   public void onImagePicked(PhotoPickerModel photoPickerModel) {
+      connectionStatusStream.subscribe(syncStatus -> {
+         if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
+            getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+            // TODO: 9/26/17 remove from wallet
+         } else cropImageDelegate.cropImage(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel));
+      });
+   }
+
+   @Override
    public void onLeaveChatClicked() {
-      TrackingHelper.leaveConversation();
+      analyticsInteractor.analyticsActionPipe().send(new LeaveConversationActon());
       chatGroupCommandsInteractor.getLeaveChatPipe()
             .createObservableResult(new LeaveChatCommand(conversationId))
             .compose(bindViewIoToMainComposer())

@@ -4,15 +4,10 @@ import android.support.annotation.StringRes;
 
 import com.messenger.entities.DataUser;
 
-import rx.Observable;
 import rx.functions.Action0;
 
 public interface GroupChatSettingsScreen extends ChatSettingsScreen {
-   void showAvatarPhotoPicker();
-
-   void hideAvatarPhotoPicker();
-
-   Observable<String> getAvatarImagePathsStream();
+   void openPicker();
 
    void showChangingAvatarProgressBar();
 

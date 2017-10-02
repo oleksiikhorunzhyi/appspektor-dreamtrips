@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command.settings.help;
 
 import android.os.Build;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.feedback.model.BaseFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.Feedback;
@@ -9,10 +10,9 @@ import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmartCardMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetadata;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.service.DeviceInfoProvider;
+import com.worldventures.core.utils.AppVersionNameBuilder;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;

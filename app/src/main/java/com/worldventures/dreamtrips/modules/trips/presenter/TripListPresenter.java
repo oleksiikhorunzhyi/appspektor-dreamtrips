@@ -1,21 +1,26 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemCommand;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.TripItemAnalyticAction;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsAdobeAnalyticAction;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsApptentiveAnalyticAction;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewMapDreamTripsAnalyticAction;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewTripDetailsAnalyticAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 
 import java.util.List;
 
@@ -40,12 +45,15 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    private boolean loading;
    private boolean noMoreItems = false;
 
-   public TripListPresenter() {
+   @Override
+   public void onResume() {
+      super.onResume();
+      analyticsInteractor.analyticsActionPipe().send(new ViewDreamTripsAdobeAnalyticAction());
    }
 
    public void takeView(View view) {
       super.takeView(view);
-      TrackingHelper.dreamTrips(getAccountUserId());
+      analyticsInteractor.analyticsActionPipe().send(new ViewDreamTripsApptentiveAnalyticAction());
       subscribeToLoadTrips();
       subscribeToFilterEvents();
       subscribeToLikesChanges();
@@ -121,7 +129,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    }
 
    public void likeItem(TripModel trip) {
-      trackAction(trip, TrackingHelper.ATTRIBUTE_LIKE);
+      sendAnalyticAction(TripItemAnalyticAction.likeAction(trip.getTripId(), trip.getName()));
       feedInteractor.changeFeedEntityLikedStatusPipe().send(new ChangeFeedEntityLikedStatusCommand(trip));
    }
 
@@ -135,7 +143,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    }
 
    public void addItemToBucket(TripModel tripModel) {
-      trackAction(tripModel, TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST);
+      sendAnalyticAction(TripItemAnalyticAction.addToBucketListAction(tripModel.getTripId(), tripModel.getName()));
       if (!tripModel.isInBucketList()) {
          bucketInteractor.createPipe()
                .createObservable(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
@@ -160,21 +168,23 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       }
    }
 
-   public void openTrip(TripModel tripModel) {
-      trackAction(tripModel, TrackingHelper.ATTRIBUTE_VIEW);
-      view.moveToTripDetails(tripModel);
+   public void openMap() {
+      sendAnalyticAction(new ViewMapDreamTripsAnalyticAction());
+      view.openMap();
    }
 
-   public void trackAction(TripModel tripModel, String actionAtrribute) {
-      if (actionAtrribute.equals(TrackingHelper.ATTRIBUTE_VIEW)) {
-         tripFilterEventDelegate.last()
-               .subscribe(tripsFilterData -> {
-                  TrackingHelper.viewTripDetails(tripModel.getTripId(), tripModel.getName(),
-                        view.isSearchOpened() ? query : "", new TripsFilterDataAnalyticsWrapper(tripsFilterData));
-               });
-      } else {
-         TrackingHelper.actionItemDreamtrips(actionAtrribute, tripModel.getTripId(), tripModel.getName());
-      }
+   public void openTrip(TripModel tripModel) {
+      view.moveToTripDetails(tripModel);
+      tripFilterEventDelegate.last()
+            .subscribe(tripsFilterData -> {
+               ViewTripDetailsAnalyticAction analyticAction = (new ViewTripDetailsAnalyticAction(tripModel.getTripId(),
+                     tripModel.getName(), view.isSearchOpened() ? query : "", new TripsFilterDataAnalyticsWrapper(tripsFilterData)));
+               sendAnalyticAction(analyticAction);
+            });
+   }
+
+   public void sendAnalyticAction(BaseAnalyticsAction action) {
+      analyticsInteractor.analyticsActionPipe().send(action);
    }
 
    public void scrolled() {
@@ -209,5 +219,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       void showItemAddedToBucketList(BucketItem bucketItem);
 
       void moveToTripDetails(TripModel tripModel);
+
+      void openMap();
    }
 }

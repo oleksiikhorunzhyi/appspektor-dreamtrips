@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.background_uploading
 
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.modules.background_uploading.util.UploadTimeEstimator
+import com.worldventures.dreamtrips.social.ui.background_uploading.util.UploadTimeEstimator
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 

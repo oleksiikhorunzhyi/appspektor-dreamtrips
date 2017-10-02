@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+
 import java.util.ArrayList;
 
 public interface DtlReviewsScreen extends DtlScreen {

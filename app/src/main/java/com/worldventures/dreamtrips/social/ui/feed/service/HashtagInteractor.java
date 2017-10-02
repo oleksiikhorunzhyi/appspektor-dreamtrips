@@ -1,0 +1,38 @@
+package com.worldventures.dreamtrips.social.ui.feed.service;
+
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.FeedByHashtagCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.HashtagSuggestionCommand;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import io.techery.janet.ActionPipe;
+import rx.schedulers.Schedulers;
+
+@Singleton
+public class HashtagInteractor {
+
+   private final ActionPipe<HashtagSuggestionCommand> suggestionPipe;
+   private final ActionPipe<FeedByHashtagCommand.Refresh> refreshFeedsByHashtagsPipe;
+   private final ActionPipe<FeedByHashtagCommand.LoadNext> loadNextFeedsByHashtagsPipe;
+
+   @Inject
+   public HashtagInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      suggestionPipe = sessionActionPipeCreator.createPipe(HashtagSuggestionCommand.class, Schedulers.io());
+      refreshFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.Refresh.class, Schedulers.io());
+      loadNextFeedsByHashtagsPipe = sessionActionPipeCreator.createPipe(FeedByHashtagCommand.LoadNext.class, Schedulers.io());
+   }
+
+   public ActionPipe<HashtagSuggestionCommand> getSuggestionPipe() {
+      return suggestionPipe;
+   }
+
+   public ActionPipe<FeedByHashtagCommand.Refresh> getRefreshFeedsByHashtagsPipe() {
+      return refreshFeedsByHashtagsPipe;
+   }
+
+   public ActionPipe<FeedByHashtagCommand.LoadNext> getLoadNextFeedsByHashtagsPipe() {
+      return loadNextFeedsByHashtagsPipe;
+   }
+}

@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.core.janet.cache.storage;
 
 
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.Storage;
 
 import java.util.List;
 

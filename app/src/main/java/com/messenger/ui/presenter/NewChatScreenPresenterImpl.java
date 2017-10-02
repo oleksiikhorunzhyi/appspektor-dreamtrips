@@ -8,7 +8,7 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.view.chat.ChatPath;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;

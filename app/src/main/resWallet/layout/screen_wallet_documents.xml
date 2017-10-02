@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             >
 
-         <com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView
+         <com.worldventures.dreamtrips.social.ui.feed.view.custom.StateRecyclerView
                android:id="@+id/recyclerView"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"

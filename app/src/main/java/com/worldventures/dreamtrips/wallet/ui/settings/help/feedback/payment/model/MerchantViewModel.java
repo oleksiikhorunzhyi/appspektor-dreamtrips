@@ -5,7 +5,7 @@ import android.databinding.Bindable;
 
 import com.worldventures.dreamtrips.BR;
 
-import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.isNotEmpty;
+import static com.worldventures.core.utils.ProjectTextUtils.isNotEmpty;
 
 public class MerchantViewModel extends BaseObservable {
 

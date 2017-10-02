@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.common.view.dialog;
 
 import android.content.Context;
 
+import com.worldventures.core.model.ShareType;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
 
 public class PhotosShareDialog extends ShareDialog {
 

@@ -9,7 +9,7 @@ import com.messenger.api.GetShortProfilesCommand;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 
 import java.util.Collections;
 import java.util.List;

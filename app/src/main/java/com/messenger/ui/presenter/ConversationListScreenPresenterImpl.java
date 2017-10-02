@@ -7,6 +7,9 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.messenger.analytics.ConversationSearchSelectedAction;
+import com.messenger.analytics.ConversationTypeFilterSelectedAction;
+import com.messenger.analytics.ConversationsCountAction;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
@@ -18,10 +21,9 @@ import com.messenger.ui.view.conversation.ConversationListScreen;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.viewstate.ConversationListViewState;
 import com.messenger.util.OpenedConversationTracker;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import java.util.concurrent.TimeUnit;
@@ -94,7 +96,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
    private void trackConversations() {
       conversationsDAO.conversationsCount().take(1).compose(bindView()).subscribe(count -> {
          if (count == 0) waitForSyncAndTrack();
-         else TrackingHelper.setConversationCount(count);
+         else analyticsInteractor.analyticsActionPipe().send(new ConversationsCountAction(count));
       });
    }
 
@@ -103,7 +105,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
             .flatMap(status -> conversationsDAO.conversationsCount())
             .take(1)
             .compose(bindView())
-            .subscribe(TrackingHelper::setConversationCount, e -> Timber.e(e, "Failed to get conv count"));
+            .subscribe(count -> analyticsInteractor.analyticsActionPipe().send(new ConversationsCountAction(count)),
+                  e -> Timber.e(e, "Failed to get conv count"));
    }
 
    private void connectToFilters() {
@@ -219,9 +222,24 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
    public void onConversationsDropdownSelected(ChatTypeItem selectedItem) {
       String lastSelectedType = typeStream.getValue();
       typeStream.onNext(selectedItem.getType());
+      if (lastSelectedType != null) {
+         trackSelectedChatType(selectedItem);
+      }
+   }
 
-      if (lastSelectedType != null)
-         TrackingHelper.conversationType(TextUtils.equals(selectedItem.getType(), GROUP_CHATS) ? TrackingHelper.MESSENGER_VALUE_GROUPS : TrackingHelper.MESSENGER_VALUE_ALL);
+   private void trackSelectedChatType(ChatTypeItem selectedItem) {
+      ConversationTypeFilterSelectedAction action;
+      if (TextUtils.equals(selectedItem.getType(), GROUP_CHATS)) {
+         action = ConversationTypeFilterSelectedAction.groupChats();
+      } else {
+         action = ConversationTypeFilterSelectedAction.allChats();
+      }
+      analyticsInteractor.analyticsActionPipe().send(action);
+   }
+
+   @Override
+   public void onConversationSearchSelected() {
+      analyticsInteractor.analyticsActionPipe().send(new ConversationSearchSelectedAction());
    }
 
    @Override

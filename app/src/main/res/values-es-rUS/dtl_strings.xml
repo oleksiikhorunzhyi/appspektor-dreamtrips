@@ -27,9 +27,7 @@
    <string name="dtl_perks_description">Ventajas</string>
    <string name="dtl_description">Descripción</string>
    <string name="ok">Aceptar</string>
-   <string name="permission_camera_rationale">Acceso a la cámara requerido para la detección</string>
-   <string name="permission_location_rationale">Acceso a la locación requerido para la detección</string>
-   <string name="no_camera_permission">Esta aplicación no pude correr porque no tiene permiso de la cámara.  La aplicación se cerrará ahora.</string>
+   <string name="continue_option">Continuar</string>
    <string name="no_location_permission">Esta aplicación no puede correr porque no tiene permiso de locación. La aplicación se cerrará ahora.</string>
    <string name="dtl_checkin_location_error">Debería estar activados los servicios de ubicación para hacer el registro</string>
    <string name="dtl_barcode_title">Escanea el código QR</string>
@@ -48,7 +46,7 @@
    <string name="dtl_earn">Ganar</string>
    <string name="dtl_dt_points">%1$d DreamTrips Points</string>
    <string name="suggest_merchant">Sugerir Comerciante</string>
-   <string name="suggest_merchant_title">Herramientas de DT Local  </string>
+   <string name="dt_local_tools">Herramientas de DT Local  </string>
    <string name="dtl_details_share_title">Voy a ganar puntos Dreamtrips en %1$s</string>
    <string name="dtl_wait_for_receipt">Espera… Cargando recibo</string>
    <string name="dtl_wait_for_earn">Espera… Ganando puntos</string>
@@ -79,7 +77,7 @@
    <string name="merchant_working_hours_caption">horas</string>
    <string name="filter_amenities_error_caption">No se pudieron cargar las comodidades en este momento</string>
    <string name="merchants_no_results">No se encontraron resultados \n Prueba ajustando los filtros o introduce una ubicación nueva.</string>
-   <string name="merchants_no_results_offers_only">Disculpa, aún no hay ofertas disponibles en tu zona.\n Desactiva las ofertas para ver los restaurantes cerca de ti.</string>
+   <string name="merchants_no_results_offers_only">Disculpa, aún no hay ofertas disponibles en tu zona.</string>
    <string name="dtl_try_again">Intentarlo de nuevo</string>
    <string name="dtl_load_more">Cargar más</string>
 
@@ -88,7 +86,64 @@
    <string name="dtl_load_merchant_error_caption">No se pudieron cargar los resultados en este momento.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Comida y Bebidas</string>
+   <string name="dtlt_search_hint">Restaurantes</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filtros</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_dining">Restaurantes</string>
+   <string name="filter_merchant_entertainment">Entretenimiento</string>
+   <string name="filter_merchant_spas">Spas</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">Evaluar y comentar</string>
+   <string name="first_reviews_text">Se el primero en opinar sobre éste lugar</string>
+   <string name="format_review_text">%1$d Comentar</string>
+   <string name="format_reviews_text">%1$d Comentarios</string>
+   <string name="reviews_text">Opiniones</string>
+   <string name="without_reviews_text">0 Opiniones</string>
+   <string name="year_ago_text">hace %1$d año</string>
+   <string name="years_ago_text">%1$d años atrás</string>
+   <string name="month_ago_text">hace %1$d mes</string>
+   <string name="months_ago_text">%1$d meses atrás</string>
+   <string name="week_ago_text">hace %1$d semana</string>
+   <string name="weeks_ago_text">%1$d semanas atrás</string>
+   <string name="day_ago_text">hace %1$d día</string>
+   <string name="days_ago_text">%1$d días atrás</string>
+   <string name="hour_ago_text">hace %1$d hora</string>
+   <string name="hours_ago_text">%1$d horas atrás</string>
+   <string name="min_ago_text">hace %1$d min</string>
+   <string name="sec_ago_text">hace %1$d seg</string>
+   <string name="total_reviews_text"> Leer todos los comentarios (%1$d)</string>
+   <string name="to_be_first_reviews">Sé el primero en dar tu opinión</string>
+   <string name="tvVerifiedReview">Comprador verificado</string>
+   <string name="review_comment_minor_letter">Tu opinión debe tener al menos %1$d caracteres.</string>
+   <string name="review_comment_major_letter">Tu opinión debe tener por lo menos %1$d caracteres.</string>
+   <string name="review_comment_discard_changes">¿Estás seguro de que deseas borrar este comentario?</string>
+   <string name="titleReview">Comentar</string>
+   <string name="hint_comment_review">¿Cómo estuvo el servicio, el ambiente, la comida, etc.?</string>
+   <string name="snack_review_success">Tu comentario ha sido enviado y se publicará una vez que se apruebe.</string>
+   <string name="menu_post">Publicación</string>
+   <string name="tv_read_more">Leer más</string>
+   <string name="action_add_review">Agregar una opinión</string>
+   <string name="text_awaiting_approval_review">Tienes un comentario anterior para esta ubicación en espera de aprobación.\n Una vez aprobado puedes comentar sobre este lugar nuevamente.</string>
+   <string name="comment_review_title_sorry">Lo sentimos</string>
+   <string name="comment_review_profanity_text">\"Tu opinión contiene palabras obscenas y no se pudo enviar. Por favor, edita tu opinión y vuelve a intentarlo.\"</string>
+   <string name="comment_review_no_internet_message">Hubo un problema al comunicarse con los servicios de DreamTrips. Inténtalo de nuevo.</string>
+   <string name="comment_review_no_internet_confirm_text">Intentarlo de nuevo</string>
+   <string name="comment_review_no_internet_cancel_text">Cancelar</string>
+   <string name="comment_review_error_unknown_title">Lo sentimos</string>
+   <string name="comment_review_error_unknown_text">Hubo un problema al comunicarse con los servicios de DreamTrips. Inténtalo de nuevo.</string>
+   <string name="comment_review_error_unknown_confirm">Intentarlo de nuevo</string>
+   <string name="comment_review_error_unknown_cancel">Cancelar</string>
+   <string name="comment_review_error_limited_reached_content">Todos nuestros servidores están ocupados en este momento. Inténtalo de nuevo en un minuto.</string>
+   <string name="comment_review_unrecognized_error_content">Oops, rompimos algo. Estamos trabajando en la solución. Inténtalo de nuevo mañana.</string>
+   <string name="comment_review_confirm_text">Aceptar</string>
+   <string name="comment_review_error_limited_reached_confirm">Aceptar</string>
+   <string name="comment_review_unrecognized_error_confirm">Aceptar</string>
+
+   <string name="flag_text_menu">Marcar</string>
+   <string name="review_min_char">%1$d min </string>
+   <string name="review_max_char">%1$d max</string>
+   <string name="input_major_limit">Tu comentario ha llegado a al límite. Se ha acortado para adaptarse.</string>
+
+   <string name="text_add_photos_and_videos">Agregar fotos</string>
 </resources>

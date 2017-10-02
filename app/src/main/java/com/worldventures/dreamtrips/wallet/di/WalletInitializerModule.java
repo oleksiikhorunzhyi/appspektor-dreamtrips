@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.di;
 
-import com.techery.spares.application.AppInitializer;
+import com.worldventures.core.di.AppInitializer;
 import com.worldventures.dreamtrips.wallet.di.initializer.SnappyStorageManagerInitializer;
 import com.worldventures.dreamtrips.wallet.initializer.LostCardInitializer;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInitializer;

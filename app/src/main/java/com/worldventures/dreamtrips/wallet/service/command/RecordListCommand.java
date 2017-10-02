@@ -1,16 +1,25 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.DummyRecordCreator;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class RecordListCommand extends CachedValueCommand<List<Record>> {
+public class RecordListCommand extends CachedValueCommand<List<Record>> implements InjectableAction {
+
+   @Inject WalletFeatureHelper featureHelper;
+   @Inject SmartCardInteractor smartCardInteractor;
 
    public static RecordListCommand fetch() {
       return new RecordListCommand();
@@ -108,6 +117,18 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> {
 
       private Record remapRecord(Record record) {
          return record.id().equals(editedRecord.id()) ? editedRecord : record;
+      }
+   }
+
+   @Override
+   protected void run(CommandCallback<List<Record>> callback) throws Throwable {
+      if (featureHelper.isSampleCardMode()) {
+         smartCardInteractor.smartCardUserPipe()
+               .createObservableResult(SmartCardUserCommand.fetch())
+               .map(command -> DummyRecordCreator.createRecords(command.getResult(), "0"))
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         super.run(callback);
       }
    }
 }

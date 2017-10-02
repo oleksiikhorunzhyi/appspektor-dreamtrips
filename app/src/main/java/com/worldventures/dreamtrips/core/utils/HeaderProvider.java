@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.core.utils;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import com.worldventures.core.utils.LocaleHelper;
+import com.worldventures.core.utils.AppVersionNameBuilder;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

@@ -27,9 +27,7 @@
    <string name="dtl_perks_description">Extraförmåner</string>
    <string name="dtl_description">Beskrivning</string>
    <string name="ok">OK</string>
-   <string name="permission_camera_rationale">Åtkomst till kameran krävs för detektion</string>
-   <string name="permission_location_rationale">Tillgång till platsen krävs för detektion</string>
-   <string name="no_camera_permission">Denna applikation kan inte startas eftersom den inte har kameratillstånd. Programmet kommer nu att avslutas. </string>
+   <string name="continue_option">Fortsätt</string>
    <string name="no_location_permission">Denna applikation kan inte startas eftersom den inte har platstillstånd. Programmet kommer nu att avslutas.</string>
    <string name="dtl_checkin_location_error">Platstjänster måste aktiveras för att du ska kunna checka in</string>
    <string name="dtl_barcode_title">Skanna QR-kod</string>
@@ -48,7 +46,7 @@
    <string name="dtl_earn">Tjäna</string>
    <string name="dtl_dt_points">%1$d DreamTrips Points</string>
    <string name="suggest_merchant">Föreslå säljare</string>
-   <string name="suggest_merchant_title">Verktyg för DT Local</string>
+   <string name="dt_local_tools">Verktyg för DT Local</string>
    <string name="dtl_details_share_title">Jag tjänade just Dreamtrips-poäng på %1$s</string>
    <string name="dtl_wait_for_receipt">Vänta… Laddar upp kvitto</string>
    <string name="dtl_wait_for_earn">Vänta… Samlar in poäng</string>
@@ -79,7 +77,7 @@
    <string name="merchant_working_hours_caption">timmar</string>
    <string name="filter_amenities_error_caption">Det gick inte att läsa in bekvämligheter just nu</string>
    <string name="merchants_no_results">Inga resultat hittades \n Pröva med att justera filtren eller ange en ny plats.</string>
-   <string name="merchants_no_results_offers_only">Tyvärr finns inga erbjudanden tillgängliga i ditt område ännu.\n Inaktivera erbjudanden för att visa restauranger nära dig.</string>
+   <string name="merchants_no_results_offers_only">Tyvärr finns inga erbjudanden tillgängliga i ditt område ännu.</string>
    <string name="dtl_try_again">Försök igen</string>
    <string name="dtl_load_more">Läs in mer</string>
 
@@ -88,7 +86,59 @@
    <string name="dtl_load_merchant_error_caption">Det gick inte att läsa in resultaten just nu.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Mat och dryck</string>
+   <string name="dtlt_search_hint">Middagar</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filter</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_dining">Middagar</string>
+   <string name="filter_merchant_entertainment">Underhållning</string>
+   <string name="filter_merchant_spas">Span</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">Betygsätt och ge ditt omdöme</string>
+   <string name="first_reviews_text">Bli den första att recensera denna plats</string>
+   <string name="format_review_text">%1$d Omdöme</string>
+   <string name="format_reviews_text">%1$d Omdömen</string>
+   <string name="reviews_text">Omdömen</string>
+   <string name="without_reviews_text">0 Omdömen</string>
+   <string name="years_ago_text">%1$d år sedan</string>
+   <string name="months_ago_text">%1$d månader sedan</string>
+   <string name="weeks_ago_text">%1$d veckor sedan</string>
+   <string name="days_ago_text">%1$d dagar sedan</string>
+   <string name="hours_ago_text">%1$d timmar sedan</string>
+   <string name="min_ago_text">%1$d minuter sedan</string>
+   <string name="sec_ago_text">%1$d sekunder sedan</string>
+   <string name="total_reviews_text"> Läs alla omdömen (%1$d)</string>
+   <string name="to_be_first_reviews">Bli först med att ge ditt omdöme</string>
+   <string name="tvVerifiedReview">Verifierad köpare</string>
+   <string name="review_comment_minor_letter">Ditt omdöme måste vara minst %1$d tecken.</string>
+   <string name="review_comment_major_letter">Ditt omdöme måste vara mindre än %1$d tecken.</string>
+   <string name="review_comment_discard_changes">Är du säker på att du vill ta bort det här omdömet?</string>
+   <string name="titleReview">Omdöme</string>
+   <string name="hint_comment_review">Hur var service, omgivningar, mat osv.?</string>
+   <string name="snack_review_success">Ditt omdöme har skickats och kommer att visas så snart det har blivit godkänt.</string>
+   <string name="menu_post">Publicera</string>
+   <string name="tv_read_more">Läs mer</string>
+   <string name="action_add_review">Omdöme</string>
+   <string name="text_awaiting_approval_review">Du har ett tidigare omdöme för den här platsen som väntar på godkännande.\n När det har godkänts kan du göra ett omdöme för den här platsen igen.</string>
+   <string name="comment_review_title_sorry">Vi är ledsna</string>
+   <string name="comment_review_profanity_text">\"Ditt omdöme innehåller svordomar och kunde inte lämnas. Redigera ditt omdöme och försök igen.\"</string>
+   <string name="comment_review_no_internet_message">Det uppstod ett problem med att kommunicera med Dreamtrips-servrarna. Försök igen.</string>
+   <string name="comment_review_no_internet_confirm_text">Försök igen</string>
+   <string name="comment_review_no_internet_cancel_text">Avbryt</string>
+   <string name="comment_review_error_unknown_title">Vi är ledsna</string>
+   <string name="comment_review_error_unknown_text">Det uppstod ett problem med att kommunicera med Dreamtrips-servrarna. Försök igen.</string>
+   <string name="comment_review_error_unknown_confirm">Försök igen</string>
+   <string name="comment_review_error_unknown_cancel">Avbryt</string>
+   <string name="comment_review_error_limited_reached_content">Alla våra servrar är upptagna just nu. Försök igen om en minut</string>
+   <string name="comment_review_unrecognized_error_content">Oj, någonting gick sönder Vi jobbar på att fixa det. Försök igen imorgon.</string>
+   <string name="comment_review_confirm_text">OK</string>
+   <string name="comment_review_error_limited_reached_confirm">OK</string>
+   <string name="comment_review_unrecognized_error_confirm">OK</string>
+
+   <string name="flag_text_menu">Flagga</string>
+   <string name="review_min_char">min %1$d </string>
+   <string name="review_max_char">max %1$d</string>
+   <string name="input_major_limit">Ditt omdöme har nått vår maxgräns. Det har förkortats för att passa in.</string>
+
+   <string name="text_add_photos_and_videos">Lägg till foton</string>
 </resources>

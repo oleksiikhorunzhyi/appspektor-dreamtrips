@@ -134,7 +134,7 @@
             app:layout_constraintTop_toBottomOf="@+id/feedback_add_photos"
             />
 
-      <com.worldventures.dreamtrips.modules.infopages.view.custom.AttachmentImagesHorizontalView
+      <com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView
             android:id="@+id/feedback_attachments"
             android:layout_width="0dp"
             android:layout_height="79dp"

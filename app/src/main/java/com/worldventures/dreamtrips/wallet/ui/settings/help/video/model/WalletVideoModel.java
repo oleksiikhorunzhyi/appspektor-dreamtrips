@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.video.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.core.modules.video.model.Video;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.holder.VideoTypeFactory;
 

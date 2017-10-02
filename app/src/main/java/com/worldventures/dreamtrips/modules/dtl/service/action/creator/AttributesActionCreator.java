@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action.creator;
 
 
-import com.worldventures.dreamtrips.api.dtl.attributes.AttributesHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.CategoryAttributesHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AttributesActionParams;
 

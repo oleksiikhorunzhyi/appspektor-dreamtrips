@@ -10,8 +10,9 @@ import android.widget.FrameLayout;
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.worldventures.core.ui.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.core.module.LegacyActivityModule;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.ui.common.LocationScreenComponent;
@@ -91,6 +92,7 @@ public class WalletActivity extends BaseActivity implements WalletActivityView {
    @Override
    protected List<Object> getModules() {
       List<Object> modules = super.getModules();
+      modules.add(new LegacyActivityModule(this));
       modules.add(new WalletActivityModule());
       return modules;
    }

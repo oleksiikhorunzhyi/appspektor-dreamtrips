@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.common.activity;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
+import com.worldventures.core.modules.auth.api.command.LogoutCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardSyncManager;
@@ -25,15 +25,15 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
 
    private final SmartCardInteractor interactor;
    private final WalletBluetoothService bluetoothService;
-   private final LogoutInteractor logoutInteractor;
+   private final AuthInteractor authInteractor;
 
    public WalletActivityPresenterImpl(SmartCardSyncManager smartCardSyncManager, SmartCardAnalyticErrorHandler smartCardAnalyticErrorHandler,
-         SmartCardInteractor interactor, WalletBluetoothService bluetoothService, LogoutInteractor logoutInteractor) {
+         SmartCardInteractor interactor, WalletBluetoothService bluetoothService, AuthInteractor authInteractor) {
       this.smartCardSyncManager = smartCardSyncManager;
       this.smartCardAnalyticErrorHandler = smartCardAnalyticErrorHandler;
       this.interactor = interactor;
       this.bluetoothService = bluetoothService;
-      this.logoutInteractor = logoutInteractor;
+      this.authInteractor = authInteractor;
    }
 
    @Override
@@ -58,7 +58,7 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    }
 
    public void logout() {
-      logoutInteractor.logoutPipe().send(new LogoutCommand());
+      authInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    @Override

@@ -4,11 +4,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.messenger.ui.presenter.MessengerPresenter;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
-import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
+import com.worldventures.core.service.analytics.MonitoringHelper;
 
 public abstract class MessengerPathLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>, T extends StyledPath> extends MessengerLinearLayout<V, P> implements PathView<T>, InjectorHolder {
 

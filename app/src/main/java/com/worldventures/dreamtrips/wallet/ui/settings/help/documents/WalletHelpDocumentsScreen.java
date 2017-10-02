@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.documents;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
+import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 

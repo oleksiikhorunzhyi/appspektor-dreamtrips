@@ -1,21 +1,26 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.modules.infopages.StaticPageProvider;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayViewFactory;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -34,6 +39,7 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    @InjectView(R.id.login_edittexts_holder) View loginEditTextsHolder;
    @InjectView(R.id.login_mode_holder) View loginModeHolder;
    private SocialConnectionOverlay connectionOverlay;
+   @Inject StaticPageProvider staticPageProvider;
 
    @Override
    protected LaunchActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -58,6 +64,23 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    public void onLoginClick() {
       SoftInputUtil.hideSoftInputMethod(this);
       getPresentationModel().loginAction();
+   }
+
+   @OnClick(R.id.tw_forgot_member_id)
+   void onForgotMemberIdClicked() {
+      openInBrowser(staticPageProvider.getForgotMemberIdUrl());
+   }
+
+   @OnClick(R.id.tw_forgot_password)
+   void onForgotPasswordClicked() {
+      openInBrowser(staticPageProvider.getForgotPasswordUrl());
+   }
+
+   private void openInBrowser(String url) {
+      Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+      if (intent.resolveActivity(getPackageManager()) != null) {
+         startActivity(intent);
+      }
    }
 
    @Override

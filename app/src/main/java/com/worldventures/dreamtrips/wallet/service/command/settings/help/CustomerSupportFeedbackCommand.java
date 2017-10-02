@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.feedback.SendFeedbackCustomerSupportHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmartCardFeedback;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardFeedback;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 
 import java.util.List;
 

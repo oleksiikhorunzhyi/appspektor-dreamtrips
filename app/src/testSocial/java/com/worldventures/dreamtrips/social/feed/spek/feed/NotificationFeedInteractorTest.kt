@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.social.feed.spek.notification
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
+import com.worldventures.core.converter.Converter
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.entity.model.BaseEntityHolder
@@ -15,35 +18,34 @@ import com.worldventures.dreamtrips.api.post.model.response.ImmutableLocation
 import com.worldventures.dreamtrips.api.post.model.response.ImmutablePostSocialized
 import com.worldventures.dreamtrips.api.post.model.response.PostSocialized
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.feed.converter.FeedItemConverter
-import com.worldventures.dreamtrips.modules.feed.converter.LinksConverter
-import com.worldventures.dreamtrips.modules.feed.converter.PostSocializedConverter
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost
-import com.worldventures.dreamtrips.modules.feed.service.NotificationFeedInteractor
-import com.worldventures.dreamtrips.modules.feed.service.command.GetNotificationsCommand
-import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationMemoryStorage
-import com.worldventures.dreamtrips.modules.feed.service.storage.NotificationsStorage
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter
-import com.worldventures.dreamtrips.modules.mapping.converter.ShortProfilesConverter
+import com.worldventures.dreamtrips.social.domain.mapping.ShortProfilesConverter
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
+import com.worldventures.dreamtrips.social.ui.feed.converter.FeedItemConverter
+import com.worldventures.dreamtrips.social.ui.feed.converter.LinksConverter
+import com.worldventures.dreamtrips.social.ui.feed.converter.PostSocializedConverter
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem
+import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
+import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetNotificationsCommand
+import com.worldventures.dreamtrips.social.ui.feed.service.storage.NotificationMemoryStorage
+import com.worldventures.dreamtrips.social.ui.feed.service.storage.NotificationsStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
-import org.jetbrains.spek.api.dsl.*
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import java.util.*
 import kotlin.test.assertTrue
 
 class NotificationFeedInteractorTest : BaseSpec({
    describe("Notification feed actions", {
-      setup({ setOf(NotificationsStorage(mockDb, mockMemoryStorage)) }) { mockHttpService() }
+      setup({ setOf(NotificationsStorage(socialDb, mockMemoryStorage)) }) { mockHttpService() }
 
       context("Refresh notifications") {
          context("Notifications cache is empty") {
@@ -125,7 +127,7 @@ class NotificationFeedInteractorTest : BaseSpec({
    })
 }) {
    companion object FeedCompanion {
-      val mockDb: SnappyRepository = spy()
+      val socialDb: SocialSnappyRepository = spy()
       val mockMemoryStorage: NotificationMemoryStorage = spy()
 
       lateinit var feedInteractor: NotificationFeedInteractor

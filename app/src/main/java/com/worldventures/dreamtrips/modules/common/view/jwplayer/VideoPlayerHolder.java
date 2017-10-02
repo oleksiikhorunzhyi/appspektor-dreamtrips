@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.jwplayer;
 import android.view.ViewGroup;
 
 import com.longtailvideo.jwplayer.JWPlayerView;
-import com.worldventures.dreamtrips.modules.video.view.custom.VideoView;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
 public class VideoPlayerHolder {
 

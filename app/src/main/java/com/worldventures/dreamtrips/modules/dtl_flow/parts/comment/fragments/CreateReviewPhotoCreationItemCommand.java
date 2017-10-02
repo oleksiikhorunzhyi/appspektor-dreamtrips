@@ -4,11 +4,11 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.content.Context;
 import android.support.v4.util.Pair;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.utils.ImageUtils;
+import com.worldventures.core.utils.Size;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.FaceRecognitionUtils;
 
 import javax.inject.Inject;
 
@@ -22,17 +22,15 @@ public class CreateReviewPhotoCreationItemCommand extends Command<PhotoReviewCre
    @Inject Context context;
 
    private PhotoPickerModel photoGalleryModel;
-   private MediaAttachment.Source source;
 
-   public CreateReviewPhotoCreationItemCommand(PhotoPickerModel photoGalleryModel, MediaAttachment.Source source) {
+   public CreateReviewPhotoCreationItemCommand(PhotoPickerModel photoGalleryModel) {
       this.photoGalleryModel = photoGalleryModel;
-      this.source = source;
    }
 
    @Override
    protected void run(CommandCallback<PhotoReviewCreationItem> callback) throws Throwable {
       ImageUtils.getBitmap(context, photoGalleryModel.getUri(), 300, 300)
-            .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable),
+            .compose(bitmapObservable -> Observable.zip(FaceRecognitionUtils.getRecognizedFaces(context, bitmapObservable),
                   bitmapObservable, Pair::new))
             .map(pair -> {
                PhotoReviewCreationItem item = new PhotoReviewCreationItem();
@@ -43,7 +41,7 @@ public class CreateReviewPhotoCreationItemCommand extends Command<PhotoReviewCre
                item.setWidth(imageSize != null ? imageSize.getWidth() : pair.second.getWidth());
                item.setHeight(imageSize != null ? imageSize.getHeight() : pair.second.getHeight());
                item.setSuggestions(pair.first);
-               item.setSource(source);
+               item.setSource(photoGalleryModel.getSource());
                item.setCanDelete(true);
                item.setCanEdit(true);
                return item;

@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
 
 @Layout(R.layout.adapter_item_progress)
-public class ProgressCell extends AbstractCell<ProgressCell.Model> {
+public class ProgressCell extends BaseAbstractCell<ProgressCell.Model> {
 
    public ProgressCell(View view) {
       super(view);

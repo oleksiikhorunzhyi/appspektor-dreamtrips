@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;

@@ -95,7 +95,7 @@
             android:layout_above="@+id/container_post"
             />
 
-      <com.worldventures.dreamtrips.modules.feed.view.custom.PhotoStripView
+      <com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView
             android:id="@+id/photo_strip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -4,10 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
+import com.worldventures.core.utils.ProjectTextUtils;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLocale;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.WalletHelpVideoScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
 

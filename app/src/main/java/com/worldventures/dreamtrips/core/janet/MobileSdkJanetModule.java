@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.core.janet;
 
-import android.content.Context;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
-import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.DateTimeDeserializer;
 import com.worldventures.dreamtrips.api.api_common.converter.DateTimeSerializer;
@@ -19,8 +17,6 @@ import com.worldventures.dreamtrips.core.janet.api_lib.CredentialsProvider;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthRefresher;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthStorage;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsCredentialsProvider;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.mobilesdk.AuthProviders;
 import com.worldventures.dreamtrips.mobilesdk.AuthRefresher;
 import com.worldventures.dreamtrips.mobilesdk.ConfigProviders;
@@ -28,7 +24,7 @@ import com.worldventures.dreamtrips.mobilesdk.DreamTripsErrorParser;
 import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
 import com.worldventures.dreamtrips.mobilesdk.authentication.AuthData;
 import com.worldventures.dreamtrips.mobilesdk.util.HttpErrorReasonParser;
-import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.modules.auth.service.ReLoginInteractor;
 
 import java.net.CookieManager;
 import java.util.Date;
@@ -168,8 +164,8 @@ public class MobileSdkJanetModule {
 
    @Singleton
    @Provides
-   HttpErrorHandlingUtil provideHttpErrorHandlingUtils(@ForApplication Context context, DreamTripsErrorParser errorParser) {
-      return new HttpErrorHandlingUtil(context, errorParser);
+   HttpErrorHandlingUtil provideHttpErrorHandlingUtils(DreamTripsErrorParser errorParser) {
+      return new HttpErrorHandlingUtil(errorParser);
    }
 
 }

@@ -5,15 +5,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.worldventures.core.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.social.ui.activity.PlayerActivity;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.CoreNavigator;
 
 import java.util.List;

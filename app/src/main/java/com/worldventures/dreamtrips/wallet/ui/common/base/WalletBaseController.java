@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
-import com.techery.spares.ui.activity.InjectingActivity;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
@@ -39,7 +39,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    protected void onFinishInflate(View view) {
       //noinspection all
-      this.objectGraph = (ObjectGraph) view.getContext().getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
+      this.objectGraph = (ObjectGraph) view.getContext().getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
       this.walletScreenDelegate = WalletScreenDelegate.create(view, supportConnectionStatusLabel(), supportHttpConnectionStatusLabel());
    }

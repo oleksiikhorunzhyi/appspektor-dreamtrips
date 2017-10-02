@@ -2,7 +2,7 @@ package com.messenger.delegate.user;
 
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import java.util.List;
 

@@ -9,16 +9,17 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
+import com.worldventures.core.ui.view.routing.BaseRouter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
-import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class PhotoNotificationFactory extends NotificationFactory {
    }
 
    private PendingIntent createPhotoIntent(TripImagesFullscreenArgs bundle) {
-      Intent resultIntent = new Intent(context, ComponentActivity.class);
+      Intent resultIntent = new Intent(context, SocialComponentActivity.class);
       //set args to pending intent
       Bundle args = new Bundle();
       args.putSerializable(ComponentPresenter.ROUTE, Route.TRIP_IMAGES_FULLSCREEN);
@@ -56,10 +57,10 @@ public class PhotoNotificationFactory extends NotificationFactory {
             .visible(false)
             .build());
       args.putParcelable(ComponentPresenter.EXTRA_DATA, bundle);
-      resultIntent.putExtra(ComponentPresenter.COMPONENT_EXTRA, args);
+      resultIntent.putExtra(BaseRouter.COMPONENT_EXTRA, args);
       //
       TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-      stackBuilder.addParentStack(ComponentActivity.class);
+      stackBuilder.addParentStack(SocialComponentActivity.class);
       stackBuilder.addNextIntent(resultIntent);
       //
       return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);

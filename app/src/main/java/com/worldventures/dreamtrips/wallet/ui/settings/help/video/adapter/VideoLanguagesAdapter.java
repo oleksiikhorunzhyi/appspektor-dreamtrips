@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLanguage;
 
 import java.util.List;
 

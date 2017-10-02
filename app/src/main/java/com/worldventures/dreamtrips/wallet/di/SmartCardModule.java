@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalModule;
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardConverterModule;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;

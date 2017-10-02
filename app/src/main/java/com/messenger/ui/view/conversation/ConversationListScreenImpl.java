@@ -32,10 +32,9 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -228,7 +227,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
          MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-               TrackingHelper.conversationSearchSelected();
+               getPresenter().onConversationSearchSelected();
                return true;
             }
 

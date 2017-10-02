@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.nxt;
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.ImmutableMultiRequestBody;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiRequestBody;

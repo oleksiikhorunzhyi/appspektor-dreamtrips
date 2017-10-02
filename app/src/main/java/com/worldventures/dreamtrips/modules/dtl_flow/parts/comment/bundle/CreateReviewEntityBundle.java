@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 public class CreateReviewEntityBundle implements Parcelable {
 
-   private MediaAttachment mediaAttachment;
+   private MediaPickerAttachment mediaAttachment;
    private boolean showPickerImmediately;
    private Origin origin; // origin is needed for analytics
    private int minCharactersAllow;
@@ -35,12 +35,12 @@ public class CreateReviewEntityBundle implements Parcelable {
       this.isVerified = isVerified;
    }
 
-   public CreateReviewEntityBundle(MediaAttachment mediaAttachment, Origin origin) {
+   public CreateReviewEntityBundle(MediaPickerAttachment mediaAttachment, Origin origin) {
       this.mediaAttachment = mediaAttachment;
       this.origin = origin;
    }
 
-   public MediaAttachment getMediaAttachment() {
+   public MediaPickerAttachment getMediaAttachment() {
       return mediaAttachment;
    }
 
@@ -101,7 +101,7 @@ public class CreateReviewEntityBundle implements Parcelable {
    }
 
    protected CreateReviewEntityBundle(Parcel in) {
-      this.mediaAttachment = in.readParcelable(MediaAttachment.class.getClassLoader());
+      this.mediaAttachment = in.readParcelable(MediaPickerAttachment.class.getClassLoader());
       this.showPickerImmediately = in.readByte() != 0;
       int tmpOrigin = in.readInt();
       this.origin = tmpOrigin == -1 ? null : Origin.values()[tmpOrigin];

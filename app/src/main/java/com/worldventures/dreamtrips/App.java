@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
-import com.techery.spares.application.BaseApplicationWithInjector;
+import com.worldventures.core.di.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.core.module.AppModule;
 
 public class App extends BaseApplicationWithInjector {

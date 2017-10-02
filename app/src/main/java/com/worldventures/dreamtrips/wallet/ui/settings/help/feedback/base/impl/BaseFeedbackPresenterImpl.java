@@ -4,15 +4,15 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.infopages.service.CancelableFeedbackAttachmentsManager;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.infopages.service.CancelableFeedbackAttachmentsManager;
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
@@ -35,17 +35,17 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    private final FeedbackInteractor feedbackInteractor;
    private final WalletSettingsInteractor settingsInteractor;
-   private final MediaInteractor mediaInteractor;
+   private final MediaPickerInteractor mediaPickerInteractor;
    private final CancelableFeedbackAttachmentsManager attachmentsManager;
 
    private int attachmentsCount;
 
    public BaseFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
+         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor, MediaPickerInteractor mediaPickerInteractor) {
       super(navigator, deviceConnectionDelegate);
       this.feedbackInteractor = feedbackInteractor;
       this.settingsInteractor = walletSettingsInteractor;
-      this.mediaInteractor = mediaInteractor;
+      this.mediaPickerInteractor = mediaPickerInteractor;
       this.attachmentsManager = new CancelableFeedbackAttachmentsManager(feedbackInteractor.uploadAttachmentPipe());
    }
 
@@ -62,7 +62,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
    }
 
    private void observeAttachmentsPreparation() {
-      mediaInteractor.mediaAttachmentPreparePipe()
+      mediaPickerInteractor.mediaAttachmentPreparePipe()
             .observe()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
@@ -178,7 +178,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    @Override
    public void handleAttachedImages(List<PhotoPickerModel> models) {
-      mediaInteractor.mediaAttachmentPreparePipe().send(new MediaAttachmentPrepareCommand(models));
+      mediaPickerInteractor.mediaAttachmentPreparePipe().send(new MediaAttachmentPrepareCommand(models));
    }
 
    @Override

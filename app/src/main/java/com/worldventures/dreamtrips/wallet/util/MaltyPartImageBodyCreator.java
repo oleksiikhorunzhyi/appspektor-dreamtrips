@@ -17,7 +17,7 @@ import io.techery.janet.body.FileBody;
 import io.techery.janet.http.model.MultipartRequestBody.PartBody;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils.getBitmap;
+import static com.worldventures.core.utils.ImageUtils.getBitmap;
 import static rx.Observable.fromCallable;
 
 public class MaltyPartImageBodyCreator {

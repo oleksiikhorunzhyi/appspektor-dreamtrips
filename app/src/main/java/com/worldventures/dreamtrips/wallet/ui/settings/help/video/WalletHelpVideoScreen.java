@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.video;
 
-import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
-import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.core.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVideoModel;
 

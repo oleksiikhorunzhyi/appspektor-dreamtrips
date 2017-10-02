@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.records.detail.impl;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;

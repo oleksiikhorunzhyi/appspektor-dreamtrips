@@ -4,25 +4,26 @@ import android.content.Context
 import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import com.techery.spares.session.SessionHolder
-import com.techery.spares.storage.complex_objects.Optional
+import com.worldventures.core.converter.Converter
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.core.model.User
+import com.worldventures.core.model.session.SessionHolder
+import com.worldventures.core.model.session.UserSession
+import com.worldventures.core.modules.infopages.StaticPageProvider
+import com.worldventures.core.service.UploadingFileManager
+import com.worldventures.core.service.UriPathProvider
+import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSimple
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketStatus
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketType
 import com.worldventures.dreamtrips.api.bucketlist.model.ImmutableBucketItemSimple
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.bucketlist.model.converter.*
-import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
-import com.worldventures.dreamtrips.modules.common.delegate.system.UriPathProvider
-import com.worldventures.dreamtrips.modules.common.model.User
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
-import com.worldventures.dreamtrips.modules.mapping.converter.*
-import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager
+import com.worldventures.dreamtrips.social.domain.mapping.*
+import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
@@ -44,7 +45,7 @@ abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSp
       lateinit var bucketInteractor: BucketInteractor
 
       fun setup(storageSet: () -> Set<ActionStorage<*>>,
-                mockDb: SnappyRepository,
+                mockDb: SocialSnappyRepository,
                 httpService: () -> MockHttpActionService) {
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
@@ -57,7 +58,7 @@ abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSp
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { getMappery() }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(SocialSnappyRepository::class.java) { mockDb }
          daggerCommandActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
          daggerCommandActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
          daggerCommandActionService.registerProvider(UploaderyInteractor::class.java) { UploaderyInteractor(janet) }

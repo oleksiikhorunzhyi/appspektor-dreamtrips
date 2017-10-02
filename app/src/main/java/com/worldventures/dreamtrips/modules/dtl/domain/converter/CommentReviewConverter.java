@@ -1,13 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.CommentReview;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Errors;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.FlaggingReviewParams;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableCommentReview;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableFlaggingReviewParams;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewImages;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.UserImage;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

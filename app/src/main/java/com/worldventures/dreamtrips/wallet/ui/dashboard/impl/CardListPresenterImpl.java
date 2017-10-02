@@ -4,8 +4,8 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.util.Pair;
 import android.view.View;
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.analytics.AddPaymentCardAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
@@ -137,7 +137,9 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .observeSuccessWithReplay()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(command -> handleSyncRecordStatus(command.getResult()));
+            .doOnUnsubscribe(() -> Timber.d("observeSyncRecordsStatus doOnUnsubscribe"))
+            .doOnSubscribe(() -> Timber.d("observeSyncRecordsStatus doOnSubscribe"))
+            .subscribe(command -> handleSyncRecordStatus(command.getResult()), Timber::e);
 
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()

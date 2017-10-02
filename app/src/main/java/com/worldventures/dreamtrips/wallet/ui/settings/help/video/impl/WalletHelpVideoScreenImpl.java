@@ -12,13 +12,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.core.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
-import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.MultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.SimpleMultiHolderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -102,23 +102,23 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    private WalletVideoCallback videoActionsCallback = new WalletVideoCallback() {
 
       @Override
-      public void onDownloadVideo(CachedModel entity) {
-         getPresenter().downloadVideo(entity);
+      public void onDownloadVideo(WalletVideoModel video) {
+         getPresenter().downloadVideo(video.getVideo().getCacheEntity());
       }
 
       @Override
-      public void onDeleteVideo(CachedModel entity) {
-         getPresenter().deleteCachedVideo(entity);
+      public void onDeleteVideo(WalletVideoModel video) {
+         getPresenter().deleteCachedVideo(video.getVideo().getCacheEntity());
       }
 
       @Override
-      public void onCancelCachingVideo(CachedModel entity) {
-         getPresenter().cancelCachingVideo(entity);
+      public void onCancelCachingVideo(WalletVideoModel video) {
+         getPresenter().cancelCachingVideo(video.getVideo().getCacheEntity());
       }
 
       @Override
-      public void onPlayVideoClicked(WalletVideoModel entity) {
-         getPresenter().onPlayVideo(entity);
+      public void onPlayVideoClicked(WalletVideoModel video) {
+         getPresenter().onPlayVideo(video);
       }
    };
 

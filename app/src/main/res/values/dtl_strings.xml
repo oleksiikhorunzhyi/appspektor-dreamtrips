@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Select location</string>
@@ -28,9 +28,6 @@
    <string name="dtl_description">Description</string>
    <string name="ok">OK</string>
    <string name="continue_option">CONTINUE</string>
-   <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
-   <string name="permission_location_rationale">Access to the location is needed for detection</string>
-   <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
    <string name="no_location_permission">This application cannot run because it does not have the location permission. The application will now exit.</string>
    <string name="dtl_checkin_location_error">Location services should be enabled to check in</string>
    <string name="dtl_barcode_title">Scan QR Code</string>
@@ -49,7 +46,7 @@
    <string name="dtl_earn">Earn</string>
    <string name="dtl_dt_points">%d DreamTrips Points</string>
    <string name="suggest_merchant">Suggest Merchant</string>
-   <string name="suggest_merchant_title">DT Local Tools</string>
+   <string name="dt_local_tools">DT Local Tools</string>
    <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
    <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
    <string name="dtl_wait_for_earn">Wait… Earning points</string>

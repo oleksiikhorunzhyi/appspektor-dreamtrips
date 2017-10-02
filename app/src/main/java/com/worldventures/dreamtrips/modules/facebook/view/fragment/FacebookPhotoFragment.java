@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.modules.media_picker.view.fragment.BasePickerFragment;
-import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
+import com.worldventures.core.modules.facebook.model.FacebookPhoto;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.view.custom.GridAutofitLayoutManager;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell;
-import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.BasePickerFragment;
 
 public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPresenter, Bundle> implements FacebookPhotoPresenter.View {
 

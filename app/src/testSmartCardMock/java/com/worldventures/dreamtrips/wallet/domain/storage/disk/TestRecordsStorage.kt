@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.domain.storage.disk
 
 import com.snappydb.DB
-import com.techery.spares.storage.complex_objects.Optional
-import com.worldventures.dreamtrips.core.repository.SnappyAction
-import com.worldventures.dreamtrips.core.repository.SnappyResult
+import com.worldventures.core.storage.complex_objects.Optional
+import com.worldventures.core.repository.SnappyAction
+import com.worldventures.core.repository.SnappyResult
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
 
 class TestRecordsStorage(offlineModeEnabled: Boolean = false) : RecordsStorage {

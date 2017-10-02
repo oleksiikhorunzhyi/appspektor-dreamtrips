@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.location.GetSmartCardLocationsHttpAction;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
@@ -20,8 +20,6 @@ import rx.Observable;
 
 @CommandAction
 public class GetLocationCommand extends Command<List<WalletLocation>> implements InjectableAction {
-
-   private static final int PAGE_SIZE = 1;
 
    @Inject Janet janet;
    @Inject LostCardRepository locationRepository;
@@ -49,7 +47,7 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
 
    private Observable<GetSmartCardLocationsHttpAction> observeGetSmartCardLocations(String smartCardId) {
       return janet.createPipe(GetSmartCardLocationsHttpAction.class)
-            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(smartCardId), PAGE_SIZE));
+            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(smartCardId)));
    }
 
    private Observable<List<WalletLocation>> getStoredLocation() {

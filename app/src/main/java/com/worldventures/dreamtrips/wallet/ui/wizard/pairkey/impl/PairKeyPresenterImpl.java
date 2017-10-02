@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CardConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CheckFrontAction;

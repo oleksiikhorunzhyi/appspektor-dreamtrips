@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl;
 
-
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -152,6 +151,7 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
 
    @Override
    public void goBack() {
+      Timber.d("WTF :: navigateBack");
       getNavigator().goBack();
    }
 

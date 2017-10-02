@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.worldventures.dreamtrips.AssertUtil
-import com.worldventures.dreamtrips.modules.background_uploading.model.CompoundOperationState
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.ResumeCompoundOperationCommand
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.StartNextCompoundOperationCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.ResumeCompoundOperationCommand
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.StartNextCompoundOperationCommand
 import io.techery.janet.ActionState
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class ResumeCompoundOperationSpec : BaseUploadingInteractorSpec({

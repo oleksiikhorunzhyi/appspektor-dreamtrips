@@ -4,35 +4,28 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 
-import com.techery.spares.ui.routing.ActivityBoundRouter;
-import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.core.ui.view.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
-import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
-import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
-
-import java.io.File;
+import com.worldventures.dreamtrips.social.ui.activity.Player360Activity;
+import com.worldventures.dreamtrips.social.ui.activity.PlayerActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
+import com.worldventures.dreamtrips.social.ui.podcast_player.PodcastPlayerActivity;
 
 public class ActivityRouter extends ActivityBoundRouter {
-
-   public static final int CAPTURE_PICTURE_REQUEST_TYPE = 294;
-   public static final int CAPTURE_VIDEO_REQUEST_TYPE = 295;
 
    public ActivityRouter(Activity activity) {
       super(activity);
    }
 
    public void openMain() {
-      startActivity(MainActivity.class);
+      startActivity(SocialMainActivity.class);
    }
 
    public void openMainWithComponent(String key) {
       Bundle bundle = new Bundle();
-      bundle.putString(MainActivity.COMPONENT_KEY, key);
-      startActivity(MainActivity.class, bundle);
+      bundle.putString(SocialMainActivity.COMPONENT_KEY, key);
+      startActivity(SocialMainActivity.class, bundle);
    }
 
    public void openLaunch() {
@@ -52,25 +45,6 @@ public class ActivityRouter extends ActivityBoundRouter {
       bundle.putString(Player360Activity.EXTRA_URL, url);
       bundle.putString(Player360Activity.EXTRA_TITLE, title);
       startActivity(Player360Activity.class, bundle);
-   }
-
-   public String openCamera(String folderName) {
-      Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-      String filePathOriginal = FileUtils.buildFilePathOriginal(folderName, "jpg");
-      intent.putExtra("output", Uri.fromFile(new File(filePathOriginal)));
-      startActivityResult(intent, CAPTURE_PICTURE_REQUEST_TYPE);
-      return filePathOriginal;
-   }
-
-   public String openCameraForVideoRecording(String folderName, int durationLimitSecs) {
-      Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-      String filePathOriginal = FileUtils.buildFilePathOriginal(folderName, "mp4");
-      intent.putExtra("output", Uri.fromFile(new File(filePathOriginal)));
-      if (durationLimitSecs > 0) {
-         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, durationLimitSecs);
-      }
-      startActivityResult(intent, CAPTURE_VIDEO_REQUEST_TYPE);
-      return filePathOriginal;
    }
 
    public void startService(Class clazz) {

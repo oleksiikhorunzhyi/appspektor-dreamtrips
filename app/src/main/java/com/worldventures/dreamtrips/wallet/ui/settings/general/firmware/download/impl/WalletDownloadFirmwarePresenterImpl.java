@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.DownloadingUpdateAction;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;

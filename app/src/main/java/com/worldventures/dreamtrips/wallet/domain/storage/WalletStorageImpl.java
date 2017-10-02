@@ -5,10 +5,10 @@ import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.repository.DefaultSnappyOpenHelper;
-import com.worldventures.dreamtrips.core.repository.SnappyAction;
-import com.worldventures.dreamtrips.core.repository.SnappyResult;
+import com.worldventures.core.repository.DefaultSnappyOpenHelper;
+import com.worldventures.core.repository.SnappyAction;
+import com.worldventures.core.repository.SnappyResult;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;

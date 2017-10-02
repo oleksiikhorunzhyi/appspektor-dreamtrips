@@ -8,7 +8,7 @@ import android.view.View;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.AnimationUtils;
-import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.ExpandableLayout;
 
 import butterknife.ButterKnife;
 

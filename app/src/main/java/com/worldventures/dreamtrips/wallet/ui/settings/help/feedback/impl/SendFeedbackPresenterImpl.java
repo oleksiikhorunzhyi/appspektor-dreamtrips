@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.impl;
 
 
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
@@ -18,9 +18,9 @@ public class SendFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<SendFee
 
    public SendFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
+         WalletSettingsInteractor walletSettingsInteractor, MediaPickerInteractor mediaPickerInteractor) {
       super(navigator, deviceConnectionDelegate, feedbackInteractor, walletSettingsInteractor,
-            mediaInteractor);
+            mediaPickerInteractor);
    }
 
    @Override

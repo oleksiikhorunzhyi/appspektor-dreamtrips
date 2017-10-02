@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <dimen name="tripImageHeightDetailed">300dp</dimen>
+
+   <dimen name="tripImageHeight">240dp</dimen>
+
+   <dimen name="bucket_quick_input_edit_text_min_width">192dp</dimen>
+
+   <dimen name="locale_flag_size_width">46dp</dimen>
+   <dimen name="locale_flag_size_height">26dp</dimen>
+
+   <dimen name="template_height">320dp</dimen>
+
+</resources>

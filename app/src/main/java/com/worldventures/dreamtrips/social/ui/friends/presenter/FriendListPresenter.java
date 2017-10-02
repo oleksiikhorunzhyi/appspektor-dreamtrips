@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.friends.service.analytics.FilterFriendsFeedAction;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 

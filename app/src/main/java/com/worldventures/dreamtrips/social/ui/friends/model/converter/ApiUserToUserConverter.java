@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.friends.model.converter;
 
-
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.model.User;
 
 import io.techery.mappery.MapperyContext;
 

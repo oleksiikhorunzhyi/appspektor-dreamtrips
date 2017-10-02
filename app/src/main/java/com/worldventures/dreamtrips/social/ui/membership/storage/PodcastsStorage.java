@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.membership.storage;
 
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.CombinedListStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.Storage;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.storage.CombinedListStorage;
+import com.worldventures.core.janet.cache.storage.Storage;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPodcastsCommand;
 

@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.analytics;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;

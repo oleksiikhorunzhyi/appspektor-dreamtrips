@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.WatchVideoAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.TrainingVideosPresenter;
 import com.worldventures.dreamtrips.social.ui.video.presenter.HelpVideosPresenter;

@@ -9,11 +9,11 @@ import android.view.MotionEvent;
 import android.widget.AbsListView;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.TagPosition;
-import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 
 import java.util.List;
 

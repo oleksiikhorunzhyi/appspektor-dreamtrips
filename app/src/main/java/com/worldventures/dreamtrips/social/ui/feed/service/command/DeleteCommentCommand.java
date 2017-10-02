@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.comment.DeleteCommentHttpAction;
-import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 

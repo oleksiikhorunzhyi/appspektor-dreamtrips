@@ -13,8 +13,8 @@ import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.worldventures.core.model.Circle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 
 import java.util.List;
 

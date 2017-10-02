@@ -6,15 +6,10 @@ import com.messenger.delegate.chat.typing.TypingManager;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.delegate.conversation.command.SyncConversationCommand;
 import com.messenger.entities.DataParticipant;
-import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.UsersDAO;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import java.util.Collections;
 
@@ -26,17 +21,20 @@ import timber.log.Timber;
 
 public class GroupChatEventDelegate {
 
-   @Inject MessengerServerFacade messengerServerFacade;
-   @Inject ConversationsDAO conversationsDAO;
-   @Inject ParticipantsDAO participantsDAO;
-   @Inject UsersDAO usersDAO;
-   @Inject SessionHolder currentUserSession;
-   @Inject LoadConversationDelegate loadConversationDelegate;
-   @Inject TypingManager typingManager;
+   private final ConversationsDAO conversationsDAO;
+   private final ParticipantsDAO participantsDAO;
+   private final SessionHolder currentUserSession;
+   private final LoadConversationDelegate loadConversationDelegate;
+   private final TypingManager typingManager;
 
    @Inject
-   public GroupChatEventDelegate(@ForApplication Injector injector) {
-      injector.inject(this);
+   public GroupChatEventDelegate(ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
+         SessionHolder currentUserSession, LoadConversationDelegate loadConversationDelegate, TypingManager typingManager) {
+      this.conversationsDAO = conversationsDAO;
+      this.participantsDAO = participantsDAO;
+      this.currentUserSession = currentUserSession;
+      this.loadConversationDelegate = loadConversationDelegate;
+      this.typingManager = typingManager;
    }
 
    public void onChatInvited(String conversationId) {
@@ -91,5 +89,4 @@ public class GroupChatEventDelegate {
       }
       return participant;
    }
-
 }

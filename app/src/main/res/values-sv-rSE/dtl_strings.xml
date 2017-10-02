@@ -28,9 +28,6 @@
    <string name="dtl_description">Beskrivning</string>
    <string name="ok">OK</string>
    <string name="continue_option">Fortsätt</string>
-   <string name="permission_camera_rationale">Åtkomst till kameran krävs för detektion</string>
-   <string name="permission_location_rationale">Tillgång till platsen krävs för detektion</string>
-   <string name="no_camera_permission">Denna applikation kan inte startas eftersom den inte har kameratillstånd. Programmet kommer nu att avslutas. </string>
    <string name="no_location_permission">Denna applikation kan inte startas eftersom den inte har platstillstånd. Programmet kommer nu att avslutas.</string>
    <string name="dtl_checkin_location_error">Platstjänster måste aktiveras för att du ska kunna checka in</string>
    <string name="dtl_barcode_title">Skanna QR-kod</string>

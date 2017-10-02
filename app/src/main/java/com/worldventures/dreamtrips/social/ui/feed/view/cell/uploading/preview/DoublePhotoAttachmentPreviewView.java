@@ -11,7 +11,7 @@ public class DoublePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrevie
    }
 
    protected int[] getPreviewViewsIds() {
-      return new int[] {R.id.photo_attachment_preview_1, R.id.photo_attachment_preview_2};
+      return new int[]{R.id.photo_attachment_preview_1, R.id.photo_attachment_preview_2};
    }
 
    protected int getLayoutId() {

@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.friends.service.command;
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.friends.AnswerFriendRequestsHttpAction;
 import com.worldventures.dreamtrips.api.friends.model.FriendRequestParams;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
 

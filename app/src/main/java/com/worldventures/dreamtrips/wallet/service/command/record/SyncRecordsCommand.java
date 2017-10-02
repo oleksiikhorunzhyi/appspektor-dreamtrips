@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command.record;
 import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;

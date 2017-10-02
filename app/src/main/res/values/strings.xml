@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="action_done">Done</string>
-   <string name="action_cancel">Cancel</string>
    <string name="action_filter">Filter</string>
    <string name="action_like">Like</string>
    <string name="trips">DreamTrips</string>
@@ -20,9 +18,6 @@
    <string name="flag_description_title">Flag</string>
    <string name="flag_description_positive">Accept</string>
    <string name="flag_description_negative">Cancel</string>
-   <string name="facebook_error_loading_albums">Could not load albums</string>
-   <string name="facebook_error_loading_photos">Could not load photos</string>
-   <string name="facebook_login_error">Could not login to Facebook</string>
    <string name="fab_posted">Successfully posted to Facebook</string>
    <string name="facebook_posting_error">Could not post to Facebook</string>
    <string-array name="share_dialog_items">
@@ -101,19 +96,8 @@
 
    <string name="feed_share_post_button">Share a photo, video or idea</string>
 
-   <string name="camera">Camera</string>
    <string name="library">Library</string>
-   <string name="camera_take_a_picture">Take a picture</string>
-   <string name="camera_record_a_video">Record a video</string>
-   <string name="add_from_facebook">Add from Facebook</string>
 
-   <string name="photos_selected">%d selected</string>
-
-   <string name="media_picker_error_contents">Loading of %s failed.</string>
-   <string name="media_picker_gallery_action">gallery media</string>
-   <string name="media_picker_fb_albums_actions">facebook albums</string>
-   <string name="media_picker_fb_photos_actions">facebook photos</string>
-   <string name="media_picker_limit_reached">You can choose only up to %s photos</string>
 
    <string name="nav_back">Back</string>
 
@@ -163,13 +147,6 @@
    <string name="merchant_message_text">Congratulations! You earned %1$s DreamTrips points @%2$s, %3$s</string>
 
    <string name="beta_label">Beta</string>
-
-   <string name="picker_two_media_type_error">Select either photos or a video</string>
-   <string name="picker_photo_limit">You can select up to %d photo</string>
-   <string name="picker_photo_limit_plural">You can select up to %d photos</string>
-   <string name="picker_video_limit">You can select up to %d video</string>
-   <string name="picker_video_limit_plural">You can select up to %d videos</string>
-   <string name="picker_video_length_limit">You are not allowed to select videos more that %d sec length</string>
 
    <string name="photo_strip_read_storage_permission_explanation">Need permission to read storage to suggest you media content</string>
 </resources>

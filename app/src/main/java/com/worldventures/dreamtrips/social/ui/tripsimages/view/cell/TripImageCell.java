@@ -5,17 +5,17 @@ import android.net.Uri;
 import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_photo)
-public class TripImageCell extends AbstractDelegateCell<PhotoMediaEntity, CellDelegate<PhotoMediaEntity>> {
+public class TripImageCell extends BaseAbstractDelegateCell<PhotoMediaEntity, CellDelegate<PhotoMediaEntity>> {
 
    @InjectView(R.id.imageViewPhoto) SimpleDraweeView draweeView;
 
@@ -32,7 +32,8 @@ public class TripImageCell extends AbstractDelegateCell<PhotoMediaEntity, CellDe
 
    public String getThumbUrl() {
       int dimensionPixelSize = itemView.getResources().getDimensionPixelSize(R.dimen.photo_thumb_size);
-      return ImageUtils.getParametrizedUrl(getModelObject().getItem().getImagePath(), dimensionPixelSize, dimensionPixelSize);
+      return ImageUtils.getParametrizedUrl(getModelObject().getItem()
+            .getImagePath(), dimensionPixelSize, dimensionPixelSize);
    }
 
    @Override

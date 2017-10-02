@@ -5,17 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_success_story)
-public class SuccessStoryCell extends AbstractDelegateCell<SuccessStory, SuccessStoryCell.Delegate> {
+public class SuccessStoryCell extends BaseAbstractDelegateCell<SuccessStory, SuccessStoryCell.Delegate> {
 
    @InjectView(R.id.tv_title) TextView tvTitle;
    @InjectView(R.id.vg_parent) ViewGroup vgParent;

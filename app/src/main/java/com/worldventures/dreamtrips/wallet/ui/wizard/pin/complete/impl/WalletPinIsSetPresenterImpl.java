@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSet
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetScreen;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIsSetScreen> implements WalletPinIsSetPresenter {
 
@@ -42,7 +43,8 @@ public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIs
    public void navigateToNextScreen() {
       wizardInteractor.provisioningStatePipe()
             .createObservable(ProvisioningModeCommand.fetchState())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
                   .onSuccess(command -> getNavigator().goWizardAssignUser(command.getResult())));
    }

@@ -3,17 +3,17 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.video.impl;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
-import com.worldventures.dreamtrips.social.ui.video.model.Video;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoCategory;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLocale;
-import com.worldventures.dreamtrips.social.ui.video.service.MemberVideosInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetMemberVideosCommand;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
+import com.worldventures.core.service.CachedEntityDelegate;
+import com.worldventures.core.service.CachedEntityInteractor;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.model.Video;
+import com.worldventures.core.modules.video.model.VideoCategory;
+import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.core.modules.video.service.MemberVideosInteractor;
+import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.core.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -27,6 +27,7 @@ import java.util.List;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelpVideoScreen> implements WalletHelpVideoPresenter {
 
@@ -57,7 +58,8 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    private void observeUpdateStatusCachedEntity() {
       cachedEntityInteractor.updateStatusCachedEntityCommandPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<UpdateStatusCachedEntityCommand>()
                   .onSuccess(command -> handleUpdatedStatusCachedEntities(command.getResult()))
                   .onFail((command, throwable) -> getView().showRefreshing(false))
@@ -78,7 +80,8 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    public void fetchVideoLocales() {
       memberVideosInteractor.getVideoLocalesPipe()
             .createObservable(new GetVideoLocalesCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationLoadLanguages())
                   .onSuccess(this::handleLoadedLocales)
                   .create());
@@ -93,7 +96,8 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    public void fetchSmartCardVideos(final VideoLanguage videoLanguage) {
       memberVideosInteractor.getMemberVideosPipe()
             .createObservable(GetMemberVideosCommand.forHelpSmartCardVideos(videoLanguage))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationLoadVideos())
                   .onStart(command -> getView().showRefreshing(true))
                   .onSuccess(command -> onVideoLoaded(command.getResult()))
@@ -128,7 +132,8 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
       Observable.merge(
             cachedEntityInteractor.getDownloadCachedModelPipe().observe(),
             cachedEntityInteractor.getDeleteCachedModelPipe().observe())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .map(actionState -> actionState.action.getCachedModel())
             .subscribe(entity -> helpVideoDelegate.processCachingState(entity, getView()));
    }

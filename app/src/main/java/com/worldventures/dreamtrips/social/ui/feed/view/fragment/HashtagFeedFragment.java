@@ -15,18 +15,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -47,7 +48,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDe
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
-import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.List;
@@ -185,7 +185,8 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
          getPresenter().onRefresh();
       }
 
-      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(Route.FEED_HASHTAG));
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
+            .send(ActiveFeedRouteCommand.update(Route.FEED_HASHTAG));
    }
 
    @Override

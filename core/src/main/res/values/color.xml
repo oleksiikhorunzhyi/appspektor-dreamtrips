@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources> xmlns:android="http://schemas.android.com/apk/res/android">
+   <color name="white">#ffffffff</color>
+   <color name="grey">#A0A0A0</color>
+   <color name="grey_lighter">#e6e6e6</color>
+
+   <color name="pin_progress_default_circle_color">#80ffffff</color>
+   <color name="pin_progress_color_progress">#ff6e9cff</color>
+   <color name="pin_progress_color_error">#fe5353</color>
+   <color name="picker_panel_blue">#005E92</color>
+   <color name="picker_toolbar_overlay">#EEEEEE</color>
+   <color name="picker_static_item_bg">#EEEEEE</color>
+   <color name="picker_static_facebook">#3C5A99</color>
+   <color name="picker_static_camera">#929292</color>
+
+   <color name="horizontal_photo_view_fab_color">#ff6e9cff</color>
+   <color name="horizontal_photo_view_fab_color_error">#fe5353</color>
+</resources>

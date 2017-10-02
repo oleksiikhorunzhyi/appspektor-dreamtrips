@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_cancel">Mégse</string>
+   <string name="action_done">Kész</string>
+   <string name="action_retry">Újra</string>
+   <string name="camera_record_a_video">Vegyél fel egy videót</string>
+   <string name="camera_take_a_picture">Készíts képet</string>
+   <string name="error_fail_to_load_documents">Nem sikerült betölteni a dokumentumokat</string>
+   <string name="error_fail_to_load_feedback_reasons">Visszajelzések betöltése sikertelen</string>
+   <string name="error_fail_to_load_videos">Videók betöltése sikertelen</string>
+   <string name="error_fail_to_locales">Helyek betöltése sikertelen</string>
+   <string name="error_fail_to_login">Belépés sikertelen</string>
+   <string name="error_fail_to_send_feedback">Visszajelzés küldése sikertelen</string>
+   <string name="error_fail_to_update_settings">Beállítások frissítése sikertelen</string>
+   <string name="facebook_error_loading_albums">albumok betöltése sikertelen</string>
+   <string name="facebook_error_loading_photos">fotók betöltése sikertelen </string>
+   <string name="facebook_login_error">Facebook belépés sikertelen</string>
+   <string name="fail">Hiba</string>
+   <string name="feedback_could_not_load_attachment">Nem sikerült betölteni a mellékletet</string>
+   <string name="media_picker_error_contents">A(z) %1$s betöltése sikertelen.</string>
+   <string name="media_picker_fb_albums_actions">facebook-albumok</string>
+   <string name="media_picker_fb_photos_actions">facebook-képek</string>
+   <string name="media_picker_gallery_action">médiagaléria</string>
+   <string name="media_picker_limit_reached">Max. %1$s képet választhat</string>
+   <string name="no_camera_permission">Az alkalmazás nem futtatható, mivel nem rendelkezik a kamerához való hozzáférési engedéllyel. Az alkalmazás most kilép. </string>
+   <string name="permission_camera_rationale">A felismeréshez szükséges a kamerához való hozzáférés engedélyezése </string>
+   <string name="permission_location_rationale">A felismeréshez szükséges a helyzethez való hozzáférés engedélyezése </string>
+   <string name="photos_selected">%1$d kiválasztva</string>
+   <string name="picker_photo_limit">Max. %1$d képet választhat ki</string>
+   <string name="picker_photo_limit_plural">Max. %1$d képet választhat ki</string>
+   <string name="picker_static_add_from_fb">Hozzáadás a Facebookból</string>
+   <string name="picker_static_take_from_camera">Kamera</string>
+   <string name="picker_two_media_type_error">Válasszon ki képeket vagy egy videót</string>
+   <string name="picker_video_length_limit">Nem választhatsz ki %1$d másodpercnél hosszabb videókat</string>
+   <string name="picker_video_limit">Max. %1$d videót választhat ki</string>
+   <string name="picker_video_limit_plural">Max. %1$d videót választhat ki</string>
+</resources>

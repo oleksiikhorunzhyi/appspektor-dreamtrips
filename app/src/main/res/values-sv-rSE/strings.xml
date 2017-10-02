@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="action_done">Klar</string>
-   <string name="action_cancel">Avbryt</string>
    <string name="action_filter">Filtrera</string>
    <string name="action_like">Gilla</string>
    <string name="trips">DreamTrips</string>
@@ -19,9 +17,6 @@
    <string name="flag_description_title">Flagga</string>
    <string name="flag_description_positive">Acceptera</string>
    <string name="flag_description_negative">Avbryt</string>
-   <string name="facebook_error_loading_albums">Kunde inte ladda album</string>
-   <string name="facebook_error_loading_photos">Kunda inte ladda bilder</string>
-   <string name="facebook_login_error">Kunda inte logga in på Facebook</string>
    <string name="fab_posted">Publiceringen på Facebook har genomförts</string>
    <string name="facebook_posting_error"> Kunda inte göra inlägg på Facebook </string>
    <string-array name="share_dialog_items">
@@ -100,19 +95,9 @@
 
    <string name="feed_share_post_button">Dela ett foto, en video eller en idé</string>
 
-   <string name="camera">Kamera</string>
    <string name="library">Bibliotek</string>
-   <string name="camera_take_a_picture">Ta en bild</string>
-   <string name="camera_record_a_video">Spela in en video</string>
-   <string name="add_from_facebook">Lägg till från Facebook</string>
 
-   <string name="photos_selected">Valt: %1$d</string>
 
-   <string name="media_picker_error_contents">Inläsning av %1$s misslyckades.</string>
-   <string name="media_picker_gallery_action">Media-galleri</string>
-   <string name="media_picker_fb_albums_actions">Facebook-album</string>
-   <string name="media_picker_fb_photos_actions">Facebook-bilder</string>
-   <string name="media_picker_limit_reached">Du kan bara välja upp till %1$s bilder</string>
 
    <string name="logout_component">Logga ut</string>
 
@@ -161,12 +146,6 @@
 
    <string name="beta_label">Beta</string>
 
-   <string name="picker_two_media_type_error">Välj antingen foton eller en video</string>
-   <string name="picker_photo_limit">Du kan välja upp till %1$d foto</string>
-   <string name="picker_photo_limit_plural">Du kan välja upp till %1$d foton</string>
-   <string name="picker_video_limit">Du kan välja upp till %1$d videoklipp</string>
-   <string name="picker_video_limit_plural">Du kan välja upp till %1$d videoklipp</string>
-   <string name="picker_video_length_limit">Du har inte tillåtelse att välja videor och foton som är mer än %1$d sekunder långa</string>
 
    <string name="photo_strip_read_storage_permission_explanation">Behöver tillåtelse att läsa av lagret för att föreslå mediainnehåll</string>
 </resources>

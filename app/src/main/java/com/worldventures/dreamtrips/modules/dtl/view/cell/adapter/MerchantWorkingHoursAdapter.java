@@ -3,12 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl.view.cell.adapter;
 import android.content.Context;
 import android.view.ViewGroup;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.ui.view.cell.AbstractCell;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
+import com.worldventures.core.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 

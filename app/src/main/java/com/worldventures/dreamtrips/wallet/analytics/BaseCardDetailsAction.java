@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
+import com.worldventures.core.service.analytics.AttributeMap;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 import java.util.HashMap;

@@ -5,18 +5,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_offer_perk)
-public class DtlPerkCell extends AbstractDelegateCell<Offer, CellDelegate<Offer>> {
+public class DtlPerkCell extends BaseAbstractDelegateCell<Offer, CellDelegate<Offer>> {
 
    @InjectView(R.id.perk_logo) ImageryDraweeView image;
    @InjectView(R.id.perks_description) TextView title;
@@ -74,7 +74,7 @@ public class DtlPerkCell extends AbstractDelegateCell<Offer, CellDelegate<Offer>
       List<OperationDay> operationDays = getModelObject().operationDays();
       if (operationDays == null) return;
       //
-      String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays, LocaleHelper.getDefaultLocale());
+      String concatDays =  OperationalHoursUtils.concatOperationDays(operationDays, LocaleHelper.getDefaultLocale(), itemView.getResources().getString(R.string.everyday));
       this.operationDays.setText(concatDays);
    }
 }

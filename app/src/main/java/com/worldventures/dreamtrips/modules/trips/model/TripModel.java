@@ -6,8 +6,8 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
+import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import java.util.ArrayList;

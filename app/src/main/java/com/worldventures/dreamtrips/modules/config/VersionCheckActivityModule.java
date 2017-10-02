@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.config;
 import android.app.Activity;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegate;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegateImpl;

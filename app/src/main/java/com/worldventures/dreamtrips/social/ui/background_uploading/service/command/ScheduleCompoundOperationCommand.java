@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;

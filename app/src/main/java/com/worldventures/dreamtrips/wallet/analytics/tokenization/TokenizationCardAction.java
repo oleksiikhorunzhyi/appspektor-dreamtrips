@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.analytics.tokenization;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.dreamtrips.wallet.analytics.BaseCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;

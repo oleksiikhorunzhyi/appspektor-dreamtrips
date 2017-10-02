@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
+import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
@@ -14,8 +16,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditingView;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 

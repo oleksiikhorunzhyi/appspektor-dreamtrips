@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.core.janet.api_lib;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.modules.common.model.Session;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.Session;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.Feature;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 
 import java.util.List;
 

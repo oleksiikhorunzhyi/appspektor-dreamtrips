@@ -4,11 +4,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.locations.model.LocationType;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.dtl.helper.comparator.LocationComparator;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
@@ -16,7 +16,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_location_search)
-public class DtlLocationSearchCell extends AbstractDelegateCell<DtlLocation, CellDelegate<DtlLocation>> {
+public class DtlLocationSearchCell extends BaseAbstractDelegateCell<DtlLocation, CellDelegate<DtlLocation>> {
 
    @InjectView(R.id.locationName) TextView locationName;
 

@@ -3,16 +3,16 @@ package com.worldventures.dreamtrips.social.ui.feed.view.util;
 import android.os.Parcelable;
 import android.util.Pair;
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
-import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 
 public class FeedEntityContentFragmentFactory {
 

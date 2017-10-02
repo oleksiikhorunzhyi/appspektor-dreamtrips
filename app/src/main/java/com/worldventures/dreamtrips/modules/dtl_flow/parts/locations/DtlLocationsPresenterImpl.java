@@ -4,7 +4,7 @@ import android.content.Context;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
@@ -168,7 +168,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
 
    @Override
    public void onLocationSelected(DtlLocation location) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
       locationInteractor.changeSourceLocation(location);
       navigateToMerchants();

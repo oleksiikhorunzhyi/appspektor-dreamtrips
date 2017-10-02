@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+
 public class ProgressEmptyRecyclerView extends EmptyRecyclerView {
 
    View progressView;

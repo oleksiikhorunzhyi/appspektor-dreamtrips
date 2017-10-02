@@ -11,26 +11,26 @@ import android.widget.Button;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateFeedPostFragment;
-import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.VideoMediaEntity;
@@ -184,7 +184,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BaseDiffUtilCallback(adapter.getItems(), items) {
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList && items.get(newItemPosition) instanceof UploadingPostsList){
+            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList && items.get(newItemPosition) instanceof UploadingPostsList) {
                return true;
             }
             return super.areItemsTheSame(oldItemPosition, newItemPosition);

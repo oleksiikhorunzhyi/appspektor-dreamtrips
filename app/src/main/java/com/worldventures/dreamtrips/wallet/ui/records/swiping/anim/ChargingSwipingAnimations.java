@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.animation.Animation;
 
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 
 import java.util.concurrent.TimeUnit;
 

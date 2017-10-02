@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.profile.service.command;
 
-
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.model.User;
+import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.circles.AddFriendsToCircleHttpAction;
-import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 
 import java.util.Collections;
 

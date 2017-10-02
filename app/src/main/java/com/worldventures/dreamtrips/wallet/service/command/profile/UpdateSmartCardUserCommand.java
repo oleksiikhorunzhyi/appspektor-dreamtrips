@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.wallet.service.command.profile;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;

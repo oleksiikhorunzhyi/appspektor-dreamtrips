@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.ImmutableOperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
 
 import io.techery.mappery.MapperyContext;
 

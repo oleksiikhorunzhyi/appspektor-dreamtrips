@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.profile.service;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand;
-import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand;
 

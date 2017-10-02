@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.share.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
+import com.worldventures.core.model.ShareType;
 
 public class ShareBundle implements Parcelable {
 

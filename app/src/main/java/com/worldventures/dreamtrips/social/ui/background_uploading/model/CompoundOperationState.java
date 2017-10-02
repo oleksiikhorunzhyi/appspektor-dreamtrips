@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.model;
 
-public enum  CompoundOperationState {
+public enum CompoundOperationState {
    SCHEDULED,
    STARTED,
    FINISHED,

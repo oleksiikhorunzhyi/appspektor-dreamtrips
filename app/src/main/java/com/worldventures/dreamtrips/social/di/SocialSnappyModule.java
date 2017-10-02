@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.di;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.repository.DefaultSnappyOpenHelper;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepositoryImpl;
 

@@ -9,8 +9,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.storage.dao.PhotoDAO;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import java.util.List;
 

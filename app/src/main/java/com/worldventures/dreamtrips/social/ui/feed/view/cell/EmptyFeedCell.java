@@ -5,17 +5,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.feed.model.cell.EmptyFeedModel;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_empty_feed)
-public class EmptyFeedCell extends AbstractDelegateCell<EmptyFeedModel, CellDelegate<EmptyFeedModel>> {
+public class EmptyFeedCell extends BaseAbstractDelegateCell<EmptyFeedModel, CellDelegate<EmptyFeedModel>> {
 
    @InjectView(R.id.arrow) ImageView ivArrow;
    @InjectView(R.id.tv_search_friends) TextView tvSearchFriends;

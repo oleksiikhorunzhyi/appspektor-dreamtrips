@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.feed.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.Hashtag;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.Hashtag;
 
 import org.jetbrains.annotations.NotNull;
 

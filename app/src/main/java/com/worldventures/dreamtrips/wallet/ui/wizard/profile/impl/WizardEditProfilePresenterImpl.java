@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.smartcard.action.user.RemoveUserPhotoAction;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEditProfileScreen> implements WizardEditProfilePresenter {
 
@@ -64,7 +65,8 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    private void observeSetupUserCommand(WizardEditProfileScreen view) {
       wizardInteractor.setupUserDataPipe()
             .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.setupUserDataPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideOperationView())
                   .onSuccess(command -> onUserSetupSuccess(command.getResult()))

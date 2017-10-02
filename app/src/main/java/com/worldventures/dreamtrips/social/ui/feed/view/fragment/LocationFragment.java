@@ -12,16 +12,16 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.gms.common.api.Status;
-import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.social.ui.feed.presenter.LocationPresenter;
 
 import javax.inject.Inject;
 
@@ -95,7 +95,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
             obtainedLocation = location;
             setInputLocation(obtainedLocation.getName());
          }
-      }, e -> {});
+      }, e -> {
+      });
    }
 
    private void initToolbar() {

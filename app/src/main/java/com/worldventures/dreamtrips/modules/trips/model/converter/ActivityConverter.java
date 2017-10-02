@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.model.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.trip.model.TripActivity;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 
 import io.techery.mappery.MapperyContext;

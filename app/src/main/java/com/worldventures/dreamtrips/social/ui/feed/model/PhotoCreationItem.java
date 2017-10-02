@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.feed.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class PhotoCreationItem implements Parcelable {
    private int rotation;
 
    //analytics related
-   private MediaAttachment.Source source;
+   private MediaPickerAttachment.Source source;
    private Location locationFromExif;
 
    public PhotoCreationItem() {
@@ -145,11 +145,11 @@ public class PhotoCreationItem implements Parcelable {
       this.locationFromExif = locationFromExif;
    }
 
-   public MediaAttachment.Source getSource() {
+   public MediaPickerAttachment.Source getSource() {
       return source;
    }
 
-   public void setSource(MediaAttachment.Source source) {
+   public void setSource(MediaPickerAttachment.Source source) {
       this.source = source;
    }
 
@@ -172,7 +172,7 @@ public class PhotoCreationItem implements Parcelable {
       dest.writeString(title);
       dest.writeString(location);
       dest.writeParcelable(locationFromExif, flags);
-      dest.writeInt(source != null ? source.ordinal() : MediaAttachment.Source.UNKNOWN.ordinal());
+      dest.writeInt(source != null ? source.ordinal() : MediaPickerAttachment.Source.UNKNOWN.ordinal());
       dest.writeInt(rotation);
    }
 
@@ -189,7 +189,7 @@ public class PhotoCreationItem implements Parcelable {
       this.title = in.readString();
       this.location = in.readString();
       this.locationFromExif = in.readParcelable(Location.class.getClassLoader());
-      this.source = MediaAttachment.Source.values()[in.readInt()];
+      this.source = MediaPickerAttachment.Source.values()[in.readInt()];
       this.rotation = in.readInt();
    }
 

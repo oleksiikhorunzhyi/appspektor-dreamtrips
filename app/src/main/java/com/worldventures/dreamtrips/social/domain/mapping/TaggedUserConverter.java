@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.photos.model.TaggedUser;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

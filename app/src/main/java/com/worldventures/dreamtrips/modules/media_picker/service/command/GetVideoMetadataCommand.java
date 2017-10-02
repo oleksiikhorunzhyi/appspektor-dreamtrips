@@ -4,7 +4,7 @@ import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.media_picker.model.ImmutableVideoMetadata;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;

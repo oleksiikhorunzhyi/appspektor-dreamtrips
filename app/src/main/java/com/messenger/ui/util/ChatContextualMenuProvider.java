@@ -18,7 +18,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.ConversationHelper;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 
 import javax.inject.Inject;

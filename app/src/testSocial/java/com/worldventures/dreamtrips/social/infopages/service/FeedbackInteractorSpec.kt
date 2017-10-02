@@ -3,21 +3,21 @@ package com.worldventures.dreamtrips.social.infopages.service
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
+import com.worldventures.core.converter.Converter
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment
+import com.worldventures.core.modules.infopages.model.FeedbackType
+import com.worldventures.core.modules.infopages.model.converter.FeedbackTypeConverter
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor
+import com.worldventures.core.modules.infopages.service.command.GetFeedbackCommand
+import com.worldventures.core.modules.infopages.service.storage.FeedbackTypeActionStorage
+import com.worldventures.core.modules.infopages.service.storage.InfopagesStorage
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackReason
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedbackReason
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter
-import com.worldventures.dreamtrips.social.domain.mapping.FeedbackImageAttachmentConverter
-import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackType
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackTypeConverter
-import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetFeedbackCommand
-import com.worldventures.dreamtrips.social.ui.infopages.service.storage.FeedbackTypeStorage
+import com.worldventures.core.modules.infopages.model.converter.FeedbackImageAttachmentConverter
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -49,7 +49,7 @@ class FeedbackInteractorSpec : BaseSpec({
 
       it("should restore feedback reasons from DB") {
          feedbackInteractor.feedbackPipe.send(GetFeedbackCommand())
-         verify(mockSocialDb, times(1)).feedbackTypes = anyList()
+         verify(mockDb, times(1)).feedbackTypes = anyList()
       }
    }
 
@@ -69,16 +69,16 @@ class FeedbackInteractorSpec : BaseSpec({
 
 }) {
    companion object {
-      lateinit var mockSocialDb: SocialSnappyRepository
+      lateinit var mockDb: InfopagesStorage
       val stubFeedbackReasons: List<FeedbackReason> = makeStubFeedbackReasons()
 
       lateinit var feedbackInteractor: FeedbackInteractor
 
       fun setup(httpService: ActionService) {
-         mockSocialDb = spy()
+         mockDb = spy()
          val daggerCommandActionService = CommandActionService()
                .wrapCache()
-               .bindStorageSet(setOf(FeedbackTypeStorage(mockSocialDb)))
+               .bindStorageSet(setOf(FeedbackTypeActionStorage(mockDb)))
                .wrapDagger()
          val janet = Janet.Builder()
                .addService(daggerCommandActionService)

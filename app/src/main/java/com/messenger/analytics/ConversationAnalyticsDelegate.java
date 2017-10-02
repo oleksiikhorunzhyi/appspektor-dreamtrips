@@ -8,7 +8,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.ui.helper.ConversationHelper;
 import com.raizlabs.android.dbflow.annotation.NotNull;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 
 import java.util.List;
 

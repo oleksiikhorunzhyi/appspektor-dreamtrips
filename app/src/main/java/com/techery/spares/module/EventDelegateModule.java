@@ -7,11 +7,12 @@ import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
+import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
-import com.worldventures.dreamtrips.social.ui.membership.delegate.MembersSelectedEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
+import com.worldventures.dreamtrips.social.ui.membership.delegate.MembersSelectedEventDelegate;
 
 import javax.inject.Singleton;
 
@@ -85,5 +86,10 @@ public class EventDelegateModule {
    @Singleton
    MembersSelectedEventDelegate provideMembersSelectedEventDelegate(ReplayEventDelegatesWiper wiper) {
       return new MembersSelectedEventDelegate(wiper);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   LogoutAction provideReplayEventDelegatesWiperLogoutAction(ReplayEventDelegatesWiper replayEventDelegatesWiper) {
+      return replayEventDelegatesWiper::clearReplays;
    }
 }

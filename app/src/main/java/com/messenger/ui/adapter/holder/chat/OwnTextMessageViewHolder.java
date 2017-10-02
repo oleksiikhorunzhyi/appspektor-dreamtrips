@@ -4,7 +4,7 @@ import android.database.Cursor;
 import android.view.View;
 
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 @Layout(R.layout.list_item_chat_own_text_messsage)

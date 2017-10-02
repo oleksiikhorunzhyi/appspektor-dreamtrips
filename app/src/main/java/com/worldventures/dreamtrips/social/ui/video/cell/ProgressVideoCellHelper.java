@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.video.cell;
 
-import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.cell.ProgressVideoButtonActions;
+import com.worldventures.core.modules.video.utils.CachedModelHelper;
+import com.worldventures.core.ui.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.social.ui.membership.view.cell.delegate.PodcastCellDelegate;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 
-import static com.worldventures.dreamtrips.social.ui.video.model.Status.FAILED;
-import static com.worldventures.dreamtrips.social.ui.video.model.Status.IN_PROGRESS;
+import static com.worldventures.core.modules.video.model.Status.FAILED;
+import static com.worldventures.core.modules.video.model.Status.IN_PROGRESS;
 
 public class ProgressVideoCellHelper {
 

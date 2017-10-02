@@ -7,8 +7,8 @@ import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.util.SessionHolderHelper;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import rx.Observable;

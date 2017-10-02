@@ -17,15 +17,16 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -55,7 +56,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.CirclesFilterPopupW
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 

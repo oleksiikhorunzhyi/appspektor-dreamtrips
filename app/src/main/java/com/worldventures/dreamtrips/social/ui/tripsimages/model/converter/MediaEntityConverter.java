@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.model.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.entity.model.EntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;

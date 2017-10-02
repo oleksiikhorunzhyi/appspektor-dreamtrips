@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.modules.trips.service.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
-
+import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 @AnalyticsEvent(action = "dreamtrips", trackers = AdobeTracker.TRACKER_KEY)
 public class TripItemAnalyticAction extends BaseAnalyticsAction {
@@ -30,7 +29,7 @@ public class TripItemAnalyticAction extends BaseAnalyticsAction {
       return action;
    }
 
-   private static String getTripId (String tripId, String tripName) {
+   private static String getTripId(String tripId, String tripName) {
       return tripName + "-" + tripId;
    }
 

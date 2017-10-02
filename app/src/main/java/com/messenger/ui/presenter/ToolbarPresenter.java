@@ -7,10 +7,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 
 import javax.inject.Inject;

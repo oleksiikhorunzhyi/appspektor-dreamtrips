@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagPoint;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagPosition;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.Position;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.TagPosition;
@@ -18,7 +18,7 @@ public class PhotoTagConverter implements Converter<com.worldventures.dreamtrips
 
       PhotoTagPosition photoTagPosition = apiTag.position();
       PhotoTagPoint topLeftApiPosition = photoTagPosition.topLeft();
-      Position topLeft = new Position((float)topLeftApiPosition.x(), (float)topLeftApiPosition.y());
+      Position topLeft = new Position((float) topLeftApiPosition.x(), (float) topLeftApiPosition.y());
       PhotoTagPoint rightBottomApiPosition = photoTagPosition.bottomRight();
       Position bottomRight = new Position((float) rightBottomApiPosition.x(), (float) rightBottomApiPosition.y());
 

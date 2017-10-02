@@ -36,6 +36,7 @@
    <dimen name="font_tiny">8sp</dimen>
 
    <dimen name="photo_thumb_size">150dp</dimen>
+
    ///////Post sizes
    <dimen name="post_spacing_horizontal">0dp</dimen>
    <dimen name="post_spacing_vertical_top">0dp</dimen>

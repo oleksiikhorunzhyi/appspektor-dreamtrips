@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.domain.converter;
 
 import android.location.Address;
 
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 

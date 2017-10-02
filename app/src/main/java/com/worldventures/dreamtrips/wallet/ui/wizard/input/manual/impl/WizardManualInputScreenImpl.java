@@ -11,8 +11,8 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;

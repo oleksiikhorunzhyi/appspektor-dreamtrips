@@ -21,6 +21,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
+import rx.android.schedulers.AndroidSchedulers;
 
 // TODO: 5/30/17 Create task and refactor both screen and presenter, it's ugly and error handling is a joke
 public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardChargingScreen> implements WizardChargingPresenter {
@@ -54,7 +55,8 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    private void fetchUserPhoto() {
       smartCardInteractor.smartCardUserPipe()
             .createObservable(SmartCardUserCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
                   .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto()))
             );
@@ -63,12 +65,14 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    private void observeCharger() {
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(new StartCardRecordingAction())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationStartCardRecording()).create());
 
       smartCardInteractor.cardSwipedEventPipe()
             .observeSuccess()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(event -> {
                if (event.result == CardSwipedEvent.Result.ERROR) {
                   getView().showSwipeError();
@@ -79,7 +83,8 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
 
       smartCardInteractor.chargedEventPipe()
             .observeSuccess()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .take(1)
             .map(cardChargedEvent -> cardChargedEvent.record)
             .subscribe(this::cardSwiped, this::errorReceiveRecord);
@@ -92,7 +97,8 @@ public class WizardChargingPresenterImpl extends WalletPresenterImpl<WizardCharg
    private void observeBankCardCreation() {
       recordInteractor.bankCardPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationCreateRecord())
                   .onSuccess(command -> bankCardCreated(command.getResult()))
                   .create());

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.feed.model.video;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 

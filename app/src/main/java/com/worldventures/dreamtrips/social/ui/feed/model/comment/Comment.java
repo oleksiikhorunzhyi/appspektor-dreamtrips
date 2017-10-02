@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.UidItem;
 

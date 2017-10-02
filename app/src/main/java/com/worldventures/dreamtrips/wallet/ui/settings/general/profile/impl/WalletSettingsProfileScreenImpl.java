@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
-import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
@@ -192,7 +192,7 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
 
    private void observeNewAvatar() {
       observeCropper()
-            .compose(bindToLifecycle())
+            .compose(bindUntilDetach())
             .subscribe(file -> profileViewModel.setChosenPhotoUri(Uri.fromFile(file).toString()));
    }
 

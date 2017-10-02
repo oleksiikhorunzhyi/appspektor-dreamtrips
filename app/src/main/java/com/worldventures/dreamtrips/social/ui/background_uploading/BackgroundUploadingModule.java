@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationMutator;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CancelAllCompoundOperationsCommand;

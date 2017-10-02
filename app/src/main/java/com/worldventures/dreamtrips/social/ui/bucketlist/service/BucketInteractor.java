@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -48,11 +48,14 @@ public final class BucketInteractor {
       deleteItemPhotoPipe = sessionActionPipeCreator.createPipe(DeleteItemPhotoCommand.class, Schedulers.io());
       addBucketItemPhotoPipe = sessionActionPipeCreator.createPipe(AddBucketItemPhotoCommand.class, Schedulers.io());
       getCategoriesPipe = sessionActionPipeCreator.createPipe(GetCategoriesCommand.class, Schedulers.io());
-      getPopularBucketItemSuggestionsPipe = sessionActionPipeCreator.createPipe(GetPopularBucketItemSuggestionsCommand.class, Schedulers.io());
+      getPopularBucketItemSuggestionsPipe = sessionActionPipeCreator.createPipe(GetPopularBucketItemSuggestionsCommand.class, Schedulers
+            .io());
       getPopularBucketItemsPipe = sessionActionPipeCreator.createPipe(GetPopularBucketItemsCommand.class, Schedulers.io());
       bucketListActionPipe = sessionActionPipeCreator.createPipe(BucketListCommand.class, Schedulers.io());
-      findBucketItemByPhotoActionPipe = sessionActionPipeCreator.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
-      uploadPhotoControllerCommandPipe = sessionActionPipeCreator.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
+      findBucketItemByPhotoActionPipe = sessionActionPipeCreator.createPipe(FindBucketItemByPhotoCommand.class, Schedulers
+            .immediate());
+      uploadPhotoControllerCommandPipe = sessionActionPipeCreator.createPipe(UploadPhotoControllerCommand.class, Schedulers
+            .immediate());
       mergeBucketItemPhotosWithStorageCommandPipe = sessionActionPipeCreator.createPipe(MergeBucketItemPhotosWithStorageCommand.class, Schedulers
             .immediate());
       recentlyAddedBucketsFromPopularCommandPipe = sessionActionPipeCreator.createPipe(RecentlyAddedBucketsFromPopularCommand.class, Schedulers

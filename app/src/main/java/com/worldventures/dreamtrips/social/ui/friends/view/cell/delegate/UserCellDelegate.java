@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
+
+import com.worldventures.core.model.User;
 
 public interface UserCellDelegate extends FriendCellDelegate {
 

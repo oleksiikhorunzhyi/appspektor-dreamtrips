@@ -6,9 +6,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 import java.util.Locale;

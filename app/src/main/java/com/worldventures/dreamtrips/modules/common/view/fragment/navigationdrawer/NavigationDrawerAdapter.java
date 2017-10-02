@@ -15,12 +15,12 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.di.MessengerModule;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 
 import java.util.List;
 

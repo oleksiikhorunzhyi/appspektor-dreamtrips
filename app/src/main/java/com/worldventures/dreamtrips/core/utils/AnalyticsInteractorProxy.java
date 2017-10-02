@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.utils;
 
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 
 import java.util.ArrayList;
 import java.util.List;

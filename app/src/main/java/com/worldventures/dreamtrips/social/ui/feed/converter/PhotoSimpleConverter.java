@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.converter;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.photos.model.PhotoSimple;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import io.techery.mappery.MapperyContext;

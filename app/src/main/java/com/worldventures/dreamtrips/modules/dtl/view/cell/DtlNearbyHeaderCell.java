@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
 
 @Layout(R.layout.adapter_item_nearby_header)
-public class DtlNearbyHeaderCell extends AbstractCell<DtlNearbyHeaderCell.NearbyHeaderModel> {
+public class DtlNearbyHeaderCell extends BaseAbstractCell<DtlNearbyHeaderCell.NearbyHeaderModel> {
 
    public DtlNearbyHeaderCell(View view) {
       super(view);

@@ -11,23 +11,24 @@ import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.event.RevertClearingEvent;
 import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
-import com.techery.spares.module.Injector;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 
 public class ChatFacadeManager {
 
-   @Inject ChatMessagesEventDelegate chatMessagesDelegate;
-   @Inject GroupChatEventDelegate groupChatEventDelegate;
-   @Inject JoinedChatEventDelegate joinedChatDelegate;
-   @Inject ChatEventInteractor chatEventInteractor;
+   private final ChatMessagesEventDelegate chatMessagesDelegate;
+   private final GroupChatEventDelegate groupChatEventDelegate;
+   private final JoinedChatEventDelegate joinedChatDelegate;
+   private final ChatEventInteractor chatEventInteractor;
 
-   public ChatFacadeManager(Injector injector) {
-      injector.inject(this);
+   public ChatFacadeManager(ChatMessagesEventDelegate chatMessagesDelegate, GroupChatEventDelegate groupChatEventDelegate,
+         JoinedChatEventDelegate joinedChatDelegate, ChatEventInteractor chatEventInteractor) {
+      this.chatMessagesDelegate = chatMessagesDelegate;
+      this.groupChatEventDelegate = groupChatEventDelegate;
+      this.joinedChatDelegate = joinedChatDelegate;
+      this.chatEventInteractor = chatEventInteractor;
    }
 
    public void onReceivedMessage(Message message) {
@@ -85,5 +86,4 @@ public class ChatFacadeManager {
    public void onRevertClearing(RevertClearingEvent revertClearingEvent) {
       chatEventInteractor.getEventRevertClearingChatPipe().send(new RevertClearingChatCommand(revertClearingEvent));
    }
-
 }

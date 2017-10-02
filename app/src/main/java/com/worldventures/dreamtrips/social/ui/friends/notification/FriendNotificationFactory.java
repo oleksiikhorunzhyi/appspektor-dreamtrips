@@ -9,14 +9,14 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
 public class FriendNotificationFactory extends NotificationFactory {

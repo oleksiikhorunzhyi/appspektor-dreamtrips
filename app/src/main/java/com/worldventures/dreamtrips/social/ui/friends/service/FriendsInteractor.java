@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.friends.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.AcceptAllFriendRequestsCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand;

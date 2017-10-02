@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.janet.api_lib;
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import rx.Observable;
 

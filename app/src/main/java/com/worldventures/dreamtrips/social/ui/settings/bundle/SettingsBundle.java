@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.settings.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
+import com.worldventures.core.modules.settings.model.SettingsGroup;
 
 import java.io.Serializable;
 

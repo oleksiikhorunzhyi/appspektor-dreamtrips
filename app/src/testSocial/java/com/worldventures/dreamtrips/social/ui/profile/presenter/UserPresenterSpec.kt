@@ -2,16 +2,16 @@ package com.worldventures.dreamtrips.social.ui.profile.presenter
 
 import com.messenger.delegate.StartChatDelegate
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.Circle
 import com.worldventures.dreamtrips.common.Injector
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
+import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate
 import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.UserTimelineStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.UserTimelineStorageDelegate
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle
+import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
 import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand
@@ -55,7 +55,7 @@ class UserPresenterSpec : ProfilePresenterSpec(UserPresenterTestBody()) {
                }
 
                it("should subscribe to data sources on view taken") {
-                  val userTimelineStorageCommand:UserTimelineStorageCommand = mock()
+                  val userTimelineStorageCommand: UserTimelineStorageCommand = mock()
                   whenever(userTimelineStorageDelegate.observeStorageCommand()).thenReturn(Observable.just(userTimelineStorageCommand))
                   presenter.feedItems = ArrayList()
                   presenter.onViewTaken()
@@ -113,7 +113,7 @@ class UserPresenterSpec : ProfilePresenterSpec(UserPresenterTestBody()) {
                   feedInteractor.loadNextUserTimelinePipe.send(GetUserTimelineCommand.LoadNext(USER_ID, Date()))
 
                   verify(presenter).loadMoreItemsError(any(), any())
-                }
+               }
             }
 
             describe("Circles interactions") {

@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RestoreViewOnCreateController;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 
 public class DisabledTrackingController extends RestoreViewOnCreateController {
 

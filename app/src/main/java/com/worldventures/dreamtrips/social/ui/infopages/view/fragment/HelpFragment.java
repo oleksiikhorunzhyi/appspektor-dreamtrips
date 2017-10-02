@@ -3,15 +3,15 @@ package com.worldventures.dreamtrips.social.ui.infopages.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpTabPresenter;
 
 import butterknife.InjectView;

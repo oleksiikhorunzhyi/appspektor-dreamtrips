@@ -6,7 +6,7 @@ import android.view.Menu;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 
 import javax.inject.Inject;

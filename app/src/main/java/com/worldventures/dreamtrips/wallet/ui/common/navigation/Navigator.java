@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.common.navigation;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;

@@ -2,11 +2,12 @@ package com.worldventures.dreamtrips.social.ui.feed.view.util;
 
 import android.content.Context;
 
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -14,7 +15,6 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.Bucke
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.FeedActionPanelView;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 

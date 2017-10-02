@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.media_picker.view.cell;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.utils.VideoDurationFormatter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.util.VideoDurationFormatter;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 
 import butterknife.InjectView;
 

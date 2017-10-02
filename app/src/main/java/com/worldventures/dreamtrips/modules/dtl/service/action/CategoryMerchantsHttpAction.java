@@ -4,7 +4,9 @@ import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchant;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchantsActionParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchantsHolder;
+
 import java.util.List;
+
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
+import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.ViewHelpDocumentsTabAnalyticAction;
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand;
 
 public class HelpDocumentListPresenter extends DocumentListPresenter {
 

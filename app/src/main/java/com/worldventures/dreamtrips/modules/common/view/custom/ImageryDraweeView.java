@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jakewharton.rxbinding.view.RxView;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
+import com.worldventures.core.ui.util.GraphicUtils;
 
 import rx.functions.Action1;
 import timber.log.Timber;

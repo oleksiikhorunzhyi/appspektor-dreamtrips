@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.social.ui.background_uploading.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ClearableStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.ClearableStorage;
+import com.worldventures.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.DeleteCompoundOperationsCommand;

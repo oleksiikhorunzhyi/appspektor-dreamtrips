@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.os.Parcelable;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;

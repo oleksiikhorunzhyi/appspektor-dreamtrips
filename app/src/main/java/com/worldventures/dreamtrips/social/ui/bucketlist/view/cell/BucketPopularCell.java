@@ -6,9 +6,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
 
@@ -16,7 +16,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_popular_cell)
-public class BucketPopularCell extends AbstractDelegateCell<PopularBucketItem, BucketPopularCellDelegate> {
+public class BucketPopularCell extends BaseAbstractDelegateCell<PopularBucketItem, BucketPopularCellDelegate> {
 
    @InjectView(R.id.imageViewImage) protected SimpleDraweeView imageViewImage;
    @InjectView(R.id.textViewName) protected TextView textViewName;

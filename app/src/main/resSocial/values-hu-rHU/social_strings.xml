@@ -94,7 +94,6 @@
    <string name="bucket_photo_dialog">Bakancslista fényképe</string>
    <string name="delete_cached_video_title">Videó</string>
    <string name="delete_cached_video_text">Biztos, hogy törli a videót a helyi gyorsítótárból?</string>
-   <string name="fail">Hiba</string>
    <string name="cancel_cached_video_title">Videó</string>
    <string name="cancel_cached_video_text">Biztos, hogy megszakítja a fájl letöltését?</string>
    <string name="cancel_photo_positiove">Igen</string>
@@ -250,7 +249,6 @@
    <string name="feedback_send_btn">Küldés</string>
    <string name="feedback_select_category">Kategória választás</string>
    <string name="feedback_add_photos">Fénykép hozzáadása</string>
-   <string name="feedback_could_not_load_attachment">Nem sikerült betölteni a mellékletet</string>
    <string name="feedback_attachment_failed_item_retry">Újra</string>
    <string name="feedback_attachment_failed_item_remove">eltávolít</string>
    <string name="feedback_fullscreen_attachments_format">%1$d/%2$d</string>
@@ -273,7 +271,6 @@
    <string name="error_fail_to_load_success_stories">Siker történetek betöltése sikertelen</string>
    <string name="error_fail_to_like_success_story">Siker történet like-olása sikertelen</string>
    <string name="error_fail_to_unlike_success_story">Siker történet nem-likeolása sikertelen</string>
-   <string name="error_fail_to_update_settings">Beállítások frissítése sikertelen</string>
    <string name="error_fail_to_load_categories">Kategória betöltés sikertelen</string>
    <string name="error_fail_to_load_suggestions">Javaslatok betöltése sikertelen</string>
    <string name="error_fail_to_load_popular_bl">Népszerű bakancslista tételek betöltése sikertelen</string>
@@ -304,20 +301,15 @@
    <string name="error_failed_to_load_activities">Tevékenységek betöltése sikertelen</string>
    <string name="error_failed_to_load_users">Felhasználók betöltése sikertelen</string>
    <string name="error_fail_to_delete_tag">Megjelölés törlése sikertelen</string>
-   <string name="error_fail_to_load_feedback_reasons">Visszajelzések betöltése sikertelen</string>
-   <string name="error_fail_to_send_feedback">Visszajelzés küldése sikertelen</string>
    <string name="error_fail_to_load_timeline">Idővonal betöltés sikertelen</string>
    <string name="error_fail_to_get_invitations">Meghívások megkapása sikertelen</string>
    <string name="error_fail_to_invitation_templates">Meghívás sablon megszerzés sikertelen</string>
    <string name="error_fail_to_get_preview_for_template">Sablon előnézet megtekintés sikertelen</string>
-   <string name="error_fail_to_locales">Helyek betöltése sikertelen</string>
    <string name="error_fail_to_load_profile_info">Fiók infó betöltése sikertelen</string>
    <string name="error_fail_to_update_avatar">Logó frissítése sikertelen</string>
    <string name="error_fail_to_update_cover_photo">Borítókép frissítés sikertelen</string>
-   <string name="error_fail_to_load_videos">Videók betöltése sikertelen</string>
    <string name="error_fail_to_like_item">Tétel like-olása sikertelen</string>
    <string name="error_fail_to_unlike_item">Tétel vissza like-olása sikertelen</string>
-   <string name="error_fail_to_load_documents">Nem sikerült betölteni a dokumentumokat</string>
    <string name="tag_people">Emberek megjelölése</string>
    <string name="uploading_post_status_progress_singular">Fotó feltöltése …</string>
    <string name="uploading_post_status_progress_plural">%1$d kép feltöltés …</string>

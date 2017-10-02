@@ -28,9 +28,6 @@
    <string name="dtl_description">Descriere</string>
    <string name="ok">OK</string>
    <string name="continue_option">Continuați</string>
-   <string name="permission_camera_rationale"> Este nevoie de acces la camera foto pentru a putea detecta </string>
-   <string name="permission_location_rationale">Este nevoie de acces la locație pentru a putea detecta </string>
-   <string name="no_camera_permission">Această aplicație nu poate funcționa deoarece nu are acces la camera foto. Aplicația se va închide.</string>
    <string name="no_location_permission">Această aplicație nu poate funcționa deoarece nu are acces la locație. Aplicația se va închide.</string>
    <string name="dtl_checkin_location_error">Serviciile de localizare trebuie să fie activate pentru a face check-in</string>
    <string name="dtl_barcode_title">Scanați codul QR</string>

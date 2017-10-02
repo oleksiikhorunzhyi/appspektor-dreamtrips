@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.modules.infopages.model.Document;
+import com.worldventures.core.modules.infopages.service.DocumentsInteractor;
+import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.infopages.model.Document;
-import com.worldventures.dreamtrips.social.ui.infopages.service.DocumentsInteractor;
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand;
 
 import java.util.List;
 

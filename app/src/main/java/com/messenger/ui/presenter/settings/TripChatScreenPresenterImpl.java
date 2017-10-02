@@ -3,7 +3,7 @@ package com.messenger.ui.presenter.settings;
 import android.content.Context;
 import android.view.Menu;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 
 public class TripChatScreenPresenterImpl extends BaseGroupChatSettingsScreenPresenterImpl {

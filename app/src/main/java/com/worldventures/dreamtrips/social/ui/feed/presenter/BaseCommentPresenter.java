@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
 import android.text.TextUtils;
 
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.CommentAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;

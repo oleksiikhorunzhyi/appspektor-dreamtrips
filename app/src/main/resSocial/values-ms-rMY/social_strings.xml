@@ -94,7 +94,6 @@
    <string name="bucket_photo_dialog">Gambar timba</string>
    <string name="delete_cached_video_title">Video</string>
    <string name="delete_cached_video_text">Adakah anda pasti anda mahu menghapuskan video daripada cache setempat? </string>
-   <string name="fail">Kegagalan</string>
    <string name="cancel_cached_video_title">Video</string>
    <string name="cancel_cached_video_text">Adakah anda pasti anda mahu batal muat turun fail?</string>
    <string name="cancel_photo_positiove">Ya</string>
@@ -250,7 +249,6 @@
    <string name="feedback_send_btn">Hantar</string>
    <string name="feedback_select_category">Pilih Kategori</string>
    <string name="feedback_add_photos">Tambah Gambar</string>
-   <string name="feedback_could_not_load_attachment">Tidak dapat memuatkan lampiran</string>
    <string name="feedback_attachment_failed_item_retry">Cuba lagi</string>
    <string name="feedback_attachment_failed_item_remove">Keluarkan</string>
    <string name="feedback_fullscreen_attachments_format">%1$d daripada%2$d</string>
@@ -273,7 +271,6 @@
    <string name="error_fail_to_load_success_stories">Gagal memuatkan kisah kejayaan</string>
    <string name="error_fail_to_like_success_story">Gagal untuk suka dengan kisah kejayaan</string>
    <string name="error_fail_to_unlike_success_story">Gagal menyahsuka kisah kejayaan</string>
-   <string name="error_fail_to_update_settings">Gagal mengemas kini tetapan</string>
    <string name="error_fail_to_load_categories">Gagal memuatkan kategori</string>
    <string name="error_fail_to_load_suggestions">Gagal memuatkan cadangan</string>
    <string name="error_fail_to_load_popular_bl">Gagal memuatkan Item Senarai Baldi popular</string>
@@ -304,20 +301,15 @@
    <string name="error_failed_to_load_activities">Gagal memuatkan aktiviti</string>
    <string name="error_failed_to_load_users">Gagal memuatkan pengguna</string>
    <string name="error_fail_to_delete_tag">Gagal memadam tag</string>
-   <string name="error_fail_to_load_feedback_reasons">Gagal memuatkan alasan maklum balas</string>
-   <string name="error_fail_to_send_feedback">Gagal menghantar maklum balas</string>
    <string name="error_fail_to_load_timeline">Gagal memuatkan garis masa</string>
    <string name="error_fail_to_get_invitations">Gagal mendapatkan jemputan</string>
    <string name="error_fail_to_invitation_templates">Gagal mendapatkan templat jemputan</string>
    <string name="error_fail_to_get_preview_for_template">Gagal mendapatkan pratonton untuk templat</string>
-   <string name="error_fail_to_locales">Gagal mendapatkan tempat peristiwa</string>
    <string name="error_fail_to_load_profile_info">Gagal memuatkan maklumat profil</string>
    <string name="error_fail_to_update_avatar">Gagal mengemas kini avatar</string>
    <string name="error_fail_to_update_cover_photo">Gagal mengemas kini foto muka depan</string>
-   <string name="error_fail_to_load_videos">Gagal memuatkan video</string>
    <string name="error_fail_to_like_item">Gagal untuk suka item</string>
    <string name="error_fail_to_unlike_item">Gagal menyah suka item</string>
-   <string name="error_fail_to_load_documents">Gagal untuk memuatkan dokumen</string>
    <string name="tag_people">Tag orang</string>
    <string name="uploading_post_status_progress_singular">Muat naik gambar…</string>
    <string name="uploading_post_status_progress_plural">Muat naik %1$d gambar…</string>

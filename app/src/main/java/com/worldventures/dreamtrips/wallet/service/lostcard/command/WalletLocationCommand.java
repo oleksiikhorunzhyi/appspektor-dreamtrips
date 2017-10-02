@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;

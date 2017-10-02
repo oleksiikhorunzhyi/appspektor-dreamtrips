@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -24,8 +23,6 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.Delete
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.EditPhotoWithTagsCommand;
 
-import javax.inject.Inject;
-
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
@@ -33,15 +30,23 @@ import rx.functions.Action2;
 
 public class FeedEntityHolderDelegate {
 
-   @Inject TripImagesInteractor tripImagesInteractor;
-   @Inject FeedInteractor feedInteractor;
-   @Inject PostsInteractor postsInteractor;
-   @Inject BucketInteractor bucketInteractor;
-   @Inject FriendsInteractor friendsInteractor;
-   @Inject CommentsInteractor commentsInteractor;
+   private final TripImagesInteractor tripImagesInteractor;
+   private final FeedInteractor feedInteractor;
+   private final PostsInteractor postsInteractor;
+   private final BucketInteractor bucketInteractor;
+   private final FriendsInteractor friendsInteractor;
+   private final CommentsInteractor commentsInteractor;
 
-   public FeedEntityHolderDelegate(Injector injector) {
-      injector.inject(this);
+   public FeedEntityHolderDelegate(TripImagesInteractor tripImagesInteractor, FeedInteractor feedInteractor,
+         PostsInteractor postsInteractor, BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor,
+         CommentsInteractor commentsInteractor) {
+
+      this.tripImagesInteractor = tripImagesInteractor;
+      this.feedInteractor = feedInteractor;
+      this.postsInteractor = postsInteractor;
+      this.bucketInteractor = bucketInteractor;
+      this.friendsInteractor = friendsInteractor;
+      this.commentsInteractor = commentsInteractor;
    }
 
    public void subscribeToUpdates(FeedEntityHolder feedEntityHolder, Observable.Transformer stopper,
@@ -57,7 +62,8 @@ public class FeedEntityHolderDelegate {
             .observe()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
-                  .onSuccess(changeFeedEntityLikedStatusCommand -> feedEntityHolder.updateFeedEntity(changeFeedEntityLikedStatusCommand.getResult()))
+                  .onSuccess(changeFeedEntityLikedStatusCommand -> feedEntityHolder.updateFeedEntity(changeFeedEntityLikedStatusCommand
+                        .getResult()))
                   .onFail(errorAction::call));
 
       postsInteractor.deletePostPipe()
@@ -112,15 +118,15 @@ public class FeedEntityHolderDelegate {
             .observeWithReplay()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
-               .onSuccess(deleteItemPhotoCommand -> feedEntityHolder.updateFeedEntity(deleteItemPhotoCommand.getResult()))
-               .onFail(errorAction::call));
+                  .onSuccess(deleteItemPhotoCommand -> feedEntityHolder.updateFeedEntity(deleteItemPhotoCommand.getResult()))
+                  .onFail(errorAction::call));
 
       friendsInteractor.getLikersPipe()
             .observeWithReplay()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<GetLikersCommand>()
-               .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
-               .onFail(errorAction::call));
+                  .onSuccess(getLikersCommand -> feedEntityHolder.updateFeedEntity(getLikersCommand.getFeedEntity()))
+                  .onFail(errorAction::call));
 
       commentsInteractor.commentsPipe()
             .observeWithReplay()

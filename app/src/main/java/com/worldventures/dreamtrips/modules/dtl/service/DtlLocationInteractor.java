@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import android.location.Location;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;

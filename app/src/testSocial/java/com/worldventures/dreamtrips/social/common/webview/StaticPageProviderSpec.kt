@@ -2,16 +2,15 @@ package com.worldventures.dreamtrips.social.common.webview
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import com.techery.spares.session.SessionHolder
-import com.techery.spares.storage.complex_objects.Optional
+import com.worldventures.core.model.User
+import com.worldventures.core.model.session.SessionHolder
+import com.worldventures.core.model.session.UserSession
+import com.worldventures.core.modules.infopages.ImmutableStaticPageProviderConfig
+import com.worldventures.core.modules.infopages.StaticPageProvider
+import com.worldventures.core.modules.infopages.StaticPageProviderConfig
+import com.worldventures.core.service.DeviceInfoProvider
+import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
-import com.worldventures.dreamtrips.modules.common.model.User
-import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle
-import com.worldventures.dreamtrips.social.ui.infopages.ImmutableStaticPageProviderConfig
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProviderConfig
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import java.net.URLEncoder
@@ -70,20 +69,20 @@ class StaticPageProviderSpec: BaseSpec({
          val expectedUrl = "$API_URL/gateway/privacy_policy"
          assertEquals(expectedUrl, provider.privacyPolicyUrl)
       }
-
-      it ("should provide correct enroll merchant url without bundle") {
-         val bundle = null
-         val actualUrl = provider.getEnrollMerchantUrl(bundle)
-         val params = parseParamsFromUrl(actualUrl)
-         checkEnrollMerchantParamsWithoutMerchantId(params)
-      }
-
-      it ("should provide correct enroll merchant url with merchant bundle") {
-         val bundle = MerchantIdBundle(MERCHANT_ID)
-         val actualUrl = provider.getEnrollMerchantUrl(bundle)
-         val params = parseParamsFromUrl(actualUrl)
-         checkEnrollMerchantParams(params)
-      }
+//       TODO : drop to merchant enroll test
+//      it ("should provide correct enroll merchant url without bundle") {
+//         val bundle = null
+//         val actualUrl = provider.getEnrollMerchantUrl(bundle)
+//         val params = parseParamsFromUrl(actualUrl)
+//         checkEnrollMerchantParamsWithoutMerchantId(params)
+//      }
+//
+//      it ("should provide correct enroll merchant url with merchant bundle") {
+//         val bundle = MerchantIdBundle(MERCHANT_ID)
+//         val actualUrl = provider.getEnrollMerchantUrl(bundle)
+//         val params = parseParamsFromUrl(actualUrl)
+//         checkEnrollMerchantParams(params)
+//      }
 
       it ("should provide correct backoffice url") {
          val encodedPart = URLEncoder.encode("/Marketing/WorldVenturesAdvantage", "UTF-8")
@@ -91,12 +90,12 @@ class StaticPageProviderSpec: BaseSpec({
          assertEquals(expectedUrl, provider.wvAdvantageUrl)
       }
 
-      it ("should provide correct forgot password url") {
+      it("should provide correct forgot password url") {
          val expectedUrl = "$FORGOT_PASSWORD_URL?dreamtrips"
          assertEquals(expectedUrl, provider.forgotPasswordUrl)
       }
 
-      it ("should provide correct forgot member id url") {
+      it("should provide correct forgot member id url") {
          val expectedUrl = "$FORGOT_PASSWORD_URL/forgotLoginId?dreamtrips"
          assertEquals(expectedUrl, provider.forgotMemberIdUrl)
       }

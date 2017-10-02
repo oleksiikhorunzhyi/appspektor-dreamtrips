@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.media_picker.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
 
 import java.util.ArrayList;
 import java.util.List;

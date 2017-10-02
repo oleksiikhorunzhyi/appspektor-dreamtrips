@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.model.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketLocation;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketTag;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.DiningItem;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import java.util.ArrayList;
 

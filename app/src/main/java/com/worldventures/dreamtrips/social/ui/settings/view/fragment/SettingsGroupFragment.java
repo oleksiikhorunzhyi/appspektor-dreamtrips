@@ -5,17 +5,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.settings.model.SettingsGroup;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.social.ui.settings.bundle.SettingsBundle;
-import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.social.ui.settings.view.cell.SettingsGroupCell;
 import com.worldventures.dreamtrips.social.ui.settings.view.presenter.SettingsGroupPresenter;
 

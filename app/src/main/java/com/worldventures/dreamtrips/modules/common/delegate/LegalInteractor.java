@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.delegate;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.common.command.AcceptTermsCommand;
 
 import javax.inject.Inject;

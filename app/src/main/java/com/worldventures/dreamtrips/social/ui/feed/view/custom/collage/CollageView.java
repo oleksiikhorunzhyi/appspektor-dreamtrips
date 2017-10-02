@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.worldventures.core.utils.Size;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.layoutmanager.LayoutManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.layoutmanager.LayoutManagerFactory;
 

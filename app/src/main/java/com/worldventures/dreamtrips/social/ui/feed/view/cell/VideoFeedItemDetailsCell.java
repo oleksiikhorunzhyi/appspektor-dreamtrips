@@ -4,17 +4,17 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.VideoInfoInjector;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.VideoInfoInjector;
+import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ import rx.Subscription;
 
 @Layout(R.layout.adapter_item_feed_video_event)
 public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem, BaseFeedCell.FeedCellDelegate<VideoFeedItem>>
-   implements Focusable {
+      implements Focusable {
 
    @InjectView(R.id.feed_share) ImageView share;
 

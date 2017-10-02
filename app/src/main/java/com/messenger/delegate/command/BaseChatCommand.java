@@ -5,7 +5,7 @@ import com.messenger.messengerservers.chat.AccessConversationDeniedException;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.helper.ConversationHelper;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

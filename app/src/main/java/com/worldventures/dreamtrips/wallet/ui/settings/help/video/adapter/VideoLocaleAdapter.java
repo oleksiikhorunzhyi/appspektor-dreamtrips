@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLocale;
+import com.worldventures.core.modules.video.model.VideoLocale;
 
 import java.util.List;
 

@@ -1,10 +1,8 @@
 package com.techery.spares.module;
 
-import android.app.Application;
-import android.content.Context;
-
-import com.techery.spares.application.BaseApplicationWithInjector;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.dreamtrips.App;
 
 import javax.inject.Singleton;
 
@@ -22,34 +20,17 @@ import dagger.Provides;
 public class InjectingApplicationModule {
 
    @Provides
-   Application provideApplication(Application application) {
-      return application;
-   }
-
-   @Provides
-   @ForApplication
-   Context provideAppContext(Application application) {
-      return application.getApplicationContext();
-   }
-
-   @Provides
    @Singleton
-   Context provideContext(Application application) {
-      return application.getApplicationContext();
+   @ForApplication
+   ObjectGraph provideObjectGraph(App app) {
+      return app.getObjectGraph();
    }
 
    @Provides
    @Singleton
    @ForApplication
-   ObjectGraph provideObjectGraph(BaseApplicationWithInjector baseApplicationWithInjector) {
-      return baseApplicationWithInjector.getObjectGraph();
-   }
-
-   @Provides
-   @Singleton
-   @ForApplication
-   Injector provideInjector(BaseApplicationWithInjector baseApplicationWithInjector) {
-      return baseApplicationWithInjector;
+   Injector provideInjector(App app) {
+      return app;
    }
 
 }

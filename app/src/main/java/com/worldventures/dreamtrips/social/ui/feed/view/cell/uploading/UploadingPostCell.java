@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.utils.VideoDurationFormatter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PhotoAttachment;
@@ -31,7 +32,6 @@ import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWit
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.preview.PhotoAttachmentPreviewView;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.preview.PhotoPreviewViewFactory;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.util.UploadingTimeLeftFormatter;
-import com.worldventures.dreamtrips.modules.common.view.util.VideoDurationFormatter;
 
 import java.io.File;
 import java.util.Collections;

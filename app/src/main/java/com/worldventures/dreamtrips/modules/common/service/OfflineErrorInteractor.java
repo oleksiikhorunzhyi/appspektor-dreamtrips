@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
 
 import io.techery.janet.ActionPipe;

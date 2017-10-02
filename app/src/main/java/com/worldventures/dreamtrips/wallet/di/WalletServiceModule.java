@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.FeatureManager;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;

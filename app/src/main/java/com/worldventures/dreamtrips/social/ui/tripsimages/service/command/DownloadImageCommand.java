@@ -10,9 +10,9 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.video.utils.CachedModelHelper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

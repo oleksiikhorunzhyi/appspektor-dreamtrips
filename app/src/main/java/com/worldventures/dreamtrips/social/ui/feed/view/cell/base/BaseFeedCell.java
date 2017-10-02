@@ -6,18 +6,18 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.storage.complex_objects.Optional;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
@@ -35,7 +35,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>> extends AbstractDelegateCell<ITEM, DELEGATE> {
+public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.FeedCellDelegate<ITEM>> extends BaseAbstractDelegateCell<ITEM, DELEGATE> {
 
    @Inject Presenter.TabletAnalytic tabletAnalytic;
    @Inject protected SessionHolder sessionHolder;

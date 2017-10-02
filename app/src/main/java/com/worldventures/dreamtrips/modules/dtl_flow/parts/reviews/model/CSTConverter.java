@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

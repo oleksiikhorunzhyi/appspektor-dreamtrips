@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="membership">Membership</string>
    <string name="trip_images">Trip Images</string>
@@ -94,7 +94,6 @@
    <string name="bucket_photo_dialog">Bucket photo</string>
    <string name="delete_cached_video_title">Video</string>
    <string name="delete_cached_video_text">Are you sure you want delete video from local cache?</string>
-   <string name="fail">Failure</string>
    <string name="cancel_cached_video_title">Video</string>
    <string name="cancel_cached_video_text">Are you sure you want to cancel file download?</string>
    <string name="cancel_photo_positiove">Yes</string>
@@ -250,7 +249,6 @@
    <string name="feedback_send_btn">Send</string>
    <string name="feedback_select_category">Choose Category</string>
    <string name="feedback_add_photos">Add Photos</string>
-   <string name="feedback_could_not_load_attachment">Could not load attachment</string>
    <string name="feedback_attachment_failed_item_retry">Retry</string>
    <string name="feedback_attachment_failed_item_remove">Remove</string>
    <string name="feedback_fullscreen_attachments_format">%1$d of %2$d</string>
@@ -273,7 +271,6 @@
    <string name="error_fail_to_load_success_stories">Failed to load success stories</string>
    <string name="error_fail_to_like_success_story">Failed to like success story</string>
    <string name="error_fail_to_unlike_success_story">Failed to unlike success story</string>
-   <string name="error_fail_to_update_settings">Failed to update settings</string>
    <string name="error_fail_to_load_categories">Failed to load categories</string>
    <string name="error_fail_to_load_suggestions">Failed to load suggestions</string>
    <string name="error_fail_to_load_popular_bl">Failed to load popular Bucket List Items</string>
@@ -304,20 +301,15 @@
    <string name="error_failed_to_load_activities">Failed to load activities</string>
    <string name="error_failed_to_load_users">Failed to load users</string>
    <string name="error_fail_to_delete_tag">Failed to delete tag</string>
-   <string name="error_fail_to_load_feedback_reasons">Failed to load feedback reasons</string>
-   <string name="error_fail_to_send_feedback">Failed to send feedback</string>
    <string name="error_fail_to_load_timeline">Failed to load timeline</string>
    <string name="error_fail_to_get_invitations">Failed to get invitations</string>
    <string name="error_fail_to_invitation_templates">Failed to get invitation templates</string>
    <string name="error_fail_to_get_preview_for_template">Failed to get preview for template</string>
-   <string name="error_fail_to_locales">Failed to get locales</string>
    <string name="error_fail_to_load_profile_info">Failed to load profile info</string>
    <string name="error_fail_to_update_avatar">Failed to update avatar</string>
    <string name="error_fail_to_update_cover_photo">Failed to update cover photo</string>
-   <string name="error_fail_to_load_videos">Failed to load videos</string>
    <string name="error_fail_to_like_item">Failed to like item</string>
    <string name="error_fail_to_unlike_item">Failed to unlike item</string>
-   <string name="error_fail_to_load_documents">Failed to load documents</string>
    <string name="tag_people">Tag people</string>
    <string name="uploading_post_status_progress_singular">Uploading photo…</string>
    <string name="uploading_post_status_progress_plural">Uploading %d photos…</string>
@@ -390,4 +382,3 @@
    <string name="forgot_member_id">Forgot Member ID?</string>
    <string name="forgot_password">Forgot Password?</string>
 </resources>
-

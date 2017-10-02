@@ -5,8 +5,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.utils.LocaleHelper;
 
 import java.util.Locale;
 

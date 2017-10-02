@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationAsReadCommand;

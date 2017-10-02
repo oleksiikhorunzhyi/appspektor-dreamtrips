@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell.delegates;
 
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;

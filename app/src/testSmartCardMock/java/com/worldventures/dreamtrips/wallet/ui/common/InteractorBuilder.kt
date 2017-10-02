@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common
 
 import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.SessionActionPipeCreator
 import io.techery.janet.ActionService
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.janet;
 
-import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
+import com.worldventures.core.service.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.VideoHttpService;
 
 import dagger.Module;

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_cancel">Cancelar</string>
+   <string name="action_done">Listo</string>
+   <string name="action_retry">Volver a intentarlo</string>
+   <string name="camera_record_a_video">Graba un video</string>
+   <string name="camera_take_a_picture">Toma una foto</string>
+   <string name="error_fail_to_load_documents">No se pudieron cargar los documentos </string>
+   <string name="error_fail_to_load_feedback_reasons">Error al cargar las razones de comentarios</string>
+   <string name="error_fail_to_load_videos">No se pudo cargar vídeos</string>
+   <string name="error_fail_to_locales">No se pudo obtener lugares</string>
+   <string name="error_fail_to_login">Error al iniciar sesión</string>
+   <string name="error_fail_to_send_feedback">Error al mandar retroalimentación</string>
+   <string name="error_fail_to_update_settings">Error al actualizar configuración </string>
+   <string name="facebook_error_loading_albums">No se pudo cargar los álbumes</string>
+   <string name="facebook_error_loading_photos">No se pudo cargar fotos</string>
+   <string name="facebook_login_error">No se ha podido iniciar sesión en Facebook</string>
+   <string name="fail">Fallo</string>
+   <string name="feedback_could_not_load_attachment">No se pudo cargar el archivo adjunto</string>
+   <string name="media_picker_error_contents">Se ha producido un error en la carga de %1$s.</string>
+   <string name="media_picker_fb_albums_actions">Álbumes de Facebook</string>
+   <string name="media_picker_fb_photos_actions">Fotos de Facebook</string>
+   <string name="media_picker_gallery_action">galería de multimedia</string>
+   <string name="media_picker_limit_reached">Sólo se puede elegir hasta %1$s fotos</string>
+   <string name="no_camera_permission">Esta aplicación no pude correr porque no tiene permiso de la cámara.  La aplicación se cerrará ahora.</string>
+   <string name="permission_camera_rationale">Acceso a la cámara requerido para la detección</string>
+   <string name="permission_location_rationale">Acceso a la locación requerido para la detección</string>
+   <string name="photos_selected">%1$d seleccionados</string>
+   <string name="picker_photo_limit">Puedes seleccionar hasta %1$d foto</string>
+   <string name="picker_photo_limit_plural">Puedes seleccionar hasta %1$d fotos</string>
+   <string name="picker_static_add_from_fb">Agregar de Facebook</string>
+   <string name="picker_static_take_from_camera">Cámara</string>
+   <string name="picker_two_media_type_error">Selecciona fotos o un video</string>
+   <string name="picker_video_length_limit">No se permite seleccionar videos mas de %1$d de largo</string>
+   <string name="picker_video_limit">Puedes seleccionar hasta %1$d video</string>
+   <string name="picker_video_limit_plural">Puedes seleccionar hasta %1$d videos</string>
+</resources>

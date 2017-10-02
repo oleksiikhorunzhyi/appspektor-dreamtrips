@@ -1,18 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
+import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.likes.DislikeHttpAction;
-import com.worldventures.dreamtrips.api.likes.LikeHttpAction;
-import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction

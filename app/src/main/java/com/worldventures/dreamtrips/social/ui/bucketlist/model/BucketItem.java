@@ -5,9 +5,9 @@ import android.support.annotation.StringRes;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

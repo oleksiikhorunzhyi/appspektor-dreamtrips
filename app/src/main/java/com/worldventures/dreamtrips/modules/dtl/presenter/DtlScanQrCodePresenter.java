@@ -158,7 +158,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                               .earnPointsActionPipe()
                               .send(new DtlEarnPointsAction(merchant, dtlTransaction))
                   ,
-                  apiErrorPresenter::handleError
+                  apiErrorViewAdapter::handleError
             );
 
    }
@@ -203,7 +203,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                   .createObservableResult(DtlTransactionAction.save(merchant, transaction)))
             .compose(bindViewIoToMainComposer())
             .subscribe(action -> {
-            }, apiErrorPresenter::handleError);
+            }, apiErrorViewAdapter::handleError);
    }
    ///////////////////////////////////////////////////////////////////////////
    // Receipt uploading

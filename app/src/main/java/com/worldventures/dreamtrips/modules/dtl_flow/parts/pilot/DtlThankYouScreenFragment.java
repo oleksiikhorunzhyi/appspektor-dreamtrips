@@ -8,13 +8,13 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.api.api_common.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -37,7 +37,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
       super.onActivityCreated(savedInstanceState);
       ThrstPaymentBundle thrstPaymentBundle = getArgs();
       merchant = thrstPaymentBundle.getMerchant();
-      ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchant.displayName());
+      ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(merchant.displayName());
    }
 
    @Override
@@ -131,13 +131,4 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    private String getTextFromResource(int id) { return getContext().getString(id);}
 
    private Drawable getDrawableFromResource(int id) { return getContext().getDrawable(id);}
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-   }
 }

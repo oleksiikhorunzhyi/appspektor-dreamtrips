@@ -10,7 +10,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
@@ -106,12 +105,8 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
    }
 
    @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
+   public void onApiError() {
 
-   @Override
-   public void onApiCallFailed() {
    }
 
    @Override

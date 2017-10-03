@@ -8,15 +8,14 @@ import android.webkit.WebViewClient;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
+import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 
 import butterknife.InjectView;
 
@@ -34,7 +33,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
       String receiptUrl = thrstFlowBundle.getReceiptUrl();
       String token = thrstFlowBundle.getToken();
       merchantName = thrstFlowBundle.getMerchant().displayName();
-      ((ComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
+      ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
       final String cookieString = "\"auth=" + token + "; Domain=.thrst.com; Path=/;\"";
 
       WebView.setWebContentsDebuggingEnabled(true);
@@ -61,16 +60,6 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
    @Override
    protected DtlThrstFlowPresenter createPresenter(Bundle savedInstanceState) {
       return new DtlThrstFlowPresenter(getArgs());
-   }
-
-   @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return false;
-   }
-
-   @Override
-   public void onApiCallFailed() {
-      
    }
 
    @Override

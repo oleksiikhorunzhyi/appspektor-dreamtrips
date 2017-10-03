@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -46,6 +46,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
@@ -53,6 +54,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlF
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,6 +79,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;
    @Inject SessionHolder appSessionHolder;
+   @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
 
    private final Merchant merchant;
    private final List<String> preExpandOffers;
@@ -101,7 +104,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    protected void validateTablet() {
-      if(getView().isTablet()){
+      //TODO Check and resolve this
+      if(ViewUtils.isTablet(getContext())){
          getView().hideReviewViewsOnTablets();
       }
    }
@@ -199,7 +203,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          transactionInteractor.transactionActionPipe()
                .createObservable(DtlTransactionAction.delete(merchant))
                .compose(bindViewIoToMainComposer())
-               .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+               .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                      .onSuccess(action -> getView().setTransaction(action.getResult(), merchant.useThrstFlow())));
       }
    }
@@ -357,7 +361,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void goToReviewList(){
-      Flow.get(getContext()).set(new DtlReviewsPath(merchant, ""));
+      // TODO Resolve null here
+      Flow.get(getContext()).set(new DtlReviewsPath(null, merchant, ""));
    }
 
    private void goToCommentReview() {

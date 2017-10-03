@@ -136,7 +136,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .createObservable(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withPoints(points)))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorPresenter::handleActionError)
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(
                         action -> view.openVerify(action.getResult())
                   )

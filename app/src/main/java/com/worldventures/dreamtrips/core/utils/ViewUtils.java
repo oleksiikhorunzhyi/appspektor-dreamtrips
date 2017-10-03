@@ -109,6 +109,10 @@ public class ViewUtils {
       }
    }
 
+   public static boolean isTabletLandscape(Context context) {
+      return ViewUtils.isTablet(context) && ViewUtils.isLandscapeOrientation(context);
+   }
+
    public static boolean isPhoneLandscape(Context context) {
       return !ViewUtils.isTablet(context) && ViewUtils.isLandscapeOrientation(context);
    }

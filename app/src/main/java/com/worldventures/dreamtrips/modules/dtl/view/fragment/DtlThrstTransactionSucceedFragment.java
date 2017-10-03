@@ -6,20 +6,18 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentCompletedBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
-import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 
 import javax.inject.Inject;
 
@@ -43,12 +41,8 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    }
 
    @Override
-   public boolean onApiError(ErrorResponse errorResponse) {
-      return true;
-   }
+   public void onApiError() {
 
-   @Override
-   public void onApiCallFailed() {
    }
 
    @Override

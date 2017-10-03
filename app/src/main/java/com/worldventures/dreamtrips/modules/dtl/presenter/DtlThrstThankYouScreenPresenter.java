@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
 
 public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankYouScreenPresenter.View> {
@@ -43,7 +42,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
       view.goBack(thrstPaymentBundle.isPaid(), thrstPaymentBundle.getEarnedPoints(), thrstPaymentBundle.getTotalPoints());
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView {
 
       void setChargeMoney(String money);
 

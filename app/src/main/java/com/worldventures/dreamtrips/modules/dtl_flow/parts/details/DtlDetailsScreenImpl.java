@@ -37,7 +37,6 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
@@ -54,6 +53,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -319,7 +319,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
             .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> getPresenter().onEstimationClick());
       if (pay != null)
-         RxView.clicks(pay).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onClickPay());
+         RxView.clicks(pay).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onClickPay());
    }
 
    private void setReviews() {

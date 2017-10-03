@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
@@ -64,7 +63,7 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
       view.openPaymentFailedScreen(action.getErrorMessage(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView {
       void openThankYouScreen(String totalAmount, String earnedPoints, String totalPoints);
 
       void openPaymentFailedScreen(String totalAmount, String earnedPoints, String totalPoints);

@@ -7,10 +7,10 @@ import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableLocation
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableUrlTokenActionParams;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 
 import javax.inject.Inject;
 
@@ -37,6 +37,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    @Inject PickImageDelegate pickImageDelegate;
    @Inject MediaInteractor mediaInteractor;
    @Inject MerchantsInteractor merchantInteractor;
+   @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
    private final Merchant merchant;
 
    private UploadTask uploadTask;
@@ -54,7 +55,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
             .compose(bindViewToMainComposer())
             .subscribe(this::receiptScanned);
 
-      apiErrorPresenter.setView(view);
+      apiErrorViewAdapter.setView(view);
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
@@ -65,7 +66,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
                   view.attachReceipt(Uri.parse(transaction.getUploadTask().getFilePath()));
                }
                checkVerification(transaction);
-            }, apiErrorPresenter::handleError);
+            }, apiErrorViewAdapter::handleError);
    }
 
    private void checkVerification(DtlTransaction transaction) {
@@ -152,10 +153,10 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
                   .withUploadTask(uploadTask)))
             .subscribeOn(Schedulers.io())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onSuccess(action -> checkVerification(action.getResult()))
-                  .onFail(apiErrorPresenter::handleActionError));
+                  .onFail(apiErrorViewAdapter::handleError));
    }
 
-   public interface View extends RxView, ApiErrorView {
+   public interface View extends RxView, DtlApiErrorViewAdapter.ApiErrorView {
 
       void hideScanButton();
 

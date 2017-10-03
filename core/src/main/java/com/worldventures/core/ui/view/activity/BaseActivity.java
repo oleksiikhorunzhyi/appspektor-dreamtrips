@@ -8,6 +8,7 @@ import com.worldventures.core.modules.ActivityModule;
 import com.worldventures.core.modules.auth.api.command.LogoutCommand;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.core.modules.picker.service.MediaPickerFacebookService;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.service.analytics.LifecycleEvent;
 import com.worldventures.core.service.analytics.MonitoringHelper;
@@ -29,6 +30,7 @@ public abstract class BaseActivity extends InjectingActivity {
    @Inject protected AuthInteractor authInteractor;
    @Inject protected PermissionDispatcher permissionDispatcher;
    @Inject protected MediaPickerFacebookService pickerFacebookService;
+   @Inject PickImageDelegate pickImageDelegate;
 
    private Subscription logoutSubscription;
 
@@ -103,6 +105,18 @@ public abstract class BaseActivity extends InjectingActivity {
    }
 
    @Override
+   public void onSaveInstanceState(Bundle outState) {
+      super.onSaveInstanceState(outState);
+      pickImageDelegate.saveInstanceState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      pickImageDelegate.restoreInstanceState(savedInstanceState);
+   }
+
+   @Override
    protected List<Object> getModules() {
       List<Object> modules = super.getModules();
       modules.add(new ActivityModule(this));
@@ -113,6 +127,7 @@ public abstract class BaseActivity extends InjectingActivity {
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       if (pickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
+      pickImageDelegate.onActivityResult(requestCode, resultCode, data);
       super.onActivityResult(requestCode, resultCode, data);
    }
 

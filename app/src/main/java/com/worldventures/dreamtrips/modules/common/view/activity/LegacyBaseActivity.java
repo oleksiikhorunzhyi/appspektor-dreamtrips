@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.messenger.di.MessengerActivityModule;
-import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.core.ui.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.core.module.LegacyActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -40,7 +39,6 @@ public abstract class LegacyBaseActivity extends BaseActivity {
 
    @Inject protected ActivityResultDelegate activityResultDelegate;
    @Inject protected BackStackDelegate backStackDelegate;
-   @Inject protected PickImageDelegate pickImageDelegate;
    @Inject protected Router router;
    @Inject protected ActivityRouter activityRouter;
 
@@ -113,19 +111,6 @@ public abstract class LegacyBaseActivity extends BaseActivity {
       if (getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
    }
 
-
-   @Override
-   public void onSaveInstanceState(Bundle outState) {
-      super.onSaveInstanceState(outState);
-      pickImageDelegate.saveInstanceState(outState);
-   }
-
-   @Override
-   protected void onRestoreInstanceState(Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-      pickImageDelegate.restoreInstanceState(savedInstanceState);
-   }
-
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
@@ -140,7 +125,6 @@ public abstract class LegacyBaseActivity extends BaseActivity {
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       activityResultDelegate.onActivityResult(requestCode, resultCode, data);
-      pickImageDelegate.onActivityResult(requestCode, resultCode, data);
       super.onActivityResult(requestCode, resultCode, data);
    }
 }

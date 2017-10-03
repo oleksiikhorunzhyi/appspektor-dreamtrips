@@ -50,7 +50,7 @@ public class DtlDetailsPresenterImplTest {
    @Test
    public void itShouldShowReviewsInTablet(){
       initMerchant();
-      Mockito.when(view.isTablet()).thenReturn(true);
+      Mockito.when(true).thenReturn(true);
       mPresenterDetail.validateTablet();
       Mockito.verify(view).hideReviewViewsOnTablets();
    }

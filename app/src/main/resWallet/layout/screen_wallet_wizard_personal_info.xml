@@ -243,6 +243,7 @@
                   tools:layout_editor_absoluteX="24dp"
                   />
 
+            <!--hide suffix picker-->
             <TextView
                   android:id="@+id/tv_suffix"
                   android:layout_width="0dp"
@@ -257,6 +258,7 @@
                   android:text="@={profile.suffix}"
                   android:textColorHint="#797979"
                   android:textSize="16sp"
+                  android:visibility="gone"
                   app:layout_constraintBottom_toBottomOf="@+id/last_name"
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintHorizontal_bias="0.5"

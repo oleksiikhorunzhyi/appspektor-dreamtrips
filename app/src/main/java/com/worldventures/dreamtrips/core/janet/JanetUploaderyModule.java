@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 
 import java.net.CookieManager;
 import java.util.Set;
@@ -34,9 +33,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Observable;
 
 @Module(
-      includes = {
-            AutomationQaConfigModule.class,
-            UploaderyImageCommand.class,
+      injects = {
             SimpleUploaderyCommand.class,
       },
       complete = false, library = true)

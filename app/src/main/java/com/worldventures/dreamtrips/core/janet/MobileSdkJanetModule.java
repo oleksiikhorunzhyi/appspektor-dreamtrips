@@ -55,7 +55,6 @@ import timber.log.Timber;
 @Module(
       includes = {
             ApiConfigModule.class,
-            AutomationQaConfigModule.class
       },
       complete = false, library = true)
 public class MobileSdkJanetModule {

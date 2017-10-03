@@ -209,7 +209,7 @@ ext {
          materialDialogsCore      : [c: 'com.github.afollestad.material-dialogs:core:0.8.6.2'],
 
          fresco                   : [c: 'com.facebook.fresco:fresco:1.1.0'],
-         frescoOkhttp             : [c: 'com.facebook.fresco:imagepipeline-okhttp:1.1.0'],
+         frescoOkhttp             : [c: 'com.facebook.fresco:imagepipeline-okhttp3:1.1.0'],
 
          // mosby
          mosbyMvp                 : [c: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],

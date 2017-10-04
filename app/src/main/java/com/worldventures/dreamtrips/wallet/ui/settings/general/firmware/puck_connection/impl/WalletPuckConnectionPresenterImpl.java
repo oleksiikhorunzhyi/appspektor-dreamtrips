@@ -34,7 +34,11 @@ public class WalletPuckConnectionPresenterImpl extends WalletPresenterImpl<Walle
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto()))
+                  .onSuccess(command -> {
+                     if (command.getResult() != null) {
+                        getView().userPhoto(command.getResult().userPhoto());
+                     }
+                  })
             );
    }
 

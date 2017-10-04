@@ -21,6 +21,8 @@ public interface Navigator {
 
    void goBack();
 
+   void goBackWithoutHandler();
+
    void finish();
 
    void goInstallFirmwareWalletStart();
@@ -38,6 +40,8 @@ public interface Navigator {
    void goProvisioningBlocked();
 
    void goCardList();
+
+   void goSuccessProvisioningWithRevertAnimation();
 
    void goAddCard(RecordViewModel recordViewModel);
 
@@ -69,9 +73,9 @@ public interface Navigator {
 
    void goPinProposalUserSetup(PinProposalAction pinProposalAction);
 
-   void goWizardUploadProfile();
+   void goWizardUploadProfile(ProvisioningMode provisioningMode);
 
-   void goWizardEditProfile();
+   void goWizardEditProfile(ProvisioningMode provisioningMode);
 
    void goWizardAssignUser(ProvisioningMode provisioningMode);
 

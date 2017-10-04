@@ -4,18 +4,11 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal;
 import android.content.Context;
 import android.view.View;
 
-import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
-import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.PinProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.RecordsPinProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.WizardPinProposalDialog;
-
-import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class PinProposalDelegate<T extends PinProposalDialog> {
    private final Navigator navigator;
@@ -24,10 +17,9 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       this.navigator = navigator;
    }
 
-   public static PinProposalDelegate create(Navigator navigator, PinProposalAction pinProposalAction,
-         String cardNickName, WizardInteractor wizardInteractor) {
+   public static PinProposalDelegate create(Navigator navigator, PinProposalAction pinProposalAction, String cardNickName) {
       if (pinProposalAction == PinProposalAction.WIZARD) {
-         return new WizardPinProposalDelegate(navigator, wizardInteractor);
+         return new WizardPinProposalDelegate(navigator);
       } else {
          return new RecordsPinProposalDelegate(navigator, cardNickName);
       }
@@ -56,28 +48,15 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
    public abstract void navigateSkipPin();
 
    private static class WizardPinProposalDelegate extends PinProposalDelegate<WizardPinProposalDialog> {
-      private final WizardInteractor wizardInteractor;
-      private ProvisioningMode provisioningMode;
 
-      private WizardPinProposalDelegate(Navigator navigator, WizardInteractor wizardInteractor) {
+      private WizardPinProposalDelegate(Navigator navigator) {
          super(navigator);
-         this.wizardInteractor = wizardInteractor;
       }
 
       @Override
       public void setupView(PinProposalScreen pinProposalScreen) {
          super.setupView(pinProposalScreen);
-         pinProposalScreen.setupToolbarNavigation();
-         checkProvisionMode(pinProposalScreen);
-      }
-
-      private void checkProvisionMode(PinProposalScreen pinProposalScreen) {
-         wizardInteractor.provisioningStatePipe()
-               .createObservable(ProvisioningModeCommand.fetchState())
-               .compose(RxLifecycleAndroid.bindView(pinProposalScreen.getView()))
-               .observeOn(AndroidSchedulers.mainThread())
-               .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
-                     .onSuccess(command -> this.provisioningMode = command.getResult()));
+         pinProposalScreen.disableToolbarNavigation();
       }
 
       @Override
@@ -102,7 +81,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
 
       @Override
       public void navigateSkipPin() {
-         getNavigator().goWizardAssignUser(provisioningMode);
+         getNavigator().goPaymentSyncFinished();
       }
 
       @Override

@@ -16,7 +16,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module (complete = false, library = true)
-public class VersionCheckActivityModule {
+public class ConfigurationActivityModule {
 
    @Provides
    @Singleton

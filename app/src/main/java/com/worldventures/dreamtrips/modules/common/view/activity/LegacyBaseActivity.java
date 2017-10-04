@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.config.VersionCheckActivityModule;
+import com.worldventures.dreamtrips.modules.config.ConfigurationActivityModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
@@ -72,7 +72,7 @@ public abstract class LegacyBaseActivity extends BaseActivity {
       modules.add(new MessengerActivityModule());
       modules.add(new DtlActivityModule());
       modules.add(new LocationPickerModule());
-      modules.add(new VersionCheckActivityModule());
+      modules.add(new ConfigurationActivityModule());
       modules.add(new SocialCommonActivityModule());
       modules.add(new LegacyActivityModule(this));
       return modules;

@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
-import com.worldventures.dreamtrips.core.initializer.VersionCheckInitializer;
+import com.worldventures.dreamtrips.core.initializer.AppConfigurationInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
@@ -117,7 +117,7 @@ public class InitializerModule {
 
    @Provides(type = Provides.Type.SET)
    public AppInitializer provideVersionCheckInitializer(AppConfigurationInteractor interactor) {
-      return new VersionCheckInitializer(interactor);
+      return new AppConfigurationInitializer(interactor);
    }
 
 }

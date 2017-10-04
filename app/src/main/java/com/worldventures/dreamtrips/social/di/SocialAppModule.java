@@ -7,7 +7,7 @@ import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.config.VersionCheckModule;
+import com.worldventures.dreamtrips.modules.config.ConfigurationModule;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.BackgroundUploadingModule;
@@ -37,7 +37,7 @@ import dagger.Provides;
             SocialActionStorageModule.class,
             SocialInteractorModule.class,
             FeedAppModule.class,
-            VersionCheckModule.class,
+            ConfigurationModule.class,
             EventDelegateModule.class,
             SocialInitializerModule.class,
             SocialMappingModule.class,

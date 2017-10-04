@@ -100,7 +100,8 @@ public class MobileSdkJanetModule {
 
    @Provides
    @Named(API_QUALIFIER)
-   HttpClient provideHttpClient(CookieManager cookieManager, @Named(API_QUALIFIER) Set<Interceptor> interceptors) {
+   HttpClient provideHttpClient(CookieManager cookieManager, @Named(API_QUALIFIER) Set<Interceptor> interceptors,
+         @Named(API_QUALIFIER) HttpLoggingInterceptor loginingIntercepter) {
       OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
             .cookieJar(new JavaNetCookieJar(cookieManager))
             .addNetworkInterceptor(chain -> {
@@ -113,6 +114,7 @@ public class MobileSdkJanetModule {
             .readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS)
             .writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       Queryable.from(interceptors).forEachR(okHttpClientBuilder::addInterceptor);
+      okHttpClientBuilder.addInterceptor(loginingIntercepter);
       return new OkClient(okHttpClientBuilder.build());
    }
 

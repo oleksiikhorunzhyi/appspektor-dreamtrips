@@ -94,6 +94,7 @@
    <string name="bucket_photo_dialog">人生愿望清单照片</string>
    <string name="delete_cached_video_title">视频</string>
    <string name="delete_cached_video_text">您确定您想从本地缓存中删除视频？</string>
+   <string name="fail">失败</string>
    <string name="cancel_cached_video_title">视频</string>
    <string name="cancel_cached_video_text">您确定要取消文件下载？</string>
    <string name="cancel_photo_positiove">是</string>
@@ -249,6 +250,7 @@
    <string name="feedback_send_btn">发送</string>
    <string name="feedback_select_category">选择类别</string>
    <string name="feedback_add_photos">添加照片</string>
+   <string name="feedback_could_not_load_attachment">无法加载附件</string>
    <string name="feedback_attachment_failed_item_retry">重试</string>
    <string name="feedback_attachment_failed_item_remove">移除</string>
    <string name="feedback_fullscreen_attachments_format">%2$d中的%1$d</string>
@@ -271,6 +273,7 @@
    <string name="error_fail_to_load_success_stories">无法加载成功故事</string>
    <string name="error_fail_to_like_success_story">无法点赞成功故事</string>
    <string name="error_fail_to_unlike_success_story">无法取消点赞成功故事</string>
+   <string name="error_fail_to_update_settings">无法更新设置</string>
    <string name="error_fail_to_load_categories">无法加载类别</string>
    <string name="error_fail_to_load_suggestions">无法加载建议</string>
    <string name="error_fail_to_load_popular_bl">无法加载流行人生愿望清单项目</string>
@@ -301,15 +304,20 @@
    <string name="error_failed_to_load_activities">无法加载活动</string>
    <string name="error_failed_to_load_users">无法加载用户</string>
    <string name="error_fail_to_delete_tag">无法删除标签</string>
+   <string name="error_fail_to_load_feedback_reasons">无法加载反馈原因</string>
+   <string name="error_fail_to_send_feedback">无法发送反馈</string>
    <string name="error_fail_to_load_timeline">无法加载时间表</string>
    <string name="error_fail_to_get_invitations">无法获得邀请</string>
    <string name="error_fail_to_invitation_templates">无法获得邀请模板</string>
    <string name="error_fail_to_get_preview_for_template">无法预览模板</string>
+   <string name="error_fail_to_locales">无法获取当地情况</string>
    <string name="error_fail_to_load_profile_info">无法加载个人资料信息</string>
    <string name="error_fail_to_update_avatar">无法更新化身</string>
    <string name="error_fail_to_update_cover_photo">无法更新封面照片</string>
+   <string name="error_fail_to_load_videos">无法加载视频</string>
    <string name="error_fail_to_like_item">无法点赞项目</string>
    <string name="error_fail_to_unlike_item">无法取消点赞项目</string>
+   <string name="error_fail_to_load_documents">无法加载文件</string>
    <string name="tag_people">给人加标签</string>
    <string name="uploading_post_status_progress_singular">上传照片…</string>
    <string name="uploading_post_status_progress_plural">上传%1$d张照片…</string>

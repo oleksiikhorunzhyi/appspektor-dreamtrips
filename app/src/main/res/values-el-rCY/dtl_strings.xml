@@ -92,7 +92,7 @@
    <!-- DtlFilterButton Options Merchants Type strings -->
    <string name="filter_merchant_dining">Γεύματα</string>
    <string name="filter_merchant_entertainment">Διασκέδαση</string>
-   <string name="filter_merchant_spas">Spas</string>
+   <string name="filter_merchant_spas">Κέντρα αισθητικής/χαλάρωσης</string>
    <!-- Reviews Merchants -->
    <string name="rate_and_reviews_text">Βαθμολόγηση &amp; Κριτική</string>
    <string name="first_reviews_text">Αφήστε πρώτοι μια κριτική για αυτή την τοποθεσία</string>

@@ -86,11 +86,11 @@
    <string name="dtl_load_merchant_error_caption">Keputusan tidak dapat dimuatkan pada masa ini.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">JAMUAN SELERA</string>
+   <string name="dtlt_search_hint">Jamuan Selera</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Tapis</string>
    <!-- DtlFilterButton Options Merchants Type strings -->
-   <string name="filter_merchant_dining">JAMUAN SELERA</string>
+   <string name="filter_merchant_dining">Jamuan Selera</string>
    <string name="filter_merchant_entertainment">Hiburan</string>
    <string name="filter_merchant_spas">Spas</string>
    <!-- Reviews Merchants -->
@@ -100,10 +100,15 @@
    <string name="format_reviews_text">%1$d Ulasan</string>
    <string name="reviews_text">Ulasan</string>
    <string name="without_reviews_text">0 Ulasan</string>
+   <string name="year_ago_text">%1$d tahun lalu</string>
    <string name="years_ago_text">%1$d tahun lalu</string>
+   <string name="month_ago_text">%1$d bulan yang lalu</string>
    <string name="months_ago_text">%1$d beberapa bulan yang lalu</string>
+   <string name="week_ago_text">%1$d minggu lalu</string>
    <string name="weeks_ago_text">%1$d minggu lalu</string>
+   <string name="day_ago_text">%1$d hari lalu</string>
    <string name="days_ago_text">%1$d hari lalu</string>
+   <string name="hour_ago_text">%1$d jam lalu</string>
    <string name="hours_ago_text">%1$d jam lalu</string>
    <string name="min_ago_text">%1$d min yang lalu</string>
    <string name="sec_ago_text">%1$d saat yang lalu</string>
@@ -117,7 +122,7 @@
    <string name="hint_comment_review">Bagaimanakah layanan, persekitaran, makanan dan sebagainya?</string>
    <string name="snack_review_success">Ulasan anda telah diserahkan dan akan dicatatkan sebaik sahaja ia diluluskan.</string>
    <string name="menu_post">HANTAR</string>
-   <string name="tv_read_more">KETAHUI LEBIH LANJUT</string>
+   <string name="tv_read_more">Ketahui Lebih Lanjut</string>
    <string name="action_add_review">Ulasan</string>
    <string name="text_awaiting_approval_review">Anda ada ulasan terdahulu untuk lokasi ini yang sedang menunggu kelulusan.\n Sebaik sahaja diluluskan anda boleh memberi ulasan bagi lokasi ini sekali lagi.</string>
    <string name="comment_review_title_sorry">Minta maaf</string>

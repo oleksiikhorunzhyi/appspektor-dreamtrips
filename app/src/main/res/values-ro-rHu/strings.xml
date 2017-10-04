@@ -99,6 +99,8 @@
 
 
 
+   <string name="nav_back">Înapoi</string>
+
    <string name="logout_component">Deconectare</string>
 
    <string name="years_ago">acum %1$d ani</string>

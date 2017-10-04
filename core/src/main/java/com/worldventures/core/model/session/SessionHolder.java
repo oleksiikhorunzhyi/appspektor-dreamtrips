@@ -13,7 +13,7 @@ import java.util.Locale;
 public class SessionHolder extends ComplexObjectStorage<UserSession> {
 
    private final static String[] supportedLanguageCodes = new String[]{"en-us", "el-cy", "el-gr", "es-us", "hu-hu", "ms-my",
-         "ro-hu", "sv-se", "zh", "zh-cn", "zh-hk", "zh-tw", "zh-sg"};
+         "ro-hu", "sv-se", "zh", "zh-cn", "zh-hk", "zh-tw", "zh-sg", "zh-my"};
    private final List<Locale> supportedLocales;
 
    public SessionHolder(SimpleKeyValueStorage keyValueStorage) {

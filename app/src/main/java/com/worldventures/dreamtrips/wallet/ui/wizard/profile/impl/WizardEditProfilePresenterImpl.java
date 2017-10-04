@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -21,7 +22,6 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.Wa
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletProfileUtils;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen;
-import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
@@ -34,19 +34,17 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletSocialInfoProvider socialInfoProvider;
-   private final WalletFeatureHelper featureHelper;
 
    private final WalletProfileDelegate delegate;
 
    public WizardEditProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor, WalletFeatureHelper featureHelper) {
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.socialInfoProvider = socialInfoProvider;
-      this.featureHelper = featureHelper;
       this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
@@ -78,7 +76,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      featureHelper.navigateFromSetupUserScreen(getNavigator());
+      if(getView().getProvisionMode() != null) getNavigator().goWizardAssignUser(getView().getProvisionMode());
    }
 
    private void attachProfile(WizardEditProfileScreen view) {

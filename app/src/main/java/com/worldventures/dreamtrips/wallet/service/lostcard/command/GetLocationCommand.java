@@ -21,6 +21,8 @@ import rx.Observable;
 @CommandAction
 public class GetLocationCommand extends Command<List<WalletLocation>> implements InjectableAction {
 
+   private static final int PAGE_SIZE = 1;
+
    @Inject Janet janet;
    @Inject LostCardRepository locationRepository;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -47,7 +49,7 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
 
    private Observable<GetSmartCardLocationsHttpAction> observeGetSmartCardLocations(String smartCardId) {
       return janet.createPipe(GetSmartCardLocationsHttpAction.class)
-            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(smartCardId)));
+            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(smartCardId), PAGE_SIZE));
    }
 
    private Observable<List<WalletLocation>> getStoredLocation() {

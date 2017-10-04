@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfileScreen;
-import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import io.techery.janet.Command;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
@@ -27,16 +26,13 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    private final SmartCardInteractor smartCardInteractor;
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
-   private final WalletFeatureHelper featureHelper;
 
-   public WizardUploadProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper featureHelper) {
+   public WizardUploadProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,SmartCardInteractor smartCardInteractor,
+         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, deviceConnectionDelegate);
-      this.smartCardInteractor = smartCardInteractor;
+      this.smartCardInteractor= smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.featureHelper = featureHelper;
    }
 
    @Override
@@ -84,6 +80,6 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      featureHelper.navigateFromSetupUserScreen(getNavigator());
+      getNavigator().goWizardAssignUser(getView().getProvisionMode());
    }
 }

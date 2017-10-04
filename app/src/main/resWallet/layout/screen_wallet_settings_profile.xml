@@ -206,11 +206,11 @@
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
                   android:layout_marginEnd="8dp"
+                  android:drawableEnd="@drawable/ic_wallet_vector_profile_lock"
                   android:enabled="false"
                   android:focusable="false"
                   android:hint="@string/wallet_card_settings_profile_lastname_hint"
                   android:text="@={profile.lastName}"
-                  android:drawableEnd="@drawable/ic_wallet_vector_profile_lock"
                   app:layout_constraintBottom_toTopOf="@+id/phone_number"
                   app:layout_constraintEnd_toStartOf="@+id/tv_suffix"
                   app:layout_constraintHorizontal_bias="0.5"
@@ -234,6 +234,7 @@
                   app:profile="@{profile}"
                   />
 
+            <!--hide suffix picker-->
             <TextView
                   android:id="@+id/tv_suffix"
                   android:layout_width="0dp"
@@ -250,6 +251,7 @@
                   android:text="@={profile.suffix}"
                   android:textColorHint="#797979"
                   android:textSize="16sp"
+                  android:visibility="gone"
                   app:layout_constraintBottom_toBottomOf="@+id/last_name"
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintHorizontal_bias="0.5"

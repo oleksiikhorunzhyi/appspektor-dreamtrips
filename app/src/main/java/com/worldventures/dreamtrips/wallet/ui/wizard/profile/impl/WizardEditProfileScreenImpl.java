@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBi
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
@@ -35,6 +36,8 @@ import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 
 import javax.inject.Inject;
@@ -49,14 +52,29 @@ import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
 public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEditProfileScreen, WizardEditProfilePresenter> implements WizardEditProfileScreen {
 
    private static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
+   private static final String KEY_PROVISION_MODE = "WizardEditProfileScreen#PROVISION_MODE_KEY";
 
    @Inject WizardEditProfilePresenter presenter;
+
+   public static WizardEditProfileScreenImpl create(@NonNull ProvisioningMode provisioningMode) {
+      final Bundle args = new Bundle();
+      args.putSerializable(KEY_PROVISION_MODE, provisioningMode);
+      return new WizardEditProfileScreenImpl(args);
+   }
 
    private ScreenWalletWizardPersonalInfoBinding binding;
    private ProfileViewModel viewModel = new ProfileViewModel();
    private WalletCropImageService cropImageService;
    private WalletPhotoProposalDialog photoActionDialog;
    private WalletSuffixSelectingDialog suffixSelectingDialog;
+
+   public WizardEditProfileScreenImpl() {
+      super();
+   }
+
+   public WizardEditProfileScreenImpl(Bundle args) {
+      super(args);
+   }
 
    @Override
    protected void onFinishInflate(View view) {
@@ -234,5 +252,13 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
             .onNegative((dialog, which) -> dialog.cancel())
             .build()
             .show();
+   }
+
+   @Override
+   @Nullable
+   public ProvisioningMode getProvisionMode() {
+      return (!getArgs().isEmpty() && getArgs().containsKey(KEY_PROVISION_MODE))
+            ? (ProvisioningMode) getArgs().getSerializable(KEY_PROVISION_MODE)
+            : null;
    }
 }

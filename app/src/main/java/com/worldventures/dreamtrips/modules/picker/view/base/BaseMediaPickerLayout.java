@@ -12,9 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
-import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.GridAutofitLayoutManager;
 import com.worldventures.dreamtrips.modules.picker.model.BaseMediaPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.presenter.base.BaseMediaPickerPresenter;
 import com.worldventures.dreamtrips.modules.picker.util.MediaPickerStep;
@@ -25,25 +26,23 @@ import com.worldventures.dreamtrips.modules.picker.view.custom.PickerGridRecycle
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.ProgressView;
 import rx.Observable;
 
-
 public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, M extends BaseMediaPickerViewModel> extends FrameLayout
       implements BaseMediaPickerView<M>, ProgressView, ErrorView {
 
-   @InjectView(R.id.picker_progress) ProgressBar progressBar;
-   @InjectView(R.id.picker_error_view) FrameLayout pickerErrorLayout;
-   @InjectView(R.id.tv_picker_error) TextView tvPickerError;
-   @InjectView(R.id.picker_recycler_view) protected PickerGridRecyclerView pickerRecyclerView;
+   private ProgressBar progressBar;
+   private FrameLayout pickerErrorLayout;
+   private TextView tvPickerError;
+   protected PickerGridRecyclerView pickerRecyclerView;
+
    private MediaPickerAdapter<M> adapter;
    private GridAutofitLayoutManager layoutManager;
    private OnNextClickListener onNextClickListener;
    private OnBackClickListener onBackClickListener;
+   private OnAttachedListener onAttachedListener;
    private Bundle arguments;
 
    public BaseMediaPickerLayout(@NonNull Context context) {
@@ -57,7 +56,8 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    protected void initView() {
       LayoutInflater.from(getContext()).inflate(R.layout.picker_layout, this);
-      ButterKnife.inject(this);
+      initUI();
+      initListeners();
       tvPickerError.setText(getContext().getString(R.string.media_picker_error_contents, getFailedActionText()));
       adapter = new MediaPickerAdapter<>(new ArrayList<>(), new MediaPickerHolderFactoryImpl());
       layoutManager = new GridAutofitLayoutManager(getContext(), getContext().getResources()
@@ -68,9 +68,15 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
             (view, position) -> handleItemClick(position)));
    }
 
-   @OnClick(R.id.btn_picker_retry)
-   public void onRetryClick() {
-      getPresenter().loadItems();
+   private void initUI() {
+      progressBar = (ProgressBar) findViewById(R.id.picker_progress);
+      pickerErrorLayout = (FrameLayout) findViewById(R.id.picker_error_view);
+      tvPickerError = (TextView) findViewById(R.id.tv_picker_error);
+      pickerRecyclerView = (PickerGridRecyclerView) findViewById(R.id.picker_recycler_view);
+   }
+
+   private void initListeners() {
+      findViewById(R.id.btn_picker_retry).setOnClickListener(view -> getPresenter().loadItems());
    }
 
    public MediaPickerAdapter<M> getAdapter() {
@@ -94,6 +100,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       getPresenter().attachView(this);
+      if (onAttachedListener != null) onAttachedListener.onAttached();
    }
 
    @Override
@@ -119,6 +126,14 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
       this.onBackClickListener = onBackClickListener;
    }
 
+   public OnAttachedListener getOnAttachedListener() {
+      return onAttachedListener;
+   }
+
+   public void setOnAttachedListener(OnAttachedListener onAttachedListener) {
+      this.onAttachedListener = onAttachedListener;
+   }
+
    public Bundle getArguments() {
       return arguments;
    }
@@ -129,7 +144,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    @Override
    public <T> Observable.Transformer<T, T> lifecycle() {
-      return RxLifecycle.bindView(this);
+      return RxLifecycleAndroid.bindView(this);
    }
 
    @Override
@@ -180,5 +195,9 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
 
    public interface OnBackClickListener {
       void onBackClick();
+   }
+
+   public interface OnAttachedListener {
+      void onAttached();
    }
 }

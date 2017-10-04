@@ -17,8 +17,10 @@ public class SmartCardUserDataInteractor {
 
    public SmartCardUserDataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       updateSmartCardUserPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardUserCommand.class, Schedulers.io());
-      revertSmartCardUserUpdatingPipe = sessionActionPipeCreator.createPipe(RevertSmartCardUserUpdatingCommand.class, Schedulers.io());
-      retryHttpUploadUpdatingPipe = sessionActionPipeCreator.createPipe(RetryHttpUploadUpdatingCommand.class, Schedulers.io());
+      revertSmartCardUserUpdatingPipe = sessionActionPipeCreator.createPipe(RevertSmartCardUserUpdatingCommand.class, Schedulers
+            .io());
+      retryHttpUploadUpdatingPipe = sessionActionPipeCreator.createPipe(RetryHttpUploadUpdatingCommand.class, Schedulers
+            .io());
    }
 
    public ActionPipe<UpdateSmartCardUserCommand> updateSmartCardUserPipe() {

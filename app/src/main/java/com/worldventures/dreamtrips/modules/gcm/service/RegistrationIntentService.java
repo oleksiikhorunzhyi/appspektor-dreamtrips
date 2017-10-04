@@ -3,8 +3,7 @@ package com.worldventures.dreamtrips.modules.gcm.service;
 import android.content.Intent;
 
 import com.techery.spares.service.InjectingIntentService;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
-import com.worldventures.dreamtrips.modules.common.service.SubscribeToPushNotificationsInteractor;
+import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotificationsCommand;
 
 import javax.inject.Inject;
 

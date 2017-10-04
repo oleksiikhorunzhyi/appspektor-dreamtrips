@@ -39,4 +39,10 @@ public abstract class SmartCardFirmware {
       return "";
    }
 
+   public boolean isEmpty() {
+      return nordicAppVersion().isEmpty()
+            && nrfBootloaderVersion().isEmpty()
+            && internalAtmelVersion().isEmpty()
+            && externalAtmelVersion().isEmpty();
+   }
 }

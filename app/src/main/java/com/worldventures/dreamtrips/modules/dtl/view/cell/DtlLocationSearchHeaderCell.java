@@ -8,6 +8,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 
 import java.util.concurrent.TimeUnit;
@@ -26,7 +27,7 @@ public class DtlLocationSearchHeaderCell extends AbstractDelegateCell<DtlLocatio
    @Override
    protected void syncUIStateWithModel() {
       RxView.clicks(autoDetectNearMe)
-            .compose(RxLifecycle.bindView(itemView))
+            .compose(RxLifecycleAndroid.bindView(itemView))
             .throttleFirst(3L, TimeUnit.SECONDS)
             .subscribe(aVoid -> cellDelegate.onCellClicked(getModelObject()));
 

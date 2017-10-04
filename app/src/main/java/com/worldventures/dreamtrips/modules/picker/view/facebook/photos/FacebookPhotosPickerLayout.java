@@ -119,4 +119,7 @@ public class FacebookPhotosPickerLayout extends FacebookMediaPickerLayout<Facebo
    private boolean isLimitReached(int count) {
       return photoPickLimitStrategy.photoPickLimit() > 0 && count > photoPickLimitStrategy.photoPickLimit();
    }
+
+   @Override
+   public void onProgressChanged(int i) { /* nothing */ }
 }

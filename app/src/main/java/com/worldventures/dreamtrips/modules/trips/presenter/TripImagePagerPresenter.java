@@ -5,7 +5,7 @@ import android.net.Uri;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 
 public class TripImagePagerPresenter extends BaseImagePresenter<ImagePathHolder> {

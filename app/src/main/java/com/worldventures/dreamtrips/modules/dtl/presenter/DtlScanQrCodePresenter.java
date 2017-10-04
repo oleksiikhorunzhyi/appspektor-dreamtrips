@@ -152,8 +152,14 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .map(Command::getResult)
             .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
-            .subscribe(dtlTransaction -> transactionInteractor.earnPointsActionPipe()
-                  .send(new DtlEarnPointsAction(merchant, dtlTransaction)), apiErrorViewAdapter::handleError);
+            .subscribe(
+                  dtlTransaction ->
+                        transactionInteractor
+                              .earnPointsActionPipe()
+                              .send(new DtlEarnPointsAction(merchant, dtlTransaction))
+                  ,
+                  apiErrorViewAdapter::handleError
+            );
 
    }
 
@@ -196,7 +202,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .flatMap(transaction -> transactionInteractor.transactionActionPipe()
                   .createObservableResult(DtlTransactionAction.save(merchant, transaction)))
             .compose(bindViewIoToMainComposer())
-            .subscribe(action -> {}, apiErrorViewAdapter::handleError);
+            .subscribe(action -> {
+            }, apiErrorViewAdapter::handleError);
    }
    ///////////////////////////////////////////////////////////////////////////
    // Receipt uploading
@@ -294,5 +301,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       void setCamera();
 
       void openScanReceipt(DtlTransaction dtlTransaction);
+
+      void openThrstFlow();
    }
 }

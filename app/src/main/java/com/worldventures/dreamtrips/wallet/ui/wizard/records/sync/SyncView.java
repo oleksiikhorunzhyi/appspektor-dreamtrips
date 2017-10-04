@@ -4,7 +4,7 @@ import android.view.View;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-interface SyncView {
+public interface SyncView {
 
    void setCountPaymentCardsProgress(int syncedCardsCount, int allCardsCount);
 

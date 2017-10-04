@@ -65,7 +65,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @InjectView(R.id.photos) RecyclerView mRecycler;
 
    @Inject MerchantsInteractor merchantInteractor;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    private static final String BRAND_ID = "1";
    private User user;

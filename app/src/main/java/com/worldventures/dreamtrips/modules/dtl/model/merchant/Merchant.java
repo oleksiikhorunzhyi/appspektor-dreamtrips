@@ -48,6 +48,8 @@ public abstract class Merchant implements Serializable {
    @Nullable public abstract List<OperationDay> operationDays();
    @Nullable public abstract List<Disclaimer> disclaimers();
    @Nullable public abstract Reviews reviews();
+   @Nullable public abstract Boolean useThrstFlow();
+   @Nullable public abstract String thrstFullCapabilityUrl();
 
    @Value.Derived public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);

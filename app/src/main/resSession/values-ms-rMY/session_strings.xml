@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="user_password_hint">Kata Laluan Ahli WV</string>
+   <string name="log_in">Log masuk</string>
+   <string name="user_id_hint">ID Ahli WV</string>
+   <string name="error_fail_to_login">Gagal untuk log masuk</string>
+   <string name="logout_dialog_title">Log keluar</string>
+   <string name="logout_dialog_message">Adakah anda pasti anda mahu Log Keluar?</string>
+   <string name="logout_dialog_positive_btn">Log keluar</string>
+   <string name="logout_dialog_negative_btn">Batal</string>
+   <string name="terms_and_conditions_title">Terma dan Syarat</string>
+   <string name="terms_and_conditions_subtitle">Sila baca dan terima terma dan syarat di bawah untuk meneruskan</string>
+   <string name="terms_and_conditions_checkbox">Klik di sini untuk menerima terma dan syarat</string>
+   <string name="terms_and_conditions_accept">Pilih Masuk</string>
+   <string name="terms_and_conditions_reject">Bukan Sekarang</string>
+   <string name="error_failed_to_accept_terms_and_conditions">Gagal menerima terma dan syarat</string>
+</resources>

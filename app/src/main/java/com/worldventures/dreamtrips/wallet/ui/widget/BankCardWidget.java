@@ -14,35 +14,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 public class BankCardWidget extends FrameLayout {
-
-   @InjectView(R.id.tv_card_type) TextView tvCardType;
-   @InjectView(R.id.tv_card_name) TextView tvCardName;
-   @InjectView(R.id.tv_owner_name) TextView tvOwnerName;
-   @InjectView(R.id.tv_card_number) TextView tvCardNumber;
-   @InjectView(R.id.tv_expire_date) TextView tvExpireDate;
-   @InjectView(R.id.tv_default_card_label) TextView tvDefaultCardLabel;
-   @InjectView(R.id.tv_short_card_number) TextView tvShortCardNumber;
-   @InjectView(R.id.iv_default_card_marker) ImageView ivDefaultCardMarker;
-
-   private View bankCardHolder;
 
    private final WalletRecordUtil walletRecordUtil;
    private final SpannableString goodThru;
 
+   private TextView tvCardType;
+   private TextView tvCardName;
+   private TextView tvOwnerName;
+   private TextView tvCardNumber;
+   private TextView tvExpireDate;
+   private TextView tvDefaultCardLabel;
+   private TextView tvShortCardNumber;
+   private ImageView ivDefaultCardMarker;
+   private View bankCardHolder;
+   private List<TextView> textViews;
    private boolean showShortNumber;
    private int drawableResId;
-   private List<TextView> textViews;
 
    public BankCardWidget(Context context) {
       this(context, null);
@@ -64,7 +59,7 @@ public class BankCardWidget extends FrameLayout {
       } finally {
          a.recycle();
       }
-      walletRecordUtil = new WalletRecordUtil(context);
+      walletRecordUtil = new WalletRecordUtil();
       goodThru = new SpannableString(getResources().getString(R.string.wallet_bank_card_good_thru));
       goodThru.setSpan(new RelativeSizeSpan(.65f), 0, goodThru.length(), 0);
    }
@@ -72,21 +67,26 @@ public class BankCardWidget extends FrameLayout {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      View.inflate(getContext(), R.layout.custom_view_bank_card, this);
+      final View view = View.inflate(getContext(), R.layout.wallet_custom_view_record, this);
+      tvCardType = view.findViewById(R.id.tv_card_type);
+      tvCardName = view.findViewById(R.id.tv_card_name);
+      tvOwnerName = view.findViewById(R.id.tv_owner_name);
+      tvCardNumber = view.findViewById(R.id.tv_card_number);
+      tvExpireDate = view.findViewById(R.id.tv_expire_date);
+      tvDefaultCardLabel = view.findViewById(R.id.tv_default_card_label);
+      tvShortCardNumber = view.findViewById(R.id.tv_short_card_number);
+      tvShortCardNumber.setVisibility(GONE);
+      ivDefaultCardMarker = view.findViewById(R.id.iv_default_card_marker);
       bankCardHolder = getChildAt(0);
       setBankCardHolder(drawableResId);
-      ButterKnife.inject(this);
-      tvShortCardNumber.setVisibility(GONE);
       textViews = Arrays.asList(tvCardType, tvCardName, tvOwnerName, tvCardNumber, tvExpireDate, tvDefaultCardLabel);
    }
 
-   final private ButterKnife.Setter<TextView, Boolean> SET_TEXT_COLOR = (textView, isCardDefault, index) -> {
-      textView.setTextColor(ContextCompat.getColor(textView.getContext(), android.R.color.white));
-   };
-
    public void setUpCardAppearance(@DrawableRes int backgroundResId, boolean isCardDefault) {
       bankCardHolder.setBackground(ContextCompat.getDrawable(getContext(), backgroundResId));
-      ButterKnife.apply(textViews, SET_TEXT_COLOR, isCardDefault);
+      for (TextView textView : textViews) {
+         textView.setTextColor(ContextCompat.getColor(textView.getContext(), android.R.color.white));
+      }
       setAsDefault(isCardDefault);
    }
 
@@ -95,12 +95,12 @@ public class BankCardWidget extends FrameLayout {
       tvShortCardNumber.setVisibility(show ? VISIBLE : GONE);
    }
 
-   public void setBankCard(Record card) {
-      setCardName(card.nickName());
-      setOwnerName(WalletRecordUtil.fetchFullName(card));
-      setCardNumber(card.numberLastFourDigits());
-      setExpireDate(card.expDate());
-      setRecordType(card.recordType());
+   public void setBankCard(RecordViewModel recordViewModel) {
+      setCardName(recordViewModel.getNickName());
+      setOwnerName(recordViewModel.getOwnerName());
+      setCardNumber(recordViewModel.getCardNumber());
+      setExpireDate(recordViewModel.getExpireDate());
+      setRecordType(recordViewModel.getRecordType());
    }
 
    //   properties:
@@ -137,13 +137,12 @@ public class BankCardWidget extends FrameLayout {
    }
 
    public void setRecordType(RecordType recordType) {
-      tvCardType.setText(walletRecordUtil.obtainRecordType(recordType));
+      tvCardType.setText(walletRecordUtil.obtainRecordType(getContext(), recordType));
    }
 
-   public enum BankCardResource {
-      BLUE(0, R.drawable.creditcard_blue),
-      GREY(1, R.drawable.creditcard_grey),
-      DARK_BLUE(2, R.drawable.creditcard_darkblue);
+   private enum BankCardResource {
+      BLUE(0, R.drawable.wallet_card_blue_background),
+      DARK_BLUE(2, R.drawable.wallet_card_dark_blue_background);
 
       private int attrId;
       private int drawableResId;

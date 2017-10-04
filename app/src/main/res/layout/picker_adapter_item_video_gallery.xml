@@ -12,7 +12,7 @@
             />
    </data>
 
-   <com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
+   <com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout
          xmlns:app="http://schemas.android.com/apk/res-auto"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -67,6 +67,6 @@
                />
       </RelativeLayout>
 
-   </com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>
+   </com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout>
 
 </layout>

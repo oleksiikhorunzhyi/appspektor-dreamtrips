@@ -23,4 +23,9 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
       tripMapViewInjector.initTripData(getModelObject());
       itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
    }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
 }

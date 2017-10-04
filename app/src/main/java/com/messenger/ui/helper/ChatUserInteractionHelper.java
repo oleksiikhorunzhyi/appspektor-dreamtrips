@@ -35,7 +35,7 @@ public class ChatUserInteractionHelper {
    private final String currentUserId;
 
    @Inject
-   public ChatUserInteractionHelper(TranslationsDAO translationsDAO, MessageDAO messageDAO, MediaDAO mediaDAO, ProfileCrosser profileCrosser, Router router, SessionHolder<UserSession> sessionHolder) {
+   public ChatUserInteractionHelper(TranslationsDAO translationsDAO, MessageDAO messageDAO, MediaDAO mediaDAO, ProfileCrosser profileCrosser, Router router, SessionHolder sessionHolder) {
       this.translationsDAO = translationsDAO;
       this.messageDAO = messageDAO;
       this.mediaDAO = mediaDAO;

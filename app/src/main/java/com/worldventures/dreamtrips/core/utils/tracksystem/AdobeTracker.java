@@ -8,7 +8,6 @@ import com.adobe.mobile.Config;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
-import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 
 import java.util.Date;

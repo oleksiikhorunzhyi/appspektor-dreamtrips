@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.trips.model.Price;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import io.techery.mappery.MapperyContext;
 

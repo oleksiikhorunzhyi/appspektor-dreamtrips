@@ -1,13 +1,14 @@
 package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
-import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.smartcard.action.support.UpgradeAppFirmwareAction;
-import io.techery.janet.smartcard.event.UpgradeAppFirmwareProgressEvent;
-import rx.Observable;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 
 import java.io.File;
+
+import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.smartcard.action.support.UpgradeAppFirmwareAction;
+import io.techery.janet.smartcard.event.UpgradeAppFirmwareProgressEvent;
+import rx.Observable;
 
 @CommandAction
 public class LoadNordicFirmwareCommand extends BaseLoadFirmwareCommand {

@@ -27,6 +27,7 @@
    <string name="dtl_perks_description">Faedah istimewa</string>
    <string name="dtl_description">Huraian</string>
    <string name="ok">OK</string>
+   <string name="continue_option">Teruskan</string>
    <string name="permission_camera_rationale">Akses ke kamera diperlukan untuk pengesanan</string>
    <string name="permission_location_rationale">Akses ke lokasi diperlukan untuk pengesanan</string>
    <string name="no_camera_permission">Aplikasi ini tidak boleh berjalan kerana ia tidak mempunyai kebenaran kamera. Aplikasi kini akan keluar.</string>
@@ -48,7 +49,7 @@
    <string name="dtl_earn">Dapatkan </string>
    <string name="dtl_dt_points">%1$d DreamTrips Points</string>
    <string name="suggest_merchant">Cadangkan Pedagang</string>
-   <string name="suggest_merchant_title">Alat Setempat DT</string>
+   <string name="dt_local_tools">Alat DT Local </string>
    <string name="dtl_details_share_title">Saya akan memperoleh mata Dreamtrips dalam %1$s</string>
    <string name="dtl_wait_for_receipt">Tunggu… Resit muat naik</string>
    <string name="dtl_wait_for_earn">Tunggu… Memperoleh mata</string>
@@ -79,7 +80,7 @@
    <string name="merchant_working_hours_caption">jam</string>
    <string name="filter_amenities_error_caption">Kemudahan tidak dapat dimuatkan pada masa ini</string>
    <string name="merchants_no_results">Tiada keputusan ditemui \n Cuba laraskan penapis anda atau masukkan sebuah lokasi baharu.</string>
-   <string name="merchants_no_results_offers_only">Maaf, masih tiada tawaran yang tersedia di kawasan anda. \n Padamkan tawaran untuk melihat restoran berdekatan anda.</string>
+   <string name="merchants_no_results_offers_only">Maaf, masih tiada tawaran yang tersedia di kawasan anda. </string>
    <string name="dtl_try_again">Cubalah lagi</string>
    <string name="dtl_load_more">Muat Lebih</string>
 
@@ -88,7 +89,59 @@
    <string name="dtl_load_merchant_error_caption">Keputusan tidak dapat dimuatkan pada masa ini.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Makanan &amp; Minuman</string>
+   <string name="dtlt_search_hint">JAMUAN SELERA</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Tapis</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_dining">JAMUAN SELERA</string>
+   <string name="filter_merchant_entertainment">Hiburan</string>
+   <string name="filter_merchant_spas">Spas</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">Nilaikan &amp; Beri Ulasan</string>
+   <string name="first_reviews_text">Jadilah orang pertama memberi ulasa lokasi ini</string>
+   <string name="format_review_text">%1$d Ulasan</string>
+   <string name="format_reviews_text">%1$d Ulasan</string>
+   <string name="reviews_text">Ulasan</string>
+   <string name="without_reviews_text">0 Ulasan</string>
+   <string name="years_ago_text">%1$d tahun lalu</string>
+   <string name="months_ago_text">%1$d beberapa bulan yang lalu</string>
+   <string name="weeks_ago_text">%1$d minggu lalu</string>
+   <string name="days_ago_text">%1$d hari lalu</string>
+   <string name="hours_ago_text">%1$d jam lalu</string>
+   <string name="min_ago_text">%1$d min yang lalu</string>
+   <string name="sec_ago_text">%1$d saat yang lalu</string>
+   <string name="total_reviews_text"> Baca semua ulasan (%1$d)</string>
+   <string name="to_be_first_reviews">Jadilah orang pertama memberi ulasan</string>
+   <string name="tvVerifiedReview">Pembeli disahkan</string>
+   <string name="review_comment_minor_letter">Penilaian anda perlulah mengandungi sekurang-kurangnya %1$d aksara.</string>
+   <string name="review_comment_major_letter">Penilaian anda perlulah kurang daripada %1$d aksara.</string>
+   <string name="review_comment_discard_changes">Adakah anda pasti mahu memadam ulasan ini?</string>
+   <string name="titleReview">Ulasan</string>
+   <string name="hint_comment_review">Bagaimanakah layanan, persekitaran, makanan dan sebagainya?</string>
+   <string name="snack_review_success">Ulasan anda telah diserahkan dan akan dicatatkan sebaik sahaja ia diluluskan.</string>
+   <string name="menu_post">HANTAR</string>
+   <string name="tv_read_more">KETAHUI LEBIH LANJUT</string>
+   <string name="action_add_review">Ulasan</string>
+   <string name="text_awaiting_approval_review">Anda ada ulasan terdahulu untuk lokasi ini yang sedang menunggu kelulusan.\n Sebaik sahaja diluluskan anda boleh memberi ulasan bagi lokasi ini sekali lagi.</string>
+   <string name="comment_review_title_sorry">Minta maaf</string>
+   <string name="comment_review_profanity_text">\"Ulasan anda mengandungi kata-kata yang tidak senonoh dan tidak boleh diserahkan. Sila sunting ulasan anda dan cuba lagi.\"</string>
+   <string name="comment_review_no_internet_message">Terdapat masalah berhubung dengan pelayan DreamTrips. Sila cuba semula.</string>
+   <string name="comment_review_no_internet_confirm_text">Cubalah lagi</string>
+   <string name="comment_review_no_internet_cancel_text">Batal</string>
+   <string name="comment_review_error_unknown_title">Minta maaf</string>
+   <string name="comment_review_error_unknown_text">Terdapat masalah berhubung dengan pelayan DreamTrips. Sila cuba semula.</string>
+   <string name="comment_review_error_unknown_confirm">Cubalah lagi</string>
+   <string name="comment_review_error_unknown_cancel">Batal</string>
+   <string name="comment_review_error_limited_reached_content">Semua pelayan kami sibuk sekarang. Sila cuba semula dalam satu minit.</string>
+   <string name="comment_review_unrecognized_error_content">Ops, kami telah memecahkan sesuatu Kami sedang berusaha membaikinya. Sila cuba semula esok.</string>
+   <string name="comment_review_confirm_text">OK</string>
+   <string name="comment_review_error_limited_reached_confirm">OK</string>
+   <string name="comment_review_unrecognized_error_confirm">OK</string>
+
+   <string name="flag_text_menu">Bendera</string>
+   <string name="review_min_char">min %1$d </string>
+   <string name="review_max_char">maks %1$d</string>
+   <string name="input_major_limit">Ulasan anda telah mencapai had kami. Ia telah disingkatkan supaya suai.</string>
+
+   <string name="text_add_photos_and_videos">Tambah Gambar</string>
 </resources>

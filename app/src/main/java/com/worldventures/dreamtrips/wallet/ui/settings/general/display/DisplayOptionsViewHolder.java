@@ -7,17 +7,13 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
 import java.util.Locale;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.Optional;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
 import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
@@ -26,27 +22,41 @@ import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeActio
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY;
 
-class DisplayOptionsViewHolder {
-
-   @InjectView(R.id.tv_title) TextView title;
-
-   @InjectView(R.id.tv_first_name) TextView firstName;
-   @InjectView(R.id.tv_full_name) TextView fullName;
-   @InjectView(R.id.iv_photo) SimpleDraweeView photo;
-
-   @InjectView(R.id.iv_silhouette) View silhouette;
-   @InjectView(R.id.tv_add_phone) TextView addPhone;
-   @InjectView(R.id.tv_add_photo) TextView addPhoto;
-   @InjectView(R.id.tv_photo_required) TextView photoRequired;
+public class DisplayOptionsViewHolder {
 
    private final View rootView;
 
+   private TextView title;
+   private TextView firstName;
+   private TextView fullName;
+   private SimpleDraweeView photo;
+   private View silhouette;
+   private TextView addPhone;
+   private TextView addPhoto;
+   private TextView photoRequired;
    private DisplayOptionsClickListener clickListener;
 
    DisplayOptionsViewHolder(View view) {
-      ButterKnife.inject(this, view);
-      rootView = view;
-      ImageUtils.applyGrayScaleColorFilter(photo);
+      this.rootView = view;
+      title = view.findViewById(R.id.tv_title);
+      firstName = view.findViewById(R.id.tv_first_name);
+      fullName = view.findViewById(R.id.tv_full_name);
+      photo = view.findViewById(R.id.iv_photo);
+      SmartCardAvatarHelper.applyGrayScaleColorFilter(photo);
+      silhouette = view.findViewById(R.id.iv_silhouette);
+      addPhone = view.findViewById(R.id.tv_add_phone);
+      addPhone.setOnClickListener(addPhone -> {
+         if (clickListener != null) {
+            clickListener.onAddPhone();
+         }
+      });
+      addPhoto = view.findViewById(R.id.tv_add_photo);
+      addPhoto.setOnClickListener(addPhoto -> {
+         if (clickListener != null) {
+            clickListener.onAddPhoto();
+         }
+      });
+      photoRequired = view.findViewById(R.id.tv_photo_required);
    }
 
    void bindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, @NonNull SmartCardUser user) {
@@ -88,7 +98,7 @@ class DisplayOptionsViewHolder {
       this.clickListener = clickListener;
    }
 
-   void onPagePositionUpdated(float position, float alphaOffset) {
+   public void onPagePositionUpdated(float position, float alphaOffset) {
       final float scale = Math.abs(Math.abs(position) - 1) * 0.2f + 0.8f;
       rootView.setScaleX(scale);
       rootView.setScaleY(scale);
@@ -101,11 +111,5 @@ class DisplayOptionsViewHolder {
       title.setAlpha(alpha);
       if (addPhoto != null) addPhoto.setAlpha(alpha);
       if (addPhone != null) addPhone.setAlpha(alpha);
-   }
-
-   @Optional
-   @OnClick({R.id.tv_add_phone, R.id.tv_add_photo})
-   void onClickAddInfo() {
-      if (clickListener != null) clickListener.onAddInfoClicked();
    }
 }

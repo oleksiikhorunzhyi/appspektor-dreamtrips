@@ -10,7 +10,7 @@ public abstract class ToastSuccessView<T> implements SuccessView<T> {
 
    @Override
    public void showSuccess(T t) {
-      if(toast == null) {
+      if (toast == null) {
          toast = createToast(t);
       }
       toast.show();

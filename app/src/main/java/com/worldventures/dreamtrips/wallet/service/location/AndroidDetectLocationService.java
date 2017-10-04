@@ -52,6 +52,6 @@ public class AndroidDetectLocationService implements WalletDetectLocationService
 
    @Override
    public Observable<Location> detectLastKnownLocation() {
-      return create(new LastKnownLocationObservable(context)).timeout(6, TimeUnit.SECONDS);
+      return create(new LastKnownLocationObservable(context)).timeout(30, TimeUnit.SECONDS);
    }
 }

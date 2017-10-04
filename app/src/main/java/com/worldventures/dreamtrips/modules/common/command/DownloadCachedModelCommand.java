@@ -4,8 +4,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.DownloadFileInteractor;
-import com.worldventures.dreamtrips.modules.video.model.CachedModel;
-import com.worldventures.dreamtrips.modules.video.model.Status;
+import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
+import com.worldventures.dreamtrips.social.ui.video.model.Status;
 
 import java.io.File;
 

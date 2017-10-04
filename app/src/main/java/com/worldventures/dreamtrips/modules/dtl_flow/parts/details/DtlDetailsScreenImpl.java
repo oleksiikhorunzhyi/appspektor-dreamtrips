@@ -7,6 +7,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,7 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -36,11 +37,11 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentCompletedBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
@@ -52,6 +53,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -92,6 +94,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.view_perks) TextView perks;
    @InjectView(R.id.container_comments) OfferWithReviewView mContainerComments;
    @InjectView(R.id.btn_rate_and_review) TextView rateAndReviewBtn;
+   @InjectView(R.id.order_from_menu_divider) View orderFromMenuDivider;
+   @InjectView(R.id.order_from_menu) TextView orderFromMenuBtn;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -162,11 +166,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       errorDialog.show();
    }
 
-   @Override
-   public boolean isTablet() {
-      return deviceInfoProvider.isTablet();
-   }
-
    @OnClick(R.id.tv_read_all_review)
    public void onClickReadAllReviews() {
       getPresenter().showAllReviews();
@@ -175,6 +174,21 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @OnClick(R.id.layout_rating_reviews_detail)
    void onClickRatingsReview() {
       if (!deviceInfoProvider.isTablet()) getPresenter().onClickRatingsReview(merchant);
+   }
+
+   @OnClick(R.id.order_from_menu)
+   void orderFromMenu() {
+      SweetAlertDialog openOrderFromMenuDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.NORMAL_TYPE);
+      openOrderFromMenuDialog.setTitle(R.string.alert);
+      openOrderFromMenuDialog.setContentText(getContext().getString(R.string.open_order_from_menu_msg));
+      openOrderFromMenuDialog.setConfirmText(getActivity().getString(R.string.ok));
+      openOrderFromMenuDialog.setCancelText(getActivity().getString(R.string.cancel));
+      openOrderFromMenuDialog.showCancelButton(true);
+      openOrderFromMenuDialog.setConfirmClickListener(listener -> {
+         listener.dismiss();
+         getPresenter().orderFromMenu();
+      });
+      openOrderFromMenuDialog.show();
    }
 
    @Override
@@ -204,6 +218,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       setReviews();
       setRatingAndPerk();
       setOffersSection();
+      setThrstFlow();
    }
 
    @Override
@@ -258,7 +273,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
                contactView.setText(contact.text);
 
                if (MerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
-                     .compose(RxLifecycle.bindView(contactView))
+                     .compose(RxLifecycleAndroid.bindView(contactView))
                      .subscribe(aVoid -> onContactClick(contact));
 
                additionalContainer.addView(contactView);
@@ -295,13 +310,16 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private void setClicks() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
+      View pay = ButterKnife.findById(this, R.id.merchant_details_pay);
       View estimate = ButterKnife.findById(this, R.id.merchant_details_estimate_points);
 
       if (earn != null)
-         RxView.clicks(earn).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
+         RxView.clicks(earn).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
       if (estimate != null) RxView.clicks(estimate)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> getPresenter().onEstimationClick());
+      if (pay != null)
+         RxView.clicks(pay).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onClickPay());
    }
 
    private void setReviews() {
@@ -337,9 +355,12 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void openTransaction(Merchant merchant, DtlTransaction dtlTransaction) {
-      router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
-            .data(new MerchantBundle(merchant))
-            .build());
+      router.moveTo(
+            merchant.useThrstFlow() ? Route.DTL_THRST_SCAN_RECEIPT : Route.DTL_SCAN_RECEIPT,
+            NavigationConfigBuilder.forActivity()
+                  .data(new MerchantBundle(merchant))
+                  .build()
+      );
    }
 
    @Override
@@ -350,7 +371,14 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void setTransaction(DtlTransaction dtlTransaction) {
+   public void showThrstSucceed(Merchant merchant, String earnedPoints, String totalPoints) {
+      router.moveTo(Route.DTL_THRST_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
+            .data(new ThrstPaymentCompletedBundle(merchant, earnedPoints, totalPoints))
+            .build());
+   }
+
+   @Override
+   public void setTransaction(DtlTransaction dtlTransaction, boolean isThrstTransaction) {
       Button earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
 
@@ -364,7 +392,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private int thrstFlow(Button earn) {
-      earn.setTextAppearance(R.style.ThemeThrstButton);
+      earn.setTextAppearance(R.style.DtlButtonPurpleTheme);
       return R.string.dtl_thrst_text_button;
    }
 
@@ -444,6 +472,41 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       return false;
    }
 
+   @Override
+   public void showThrstFlowButton() {
+      View payBtn = ButterKnife.findById(this, R.id.merchant_details_pay);
+      payBtn.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void showEarnFlowButton() {
+      View earnBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
+      earnBtn.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void hideEarnFlowButton(){
+      View payBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
+      if (payBtn != null) payBtn.setVisibility(View.GONE);
+   }
+
+   @Override
+   public AppCompatActivity getActivity() {
+      return super.getActivity();
+   }
+
+   @Override
+   public void showOrderFromMenu() {
+      orderFromMenuBtn.setVisibility(VISIBLE);
+      orderFromMenuDivider.setVisibility(VISIBLE);
+   }
+
+   @Override
+   public void hideOrderFromMenu() {
+      orderFromMenuBtn.setVisibility(GONE);
+      orderFromMenuDivider.setVisibility(GONE);
+   }
+
    private void setOffersSection() {
       if (!merchant.asMerchantAttributes().hasOffers()) {
          ViewUtils.setViewVisibility(this.perks, View.GONE);
@@ -464,6 +527,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
       if (perkVisibility == View.VISIBLE) this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
+   }
+
+   private void setThrstFlow() {
+      getPresenter().setThrstFlow();
+      getPresenter().setupFullThrstBtn();
    }
 
    ///////////////////////////////////////////////////////////////////////////

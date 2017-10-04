@@ -35,6 +35,9 @@ public class AnimatorProgressView<T> implements ProgressView<T> {
       progressViewImpl.hideProgress();
    }
 
+   @Override
+   public void onProgressChanged(int i) { /* nothing */ }
+
    private static class PreKitKatImpl implements ProgressView {
       private boolean started;
 
@@ -52,6 +55,9 @@ public class AnimatorProgressView<T> implements ProgressView<T> {
       public void hideProgress() {
          started = false;
       }
+
+      @Override
+      public void onProgressChanged(int i) { /* nothing */ }
    }
 
    @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -77,5 +83,8 @@ public class AnimatorProgressView<T> implements ProgressView<T> {
       public void hideProgress() {
          animator.pause();
       }
+
+      @Override
+      public void onProgressChanged(int i) { /* nothing */ }
    }
 }

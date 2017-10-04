@@ -16,8 +16,6 @@ import dagger.Provides;
       includes = {
             // base helpers and drivers
             EventBusModule.class,
-            EventDelegateModule.class,
-            SupportModule.class,
             StorageModule.class},
       library = true,
       complete = false)

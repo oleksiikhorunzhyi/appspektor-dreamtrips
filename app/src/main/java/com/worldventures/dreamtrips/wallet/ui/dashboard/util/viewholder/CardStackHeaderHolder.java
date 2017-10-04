@@ -54,11 +54,6 @@ public abstract class CardStackHeaderHolder implements HeaderItem {
    }
 
    @Value.Default
-   public boolean firmwareUpdateAvailable() {
-      return false;
-   }
-
-   @Value.Default
    public int cardCount() { return 0;}
 
    @Value.Default

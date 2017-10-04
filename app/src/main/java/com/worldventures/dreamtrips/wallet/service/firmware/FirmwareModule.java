@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.firmware;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.DownloadFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FetchFirmwareUpdateData;
@@ -35,7 +35,7 @@ public class FirmwareModule {
 
    @Provides
    @Singleton
-   FirmwareRepository firmwareRepository(SnappyRepository snappyRepository) {
-      return new DiskFirmwareRepository(snappyRepository);
+   FirmwareRepository firmwareRepository(WalletStorage walletStorage) {
+      return new DiskFirmwareRepository(walletStorage);
    }
 }

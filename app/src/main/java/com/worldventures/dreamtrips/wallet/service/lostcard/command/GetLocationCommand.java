@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
 
    @Override
    protected void run(CommandCallback<List<WalletLocation>> callback) throws Throwable {
-      Observable.merge(getStoredLocation(), getHistoricalLocation())
+      Observable.concat(getStoredLocation(), getHistoricalLocation())
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -35,7 +36,8 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
       return observeActiveSmartCard()
             .flatMap(command -> observeGetSmartCardLocations(command.getResult().smartCardId()))
             .map(GetSmartCardLocationsHttpAction::response)
-            .map(locations -> mapperyContext.convert(locations, WalletLocation.class));
+            .map(locations -> mapperyContext.convert(locations, WalletLocation.class))
+            .onErrorReturn(throwable -> Collections.emptyList());
    }
 
    private Observable<ActiveSmartCardCommand> observeActiveSmartCard() {
@@ -49,6 +51,13 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
    }
 
    private Observable<List<WalletLocation>> getStoredLocation() {
-      return Observable.just(locationRepository.getWalletLocations());
+      return Observable.just(locationRepository.getWalletLocations())
+            .flatMap(locations -> {
+               if (locations.isEmpty()) {
+                  return Observable.empty();
+               } else {
+                  return Observable.just(locations);
+               }
+            });
    }
 }

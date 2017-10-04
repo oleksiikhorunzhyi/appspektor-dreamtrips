@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.view.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import java.util.List;
 

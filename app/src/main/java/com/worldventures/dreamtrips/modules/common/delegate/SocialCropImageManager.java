@@ -27,27 +27,13 @@ public class SocialCropImageManager {
 
    private static final String TEMP_PHOTO_DIR = "cropped_images";
 
-   private Context context;
-
    private PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
 
    private int ratioX = RATIO_X_DEFAULT;
    private int ratioY = RATIO_Y_DEFAULT;
 
-   public SocialCropImageManager(Context context) {
-      init(context);
-   }
-
-   private void init(Context context) {
-      this.context = context;
-   }
-
-   public void cropImage(Fragment fragment, String filePath) {
-      if (context == null) {
-         throw new IllegalStateException("You must call init() first");
-      }
-
-      executeCrop(fragment, filePath);
+   public void cropImage(Context context, Fragment fragment, String filePath) {
+      executeCrop(context, fragment, filePath);
    }
 
    public Observable<Notification<File>> getCroppedImagesStream() {
@@ -59,9 +45,9 @@ public class SocialCropImageManager {
       this.ratioY = ratioY;
    }
 
-   private void executeCrop(Fragment fragment, String originalFilePath) {
-      String temporaryFile = getTempFile(originalFilePath).getAbsolutePath();
-      startCropActivity(fragment, originalFilePath, temporaryFile);
+   private void executeCrop(Context context, Fragment fragment, String originalFilePath) {
+      String temporaryFile = getTempFile(context, originalFilePath).getAbsolutePath();
+      startCropActivity(context, fragment, originalFilePath, temporaryFile);
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,7 +82,7 @@ public class SocialCropImageManager {
       }
    }
 
-   private File getTempFile(String originalFilePath) {
+   private File getTempFile(Context context, String originalFilePath) {
       File originalFile = new File(originalFilePath);
       File tempDir = new File(context.getCacheDir().getAbsolutePath() + File.separator + TEMP_PHOTO_DIR);
       String fileName = String.valueOf(System.currentTimeMillis() + "_" + originalFile.getName());
@@ -123,7 +109,7 @@ public class SocialCropImageManager {
       croppedImagesStream.onNext(Notification.createOnError(exception));
    }
 
-   private void startCropActivity(Fragment fragment, String originalPath, String targetPath) {
+   private void startCropActivity(Context context, Fragment fragment, String originalPath, String targetPath) {
       if (fragment == null) {
          Timber.w("Cannot start cropping activity, starting fragment is null");
          return;

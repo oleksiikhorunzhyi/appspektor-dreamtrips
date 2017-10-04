@@ -26,9 +26,7 @@ public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends C
       extends AbstractDelegateCell<EntityStateHolder<Photo>, Delegate> {
 
    @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivPhoto;
-
    @InjectView(R.id.fab_progress) FabButton fabProgress;
-
    @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
 
    public StatefulPhotoCell(View view) {
@@ -78,5 +76,10 @@ public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends C
    @OnClick(R.id.fab_progress)
    void onProgressClicked() {
       cellDelegate.onCellClicked(getModelObject());
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 }

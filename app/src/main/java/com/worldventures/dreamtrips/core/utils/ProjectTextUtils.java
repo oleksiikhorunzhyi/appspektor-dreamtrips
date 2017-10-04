@@ -105,6 +105,10 @@ public class ProjectTextUtils {
       return str == null || str.length() == 0;
    }
 
+   public static boolean isNotEmpty(@Nullable CharSequence str) {
+      return str != null && str.length() > 0;
+   }
+
    public static String defaultIfEmpty(@Nullable String str, String defaultStr) {
       return (str == null || str.length() == 0) ? defaultStr : str;
    }

@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.Pagi
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import flow.Flow;
@@ -39,6 +40,9 @@ public class OfferWithReviewView extends LinearLayout {
    public static final String COUNT_REVIEW = "countReview";
    public static final String MERCHANT_NAME = "merchantName";
    public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
+   public static String IS_TABLET = "isTablet";
+
+   private List<ReviewObject> mArrayInfo = new ArrayList<>();
 
    private float mRatingMerchant;
    private int mCountReview;

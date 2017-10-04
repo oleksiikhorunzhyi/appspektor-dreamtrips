@@ -168,7 +168,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
             .backStackEnabled(true)
             .containerId(container.getId())
             .build());
-      cancel.setText(R.string.back);
+      cancel.setText(R.string.nav_back);
    }
 
    public void openFacebookPhoto(Bundle bundle) {
@@ -220,7 +220,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
    private void updateCancelButtonState() {
       if (cancel == null) return;
       if (fragmentManager.getBackStackEntryCount() < 2) cancel.setText(R.string.action_cancel);
-      else cancel.setText(R.string.back);
+      else cancel.setText(R.string.nav_back);
    }
 
    public void showPanel(boolean photoMultipickEnabled, int photoPickLimit) {

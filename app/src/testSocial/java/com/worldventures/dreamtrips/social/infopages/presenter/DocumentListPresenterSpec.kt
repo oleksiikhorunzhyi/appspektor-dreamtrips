@@ -4,10 +4,10 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
 import com.worldventures.dreamtrips.common.Injector
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.modules.infopages.model.Document
-import com.worldventures.dreamtrips.modules.infopages.presenter.DocumentListPresenter
-import com.worldventures.dreamtrips.modules.infopages.service.DocumentsInteractor
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand
+import com.worldventures.dreamtrips.social.ui.infopages.model.Document
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter
+import com.worldventures.dreamtrips.social.ui.infopages.service.DocumentsInteractor
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.GetDocumentsCommand
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

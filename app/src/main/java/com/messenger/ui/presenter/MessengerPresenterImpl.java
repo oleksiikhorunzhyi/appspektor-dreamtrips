@@ -11,6 +11,7 @@ import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.view.layout.MessengerScreen;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 import java.util.concurrent.TimeUnit;
@@ -26,7 +27,8 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
 
    protected Observable<SyncStatus> connectionStatusStream;
    protected SyncStatus currentConnectivityStatus = SyncStatus.DISCONNECTED;
-   @Inject MessengerConnector messengerConnector;
+   @Inject protected MessengerConnector messengerConnector;
+   @Inject protected AnalyticsInteractor analyticsInteractor;
 
    public MessengerPresenterImpl(Context context, Injector injector) {
       this.context = context;

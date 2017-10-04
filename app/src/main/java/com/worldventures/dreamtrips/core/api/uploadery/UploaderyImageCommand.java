@@ -6,8 +6,8 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.api.uploadery.UploadImageHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.util.HttpUploaderyException;
+import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
+import com.worldventures.dreamtrips.core.utils.HttpUploaderyException;
 
 import java.io.File;
 

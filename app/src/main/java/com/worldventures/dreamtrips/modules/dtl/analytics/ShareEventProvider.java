@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 
 public final class ShareEventProvider {

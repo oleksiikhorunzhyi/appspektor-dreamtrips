@@ -144,4 +144,10 @@ public class PinProposalScreenImpl extends WalletBaseController<PinProposalScree
    public boolean supportHttpConnectionStatusLabel() {
       return false;
    }
+
+   @Override
+   public boolean handleBack() {
+      getPresenter().goBack();
+      return true;
+   }
 }

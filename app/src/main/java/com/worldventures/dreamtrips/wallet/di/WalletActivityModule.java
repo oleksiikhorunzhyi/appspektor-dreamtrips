@@ -432,18 +432,16 @@ public class WalletActivityModule {
    @Provides
    WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
-         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor,
-         WalletFeatureHelper walletFeatureHelper) {
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor) {
       return new WizardEditProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
-            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor, walletFeatureHelper);
+            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor);
    }
 
    @Provides
    WizardUploadProfilePresenter provideWizardUploadProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         WizardInteractor wizardInteractor, WalletFeatureHelper walletFeatureHelper) {
-      return new WizardUploadProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
-            analyticsInteractor, walletFeatureHelper);
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+      return new WizardUploadProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            wizardInteractor, analyticsInteractor);
    }
 
    @Provides

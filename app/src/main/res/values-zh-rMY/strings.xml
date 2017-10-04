@@ -100,11 +100,9 @@
 
    <string name="feed_share_post_button">分享一张照片，一个视频或者想法</string>
 
-   <string name="camera">相机</string>
    <string name="library">图书馆</string>
    <string name="camera_take_a_picture">拍摄一张照片</string>
    <string name="camera_record_a_video">录制一个视频</string>
-   <string name="add_from_facebook">添加来自Facebook</string>
 
    <string name="photos_selected">%1$d已选</string>
 

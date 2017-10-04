@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
 
+import butterknife.ButterKnife;
 import butterknife.OnLongClick;
 import timber.log.Timber;
 
@@ -18,6 +19,7 @@ public class BucketPhotoCell extends StatefulPhotoCell<BucketPhoto, BucketPhotoU
 
    public BucketPhotoCell(View view) {
       super(view);
+      ButterKnife.inject(this, itemView);
    }
 
    @OnLongClick(R.id.imageViewPhoto)

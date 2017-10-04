@@ -37,6 +37,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Provides.Type;
 import io.techery.janet.ActionService;
 import io.techery.janet.HttpActionService;
 import io.techery.janet.gson.GsonConverter;
@@ -64,7 +65,7 @@ public class MobileSdkJanetModule {
 
    private static final String LOGGING_TAG = "DT MobileSDK API";
 
-   @Provides(type = Provides.Type.SET)
+   @Provides(type = Type.SET)
    ActionService provideApiService(DreamtripsApiProvider dreamtripsApiProvider) {
       return dreamtripsApiProvider.createApiService();
    }
@@ -100,8 +101,7 @@ public class MobileSdkJanetModule {
 
    @Provides
    @Named(API_QUALIFIER)
-   HttpClient provideHttpClient(CookieManager cookieManager, @Named(API_QUALIFIER) Set<Interceptor> interceptors,
-         @Named(API_QUALIFIER) HttpLoggingInterceptor loginingIntercepter) {
+   HttpClient provideHttpClient(CookieManager cookieManager, @Named(API_QUALIFIER) Set<Interceptor> interceptors) {
       OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
             .cookieJar(new JavaNetCookieJar(cookieManager))
             .addNetworkInterceptor(chain -> {
@@ -114,13 +114,12 @@ public class MobileSdkJanetModule {
             .readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS)
             .writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       Queryable.from(interceptors).forEachR(okHttpClientBuilder::addInterceptor);
-      okHttpClientBuilder.addInterceptor(loginingIntercepter);
       return new OkClient(okHttpClientBuilder.build());
    }
 
-   @Provides
+   @Provides(type = Type.SET)
    @Named(API_QUALIFIER)
-   HttpLoggingInterceptor provideLoggingInterceptor() {
+   Interceptor provideLoggingInterceptor() {
       HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(message -> Timber.tag(LOGGING_TAG).d(message));
       interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
       return interceptor;

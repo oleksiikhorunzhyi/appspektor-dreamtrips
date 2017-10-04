@@ -53,7 +53,7 @@ ext {
          okhttpLoggingInterceptor2: [c: "com.squareup.okhttp:logging-interceptor:$okhttp2Version"],
          okhttpUrlConnection3     : [c: "com.squareup.okhttp3:okhttp-urlconnection:$okhttp3Version"],
          okhttpLoggingInterceptor3: [c: "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"],
-         gson                     : [c: 'com.google.code.gson:gson:2.7'],
+
          // util
          reactivenetwork          : [c: 'com.github.pwittchen:reactivenetwork:0.5.2'],
          // smack / xmpp
@@ -162,7 +162,6 @@ ext {
          leakcanary               : [c: "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"],
          leakcanaryNoOp           : [c: "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"],
          databindingcompiler      : [a: "com.android.databinding:compiler:${dataBindingCompilerVersion}"],
-         jetbrainsAnnotations     : [c: 'org.jetbrains:annotations:13.0'],
    ]
    // tests
    def spekVersion = '1.1.2'
@@ -254,7 +253,7 @@ ext {
          janetCommand             : [c: 'com.github.techery:janet-command:1.0.5'],
          // janet http
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
-         janetHttpClient          : [c: "com.github.techery.janet-http:client-okhttp:$janetHttpVersion"],
+         janetHttpClient          : [c: "com.github.techery.janet-http:client-okhttp3:$janetHttpVersion"],
          janetHttpConverter       : [c: 'com.github.techery.janet-converters:gson:1.1.1'],
 
          // API
@@ -268,6 +267,8 @@ ext {
          timber                   : [c: 'com.jakewharton.timber:timber:4.5.1'],
          collectionsQuery         : [c: 'com.innahema:collections-query:0.2.9'],
          multidex                 : [c: 'com.android.support:multidex:1.0.1'],
+         jetbrainsAnnotations     : [c: 'org.jetbrains:annotations:13.0'],
+         gson                     : [c: 'com.google.code.gson:gson:2.7'],
 
          // oauth sdk
          facebook                 : [c: 'com.facebook.android:facebook-android-sdk:4.18.0'],
@@ -288,7 +289,7 @@ ext {
          daggerProguard   : [rap: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
    ]
 
-   moduleDependencies.provide = { bundle ->
+   provideDep = { bundle ->
       return bundle.entrySet().first().value
    }
 

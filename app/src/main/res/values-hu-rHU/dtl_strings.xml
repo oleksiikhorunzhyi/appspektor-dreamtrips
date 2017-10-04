@@ -100,10 +100,15 @@
    <string name="format_reviews_text">%1$d Értékelés</string>
    <string name="reviews_text">Értékelés</string>
    <string name="without_reviews_text">0 Értékelés</string>
+   <string name="year_ago_text">%1$d évvel ezelőtt</string>
    <string name="years_ago_text">%1$d évvel ezelőtt</string>
+   <string name="month_ago_text">%1$d hónappal ezelőtt</string>
    <string name="months_ago_text">%1$d perccel ezelőtt</string>
+   <string name="week_ago_text">%1$d héttel ezelőtt</string>
    <string name="weeks_ago_text">%1$d héttel ezelőtt</string>
+   <string name="day_ago_text">%1$d nappal ezelőtt</string>
    <string name="days_ago_text">%1$d nappal ezelőtt</string>
+   <string name="hour_ago_text">%1$d órával ezelőtt</string>
    <string name="hours_ago_text">%1$d órával ezelőtt</string>
    <string name="min_ago_text">%1$d perccel ezelőtt</string>
    <string name="sec_ago_text">%1$d másodperccel ezelőtt</string>

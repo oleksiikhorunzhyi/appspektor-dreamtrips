@@ -9,7 +9,7 @@
    <string name="action_map">Hartă</string>
    <string name="member_images">Imagini de la membri</string>
    <string name="my_images">Imaginile mele</string>
-   <string name="you_should_be_here">You Should Be Here</string>
+   <string name="trip_images_you_should_be_here">You Should Be Here</string>
    <string name="duration">%1$d nopți</string>
    <string name="inspire_me">Inspirație</string>
    <string name="three_sixty">Experiența 360</string>
@@ -34,7 +34,7 @@
    <string name="profile_user_id_hint">ID utilizator</string>
    <string name="bucket_locations">Locații</string>
    <string name="bucket_activities">Activități</string>
-   <string name="bucket_restaurants">Dining</string>
+   <string name="bucket_restaurants">Luarea Mesei</string>
    <string name="photo_deleted">Fotografia a fost ștearsă</string>
    <string name="delete_photo_title">Ștergeți fotografia</string>
    <string name="delete_photo_text">Sigur doriți să ștergeți această fotografie?</string>
@@ -379,4 +379,6 @@
    <string name="error_failed_to_delete_video">Ștergerea videoclipului a eșuat</string>
    <string name="type_video">Videoclip</string>
    <string name="type_post">Postați</string>
+   <string name="forgot_member_id">Ai uitat ID membru?</string>
+   <string name="forgot_password">Ați uitat parola?</string>
 </resources>

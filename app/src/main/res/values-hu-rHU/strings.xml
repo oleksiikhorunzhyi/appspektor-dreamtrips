@@ -99,6 +99,8 @@
 
 
 
+   <string name="nav_back">Vissza</string>
+
    <string name="logout_component">Kijelentkezés</string>
 
    <string name="years_ago">%1$d évvel ezelőtt</string>

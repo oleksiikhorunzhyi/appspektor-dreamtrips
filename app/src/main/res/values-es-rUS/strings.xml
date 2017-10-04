@@ -58,7 +58,7 @@
    <string name="social_add_friend_yes">Sí</string>
    <string name="social_add_friend_no">No</string>
    <string name="coming_soon">Próximamente</string>
-   <string name="loading">Cargando...</string>
+   <string name="loading">Cargando…</string>
    <string name="post_visibility_public">Publicar</string>
    <string name="post">Publicación</string>
 
@@ -98,6 +98,8 @@
    <string name="library">Biblioteca</string>
 
 
+
+   <string name="nav_back">Volver</string>
 
    <string name="logout_component">Cerrar sesión</string>
 

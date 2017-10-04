@@ -4,15 +4,13 @@ import com.messenger.di.MessengerJanetCommandModule;
 import com.worldventures.core.modules.auth.api.command.LoginCommand;
 import com.worldventures.core.modules.auth.api.command.LogoutCommand;
 import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
-import com.worldventures.core.modules.video.service.command.ResetCachedModelsInProgressCommand;
-import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.core.modules.picker.command.CopyFileCommand;
-import com.worldventures.core.service.command.DeleteCachedModelCommand;
-import com.worldventures.core.service.command.DownloadCachedModelCommand;
 import com.worldventures.core.modules.picker.command.GetVideoDurationCommand;
 import com.worldventures.core.modules.picker.command.MediaCaptureCanceledCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
+import com.worldventures.core.modules.video.service.command.ResetCachedModelsInProgressCommand;
+import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
+import com.worldventures.core.service.command.DeleteCachedModelCommand;
+import com.worldventures.core.service.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.common.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCommand;
@@ -44,8 +42,6 @@ import dagger.Module;
       CleanTempDirectoryCommand.class,
       MediaCaptureCanceledCommand.class,
       GetVideoDurationCommand.class,
-      UploaderyImageCommand.class,
-      SimpleUploaderyCommand.class,
       LoginCommand.class,
       UpdateUserCommand.class,
       UnsubscribeFromPushCommand.class,

@@ -9,7 +9,7 @@
    <string name="action_map">Karta</string>
    <string name="member_images">Medlemsbilder</string>
    <string name="my_images">Mina bilder</string>
-   <string name="you_should_be_here">DU SKULLE VARA HÄR</string>
+   <string name="trip_images_you_should_be_here">You Should Be Here</string>
    <string name="duration">%1$d nätter</string>
    <string name="inspire_me">Ge mig inspiration</string>
    <string name="three_sixty">360-upplevelsen</string>
@@ -34,7 +34,7 @@
    <string name="profile_user_id_hint">Användar-id</string>
    <string name="bucket_locations">Platser</string>
    <string name="bucket_activities">Aktiviteter</string>
-   <string name="bucket_restaurants">Middagar</string>
+   <string name="bucket_restaurants">Middagsbjudning</string>
    <string name="photo_deleted">Fotot har tagits bort</string>
    <string name="delete_photo_title">Ta bort foto</string>
    <string name="delete_photo_text">Är du säker på att du vill ta bort fotot?</string>
@@ -379,4 +379,6 @@
    <string name="error_failed_to_delete_video">Borttagningen av videon misslyckades.</string>
    <string name="type_video">Video</string>
    <string name="type_post">Publicera</string>
+   <string name="forgot_member_id">Glömt Medlems-id?</string>
+   <string name="forgot_password">Glömt ditt lösenord?</string>
 </resources>

@@ -9,7 +9,7 @@
    <string name="action_map">Peta</string>
    <string name="member_images">Imej Ahli</string>
    <string name="my_images">Imej Saya</string>
-   <string name="you_should_be_here">Anda Seharusnya Berada Di Sini</string>
+   <string name="trip_images_you_should_be_here">You Should Be Here</string>
    <string name="duration">%1$d Malam</string>
    <string name="inspire_me">Berikan inspirasi kepada saya</string>
    <string name="three_sixty">Pengalaman 360</string>
@@ -34,7 +34,7 @@
    <string name="profile_user_id_hint">ID Pengguna</string>
    <string name="bucket_locations">Lokasi</string>
    <string name="bucket_activities">Aktiviti</string>
-   <string name="bucket_restaurants">JAMUAN SELERA</string>
+   <string name="bucket_restaurants">Jamuan Selera</string>
    <string name="photo_deleted">Gambar telah Dihapuskan</string>
    <string name="delete_photo_title">Hapus Gambar</string>
    <string name="delete_photo_text">Adakah anda pasti anda mahu menghapuskan gambar ini?</string>
@@ -379,4 +379,6 @@
    <string name="error_failed_to_delete_video">Gagal untuk memadamkan video</string>
    <string name="type_video">Video</string>
    <string name="type_post">HANTAR</string>
+   <string name="forgot_member_id">Terlupa ID ahli?</string>
+   <string name="forgot_password">Terlupa kata laluan anda?</string>
 </resources>

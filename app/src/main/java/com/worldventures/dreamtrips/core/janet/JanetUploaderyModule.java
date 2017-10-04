@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.janet;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.TimberServiceWrapper;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.service.ReLoginInteractor;
@@ -9,9 +10,9 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 
 import java.net.CookieManager;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
@@ -31,12 +32,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Observable;
 
-@Module(injects = {
-      UploaderyImageCommand.class,
-      SimpleUploaderyCommand.class,
+@Module(
+      injects = {
+            SimpleUploaderyCommand.class,
       },
-        complete = false,
-        library = true)
+      complete = false, library = true)
 public class JanetUploaderyModule {
 
    public static final String JANET_UPLOADERY = "JANET_UPLOADERY";
@@ -52,11 +52,10 @@ public class JanetUploaderyModule {
 
    @Provides
    @Named(JANET_UPLOADERY)
-   okhttp3.OkHttpClient provideJanetOkHttp3Client(CookieManager cookieManager,
-         @Named(JANET_UPLOADERY) Interceptor interceptor) {
+   OkHttpClient provideJanetOkHttp3Client(CookieManager cookieManager, @Named(JANET_UPLOADERY) Set<Interceptor> interceptors) {
       OkHttpClient.Builder builder = new OkHttpClient.Builder();
       builder.cookieJar(new JavaNetCookieJar(cookieManager));
-      if (BuildConfig.DEBUG) builder.addInterceptor(interceptor);
+      Queryable.from(interceptors).forEachR(builder::addInterceptor);
       builder.connectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       builder.readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       builder.writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
@@ -65,8 +64,8 @@ public class JanetUploaderyModule {
 
    @Provides
    @Named(JANET_UPLOADERY)
-   Interceptor provideOkHttp3Interceptor() {
-      HttpLoggingInterceptor interceptor = new okhttp3.logging.HttpLoggingInterceptor();
+   HttpLoggingInterceptor provideOkHttp3Interceptor() {
+      HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
       interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
       return interceptor;
    }

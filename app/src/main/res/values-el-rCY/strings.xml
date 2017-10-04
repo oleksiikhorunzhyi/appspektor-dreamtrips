@@ -99,6 +99,8 @@
 
 
 
+   <string name="nav_back">Πίσω</string>
+
    <string name="logout_component">Αποσύνδεση</string>
 
    <string name="years_ago">πριν από %1$d έτη</string>

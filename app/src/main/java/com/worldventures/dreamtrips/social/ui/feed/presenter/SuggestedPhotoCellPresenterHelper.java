@@ -5,16 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.modules.picker.command.GetPhotosFromGalleryCommand;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +31,7 @@ public class SuggestedPhotoCellPresenterHelper {
    private static final int SUGGESTION_ITEM_CHUNK = 20;
    private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
-   private MediaInteractor mediaInteractor;
+   private MediaPickerInteractor mediaPickerInteractor;
    private SessionHolder appSessionHolder;
 
    @State ArrayList<PhotoPickerModel> suggestionItems;
@@ -43,9 +42,9 @@ public class SuggestedPhotoCellPresenterHelper {
    private Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper;
 
    public SuggestedPhotoCellPresenterHelper(SessionHolder appSessionHolder,
-         MediaInteractor mediaInteractor) {
+         MediaPickerInteractor mediaPickerInteractor) {
       this.appSessionHolder = appSessionHolder;
-      this.mediaInteractor = mediaInteractor;
+      this.mediaPickerInteractor = mediaPickerInteractor;
    }
 
    public void takeView(View view, Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper, Bundle bundle) {
@@ -139,7 +138,7 @@ public class SuggestedPhotoCellPresenterHelper {
       List<PhotoPickerModel> photoPickerModels = Queryable.from(selectedPhotosPaths)
             .map(path -> {
                PhotoPickerModel model = new PhotoPickerModel(path, 0);
-               model.setSource(MediaAttachment.Source.GALLERY);
+               model.setSource(MediaPickerAttachment.Source.GALLERY);
                return model;
             }).toList();
       return new MediaPickerAttachment(photoPickerModels, -1);
@@ -158,7 +157,7 @@ public class SuggestedPhotoCellPresenterHelper {
 
    @NonNull
    private Observable<List<PhotoPickerModel>> getSuggestionObservable(long toTimestamp) {
-      return mediaInteractor.getPhotosFromGalleryPipe()
+      return mediaPickerInteractor.getPhotosFromGalleryPipe()
             .createObservableResult(new GetPhotosFromGalleryCommand(SUGGESTION_ITEM_CHUNK, new Date(toTimestamp)))
             .map(Command::getResult)
             .compose(new IoToMainComposer<>());

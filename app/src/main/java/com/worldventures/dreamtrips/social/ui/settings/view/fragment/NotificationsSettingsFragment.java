@@ -4,12 +4,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.settings.model.FlagSetting;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.settings.model.FlagSetting;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
 
 @Layout(R.layout.fragment_settings_notifications)
 @MenuResource(R.menu.menu_settings)

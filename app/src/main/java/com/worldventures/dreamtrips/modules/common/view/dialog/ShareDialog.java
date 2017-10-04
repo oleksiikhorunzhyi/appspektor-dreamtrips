@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.common.view.dialog;
 import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.model.ShareType;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
 
 public class ShareDialog extends MaterialDialog {
 

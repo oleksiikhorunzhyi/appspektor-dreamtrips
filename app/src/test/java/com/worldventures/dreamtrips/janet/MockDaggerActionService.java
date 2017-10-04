@@ -2,11 +2,7 @@ package com.worldventures.dreamtrips.janet;
 
 import com.worldventures.dreamtrips.common.Injector;
 import com.worldventures.dreamtrips.common.ObjectProvider;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-
-import java.lang.reflect.Field;
-
-import javax.inject.Inject;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionService;

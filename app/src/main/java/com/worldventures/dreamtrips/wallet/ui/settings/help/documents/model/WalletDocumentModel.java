@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.social.ui.infopages.model.Document;
+import com.worldventures.core.modules.infopages.model.Document;
 import com.worldventures.dreamtrips.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.documents.holder.HelpDocsTypeFactory;
 

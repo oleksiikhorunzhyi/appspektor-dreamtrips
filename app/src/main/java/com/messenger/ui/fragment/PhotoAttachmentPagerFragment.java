@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.PhotoAttachment;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.membership.model;
 
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLocale;
+import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLocale;
 
 public class MediaHeader {
 

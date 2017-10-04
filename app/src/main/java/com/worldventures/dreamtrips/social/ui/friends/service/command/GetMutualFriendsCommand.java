@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.friends.service.command;
 
-
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.friends.GetMutualFriendsHttpAction;
 import com.worldventures.dreamtrips.api.friends.model.ImmutableMutualFriendsParams;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class GetMutualFriendsCommand extends GetUsersCommand {
       janet.createPipe(GetMutualFriendsHttpAction.class)
             .createObservableResult(
                   new GetMutualFriendsHttpAction(ImmutableMutualFriendsParams.builder()
-                  .userId(userId).page(page).perPage(perPage).build()))
+                        .userId(userId).page(page).perPage(perPage).build()))
             .map(GetMutualFriendsHttpAction::response)
             .map(this::convert)
             .subscribe(callback::onSuccess, callback::onFail);

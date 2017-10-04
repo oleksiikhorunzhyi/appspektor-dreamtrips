@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.core.model.session.FeatureManager;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 
 import javax.inject.Singleton;
 

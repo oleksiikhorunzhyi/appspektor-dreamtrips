@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.social.ui.settings.command.SettingsCommand;
-import com.worldventures.dreamtrips.social.ui.settings.model.FlagSetting;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
-import com.worldventures.dreamtrips.social.ui.settings.service.SettingsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.modules.settings.command.SettingsCommand;
+import com.worldventures.core.modules.settings.model.FlagSetting;
+import com.worldventures.core.modules.settings.service.SettingsInteractor;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 

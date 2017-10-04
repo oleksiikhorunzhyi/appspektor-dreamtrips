@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.video.view;
 
 import android.os.Bundle;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.reptools.view.fragment.TrainingVideosFragment;
 import com.worldventures.dreamtrips.social.ui.video.presenter.HelpVideosPresenter;

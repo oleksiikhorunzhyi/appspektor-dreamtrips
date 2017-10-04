@@ -7,13 +7,13 @@ import android.widget.TextView;
 
 import com.messenger.entities.DataUser;
 import com.messenger.ui.widget.AvatarView;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 
 import butterknife.InjectView;
 
-public abstract class UserCell<EntityType, D extends CellDelegate<EntityType>> extends AbstractDelegateCell<EntityType, D> {
+public abstract class UserCell<EntityType, D extends CellDelegate<EntityType>> extends BaseAbstractDelegateCell<EntityType, D> {
 
    @InjectView(R.id.contact_icon) AvatarView avatarView;
    @InjectView(R.id.contact_name_textview) TextView nameTextView;

@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.terms_and_conditions.AcceptTermsAndConditionsHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 

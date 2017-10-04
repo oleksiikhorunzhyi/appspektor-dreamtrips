@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.core.janet;
 
-import android.content.Context;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
-import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
+import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.DateTimeDeserializer;
 import com.worldventures.dreamtrips.api.api_common.converter.DateTimeSerializer;
@@ -19,8 +19,6 @@ import com.worldventures.dreamtrips.core.janet.api_lib.CredentialsProvider;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthRefresher;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthStorage;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsCredentialsProvider;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.mobilesdk.AuthProviders;
 import com.worldventures.dreamtrips.mobilesdk.AuthRefresher;
 import com.worldventures.dreamtrips.mobilesdk.ConfigProviders;
@@ -28,7 +26,6 @@ import com.worldventures.dreamtrips.mobilesdk.DreamTripsErrorParser;
 import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
 import com.worldventures.dreamtrips.mobilesdk.authentication.AuthData;
 import com.worldventures.dreamtrips.mobilesdk.util.HttpErrorReasonParser;
-import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 
 import java.net.CookieManager;
 import java.util.Date;
@@ -47,6 +44,7 @@ import io.techery.janet.http.HttpClient;
 import io.techery.janet.okhttp3.OkClient;
 import io.techery.mappery.MapperyContext;
 import okhttp3.Headers;
+import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -61,8 +59,9 @@ import timber.log.Timber;
       complete = false, library = true)
 public class MobileSdkJanetModule {
 
-   private static final String API_QUALIFIER = "MobileSdkJanetModule";
-   private static final String NON_API_QUALIFIER = "NonApiMobileSdkJanetModule";
+   public static final String API_QUALIFIER = "MobileSdkJanetModule";
+   public static final String NON_API_QUALIFIER = "NonApiMobileSdkJanetModule";
+
    private static final String LOGGING_TAG = "DT MobileSDK API";
 
    @Provides(type = Provides.Type.SET)
@@ -82,7 +81,7 @@ public class MobileSdkJanetModule {
 
    @Provides
    @Named(NON_API_QUALIFIER)
-   HttpActionService provideNonApiService(@Named(API_QUALIFIER) HttpLoggingInterceptor loggingInterceptor, Set<TypeAdapterFactory> adapterFactories) {
+   HttpActionService provideNonApiService(@Named(API_QUALIFIER) Set<Interceptor> interceptors, Set<TypeAdapterFactory> adapterFactories) {
       final GsonBuilder gsonBuilder = new GsonBuilder()
             .setExclusionStrategies(new SerializedNameExclusionStrategy())
             //
@@ -92,18 +91,17 @@ public class MobileSdkJanetModule {
       for (TypeAdapterFactory factory : adapterFactories) {
          gsonBuilder.registerTypeAdapterFactory(factory);
       }
+      OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
+      Queryable.from(interceptors).forEachR(okHttpClientBuilder::addInterceptor);
       return new HttpActionService("http://dreamtrips-nonexisting-api.com",
-            new OkClient(new OkHttpClient.Builder()
-                  .addNetworkInterceptor(loggingInterceptor)
-                  .build()
-            ), new GsonConverter(gsonBuilder.create())
+            new OkClient(okHttpClientBuilder.build()), new GsonConverter(gsonBuilder.create())
       );
    }
 
    @Provides
    @Named(API_QUALIFIER)
-   HttpClient provideHttpClient(CookieManager cookieManager, @Named(API_QUALIFIER) HttpLoggingInterceptor loggingInterceptor) {
-      OkHttpClient okHttpClient = new OkHttpClient.Builder()
+   HttpClient provideHttpClient(CookieManager cookieManager, @Named(API_QUALIFIER) Set<Interceptor> interceptors) {
+      OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
             .cookieJar(new JavaNetCookieJar(cookieManager))
             .addNetworkInterceptor(chain -> {
                Request request = chain.request();
@@ -111,12 +109,11 @@ public class MobileSdkJanetModule {
                Request newRequest = request.newBuilder().headers(headers).build();
                return chain.proceed(newRequest);
             })
-            .addInterceptor(loggingInterceptor)
             .connectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS)
             .readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS)
-            .writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS)
-            .build();
-      return new OkClient(okHttpClient);
+            .writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      Queryable.from(interceptors).forEachR(okHttpClientBuilder::addInterceptor);
+      return new OkClient(okHttpClientBuilder.build());
    }
 
    @Provides
@@ -168,8 +165,8 @@ public class MobileSdkJanetModule {
 
    @Singleton
    @Provides
-   HttpErrorHandlingUtil provideHttpErrorHandlingUtils(@ForApplication Context context, DreamTripsErrorParser errorParser) {
-      return new HttpErrorHandlingUtil(context, errorParser);
+   HttpErrorHandlingUtil provideHttpErrorHandlingUtils(DreamTripsErrorParser errorParser) {
+      return new HttpErrorHandlingUtil(errorParser);
    }
 
 }

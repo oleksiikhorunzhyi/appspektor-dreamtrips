@@ -10,7 +10,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.helper.ConversationHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
+import com.worldventures.core.utils.ProjectTextUtils;
 
 import static com.messenger.messengerservers.constant.MessageType.SYSTEM_JOIN;
 import static com.messenger.messengerservers.constant.MessageType.SYSTEM_KICK;

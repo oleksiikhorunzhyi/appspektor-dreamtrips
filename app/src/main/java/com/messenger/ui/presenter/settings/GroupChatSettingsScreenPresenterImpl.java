@@ -7,21 +7,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.messenger.delegate.ConversationAvatarInteractor;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SetChatAvatarCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.chat.GroupChat;
-import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.io.File;

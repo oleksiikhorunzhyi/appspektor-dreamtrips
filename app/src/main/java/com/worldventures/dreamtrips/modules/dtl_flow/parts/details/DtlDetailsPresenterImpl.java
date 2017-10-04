@@ -10,15 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.Feature;
+import com.worldventures.core.model.session.FeatureManager;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
@@ -88,7 +88,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant.asMerchantAttributes())));
       getView().setMerchant(merchant);
       preExpandOffers();
@@ -244,7 +244,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
       getView().setTransaction(dtlTransaction);
 
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));
    }
 
@@ -255,7 +255,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onMerchantClick() {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant.asMerchantAttributes())));
       getView().openSuggestMerchant(new MerchantIdBundle(merchant.id()));
    }
@@ -382,25 +382,25 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void trackSharing(@ShareType String type) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(
                   ShareEventProvider.provideMerchantShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
    @Override
    public void trackPointEstimator() {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant.asMerchantAttributes())));
    }
 
    @Override
    public void routeToMerchantRequested(@Nullable final Intent intent) {
       locationDelegate.getLastKnownLocation().compose(bindViewIoToMainComposer()).subscribe(location -> {
-         analyticsInteractor.dtlAnalyticsCommandPipe()
+         analyticsInteractor.analyticsCommandPipe()
                .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(location, merchant)));
          getView().showMerchantMap(intent);
       }, e -> {
-         analyticsInteractor.dtlAnalyticsCommandPipe()
+         analyticsInteractor.analyticsCommandPipe()
                .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
          getView().showMerchantMap(intent);
       });

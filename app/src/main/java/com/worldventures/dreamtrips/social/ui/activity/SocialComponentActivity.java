@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ToolbarActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 
 @Layout(R.layout.activity_component)
 public class SocialComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {

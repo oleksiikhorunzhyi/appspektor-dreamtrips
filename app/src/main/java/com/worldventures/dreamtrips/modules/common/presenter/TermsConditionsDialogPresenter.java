@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.auth.api.command.LogoutCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.common.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.LegalInteractor;
 import com.worldventures.dreamtrips.modules.common.service.analytics.TermsAndConditionsAction;
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
 
 import javax.inject.Inject;
 

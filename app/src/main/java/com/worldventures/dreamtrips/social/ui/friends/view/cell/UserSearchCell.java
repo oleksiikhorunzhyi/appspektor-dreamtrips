@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.friends.view.cell;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.model.User;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserSearchCellDelegate;
 
 import butterknife.InjectView;

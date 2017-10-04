@@ -1,0 +1,64 @@
+package com.worldventures.core.ui.view.fragment;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.CallSuper;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.view.activity.InjectingActivity;
+
+import dagger.ObjectGraph;
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
+public abstract class InjectingDialogFragment extends DialogFragment implements ConfigurableFragment, Injector {
+
+   private final PublishSubject<FragmentEvent> lifecycleSubject = PublishSubject.create();
+
+   protected boolean injectCustomLayout = true;
+
+   @Override
+   public void onAttach(Context context) {
+      super.onAttach(context);
+      inject(this);
+   }
+
+   @Override
+   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      if (injectCustomLayout) {
+         return FragmentHelper.onCreateView(inflater, container, this);
+      } else {
+         return super.onCreateView(inflater, container, savedInstanceState);
+      }
+   }
+
+   @Override
+   public void inject(Object target) {
+      getObjectGraph().inject(target);
+   }
+
+   @Override
+   public ObjectGraph getObjectGraph() {
+      return ((InjectingActivity) getActivity()).getObjectGraph();
+   }
+
+   @Override
+   @CallSuper
+   public void onDestroyView() {
+      lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
+      super.onDestroyView();
+   }
+
+   public final <T> Observable.Transformer<T, T> bindToLifecycle() {
+      return RxLifecycle.bind(lifecycleSubject);
+   }
+
+   public void afterCreateView(View rootView) {
+   }
+}

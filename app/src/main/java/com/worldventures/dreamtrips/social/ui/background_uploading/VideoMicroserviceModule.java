@@ -5,9 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.VideoHttpService;
 
 import java.util.concurrent.TimeUnit;
@@ -21,6 +23,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 import io.techery.janet.okhttp.OkClient;
+import io.techery.mappery.MapperyContext;
+import rx.Observable;
 
 @Module(
       injects = {},
@@ -32,12 +36,15 @@ public class VideoMicroserviceModule {
    @Provides
    @Singleton
    @Named(JANET_QUALIFIER)
-   Janet provideJanet(@ForApplication Injector injector, @Named(JANET_QUALIFIER) HttpClient httpClient) {
-      Janet.Builder builder = new Janet.Builder();
-      Gson gson = new GsonBuilder().create();
+   Janet provideJanet(@Named(JANET_QUALIFIER) HttpClient httpClient, SessionHolder appSessionHolder,
+         MapperyContext mapperyContext, AppVersionNameBuilder appVersionNameBuilder,
+         ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
 
-      builder.addService(new VideoHttpService(injector, BuildConfig.VIDEO_MICROSERVICE_URL, httpClient,
-            new GsonConverter(gson)));
+      final Janet.Builder builder = new Janet.Builder();
+      final Gson gson = new GsonBuilder().create();
+
+      builder.addService(new VideoHttpService(BuildConfig.VIDEO_MICROSERVICE_URL, httpClient, new GsonConverter(gson),
+            appSessionHolder, mapperyContext, appVersionNameBuilder, reLoginInteractor, deviceSource));
 
       return builder.build();
    }

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.unassign.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDete
 import com.worldventures.dreamtrips.wallet.ui.wizard.unassign.ExistingDeviceDetectScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ExistingDeviceDetectPresenterImpl extends WalletPresenterImpl<ExistingDeviceDetectScreen> implements ExistingDeviceDetectPresenter {
 
@@ -66,7 +67,8 @@ public class ExistingDeviceDetectPresenterImpl extends WalletPresenterImpl<Exist
       wizardInteractor.reAssignCardPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.reAssignCardPipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<ReAssignCardCommand>provideOperationView())
                   .onSuccess(command -> reAssignSuccess())
                   .create());

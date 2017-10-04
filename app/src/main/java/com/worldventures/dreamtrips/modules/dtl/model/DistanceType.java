@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.model;
 
 import com.crashlytics.android.Crashlytics;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
-import com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.modules.settings.util.SettingsFactory;
 
 public enum DistanceType {
    MILES("mi"), KMS("km");

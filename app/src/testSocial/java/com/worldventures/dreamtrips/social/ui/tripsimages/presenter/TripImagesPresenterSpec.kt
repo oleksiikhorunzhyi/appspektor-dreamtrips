@@ -1,14 +1,15 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter
 
 import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.core.navigation.Route
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
-import com.worldventures.dreamtrips.modules.common.model.User
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor
+import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoFeedItem
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
@@ -22,8 +23,6 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.*
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs
-import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
-import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.TripImagesPresenter
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -360,7 +359,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec({
          return listOf(stubPhotoMediaEntity)
       }
 
-      private fun stubTextualPost() : TextualPost {
+      private fun stubTextualPost(): TextualPost {
          val textualPost = TextualPost()
          textualPost.uid = "fsdafasdf"
 

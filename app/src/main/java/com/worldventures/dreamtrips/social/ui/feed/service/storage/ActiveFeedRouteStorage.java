@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.storage;
 
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRouteCommand;
 

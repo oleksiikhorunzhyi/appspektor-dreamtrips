@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.podcast_player.view.custom;
 
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.core.utils.LocaleHelper;
 
 import java.util.Formatter;
 

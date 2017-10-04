@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
-
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 
 import io.techery.mappery.MapperyContext;

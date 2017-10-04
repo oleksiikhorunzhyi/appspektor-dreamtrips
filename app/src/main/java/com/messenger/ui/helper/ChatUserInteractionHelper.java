@@ -12,13 +12,12 @@ import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.ui.fragment.PhotoAttachmentPagerArgs;
 import com.messenger.util.Utils;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 

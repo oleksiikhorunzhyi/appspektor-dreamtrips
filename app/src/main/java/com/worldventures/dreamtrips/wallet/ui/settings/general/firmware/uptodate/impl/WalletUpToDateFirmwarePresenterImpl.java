@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwarePresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.uptodate.WalletUpToDateFirmwareScreen;
 
+import rx.android.schedulers.AndroidSchedulers;
+
 public class WalletUpToDateFirmwarePresenterImpl extends WalletPresenterImpl<WalletUpToDateFirmwareScreen> implements WalletUpToDateFirmwarePresenter {
 
    private final SmartCardInteractor smartCardInteractor;
@@ -34,7 +36,8 @@ public class WalletUpToDateFirmwarePresenterImpl extends WalletPresenterImpl<Wal
    private void observeSmartCard() {
       smartCardInteractor.smartCardFirmwarePipe()
             .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> bindSmartCardFirmware(command.getResult()));
    }
 

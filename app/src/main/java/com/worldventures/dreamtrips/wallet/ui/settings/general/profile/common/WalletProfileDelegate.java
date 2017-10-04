@@ -2,9 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common;
 
 import android.support.annotation.Nullable;
 
-import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
@@ -43,7 +42,7 @@ public class WalletProfileDelegate {
 
       smartCardUserDataInteractor.updateSmartCardUserPipe()
             .observeWithReplay()
-            .compose(RxLifecycleAndroid.bindView(view.getView()))
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation(this))
@@ -58,7 +57,7 @@ public class WalletProfileDelegate {
 
       smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
             .observeWithReplay()
-            .compose(RxLifecycleAndroid.bindView(view.getView()))
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideHttpUploadOperation(this)).create());

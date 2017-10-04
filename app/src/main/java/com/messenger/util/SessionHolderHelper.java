@@ -1,7 +1,7 @@
 package com.messenger.util;
 
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
 
 public final class SessionHolderHelper {
 

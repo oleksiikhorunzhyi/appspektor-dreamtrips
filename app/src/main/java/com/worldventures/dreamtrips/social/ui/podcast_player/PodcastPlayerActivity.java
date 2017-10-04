@@ -5,7 +5,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.social.ui.podcast_player.presenter.PodcastPlayerPresenter;

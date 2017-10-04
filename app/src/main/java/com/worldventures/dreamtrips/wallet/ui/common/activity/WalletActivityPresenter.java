@@ -1,10 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.common.activity;
 
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-
 import rx.Observable;
 
-public interface WalletActivityPresenter extends WalletPresenter<WalletActivityView> {
+public interface WalletActivityPresenter {
+
+   void attachView(WalletActivityView view);
+
+   void detachView();
 
    void logout();
 

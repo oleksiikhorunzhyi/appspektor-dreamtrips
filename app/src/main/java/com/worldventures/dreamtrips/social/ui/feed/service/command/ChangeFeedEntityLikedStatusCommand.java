@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.storage.PendingLikesStorage;
@@ -47,7 +47,8 @@ public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEnt
       likesInteractor.likePipe().createObservableResult(new LikeEntityCommand(feedEntity))
             .subscribe(likeEntityCommand -> {
                if (likeEntityCommand.getResult() instanceof Photo) {
-                  analyticsInteractor.analyticsActionPipe().send(new TripImageLikedAnalyticsEvent(likeEntityCommand.getResult().getUid()));
+                  analyticsInteractor.analyticsActionPipe()
+                        .send(new TripImageLikedAnalyticsEvent(likeEntityCommand.getResult().getUid()));
                }
                pendingLikesStorage.remove(likeEntityCommand.getResult().getUid());
                callback.onSuccess(likeEntityCommand.getResult());
@@ -70,6 +71,6 @@ public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEnt
 
    @Override
    public int getFallbackErrorMessage() {
-      return !feedEntity.isLiked() ?  R.string.error_fail_to_like_item : R.string.error_fail_to_unlike_item;
+      return !feedEntity.isLiked() ? R.string.error_fail_to_like_item : R.string.error_fail_to_unlike_item;
    }
 }

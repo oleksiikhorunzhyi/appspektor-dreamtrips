@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.video.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 @Layout(R.layout.adapter_media_header)

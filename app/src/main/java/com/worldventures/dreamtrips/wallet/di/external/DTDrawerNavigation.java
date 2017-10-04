@@ -7,11 +7,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.component.RootComponentsProvider;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
@@ -40,8 +40,8 @@ class DTDrawerNavigation implements WalletNavigationDelegate {
 
    @Override
    public void init(View view) {
-      drawerLayout = (DrawerLayout) view.findViewById(R.id.drawer);
-      navDrawer = (NavigationDrawerViewImpl) view.findViewById(R.id.drawer_layout);
+      drawerLayout = view.findViewById(R.id.drawer);
+      navDrawer = view.findViewById(R.id.drawer_layout);
 
       initNavDrawer();
    }

@@ -3,14 +3,15 @@ package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.fragment.FragmentHelper;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -19,7 +20,6 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedEntityDetailsPr
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.FeedEntityDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import rx.Observable;
 

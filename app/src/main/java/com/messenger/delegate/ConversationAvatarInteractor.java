@@ -3,7 +3,7 @@ package com.messenger.delegate;
 import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SetChatAvatarCommand;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -4,15 +4,15 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.utils.Size;
+import com.worldventures.core.utils.ValidationUtils;
+import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
-import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 
@@ -24,13 +24,13 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> implements InjectableAction {
 
-   @Inject MediaInteractor mediaInteractor;
+   @Inject MediaPickerInteractor mediaInteractor;
    @Inject CapturedRowMediaHelper capturedRowMediaHelper;
 
    private PhotoPickerModel photoPickerModel;
-   private MediaAttachment.Source source;
+   private MediaPickerAttachment.Source source;
 
-   public CreatePhotoCreationItemCommand(PhotoPickerModel photoPickerModel, MediaAttachment.Source source) {
+   public CreatePhotoCreationItemCommand(PhotoPickerModel photoPickerModel, MediaPickerAttachment.Source source) {
       this.photoPickerModel = photoPickerModel;
       this.source = source;
    }
@@ -47,7 +47,8 @@ public class CreatePhotoCreationItemCommand extends Command<PhotoCreationItem> i
                   callback.onSuccess(createPhotoItem(stringUri, uri.getPath(), getImageSize(uri.getPath())));
                }, callback::onFail);
       } else {
-         PhotoCreationItem photoCreation = createPhotoItem(photoPickerModel.getUri().toString(), photoPickerModel.getAbsolutePath(),
+         PhotoCreationItem photoCreation = createPhotoItem(photoPickerModel.getUri()
+                     .toString(), photoPickerModel.getAbsolutePath(),
                getImageSize(photoPickerModel.getUri().getPath()));
          photoCreation.setRotation(capturedRowMediaHelper.obtainPhotoOrientation(photoPickerModel.getUri().getPath()));
          callback.onSuccess(photoCreation);

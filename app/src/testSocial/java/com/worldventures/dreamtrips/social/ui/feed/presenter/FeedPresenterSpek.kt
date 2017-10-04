@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter
 import com.messenger.util.UnreadConversationObservable
 import com.nhaarman.mockito_kotlin.*
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.Circle
+import com.worldventures.core.modules.picker.model.PhotoPickerModel
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec.Companion.anyString
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.SuggestedPhot
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.FeedStorageDelegate
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle
+import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo
 import io.techery.janet.ActionState

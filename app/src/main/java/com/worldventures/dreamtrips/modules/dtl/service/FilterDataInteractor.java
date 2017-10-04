@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.modules.settings.storage.SettingsStorage;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFilterAppliedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
@@ -26,7 +26,7 @@ public class FilterDataInteractor implements Initializable {
 
    private final AnalyticsInteractor analyticsInteractor;
    private final DtlLocationInteractor dtlLocationInteractor;
-   private final SnappyRepository snappyRepository;
+   private final SettingsStorage settingsStorage;
    private final MerchantsRequestSourceInteractor merchantsRequestSourceInteractor;
    private final ActionPipe<FilterDataAction> filterDataPipe;
 
@@ -34,12 +34,12 @@ public class FilterDataInteractor implements Initializable {
 
    public FilterDataInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor, MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
-         SnappyRepository snappyRepository) {
+         SettingsStorage settingsStorage) {
 
       this.analyticsInteractor = analyticsInteractor;
       this.dtlLocationInteractor = dtlLocationInteractor;
       this.merchantsRequestSourceInteractor = merchantsRequestSourceInteractor;
-      this.snappyRepository = snappyRepository;
+      this.settingsStorage = settingsStorage;
 
       filterDataPipe = sessionActionPipeCreator.createPipe(FilterDataAction.class, Schedulers.io());
 
@@ -54,7 +54,7 @@ public class FilterDataInteractor implements Initializable {
    public void reset() {
       getLastFilterObservable()
             .map(filterData -> ImmutableFilterData.builder()
-                  .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
+                  .distanceType(FilterHelper.provideDistanceFromSettings(settingsStorage))
                   .isOffersOnly(filterData.isOffersOnly())
                   .merchantType(filterData.getMerchantType())
                   .build())
@@ -94,11 +94,11 @@ public class FilterDataInteractor implements Initializable {
                   .withPage(newFilterData.page())
                   .withBudgetMin(newFilterData.budgetMin())
                   .withBudgetMax(newFilterData.budgetMax())
-                  .withDistanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
+                  .withDistanceType(FilterHelper.provideDistanceFromSettings(settingsStorage))
                   .withDistanceMaxIndex(newFilterData.distanceMaxIndex())
                   .withSelectedAmenities(newFilterData.selectedAmenities()))
             .map(filterData -> {
-               analyticsInteractor.dtlAnalyticsCommandPipe()
+               analyticsInteractor.analyticsCommandPipe()
                      .send(DtlAnalyticsCommand.create(new MerchantFilterAppliedEvent(filterData)));
                return filterData;
             })
@@ -190,7 +190,7 @@ public class FilterDataInteractor implements Initializable {
    @Override
    public void init() {
       send(ImmutableFilterData.builder()
-            .distanceType(FilterHelper.provideDistanceFromSettings(snappyRepository))
+            .distanceType(FilterHelper.provideDistanceFromSettings(settingsStorage))
             .build());
    }
 }

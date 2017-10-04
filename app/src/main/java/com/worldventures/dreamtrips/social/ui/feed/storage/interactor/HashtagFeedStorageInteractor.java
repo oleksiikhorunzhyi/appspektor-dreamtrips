@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.interactor;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.HashtagFeedStorageCommand;
 
 public class HashtagFeedStorageInteractor extends FeedItemsStorageBaseInteractor<HashtagFeedStorageCommand> {

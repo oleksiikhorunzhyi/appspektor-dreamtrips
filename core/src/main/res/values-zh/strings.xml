@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_cancel">取消</string>
+   <string name="action_done">完成</string>
+   <string name="action_retry">重试</string>
+   <string name="camera_record_a_video">录制一个视频</string>
+   <string name="camera_take_a_picture">拍摄一张照片</string>
+   <string name="error_fail_to_load_documents">无法加载文件</string>
+   <string name="error_fail_to_load_feedback_reasons">无法加载反馈原因</string>
+   <string name="error_fail_to_load_videos">无法加载视频</string>
+   <string name="error_fail_to_locales">无法获取当地情况</string>
+   <string name="error_fail_to_login">无法登录</string>
+   <string name="error_fail_to_send_feedback">无法发送反馈</string>
+   <string name="error_fail_to_update_settings">无法更新设置</string>
+   <string name="facebook_error_loading_albums">无法加载相册</string>
+   <string name="facebook_error_loading_photos">无法加载照片</string>
+   <string name="facebook_login_error">无法登录至Facebook</string>
+   <string name="fail">失败</string>
+   <string name="feedback_could_not_load_attachment">无法加载附件</string>
+   <string name="media_picker_error_contents">加载 %1$s 失败。</string>
+   <string name="media_picker_fb_albums_actions">facebook 相册</string>
+   <string name="media_picker_fb_photos_actions">facebook 图片</string>
+   <string name="media_picker_gallery_action">媒体库</string>
+   <string name="media_picker_limit_reached">您只可以选择 %1$s 张图片</string>
+   <string name="no_camera_permission">这个应用程序不能运行，因为它不具有相机权限。应用程序现在将退出。</string>
+   <string name="permission_camera_rationale">需要连接相机进行检测</string>
+   <string name="permission_location_rationale">需要访问位置进行检测</string>
+   <string name="photos_selected">%1$d已选</string>
+   <string name="picker_photo_limit">您可以选择最多 %1$d 张照片</string>
+   <string name="picker_photo_limit_plural">您可以选择最多 %1$d 张照片</string>
+   <string name="picker_static_add_from_fb">添加来自Facebook</string> //
+   <string name="picker_static_take_from_camera">相机</string>
+   <string name="picker_two_media_type_error">选择照片或者是一个视频</string>
+   <string name="picker_video_length_limit">您无权选择时长超过%1$d的视频</string>
+   <string name="picker_video_limit">您可以选择最多 %1$d 个视频</string>
+   <string name="picker_video_limit_plural">您可以选择最多 %1$d 个视频</string>
+</resources>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="action_done">Kész</string>
-   <string name="action_cancel">Mégse</string>
    <string name="action_filter">Szűrés</string>
    <string name="action_like">Tetszik</string>
    <string name="trips">DreamTrips</string>
@@ -19,9 +17,6 @@
    <string name="flag_description_title">Jelölés</string>
    <string name="flag_description_positive">Elfogadás</string>
    <string name="flag_description_negative">Mégse</string>
-   <string name="facebook_error_loading_albums">albumok betöltése sikertelen</string>
-   <string name="facebook_error_loading_photos">fotók betöltése sikertelen </string>
-   <string name="facebook_login_error">Facebook belépés sikertelen</string>
    <string name="fab_posted">Sikeresen elküldve a Facebookra</string>
    <string name="facebook_posting_error">Facebook poszt sikertelen</string>
    <string-array name="share_dialog_items">
@@ -100,19 +95,11 @@
 
    <string name="feed_share_post_button">Ossz meg egy képet, videót vagy ötletet</string>
 
-   <string name="camera">Kamera</string>
    <string name="library">Könyvtár</string>
-   <string name="camera_take_a_picture">Készíts képet</string>
-   <string name="camera_record_a_video">Vegyél fel egy videót</string>
-   <string name="add_from_facebook">Hozzáadás a Facebookból</string>
 
-   <string name="photos_selected">%1$d kiválasztva</string>
 
-   <string name="media_picker_error_contents">A(z) %1$s betöltése sikertelen.</string>
-   <string name="media_picker_gallery_action">médiagaléria</string>
-   <string name="media_picker_fb_albums_actions">facebook-albumok</string>
-   <string name="media_picker_fb_photos_actions">facebook-képek</string>
-   <string name="media_picker_limit_reached">Max. %1$s képet választhat</string>
+
+   <string name="nav_back">Vissza</string>
 
    <string name="logout_component">Kijelentkezés</string>
 
@@ -161,12 +148,6 @@
 
    <string name="beta_label">Béta</string>
 
-   <string name="picker_two_media_type_error">Válasszon ki képeket vagy egy videót</string>
-   <string name="picker_photo_limit">Max. %1$d képet választhat ki</string>
-   <string name="picker_photo_limit_plural">Max. %1$d képet választhat ki</string>
-   <string name="picker_video_limit">Max. %1$d videót választhat ki</string>
-   <string name="picker_video_limit_plural">Max. %1$d videót választhat ki</string>
-   <string name="picker_video_length_limit">Nem választhatsz ki %1$d másodpercnél hosszabb videókat</string>
 
    <string name="photo_strip_read_storage_permission_explanation">A tárhely beolvasásához és médiatartalom ajánlásához engedélyre van szükség</string>
 </resources>

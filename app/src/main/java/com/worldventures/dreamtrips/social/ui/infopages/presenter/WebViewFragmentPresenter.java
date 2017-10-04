@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
-import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
+import com.worldventures.core.service.NewDreamTripsHttpService;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.OtaViewedAction;
@@ -63,7 +63,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    }
 
    public String getLegacyAuthTokenBase64() {
-      String legacyToken = appSessionHolder.get().get().getUsername() + ":" + appSessionHolder.get().get().getLegacyApiToken();
+      String legacyToken = appSessionHolder.get().get().getUsername() + ":" + appSessionHolder.get()
+            .get()
+            .getLegacyApiToken();
       String base64 = ProjectTextUtils.convertToBase64(legacyToken);
       return "Basic " + base64;
    }

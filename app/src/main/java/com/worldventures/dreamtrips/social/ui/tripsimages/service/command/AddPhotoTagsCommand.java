@@ -1,19 +1,19 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import io.techery.janet.Command;
-import io.techery.janet.Janet;
-import io.techery.janet.command.annotations.CommandAction;
-import io.techery.mappery.MapperyContext;
-import rx.Observable;
-
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.photos.AddUserTagsToPhotoHttpAction;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.techery.janet.Command;
+import io.techery.janet.Janet;
+import io.techery.janet.command.annotations.CommandAction;
+import io.techery.mappery.MapperyContext;
+import rx.Observable;
 
 @CommandAction
 public class AddPhotoTagsCommand extends Command implements InjectableAction {

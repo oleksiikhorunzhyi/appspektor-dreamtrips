@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.feed.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 
 public class CreateEntityBundle implements Parcelable {
 

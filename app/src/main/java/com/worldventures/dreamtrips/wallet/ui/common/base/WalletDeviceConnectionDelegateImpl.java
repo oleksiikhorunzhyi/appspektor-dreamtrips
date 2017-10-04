@@ -24,7 +24,7 @@ public class WalletDeviceConnectionDelegateImpl implements WalletDeviceConnectio
             .throttleLast(1, TimeUnit.SECONDS)
             .map(command -> command.getResult().connectionStatus())
             .distinctUntilChanged()
-            .compose(view.bindToLifecycle())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::showConnectionStatus);
       smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());

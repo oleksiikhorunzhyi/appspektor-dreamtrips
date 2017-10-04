@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;

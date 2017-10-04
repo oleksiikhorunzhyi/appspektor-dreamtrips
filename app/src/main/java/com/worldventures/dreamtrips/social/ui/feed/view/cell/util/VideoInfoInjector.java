@@ -5,8 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.video.utils.mute_strategy.FullscreenMuteStrategy;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
+import com.worldventures.dreamtrips.social.ui.video.utils.mute_strategy.FullscreenMuteStrategy;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
 import butterknife.ButterKnife;

@@ -2,17 +2,15 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.*;

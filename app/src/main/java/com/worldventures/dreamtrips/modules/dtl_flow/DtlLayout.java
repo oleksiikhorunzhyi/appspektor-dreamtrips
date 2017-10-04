@@ -13,15 +13,15 @@ import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
-import com.techery.spares.module.Injector;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.service.analytics.MonitoringHelper;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 
 import javax.inject.Inject;
 

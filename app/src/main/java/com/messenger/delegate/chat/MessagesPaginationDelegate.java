@@ -9,8 +9,7 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PaginationResult;
 import com.messenger.synchmechanism.SyncStatus;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import org.immutables.value.Value;
 

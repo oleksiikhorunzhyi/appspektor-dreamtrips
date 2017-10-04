@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableVideoCreationModel;
@@ -18,7 +19,6 @@ import com.worldventures.dreamtrips.social.ui.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.VideoCreationCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
-import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

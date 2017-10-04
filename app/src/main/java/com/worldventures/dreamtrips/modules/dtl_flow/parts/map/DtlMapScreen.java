@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.List;
 

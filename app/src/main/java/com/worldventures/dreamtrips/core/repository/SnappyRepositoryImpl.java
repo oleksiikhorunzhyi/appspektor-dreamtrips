@@ -5,22 +5,17 @@ import android.content.Context;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
+import com.worldventures.core.repository.BaseSnappyRepository;
+import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
-import com.worldventures.dreamtrips.social.ui.infopages.model.Document;
-import com.worldventures.dreamtrips.social.ui.settings.model.FlagSetting;
-import com.worldventures.dreamtrips.social.ui.settings.model.SelectSetting;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedEntity;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyRepository {
@@ -85,52 +80,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
       }));
    }
 
-   ///////////////////////////////////////////////////////////////////////////
-   // Media
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public List<CachedModel> getDownloadMediaModels() {
-      return actWithResult(db -> {
-         List<CachedModel> entities = new ArrayList<>();
-         String[] keys = db.findKeys(MEDIA_UPLOAD_MODEL);
-         for (String key : keys) {
-            entities.add(db.get(key, CachedModel.class));
-         }
-         return entities;
-      }).or(Collections.emptyList());
-   }
-
-   @Override
-   public List<CachedEntity> getDownloadMediaEntities() {
-      return actWithResult(db -> {
-         List<CachedEntity> entities = new ArrayList<>();
-         String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
-         for (String key : keys) {
-            entities.add(db.get(key, CachedEntity.class));
-         }
-         return entities;
-      }).or(Collections.emptyList());
-   }
-
-   @Override
-   public void deleteAllMediaEntities() {
-      act(db -> {
-         String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
-         for (String key : keys) db.del(key);
-      });
-   }
-
-   @Override
-   public void saveDownloadMediaModel(CachedModel e) {
-      act(db -> db.put(MEDIA_UPLOAD_MODEL + e.getUuid(), e));
-   }
-
-   @Override
-   public CachedModel getDownloadMediaModel(String id) {
-      return actWithResult(db -> db.get(MEDIA_UPLOAD_MODEL + id, CachedModel.class)).orNull();
-   }
-
    @Override
    public String getLastSyncAppVersion() {
       return actWithResult(db -> db.get(LAST_SYNC_APP_VERSION)).orNull();
@@ -139,45 +88,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public void setLastSyncAppVersion(String appVersion) {
       act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Settings
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public void saveSettings(List<Setting> settingsList, boolean withClear) {
-      act(db -> {
-         if (withClear) clearSettings(db);
-         //
-         for (Setting settings : settingsList) {
-            db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
-         }
-      });
-   }
-
-   @Override
-   public List<Setting> getSettings() {
-      return actWithResult(db -> {
-         List<Setting> settingsList = new ArrayList<>();
-         String[] keys = db.findKeys(SETTINGS_KEY);
-         for (String key : keys) {
-            if (key.contains(Setting.Type.FLAG.name())) {
-               settingsList.add(db.get(key, FlagSetting.class));
-            } else if (key.contains(Setting.Type.SELECT.name())) {
-               settingsList.add(db.get(key, SelectSetting.class));
-            }
-         }
-         return settingsList;
-      }).or(Collections.emptyList());
-   }
-
-   @Override
-   public void clearSettings(DB snappyDb) throws SnappydbException {
-      String[] settingsKeys = snappyDb.findKeys(SETTINGS_KEY);
-      for (String key : settingsKeys) {
-         snappyDb.del(key);
-      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -256,16 +166,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public void setGcmRegToken(String token) {
       act(db -> db.put(GCM_REG_TOKEN, token));
-   }
-
-   @Override
-   public List<Document> getDocuments(String type) {
-      return readList(DOCUMENTS + ":" + type, Document.class);
-   }
-
-   @Override
-   public void setDocuments(String type, List<Document> documents) {
-      putList(DOCUMENTS + ":" + type, documents);
    }
 
    ///////////////////////////////////////////////////////////////////////////

@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.social.ui.profile.view;
 import android.content.res.Resources;
 import android.widget.TextView;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class ProfileViewUtils {
 

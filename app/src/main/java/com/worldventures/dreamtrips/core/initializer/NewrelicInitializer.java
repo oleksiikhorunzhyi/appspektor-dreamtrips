@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.core.initializer;
 import android.app.Application;
 
 import com.newrelic.agent.android.NewRelic;
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.BuildConfig;
 
 import javax.inject.Inject;

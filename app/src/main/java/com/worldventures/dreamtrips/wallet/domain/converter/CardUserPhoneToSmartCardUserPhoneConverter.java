@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 
 import io.techery.mappery.MapperyContext;

@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.infopages.service.command.AttachmentsRemovedCommand;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.infopages.service.command.AttachmentsRemovedCommand;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor;
 
 import java.util.ArrayList;
 import java.util.List;

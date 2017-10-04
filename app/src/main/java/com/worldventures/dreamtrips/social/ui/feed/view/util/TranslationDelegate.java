@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.util;
 
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.service.TranslationFeedInteractor;

@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNewCardScreen> implements PreCheckNewCardPresenter {
@@ -61,7 +62,8 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
             bluetoothService.observeEnablesState()
                   .startWith(bluetoothService.isEnable()),
             (smartCardCommand, bluetoothIsEnabled) -> new Pair<>(bluetoothIsEnabled, smartCardCommand.getResult()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(pair -> bind(pair.first, pair.second.connectionStatus()
                   .isConnected()), throwable -> Timber.e(throwable, ""));
 
@@ -86,7 +88,8 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
    public void prepareContinueAddCard() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> getView().showAddCardContinueDialog(command.getResult().smartCardId()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))

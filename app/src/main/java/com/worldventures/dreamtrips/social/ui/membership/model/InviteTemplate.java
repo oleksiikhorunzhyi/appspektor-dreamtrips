@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.membership.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.techery.spares.adapter.HeaderItem;
+import com.worldventures.core.ui.view.adapter.HeaderItem;
 
 import java.util.ArrayList;
 import java.util.List;

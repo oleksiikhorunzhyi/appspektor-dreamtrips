@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security
 
-import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -54,7 +53,7 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
       deviceStateCommandContract.result(ImmutableSmartCardStatus.builder().build())
       walletFeatureHelper = WalletFeatureHelperFull()
-      screen = mock()
+      screen = mockScreen(WalletSecuritySettingsScreen::class.java)
       whenever(screen.stealthModeStatus()).thenReturn(stealthToggleSubject.asObservable())
       whenever(screen.lockStatus()).thenReturn(lockToggleSubject.asObservable())
       presenter = WalletSecuritySettingsPresenterImpl(navigator, deviceConnectionDelegate,

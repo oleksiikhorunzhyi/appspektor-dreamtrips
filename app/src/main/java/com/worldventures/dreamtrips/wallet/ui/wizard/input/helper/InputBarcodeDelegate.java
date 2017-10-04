@@ -39,7 +39,7 @@ public class InputBarcodeDelegate {
    public void init(InputDelegateView inputDelegateView) {
       wizardInteractor.getSmartCardStatusCommandActionPipe()
             .observe()
-            .compose(inputDelegateView.bindToLifecycle())
+            .compose(inputDelegateView.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(inputDelegateView.provideOperationFetchCardStatus())
                   .onSuccess(command -> SmartCardStatusHandler.handleSmartCardStatus(command.getResult(),

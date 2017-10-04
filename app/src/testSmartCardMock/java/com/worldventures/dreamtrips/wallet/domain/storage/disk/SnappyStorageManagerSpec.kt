@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import com.worldventures.dreamtrips.core.repository.SnappyAction
+import com.worldventures.core.repository.SnappyAction
 import org.mockito.Mockito
 
 class SnappyStorageManagerSpec : BaseSpec({

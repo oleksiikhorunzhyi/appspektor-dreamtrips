@@ -8,8 +8,8 @@ import android.graphics.PorterDuff;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 public class BatteryView extends AppCompatImageView {
 

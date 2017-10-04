@@ -148,6 +148,9 @@
    <string name="sent_location">locație trimisă</string>
    <string name="unread_conversation">Conversații </string>
 
+   <string name="connection_overlay_disconnected_message">Conexiune pierdută</string>
+   <string name="connection_overlay_connecting_message">Se conectează…</string>
+
    <string name="warning_no_internet_connection">Nu există conexiune la internet </string>
 
    <string name="chat_update_proposition"><![CDATA[Pentru a vedea atasamentul, actualizați aici până la ultima versiune a aplicației DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">aici </a>]]></string>

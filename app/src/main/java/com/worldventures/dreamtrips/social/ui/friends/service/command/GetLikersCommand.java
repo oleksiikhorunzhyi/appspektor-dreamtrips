@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.social.ui.friends.service.command;
 
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.likes.GetLikersHttpAction;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 
 import java.util.List;

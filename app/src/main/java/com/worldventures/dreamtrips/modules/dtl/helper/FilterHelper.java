@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.modules.settings.storage.SettingsStorage;
+import com.worldventures.core.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
-import com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -43,8 +43,8 @@ public abstract class FilterHelper {
       return filterData.distanceType() == DistanceType.KMS ? (float) 16 : 10;
    }
 
-   public static DistanceType provideDistanceFromSettings(SnappyRepository snappyRepository) {
-      final Setting distanceTypeSetting = Queryable.from(snappyRepository.getSettings())
+   public static DistanceType provideDistanceFromSettings(SettingsStorage settingsStorage) {
+      final Setting distanceTypeSetting = Queryable.from(settingsStorage.getSettings())
             .filter(setting -> setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
       return DistanceType.provideFromSetting(distanceTypeSetting);
    }

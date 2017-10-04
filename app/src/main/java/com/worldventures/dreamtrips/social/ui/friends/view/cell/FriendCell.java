@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.social.ui.friends.view.cell;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.model.User;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.FriendCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.view.dialog.FriendActionDialogDelegate;
 

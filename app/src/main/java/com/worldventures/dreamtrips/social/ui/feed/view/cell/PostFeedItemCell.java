@@ -6,13 +6,13 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.utils.ImageUtils;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.VideoInfoInjector;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.HashtagFeedBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRou
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.VideoInfoInjector;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageItem;
@@ -34,7 +35,6 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -207,11 +207,10 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
       int thumbSize = itemView.getResources().getDimensionPixelSize(R.dimen.photo_thumb_size);
-      return Queryable.from(attachments).map(element -> (Photo) element.getItem()).map(photo -> {
-         return new CollageItem(ImageUtils.getParametrizedUrl(photo.getImagePath(), thumbSize, thumbSize),
-               ImageUtils.getParametrizedUrl(photo.getImagePath(), itemView.getWidth(), itemView.getHeight()),
-               photo.getWidth(), photo.getHeight());
-      }).toList();
+      return Queryable.from(attachments).map(element -> (Photo) element.getItem())
+            .map(photo -> new CollageItem(ImageUtils.getParametrizedUrl(photo.getImagePath(), thumbSize, thumbSize),
+                  ImageUtils.getParametrizedUrl(photo.getImagePath(), itemView.getWidth(), itemView.getHeight()),
+                  photo.getWidth(), photo.getHeight())).toList();
    }
 
    private void processTags(List<FeedEntityHolder> attachments) {

@@ -8,8 +8,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.MessageHelper;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import javax.inject.Inject;
 

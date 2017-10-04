@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
 import com.worldventures.dreamtrips.social.ui.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.VideoCreationCellDelegate;
@@ -20,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_video_post)
-public class VideoPostCreationCell extends AbstractDelegateCell<VideoCreationModel, VideoCreationCellDelegate> implements ResizeableCell {
+public class VideoPostCreationCell extends BaseAbstractDelegateCell<VideoCreationModel, VideoCreationCellDelegate> implements ResizeableCell {
 
    @InjectView(R.id.video_thumbnail) SimpleDraweeView videoThumbnail;
    @InjectView(R.id.remove) View remove;

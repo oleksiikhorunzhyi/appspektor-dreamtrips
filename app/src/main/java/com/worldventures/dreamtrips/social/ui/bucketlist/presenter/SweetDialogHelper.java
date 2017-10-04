@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 

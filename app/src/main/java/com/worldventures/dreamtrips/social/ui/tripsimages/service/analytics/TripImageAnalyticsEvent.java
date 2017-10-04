@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics;
 
-
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 public class TripImageAnalyticsEvent extends BaseAnalyticsAction {
 

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.comparator;
 
 
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 import java.util.Comparator;

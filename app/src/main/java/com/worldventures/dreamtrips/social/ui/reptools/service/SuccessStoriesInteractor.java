@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.reptools.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand;

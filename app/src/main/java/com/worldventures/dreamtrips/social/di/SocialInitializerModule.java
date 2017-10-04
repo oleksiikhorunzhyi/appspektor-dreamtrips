@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.di;
 
-import com.techery.spares.application.AppInitializer;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.service.CachedEntityInteractor;
 import com.worldventures.dreamtrips.social.initializer.CachedEntityCommandInitializer;
 
 import dagger.Module;

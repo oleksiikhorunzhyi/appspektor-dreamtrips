@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.photos.RemoveUserTagsFromPhotoHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import java.util.List;
 

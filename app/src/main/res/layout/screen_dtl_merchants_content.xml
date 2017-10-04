@@ -12,7 +12,7 @@
          android:layout_height="match_parent"
          >
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+      <com.worldventures.core.ui.view.custom.EmptyRecyclerView
             android:id="@+id/lv_items"
             style="@style/DtlRecyclerViewStyle"
             android:layout_width="match_parent"

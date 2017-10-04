@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Disclaimer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.ImmutableDisclaimer;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

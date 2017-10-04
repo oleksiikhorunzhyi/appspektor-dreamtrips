@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.checking.WizardCheckingScre
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WizardCheckingPresenterImpl extends WalletPresenterImpl<WizardCheckingScreen> implements WizardCheckingPresenter {
 
@@ -49,14 +50,16 @@ public class WizardCheckingPresenterImpl extends WalletPresenterImpl<WizardCheck
 
    private void observeBluetoothAndNetwork() {
       Observable.merge(bluetoothService.observeEnablesState(), networkDelegate.observeConnectedState())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(b -> wizardInteractor.checksPipe().send(new WizardCheckCommand()));
    }
 
    private void observeChecks() {
       wizardInteractor.checksPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<WizardCheckCommand>()
                   .onSuccess(command -> bindResult(command.getResult()))
             );

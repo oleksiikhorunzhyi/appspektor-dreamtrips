@@ -16,7 +16,7 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
-import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -43,7 +43,7 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.fromHtml;
+import static com.worldventures.core.utils.ProjectTextUtils.fromHtml;
 import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
 
 public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEditProfileScreen, WizardEditProfilePresenter> implements WizardEditProfileScreen {
@@ -155,7 +155,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    private void observeNewAvatar() {
       observeCropper()
-            .compose(bindToLifecycle())
+            .compose(bindUntilDetach())
             .subscribe(file -> viewModel.setChosenPhotoUri(Uri.fromFile(file).toString()));
    }
 

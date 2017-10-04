@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.session;
 
-import com.techery.spares.storage.complex_objects.ComplexObjectStorage;
-import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.core.storage.complex_objects.ComplexObjectStorage;
+import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.ImmutableNxtSession;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.NxtSession;
 

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.model;
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 

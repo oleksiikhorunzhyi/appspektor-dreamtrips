@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.media_picker.presenter;
 
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
+import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -32,7 +32,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
-   @Inject MediaInteractor mediaInteractor;
+   @Inject MediaPickerInteractor mediaPickerInteractor;
    @Inject DrawableUtil drawableUtil;
    @Inject CapturedRowMediaHelper capturedRowMediaHelper;
 
@@ -56,7 +56,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                if (videoDurationSec > videoLengthLimit) {
                   view.informUser(context.getString(R.string.picker_video_length_limit, videoLengthLimit));
                } else {
-                  mediaPickerEventDelegate.post(new MediaAttachment(videoPickerModel, MediaAttachment.Source.CAMERA, requestId));
+                  videoPickerModel.setSource(MediaPickerAttachment.Source.CAMERA);
+                  mediaPickerEventDelegate.post(new MediaPickerAttachment(videoPickerModel, requestId));
                   closeMediaPicker();
                }
             }, throwable -> Timber.e(throwable, "Could not load video"));
@@ -66,7 +67,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
       capturedRowMediaHelper.photoModelFromCameraObservable()
             .compose(bindViewToMainComposer())
             .subscribe(photoGalleryModel -> {
-               mediaPickerEventDelegate.post(new MediaAttachment(photoGalleryModel, MediaAttachment.Source.CAMERA, requestId));
+               photoGalleryModel.setSource(MediaPickerAttachment.Source.CAMERA);
+               mediaPickerEventDelegate.post(new MediaPickerAttachment(photoGalleryModel, requestId));
                closeMediaPicker();
             });
    }
@@ -78,8 +80,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    }
 
    public void attachMedia(List<MediaPickerModel> pickedImages, VideoPickerModel pickedVideo, int type) {
-      MediaAttachment.Source source = MediaAttachment.Source.GALLERY;
-      if (type == PHOTOS_TYPE_FACEBOOK) source = MediaAttachment.Source.FACEBOOK;
+      MediaPickerAttachment.Source source = MediaPickerAttachment.Source.GALLERY;
+      if (type == PHOTOS_TYPE_FACEBOOK) source = MediaPickerAttachment.Source.FACEBOOK;
 
       mediaPickerImagesProcessedEventDelegate.post(true);
       getPhotosAttachmentsObservable(pickedImages, source)
@@ -95,16 +97,22 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                   });
    }
 
-   private Observable<MediaAttachment> getPhotosAttachmentsObservable(List<MediaPickerModel> pickedImages, MediaAttachment.Source source) {
+   private Observable<MediaPickerAttachment> getPhotosAttachmentsObservable(List<MediaPickerModel> pickedImages, MediaPickerAttachment.Source source) {
       if (pickedImages == null || pickedImages.isEmpty()) return Observable.empty();
       return Observable.from(pickedImages)
             .map(element -> capturedRowMediaHelper.processPhotoModel(element.getAbsolutePath()))
-            .map(photoGalleryModel -> new MediaAttachment(photoGalleryModel, source, requestId));
+            .map(photoGalleryModel -> {
+               photoGalleryModel.setSource(source);
+               return new MediaPickerAttachment(photoGalleryModel, requestId);
+            });
    }
 
-   private Observable<MediaAttachment> getVideoAttachmentsObservable(VideoPickerModel videoPickerModel, MediaAttachment.Source source) {
+   private Observable<MediaPickerAttachment> getVideoAttachmentsObservable(VideoPickerModel videoPickerModel, MediaPickerAttachment.Source source) {
       return Observable.just(videoPickerModel)
-            .map(model -> new MediaAttachment(videoPickerModel, source, requestId));
+            .map(model -> {
+               videoPickerModel.setSource(source);
+               return new MediaPickerAttachment(videoPickerModel, requestId);
+            });
    }
 
    public interface View extends Presenter.View {

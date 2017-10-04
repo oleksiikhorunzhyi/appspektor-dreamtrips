@@ -4,19 +4,23 @@ import android.app.Application;
 import android.content.Context;
 
 import com.messenger.di.MessengerModule;
-import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
 import com.techery.spares.module.InjectingApplicationModule;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.CoreModule;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.facebook.FacebookAppModule;
+import com.worldventures.core.modules.infopages.ImmutableStaticPageProviderConfig;
+import com.worldventures.core.modules.infopages.StaticPageProviderConfig;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.App;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.repository.SnappyModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
-import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
-import com.worldventures.dreamtrips.modules.facebook.FacebookAppModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
@@ -30,6 +34,7 @@ import dagger.Provides;
 @Module(
       injects = {App.class},
       includes = {
+            CoreModule.class,
             // base injection and helpers/drivers
             InjectingApplicationModule.class,
             //
@@ -63,7 +68,6 @@ import dagger.Provides;
             JanetModule.class,
             JanetUploaderyModule.class,
             AnalyticsModule.class,
-            SessionProcessingModule.class,
             //
             MappingModule.class,
             //
@@ -90,13 +94,12 @@ public class AppModule {
       return app;
    }
 
-   @Provides
-   BaseApplicationWithInjector appWithInjector() {
-      return app;
-   }
-
+   /**
+    * Use Context without ForApplication qualifier.
+    */
    @ForApplication
    @Provides
+   @Deprecated
    Context provideAppContext() {
       return app.getApplicationContext();
    }
@@ -104,5 +107,17 @@ public class AppModule {
    @Provides
    Context provideContext() {
       return app.getApplicationContext();
+   }
+
+   @Provides
+   StaticPageProviderConfig provideConfig(SessionHolder appSessionHolder, DeviceInfoProvider deviceInfoProvider) {
+      return ImmutableStaticPageProviderConfig.builder()
+            .appSessionHolder(appSessionHolder)
+            .deviceInfoProvider(deviceInfoProvider)
+            .apiUrl(BuildConfig.DreamTripsApi)
+            .backofficeUrl(BuildConfig.BACKOFFICE_URL)
+            .uploaderyUrl(BuildConfig.UPLOADERY_API_URL)
+            .forgotPasswordUrl(BuildConfig.FORGOT_PASSWORD_URL)
+            .build();
    }
 }

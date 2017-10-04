@@ -3,10 +3,11 @@ package com.worldventures.dreamtrips.modules.media_picker.service.command;
 import android.content.Context;
 import android.net.Uri;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.utils.ImageUtils;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.FaceRecognitionUtils;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import javax.inject.Inject;
 
@@ -26,7 +27,7 @@ public class RecognizeFacesCommand extends Command<PhotoCreationItem> implements
 
    @Override
    protected void run(CommandCallback<PhotoCreationItem> callback) throws Throwable {
-      ImageUtils.getRecognizedFaces(context, ImageUtils.getBitmap(context, Uri.parse(photoCreationItem.getFileUri()), 300, 300)
+      FaceRecognitionUtils.getRecognizedFaces(context, ImageUtils.getBitmap(context, Uri.parse(photoCreationItem.getFileUri()), 300, 300)
       ).subscribe(photoTags -> {
          photoCreationItem.setSuggestions(photoTags);
          callback.onSuccess(photoCreationItem);

@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.model;
 
 import android.os.Parcel;
 
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+import com.worldventures.core.model.BaseEntity;
+import com.worldventures.core.model.Filterable;
 
 public class PopularBucketItem extends BaseEntity implements Filterable {
 

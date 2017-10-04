@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.logout;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.auth.api.command.LogoutAction;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 

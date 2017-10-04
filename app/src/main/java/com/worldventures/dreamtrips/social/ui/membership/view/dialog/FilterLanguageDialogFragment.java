@@ -13,15 +13,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.techery.spares.ui.fragment.InjectingDialogFragment;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.view.fragment.InjectingDialogFragment;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.social.ui.membership.view.util.WrapContentLinearLayoutManager;
 import com.worldventures.dreamtrips.social.ui.reptools.view.cell.VideoLanguageCell;
 import com.worldventures.dreamtrips.social.ui.reptools.view.cell.VideoLocaleCell;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLocale;
 
 import java.util.ArrayList;
 import java.util.List;

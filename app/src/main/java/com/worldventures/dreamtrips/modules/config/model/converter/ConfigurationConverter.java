@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.config.model.converter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.config.model.Category;
 import com.worldventures.dreamtrips.api.config.model.ConfigSetting;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.config.model.VideoRequirement;

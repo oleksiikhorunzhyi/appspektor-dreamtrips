@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.techery.janet.smartcard.event.CardInChargerEvent;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.cardIsCharged;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.chargerRequired;
@@ -76,7 +77,8 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
                         deviceStateCommand.getResult().batteryLevel(),
                         bluetoothEnabled,
                         cardInChargerEvent.inCharger)
-      ).compose(bindViewIoToMainComposer())
+      ).compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::updateViewStates);
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
@@ -88,7 +90,8 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
       smartCardInteractor.connectionActionPipe()
             .observeSuccess()
             .throttleLast(500L, TimeUnit.MILLISECONDS)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(action -> cardConnected());
    }
 

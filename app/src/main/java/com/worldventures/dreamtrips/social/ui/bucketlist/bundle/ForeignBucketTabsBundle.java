@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 
 public class ForeignBucketTabsBundle implements Parcelable {
 

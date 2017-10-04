@@ -1,12 +1,11 @@
 package com.messenger.delegate.chat.message;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
 @Singleton

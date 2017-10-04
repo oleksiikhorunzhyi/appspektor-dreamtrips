@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
-
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.hashtags.model.Metadata;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.feed.model.MetaData;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.Hashtag;
 

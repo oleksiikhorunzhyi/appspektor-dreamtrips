@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.feed.view.cell;
 import android.content.Context;
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;

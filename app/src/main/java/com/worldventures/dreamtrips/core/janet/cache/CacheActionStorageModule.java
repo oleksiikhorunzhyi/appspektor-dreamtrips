@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.core.janet.cache;
 
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.modules.facebook.service.storage.FacebookAlbumsStorage;
+import com.worldventures.core.modules.facebook.service.storage.FacebookPhotosStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
-import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookAlbumsStorage;
-import com.worldventures.dreamtrips.modules.facebook.service.storage.FacebookPhotosStorage;
 
 import javax.inject.Singleton;
 
@@ -14,7 +14,6 @@ import dagger.Provides;
 
 @Module(complete = false, library = true)
 public class CacheActionStorageModule {
-
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideLocationStorage() {

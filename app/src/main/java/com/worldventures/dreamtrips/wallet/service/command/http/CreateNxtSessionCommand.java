@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.nxt.CreateNxtSessionHttpAction;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.NxtSession;
 

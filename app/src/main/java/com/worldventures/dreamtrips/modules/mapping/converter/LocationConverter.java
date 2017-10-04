@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import io.techery.mappery.MapperyContext;

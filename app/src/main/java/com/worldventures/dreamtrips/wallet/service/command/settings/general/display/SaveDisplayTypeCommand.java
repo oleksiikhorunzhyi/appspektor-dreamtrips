@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.service.command.settings.general.dis
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;

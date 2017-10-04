@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.social.background_uploading.spec
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.techery.spares.session.SessionHolder
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.session.SessionHolder
+import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationMutator
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor

@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketFullscreenBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ImageryView;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketFullscreenPresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ImageryView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

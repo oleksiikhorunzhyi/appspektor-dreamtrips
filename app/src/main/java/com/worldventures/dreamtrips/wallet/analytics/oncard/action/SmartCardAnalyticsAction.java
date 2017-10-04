@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.analytics.oncard.action;
 
 import android.support.annotation.CallSuper;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
+import com.worldventures.core.service.analytics.AttributeMap;
 import com.worldventures.dreamtrips.wallet.analytics.BaseCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.util.TimeUtils;
 

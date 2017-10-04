@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
 import android.text.TextUtils;
 
+import com.worldventures.core.model.User;
+import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
+import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
 
 import javax.inject.Inject;
 

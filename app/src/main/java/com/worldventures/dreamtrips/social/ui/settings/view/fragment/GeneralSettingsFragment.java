@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.settings.view.fragment;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.modules.settings.model.SelectSetting;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.social.ui.settings.view.cell.delegate.SettingsSelectCellDelegate;
 
 @Layout(R.layout.fragment_settings)

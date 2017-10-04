@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
+import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.DeleteBucketItemHttpAction;
-import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 

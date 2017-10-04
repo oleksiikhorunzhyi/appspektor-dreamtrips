@@ -2,16 +2,17 @@ package com.worldventures.dreamtrips.social.media_picker
 
 import com.innahema.collections.query.queriables.Queryable
 import com.nhaarman.mockito_kotlin.mock
+import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor
-import com.worldventures.dreamtrips.modules.media_picker.service.delegate.PhotosProvider
-import com.worldventures.dreamtrips.modules.media_picker.service.delegate.VideosProvider
+import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand
+import com.worldventures.core.modules.picker.command.GetPhotosFromGalleryCommand
+import com.worldventures.core.modules.picker.model.MediaPickerModel
+import com.worldventures.core.modules.picker.model.PhotoPickerModel
+import com.worldventures.core.modules.picker.model.VideoPickerModel
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor
+import com.worldventures.core.modules.picker.service.delegate.PhotosProvider
+import com.worldventures.core.modules.picker.service.delegate.VideosProvider
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -56,7 +57,7 @@ class MediaInteractorSpec : BaseSpec({
 
    companion object {
 
-      lateinit var mediaInteractor : MediaInteractor
+      lateinit var mediaInteractor : MediaPickerInteractor
 
       fun setup(photos: List<PhotoPickerModel>, videos: List<VideoPickerModel> = emptyList()) {
          val service = CommandActionService().wrapDagger()
@@ -65,8 +66,8 @@ class MediaInteractorSpec : BaseSpec({
                .build()
          service.registerProvider(PhotosProvider::class.java) { PhotosProvider { date: Date, i: Int -> photos }}
          service.registerProvider(VideosProvider::class.java) { VideosProvider { videos }}
-         mediaInteractor = MediaInteractor(janet)
-         service.registerProvider(MediaInteractor::class.java) { mediaInteractor }
+         mediaInteractor = MediaPickerInteractor(SessionActionPipeCreator(janet))
+         service.registerProvider(MediaPickerInteractor::class.java) { mediaInteractor }
       }
 
       fun makeMockPhotos(): List<PhotoPickerModel> {

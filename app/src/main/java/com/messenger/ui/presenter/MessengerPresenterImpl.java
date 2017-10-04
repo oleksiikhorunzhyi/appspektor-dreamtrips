@@ -9,9 +9,9 @@ import android.widget.Toast;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.view.layout.MessengerScreen;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 
 import java.util.concurrent.TimeUnit;

@@ -3,14 +3,14 @@ package com.worldventures.dreamtrips.wallet
 import android.content.Context
 import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.cache.CacheResultWrapper
+import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.social.ui.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
@@ -84,7 +84,7 @@ class WizardInteractorSpec : BaseSpec({
             verify(propertiesProvider, times(1)).deviceId()
          }
 
-         it("should be associate SmartCard and save SmartCardDetails to db") {
+         it("should be associate SmartCard and save SmartCardDetails to mediaModelStorage") {
             val cardUserData: UpdateCardUserData = TestUpdateCardUserData()
             val testSubscriber: TestSubscriber<ActionState<AssociateCardUserCommand>> = TestSubscriber()
             janet.createPipe(AssociateCardUserCommand::class.java)
@@ -98,7 +98,7 @@ class WizardInteractorSpec : BaseSpec({
             verify(propertiesProvider, times(1)).osVersion()
          }
 
-         it("should be save TermsAndConditions to db") {
+         it("should be save TermsAndConditions to mediaModelStorage") {
             val testSubscriber: TestSubscriber<ActionState<FetchTermsAndConditionsCommand>> = TestSubscriber()
             janet.createPipe(FetchTermsAndConditionsCommand::class.java)
                   .createObservable(FetchTermsAndConditionsCommand())

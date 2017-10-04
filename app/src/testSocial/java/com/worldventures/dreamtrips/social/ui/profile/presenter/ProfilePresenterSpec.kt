@@ -1,18 +1,18 @@
 package com.worldventures.dreamtrips.social.ui.profile.presenter
 
 import com.nhaarman.mockito_kotlin.*
-import com.techery.spares.session.SessionHolder
-import com.techery.spares.storage.complex_objects.Optional
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.common.model.User
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.User
+import com.worldventures.core.model.session.SessionHolder
+import com.worldventures.core.model.session.UserSession
+import com.worldventures.core.storage.complex_objects.Optional
+import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedActionHandlerDelegate
 import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate
-import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
 open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter<out ProfilePresenter.View>, out ProfilePresenter.View>)
    : PresenterBaseSpec(testBody.makeTestBody()) {
 
-   abstract class TestBody<P: ProfilePresenter<V>, V: ProfilePresenter.View> {
+   abstract class TestBody<P : ProfilePresenter<V>, V : ProfilePresenter.View> {
       val USER_ID = 1100
       val USER = User(USER_ID)
       var sessionHolder = makeSessionHolder(USER_ID)
@@ -93,7 +93,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
                      verify(presenter).refreshFeed()
                   }
 
-                  it ("should drop translation delegate view on drop view") {
+                  it("should drop translation delegate view on drop view") {
                      presenter.dropView()
 
                      verify(translationDelegate).onDropView()
@@ -101,19 +101,19 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
                }
 
                describe("Feed actions") {
-                  it ("should start downloading image") {
+                  it("should start downloading image") {
                      presenter.onDownloadImage("")
 
                      verify(feedActionHandlerDelegate).onDownloadImage(any(), any(), any())
                   }
 
-                  it ("should load flags") {
+                  it("should load flags") {
                      presenter.onLoadFlags(null)
 
                      verify(feedActionHandlerDelegate).onLoadFlags(anyOrNull(), any())
                   }
 
-                  it ("should flag item") {
+                  it("should flag item") {
                      presenter.onFlagItem(null, 0, null)
 
                      verify(feedActionHandlerDelegate).onFlagItem(anyOrNull(), any(), anyOrNull(), any(), any())
@@ -121,7 +121,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
                }
 
                describe("Load feed actions") {
-                  it ("should correctly refresh") {
+                  it("should correctly refresh") {
                      presenter.onRefresh()
 
                      verify(presenter).refreshFeed()
@@ -129,7 +129,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
                      verify(view, VerificationModeFactory.times(2)).startLoading()
                   }
 
-                  it ("should not load next when feed items are empty") {
+                  it("should not load next when feed items are empty") {
                      presenter.feedItems = ArrayList<FeedItem<out FeedEntity>>()
 
                      assertFalse(presenter.onLoadNext())
@@ -233,7 +233,8 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
       }
 
       open fun onSetupInjector(injector: com.worldventures.dreamtrips.common.Injector,
-                               pipeCreator: SessionActionPipeCreator) {}
+                               pipeCreator: SessionActionPipeCreator) {
+      }
    }
 }
 

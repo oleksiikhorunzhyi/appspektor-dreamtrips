@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.model.converter;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSocialized;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 
 import io.techery.mappery.MapperyContext;

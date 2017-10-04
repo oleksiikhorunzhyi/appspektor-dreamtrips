@@ -4,19 +4,19 @@ import android.content.ActivityNotFoundException;
 import android.os.Environment;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.utils.CachedModelHelper;
+import com.worldventures.core.service.CachedEntityDelegate;
+import com.worldventures.core.service.CachedEntityInteractor;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.social.ui.podcast_player.service.ViewPodcastAnalyticsAction;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +110,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
    private void processCachingState(CachedModel cachedModel) {
       Queryable.from(podcasts).notNulls()
             .filter(podcast -> podcast.getCacheEntity().getUuid()
-                     .equals(cachedModel.getUuid()))
+                  .equals(cachedModel.getUuid()))
             .forEachR(podcast -> {
                podcast.setCacheEntity(cachedModel);
                view.notifyItemChanged(cachedModel);

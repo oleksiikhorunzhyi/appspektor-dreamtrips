@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.St
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class StartFirmwareInstallPresenterImpl extends WalletPresenterImpl<StartFirmwareInstallScreen> implements StartFirmwareInstallPresenter {
 
@@ -27,7 +28,8 @@ public class StartFirmwareInstallPresenterImpl extends WalletPresenterImpl<Start
       super.attachView(view);
       firmwareInteractor.prepareForUpdatePipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationPrepareForUpdate())
                   .onSuccess(command -> cardPrepared(command.getResult()))
                   .create());

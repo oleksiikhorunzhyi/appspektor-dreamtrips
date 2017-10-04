@@ -3,18 +3,18 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.modules.auth.api.command.LogoutAction;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.settings.storage.SettingsStorage;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteracto
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
-import com.worldventures.dreamtrips.modules.facebook.service.FacebookInteractor;
 
 import javax.inject.Singleton;
 
@@ -80,9 +79,9 @@ public class ManagerModule {
    @Provides
    FilterDataInteractor provideFilterDataInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          AnalyticsInteractor analyticsInteractor, DtlLocationInteractor dtlLocationInteractor, MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
-         SnappyRepository snappyRepository) {
+         SettingsStorage settingsStorage) {
       return new FilterDataInteractor(sessionActionPipeCreator, analyticsInteractor, dtlLocationInteractor, merchantsRequestSourceInteractor,
-            snappyRepository);
+            settingsStorage);
    }
 
    @Singleton
@@ -148,20 +147,19 @@ public class ManagerModule {
 
    @Provides
    @Singleton
-   DrawableUtil provideDrawableUtil(Context context) {
-      return new DrawableUtil(context);
-   }
-
-   @Provides
-   @Singleton
-   FacebookInteractor provideFacebookInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new FacebookInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
    InitializerInteractor provideInitializerInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          AuthInteractor loginInteractor) {
       return new InitializerInteractor(sessionActionPipeCreator, loginInteractor);
+   }
+
+   // clear after logout actions
+   @Provides(type = Provides.Type.SET)
+   LogoutAction provideOfflineWarningDelegateLogoutAction(OfflineWarningDelegate offlineWarningDelegate) {
+      return offlineWarningDelegate::resetState;
+   }
+
+   @Provides(type = Provides.Type.SET)
+   LogoutAction provideCookieManagerLogoutAction(DTCookieManager cookieManager) {
+      return cookieManager::clearCookies;
    }
 }

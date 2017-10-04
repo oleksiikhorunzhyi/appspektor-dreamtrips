@@ -70,7 +70,7 @@
                android:text="@string/wallet_card_settings_general"
                />
 
-         <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+         <com.worldventures.core.ui.view.custom.BadgeView
                android:id="@+id/badgeFirmwareUpdates"
                android:layout_width="28dp"
                android:layout_height="wrap_content"

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.record;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.service.command.CachedValueCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.DummyRecordCreator;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;

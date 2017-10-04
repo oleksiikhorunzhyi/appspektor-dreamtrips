@@ -3,16 +3,14 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.social.ui.feed.model.CreatePhotoPostEntity;
-import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableVideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.EditPostCommand;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import javax.inject.Inject;

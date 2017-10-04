@@ -25,7 +25,7 @@
             android:textColor="@color/tab_text_color"
             />
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+      <com.worldventures.core.ui.view.custom.BadgeView
             android:id="@+id/psts_tab_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

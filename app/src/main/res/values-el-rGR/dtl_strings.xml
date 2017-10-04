@@ -28,9 +28,6 @@
    <string name="dtl_description">Περιγραφή</string>
    <string name="ok">OK</string>
    <string name="continue_option">Συνέχεια</string>
-   <string name="permission_camera_rationale">Χρειάζεται πρόσβαση στην κάμερα για ανίχνευση</string>
-   <string name="permission_location_rationale">Χρειάζεται πρόσβαση στην τοποθεσία για ανίχνευση</string>
-   <string name="no_camera_permission">Αυτή η εφαρμογή δεν μπορεί να τρέξει γιατί δεν έχει την άδεια της κάμερας. Θα γίνει έξοδος τώρα από την εφαρμογή.</string>
    <string name="no_location_permission">Αυτή η εφαρμογή δεν μπορεί να τρέξει γιατί δεν έχει την άδεια της τοποθεσίας. Θα γίνει έξοδος τώρα από την εφαρμογή.</string>
    <string name="dtl_checkin_location_error">Η εξυπηρέτηση τοποθεσίας πρέπει να είναι ενεργοποιημένη προκειμένου να κάνετε check-in</string>
    <string name="dtl_barcode_title">Σάρωση κωδικού QR</string>
@@ -95,7 +92,7 @@
    <!-- DtlFilterButton Options Merchants Type strings -->
    <string name="filter_merchant_dining">Γεύματα</string>
    <string name="filter_merchant_entertainment">Διασκέδαση</string>
-   <string name="filter_merchant_spas">Spas</string>
+   <string name="filter_merchant_spas">Κέντρα αισθητικής/χαλάρωσης</string>
    <!-- Reviews Merchants -->
    <string name="rate_and_reviews_text">Βαθμολόγηση &amp; Κριτική</string>
    <string name="first_reviews_text">Αφήστε πρώτοι μια κριτική για αυτή την τοποθεσία</string>

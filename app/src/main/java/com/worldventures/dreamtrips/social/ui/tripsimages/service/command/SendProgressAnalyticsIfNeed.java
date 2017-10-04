@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;

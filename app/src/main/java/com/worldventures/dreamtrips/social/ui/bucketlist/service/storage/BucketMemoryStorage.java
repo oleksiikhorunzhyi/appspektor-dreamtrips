@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.service.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 import java.util.List;

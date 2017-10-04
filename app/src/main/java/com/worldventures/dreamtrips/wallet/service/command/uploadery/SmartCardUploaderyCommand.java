@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.wallet.service.command.uploadery;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.UriPathProvider;
+import com.worldventures.core.utils.HttpUploaderyException;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.uploadery.UploadSmartCardImageHttpAction;
 import com.worldventures.dreamtrips.core.api.uploadery.BaseUploadImageCommand;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.HttpUploaderyException;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.util.MaltyPartImageBodyCreator;
 
@@ -19,6 +20,7 @@ public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmar
    @Inject Janet janet;
    @Inject WalletSocialInfoProvider socialInfoProvider;
    @Inject MaltyPartImageBodyCreator creator;
+   @Inject UriPathProvider uriPathProvider;
 
    private final String photoUri;
    private final String smartCardId;
@@ -40,5 +42,10 @@ public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmar
                         smartCardId,
                         body))
             ).subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
+   }
+
+   @Override
+   public UriPathProvider getUriPathProvider() {
+      return uriPathProvider;
    }
 }

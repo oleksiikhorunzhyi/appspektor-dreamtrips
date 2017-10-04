@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.FieldErrors;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableFieldErrors;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewText;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

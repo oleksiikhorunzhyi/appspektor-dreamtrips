@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.service.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.ActionPart;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AttributeMap;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.ActionPart;
+import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AttributeMap;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 
 import java.util.HashMap;
@@ -15,8 +15,7 @@ public class ViewFeedEntityAction extends BaseAnalyticsAction {
 
    @ActionPart final String action;
 
-   @AttributeMap
-   final Map<String, String> attributeMap = new HashMap<>();
+   @AttributeMap final Map<String, String> attributeMap = new HashMap<>();
 
    public ViewFeedEntityAction(String action, String actionAttribute, FeedEntityHolder.Type type, String uid) {
       this.action = action;

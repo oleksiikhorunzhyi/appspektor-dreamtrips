@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.LaunchUpdatingVideoProcessingCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.PerformUpdateVideoStatusCommand;
@@ -17,10 +17,14 @@ public class PingAssetStatusInteractor {
    private ActionPipe<FeedItemsVideoProcessingStatusCommand> feedItemsVideoProcessingPipe;
 
    public PingAssetStatusInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      updateVideoProcessStatusPipe = sessionActionPipeCreator.createPipe(UpdateVideoProcessStatusCommand.class, Schedulers.io());
-      performUpdateVideoStatusPipe = sessionActionPipeCreator.createPipe(PerformUpdateVideoStatusCommand.class, Schedulers.io());
-      launchUpdatingVideoProcessingPipe = sessionActionPipeCreator.createPipe(LaunchUpdatingVideoProcessingCommand.class, Schedulers.io());
-      feedItemsVideoProcessingPipe = sessionActionPipeCreator.createPipe(FeedItemsVideoProcessingStatusCommand.class, Schedulers.io());
+      updateVideoProcessStatusPipe = sessionActionPipeCreator.createPipe(UpdateVideoProcessStatusCommand.class, Schedulers
+            .io());
+      performUpdateVideoStatusPipe = sessionActionPipeCreator.createPipe(PerformUpdateVideoStatusCommand.class, Schedulers
+            .io());
+      launchUpdatingVideoProcessingPipe = sessionActionPipeCreator.createPipe(LaunchUpdatingVideoProcessingCommand.class, Schedulers
+            .io());
+      feedItemsVideoProcessingPipe = sessionActionPipeCreator.createPipe(FeedItemsVideoProcessingStatusCommand.class, Schedulers
+            .io());
    }
 
    public ActionPipe<UpdateVideoProcessStatusCommand> updateVideoProcessStatusPipe() {

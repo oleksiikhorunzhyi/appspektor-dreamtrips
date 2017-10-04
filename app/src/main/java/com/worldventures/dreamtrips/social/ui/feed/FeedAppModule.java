@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteracto
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedEntityHolderDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.AccountTimelineStorageDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.BaseFeedStorageDelegate;
@@ -67,11 +68,12 @@ public class FeedAppModule {
 
    @Provides
    @Singleton
-   HashtagFeedStorageDelegate provideHashtagFeedStorageDelegate(HashtagFeedStorageInteractor hashtagFeedStorageInteractor, FeedInteractor feedInteractor,
+   HashtagFeedStorageDelegate provideHashtagFeedStorageDelegate(HashtagInteractor hashtagInteractor,
+         HashtagFeedStorageInteractor hashtagFeedStorageInteractor, FeedInteractor feedInteractor,
          PostsInteractor postsInteractor, TripsInteractor tripsInteractor, TripImagesInteractor tripImagesInteractor,
          BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
-      return new HashtagFeedStorageDelegate(hashtagFeedStorageInteractor, feedInteractor, postsInteractor, tripsInteractor,
-            tripImagesInteractor, bucketInteractor, friendsInteractor, commentsInteractor);
+      return new HashtagFeedStorageDelegate(hashtagInteractor, hashtagFeedStorageInteractor, feedInteractor, postsInteractor,
+            tripsInteractor, tripImagesInteractor, bucketInteractor, friendsInteractor, commentsInteractor);
    }
 
    @Provides

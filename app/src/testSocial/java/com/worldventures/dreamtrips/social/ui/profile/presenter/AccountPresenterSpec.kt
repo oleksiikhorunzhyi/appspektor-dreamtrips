@@ -62,6 +62,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestBody()) {
                   command.result = emptyList()
                   whenever(accountTimelineStorageDelegate.observeStorageCommand()).thenReturn(Observable.just(command))
 
+                  presenter.feedItems = ArrayList()
                   presenter.onViewTaken()
 
                   verify(presenter).subscribeNotificationsBadgeUpdates()

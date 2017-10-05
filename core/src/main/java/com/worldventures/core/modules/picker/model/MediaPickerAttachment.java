@@ -1,9 +1,8 @@
 package com.worldventures.core.modules.picker.model;
 
-
-import android.annotation.Nullable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;

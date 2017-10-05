@@ -79,7 +79,7 @@ public class JanetNxtModule {
 
    @Provides
    @Named(JANET_NXT)
-   okhttp3.Interceptor provideOkHttp3Interceptor() {
+   Interceptor provideOkHttp3Interceptor() {
       HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
       interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
       return interceptor;

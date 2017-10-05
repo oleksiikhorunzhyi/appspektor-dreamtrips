@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.core.janet;
 
 import android.content.Context;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.janet.TimberServiceWrapper;
@@ -33,6 +30,11 @@ import dagger.Provides;
 import io.techery.janet.ActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.http.HttpClient;
+import io.techery.janet.okhttp3.OkClient;
+import okhttp3.Interceptor;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 @Module(
       includes = {
@@ -108,14 +110,14 @@ public class JanetModule {
    @Named(JANET_QUALIFIER)
    @Provides
    OkHttpClient provideJanetOkHttpClient(CookieManager cookieManager, @Named(JANET_QUALIFIER) Interceptor interceptor) {
-      OkHttpClient okHttpClient = new OkHttpClient();
-      okHttpClient.setCookieHandler(cookieManager);
-      okHttpClient.interceptors().add(interceptor);
+      OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
+      okHttpClientBuilder.cookieJar(new JavaNetCookieJar(cookieManager));
+      okHttpClientBuilder.interceptors().add(interceptor);
       //Currently `api/{uid}/likes` (10k+ms)
-      okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      return okHttpClient;
+      okHttpClientBuilder.connectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      okHttpClientBuilder.readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      okHttpClientBuilder.writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      return okHttpClientBuilder.build();
    }
 
    @Named(JANET_QUALIFIER)
@@ -129,6 +131,6 @@ public class JanetModule {
    @Singleton
    @Provides
    HttpClient provideJanetHttpClient(@Named(JANET_QUALIFIER) OkHttpClient okHttpClient) {
-      return new io.techery.janet.okhttp.OkClient(okHttpClient);
+      return new OkClient(okHttpClient);
    }
 }

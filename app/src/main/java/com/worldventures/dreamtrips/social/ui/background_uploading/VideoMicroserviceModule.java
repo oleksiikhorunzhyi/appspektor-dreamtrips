@@ -2,9 +2,6 @@ package com.worldventures.dreamtrips.social.ui.background_uploading;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.service.ReLoginInteractor;
 import com.worldventures.core.utils.AppVersionNameBuilder;
@@ -22,8 +19,11 @@ import dagger.Provides;
 import io.techery.janet.Janet;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
-import io.techery.janet.okhttp.OkClient;
+import io.techery.janet.okhttp3.OkClient;
 import io.techery.mappery.MapperyContext;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import rx.Observable;
 
 @Module(
@@ -58,12 +58,12 @@ public class VideoMicroserviceModule {
    @Named(JANET_QUALIFIER)
    @Provides
    OkHttpClient provideJanetOkHttpClient(@Named(JANET_QUALIFIER) Interceptor interceptor) {
-      OkHttpClient okHttpClient = new OkHttpClient();
-      if (BuildConfig.DEBUG) okHttpClient.interceptors().add(interceptor);
-      okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      return okHttpClient;
+      OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
+      if (BuildConfig.DEBUG) okHttpClientBuilder.interceptors().add(interceptor);
+      okHttpClientBuilder.connectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      okHttpClientBuilder.readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      okHttpClientBuilder.writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
+      return okHttpClientBuilder.build();
    }
 
    @Named(JANET_QUALIFIER)

@@ -20,6 +20,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Provides.Type;
 import io.techery.janet.ActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.gson.GsonConverter;
@@ -62,9 +63,9 @@ public class JanetUploaderyModule {
       return builder.build();
    }
 
-   @Provides
+   @Provides(type = Type.SET)
    @Named(JANET_UPLOADERY)
-   HttpLoggingInterceptor provideOkHttp3Interceptor() {
+   Interceptor provideOkHttp3Interceptor() {
       HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
       interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
       return interceptor;

@@ -14,9 +14,9 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
-import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
@@ -208,7 +208,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
                   .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
-                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> getPresenter().back()))
+                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> {}))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), cmd -> getPresenter().onUserDataConfirmed()))
                   .build()
       );

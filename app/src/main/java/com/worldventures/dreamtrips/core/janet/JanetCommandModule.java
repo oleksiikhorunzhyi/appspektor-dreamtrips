@@ -47,7 +47,6 @@ import dagger.Module;
       UpdateUserCommand.class,
       UnsubscribeFromPushCommand.class,
       LogoutCommand.class,
-      GetFlagsCommand.class
 
 },
         complete = false, library = true)

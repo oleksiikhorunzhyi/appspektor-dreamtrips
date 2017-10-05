@@ -145,6 +145,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    void loadNext() {
+      loading = true;
       tripImagesInteractor.baseTripImagesCommandActionPipe()
             .send(tripImagesCommandFactory.provideLoadMoreCommand(tripImagesArgs, currentItems));
    }

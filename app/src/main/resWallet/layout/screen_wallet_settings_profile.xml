@@ -205,7 +205,7 @@
                   style="@style/WalletTheme.ProfileField"
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
-                  android:layout_marginEnd="8dp"
+                  android:layout_marginEnd="0dp"
                   android:drawableEnd="@drawable/ic_wallet_vector_profile_lock"
                   android:enabled="false"
                   android:focusable="false"
@@ -234,13 +234,14 @@
                   app:profile="@{profile}"
                   />
 
-            <!--hide suffix picker-->
+            <!--TODO: disable suffix functionality-->
+            <!--android:text="@={profile.suffix}"-->
             <TextView
                   android:id="@+id/tv_suffix"
                   android:layout_width="0dp"
                   android:layout_height="0dp"
                   android:layout_marginBottom="0dp"
-                  android:layout_marginStart="8dp"
+                  android:layout_marginStart="16dp"
                   android:layout_marginTop="0dp"
                   android:background="@drawable/wallet_edit_text_background_selector"
                   android:drawableEnd="@drawable/ic_wallet_vector_profile_lock"
@@ -248,7 +249,6 @@
                   android:focusable="false"
                   android:gravity="center_vertical"
                   android:hint="@string/wallet_edit_profile_enter_suffix_hint"
-                  android:text="@={profile.suffix}"
                   android:textColorHint="#797979"
                   android:textSize="16sp"
                   android:visibility="gone"

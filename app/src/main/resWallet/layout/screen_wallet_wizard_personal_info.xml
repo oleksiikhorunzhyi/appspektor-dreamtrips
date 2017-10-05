@@ -16,17 +16,17 @@
 
       <variable
             name="onAvatarClick"
-            type="View.OnClickListener"
+            type="android.view.View.OnClickListener"
             />
 
       <variable
             name="onNextClick"
-            type="View.OnClickListener"
+            type="android.view.View.OnClickListener"
             />
 
       <variable
             name="onEditTextFocusChange"
-            type="View.OnFocusChangeListener"
+            type="android.view.View.OnFocusChangeListener"
             />
    </data>
 
@@ -200,7 +200,6 @@
                   style="@style/WalletTheme.ProfileField"
                   android:layout_width="0dp"
                   android:layout_height="wrap_content"
-                  android:layout_marginEnd="8dp"
                   android:layout_marginTop="@dimen/spacing_tiniest"
                   android:drawableEnd="@drawable/ic_wallet_vector_pencil"
                   android:hint="@string/wallet_card_settings_profile_lastname_hint"
@@ -243,19 +242,17 @@
                   tools:layout_editor_absoluteX="24dp"
                   />
 
-            <!--hide suffix picker-->
+            <!--TODO: disable suffix functionality-->
+            <!--android:text="@={profile.suffix}"-->
             <TextView
                   android:id="@+id/tv_suffix"
                   android:layout_width="0dp"
                   android:layout_height="0dp"
-                  android:layout_marginBottom="0dp"
-                  android:layout_marginStart="8dp"
-                  android:layout_marginTop="0dp"
+                  android:layout_marginStart="16dp"
                   android:background="@drawable/wallet_edit_text_background_selector"
                   android:drawableEnd="@drawable/ic_arrow_down_grey"
                   android:gravity="center_vertical"
                   android:hint="@string/wallet_edit_profile_enter_suffix_hint"
-                  android:text="@={profile.suffix}"
                   android:textColorHint="#797979"
                   android:textSize="16sp"
                   android:visibility="gone"

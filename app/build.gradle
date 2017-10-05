@@ -237,6 +237,7 @@ dependencies {
    applyDependencies(owner, deps.lang)
    applyDependencies(owner, deps.domain)
    applyDependencies(owner, coreDeps.di)
+   applyDependencies(owner, coreDeps.ui)
    applyDependencies(owner, deps.data)
    applyDependencies(owner, coreDeps.immutables)
    applyDependencies(owner, deps.networking)

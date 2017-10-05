@@ -48,9 +48,6 @@ ext {
    def mobileSdkVersion = '1.2.4'
    moduleDependencies.networking = [
          // client & converter
-         okhttpClient2            : [c: "com.squareup.okhttp:okhttp:$okhttp2Version"],
-         okhttpUrlConnection2     : [c: "com.squareup.okhttp:okhttp-urlconnection:$okhttp2Version"],
-         okhttpLoggingInterceptor2: [c: "com.squareup.okhttp:logging-interceptor:$okhttp2Version"],
          okhttpUrlConnection3     : [c: "com.squareup.okhttp3:okhttp-urlconnection:$okhttp3Version"],
          okhttpLoggingInterceptor3: [c: "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"],
 
@@ -267,7 +264,7 @@ ext {
          timber                   : [c: 'com.jakewharton.timber:timber:4.5.1'],
          collectionsQuery         : [c: 'com.innahema:collections-query:0.2.9'],
          multidex                 : [c: 'com.android.support:multidex:1.0.1'],
-         jetbrainsAnnotations     : [c: 'org.jetbrains:annotations:13.0'],
+         jetbrainsAnnotations     : [p: 'org.jetbrains:annotations:13.0'],
          gson                     : [c: 'com.google.code.gson:gson:2.7'],
 
          // oauth sdk

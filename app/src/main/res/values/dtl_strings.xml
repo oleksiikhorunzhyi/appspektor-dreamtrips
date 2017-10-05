@@ -71,7 +71,7 @@
    <string name="perks_terms">Terms &amp; Condition</string>
    <string name="perks_formatted">%1$d Perks</string>
    <string name="dtl_show_offers_only">Offers only</string>
-   <string name="dtl_show_transaction">Payment History</string>
+   <string name="dtl_show_transaction">Transactions</string>
    <string name="dtl_show_transaction_toolbar">Payment History</string>
    <string name="dtl_earn_points">Earn DreamTrips points</string>
    <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>

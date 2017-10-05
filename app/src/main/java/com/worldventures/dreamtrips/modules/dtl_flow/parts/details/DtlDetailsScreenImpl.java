@@ -383,7 +383,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
 
       if (earn != null) earn.setText(dtlTransaction != null ? thrstFlow(earn) : getTextNormalFlow(earn));
-      if (checkedIn != null) ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+      if (!isThrstTransaction){
+         if (checkedIn != null) ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+      }
    }
 
    private int getTextNormalFlow(Button earn) {

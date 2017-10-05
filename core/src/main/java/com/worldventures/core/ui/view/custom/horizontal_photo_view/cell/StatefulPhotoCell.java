@@ -32,6 +32,12 @@ public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends C
       setUpView();
    }
 
+   //TODO unobvious! it called via reflection in AdapterHelper
+   public StatefulPhotoCell(ViewGroup viewGroup) {
+      super(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_horizantal_photo_cell, viewGroup, false));
+      setUpView();
+   }
+
    private void setUpView() {
       itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
       ivPhoto = itemView.findViewById(R.id.imageViewPhoto);

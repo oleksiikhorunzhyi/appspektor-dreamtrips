@@ -14,10 +14,9 @@ import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorageModule;
 import com.worldventures.dreamtrips.wallet.domain.storage.action.PersistentDeviceStorage;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.logout.WalletLogoutActionModule;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
-import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperFull;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelperRelease;
 
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -78,9 +77,9 @@ public class SmartCardModule {
 
    @Singleton
    @Provides
-   WalletFeatureHelper featureHelper(@Named(JANET_WALLET) Janet janet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
-      //      return new WalletFeatureHelperRelease(janet, recordInteractor, wizardInteractor);
-      return new WalletFeatureHelperFull();
+   WalletFeatureHelper featureHelper(@Named(JANET_WALLET) Janet janet, RecordInteractor recordInteractor) {
+      return new WalletFeatureHelperRelease(janet, recordInteractor);
+      //return new WalletFeatureHelperFull();
    }
 
    @Provides

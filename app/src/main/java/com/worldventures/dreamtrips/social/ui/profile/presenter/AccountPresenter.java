@@ -79,6 +79,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
 
    @Override
    public void onViewTaken() {
+      super.onViewTaken();
       socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
       analyticsInteractor.analyticsActionPipe().send(new ViewMyProfileApptentiveAnalyticAction());
       subscribeNotificationsBadgeUpdates();

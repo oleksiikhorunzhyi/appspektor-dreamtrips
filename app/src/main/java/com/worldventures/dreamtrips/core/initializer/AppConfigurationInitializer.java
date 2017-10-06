@@ -5,10 +5,10 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 
-public class VersionCheckInitializer implements AppInitializer {
+public class AppConfigurationInitializer implements AppInitializer {
    private AppConfigurationInteractor appConfigurationInteractor;
 
-   public VersionCheckInitializer(AppConfigurationInteractor appConfigurationInteractor) {
+   public AppConfigurationInitializer(AppConfigurationInteractor appConfigurationInteractor) {
       this.appConfigurationInteractor = appConfigurationInteractor;
    }
 

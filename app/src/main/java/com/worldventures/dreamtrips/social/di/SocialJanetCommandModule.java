@@ -57,6 +57,8 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.SuggestedPhot
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.UnlikeEntityCommand;
+import com.worldventures.dreamtrips.social.ui.flags.command.FlagItemCommand;
+import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.AcceptAllFriendRequestsCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand;
@@ -85,6 +87,7 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBack
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CreatePhotoCreationItemCommand;
@@ -214,6 +217,8 @@ import dagger.Provides;
       GetUsersMediaCommand.class,
       DeleteVideoCommand.class,
       CheckVideoProcessingStatusCommand.class,
+      FlagItemCommand.class,
+      GetFlagsCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {
 

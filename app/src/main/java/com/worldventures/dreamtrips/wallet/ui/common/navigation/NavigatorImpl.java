@@ -110,6 +110,11 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
+   public void goBackWithoutHandler() {
+      routerLazy.get().popCurrentController();
+   }
+
+   @Override
    public void finish() {
       routerLazy.get().getActivity().finish();
    }
@@ -156,6 +161,11 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goCardList() {
       single(new CardListScreenImpl());
+   }
+
+   @Override
+   public void goSuccessProvisioningWithRevertAnimation() {
+      single(new PaymentSyncFinishScreenImpl(), new RevertHorizontalChangeHandler(), new RevertHorizontalChangeHandler());
    }
 
    @Override
@@ -234,13 +244,13 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goWizardUploadProfile() {
-      withoutLast(new WizardUploadProfileScreenImpl());
+   public void goWizardUploadProfile(ProvisioningMode provisioningMode) {
+      withoutLast(WizardUploadProfileScreenImpl.create(provisioningMode));
    }
 
    @Override
-   public void goWizardEditProfile() {
-      withoutLast(new WizardEditProfileScreenImpl());
+   public void goWizardEditProfile(ProvisioningMode provisioningMode) {
+      withoutLast(WizardEditProfileScreenImpl.create(provisioningMode));
    }
 
    @Override

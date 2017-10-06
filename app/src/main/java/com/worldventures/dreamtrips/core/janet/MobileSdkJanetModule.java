@@ -37,6 +37,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Provides.Type;
 import io.techery.janet.ActionService;
 import io.techery.janet.HttpActionService;
 import io.techery.janet.gson.GsonConverter;
@@ -64,7 +65,7 @@ public class MobileSdkJanetModule {
 
    private static final String LOGGING_TAG = "DT MobileSDK API";
 
-   @Provides(type = Provides.Type.SET)
+   @Provides(type = Type.SET)
    ActionService provideApiService(DreamtripsApiProvider dreamtripsApiProvider) {
       return dreamtripsApiProvider.createApiService();
    }
@@ -116,9 +117,9 @@ public class MobileSdkJanetModule {
       return new OkClient(okHttpClientBuilder.build());
    }
 
-   @Provides
+   @Provides(type = Type.SET)
    @Named(API_QUALIFIER)
-   HttpLoggingInterceptor provideLoggingInterceptor() {
+   Interceptor provideLoggingInterceptor() {
       HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(message -> Timber.tag(LOGGING_TAG).d(message));
       interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
       return interceptor;

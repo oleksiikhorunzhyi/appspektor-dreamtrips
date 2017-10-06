@@ -28,9 +28,11 @@ public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends C
    private CircleImageView circleView;
 
    public StatefulPhotoCell(View view) {
-      super(view);
+      super(LayoutInflater.from(view.getContext()).inflate(R.layout.item_horizantal_photo_cell, (ViewGroup)view, false));
+      setUpView();
    }
 
+   //TODO unobvious! it called via reflection in AdapterHelper
    public StatefulPhotoCell(ViewGroup viewGroup) {
       super(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_horizantal_photo_cell, viewGroup, false));
       setUpView();

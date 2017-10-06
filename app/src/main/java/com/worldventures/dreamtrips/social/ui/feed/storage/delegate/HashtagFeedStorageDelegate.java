@@ -13,21 +13,20 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFee
 import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 
 public class HashtagFeedStorageDelegate extends BaseFeedStorageDelegate<HashtagFeedStorageCommand> {
 
-   @Inject HashtagInteractor hashtagInteractor;
+   private HashtagInteractor hashtagInteractor;
 
    private String hashtag;
 
-   public HashtagFeedStorageDelegate(HashtagFeedStorageInteractor hashtagFeedStorageInteractor, FeedInteractor feedInteractor,
+   public HashtagFeedStorageDelegate(HashtagInteractor hashtagInteractor, HashtagFeedStorageInteractor hashtagFeedStorageInteractor, FeedInteractor feedInteractor,
          PostsInteractor postsInteractor, TripsInteractor tripsInteractor, TripImagesInteractor tripImagesInteractor,
          BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
       super(hashtagFeedStorageInteractor, feedInteractor, postsInteractor, tripsInteractor, tripImagesInteractor,
             bucketInteractor, friendsInteractor, commentsInteractor);
+      this.hashtagInteractor = hashtagInteractor;
    }
 
    @Override

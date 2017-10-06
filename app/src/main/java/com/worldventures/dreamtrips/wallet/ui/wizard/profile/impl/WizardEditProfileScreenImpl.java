@@ -14,11 +14,12 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
-import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
@@ -35,6 +36,8 @@ import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
 import com.worldventures.dreamtrips.wallet.util.SmartCardAvatarHelper;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 
 import javax.inject.Inject;
@@ -49,14 +52,29 @@ import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
 public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEditProfileScreen, WizardEditProfilePresenter> implements WizardEditProfileScreen {
 
    private static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
+   private static final String KEY_PROVISION_MODE = "WizardEditProfileScreen#PROVISION_MODE_KEY";
 
    @Inject WizardEditProfilePresenter presenter;
+
+   public static WizardEditProfileScreenImpl create(@NonNull ProvisioningMode provisioningMode) {
+      final Bundle args = new Bundle();
+      args.putSerializable(KEY_PROVISION_MODE, provisioningMode);
+      return new WizardEditProfileScreenImpl(args);
+   }
 
    private ScreenWalletWizardPersonalInfoBinding binding;
    private ProfileViewModel viewModel = new ProfileViewModel();
    private WalletCropImageService cropImageService;
    private WalletPhotoProposalDialog photoActionDialog;
    private WalletSuffixSelectingDialog suffixSelectingDialog;
+
+   public WizardEditProfileScreenImpl() {
+      super();
+   }
+
+   public WizardEditProfileScreenImpl(Bundle args) {
+      super(args);
+   }
 
    @Override
    protected void onFinishInflate(View view) {
@@ -190,7 +208,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
                   .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
-                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> getPresenter().back()))
+                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> {}))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), cmd -> getPresenter().onUserDataConfirmed()))
                   .build()
       );
@@ -234,5 +252,13 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
             .onNegative((dialog, which) -> dialog.cancel())
             .build()
             .show();
+   }
+
+   @Override
+   @Nullable
+   public ProvisioningMode getProvisionMode() {
+      return (!getArgs().isEmpty() && getArgs().containsKey(KEY_PROVISION_MODE))
+            ? (ProvisioningMode) getArgs().getSerializable(KEY_PROVISION_MODE)
+            : null;
    }
 }

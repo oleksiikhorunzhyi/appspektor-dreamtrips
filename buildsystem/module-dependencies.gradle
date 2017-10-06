@@ -48,19 +48,16 @@ ext {
    def mobileSdkVersion = '1.2.4'
    moduleDependencies.networking = [
          // client & converter
-         okhttpClient2            : [c: "com.squareup.okhttp:okhttp:$okhttp2Version"],
-         okhttpUrlConnection2     : [c: "com.squareup.okhttp:okhttp-urlconnection:$okhttp2Version"],
-         okhttpLoggingInterceptor2: [c: "com.squareup.okhttp:logging-interceptor:$okhttp2Version"],
          okhttpUrlConnection3     : [c: "com.squareup.okhttp3:okhttp-urlconnection:$okhttp3Version"],
          okhttpLoggingInterceptor3: [c: "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"],
-         gson                     : [c: 'com.google.code.gson:gson:2.7'],
+
          // util
          reactivenetwork          : [c: 'com.github.pwittchen:reactivenetwork:0.5.2'],
          // smack / xmpp
          smackAndroid             : [c: "org.igniterealtime.smack:smack-android-extensions:$smackVersion"],
          smackTcp                 : [c: "org.igniterealtime.smack:smack-tcp:$smackVersion"],
          // beacons
-         altBeacon                : [c: 'org.altbeacon:android-beacon-library:2.12'],
+         altBeacon                : [c: 'org.altbeacon:android-beacon-library:2.12.2'],
          slf4                     : [ct: 'com.github.bright:slf4android:0.1.3'],
          // API
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
@@ -68,7 +65,7 @@ ext {
    ]
    // smartcard
    moduleDependencies.smartcard = [
-         service: [c: 'io.techery.janet:smartcard:0.21.4-SNAPSHOT'],
+         service: [c: 'io.techery.janet:smartcard:0.21.6.1-SNAPSHOT'],
    ]
    // services
    def googleServicesVersion = '11.2.0'
@@ -109,7 +106,7 @@ ext {
          picasso       : [c: 'com.squareup.picasso:picasso:2.5.2'],
    ]
    // ui (views/layouts/widgets)
-   def googleLibrariesVersion = '26.0.2'
+   def googleLibrariesVersion = '26.1.0'
    moduleDependencies.ui = [
          googleAppcompat7      : [c: "com.android.support:appcompat-v7:${googleLibrariesVersion}"],
          googleDesign          : [c: "com.android.support:design:${googleLibrariesVersion}"],
@@ -145,8 +142,8 @@ ext {
          materialRangeBar      : [c: 'com.github.techery:material-range-bar:db6fec9fdd'],
          shortuctbadger        : [c: 'me.leolin:ShortcutBadger:1.1.3@aar'],
          circleindicator       : [c: 'me.relex:circleindicator:1.2.2@aar'],
-         jwPlayer              : [c: 'com.longtailvideo.jwplayer:jwplayer-core:2.7.0+15'],
-         jwPlayerCore          : [c: 'com.longtailvideo.jwplayer:jwplayer-common:2.7.0+15'],
+         jwPlayer              : [c: 'com.longtailvideo.jwplayer:jwplayer-core:2.7.6+24'],
+         jwPlayerCore          : [c: 'com.longtailvideo.jwplayer:jwplayer-common:2.7.6+24'],
    ]
    //
    def leakCanaryVersion = '1.3.1'
@@ -162,7 +159,6 @@ ext {
          leakcanary               : [c: "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"],
          leakcanaryNoOp           : [c: "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"],
          databindingcompiler      : [a: "com.android.databinding:compiler:${dataBindingCompilerVersion}"],
-         jetbrainsAnnotations     : [c: 'org.jetbrains:annotations:13.0'],
    ]
    // tests
    def spekVersion = '1.1.2'
@@ -254,13 +250,13 @@ ext {
          janetCommand             : [c: 'com.github.techery:janet-command:1.0.5'],
          // janet http
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
-         janetHttpClient          : [c: "com.github.techery.janet-http:client-okhttp:$janetHttpVersion"],
+         janetHttpClient          : [c: "com.github.techery.janet-http:client-okhttp3:$janetHttpVersion"],
          janetHttpConverter       : [c: 'com.github.techery.janet-converters:gson:1.1.1'],
 
          // API
          mobileSdkApi             : [c: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.19-SOCIAL-DEV-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.21-RELEASE-1.23-SNAPSHOT'],
    ]
    coreDependencies.util = [
          jodaTimeAndroidDebug     : [dc: "net.danlew:android.joda:$jodaTimeVersion"],
@@ -268,6 +264,8 @@ ext {
          timber                   : [c: 'com.jakewharton.timber:timber:4.5.1'],
          collectionsQuery         : [c: 'com.innahema:collections-query:0.2.9'],
          multidex                 : [c: 'com.android.support:multidex:1.0.1'],
+         jetbrainsAnnotations     : [p: 'org.jetbrains:annotations:13.0'],
+         gson                     : [c: 'com.google.code.gson:gson:2.7'],
 
          // oauth sdk
          facebook                 : [c: 'com.facebook.android:facebook-android-sdk:4.18.0'],
@@ -288,7 +286,7 @@ ext {
          daggerProguard   : [rap: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
    ]
 
-   moduleDependencies.provide = { bundle ->
+   provideDep = { bundle ->
       return bundle.entrySet().first().value
    }
 

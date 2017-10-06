@@ -21,9 +21,16 @@ android {
    }
 
    buildTypes {
+      debug {
+         minifyEnabled false
+      }
       release {
          minifyEnabled false
-         proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+         def proConfigs = file('proguard-rules').listFiles().collect { it }
+         proConfigs << getDefaultProguardFile('proguard-android.txt')
+         proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
+         proConfigs << file('dagger-proguard-keepnames.cfg')
+         setConsumerProguardFiles proConfigs
       }
    }
 
@@ -35,6 +42,16 @@ android {
 }
 
 def deps = project.ext.coreDependencies
+
+configurations.all {
+   resolutionStrategy {
+      force provideDep(deps.rx.rxjava)
+      force provideDep(deps.domain.mappery)
+      force provideDep(deps.util.jetbrainsAnnotations)
+   }
+   exclude group: 'org.jetbrains', module: 'annotations-java5'
+   exclude group: 'com.intellij', module: 'annotations'
+}
 
 repositories {
    deps.repos.each { it.call(owner) }

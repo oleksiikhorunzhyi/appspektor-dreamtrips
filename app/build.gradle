@@ -218,11 +218,13 @@ def coreDeps = project.ext.coreDependencies
 configurations.all {
    resolutionStrategy {
       cacheChangingModulesFor 0, 'seconds'
-      force deps.provide(coreDeps.rx.rxjava)
-      force deps.provide(coreDeps.domain.mappery)
+      force provideDep(coreDeps.rx.rxjava)
+      force provideDep(coreDeps.domain.mappery)
+      force provideDep(coreDeps.util.jetbrainsAnnotations)
    }
    exclude group: 'xpp3', module: 'xpp3'
    exclude group: 'org.jetbrains', module: 'annotations-java5'
+   exclude group: 'com.intellij', module: 'annotations'
 }
 
 repositories {
@@ -237,6 +239,7 @@ dependencies {
    applyDependencies(owner, deps.lang)
    applyDependencies(owner, deps.domain)
    applyDependencies(owner, coreDeps.di)
+   applyDependencies(owner, coreDeps.ui)
    applyDependencies(owner, deps.data)
    applyDependencies(owner, coreDeps.immutables)
    applyDependencies(owner, deps.networking)
@@ -245,6 +248,7 @@ dependencies {
    applyDependencies(owner, deps.media)
    applyDependencies(owner, deps.presentation)
    applyDependencies(owner, deps.ui)
+   applyDependencies(owner, coreDeps.util)
    applyDependencies(owner, deps.util.findAll {
       ![
             deps.util.leakcanary,
@@ -253,7 +257,7 @@ dependencies {
    })
    applyDependencies(owner, deps.test)
 
-   devCompile deps.provide(deps.util.leakcanary)
-   devpremarshmallowCompile deps.provide(deps.util.leakcanary)
-   externalCompile deps.provide(deps.util.leakcanaryNoOp)
+   devCompile                 provideDep(deps.util.leakcanary)
+   devpremarshmallowCompile   provideDep(deps.util.leakcanary)
+   externalCompile            provideDep(deps.util.leakcanaryNoOp)
 }

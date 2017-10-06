@@ -15,10 +15,12 @@ public abstract class PairDelegate {
 
    protected final Navigator navigator;
    protected final SmartCardInteractor smartCardInteractor;
+   protected final ProvisioningMode provisioningMode;
 
-   private PairDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
+   private PairDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor, ProvisioningMode provisioningMode) {
       this.navigator = navigator;
       this.smartCardInteractor = smartCardInteractor;
+      this.provisioningMode = provisioningMode;
    }
 
    public abstract void prepareView(PairView view);
@@ -27,16 +29,16 @@ public abstract class PairDelegate {
 
    public static PairDelegate create(ProvisioningMode mode, Navigator navigator, SmartCardInteractor smartCardInteractor) {
       if (mode == ProvisioningMode.SETUP_NEW_DEVICE) {
-         return new NewDeviceDelegate(navigator, smartCardInteractor);
+         return new NewDeviceDelegate(navigator, smartCardInteractor, mode);
       } else { // ProvisioningMode.STANDARD or ProvisioningMode.SETUP_NEW_CARD
-         return new SetupDelegate(navigator, smartCardInteractor);
+         return new SetupDelegate(navigator, smartCardInteractor, mode);
       }
    }
 
    private static class NewDeviceDelegate extends PairDelegate {
 
-      private NewDeviceDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
-         super(navigator, smartCardInteractor);
+      private NewDeviceDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor, ProvisioningMode provisioningMode) {
+         super(navigator, smartCardInteractor, provisioningMode);
       }
 
       @Override
@@ -52,8 +54,8 @@ public abstract class PairDelegate {
 
    private static class SetupDelegate extends PairDelegate {
 
-      private SetupDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor) {
-         super(navigator, smartCardInteractor);
+      private SetupDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor, ProvisioningMode provisioningMode) {
+         super(navigator, smartCardInteractor, provisioningMode);
       }
 
       @Override
@@ -74,9 +76,9 @@ public abstract class PairDelegate {
 
       private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
          if (smartCardUser != null) {
-            navigator.goWizardUploadProfile();
+            navigator.goWizardUploadProfile(provisioningMode);
          } else {
-            navigator.goWizardEditProfile();
+            navigator.goWizardEditProfile(provisioningMode);
          }
       }
    }

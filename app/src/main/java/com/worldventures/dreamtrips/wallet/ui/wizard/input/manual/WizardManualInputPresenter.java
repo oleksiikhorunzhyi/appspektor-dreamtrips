@@ -9,4 +9,6 @@ public interface WizardManualInputPresenter extends WalletPresenter<WizardManual
    void checkBarcode(String barcode);
 
    void retry(String barcode);
+
+   void retryAssignedToCurrentDevice();
 }

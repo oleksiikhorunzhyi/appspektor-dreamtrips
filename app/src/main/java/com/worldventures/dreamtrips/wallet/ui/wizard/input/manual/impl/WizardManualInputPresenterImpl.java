@@ -52,4 +52,9 @@ public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardMa
    public void retry(String barcode) {
       inputBarcodeDelegate.retry(barcode);
    }
+
+   @Override
+   public void retryAssignedToCurrentDevice() {
+      inputBarcodeDelegate.retryAssignedToCurrentDevice();
+   }
 }

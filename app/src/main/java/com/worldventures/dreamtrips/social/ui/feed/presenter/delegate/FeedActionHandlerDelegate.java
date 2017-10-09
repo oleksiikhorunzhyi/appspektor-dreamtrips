@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.LikeAction;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.LikeAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteBucketItemCommand;

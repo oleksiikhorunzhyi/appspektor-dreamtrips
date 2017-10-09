@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
 import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;

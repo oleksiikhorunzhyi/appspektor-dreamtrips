@@ -1,5 +1,11 @@
-package com.worldventures.dreamtrips.modules.common.list_storage.operation;
+package com.worldventures.dreamtrips.social.ui.feed.storage.util;
 
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddToBeginningStorageOperation;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddToStorageOperation;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.DeleteItemsStorageOperation;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.RefreshStorageOperation;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.UpdateItemsStorageOperation;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 
 import java.util.List;

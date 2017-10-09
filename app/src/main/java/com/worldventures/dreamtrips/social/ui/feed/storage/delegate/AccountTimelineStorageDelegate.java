@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
-import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
+import com.worldventures.dreamtrips.social.ui.feed.storage.util.ListStorageOperationFactory;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;

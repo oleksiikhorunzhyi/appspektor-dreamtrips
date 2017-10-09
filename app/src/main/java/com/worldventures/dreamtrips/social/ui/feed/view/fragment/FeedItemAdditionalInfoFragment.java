@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;

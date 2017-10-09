@@ -22,7 +22,7 @@ import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedViewInjector;

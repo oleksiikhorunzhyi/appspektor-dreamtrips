@@ -1,4 +1,4 @@
-package com.techery.spares.utils;
+package com.worldventures.dreamtrips.social.util;
 
 import rx.Observable;
 

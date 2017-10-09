@@ -1,4 +1,4 @@
-package com.techery.spares.utils;
+package com.worldventures.dreamtrips.social.util;
 
 import com.messenger.storage.dao.UsersDAO;
 

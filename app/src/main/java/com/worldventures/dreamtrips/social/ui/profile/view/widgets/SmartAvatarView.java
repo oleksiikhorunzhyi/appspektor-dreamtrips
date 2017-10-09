@@ -1,10 +1,10 @@
-package com.worldventures.dreamtrips.modules.common.view.custom;
+package com.worldventures.dreamtrips.social.ui.profile.view.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
 
 import com.messenger.ui.widget.AvatarView;
-import com.techery.spares.utils.UserStatusAdapter;
+import com.worldventures.dreamtrips.social.util.UserStatusAdapter;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 
@@ -35,9 +35,7 @@ public class SmartAvatarView extends AvatarView {
             .first()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(isOnline -> {
-               setOnline(isOnline);
-            });
+            .subscribe(this::setOnline);
    }
 
    @Override

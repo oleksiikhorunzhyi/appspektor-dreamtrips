@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.MutualFriendsBundle;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserActionDelegate;
 import com.worldventures.dreamtrips.social.ui.friends.view.util.MutualFriendsUtil;

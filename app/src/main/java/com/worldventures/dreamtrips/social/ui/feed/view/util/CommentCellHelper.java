@@ -11,7 +11,7 @@ import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
 import com.worldventures.dreamtrips.modules.common.utils.UserUtils;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 
 import butterknife.ButterKnife;

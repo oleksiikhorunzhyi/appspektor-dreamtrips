@@ -1,9 +1,7 @@
 package com.techery.spares.module;
 
 import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
-import com.techery.spares.utils.delegate.EntityDeletedEventDelegate;
 import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
@@ -42,12 +40,6 @@ public class EventDelegateModule {
 
    @Provides
    @Singleton
-   NotificationCountEventDelegate provideNotificationCountDelegate() {
-      return new NotificationCountEventDelegate();
-   }
-
-   @Provides
-   @Singleton
    TripFilterEventDelegate provideTripFilterEventDelegate(SnappyRepository snappyRepository) {
       return new TripFilterEventDelegate(snappyRepository);
    }
@@ -74,12 +66,6 @@ public class EventDelegateModule {
    @Singleton
    ReplayEventDelegatesWiper provideReplayEventDelegatesWiper() {
       return new ReplayEventDelegatesWiper();
-   }
-
-   @Provides
-   @Singleton
-   EntityDeletedEventDelegate provideEntityDeletedEventDelegate(ReplayEventDelegatesWiper wiper) {
-      return new EntityDeletedEventDelegate(wiper);
    }
 
    @Provides

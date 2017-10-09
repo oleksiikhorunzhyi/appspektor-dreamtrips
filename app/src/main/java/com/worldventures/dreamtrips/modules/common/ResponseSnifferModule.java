@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.modules.common;
 
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.janet.api_lib.ResponseListener;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.HttpResponseSnifferDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.api.response.HeaderChangedInformerListener;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.api.response.RequestCountResponseListener;
 
 import java.util.Set;
@@ -19,13 +17,8 @@ import io.techery.janet.Janet;
 public class ResponseSnifferModule {
 
    @Provides(type = Provides.Type.SET)
-   ResponseListener provideNotificationCountListener(SnappyRepository db) {
-      return new RequestCountResponseListener(db);
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ResponseListener provideHeaderChangedInformerResponseListener(NotificationCountEventDelegate notificationCountEventDelegate) {
-      return new HeaderChangedInformerListener(notificationCountEventDelegate);
+   ResponseListener provideNotificationCountListener(UserNotificationInteractor userNotificationInteractor) {
+      return new RequestCountResponseListener(userNotificationInteractor);
    }
 
    @Singleton

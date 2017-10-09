@@ -32,11 +32,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.profile.service.analytics.TapMyProfileAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.ProfileCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.view.widgets.ExpandableLayout;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

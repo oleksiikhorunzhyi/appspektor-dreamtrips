@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.profile.presenter;
 import android.content.Intent;
 
 import com.raizlabs.android.dbflow.annotation.NotNull;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.modules.auth.api.command.LogoutCommand;
@@ -16,8 +15,8 @@ import com.worldventures.core.service.DownloadFileInteractor;
 import com.worldventures.core.service.command.DownloadFileCommand;
 import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
@@ -61,8 +60,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    @Inject SocialCropImageManager socialCropImageManager;
    @Inject AuthInteractor authInteractor;
    @Inject ProfileInteractor profileInteractor;
-   @Inject NotificationCountEventDelegate notificationCountEventDelegate;
-   @Inject SnappyRepository db;
+   @Inject UserNotificationInteractor userNotificationInteractor;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject AccountTimelineStorageDelegate accountTimelineStorageDelegate;
    @Inject CachedModelHelper cachedModelHelper;
@@ -109,9 +107,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    }
 
    void subscribeNotificationsBadgeUpdates() {
-      notificationCountEventDelegate.getObservable()
+      userNotificationInteractor.notificationCountChangedPipe()
+            .observeSuccess()
             .compose(bindViewToMainComposer())
-            .subscribe(o -> view.updateBadgeCount(db.getFriendsRequestsCount()));
+            .subscribe(command -> view.updateBadgeCount(command.getFriendNotificationCount()));
    }
 
    void subscribeToAvatarUpdates() {

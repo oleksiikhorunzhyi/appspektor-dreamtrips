@@ -4,13 +4,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import com.messenger.util.UnreadConversationObservable;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 
 import java.util.List;
 
@@ -24,24 +23,21 @@ import rx.subjects.PublishSubject;
 public class NavigationDrawerPresenter {
 
    private final SessionHolder appSessionHolder;
-   private final SnappyRepository db;
    private final UnreadConversationObservable unreadObservable;
    private final AuthInteractor authInteractor;
-   private final NotificationCountEventDelegate notificationCountEventDelegate;
+   private final UserNotificationInteractor userNotificationInteractor;
 
    private NavigationDrawerView navigationDrawerView;
    private DrawerLayout drawerLayout;
 
    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
 
-   public NavigationDrawerPresenter(SessionHolder appSessionHolder, SnappyRepository db,
-         UnreadConversationObservable unreadObservable, AuthInteractor authInteractor,
-         NotificationCountEventDelegate notificationCountEventDelegate) {
+   public NavigationDrawerPresenter(SessionHolder appSessionHolder, UnreadConversationObservable unreadObservable,
+         AuthInteractor authInteractor, UserNotificationInteractor userNotificationInteractor) {
       this.appSessionHolder = appSessionHolder;
-      this.db = db;
       this.unreadObservable = unreadObservable;
       this.authInteractor = authInteractor;
-      this.notificationCountEventDelegate = notificationCountEventDelegate;
+      this.userNotificationInteractor = userNotificationInteractor;
    }
 
    public void attachView(NavigationDrawerView navigationDrawerView, List<ComponentDescription> components) {
@@ -56,10 +52,11 @@ public class NavigationDrawerPresenter {
       navigationDrawerView.setData(components);
       navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
 
-      notificationCountEventDelegate.getObservable()
+      userNotificationInteractor.notificationCountChangedPipe()
+            .observeSuccess()
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
-            .subscribe(event -> updateNotificationsCount());
+            .subscribe(command -> navigationDrawerView.setNotificationCount(command.getExclusiveNotificationCount()));
 
       unreadObservable.getObservable()
             .compose(bindView())
@@ -77,10 +74,6 @@ public class NavigationDrawerPresenter {
       onItemSelected = null;
       onLogout = null;
       destroyViewStopper.onNext(null);
-   }
-
-   public void updateNotificationsCount() {
-      navigationDrawerView.setNotificationCount(db.getExclusiveNotificationsCount());
    }
 
    public void setCurrentComponent(ComponentDescription componentDescription) {

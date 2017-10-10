@@ -18,7 +18,7 @@
    <string name="member_images_new_items_plus">%1$s+ Nya objekt</string>
    <string name="book_it">Boka den!</string>
    <string name="reload_trip_details">Läs in resedetaljer igen</string>
-   <string name="filter_region_header">REGION</string>
+   <string name="filter_region_header">OMRÅDE</string>
    <string name="filter_duration_header">VARAKTIGHET (NÄTTER)</string>
    <string name="filter_price_header">PRIS ($)</string>
    <string name="filter_select_all">VÄLJ ALLA</string>

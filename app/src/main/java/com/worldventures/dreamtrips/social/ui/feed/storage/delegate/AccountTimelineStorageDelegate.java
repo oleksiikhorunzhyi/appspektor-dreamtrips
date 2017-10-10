@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddItemsStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
-import com.worldventures.dreamtrips.social.ui.feed.storage.util.ListStorageOperationFactory;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.RefreshStorageOperation;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -32,12 +33,12 @@ public class AccountTimelineStorageDelegate extends BaseFeedStorageDelegate<Acco
             feedInteractor.getRefreshAccountTimelinePipe()
                   .observeSuccess()
                   .map(Command::getResult)
-                  .map(ListStorageOperationFactory::refreshItemsOperation),
+                  .map(RefreshStorageOperation::new),
 
             feedInteractor.getLoadNextAccountTimelinePipe()
                   .observeSuccess()
                   .map(Command::getResult)
-                  .map(ListStorageOperationFactory::addItemsOperation));
+                  .map(AddItemsStorageOperation::new));
    }
 
    @Override

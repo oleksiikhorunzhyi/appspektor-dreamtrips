@@ -34,8 +34,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.ValidateReviewUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 
 import java.util.List;
 
@@ -57,6 +59,7 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
    @InjectView(R.id.merchantOpenClosedStatus) TextView merchantOperationalStatus;
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
+   @InjectView(R.id.view_pay_in_app) TextView payInApp;
    @InjectView(R.id.merchantDistance) TextView merchantDistance;
    @InjectView(R.id.offers_container) View offersContainer;
    @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
@@ -155,6 +158,14 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
 
       ViewUtils.setViewVisibility(this.perks, perkVisibility);
       ViewUtils.setViewVisibility(this.points, pointVisibility);
+
+      if (getModelObject().useThrstFlow()) {
+         ViewUtils.setViewVisibility(this.payInApp, View.VISIBLE);
+         ViewUtils.setViewVisibility(this.points, View.GONE);
+      } else {
+         ViewUtils.setViewVisibility(this.payInApp, View.GONE);
+         ViewUtils.setViewVisibility(this.points, View.VISIBLE);
+      }
 
       if (perkVisibility == View.VISIBLE) this.perks.setText(itemView.getContext()
             .getString(R.string.perks_formatted, perks));

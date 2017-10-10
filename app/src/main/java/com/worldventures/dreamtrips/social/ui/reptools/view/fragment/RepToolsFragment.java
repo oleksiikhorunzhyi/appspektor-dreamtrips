@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;

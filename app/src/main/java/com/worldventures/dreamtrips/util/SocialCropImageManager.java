@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.delegate;
+package com.worldventures.dreamtrips.util;
 
 import android.app.Activity;
 import android.content.Context;

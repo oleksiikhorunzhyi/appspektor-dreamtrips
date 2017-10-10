@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;

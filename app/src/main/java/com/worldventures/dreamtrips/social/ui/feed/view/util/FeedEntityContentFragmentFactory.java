@@ -6,7 +6,7 @@ import android.util.Pair;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsRouteCreator;
+import com.worldventures.dreamtrips.social.util.navigation.BucketDetailsRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;

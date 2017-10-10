@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.module;
 
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsRouteCreator;
-import com.worldventures.dreamtrips.core.navigation.creator.ProfileRouteCreator;
+import com.worldventures.dreamtrips.social.util.navigation.BucketDetailsRouteCreator;
+import com.worldventures.dreamtrips.social.util.navigation.ProfileRouteCreator;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlTransactionRouteCreator;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;

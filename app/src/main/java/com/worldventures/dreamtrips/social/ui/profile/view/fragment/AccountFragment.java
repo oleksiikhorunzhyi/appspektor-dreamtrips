@@ -13,7 +13,7 @@ import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.util.SocialCropImageManager;
 import com.worldventures.dreamtrips.social.ui.activity.FeedActivity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;

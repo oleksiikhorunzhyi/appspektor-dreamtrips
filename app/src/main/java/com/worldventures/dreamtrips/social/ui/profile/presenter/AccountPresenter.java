@@ -15,7 +15,6 @@ import com.worldventures.core.service.DownloadFileInteractor;
 import com.worldventures.core.service.command.DownloadFileCommand;
 import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
@@ -38,6 +37,7 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvat
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.util.Action;
+import com.worldventures.dreamtrips.util.SocialCropImageManager;
 
 import java.io.File;
 import java.util.Date;

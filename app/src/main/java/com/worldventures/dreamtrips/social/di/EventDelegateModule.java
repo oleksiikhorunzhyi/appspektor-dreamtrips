@@ -1,10 +1,10 @@
-package com.techery.spares.module;
+package com.worldventures.dreamtrips.social.di;
 
-import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
-import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
-import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
-import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
-import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate;
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;

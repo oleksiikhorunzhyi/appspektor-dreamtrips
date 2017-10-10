@@ -28,7 +28,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.infopages.StaticPageProvider;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;

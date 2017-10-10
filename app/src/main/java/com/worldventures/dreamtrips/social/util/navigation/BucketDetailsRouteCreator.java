@@ -1,9 +1,10 @@
-package com.worldventures.dreamtrips.core.navigation.creator;
+package com.worldventures.dreamtrips.social.util.navigation;
 
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 public class BucketDetailsRouteCreator implements RouteCreator<Integer> {
 

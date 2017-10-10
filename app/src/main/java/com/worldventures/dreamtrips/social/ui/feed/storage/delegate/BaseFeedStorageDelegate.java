@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddToBeginningIfNotExistsStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
-import com.worldventures.dreamtrips.social.ui.feed.storage.util.ListStorageOperationFactory;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
@@ -70,7 +70,7 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
       return Observable.merge(Arrays.asList(
             postsInteractor.postCreatedPipe().observeSuccess()
                   .map(PostCreatedCommand::getFeedItem)
-                  .map(ListStorageOperationFactory::addItemToBeginningOperation),
+                  .map(AddToBeginningIfNotExistsStorageOperation::new),
 
             tripImagesInteractor.deletePhotoPipe().observeSuccess()
                   .map(DeletePhotoCommand::getResult)

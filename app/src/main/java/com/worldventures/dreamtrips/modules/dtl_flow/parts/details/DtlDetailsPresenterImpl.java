@@ -105,7 +105,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    protected void validateTablet() {
       //TODO Check and resolve this
-      if(ViewUtils.isTablet(getContext())){
+      if(getView().isTablet()){
          getView().hideReviewViewsOnTablets();
       }
    }

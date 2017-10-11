@@ -574,4 +574,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       return true;
    }
 
+   @Override
+   public boolean isTablet() {
+      return ViewUtils.isTablet(getContext());
+   }
 }

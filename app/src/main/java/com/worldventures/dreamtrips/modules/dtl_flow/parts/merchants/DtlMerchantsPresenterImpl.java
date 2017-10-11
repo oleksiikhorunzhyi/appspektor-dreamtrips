@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;

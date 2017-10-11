@@ -6,7 +6,6 @@ import android.content.Context;
 
 import com.messenger.di.MessengerModule;
 import com.messenger.util.UnreadConversationObservable;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.component.ComponentsConfig;
 import com.worldventures.core.component.RootComponentsProvider;
@@ -20,7 +19,6 @@ import com.worldventures.core.ui.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.router.RouterImpl;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -31,6 +29,7 @@ import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerActivityModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 
 import java.util.ArrayList;
@@ -98,10 +97,9 @@ public class LegacyActivityModule {
 
    @Provides
    @Singleton
-   NavigationDrawerPresenter provideNavDrawerPresenter(SessionHolder appSessionHolder, SnappyRepository db,
-         UnreadConversationObservable unreadObservable, AuthInteractor authInteractor,
-         NotificationCountEventDelegate notificationCountEventDelegate) {
-      return new NavigationDrawerPresenter(appSessionHolder, db, unreadObservable, authInteractor, notificationCountEventDelegate);
+   NavigationDrawerPresenter provideNavDrawerPresenter(SessionHolder sessionHolder, UnreadConversationObservable unreadObservable,
+         AuthInteractor authInteractor, UserNotificationInteractor userNotificationInteractor) {
+      return new NavigationDrawerPresenter(sessionHolder, unreadObservable, authInteractor, userNotificationInteractor);
    }
 
    @Provides

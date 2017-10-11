@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.gcm.service;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.UnsubscribeFromPushCommand;
+import com.worldventures.dreamtrips.modules.gcm.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotificationsCommand;
 
 import io.techery.janet.ActionPipe;

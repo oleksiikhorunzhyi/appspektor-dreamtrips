@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.linearlistview.LinearListView;
-import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.ViewUtils;

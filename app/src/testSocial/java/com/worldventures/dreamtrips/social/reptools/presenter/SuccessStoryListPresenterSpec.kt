@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.reptools.presenter
 
 import com.nhaarman.mockito_kotlin.*
-import com.techery.spares.utils.delegate.StoryLikedEventDelegate
+import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory

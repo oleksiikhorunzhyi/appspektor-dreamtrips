@@ -145,4 +145,5 @@ public class SocialInteractorModule {
    FlagsInteractor provideFlagsProvider(SessionActionPipeCreator sessionActionPipeCreator) {
       return new FlagsInteractor(sessionActionPipeCreator);
    }
+
 }

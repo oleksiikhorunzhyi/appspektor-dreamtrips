@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.reptools.presenter
 
 import com.nhaarman.mockito_kotlin.*
-import com.techery.spares.utils.delegate.SearchFocusChangedDelegate
+import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.core.repository.SnappyRepository

@@ -115,46 +115,6 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    }
 
    ///////////////////////////////////////////////////////////////////////////
-   // Notifications counters
-   ///////////////////////////////////////////////////////////////////////////
-
-   /**
-    * All notifications
-    */
-   @Override
-   public void saveBadgeNotificationsCount(int notificationsCount) {
-      act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
-   }
-
-   /**
-    * All notifications
-    */
-   @Override
-   public int getBadgeNotificationsCount() {
-      return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
-   }
-
-   @Override
-   public void saveNotificationsCount(int count) {
-      act(db -> db.putInt(EXCLUSIVE_NOTIFICATIONS_COUNT, count));
-   }
-
-   @Override
-   public void saveFriendRequestsCount(int count) {
-      act(db -> db.putInt(FRIEND_REQUEST_COUNT, count));
-   }
-
-   @Override
-   public int getExclusiveNotificationsCount() {
-      return actWithResult(db -> db.getInt(EXCLUSIVE_NOTIFICATIONS_COUNT)).or(0);
-   }
-
-   @Override
-   public int getFriendsRequestsCount() {
-      return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
    //
    ///////////////////////////////////////////////////////////////////////////
 
@@ -264,4 +224,39 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
       }).or(new ArrayList<>());
    }
 
+   /**
+    * All notifications
+    */
+   @Override
+   public void saveBadgeNotificationsCount(int notificationsCount) {
+      act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
+   }
+
+   /**
+    * All notifications
+    */
+   @Override
+   public int getBadgeNotificationsCount() {
+      return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
+   }
+
+   @Override
+   public void saveNotificationsCount(int count) {
+      act(db -> db.putInt(EXCLUSIVE_NOTIFICATIONS_COUNT, count));
+   }
+
+   @Override
+   public void saveFriendRequestsCount(int count) {
+      act(db -> db.putInt(FRIEND_REQUEST_COUNT, count));
+   }
+
+   @Override
+   public int getExclusiveNotificationsCount() {
+      return actWithResult(db -> db.getInt(EXCLUSIVE_NOTIFICATIONS_COUNT)).or(0);
+   }
+
+   @Override
+   public int getFriendsRequestsCount() {
+      return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
+   }
 }

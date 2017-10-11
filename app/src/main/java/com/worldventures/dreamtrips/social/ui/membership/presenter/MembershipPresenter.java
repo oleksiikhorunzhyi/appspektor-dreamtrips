@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.membership.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate;
 import com.worldventures.core.model.session.Feature;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;

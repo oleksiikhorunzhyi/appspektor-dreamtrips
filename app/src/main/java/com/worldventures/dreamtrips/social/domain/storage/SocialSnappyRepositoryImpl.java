@@ -37,7 +37,6 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    private static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
    private static final String PODCASTS = "PODCASTS";
    private static final String CATEGORIES = "categories";
-
    private final DefaultSnappyOpenHelper defaultSnappyOpenHelper;
 
    public SocialSnappyRepositoryImpl(Context context, DefaultSnappyOpenHelper defaultSnappyOpenHelper) {

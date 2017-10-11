@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.component.RootComponentsProvider;

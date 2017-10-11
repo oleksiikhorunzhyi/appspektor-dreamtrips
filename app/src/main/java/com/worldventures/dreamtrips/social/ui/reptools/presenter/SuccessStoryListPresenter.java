@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.reptools.presenter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 
-import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;

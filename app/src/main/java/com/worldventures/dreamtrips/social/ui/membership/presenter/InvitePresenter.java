@@ -8,7 +8,7 @@ import android.util.Patterns;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;

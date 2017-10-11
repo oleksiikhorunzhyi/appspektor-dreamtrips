@@ -5,17 +5,17 @@ import android.support.annotation.NonNull;
 
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
@@ -63,11 +63,10 @@ import timber.log.Timber;
 public class FeedPresenter extends Presenter<FeedPresenter.View> implements FeedActionHandlerPresenter,
       FeedEditEntityPresenter, UploadingListenerPresenter {
 
-   @Inject SnappyRepository db;
    @Inject SocialSnappyRepository socialDb;
    @Inject TranslationDelegate translationDelegate;
    @Inject UnreadConversationObservable unreadConversationObservable;
-   @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+   @Inject UserNotificationInteractor userNotificationInteractor;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject FeedStorageDelegate feedStorageDelegate;
@@ -279,7 +278,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    public void menuInflated() {
-      view.setRequestsCount(db.getFriendsRequestsCount());
+      userNotificationInteractor.notificationCountChangedPipe().send(new NotificationCountChangedCommand());
       view.setUnreadConversationCount(unreadConversationCount);
    }
 
@@ -414,9 +413,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    void subscribeFriendsNotificationsCount() {
-      notificationCountEventDelegate.getObservable().compose(bindViewToMainComposer()).subscribe(event -> {
-         view.setRequestsCount(db.getFriendsRequestsCount());
-      }, throwable -> Timber.w("Can't get friends notifications count"));
+      userNotificationInteractor.notificationCountChangedPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> view.setRequestsCount(command.getFriendNotificationCount()));
    }
 
    ///////////////////////////////////////////////////////////////////////////

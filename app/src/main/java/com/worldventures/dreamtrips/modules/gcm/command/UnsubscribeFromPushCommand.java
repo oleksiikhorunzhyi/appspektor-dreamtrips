@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.api.janet.command;
+package com.worldventures.dreamtrips.modules.gcm.command;
 
 import android.content.Context;
 import android.text.TextUtils;

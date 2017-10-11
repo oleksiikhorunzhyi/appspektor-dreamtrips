@@ -389,12 +389,12 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private int getTextNormalFlow(Button earn) {
-      earn.setTextAppearance(R.style.DtlButtonGreenTheme);
+      ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonGreenTheme);
       return R.string.dtl_check_in;
    }
 
    private int thrstFlow(Button earn) {
-      earn.setTextAppearance(R.style.DtlButtonPurpleTheme);
+      ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonPurpleTheme);
       return R.string.dtl_thrst_text_button;
    }
 

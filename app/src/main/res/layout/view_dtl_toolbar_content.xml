@@ -81,7 +81,7 @@
             android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="@dimen/dtlfb_caption_text_size"
-            app:theme="@style/Theme.DreamTripsTheme"
+            android:theme="@style/Theme.DreamTripsTheme"
             />
    </LinearLayout>
    <LinearLayout
@@ -109,7 +109,7 @@
             android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="@dimen/dtlfb_caption_text_size"
-            app:theme="@style/Theme.DreamTripsTheme"
+            android:theme="@style/Theme.DreamTripsTheme"
             />
    </LinearLayout>
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -130,5 +131,5 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
 
    private String getTextFromResource(int id) { return getContext().getString(id);}
 
-   private Drawable getDrawableFromResource(int id) { return getContext().getDrawable(id);}
+   private Drawable getDrawableFromResource(int id) { return ContextCompat.getDrawable(getContext(), id);}
 }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/root_reviews_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_actionbar"
+            style="@style/ToolBarStyle"
+            ></android.support.v7.widget.Toolbar>
+
+      <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textColor="@color/merchant_landscape_title_color"
+            android:textSize="@dimen/font_large"
+            android:textStyle="normal"
+            android:visibility="gone"
+            />
+   </RelativeLayout>
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:gravity="center_horizontal"
+         android:orientation="vertical"
+         >
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Thank You"
+            />
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Thank You"
+            />
+
+      <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Thank You"
+            />
+
+      <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            >
+
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="vertical"
+               >
+
+            <ImageView
+                  android:id="@+id/imageView3"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  app:srcCompat="@drawable/add_photo_icon_selected"
+                  />
+         </LinearLayout>
+      </LinearLayout>
+
+
+   </LinearLayout>
+
+
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl>

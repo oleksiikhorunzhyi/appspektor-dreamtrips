@@ -14,12 +14,16 @@ import com.worldventures.dreamtrips.modules.common.listener.PaginationScrollList
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerTouchListener;
 import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.SearchableTransactionsAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.PageableTransactionAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import java.util.List;
+
+import flow.Flow;
 
 public class TransactionView extends LinearLayout {
 
@@ -99,6 +103,8 @@ public class TransactionView extends LinearLayout {
             new RecyclerClickListener() {
                @Override
                public void onClick(View view, int position) {
+                  DtlTransactionPath path = new DtlTransactionPath(FlowUtil.currentMaster(getContext()));
+                  Flow.get(getContext()).set(path);
                }
 
                @Override

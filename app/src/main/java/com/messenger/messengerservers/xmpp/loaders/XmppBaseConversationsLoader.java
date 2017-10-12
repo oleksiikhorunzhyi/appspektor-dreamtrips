@@ -33,7 +33,9 @@ abstract class XmppBaseConversationsLoader {
    }
 
    protected Observable<Conversation> obtainParticipants(XmppParticipantsLoader participantsLoader, Conversation conversation) {
-      return TextUtils.equals(conversation.getType(), CHAT) ? obtainSingleConversationParticipant(participantsLoader, conversation) : obtainGroupConversationParticipants(participantsLoader, conversation);
+      return TextUtils.equals(conversation.getType(), CHAT)
+            ? obtainSingleConversationParticipant(participantsLoader, conversation)
+            : obtainGroupConversationParticipants(participantsLoader, conversation);
    }
 
    private Observable<Conversation> obtainSingleConversationParticipant(XmppParticipantsLoader participantLoader, Conversation conversation) {

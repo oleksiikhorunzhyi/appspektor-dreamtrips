@@ -65,8 +65,9 @@ public class CreateConversationHelper {
    }
 
    public Observable<DataConversation> modifyConversation(DataConversation conversation, List<DataUser> existParticipants, List<DataUser> newChatUserIds, @Nullable String subject) {
-      if (TextUtils.equals(conversation.getType(), ConversationType.CHAT)) {
-         conversation = new DataConversation.Builder().ownerId(getUsername())
+      DataConversation chat = conversation;
+      if (TextUtils.equals(chat.getType(), ConversationType.CHAT)) {
+         chat = new DataConversation.Builder().ownerId(getUsername())
                .type(ConversationType.GROUP)
                .status(ConversationStatus.PRESENT)
                .subject(TextUtils.isEmpty(subject) ? null : subject)
@@ -77,8 +78,7 @@ public class CreateConversationHelper {
          // make sure to invite original participant (addressee) from old single chat
          newChatUserIds.addAll(existParticipants);
       }
-
-      return setMultiUserChatData(conversation, newChatUserIds, subject);
+      return setMultiUserChatData(chat, newChatUserIds, subject);
    }
 
    public DataConversation getExistingSingleConversation(String participantId) {

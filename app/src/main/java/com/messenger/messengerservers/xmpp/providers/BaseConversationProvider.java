@@ -63,7 +63,11 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
                   case CONVERSATION:
                      conversations.add(parseConversation(parser));
                      break;
+                  default:
+                     break;
                }
+               break;
+            default:
                break;
          }
          done = eventType == XmlPullParser.END_TAG && getEndElement().equalsIgnoreCase(elementName);

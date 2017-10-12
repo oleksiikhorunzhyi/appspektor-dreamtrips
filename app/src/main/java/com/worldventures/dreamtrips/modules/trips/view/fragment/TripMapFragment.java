@@ -281,6 +281,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
          case R.id.action_list:
             moveToListView();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -431,6 +433,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                params.rightMargin = margin;
                params.bottomMargin = 0;
                params.leftMargin = 0;
+               break;
+            default:
                break;
          }
       }

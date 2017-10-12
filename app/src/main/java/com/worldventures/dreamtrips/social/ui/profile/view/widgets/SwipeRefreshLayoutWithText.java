@@ -73,7 +73,12 @@ public class SwipeRefreshLayoutWithText extends SwipeRefreshLayout {
          final int width = getMeasuredWidth();
          final int infoWidth = infoTextView.getMeasuredWidth();
          final int infoHeight = infoTextView.getMeasuredHeight();
-         infoTextView.layout((width / 2 - infoWidth / 2), getCurrentTargetOffsetTop() + getCircleHeight() + VERTICAL_OFFSET, (width / 2 + infoWidth / 2), getCurrentTargetOffsetTop() + getCircleHeight() + infoHeight + VERTICAL_OFFSET);
+         infoTextView.layout(
+               (width / 2 - infoWidth / 2),
+               getCurrentTargetOffsetTop() + getCircleHeight() + VERTICAL_OFFSET,
+               (width / 2 + infoWidth / 2),
+               getCurrentTargetOffsetTop() + getCircleHeight() + infoHeight + VERTICAL_OFFSET
+         );
       }
    }
 

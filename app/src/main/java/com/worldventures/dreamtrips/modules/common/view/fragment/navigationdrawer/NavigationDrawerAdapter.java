@@ -63,6 +63,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
                   .inflate(R.layout.header_navigation_drawer, viewGroup, false);
             return new HeaderHolder(v);
          }
+         default:
+            break;
       }
       return null;
    }
@@ -75,6 +77,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             break;
          case TYPE_ITEM:
             bindItemViewHolder((ItemHolder) viewHolder, i);
+            break;
+         default:
             break;
       }
    }
@@ -188,6 +192,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             return 0;
          case TYPE_ITEM:
             return getItem(position).hashCode();
+         default:
+            break;
       }
       return super.getItemId(position);
    }

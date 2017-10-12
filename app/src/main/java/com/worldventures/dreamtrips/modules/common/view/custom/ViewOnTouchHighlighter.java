@@ -46,6 +46,8 @@ public class ViewOnTouchHighlighter implements View.OnTouchListener {
             anim.cancel();
             v.getBackground().setColorFilter(null);
             break;
+         default:
+            break;
       }
       return false;
    }

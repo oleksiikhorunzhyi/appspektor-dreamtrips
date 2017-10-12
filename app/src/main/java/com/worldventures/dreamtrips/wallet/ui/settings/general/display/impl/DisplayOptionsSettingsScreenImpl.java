@@ -66,8 +66,8 @@ import static android.view.View.OVER_SCROLL_NEVER;
 import static android.view.View.inflate;
 
 public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter> implements DisplayOptionsSettingsScreen {
-   public static String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
-   public static String KEY_DISPLAY_OPTIONS_SOURCE = "key_smart_card_user";
+   public static final String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
+   public static final String KEY_DISPLAY_OPTIONS_SOURCE = "key_smart_card_user";
 
    private ViewGroup wrapperPager;
    private ViewPager viewPager;

@@ -66,6 +66,8 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
          case NOTIFICATIONS:
             analyticsInteractor.analyticsActionPipe().send(new TrackNotificationSettingsOpened());
             break;
+         default:
+            break;
       }
    }
 

@@ -27,10 +27,10 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WizardUploadProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,SmartCardInteractor smartCardInteractor,
+   public WizardUploadProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, deviceConnectionDelegate);
-      this.smartCardInteractor= smartCardInteractor;
+      this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }

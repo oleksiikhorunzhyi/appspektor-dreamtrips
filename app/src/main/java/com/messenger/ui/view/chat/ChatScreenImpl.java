@@ -302,8 +302,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
    }
 
    @Override
-   public void showErrorMessage(@StringRes int error_no_connection) {
-      Snackbar.make(this, error_no_connection, Snackbar.LENGTH_SHORT).show();
+   public void showErrorMessage(@StringRes int errorNoConnectionRes) {
+      Snackbar.make(this, errorNoConnectionRes, Snackbar.LENGTH_SHORT).show();
    }
 
    @Override
@@ -371,6 +371,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                break;
             case R.id.action_flag:
                getPresenter().onFlagMessage(message);
+               break;
+            default:
                break;
          }
       })).show();

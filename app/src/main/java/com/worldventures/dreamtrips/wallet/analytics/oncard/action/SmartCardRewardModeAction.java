@@ -19,6 +19,8 @@ class SmartCardRewardModeAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.REWARDS_BEACON:
             attributeMap.put("ocrewardmode", "1");
             break;
+         default:
+            break;
       }
    }
 }

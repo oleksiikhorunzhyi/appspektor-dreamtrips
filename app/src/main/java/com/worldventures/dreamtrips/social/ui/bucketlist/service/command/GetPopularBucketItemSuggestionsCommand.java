@@ -55,6 +55,8 @@ public class GetPopularBucketItemSuggestionsCommand extends CommandWithError<Lis
                   .createObservableResult(new GetBucketListPopularDinningsHttpAction(query))
                   .map(GetBucketListPopularDinningsHttpAction::response)
                   .map(items -> mapperyContext.convert(items, PopularBucketItem.class));
+         default:
+            break;
       }
       return Observable.error(new IllegalStateException("Wrong type was passed"));
    }

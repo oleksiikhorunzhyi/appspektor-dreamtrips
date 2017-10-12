@@ -113,7 +113,8 @@ public class ContainerDetailsMapParamsBuilder {
                params.topMargin = DEFAULT_MARGIN;
                params.bottomMargin = DEFAULT_MARGIN;
                int calculatedTopMargin = rect.bottom - params.bottomMargin - tripsHeight;
-               anchorMargin = point.y - (isOnBottom(pointPosition) && params.topMargin + params.bottomMargin + tripsHeight < rect.bottom ? calculatedTopMargin : params.topMargin) - markerHeight / 2 - triangleWidth / 2;
+               anchorMargin = point.y - (isOnBottom(pointPosition) && params.topMargin + params.bottomMargin + tripsHeight < rect.bottom ? calculatedTopMargin : params.topMargin)
+                     - markerHeight / 2 - triangleWidth / 2;
             }
          }
          if (isOnLeft(pointPosition)) {
@@ -174,6 +175,8 @@ public class ContainerDetailsMapParamsBuilder {
             break;
          case BOTTOM_RIGHT:
             gravity = Gravity.BOTTOM | Gravity.RIGHT;
+            break;
+         default:
             break;
       }
 

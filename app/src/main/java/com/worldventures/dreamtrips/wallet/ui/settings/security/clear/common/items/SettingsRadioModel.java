@@ -37,9 +37,13 @@ public class SettingsRadioModel implements Parcelable {
 
    public static final Creator<SettingsRadioModel> CREATOR = new Creator<SettingsRadioModel>() {
       @Override
-      public SettingsRadioModel createFromParcel(Parcel source) {return new SettingsRadioModel(source);}
+      public SettingsRadioModel createFromParcel(Parcel source) {
+         return new SettingsRadioModel(source);
+      }
 
       @Override
-      public SettingsRadioModel[] newArray(int size) {return new SettingsRadioModel[size];}
+      public SettingsRadioModel[] newArray(int size) {
+         return new SettingsRadioModel[size];
+      }
    };
 }

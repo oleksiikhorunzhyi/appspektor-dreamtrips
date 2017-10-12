@@ -13,7 +13,7 @@ public class DelaySearchView extends SearchView {
    private static final int TRIGGER_ONQUERYTEXT_CHANGE = 1;
    private static final int TRIGGER_ONQUERYTEXT_SUBMIT = 2;
 
-   private final long SEARCH_TRIGGER_DELAY_IN_MS = 1000;
+   private final static long SEARCH_TRIGGER_DELAY_IN_MS = 1000;
 
    InnerHandler handler = new InnerHandler();
 

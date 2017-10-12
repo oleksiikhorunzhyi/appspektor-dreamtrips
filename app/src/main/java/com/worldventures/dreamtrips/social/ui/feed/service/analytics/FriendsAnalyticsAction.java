@@ -8,7 +8,7 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import java.util.HashMap;
 
 @AnalyticsEvent(action = "friends_activity", trackers = AdobeTracker.TRACKER_KEY)
-public class FriendsAnalyticsAction extends BaseAnalyticsAction {
+public final class FriendsAnalyticsAction extends BaseAnalyticsAction {
 
    @AttributeMap
    HashMap<String, String> map = new HashMap<>();

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 import rx.functions.Func1;
 
-public class MerchantDistancePatcher implements Func1<Merchant, Merchant> {
+public final class MerchantDistancePatcher implements Func1<Merchant, Merchant> {
 
    private final DtlLocation dtlLocation;
 

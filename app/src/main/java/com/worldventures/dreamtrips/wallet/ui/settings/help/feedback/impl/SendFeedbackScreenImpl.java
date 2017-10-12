@@ -79,10 +79,10 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
    public void applyFeedbackType(FeedbackType feedbackType) {
       boolean smartCardFeedback = feedbackType == FeedbackType.SmartCardFeedback;
       toolbar.setTitle(smartCardFeedback ? R.string.wallet_card_settings_send_feedback : R.string.wallet_card_settings_customer_support);
-      tvDescription.setText(smartCardFeedback ? R.string.wallet_settings_help_feedback_user_approve_info :
-            R.string.wallet_settings_help_customer_support_email_us_description);
-      etFeedbackMessage.setHint(smartCardFeedback ? R.string.wallet_settings_help_feedback_enter_comment_hint :
-            R.string.wallet_settings_help_customer_support_email_us_hint);
+      tvDescription.setText(smartCardFeedback ? R.string.wallet_settings_help_feedback_user_approve_info
+            : R.string.wallet_settings_help_customer_support_email_us_description);
+      etFeedbackMessage.setHint(smartCardFeedback ? R.string.wallet_settings_help_feedback_enter_comment_hint
+            : R.string.wallet_settings_help_customer_support_email_us_hint);
    }
 
    private void onNavigationBack() {
@@ -104,6 +104,8 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
          switch (item.getItemId()) {
             case R.id.action_send:
                getPresenter().sendFeedback(etFeedbackMessage.getText().toString());
+            default:
+               break;
          }
          return true;
       });
@@ -125,6 +127,8 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
             break;
          case FAIL:
             showRetryUploadingUiForAttachment(holder);
+            break;
+         default:
             break;
       }
    }
@@ -175,6 +179,8 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
                      break;
                   case 1:
                      getPresenter().onRemoveAttachment(attachmentHolder);
+                     break;
+                  default:
                      break;
                }
             }).show();

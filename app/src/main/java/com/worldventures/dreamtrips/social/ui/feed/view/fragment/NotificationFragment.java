@@ -90,8 +90,8 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
    }
 
    private void loadNext() {
-      if (!statePaginatedRecyclerViewManager.isNoMoreElements() &&
-            Queryable.from(adapter.getItems()).firstOrDefault(item -> item instanceof LoadMoreModel) == null) {
+      if (!statePaginatedRecyclerViewManager.isNoMoreElements()
+            && Queryable.from(adapter.getItems()).firstOrDefault(item -> item instanceof LoadMoreModel) == null) {
          adapter.addItem(new LoadMoreModel());
          adapter.notifyDataSetChanged();
          getPresenter().loadNext();

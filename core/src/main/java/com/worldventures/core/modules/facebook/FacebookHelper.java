@@ -52,7 +52,7 @@ public class FacebookHelper {
    public Throwable getThrowableFromGraphError(FacebookRequestError error) {
       FacebookRequestErrorClassification errorClassification
             = FacebookRequestErrorClassification.getDefaultErrorClassification();
-      if(errorClassification.classify(error.getErrorCode(), error.getSubErrorCode(), false) == FacebookRequestError.Category.LOGIN_RECOVERABLE) {
+      if (errorClassification.classify(error.getErrorCode(), error.getSubErrorCode(), false) == FacebookRequestError.Category.LOGIN_RECOVERABLE) {
          return new FacebookAccessTokenException("Access token is invalid", error.getException());
       } else {
          return error.getException();

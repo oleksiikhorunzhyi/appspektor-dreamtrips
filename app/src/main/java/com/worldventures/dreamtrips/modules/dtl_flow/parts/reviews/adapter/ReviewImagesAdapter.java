@@ -18,8 +18,8 @@ public class ReviewImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
    private List<ReviewImages> imagesList;
    private String userComment;
-   private int HEADER_TYPE = 0;
-   private int ITEM_TYPE = 1;
+   private final static int HEADER_TYPE = 0;
+   private final static int ITEM_TYPE = 1;
 
    public ReviewImagesAdapter(String userComment, List<ReviewImages> imagesList) {
       this.userComment = userComment;

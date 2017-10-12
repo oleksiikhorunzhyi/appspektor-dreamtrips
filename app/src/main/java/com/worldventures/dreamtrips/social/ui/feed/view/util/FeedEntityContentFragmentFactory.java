@@ -46,6 +46,8 @@ public class FeedEntityContentFragmentFactory {
             bucketBundle.setOwnerId(userId);
             args = bucketBundle;
             break;
+         default:
+            break;
       }
       return new Pair<>(route, args);
    }

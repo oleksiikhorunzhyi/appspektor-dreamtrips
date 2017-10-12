@@ -61,7 +61,7 @@ public class AnimatorProgressView<T> implements ProgressView<T> {
    }
 
    @TargetApi(Build.VERSION_CODES.KITKAT)
-   private static class KitKatImpl implements ProgressView {
+   private final static class KitKatImpl implements ProgressView {
 
       private final ObjectAnimator animator;
 

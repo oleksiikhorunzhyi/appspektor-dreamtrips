@@ -113,6 +113,8 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
          case PREPARING:
             getView().setPreparing();
             break;
+         default:
+            break;
       }
    }
 

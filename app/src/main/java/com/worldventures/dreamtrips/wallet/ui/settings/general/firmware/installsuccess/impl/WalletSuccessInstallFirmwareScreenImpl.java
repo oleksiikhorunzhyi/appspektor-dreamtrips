@@ -26,7 +26,9 @@ import javax.inject.Inject;
 
 import static android.animation.ObjectAnimator.ofFloat;
 
-public class WalletSuccessInstallFirmwareScreenImpl extends WalletBaseController<WalletSuccessInstallFirmwareScreen, WalletSuccessInstallFirmwarePresenter> implements WalletSuccessInstallFirmwareScreen {
+public class WalletSuccessInstallFirmwareScreenImpl
+      extends WalletBaseController<WalletSuccessInstallFirmwareScreen, WalletSuccessInstallFirmwarePresenter>
+      implements WalletSuccessInstallFirmwareScreen {
 
    private static final String KEY_FIRMWARE_UPDATE_DATA = "key_firmware_update_data";
    private static final int ANIM_DURATION_MAIN_IMAGE = 300;

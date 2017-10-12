@@ -21,9 +21,13 @@ public class UndefinedMediaEntity extends BaseMediaEntity<Photo> {
 
    public static final Creator<UndefinedMediaEntity> CREATOR = new Creator<UndefinedMediaEntity>() {
       @Override
-      public UndefinedMediaEntity createFromParcel(Parcel source) {return new UndefinedMediaEntity(source);}
+      public UndefinedMediaEntity createFromParcel(Parcel source) {
+         return new UndefinedMediaEntity(source);
+      }
 
       @Override
-      public UndefinedMediaEntity[] newArray(int size) {return new UndefinedMediaEntity[size];}
+      public UndefinedMediaEntity[] newArray(int size) {
+         return new UndefinedMediaEntity[size];
+      }
    };
 }

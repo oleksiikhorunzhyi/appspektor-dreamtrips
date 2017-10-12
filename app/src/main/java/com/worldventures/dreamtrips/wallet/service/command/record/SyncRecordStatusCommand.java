@@ -7,7 +7,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class SyncRecordStatusCommand extends CachedValueCommand<SyncRecordsStatus> {
+public final class SyncRecordStatusCommand extends CachedValueCommand<SyncRecordsStatus> {
 
    private SyncRecordStatusCommand(Func1<SyncRecordsStatus, SyncRecordsStatus> func) {
       super(func);

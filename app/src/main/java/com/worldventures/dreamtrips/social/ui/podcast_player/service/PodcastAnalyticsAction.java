@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 @AnalyticsEvent(action = "membership:podcasts:podcast ${progressStatus}",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class PodcastAnalyticsAction extends BaseAnalyticsAction {
+public final class PodcastAnalyticsAction extends BaseAnalyticsAction {
 
    @ActionPart String progressStatus;
 

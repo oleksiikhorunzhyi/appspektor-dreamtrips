@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -76,7 +75,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      if(getView().getProvisionMode() != null) getNavigator().goWizardAssignUser(getView().getProvisionMode());
+      if (getView().getProvisionMode() != null) getNavigator().goWizardAssignUser(getView().getProvisionMode());
    }
 
    private void attachProfile(WizardEditProfileScreen view) {

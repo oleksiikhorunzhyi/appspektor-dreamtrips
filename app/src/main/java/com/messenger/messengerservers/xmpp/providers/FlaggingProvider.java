@@ -30,7 +30,8 @@ public class FlaggingProvider extends IQProvider<FlagMessageIQ> {
                   done = true;
                }
                break;
-
+            default:
+               break;
          }
       }
       return flagMessageIQ;

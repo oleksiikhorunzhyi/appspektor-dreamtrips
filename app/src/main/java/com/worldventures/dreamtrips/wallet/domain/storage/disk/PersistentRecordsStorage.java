@@ -12,9 +12,9 @@ import java.util.List;
 
 public final class PersistentRecordsStorage extends CryptedModelStorage implements RecordsStorage {
 
-   private final String RECORDS_LIST = "WALLET_CARDS_LIST";
-   private final String DEFAULT_RECORD_ID = "DEFAULT_WALLET_CARD_ID";
-   private final String OFFLINE_MODE_STATE = "OFFLINE_MODE_STATE";
+   private final static String RECORDS_LIST = "WALLET_CARDS_LIST";
+   private final static String DEFAULT_RECORD_ID = "DEFAULT_WALLET_CARD_ID";
+   private final static String OFFLINE_MODE_STATE = "OFFLINE_MODE_STATE";
 
    public PersistentRecordsStorage(SnappyStorage storage, SnappyCrypter snappyCrypter) {
       super(storage, snappyCrypter);

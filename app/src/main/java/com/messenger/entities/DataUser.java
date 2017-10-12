@@ -147,9 +147,9 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, C
 
    @Override
    public String toString() {
-      return "User{" +
-            "_id='" + id + '\'' +
-            '}';
+      return "User{"
+            + "_id='" + id + '\''
+            + '}';
    }
 
    @Override

@@ -55,8 +55,8 @@ public class HoldableButton extends AppCompatButton {
       initializeWithAttrs(attrs);
    }
 
-   public void setOnClickHoldListener(OnClickHoldListener OnClickHoldListener) {
-      this.onClickHoldListener = OnClickHoldListener;
+   public void setOnClickHoldListener(OnClickHoldListener onClickHoldListener) {
+      this.onClickHoldListener = onClickHoldListener;
    }
 
    public void setHoldInitialDelay(int holdInitialDelay) {

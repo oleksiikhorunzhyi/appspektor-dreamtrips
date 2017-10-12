@@ -69,6 +69,8 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
          case R.id.action_send:
             getPresenter().shareRequest();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model.util;
 
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 
-public class FeedEntityUtil {
+public final class FeedEntityUtil {
    private FeedEntityUtil() {
    }
 

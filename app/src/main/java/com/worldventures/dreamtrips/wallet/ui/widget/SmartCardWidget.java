@@ -102,10 +102,12 @@ public class SmartCardWidget extends ConstraintLayout {
             tvPhotoFullName.setText(photoFullName);
             break;
          case DISPLAY_PHONE_AND_NAME:
-            final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber()) ?
-                  String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
+            final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber())
+                  ? String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
                   : holder.phoneNumber();
             tvPhotoFullName.setText(photoFullName + "\n\n" + phoneNumber);
+            break;
+         default:
             break;
       }
 
@@ -138,6 +140,8 @@ public class SmartCardWidget extends ConstraintLayout {
             else return displayType;
          case DISPLAY_NAME_ONLY:
             return displayType;
+         default:
+            break;
       }
       return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
    }

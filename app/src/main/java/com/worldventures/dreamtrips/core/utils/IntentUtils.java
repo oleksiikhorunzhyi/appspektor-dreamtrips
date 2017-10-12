@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import java.util.Locale;
 
-public class IntentUtils {
+public final class IntentUtils {
 
    private IntentUtils() {
       //nothing
@@ -26,7 +26,7 @@ public class IntentUtils {
       }
       intent.putExtra(Intent.EXTRA_SUBJECT, subject);
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body,Html.FROM_HTML_MODE_LEGACY));
+         intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY));
       } else {
          intent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
       }

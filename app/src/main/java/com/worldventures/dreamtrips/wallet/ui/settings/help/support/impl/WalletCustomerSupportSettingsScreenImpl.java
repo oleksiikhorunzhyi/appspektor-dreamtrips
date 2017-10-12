@@ -25,7 +25,9 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 
 import static android.view.View.GONE;
 
-public class WalletCustomerSupportSettingsScreenImpl extends WalletBaseController<WalletCustomerSupportSettingsScreen, WalletCustomerSupportSettingsPresenter> implements WalletCustomerSupportSettingsScreen {
+public class WalletCustomerSupportSettingsScreenImpl
+      extends WalletBaseController<WalletCustomerSupportSettingsScreen, WalletCustomerSupportSettingsPresenter>
+      implements WalletCustomerSupportSettingsScreen {
 
    private View containerContacts;
    private TextView tvUsCustomerCare;

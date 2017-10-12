@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 
-public class ViewUtils {
+public final class ViewUtils {
 
    private ViewUtils() {
    }

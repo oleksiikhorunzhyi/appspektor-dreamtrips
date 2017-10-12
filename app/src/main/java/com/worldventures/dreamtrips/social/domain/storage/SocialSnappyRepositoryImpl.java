@@ -184,19 +184,19 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    private static final String TRIP_FEED_ITEM = "trip";
    private static final String BUCKET_FEED_ITEM = "bucket";
 
-   private static final Map<String, Class<? extends FeedItem>> feedItemsMapping = new HashMap<>();
+   private static final Map<String, Class<? extends FeedItem>> FEED_ITEMS_MAPPING = new HashMap<>();
 
    static {
-      feedItemsMapping.put(NOTIFICATIONS + UNDEFINED_FEED_ITEM, UndefinedFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + TRIP_FEED_ITEM, TripFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + PHOTO_FEED_ITEM, PhotoFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + BUCKET_FEED_ITEM, BucketFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + POST_FEED_ITEM, PostFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + UNDEFINED_FEED_ITEM, UndefinedFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + TRIP_FEED_ITEM, TripFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + PHOTO_FEED_ITEM, PhotoFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + BUCKET_FEED_ITEM, BucketFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + POST_FEED_ITEM, PostFeedItem.class);
    }
 
    @Override
    public void saveNotifications(List<FeedItem> notifications) {
-      for (Map.Entry<String, Class<? extends FeedItem>> entry : feedItemsMapping.entrySet()) {
+      for (Map.Entry<String, Class<? extends FeedItem>> entry : FEED_ITEMS_MAPPING.entrySet()) {
          saveNotificationByType(notifications, entry.getValue(), entry.getKey());
       }
    }
@@ -211,7 +211,7 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    @Override
    public List<FeedItem> getNotifications() {
       List<FeedItem> feedItems = new ArrayList<>();
-      for (Map.Entry<String, Class<? extends FeedItem>> entry : feedItemsMapping.entrySet()) {
+      for (Map.Entry<String, Class<? extends FeedItem>> entry : FEED_ITEMS_MAPPING.entrySet()) {
          feedItems.addAll(readList(entry.getKey(), entry.getValue()));
       }
       return Queryable.from(feedItems)

@@ -37,9 +37,13 @@ public class GalleryBundle implements Parcelable {
 
    public static final Creator<GalleryBundle> CREATOR = new Creator<GalleryBundle>() {
       @Override
-      public GalleryBundle createFromParcel(Parcel source) {return new GalleryBundle(source);}
+      public GalleryBundle createFromParcel(Parcel source) {
+         return new GalleryBundle(source);
+      }
 
       @Override
-      public GalleryBundle[] newArray(int size) {return new GalleryBundle[size];}
+      public GalleryBundle[] newArray(int size) {
+         return new GalleryBundle[size];
+      }
    };
 }

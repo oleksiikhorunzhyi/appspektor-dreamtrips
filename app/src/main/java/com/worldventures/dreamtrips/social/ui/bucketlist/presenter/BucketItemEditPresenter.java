@@ -143,6 +143,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             view.deleteImage(photoStateHolder);
             cancelUpload(photoStateHolder);
             break;
+         default:
+            break;
       }
    }
 

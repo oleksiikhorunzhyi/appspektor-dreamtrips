@@ -138,11 +138,11 @@ public class FeedCellListWidthProvider {
 
       @Override
       public String toString() {
-         return "Config{" +
-               "feedType=" + feedType +
-               ", device=" + device +
-               ", orientation=" + orientation +
-               '}';
+         return "Config{"
+               + "feedType=" + feedType
+               + ", device=" + device
+               + ", orientation=" + orientation
+               + '}';
       }
    }
 

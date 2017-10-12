@@ -87,10 +87,10 @@ public class HtmlTagHandler implements Html.TagHandler {
     * @see android.text.Html
     */
    private static Object getLast(Spanned text, Class<?> kind) {
-        /*
-         * This knows that the last returned object from getSpans()
-		 * will be the most recently added.
-		 */
+      /*
+       * This knows that the last returned object from getSpans()
+       *  will be the most recently added.
+       */
       Object[] objs = text.getSpans(0, text.length(), kind);
       if (objs.length == 0) {
          return null;
@@ -162,12 +162,12 @@ public class HtmlTagHandler implements Html.TagHandler {
       }
    }
 
-   private static class Ul {
+   private final static class Ul {
       private Ul() {
       }
    }
 
-   private static class Ol {
+   private final static class Ol {
       private Ol() {
       }
    }

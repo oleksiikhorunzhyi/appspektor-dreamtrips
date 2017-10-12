@@ -91,6 +91,8 @@ public class DisplayOptionsViewHolder {
          case DISPLAY_PHONE_AND_NAME:
             fullName.setText(userFullName(user) + "\n\n" + phone);
             break;
+         default:
+            break;
       }
    }
 

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class DialogFactory {
+public final class DialogFactory {
 
    private DialogFactory() {}
 

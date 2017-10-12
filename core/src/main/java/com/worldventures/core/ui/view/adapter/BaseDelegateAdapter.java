@@ -10,7 +10,7 @@ import com.worldventures.core.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.ui.view.cell.CellIdDelegate;
 
-public class BaseDelegateAdapter<BaseItemClass> extends BaseArrayListAdapter<BaseItemClass> {
+public class BaseDelegateAdapter<T> extends BaseArrayListAdapter<T> {
 
    private final SparseArray<CellDelegate> itemDelegateMapping = new SparseArray<>();
    private final SparseArray<CellIdDelegate> itemIdDelegateMapping = new SparseArray<>();
@@ -25,7 +25,7 @@ public class BaseDelegateAdapter<BaseItemClass> extends BaseArrayListAdapter<Bas
     * @param itemClass    Class of CellDelegate
     * @param cellDelegate CellDelegate implementation
     */
-   public void registerDelegate(Class<?> itemClass, CellDelegate<? extends BaseItemClass> cellDelegate) {
+   public void registerDelegate(Class<?> itemClass, CellDelegate<? extends T> cellDelegate) {
       int index = viewTypes.indexOf(itemClass);
       if (index < 0) throw new IllegalStateException(itemClass.getSimpleName() + " is not registered as Cell");
       this.itemDelegateMapping.put(index, cellDelegate);
@@ -38,7 +38,7 @@ public class BaseDelegateAdapter<BaseItemClass> extends BaseArrayListAdapter<Bas
       setHasStableIds(true);
    }
 
-   public void registerCell(Class<?> itemClass, Class<? extends AbstractCell> cellClass, CellDelegate<? extends BaseItemClass> cellDelegate) {
+   public void registerCell(Class<?> itemClass, Class<? extends AbstractCell> cellClass, CellDelegate<? extends T> cellDelegate) {
       registerCell(itemClass, cellClass);
       registerDelegate(itemClass, cellDelegate);
    }

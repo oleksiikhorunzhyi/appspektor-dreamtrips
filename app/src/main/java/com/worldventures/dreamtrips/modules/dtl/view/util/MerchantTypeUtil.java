@@ -10,54 +10,54 @@ import java.util.List;
 
 public class MerchantTypeUtil {
 
-    public static List<String> getMerchantTypeList(String type) {
+   public static List<String> getMerchantTypeList(String type) {
 
-        List<String> merchantType = new ArrayList<>();
+      List<String> merchantType = new ArrayList<>();
 
-        if (type.equals(FilterData.SPAS)) {
-            merchantType.add(FilterData.SPAS);
-        } else if (type.equals(FilterData.ENTERTAINMENT)) {
-            merchantType.add(FilterData.ENTERTAINMENT);
-        } else {
-            merchantType.add(FilterData.RESTAURANT);
-            merchantType.add(FilterData.BAR);
-        }
-        return merchantType;
-    }
+      if (type.equals(FilterData.SPAS)) {
+         merchantType.add(FilterData.SPAS);
+      } else if (type.equals(FilterData.ENTERTAINMENT)) {
+         merchantType.add(FilterData.ENTERTAINMENT);
+      } else {
+         merchantType.add(FilterData.RESTAURANT);
+         merchantType.add(FilterData.BAR);
+      }
+      return merchantType;
+   }
 
-    public static int getStringResource(String type) {
-        int stringResource = R.string.filter_merchant_dining;
-        if (type.equals(FilterData.SPAS)) {
-            stringResource = R.string.filter_merchant_spas;
-        } else if (type.equals(FilterData.ENTERTAINMENT)) {
-            stringResource = R.string.filter_merchant_entertainment;
-        }
-        return stringResource;
-    }
+   public static int getStringResource(String type) {
+      int stringResource = R.string.filter_merchant_dining;
+      if (type.equals(FilterData.SPAS)) {
+         stringResource = R.string.filter_merchant_spas;
+      } else if (type.equals(FilterData.ENTERTAINMENT)) {
+         stringResource = R.string.filter_merchant_entertainment;
+      }
+      return stringResource;
+   }
 
-    public static int filterMapDrawable(View view) {
-        return view.isSelected() ?
-                R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused;
-    }
+   public static int filterMapDrawable(View view) {
+      return view.isSelected()
+            ? R.drawable.custom_button_filters_map_pressed : R.drawable.custom_button_filters_map_focused;
+   }
 
-    public static int filterMerchantColor(View view) {
-        return view.isSelected() ?
-                R.color.white : R.color.dtl_text_color_disabled_filters;
-    }
+   public static int filterMerchantColor(View view) {
+      return view.isSelected()
+            ? R.color.white : R.color.dtl_text_color_disabled_filters;
+   }
 
-    public static void toggleState(View filterFood, View filterEntertainment, View filterSpa, String type) {
-        if (type.equals(FilterData.SPAS)) {
-            filterFood.setSelected(false);
-            filterEntertainment.setSelected(false);
-            filterSpa.setSelected(true);
-        } else if (type.equals(FilterData.ENTERTAINMENT)) {
-            filterFood.setSelected(false);
-            filterEntertainment.setSelected(true);
-            filterSpa.setSelected(false);
-        } else {
-            filterFood.setSelected(true);
-            filterEntertainment.setSelected(false);
-            filterSpa.setSelected(false);
-        }
-    }
+   public static void toggleState(View filterFood, View filterEntertainment, View filterSpa, String type) {
+      if (type.equals(FilterData.SPAS)) {
+         filterFood.setSelected(false);
+         filterEntertainment.setSelected(false);
+         filterSpa.setSelected(true);
+      } else if (type.equals(FilterData.ENTERTAINMENT)) {
+         filterFood.setSelected(false);
+         filterEntertainment.setSelected(true);
+         filterSpa.setSelected(false);
+      } else {
+         filterFood.setSelected(true);
+         filterEntertainment.setSelected(false);
+         filterSpa.setSelected(false);
+      }
+   }
 }

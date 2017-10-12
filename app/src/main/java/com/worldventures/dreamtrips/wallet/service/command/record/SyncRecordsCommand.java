@@ -85,8 +85,8 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
       final List<Observable<Void>> operations = new ArrayList<>();
 
       // All SmartCard records -> prepare for local storage
-      Observable<Record> smartCardToApp = bundle.deviceRecords.isEmpty() ?
-            Observable.empty() : prepareRecordsForLocalStorage(bundle.deviceRecords);
+      Observable<Record> smartCardToApp = bundle.deviceRecords.isEmpty()
+            ? Observable.empty() : prepareRecordsForLocalStorage(bundle.deviceRecords);
 
       // Local only records -> prepare for SmartCard -> send to SmartCard
       Observable<Record> appToSmartCard = Observable.empty();

@@ -89,12 +89,12 @@ public class CachedEntity implements Serializable {
 
    @Override
    public String toString() {
-      return "CachedEntity{" +
-            "url='" + url + '\'' +
-            ", failed=" + failed +
-            ", create=" + progress +
-            ", uuid='" + uuid + '\'' +
-            ", downloadId=" + downloadId +
-            '}';
+      return "CachedEntity{"
+            + "url='" + url + '\''
+            + ", failed=" + failed
+            + ", create=" + progress
+            + ", uuid='" + uuid + '\''
+            + ", downloadId=" + downloadId
+            + '}';
    }
 }

@@ -26,8 +26,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
    private ArrayList<ChangeInfo> mPendingChanges = new ArrayList<ChangeInfo>();
 
 
-   private ArrayList<ArrayList<ViewHolder>> mAdditionsList =
-         new ArrayList<ArrayList<ViewHolder>>();
+   private ArrayList<ArrayList<ViewHolder>> mAdditionsList = new ArrayList<ArrayList<ViewHolder>>();
    private ArrayList<ArrayList<MoveInfo>> mMovesList = new ArrayList<ArrayList<MoveInfo>>();
    private ArrayList<ArrayList<ChangeInfo>> mChangesList = new ArrayList<ArrayList<ChangeInfo>>();
 
@@ -42,7 +41,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    volatile Map<ViewHolder, ChangeInfo> notYetAnimated = new HashMap<>();
 
-   private static class MoveInfo {
+   private final static class MoveInfo {
       public ViewHolder holder;
       public int fromX, fromY, toX, toY;
 
@@ -55,7 +54,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       }
    }
 
-   private static class ChangeInfo {
+   private final static class ChangeInfo {
       public ViewHolder oldHolder, newHolder;
       public int fromX, fromY, toX, toY;
 
@@ -513,17 +512,17 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    @Override
    public boolean isRunning() {
-      return (!mPendingAdditions.isEmpty() ||
-            !mPendingChanges.isEmpty() ||
-            !mPendingMoves.isEmpty() ||
-            !mPendingRemovals.isEmpty() ||
-            !mMoveAnimations.isEmpty() ||
-            !mRemoveAnimations.isEmpty() ||
-            !mAddAnimations.isEmpty() ||
-            !mChangeAnimations.isEmpty() ||
-            !mMovesList.isEmpty() ||
-            !mAdditionsList.isEmpty() ||
-            !mChangesList.isEmpty());
+      return (!mPendingAdditions.isEmpty()
+            || !mPendingChanges.isEmpty()
+            || !mPendingMoves.isEmpty()
+            || !mPendingRemovals.isEmpty()
+            || !mMoveAnimations.isEmpty()
+            || !mRemoveAnimations.isEmpty()
+            || !mAddAnimations.isEmpty()
+            || !mChangeAnimations.isEmpty()
+            || !mMovesList.isEmpty()
+            || !mAdditionsList.isEmpty()
+            || !mChangesList.isEmpty());
    }
 
    private void dispatchFinishedWhenDone() {
@@ -634,18 +633,17 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       public void onAnimationCancel(View view) {}
    }
 
-   ;
 
-   private static final int AnimDuration = 500;
+   private static final int ANIM_DURATION = 500;
 
    @Override
    public long getAddDuration() {
-      return AnimDuration;
+      return ANIM_DURATION;
    }
 
    @Override
    public long getRemoveDuration() {
-      return AnimDuration;
+      return ANIM_DURATION;
    }
 
    @Override
@@ -655,7 +653,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    @Override
    public long getMoveDuration() {
-      return AnimDuration;
+      return ANIM_DURATION;
    }
 
 }

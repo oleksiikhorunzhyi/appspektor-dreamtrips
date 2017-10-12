@@ -159,6 +159,8 @@ public class DtlToolbar extends LinearLayout {
                SoftInputUtil.showSoftInputMethod(getContext());
                locationSearchInput.requestFocus();
                break;
+            default:
+               break;
          }
       }
       // due to possible bug in EditText - hint not saved after rotation. Fix below:
@@ -220,9 +222,9 @@ public class DtlToolbar extends LinearLayout {
          for (FocusedMode value : values()) {
             if (value.id == attributeId) return value;
          }
-         throw new IllegalArgumentException("DtlToolbar: wrong argument provided for focused" +
-               " mode attribute: must be one of " +
-               Queryable.from(values()).joinStrings(" ", element -> element.name()));
+         throw new IllegalArgumentException("DtlToolbar: wrong argument provided for focused"
+               + " mode attribute: must be one of "
+               + Queryable.from(values()).joinStrings(" ", element -> element.name()));
       }
    }
 }

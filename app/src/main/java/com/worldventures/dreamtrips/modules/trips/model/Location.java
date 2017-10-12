@@ -102,11 +102,11 @@ public class Location implements Serializable, Parcelable {
 
    @Override
    public String toString() {
-      return "Location{" +
-            "name='" + name + '\'' +
-            ", lat=" + lat +
-            ", lng=" + lng +
-            '}';
+      return "Location{"
+            + "name='" + name + '\''
+            + ", lat=" + lat
+            + ", lng=" + lng
+            + '}';
    }
 
    @Override

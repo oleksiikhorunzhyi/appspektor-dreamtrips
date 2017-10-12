@@ -147,6 +147,8 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
          case ERROR:
             view.showError(editChatMembersViewState.getError());
             break;
+         default:
+            break;
       }
    }
 

@@ -76,8 +76,8 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
    }
 
    private void setupTranslationState() {
-      boolean ownPost = photo.getOwner() != null &&
-            photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownPost = photo.getOwner() != null
+            && photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
       boolean emptyPostText = TextUtils.isEmpty(photo.getTitle());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, photo.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(photo.getLanguage());

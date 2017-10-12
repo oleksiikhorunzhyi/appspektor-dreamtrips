@@ -291,8 +291,8 @@ public class ViewServer implements Runnable {
    public void addWindow(Activity activity) {
       String name = activity.getTitle().toString();
       if (TextUtils.isEmpty(name)) {
-         name = activity.getClass().getCanonicalName() +
-               "/0x" + System.identityHashCode(activity);
+         name = activity.getClass().getCanonicalName()
+               + "/0x" + System.identityHashCode(activity);
       } else {
          name += "(" + activity.getClass().getCanonicalName() + ")";
       }
@@ -500,7 +500,7 @@ public class ViewServer implements Runnable {
       }
    }
 
-   private static class NoopViewServer extends ViewServer {
+   private final static class NoopViewServer extends ViewServer {
       private NoopViewServer() {
       }
 
@@ -656,8 +656,8 @@ public class ViewServer implements Runnable {
             }
 
          } catch (Exception e) {
-            Log.w(LOG_TAG, "Could not send command " + command +
-                  " with parameters " + parameters, e);
+            Log.w(LOG_TAG, "Could not send command " + command
+                  + " with parameters " + parameters, e);
             success = false;
          } finally {
             if (out != null) {

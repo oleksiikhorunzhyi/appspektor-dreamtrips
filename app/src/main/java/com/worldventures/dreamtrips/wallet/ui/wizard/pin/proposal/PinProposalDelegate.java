@@ -47,7 +47,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
 
    public abstract void navigateSkipPin();
 
-   private static class WizardPinProposalDelegate extends PinProposalDelegate<WizardPinProposalDialog> {
+   private final static class WizardPinProposalDelegate extends PinProposalDelegate<WizardPinProposalDialog> {
 
       private WizardPinProposalDelegate(Navigator navigator) {
          super(navigator);
@@ -90,7 +90,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       }
    }
 
-   private static class RecordsPinProposalDelegate extends PinProposalDelegate<RecordsPinProposalDialog> {
+   private final static class RecordsPinProposalDelegate extends PinProposalDelegate<RecordsPinProposalDialog> {
       private final String cardNickname;
 
       private RecordsPinProposalDelegate(Navigator navigator, String cardNickname) {

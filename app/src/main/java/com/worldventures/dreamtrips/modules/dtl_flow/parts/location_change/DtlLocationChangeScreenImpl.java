@@ -40,7 +40,9 @@ import butterknife.InjectView;
 import rx.Observable;
 import timber.log.Timber;
 
-public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScreen, DtlLocationChangePresenter, DtlLocationChangePath> implements DtlLocationChangeScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
+public class DtlLocationChangeScreenImpl
+      extends DtlLayout<DtlLocationChangeScreen, DtlLocationChangePresenter, DtlLocationChangePath>
+      implements DtlLocationChangeScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject ActivityResultDelegate activityResultDelegate;
@@ -132,6 +134,8 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
                   .getString(R.string.dtl_nearby_caption_format, dtlLocation.longName());
             dtlToolbar.setCaptions(appliedSearchQuery, locationTitle);
             break;
+         default:
+            break;
       }
    }
 
@@ -180,6 +184,8 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
             case Activity.RESULT_CANCELED:
                // The user was asked to change settings, but chose not to
                getPresenter().onLocationResolutionDenied();
+               break;
+            default:
                break;
          }
          return true;

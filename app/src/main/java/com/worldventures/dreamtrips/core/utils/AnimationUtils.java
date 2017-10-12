@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
-public class AnimationUtils {
+public final class AnimationUtils {
    private AnimationUtils() {
    }
 

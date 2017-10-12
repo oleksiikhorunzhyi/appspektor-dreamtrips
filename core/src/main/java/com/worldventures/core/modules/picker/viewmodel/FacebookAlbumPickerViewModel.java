@@ -76,10 +76,10 @@ public class FacebookAlbumPickerViewModel extends FacebookMediaPickerViewModel<F
 
    @Override
    public Uri getUriFromSource(FacebookCoverPhoto source) {
-      return Uri.parse(GRAPH_URL +
-            (source == null ? "" : source.getId()) +
-            COVER_URL +
-            AccessToken.getCurrentAccessToken().getToken() +
-            PARAMS);
+      return Uri.parse(GRAPH_URL
+            + (source == null ? "" : source.getId())
+            + COVER_URL
+            + AccessToken.getCurrentAccessToken().getToken()
+            + PARAMS);
    }
 }

@@ -177,6 +177,8 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
          case FAIL:
             view.showRetryUploadingUiForAttachment(holder);
             break;
+         default:
+            break;
       }
    }
 

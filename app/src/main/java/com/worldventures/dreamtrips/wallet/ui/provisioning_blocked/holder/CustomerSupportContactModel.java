@@ -26,9 +26,13 @@ public class CustomerSupportContactModel extends BaseViewModel<ProvisionBlockedT
 
    public static final Creator<CustomerSupportContactModel> CREATOR = new Creator<CustomerSupportContactModel>() {
       @Override
-      public CustomerSupportContactModel createFromParcel(Parcel source) {return new CustomerSupportContactModel(source);}
+      public CustomerSupportContactModel createFromParcel(Parcel source) {
+         return new CustomerSupportContactModel(source);
+      }
 
       @Override
-      public CustomerSupportContactModel[] newArray(int size) {return new CustomerSupportContactModel[size];}
+      public CustomerSupportContactModel[] newArray(int size) {
+         return new CustomerSupportContactModel[size];
+      }
    };
 }

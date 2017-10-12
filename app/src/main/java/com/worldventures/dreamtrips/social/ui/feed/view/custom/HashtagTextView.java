@@ -151,7 +151,7 @@ public class HashtagTextView extends AppCompatTextView {
 
    private static class RoundedBackgroundSpan extends ReplacementSpan {
 
-      final int CORNER_RADIUS = 8;
+      private final static int CORNER_RADIUS = 8;
       @ColorInt int textColor;
       @ColorInt int backgroundColor;
 

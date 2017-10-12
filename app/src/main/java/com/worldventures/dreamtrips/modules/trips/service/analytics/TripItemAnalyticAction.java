@@ -6,7 +6,7 @@ import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 @AnalyticsEvent(action = "dreamtrips", trackers = AdobeTracker.TRACKER_KEY)
-public class TripItemAnalyticAction extends BaseAnalyticsAction {
+public final class TripItemAnalyticAction extends BaseAnalyticsAction {
 
    @Attribute("trip_id") String tripId;
    @Attribute("like") String like;

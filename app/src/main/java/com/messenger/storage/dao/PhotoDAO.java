@@ -51,14 +51,13 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
    }
 
    public Observable<List<DataPhotoAttachment>> getPhotoAttachments(String conversationId) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT p.* " +
-            "FROM " + DataPhotoAttachment.TABLE_NAME + " p " +
-            "INNER JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
-            "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " " +
-            "INNER JOIN " + DataMessage$Table.TABLE_NAME + " m " +
-            "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
-
-            "WHERE m." + DataMessage$Table.CONVERSATIONID + "=?")
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT p.* "
+            + "FROM " + DataPhotoAttachment.TABLE_NAME + " p "
+            + "INNER JOIN " + DataAttachment$Table.TABLE_NAME + " a "
+            + "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " "
+            + "INNER JOIN " + DataMessage$Table.TABLE_NAME + " m "
+            + "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " "
+            + "WHERE m." + DataMessage$Table.CONVERSATIONID + "=?")
             .withSelectionArgs(new String[]{conversationId})
             .build();
 
@@ -66,14 +65,13 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
    }
 
    public Observable<List<DataPhotoAttachment>> getErrorAttachments() {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * " +
-            "FROM " + DataPhotoAttachment.TABLE_NAME + " as p " +
-            "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
-            "ON a." + DataAttachment$Table._ID + " = p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " " +
-            "JOIN " + DataMessage$Table.TABLE_NAME + " m " +
-            "ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID + " " +
-
-            "WHERE m." + DataMessage$Table.STATUS + "= ? ")
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * "
+            + "FROM " + DataPhotoAttachment.TABLE_NAME + " as p "
+            + "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a "
+            + "ON a." + DataAttachment$Table._ID + " = p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " "
+            + "JOIN " + DataMessage$Table.TABLE_NAME + " m "
+            + "ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID + " "
+            + "WHERE m." + DataMessage$Table.STATUS + "= ? ")
             .withSelectionArgs(new String[]{Integer.toString(MessageStatus.ERROR)})
             .build();
 

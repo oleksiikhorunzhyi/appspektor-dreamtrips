@@ -37,6 +37,8 @@ public class WalletFinancialServiceToSmartCardFinancialServiceConverter implemen
          case GENERIC:
             recordFinancialService = Record.FinancialService.GENERIC;
             break;
+         default:
+            break;
       }
       return recordFinancialService;
    }

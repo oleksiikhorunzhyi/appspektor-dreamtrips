@@ -48,9 +48,13 @@ public class Document implements Parcelable {
 
    public static final Creator<Document> CREATOR = new Creator<Document>() {
       @Override
-      public Document createFromParcel(Parcel source) {return new Document(source);}
+      public Document createFromParcel(Parcel source) {
+         return new Document(source);
+      }
 
       @Override
-      public Document[] newArray(int size) {return new Document[size];}
+      public Document[] newArray(int size) {
+         return new Document[size];
+      }
    };
 }

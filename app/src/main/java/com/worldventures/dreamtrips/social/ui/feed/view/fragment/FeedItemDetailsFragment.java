@@ -54,11 +54,12 @@ public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetails
    @Override
    public void onPause() {
       super.onPause();
-        /* Hiding keyboard saves app from crash on Samsung Tablets. Here is crash log from samsung tab
+      /* Hiding keyboard saves app from crash on Samsung Tablets. Here is crash log from samsung tab
         Fatal Exception: java.lang.NullPointerException
             at android.widget.LinearLayout.layoutHorizontal(LinearLayout.java:1629)
             at android.widget.LinearLayout.onLayout(LinearLayout.java:1442)
-            at android.view.View.layout(View.java:15746)*/
+            at android.view.View.layout(View.java:15746)
+      */
       SoftInputUtil.hideSoftInputMethod(getActivity());
    }
 

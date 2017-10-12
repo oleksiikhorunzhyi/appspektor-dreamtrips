@@ -77,8 +77,7 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
       }
       builder.append(getString(R.string.wallet_card_settings_battery_level, batteryLevel)).append("\n")
       // TODO: 5/5/17 Implement this ffs
-      //                  .append(getString(R.string.wallet_card_settings_last_sync, formattedLastSync))
-      ;
+      //                  .append(getString(R.string.wallet_card_settings_last_sync, formattedLastSync));
 
       status.setText(builder.toString());
    }

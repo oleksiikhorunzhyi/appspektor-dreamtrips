@@ -76,7 +76,8 @@ public class GroupChatEventDelegate {
             .flatMap(dataParticipant -> loadConversationDelegate.getSyncConversationPipe()
                   .createObservableResult(new SyncConversationCommand(conversationId)))
             .subscribeOn(Schedulers.io())
-            .subscribe(p -> {}, e -> Timber.e(e, ""));
+            .subscribe(p -> {
+            }, e -> Timber.e(e, ""));
    }
 
    private DataParticipant removeFromConversation(String conversationId, String userId) {

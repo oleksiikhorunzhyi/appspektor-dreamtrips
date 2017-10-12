@@ -41,7 +41,11 @@ public class ChatMessagesEventDelegate {
    private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
    @Inject
-   public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO, MessageDAO messageDAO, LoadConversationDelegate loadConversationDelegate, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
+   public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO,
+         MessageDAO messageDAO,
+         LoadConversationDelegate loadConversationDelegate,
+         DecomposeMessagesHelper decomposeMessagesHelper,
+         UsersDelegate usersDelegate) {
       this.conversationsDAO = conversationsDAO;
       this.messageDAO = messageDAO;
       this.loadConversationDelegate = loadConversationDelegate;
@@ -80,7 +84,7 @@ public class ChatMessagesEventDelegate {
             .doOnNext(messageDAO::deleteMessageByIds)
             .subscribeOn(Schedulers.io())
             .publish();
-      observable.subscribe(deletedMessageIds -> {}, e -> Timber.e(e, "Something went wrong while messages were deleting"));
+      observable.subscribe(deletedMessageIds -> { }, e -> Timber.e(e, "Something went wrong while messages were deleting"));
       observable.connect();
       return observable;
    }

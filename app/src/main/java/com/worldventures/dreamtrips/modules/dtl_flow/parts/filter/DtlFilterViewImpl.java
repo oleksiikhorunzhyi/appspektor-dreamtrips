@@ -168,11 +168,10 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    }
 
    private List<Attribute> obtainSelectedAmenities() {
-      List<Integer> selectedPositions =
-            selectionManager.getSelectedPositions(baseDelegateAdapter.getClassItemViewType(ImmutableAttribute.class));
+      List<Integer> selectedPositions = selectionManager.getSelectedPositions(baseDelegateAdapter.getClassItemViewType(ImmutableAttribute.class));
 
-      if (selectedPositions.isEmpty() ||
-            (selectedPositions.size() == baseDelegateAdapter.getItemCount(ImmutableAttribute.class))) {
+      if (selectedPositions.isEmpty()
+            || (selectedPositions.size() == baseDelegateAdapter.getItemCount(ImmutableAttribute.class))) {
          return Collections.emptyList(); // treat all selected as none
       }
 

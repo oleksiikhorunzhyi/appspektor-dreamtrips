@@ -35,7 +35,7 @@ public abstract class PairDelegate {
       }
    }
 
-   private static class NewDeviceDelegate extends PairDelegate {
+   private final static class NewDeviceDelegate extends PairDelegate {
 
       private NewDeviceDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor, ProvisioningMode provisioningMode) {
          super(navigator, smartCardInteractor, provisioningMode);
@@ -52,7 +52,7 @@ public abstract class PairDelegate {
       }
    }
 
-   private static class SetupDelegate extends PairDelegate {
+   private final static class SetupDelegate extends PairDelegate {
 
       private SetupDelegate(Navigator navigator, SmartCardInteractor smartCardInteractor, ProvisioningMode provisioningMode) {
          super(navigator, smartCardInteractor, provisioningMode);

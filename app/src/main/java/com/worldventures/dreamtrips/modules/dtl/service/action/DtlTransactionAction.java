@@ -20,7 +20,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class DtlTransactionAction extends Command<DtlTransaction> implements CachedAction<Pair<String, DtlTransaction>>, InjectableAction {
+public final class DtlTransactionAction extends Command<DtlTransaction> implements CachedAction<Pair<String, DtlTransaction>>, InjectableAction {
 
    @Inject SnappyRepository db;
 

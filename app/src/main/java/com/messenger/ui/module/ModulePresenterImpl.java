@@ -2,7 +2,6 @@ package com.messenger.ui.module;
 
 import android.content.Context;
 
-import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
 import rx.Observable;

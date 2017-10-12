@@ -53,6 +53,8 @@ public class GetPopularBucketItemsCommand extends CommandWithError<List<PopularB
                   .createObservableResult(new GetBucketListDiningsHttpAction())
                   .map(GetBucketListDiningsHttpAction::response)
                   .map(items -> mapperyContext.convert(items, PopularBucketItem.class));
+         default:
+            break;
       }
       return Observable.error(new IllegalStateException("Wrong type was passed"));
    }

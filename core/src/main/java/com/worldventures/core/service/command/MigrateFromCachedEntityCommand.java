@@ -39,7 +39,7 @@ public class MigrateFromCachedEntityCommand extends Command<Void> implements Inj
 
    private CachedModel convert(CachedEntity entity) {
       CachedModel cachedModel = new CachedModel(entity.getUrl(), entity.getUuid(), entity.getName());
-      @CacheStatus int status = entity.getProgress() == 100? SUCCESS : entity.isFailed()? FAILED : IN_PROGRESS;
+      @CacheStatus int status = entity.getProgress() == 100 ? SUCCESS : entity.isFailed() ? FAILED : IN_PROGRESS;
       cachedModel.setCacheStatus(status);
       cachedModel.setProgress(entity.getProgress());
       return cachedModel;

@@ -28,7 +28,7 @@ public class DateTimeDeserializer implements JsonDeserializer<Date> {
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date date = format.parse(json.getAsString());
             return date;
-         } catch (ParseException e) {
+         } catch (ParseException ignored) {
          }
       }
       Timber.e("Can't parse date with any format, date string: %s", json);

@@ -192,6 +192,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          case R.id.action_map:
             getPresenter().openMap();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

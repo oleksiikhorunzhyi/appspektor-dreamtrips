@@ -110,8 +110,8 @@ public class StatePaginatedRecyclerViewManager {
          float viewHolderCenterPosition = viewHolder.itemView.getY() + viewHolder.itemView.getHeight() / 2;
          float positionDelta = Math.abs(centerPositionY - viewHolderCenterPosition);
 
-         if (positionDelta < minPositionDelta && viewHolder instanceof Focusable &&
-               ((Focusable) viewHolder).canFocus()) {
+         if (positionDelta < minPositionDelta && viewHolder instanceof Focusable
+               && ((Focusable) viewHolder).canFocus()) {
             minPositionDelta = positionDelta;
             nearestFocusableViewHolder = (Focusable) viewHolder;
          }

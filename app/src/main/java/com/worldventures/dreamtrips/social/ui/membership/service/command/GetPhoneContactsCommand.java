@@ -51,7 +51,14 @@ public class GetPhoneContactsCommand extends Command<List<Member>> implements In
             break;
          case SMS:
             contentURI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            projection = new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE};
+            projection = new String[]{
+                  ContactsContract.Contacts._ID,
+                  ContactsContract.Contacts.DISPLAY_NAME,
+                  ContactsContract.CommonDataKinds.Phone.NUMBER,
+                  ContactsContract.CommonDataKinds.Phone.TYPE
+            };
+            break;
+         default:
             break;
       }
       Cursor cur = context.getContentResolver().query(contentURI, projection, selection, selectionArgs, order);
@@ -82,6 +89,8 @@ public class GetPhoneContactsCommand extends Command<List<Member>> implements In
                if (TextUtils.isEmpty(member.getName())) break;
                member.setEmailIsMain(false);
                result.add(member);
+               break;
+            default:
                break;
          }
       }

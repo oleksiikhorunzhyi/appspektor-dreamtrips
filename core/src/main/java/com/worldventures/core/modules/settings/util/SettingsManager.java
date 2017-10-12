@@ -5,7 +5,7 @@ import com.worldventures.core.modules.settings.model.Setting;
 
 import java.util.List;
 
-public class SettingsManager {
+public final class SettingsManager {
 
    private SettingsManager() {
    }

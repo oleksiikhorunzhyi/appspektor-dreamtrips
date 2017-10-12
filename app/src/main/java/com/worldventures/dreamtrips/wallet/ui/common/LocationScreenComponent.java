@@ -43,6 +43,8 @@ public class LocationScreenComponent {
                Timber.e(e, "");
             }
             break;
+         default:
+            break;
       }
       return resultPublishSubject.asObservable().take(1);
    }

@@ -85,7 +85,7 @@ public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlace
       return coordinates;
    }
 
-   public class PlacesWithAddress {
+   public final class PlacesWithAddress {
       public final WalletAddress address;
       public final List<WalletPlace> places;
 

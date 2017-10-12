@@ -9,7 +9,7 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
 
-public class UserUtils {
+public final class UserUtils {
 
    private UserUtils() {
    }

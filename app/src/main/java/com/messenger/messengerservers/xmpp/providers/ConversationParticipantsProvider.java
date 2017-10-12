@@ -40,12 +40,18 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
                            .userId(participantId)
                            .build());
                      break;
+                  default:
+                     break;
                }
             case XmlPullParser.END_TAG:
                switch (elementName) {
                   case QUERY:
                      done = true;
+                  default:
+                     break;
                }
+            default:
+               break;
          }
       }
       return conversationParticipantsIQ;

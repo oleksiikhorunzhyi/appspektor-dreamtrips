@@ -161,6 +161,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
          case ERROR:
             getView().showError(getViewState().getError());
             break;
+         default:
+            break;
       }
    }
 
@@ -262,6 +264,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
          case R.id.action_add:
             openRoster();
             return true;
+         default:
+            break;
       }
       return false;
    }

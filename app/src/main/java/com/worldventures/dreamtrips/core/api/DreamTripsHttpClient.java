@@ -138,17 +138,17 @@ public class DreamTripsHttpClient implements HttpClient {
             if (key.equals(HttpHeader.CONTENT_LENGTH) || key.equals(HttpHeader.HOST)) {
                continue;
             }
-                /*
-                 * Amazon S3 suggests set 100-continue header prior to sending
-                 * the request body in order to improve efficiency. S3 may
-                 * return '100 Continue' or 417 (Expectation failed). It may
-                 * also respond with 307 to redirect the request to the correct
-                 * regional location, in which case HttpURLConnection will throw
-                 * ProtocolException because it only expects either a 100 or a
-                 * 417 response. As a result, this feature is explicitly
-                 * disabled. To prevent sending the request body twice due to
-                 * redirect, please choose the correct endpoint.
-                 */
+            /*
+            *  Amazon S3 suggests set 100-continue header prior to sending
+            * the request body in order to improve efficiency. S3 may
+            * return '100 Continue' or 417 (Expectation failed). It may
+            * also respond with 307 to redirect the request to the correct
+            * regional location, in which case HttpURLConnection will throw
+            * ProtocolException because it only expects either a 100 or a
+            * 417 response. As a result, this feature is explicitly
+            * disabled. To prevent sending the request body twice due to
+            * redirect, please choose the correct endpoint.
+            */
             if (key.equals(HttpHeader.EXPECT)) {
                // continue;
             }

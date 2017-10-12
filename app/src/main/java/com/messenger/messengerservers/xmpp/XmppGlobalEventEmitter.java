@@ -199,6 +199,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
          case SUBJECT:
             notifyOnSubjectChanges(JidCreatorHelper.obtainId(packet.getFrom()), ((Message) packet).getSubject());
             break;
+         default:
+            break;
       }
    }
 

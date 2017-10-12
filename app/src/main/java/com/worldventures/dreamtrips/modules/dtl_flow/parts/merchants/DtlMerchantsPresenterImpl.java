@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -179,7 +179,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       setItemsOrRedirect(action.merchants());
    }
 
-   void onMerchantsLoading(MerchantsAction action, Integer progress){
+   void onMerchantsLoading(MerchantsAction action, Integer progress) {
       if (action.isRefresh()) getView().onRefreshProgress();
       else getView().onLoadNextProgress();
    }
@@ -211,7 +211,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       if (!action.getFromRating()) {
          navigateToDetails(action.getResult(), action.getOfferId());
       } else {
-         if (!action.getResult().reviews().total().isEmpty() && Integer.parseInt(action.getResult().reviews().total()) > 0) {
+         if (!action.getResult().reviews().total().isEmpty() && Integer.parseInt(action.getResult()
+               .reviews()
+               .total()) > 0) {
             navigateToRatingList(action.getResult());
          } else {
             navigateToCommentRating(action.getResult());

@@ -62,6 +62,8 @@ public class NotificationsSettingsFragment extends SettingsFragment implements C
          case R.id.done:
             getPresenter().applyChanges();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

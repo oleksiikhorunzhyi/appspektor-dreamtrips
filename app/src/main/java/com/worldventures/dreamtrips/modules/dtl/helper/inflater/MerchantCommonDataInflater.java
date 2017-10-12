@@ -44,8 +44,9 @@ public class MerchantCommonDataInflater extends MerchantDataInflater {
          return;
       }
 
-      earnPointsBadge.setImageResource(merchantAttributes.hasPerks() ?
-            R.drawable.ic_dtl_points_and_perks_badge : R.drawable.ic_dtl_points_badge);
+      earnPointsBadge.setImageResource(merchantAttributes.hasPerks()
+            ? R.drawable.ic_dtl_points_and_perks_badge
+            : R.drawable.ic_dtl_points_badge);
    }
 
    private void setupPerksBadge() {

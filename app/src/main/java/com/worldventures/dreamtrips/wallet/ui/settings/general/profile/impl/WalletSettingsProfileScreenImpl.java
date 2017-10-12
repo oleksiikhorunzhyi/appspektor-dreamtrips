@@ -80,6 +80,8 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
             case R.id.done:
                getPresenter().handleDoneAction();
                break;
+            default:
+               break;
          }
          return false;
       });

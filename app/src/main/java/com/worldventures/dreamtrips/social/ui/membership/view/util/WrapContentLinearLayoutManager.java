@@ -43,6 +43,8 @@ public class WrapContentLinearLayoutManager extends LinearLayoutManager {
             width = widthSize;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
+         default:
+            break;
       }
 
       switch (heightMode) {
@@ -50,6 +52,8 @@ public class WrapContentLinearLayoutManager extends LinearLayoutManager {
             height = heightSize;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
+         default:
+            break;
       }
 
       setMeasuredDimension(width, height);

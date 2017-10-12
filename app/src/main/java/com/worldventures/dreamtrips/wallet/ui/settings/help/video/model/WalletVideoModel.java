@@ -46,10 +46,14 @@ public class WalletVideoModel extends BaseViewModel<VideoTypeFactory> implements
 
    public static final Creator<WalletVideoModel> CREATOR = new Creator<WalletVideoModel>() {
       @Override
-      public WalletVideoModel createFromParcel(Parcel source) {return new WalletVideoModel(source);}
+      public WalletVideoModel createFromParcel(Parcel source) {
+         return new WalletVideoModel(source);
+      }
 
       @Override
-      public WalletVideoModel[] newArray(int size) {return new WalletVideoModel[size];}
+      public WalletVideoModel[] newArray(int size) {
+         return new WalletVideoModel[size];
+      }
    };
 
    @Override

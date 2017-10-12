@@ -91,6 +91,8 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
             case R.id.action_send:
                getPresenter().sendFeedback();
                break;
+            default:
+               break;
          }
          return true;
       });
@@ -119,6 +121,8 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
             break;
          case FAIL:
             showRetryUploadingUiForAttachment(holder);
+            break;
+         default:
             break;
       }
    }
@@ -149,6 +153,8 @@ public class PaymentFeedbackScreenImpl extends BaseFeedbackScreenImpl<PaymentFee
                      break;
                   case 1:
                      getPresenter().onRemoveAttachment(attachmentHolder);
+                     break;
+                  default:
                      break;
                }
             }).show();

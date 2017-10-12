@@ -41,9 +41,13 @@ public class FeedbackImageAttachmentsBundle implements Parcelable {
 
    public static final Creator<FeedbackImageAttachmentsBundle> CREATOR = new Creator<FeedbackImageAttachmentsBundle>() {
       @Override
-      public FeedbackImageAttachmentsBundle createFromParcel(Parcel source) {return new FeedbackImageAttachmentsBundle(source);}
+      public FeedbackImageAttachmentsBundle createFromParcel(Parcel source) {
+         return new FeedbackImageAttachmentsBundle(source);
+      }
 
       @Override
-      public FeedbackImageAttachmentsBundle[] newArray(int size) {return new FeedbackImageAttachmentsBundle[size];}
+      public FeedbackImageAttachmentsBundle[] newArray(int size) {
+         return new FeedbackImageAttachmentsBundle[size];
+      }
    };
 }

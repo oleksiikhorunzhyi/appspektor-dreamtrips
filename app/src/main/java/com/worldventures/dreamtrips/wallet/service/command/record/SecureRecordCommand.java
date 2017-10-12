@@ -23,7 +23,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 @CommandAction
-public class SecureRecordCommand extends Command<Record> implements InjectableAction {
+public final class SecureRecordCommand extends Command<Record> implements InjectableAction {
 
    @Inject NxtInteractor nxtInteractor;
    @Inject WalletAnalyticsInteractor analyticsInteractor;
@@ -93,7 +93,7 @@ public class SecureRecordCommand extends Command<Record> implements InjectableAc
       ));
    }
 
-   public static class Builder {
+   public final static class Builder {
 
       private final Record record;
       private final boolean secureForLocalStorage;

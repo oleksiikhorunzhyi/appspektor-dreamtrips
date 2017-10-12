@@ -45,10 +45,14 @@ public class WalletLoadMoreModel extends BaseViewModel<HelpDocsTypeFactory> impl
 
    public static final Creator<WalletLoadMoreModel> CREATOR = new Creator<WalletLoadMoreModel>() {
       @Override
-      public WalletLoadMoreModel createFromParcel(Parcel source) {return new WalletLoadMoreModel(source);}
+      public WalletLoadMoreModel createFromParcel(Parcel source) {
+         return new WalletLoadMoreModel(source);
+      }
 
       @Override
-      public WalletLoadMoreModel[] newArray(int size) {return new WalletLoadMoreModel[size];}
+      public WalletLoadMoreModel[] newArray(int size) {
+         return new WalletLoadMoreModel[size];
+      }
    };
 
    @Override

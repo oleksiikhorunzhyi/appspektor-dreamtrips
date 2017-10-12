@@ -46,9 +46,9 @@ public class SendFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<SendFee
    public void sendFeedback(String text) {
       getView().changeActionSendMenuItemEnabled(false);
 
-      sendFeedbackCommand(getView().getFeedbackType() == FeedbackType.SmartCardFeedback ?
-            new SmartCardFeedbackCommand(text, getImagesAttachments()) :
-            new CustomerSupportFeedbackCommand(text, getImagesAttachments()));
+      sendFeedbackCommand(getView().getFeedbackType() == FeedbackType.SmartCardFeedback
+            ? new SmartCardFeedbackCommand(text, getImagesAttachments())
+            : new CustomerSupportFeedbackCommand(text, getImagesAttachments()));
    }
 
    @Override

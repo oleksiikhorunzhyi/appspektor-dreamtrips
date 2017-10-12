@@ -88,9 +88,9 @@ public class SelectableHeaderItem implements Parcelable {
 
    @Override
    public String toString() {
-      return "SelectableHeaderItem{" +
-            "headerCaption='" + headerCaption + '\'' +
-            ", selected=" + selected +
-            '}';
+      return "SelectableHeaderItem{"
+            + "headerCaption='" + headerCaption + '\''
+            + ", selected=" + selected
+            + '}';
    }
 }

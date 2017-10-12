@@ -65,19 +65,22 @@ public class AdobeTracker extends Tracker {
 
    @Override
    public void trackEvent(String category, String viewState, Map<String, Object> data) {
-      if (data == null) data = new HashMap<>();
-      if (getHeaderData() != null) data.putAll(getHeaderData());
+      Map<String, Object> contextData = new HashMap<>();
+      if (data != null) {
+         contextData.putAll(data);
+      }
+      if (getHeaderData() != null) contextData.putAll(getHeaderData());
 
       String preparedViewState = prepareViewState(viewState);
 
-      data.put(CHANNEL_KEY, CHANNEL_VALUE);
-      data.put(PREV_VIEW_STATE, lastTrackedViewState);
-      data.put(ACTION, preparedViewState);
-      data.put(TIME_PARTING, DateTimeUtils.convertDateToString(new Date(), TIME_FORMAT_ANALYTICS));
-      data.put(WIFI_CONNECTED, connectionInfoProvider.isWifi() ? "Yes" : "No");
-      data.put(DEVICE_ID, deviceInfoProvider.getUniqueIdentifier());
+      contextData.put(CHANNEL_KEY, CHANNEL_VALUE);
+      contextData.put(PREV_VIEW_STATE, lastTrackedViewState);
+      contextData.put(ACTION, preparedViewState);
+      contextData.put(TIME_PARTING, DateTimeUtils.convertDateToString(new Date(), TIME_FORMAT_ANALYTICS));
+      contextData.put(WIFI_CONNECTED, connectionInfoProvider.isWifi() ? "Yes" : "No");
+      contextData.put(DEVICE_ID, deviceInfoProvider.getUniqueIdentifier());
 
-      Analytics.trackState(preparedViewState, data);
+      Analytics.trackState(preparedViewState, contextData);
       lastTrackedViewState = preparedViewState;
    }
 

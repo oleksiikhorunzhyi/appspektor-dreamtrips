@@ -21,8 +21,8 @@ public final class SCFirmwareUtils {
    }
 
    public static boolean isNewFirmwareAvailable(String currentVersion, String availableVersion) {
-      return currentVersion.isEmpty() ||
-            (!UNKNOWN_VERSION.equals(currentVersion) && !currentVersion.equalsIgnoreCase(availableVersion));
+      return currentVersion.isEmpty()
+            || (!UNKNOWN_VERSION.equals(currentVersion) && !currentVersion.equalsIgnoreCase(availableVersion));
    }
 
    public static boolean cardIsCharged(int batteryLevel, boolean cardInCharger) {

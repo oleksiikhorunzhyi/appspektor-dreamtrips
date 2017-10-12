@@ -42,6 +42,8 @@ public class UploadChatAvatarCommand extends Command<String> implements Injectab
          case PROGRESS:
             callback.onProgress(actionState.progress);
             break;
+         default:
+            break;
       }
    }
 }

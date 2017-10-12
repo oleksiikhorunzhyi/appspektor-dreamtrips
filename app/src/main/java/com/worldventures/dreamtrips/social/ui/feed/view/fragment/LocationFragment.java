@@ -119,6 +119,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
             SoftInputUtil.hideSoftInputMethod(getActivity());
             getPresenter().onDone(composeLocation());
             router.back();
+         default:
+            break;
       }
       return true;
    }
@@ -189,6 +191,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
                   break;
             }
             activityResultDelegate.clear();
+            break;
+         default:
             break;
       }
    }

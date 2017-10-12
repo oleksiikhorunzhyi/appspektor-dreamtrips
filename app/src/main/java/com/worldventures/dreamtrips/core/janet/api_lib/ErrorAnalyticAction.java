@@ -8,7 +8,7 @@ import com.worldventures.core.service.analytics.AdobeTracker;
 
 @AnalyticsEvent(action = "errors:${viewState}",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class ErrorAnalyticAction extends BaseAnalyticsAction {
+public final class ErrorAnalyticAction extends BaseAnalyticsAction {
 
    @ActionPart String viewState;
 

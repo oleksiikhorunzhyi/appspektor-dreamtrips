@@ -309,8 +309,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!isFilterDefault) {
          captionId = R.string.merchants_no_results;
       } else {
-         captionId =
-               isOffersOnly ? R.string.merchants_no_results_offers_only : R.string.dtl_location_no_merchants_caption;
+         captionId = isOffersOnly
+               ? R.string.merchants_no_results_offers_only
+               : R.string.dtl_location_no_merchants_caption;
       }
       noMerchantsCaption.setText(captionId);
    }
@@ -456,7 +457,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       getPresenter().loadAmenities(merchantType);
    }
 
-   private void setCurrentSearchFilter(int stringResource){
+   private void setCurrentSearchFilter(int stringResource) {
       currentSelectedFilter = getContext().getString(stringResource);
    }
 }

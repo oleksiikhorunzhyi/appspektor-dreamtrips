@@ -228,7 +228,7 @@ public class SmartCardSyncManager {
             .flatMap(aLong -> interactor.smartCardSyncPipe()
                   .createObservableResult(new SyncSmartCardCommand()))
             .retry(1)
-            .subscribe(command -> {/*nothing*/}, throwable -> Timber.e(throwable, ""));
+            .subscribe(command -> { /*nothing*/ }, throwable -> Timber.e(throwable, ""));
    }
 
    private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {

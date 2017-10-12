@@ -52,8 +52,6 @@ public abstract class BaseInAppNotificationView extends SwipeLayout implements S
       }
    }
 
-   ;
-
    @Override
    public void onStartOpen(SwipeLayout layout) {
    }

@@ -65,6 +65,8 @@ public class ChatFacadeInitializer implements AppInitializer {
          case ChatState.PAUSE:
             typingManager.userStopTyping(conversationId, userId);
             break;
+         default:
+            break;
       }
    }
 }

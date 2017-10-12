@@ -29,8 +29,8 @@ public class WalletProfileUtils {
       if (!countryCode.contains("+")) {
          countryCode = String.format(Locale.getDefault(), "+%s", countryCode);
       }
-      return (phone == null && isStrPhoneEmpty) ||
-            (phone != null && phone.code().equals(countryCode) && phone.number().equals(number));
+      return (phone == null && isStrPhoneEmpty)
+            || (phone != null && phone.code().equals(countryCode) && phone.number().equals(number));
    }
 
    public static boolean equalsPhoto(@Nullable SmartCardUserPhoto photo, @Nullable String photoUri) {

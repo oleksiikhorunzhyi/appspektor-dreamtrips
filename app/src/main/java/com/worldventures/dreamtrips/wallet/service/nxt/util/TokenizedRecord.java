@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiResponseBody;
 import java.util.Collections;
 import java.util.List;
 
-public class TokenizedRecord extends NxtRecordResponse {
+public final class TokenizedRecord extends NxtRecordResponse {
 
    public static TokenizedRecord from(@NonNull Record detokenizedRecord, @NonNull MultiResponseBody nxtResponses) {
       return from(detokenizedRecord, Collections.singletonList(nxtResponses));

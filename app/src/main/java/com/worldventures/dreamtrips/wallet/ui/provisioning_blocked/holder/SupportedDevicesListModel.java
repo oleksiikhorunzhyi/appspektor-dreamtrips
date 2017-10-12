@@ -25,15 +25,23 @@ public class SupportedDevicesListModel extends BaseViewModel<ProvisionBlockedTyp
    public int describeContents() { return 0; }
 
    @Override
-   public void writeToParcel(Parcel dest, int flags) {dest.writeStringList(this.devices);}
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeStringList(this.devices);
+   }
 
-   protected SupportedDevicesListModel(Parcel in) {this.devices = in.createStringArrayList();}
+   protected SupportedDevicesListModel(Parcel in) {
+      this.devices = in.createStringArrayList();
+   }
 
    public static final Creator<SupportedDevicesListModel> CREATOR = new Creator<SupportedDevicesListModel>() {
       @Override
-      public SupportedDevicesListModel createFromParcel(Parcel source) {return new SupportedDevicesListModel(source);}
+      public SupportedDevicesListModel createFromParcel(Parcel source) {
+         return new SupportedDevicesListModel(source);
+      }
 
       @Override
-      public SupportedDevicesListModel[] newArray(int size) {return new SupportedDevicesListModel[size];}
+      public SupportedDevicesListModel[] newArray(int size) {
+         return new SupportedDevicesListModel[size];
+      }
    };
 }

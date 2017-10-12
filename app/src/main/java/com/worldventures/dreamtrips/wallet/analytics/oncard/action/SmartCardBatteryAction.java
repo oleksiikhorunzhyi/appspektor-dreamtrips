@@ -24,6 +24,8 @@ class SmartCardBatteryAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.BATTERY_CRITICAL:
             attributeMap.put("ocbatcritical", "1");
             break;
+         default:
+            break;
       }
    }
 }

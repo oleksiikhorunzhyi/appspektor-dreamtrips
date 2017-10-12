@@ -24,8 +24,7 @@ public class MessengerSyncDelegate {
       this.reLoginInteractor = reLoginInteractor;
       this.contactsPipe = janet.createPipe(LoadContactsCommand.class, Schedulers.io());
       this.conversationsPipe = janet.createPipe(SyncConversationsCommand.class, Schedulers.io());
-      this.loginToMessengerServerCommandActionPipe =
-            janet.createPipe(LoginToMessengerServerCommand.class, Schedulers.io());
+      this.loginToMessengerServerCommandActionPipe = janet.createPipe(LoginToMessengerServerCommand.class, Schedulers.io());
 
       connectReLogin();
    }

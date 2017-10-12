@@ -114,16 +114,16 @@ public class Podcast {
 
    @Override
    public String toString() {
-      return "Podcast{" +
-            "title='" + title + '\'' +
-            ", category='" + category + '\'' +
-            ", description='" + description + '\'' +
-            ", date=" + date +
-            ", size=" + size +
-            ", duration=" + duration +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", fileUrl='" + fileUrl + '\'' +
-            ", speaker=" + speaker +
-            '}';
+      return "Podcast{"
+            + "title='" + title + '\''
+            + ", category='" + category + '\''
+            + ", description='" + description + '\''
+            + ", date=" + date
+            + ", size=" + size
+            + ", duration=" + duration
+            + ", imageUrl='" + imageUrl + '\''
+            + ", fileUrl='" + fileUrl + '\''
+            + ", speaker=" + speaker
+            + '}';
    }
 }

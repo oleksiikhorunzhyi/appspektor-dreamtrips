@@ -32,7 +32,7 @@ public class XmppContactLoader implements ContactsLoader {
       return rosterObservable.flatMap(RosterObservable::create);
    }
 
-   private static class RosterObservable implements Observable.OnSubscribe<List<MessengerUser>> {
+   private final static class RosterObservable implements Observable.OnSubscribe<List<MessengerUser>> {
 
       private final Roster roster;
 

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 @AnalyticsEvent(action = "wallet:Add a Card:Card Detail",
                 navigationState = true,
                 trackers = AdobeTracker.TRACKER_KEY)
-public class AddCardDetailsAction extends BaseCardDetailsAction {
+public final class AddCardDetailsAction extends BaseCardDetailsAction {
 
    @Attribute("addstate") final String addState;
 

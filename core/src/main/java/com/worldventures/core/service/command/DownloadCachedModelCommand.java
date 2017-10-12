@@ -38,14 +38,14 @@ public class DownloadCachedModelCommand extends CachedEntityCommand implements I
    @Override
    protected void run(Command.CommandCallback<CachedModel> callback) throws Throwable {
       downloadFileInteractor.
-            getDownloadFileCommandPipe().createObservable(downloadFileCommand =
-               new DownloadFileCommand(file, cachedModel.getUrl()))
+            getDownloadFileCommandPipe()
+            .createObservable(downloadFileCommand = new DownloadFileCommand(file, cachedModel.getUrl()))
             .onBackpressureLatest()
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
-               .onStart(this::onStart)
-               .onSuccess(successCommand -> onSuccess(callback))
-               .onFail((failedCommand, throwable) -> onFail(callback, throwable))
-               .onProgress((commandInProgress, progress) -> onProgress(callback, progress)));
+                  .onStart(this::onStart)
+                  .onSuccess(successCommand -> onSuccess(callback))
+                  .onFail((failedCommand, throwable) -> onFail(callback, throwable))
+                  .onProgress((commandInProgress, progress) -> onProgress(callback, progress)));
    }
 
    private void onStart(DownloadFileCommand command) {

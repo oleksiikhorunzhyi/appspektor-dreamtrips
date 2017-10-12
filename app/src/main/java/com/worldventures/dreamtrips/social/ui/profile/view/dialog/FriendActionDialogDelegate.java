@@ -74,6 +74,8 @@ public class FriendActionDialogDelegate {
          case 2:
             onStartSingleChatAction.call(user);
             break;
+         default:
+            break;
       }
    }
 

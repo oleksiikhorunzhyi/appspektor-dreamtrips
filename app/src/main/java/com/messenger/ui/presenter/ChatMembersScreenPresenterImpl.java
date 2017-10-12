@@ -125,6 +125,8 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
          case ERROR:
             screen.showError(viewState.getError());
             break;
+         default:
+            break;
       }
    }
 

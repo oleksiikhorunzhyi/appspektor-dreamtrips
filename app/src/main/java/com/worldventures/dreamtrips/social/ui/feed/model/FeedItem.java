@@ -292,6 +292,8 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
             return resources.getString(R.string.send_request);
          case TAG_PHOTO:
             return resources.getString(R.string.tag_photo);
+         default:
+            break;
       }
       return "";
    }

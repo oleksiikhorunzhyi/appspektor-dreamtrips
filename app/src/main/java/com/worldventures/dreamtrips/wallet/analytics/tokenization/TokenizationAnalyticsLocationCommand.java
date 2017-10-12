@@ -34,8 +34,8 @@ public class TokenizationAnalyticsLocationCommand extends WalletAnalyticsCommand
    @Nullable
    private WalletCoordinates getLastKnownCoordinates() {
       List<WalletLocation> locations = lostCardRepository.getWalletLocations();
-      WalletLocation lastKnownLocation = (locations == null || locations.isEmpty()) ?
-            null : locations.get(locations.size() - 1);
+      WalletLocation lastKnownLocation = (locations == null || locations.isEmpty())
+            ? null : locations.get(locations.size() - 1);
       return (lastKnownLocation == null) ? null : lastKnownLocation.coordinates();
    }
 

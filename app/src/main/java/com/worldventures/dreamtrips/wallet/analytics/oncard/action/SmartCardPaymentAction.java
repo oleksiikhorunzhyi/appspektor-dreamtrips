@@ -46,6 +46,8 @@ public class SmartCardPaymentAction extends SmartCardAnalyticsAction {
             attributeMap.put("ocpayswipespd", String.valueOf(cardSwipe.swipeSpeed()));
             attributeMap.put("ocpaytrack", String.valueOf(cardSwipe.trackIdentifier()));
             break;
+         default:
+            break;
       }
    }
 }

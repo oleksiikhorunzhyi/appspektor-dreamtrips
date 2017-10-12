@@ -11,7 +11,7 @@ import timber.log.Timber;
 
 public class CompoundOperationRepositoryImpl implements CompoundOperationRepository {
 
-   private String COMPOUND_OBJECT_POSTS = "COMPOUND_OBJECT_POSTS";
+   private static final String COMPOUND_OBJECT_POSTS = "COMPOUND_OBJECT_POSTS";
 
    private SocialSnappyRepository snappyRepository;
 

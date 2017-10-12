@@ -12,15 +12,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.R;
 import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
-import com.worldventures.core.utils.QuantityHelper;
-import com.worldventures.core.modules.picker.viewmodel.GalleryMediaPickerViewModel;
-import com.worldventures.core.modules.picker.viewmodel.IrregularPhotoPickerViewModel;
 import com.worldventures.core.modules.picker.presenter.gallery.GalleryMediaPickerPresenter;
 import com.worldventures.core.modules.picker.util.MediaPickerStep;
 import com.worldventures.core.modules.picker.util.strategy.MediaPickerStaticItemsStrategy;
 import com.worldventures.core.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.core.modules.picker.util.strategy.VideoPickLimitStrategy;
 import com.worldventures.core.modules.picker.view.base.BaseMediaPickerLayout;
+import com.worldventures.core.modules.picker.viewmodel.GalleryMediaPickerViewModel;
+import com.worldventures.core.modules.picker.viewmodel.IrregularPhotoPickerViewModel;
+import com.worldventures.core.utils.QuantityHelper;
 
 import java.util.List;
 
@@ -84,9 +84,8 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
    @Override
    public void updateItemWithSwap(int position) {
       getAdapter().updateItem(position);
-      GalleryMediaPickerViewModel modelToRevert =
-            Queryable.from(getChosenMedia())
-                  .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
+      GalleryMediaPickerViewModel modelToRevert = Queryable.from(getChosenMedia())
+            .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
       int modelToRevertPosition = getAdapter().getPositionFromItem(modelToRevert);
       getAdapter().updateItem(modelToRevertPosition);
    }
@@ -141,6 +140,8 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
                      break;
                   case 1:
                      presenter.tryOpenCameraForVideo();
+                     break;
+                  default:
                      break;
                }
             }).show();

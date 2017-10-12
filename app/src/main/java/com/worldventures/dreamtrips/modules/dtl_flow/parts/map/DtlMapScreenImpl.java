@@ -138,27 +138,27 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       dtlToolbar.setFilterEnabled(!isDefault);
    }
 
-    @Override
-    public void updateMerchantType(List<String> type) {
-       int idResource = R.string.dtlt_search_hint;
-       if (type != null && type.size() > 0) {
-          if (type.size() == 1) {
-             if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
-                filterEntertainment.setSelected(true);
-                idResource = R.string.filter_merchant_entertainment;
-             } else if (type.get(0).equals(FilterData.SPAS)) {
-                filterSpa.setSelected(true);
-                idResource = R.string.filter_merchant_spas;
-             }
-          } else {
-             if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
-                filterFood.setSelected(true);
-                idResource = R.string.dtlt_search_hint;
-             }
-          }
-       }
-       updateFiltersView(idResource);
-    }
+   @Override
+   public void updateMerchantType(List<String> type) {
+      int idResource = R.string.dtlt_search_hint;
+      if (type != null && type.size() > 0) {
+         if (type.size() == 1) {
+            if (type.get(0).equals(FilterData.ENTERTAINMENT)) {
+               filterEntertainment.setSelected(true);
+               idResource = R.string.filter_merchant_entertainment;
+            } else if (type.get(0).equals(FilterData.SPAS)) {
+               filterSpa.setSelected(true);
+               idResource = R.string.filter_merchant_spas;
+            }
+         } else {
+            if (type.get(0).equals(FilterData.RESTAURANT) && type.get(1).equals(FilterData.BAR)) {
+               filterFood.setSelected(true);
+               idResource = R.string.dtlt_search_hint;
+            }
+         }
+      }
+      updateFiltersView(idResource);
+   }
 
    private void checkMapAvailable() {
       if (MapsInitializer.initialize(getActivity()) != ConnectionResult.SUCCESS) {
@@ -282,7 +282,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void connectToggleUpdate() {
-      if(dtlToolbar == null) return;
+      if (dtlToolbar == null) return;
 
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
             .compose(RxLifecycleAndroid.bindView(this))
@@ -445,7 +445,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       }
    }
 
-   private void loadMerchantsAndAmenities(List<String> merchantType , int stringResource) {
+   private void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
       updateFiltersView(stringResource);
       getPresenter().setMerchantType(merchantType, getActivity().getString(stringResource));
       getPresenter().loadAmenities(merchantType);

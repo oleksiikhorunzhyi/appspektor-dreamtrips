@@ -84,8 +84,9 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
    }
 
    public String getFileName() {
-      return absolutePath != null && absolutePath.contains(PATH_DEVIDER) ?
-            absolutePath.substring(absolutePath.lastIndexOf(PATH_DEVIDER)) : "";
+      return absolutePath != null && absolutePath.contains(PATH_DEVIDER)
+            ? absolutePath.substring(absolutePath.lastIndexOf(PATH_DEVIDER))
+            : "";
    }
 
    @Override
@@ -105,9 +106,9 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
 
    @Override
    public String toString() {
-      return "MediaPickerModelImpl{" +
-            "dateTaken=" + dateTaken +
-            ", absolutePath='" + absolutePath + '\'' +
-            '}';
+      return "MediaPickerModelImpl{"
+            + "dateTaken=" + dateTaken
+            + ", absolutePath='" + absolutePath + '\''
+            + '}';
    }
 }

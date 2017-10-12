@@ -43,11 +43,11 @@ public class RegionBundle {
 
    @Override
    public String toString() {
-      return "RegionBundle{" +
-            "name='" + name + '\'' +
-            ", uuid='" + uuid + '\'' +
-            ", minor='" + minor + '\'' +
-            ", major='" + major + '\'' +
-            '}';
+      return "RegionBundle{"
+            + "name='" + name + '\''
+            + ", uuid='" + uuid + '\''
+            + ", minor='" + minor + '\''
+            + ", major='" + major + '\''
+            + '}';
    }
 }

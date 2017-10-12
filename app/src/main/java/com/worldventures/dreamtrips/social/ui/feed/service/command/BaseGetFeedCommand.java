@@ -16,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> extends CommandWithError<List<FeedItem>> implements InjectableAction {
+public abstract class BaseGetFeedCommand<A extends GetFeedHttpAction> extends CommandWithError<List<FeedItem>> implements InjectableAction {
 
    protected static final int FEED_LIMIT = 20;
    protected static final int TIMELINE_LIMIT = 10;
@@ -46,7 +46,7 @@ public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> e
       callback.onSuccess(items);
    }
 
-   protected abstract HttpAction provideRequest();
+   protected abstract A provideRequest();
 
-   protected abstract Class<HttpAction> provideHttpActionClass();
+   protected abstract Class<A> provideHttpActionClass();
 }

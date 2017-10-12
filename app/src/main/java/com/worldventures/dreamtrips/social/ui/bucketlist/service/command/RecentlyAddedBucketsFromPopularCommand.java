@@ -19,7 +19,7 @@ import rx.functions.Func1;
 import static com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.BucketType;
 
 @CommandAction
-public class RecentlyAddedBucketsFromPopularCommand extends Command<Pair<BucketType, List<BucketItem>>> implements CachedAction<List<BucketItem>> {
+public final class RecentlyAddedBucketsFromPopularCommand extends Command<Pair<BucketType, List<BucketItem>>> implements CachedAction<List<BucketItem>> {
    public static final String BUCKET_TYPE_EXTRA = "bucket_type_extra";
 
    private List<BucketItem> recentPopularBucketListByType;

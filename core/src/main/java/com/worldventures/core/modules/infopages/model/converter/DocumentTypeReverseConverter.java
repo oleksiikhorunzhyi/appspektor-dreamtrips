@@ -17,6 +17,8 @@ public class DocumentTypeReverseConverter implements Converter<GetDocumentsComma
             return DocumentType.LEGAL;
          case SMARTCARD:
             return DocumentType.SMARTCARD;
+         default:
+            break;
       }
       throw new IllegalArgumentException("Unknown document type");
    }

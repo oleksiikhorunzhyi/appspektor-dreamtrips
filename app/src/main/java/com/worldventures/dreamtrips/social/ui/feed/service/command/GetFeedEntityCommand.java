@@ -75,6 +75,8 @@ public class GetFeedEntityCommand extends CommandWithError<FeedEntity> implement
                   .map(video -> mappery.convert(video, Video.class))
                   .subscribe(callback::onSuccess, callback::onFail);
             break;
+         default:
+            break;
       }
    }
 

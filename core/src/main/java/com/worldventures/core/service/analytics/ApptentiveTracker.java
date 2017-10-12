@@ -56,7 +56,7 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void trackEvent(String category, String action, Map<String, Object> data) {
-      if (qaAutomationModeEnabled|| activity == null) return;
+      if (qaAutomationModeEnabled || activity == null) return;
 
       Activity activity = this.activity.get();
       if (activity != null) {

@@ -28,6 +28,8 @@ class SmartCardPowerAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.EXIT_CHARGER:
             attributeMap.put("ocexitcharger", "1");
             break;
+         default:
+            break;
       }
    }
 }

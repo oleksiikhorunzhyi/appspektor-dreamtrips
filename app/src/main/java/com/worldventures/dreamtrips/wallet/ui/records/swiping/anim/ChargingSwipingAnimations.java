@@ -24,7 +24,7 @@ public class ChargingSwipingAnimations {
    private final static int SMARTCARD_TRANSLATION_DISTANCE_FINISH_DP = 100;
    private final static int SMARTCARD_ANIMATION_DURATION = 800;
 
-   private final static int BANKCARD_TRANSLATION_DISTANCE__DP = 200;
+   private final static int BANKCARD_TRANSLATION_DISTANCE_DP = 200;
    private final static int BANKCARD_DELAY_BETWEEN_ANIMATIONS = 1200;
    private final static int BANKCARD_ANIMATION_DURATION = 1600;
    private final static int BANKCARD_ANIMATION_DELAY = 1000;
@@ -45,7 +45,7 @@ public class ChargingSwipingAnimations {
 
    public void animateBankCard(View card, int repeatCount) {
       ViewUtils.runTaskAfterMeasure(card, () -> {
-         float distance = ViewUtils.pxFromDp(card.getContext(), BANKCARD_TRANSLATION_DISTANCE__DP);
+         float distance = ViewUtils.pxFromDp(card.getContext(), BANKCARD_TRANSLATION_DISTANCE_DP);
          float halfWayDistance = distance / 2;
          int halfWayDuration = BANKCARD_ANIMATION_DURATION / 2;
          int halfWayAlphaAnimDuration = halfWayDuration / 2;

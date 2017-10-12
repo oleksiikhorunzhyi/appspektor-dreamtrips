@@ -96,7 +96,8 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                      //noinspection all //messageBuilder cannot be null
                      messageBuilder.messageBody(messageBodyParser.
                            parseMessageBody(parser.nextText()));
-
+                  default:
+                     break;
                }
                break;
             case XmlPullParser.END_TAG:
@@ -113,7 +114,11 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                   case ELEMENT_CHAT:
                      done = true;
                      continue;
+                  default:
+                     break;
                }
+               break;
+            default:
                break;
          }
          parser.next();

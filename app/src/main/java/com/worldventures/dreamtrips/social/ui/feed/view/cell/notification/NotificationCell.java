@@ -112,6 +112,8 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
          case POST:
             openDetails();
             break;
+         default:
+            break;
       }
    }
 
@@ -121,6 +123,8 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
          case SEND_REQUEST:
          case ACCEPT_REQUEST:
             openProfile(links.getUsers().get(0));
+         default:
+            break;
       }
    }
 

@@ -25,6 +25,8 @@ class SmartCardSystemAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.SET_TIME:
             attributeMap.put("ocsettime", "1");
             break;
+         default:
+            break;
       }
    }
 

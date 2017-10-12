@@ -7,7 +7,7 @@ import android.widget.PopupMenu;
 
 import com.worldventures.dreamtrips.R;
 
-public class FeedItemMenuBuilder {
+public final class FeedItemMenuBuilder {
 
    private Context context;
    private View anchor;
@@ -52,6 +52,8 @@ public class FeedItemMenuBuilder {
                break;
             case R.id.action_edit:
                if (onEditAction != null) onEditAction.action();
+               break;
+            default:
                break;
          }
 

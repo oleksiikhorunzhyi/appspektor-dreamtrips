@@ -47,6 +47,8 @@ public class SendVideoAnalyticsIfNeedAction extends SendProgressAnalyticsIfNeed<
             break;
          case 4:
             action = WatchVideoAnalyticAction.progress100(language, videoName, chooseAnalyticNamespace());
+         default:
+            break;
       }
       return action;
    }

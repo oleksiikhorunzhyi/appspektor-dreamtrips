@@ -35,7 +35,12 @@ public class ChatContextualMenuProvider {
    private DataUser currentUser;
 
    @Inject
-   public ChatContextualMenuProvider(@ForApplication Context context, DataUser currentUser, UsersDAO usersDAO, TranslationsDAO translationsDAO, ConversationsDAO conversationsDAO, AttachmentDAO attachmentDAO) {
+   public ChatContextualMenuProvider(@ForApplication Context context,
+         DataUser currentUser,
+         UsersDAO usersDAO,
+         TranslationsDAO translationsDAO,
+         ConversationsDAO conversationsDAO,
+         AttachmentDAO attachmentDAO) {
       this.context = context;
       this.usersDAO = usersDAO;
       this.currentUser = currentUser;
@@ -103,6 +108,8 @@ public class ChatContextualMenuProvider {
          case TranslationStatus.ERROR:
          case TranslationStatus.REVERTED:
             menu.removeItem(R.id.action_revert_translate);
+            break;
+         default:
             break;
       }
    }

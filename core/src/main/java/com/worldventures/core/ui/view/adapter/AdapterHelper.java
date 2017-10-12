@@ -23,9 +23,9 @@ public class AdapterHelper {
    @Nullable
    AbstractCell buildCell(Class<? extends AbstractCell> cellClass, ViewGroup parent) {
       final Layout layoutAnnotation = cellClass.getAnnotation(Layout.class);
-      return (AbstractCell) (layoutAnnotation != null ?
-            createHolderWithAnnotation(cellClass, layoutAnnotation, parent) :
-            createHolderWithoutAnnotation(cellClass, parent)
+      return (AbstractCell) (layoutAnnotation != null
+            ? createHolderWithAnnotation(cellClass, layoutAnnotation, parent)
+            : createHolderWithoutAnnotation(cellClass, parent)
       );
    }
 

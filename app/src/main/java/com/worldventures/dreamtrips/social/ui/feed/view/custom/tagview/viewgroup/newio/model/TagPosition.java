@@ -68,10 +68,10 @@ public class TagPosition implements Parcelable, Serializable {
 
    @Override
    public String toString() {
-      return "TagPosition{" +
-            "topLeft=" + topLeft +
-            ", bottomRight=" + bottomRight +
-            '}';
+      return "TagPosition{"
+            + "topLeft=" + topLeft
+            + ", bottomRight=" + bottomRight
+            + '}';
    }
 
    @Override

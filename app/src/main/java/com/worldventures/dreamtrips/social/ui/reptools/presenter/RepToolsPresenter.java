@@ -79,6 +79,8 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
          case INVITE:
             analyticsInteractor.analyticsActionPipe().send(new ReptoolsInviteShareAction());
             break;
+         default:
+            break;
       }
    }
 

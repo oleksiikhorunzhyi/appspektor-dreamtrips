@@ -38,6 +38,8 @@ public class RestoreCompoundOperationsCommand extends Command<List<PostCompoundO
                      case FINISHED:
                         cachedModels.remove(i);
                         break;
+                     default:
+                        break;
                   }
                }
                compoundOperationsInteractor.compoundOperationsPipe()

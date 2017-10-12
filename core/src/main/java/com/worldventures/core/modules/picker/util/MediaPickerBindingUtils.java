@@ -13,7 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.utils.VideoDurationFormatter;
 
-public class MediaPickerBindingUtils {
+public final class MediaPickerBindingUtils {
 
    private MediaPickerBindingUtils() {
    }

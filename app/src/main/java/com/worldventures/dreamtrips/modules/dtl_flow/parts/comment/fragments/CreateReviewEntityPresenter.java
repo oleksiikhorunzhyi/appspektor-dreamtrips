@@ -4,9 +4,9 @@ import android.net.Uri;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
-import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.utils.FileUtils;
 import com.worldventures.core.utils.ValidationUtils;
@@ -138,7 +138,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    public boolean removeImage(PhotoReviewCreationItem item) {
       try {
          cachedCreationItems.remove(item);
-      } catch (Exception e){
+      } catch (Exception e) {
          e.printStackTrace();
          return false;
       }

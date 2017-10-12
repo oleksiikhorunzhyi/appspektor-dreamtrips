@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class MerchantHelper {
+public final class MerchantHelper {
 
    public static final DateTimeFormatter OPERATION_TIME_FORMATTER = DateTimeFormat.forPattern("hh:mm a");
 
@@ -114,7 +114,13 @@ public class MerchantHelper {
             }
 
             if (includeTime) {
-               stringBuilder.append(String.format("%s - %s", OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(localTimeStart).toUpperCase(), OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(localTimeEnd).toUpperCase()));
+               stringBuilder.append(
+                     String.format("%s - %s",
+                           OPERATION_TIME_FORMATTER.withLocale(Locale.US)
+                                 .print(localTimeStart)
+                                 .toUpperCase(),
+                           OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(localTimeEnd).toUpperCase())
+               );
                stringBuilder.append(", ");
             }
          }
@@ -146,7 +152,8 @@ public class MerchantHelper {
    }
 
    private static String provideDistance(Context context, MerchantAttributes merchantAttributes, DistanceType type) {
-      return merchantAttributes.distance() != null ? context.getString(R.string.distance_caption_format, merchantAttributes.distance(),
+      return merchantAttributes.distance() != null ? context.getString(R.string.distance_caption_format, merchantAttributes
+                  .distance(),
             context.getString(type == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
    }
 
@@ -166,7 +173,9 @@ public class MerchantHelper {
          DateTime end = DateTime.now().withTime(localTimeEnd.getHourOfDay(), localTimeEnd.getMinuteOfHour(), 0, 0);
          //
          String f = OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(start).toUpperCase();
-         return String.format("%s - %s", OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(start).toUpperCase(), OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(end).toUpperCase());
+         return String.format("%s - %s", OPERATION_TIME_FORMATTER.withLocale(Locale.US)
+               .print(start)
+               .toUpperCase(), OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(end).toUpperCase());
       } catch (Exception e) {
          return "";
       }
@@ -175,7 +184,8 @@ public class MerchantHelper {
    public static ShareBundle buildShareBundle(Context context, Merchant merchant, @ShareType String type) {
       ShareBundle shareBundle = new ShareBundle();
       shareBundle.setShareType(type);
-      shareBundle.setText(context.getString(merchant.asMerchantAttributes().hasPoints() ? R.string.dtl_details_share_title : R.string.dtl_details_share_title_without_points, merchant
+      shareBundle.setText(context.getString(merchant.asMerchantAttributes()
+            .hasPoints() ? R.string.dtl_details_share_title : R.string.dtl_details_share_title_without_points, merchant
             .displayName()));
       shareBundle.setShareUrl(merchant.website());
       // don't attach media if website is attached, this image will go nowhere

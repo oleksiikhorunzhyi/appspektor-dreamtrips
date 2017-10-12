@@ -39,7 +39,9 @@ import butterknife.InjectView;
 import flow.Flow;
 import timber.log.Timber;
 
-public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath> implements DtlLocationsScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
+public class DtlLocationsScreenImpl
+      extends DtlLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath>
+      implements DtlLocationsScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject ActivityResultDelegate activityResultDelegate;
@@ -147,6 +149,8 @@ public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLoc
             case Activity.RESULT_CANCELED:
                // The user was asked to change settings, but chose not to
                getPresenter().onLocationResolutionDenied();
+               break;
+            default:
                break;
          }
          return true;

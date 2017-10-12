@@ -128,6 +128,8 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
             getPresenter().done(description.getText().toString());
             router.back();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

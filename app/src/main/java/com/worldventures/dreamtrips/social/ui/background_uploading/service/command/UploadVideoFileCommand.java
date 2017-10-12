@@ -76,6 +76,8 @@ public class UploadVideoFileCommand extends Command<PostCompoundOperationModel<P
                      Timber.e(actionState.exception, "[New Photo Attachment Creation] Upload failed");
                      builder.state(PostBody.State.FAILED);
                      break;
+                  default:
+                     break;
                }
                long remainingTimeInMillis = uploadTimeEstimator.estimate(progress, System.currentTimeMillis());
                double updatedAverageSpeed = uploadTimeEstimator.getAverageUploadSpeed();

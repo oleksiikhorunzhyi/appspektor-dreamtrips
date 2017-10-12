@@ -69,6 +69,8 @@ public class SettingsCommand extends CommandWithError<Void> implements Injectabl
                      .build();
                settingsBodyBuilder.addSettings(unknownSetting);
                break;
+            default:
+               break;
          }
       });
       return settingsBodyBuilder.build();

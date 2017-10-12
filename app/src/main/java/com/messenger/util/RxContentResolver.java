@@ -59,7 +59,7 @@ public class RxContentResolver {
             // Ensure the cursor window is filled.
             cursor.getCount();
             subscriber.onNext(cursor);
-         } catch (RuntimeException ex) {
+         } catch (Exception ex) {
             cursor.close();
             subscriber.onError(new RxFetchCursorException(query.toString(), ex));
          }
@@ -84,7 +84,7 @@ public class RxContentResolver {
       Cursor fetchCursor(Q query);
    }
 
-   public static class Query {
+   public final static class Query {
       public final Uri uri;
       public final String[] projection;
       public final String selection;
@@ -128,13 +128,13 @@ public class RxContentResolver {
 
       @Override
       public String toString() {
-         return "Query{" +
-               "uri=" + uri +
-               ", projection=" + Arrays.toString(projection) +
-               ", selection='" + selection + '\'' +
-               ", selectionArgs=" + Arrays.toString(selectionArgs) +
-               ", sortOrder='" + sortOrder + '\'' +
-               '}';
+         return "Query{"
+               + "uri=" + uri
+               + ", projection=" + Arrays.toString(projection)
+               + ", selection='" + selection + '\''
+               + ", selectionArgs=" + Arrays.toString(selectionArgs)
+               + ", sortOrder='" + sortOrder + '\''
+               + '}';
       }
 
       @Override
@@ -185,7 +185,7 @@ public class RxContentResolver {
       }
    }
 
-   public static class RxFetchCursorException extends Exception {
+   public final static class RxFetchCursorException extends Exception {
 
       private RxFetchCursorException(String message, Exception ex) {
          super(message, ex);

@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.GetMerchantByIdHttpAction;
-import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantDistancePatcher;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -69,9 +69,9 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    }
 
    private boolean needToForce() {
-      return review != null &&
-            (!review.ratingAverage().equals(cache.reviews().ratingAverage())
-                  || !review.total().equals(cache.reviews().total()));
+      return review != null
+            && (!review.ratingAverage().equals(cache.reviews().ratingAverage())
+            || !review.total().equals(cache.reviews().total()));
    }
 
    private void requestMerchant(CommandCallback<Merchant> callback) {

@@ -39,7 +39,9 @@ public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFacto
    public int describeContents() { return 0; }
 
    @Override
-   public void writeToParcel(Parcel dest, int flags) {dest.writeInt(this.name == null ? -1 : this.name.ordinal());}
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeInt(this.name == null ? -1 : this.name.ordinal());
+   }
 
    protected CardGroupHeaderModel(Parcel in) {
       int tmpName = in.readInt();
@@ -48,9 +50,13 @@ public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFacto
 
    public static final Creator<CardGroupHeaderModel> CREATOR = new Creator<CardGroupHeaderModel>() {
       @Override
-      public CardGroupHeaderModel createFromParcel(Parcel source) {return new CardGroupHeaderModel(source);}
+      public CardGroupHeaderModel createFromParcel(Parcel source) {
+         return new CardGroupHeaderModel(source);
+      }
 
       @Override
-      public CardGroupHeaderModel[] newArray(int size) {return new CardGroupHeaderModel[size];}
+      public CardGroupHeaderModel[] newArray(int size) {
+         return new CardGroupHeaderModel[size];
+      }
    };
 }

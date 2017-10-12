@@ -49,9 +49,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
    }
 
    private Observable<Void> revertName(ChangedFields changedFields, SmartCardUser user, String smartCardId) {
-      final boolean nameChanged = changedFields.firstName().equals(user.firstName()) &&
-            changedFields.middleName().equals(user.middleName()) &&
-            changedFields.lastName().equals(user.lastName());
+      final boolean nameChanged = changedFields.firstName().equals(user.firstName())
+            && changedFields.middleName().equals(user.middleName())
+            && changedFields.lastName().equals(user.lastName());
       if (nameChanged) {
          return janet.createPipe(UpdateUserAction.class)
                .createObservableResult(new UpdateUserAction(createUser(user, smartCardId)))

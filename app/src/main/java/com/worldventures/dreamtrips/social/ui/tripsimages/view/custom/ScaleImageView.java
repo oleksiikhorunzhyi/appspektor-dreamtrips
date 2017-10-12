@@ -22,7 +22,7 @@ public class ScaleImageView extends SimpleDraweeView {
 
    String TAG = "ScaleImageView";
    private Context context;
-   private float MAX_SCALE = 3f;
+   private final static float MAX_SCALE = 3f;
    private Matrix matrix;
    // display width height.
    private int width;
@@ -118,8 +118,8 @@ public class ScaleImageView extends SimpleDraweeView {
       height = b - t;
 
       matrix.reset();
-      int r_norm = r - l;
-      scale = (float) r_norm / (float) intrinsicWidth;
+      int rNorm = r - l;
+      scale = (float) rNorm / (float) intrinsicWidth;
 
       int paddingHeight = 0;
       int paddingWidth = 0;
@@ -268,7 +268,8 @@ public class ScaleImageView extends SimpleDraweeView {
             if (event.getPointerCount() <= 1) {
                isScaling = false;
             }
-
+            break;
+         default:
             break;
       }
       return true;

@@ -12,7 +12,7 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.os.Build;
 
-public class RoundDrawableWrapper extends ShapeDrawable {
+public final class RoundDrawableWrapper extends ShapeDrawable {
    private Drawable baseDrawable;
 
    private RoundDrawableWrapper(Builder builder) {

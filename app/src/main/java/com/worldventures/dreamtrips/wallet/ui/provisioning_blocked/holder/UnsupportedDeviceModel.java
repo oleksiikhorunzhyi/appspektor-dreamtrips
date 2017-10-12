@@ -26,9 +26,13 @@ public class UnsupportedDeviceModel extends BaseViewModel<ProvisionBlockedTypeFa
 
    public static final Creator<UnsupportedDeviceModel> CREATOR = new Creator<UnsupportedDeviceModel>() {
       @Override
-      public UnsupportedDeviceModel createFromParcel(Parcel source) {return new UnsupportedDeviceModel(source);}
+      public UnsupportedDeviceModel createFromParcel(Parcel source) {
+         return new UnsupportedDeviceModel(source);
+      }
 
       @Override
-      public UnsupportedDeviceModel[] newArray(int size) {return new UnsupportedDeviceModel[size];}
+      public UnsupportedDeviceModel[] newArray(int size) {
+         return new UnsupportedDeviceModel[size];
+      }
    };
 }

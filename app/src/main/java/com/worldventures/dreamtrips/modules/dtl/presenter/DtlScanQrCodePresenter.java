@@ -180,7 +180,6 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       transactionInteractor.transactionActionPipe()
             .send(DtlTransactionAction.save(action.getMerchant(), ImmutableDtlTransaction.copyOf(action.getTransaction())
                   .withDtlTransactionResult(action.getResult())));
-      ;
 
       eventBus.postSticky(new DtlTransactionSucceedEvent(action.getTransaction()));
       view.finish();
@@ -196,7 +195,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .flatMap(transaction -> transactionInteractor.transactionActionPipe()
                   .createObservableResult(DtlTransactionAction.save(merchant, transaction)))
             .compose(bindViewIoToMainComposer())
-            .subscribe(action -> {}, apiErrorViewAdapter::handleError);
+            .subscribe(action -> {
+            }, apiErrorViewAdapter::handleError);
    }
    ///////////////////////////////////////////////////////////////////////////
    // Receipt uploading
@@ -222,6 +222,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             break;
          case WAITING_FOR_NETWORK:
             view.noConnection();
+            break;
+         default:
             break;
       }
    }
@@ -249,6 +251,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                      break;
                   case WAITING_FOR_NETWORK:
                      view.noConnection();
+                  default:
+                     break;
                }
             }, apiErrorViewAdapter::handleError);
    }

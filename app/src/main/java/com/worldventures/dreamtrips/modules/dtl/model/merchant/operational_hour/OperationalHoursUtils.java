@@ -13,7 +13,7 @@ import java.util.Locale;
 
 import static com.worldventures.core.utils.DateTimeUtils.getDisplayWeekDay;
 
-public class OperationalHoursUtils {
+public final class OperationalHoursUtils {
 
    private OperationalHoursUtils() {
    }

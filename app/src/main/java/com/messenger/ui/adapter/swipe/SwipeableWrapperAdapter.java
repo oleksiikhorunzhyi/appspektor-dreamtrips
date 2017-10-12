@@ -14,7 +14,9 @@ import java.util.List;
 /*
  * Wrapper for providing swipe functionality.
  */
-public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeLayoutContainer, VH extends RecyclerView.ViewHolder> extends BaseWrapperAdapter<VH> implements SwipeItemMangerInterface, SwipeAdapterInterface {
+public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeLayoutContainer, VH extends RecyclerView.ViewHolder>
+      extends BaseWrapperAdapter<VH>
+      implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
    private SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
    private SwipeLayoutContainer swipeLayoutContainer;

@@ -9,9 +9,9 @@ import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialogView;
 import com.worldventures.core.modules.picker.viewmodel.BaseMediaPickerViewModel;
 import com.worldventures.core.modules.picker.viewmodel.GalleryVideoPickerViewModel;
-import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialogView;
 
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ public class MediaPickerDialogPresenterImpl extends MvpBasePresenter<MediaPicker
          MediaPickerModelImpl mediaPickerModel = null;
          if (model.getType() == MediaPickerModel.Type.VIDEO) {
             mediaPickerModel = new VideoPickerModel(model.getAbsolutePath(), ((GalleryVideoPickerViewModel) model).getDuration());
-         } else if (model.getType() == MediaPickerModel.Type.PHOTO){
+         } else if (model.getType() == MediaPickerModel.Type.PHOTO) {
             mediaPickerModel = new PhotoPickerModel(model.getAbsolutePath(), model.getDateTaken());
          }
          mediaPickerModel.setSource(model.getSource());

@@ -157,6 +157,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             break;
          case SEARCH:
             break;
+         default:
+            break;
       }
    }
 
@@ -260,7 +262,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    }
 
    private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
-      if(throwable instanceof CancelException) return;
+      if (throwable instanceof CancelException) return;
       getView().informUser(action.getErrorMessage());
       getView().hideProgress();
    }

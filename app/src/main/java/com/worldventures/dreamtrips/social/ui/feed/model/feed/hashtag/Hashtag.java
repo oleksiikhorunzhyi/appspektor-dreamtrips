@@ -71,8 +71,8 @@ public class Hashtag implements Parcelable, Serializable {
 
    @Override
    public String toString() {
-      return "Hashtag{" +
-            "name='" + name + '\'' +
-            '}';
+      return "Hashtag{"
+            + "name='" + name + '\''
+            + '}';
    }
 }

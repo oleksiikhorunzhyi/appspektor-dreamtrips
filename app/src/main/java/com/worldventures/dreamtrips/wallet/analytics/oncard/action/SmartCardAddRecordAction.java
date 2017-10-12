@@ -28,6 +28,8 @@ class SmartCardAddRecordAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.CARD_READ_NAME_ERROR:
             attributeMap.put("ocnameerrorswipe", "1");
             break;
+         default:
+            break;
       }
    }
 }

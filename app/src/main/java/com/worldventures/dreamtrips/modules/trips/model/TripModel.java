@@ -240,9 +240,9 @@ public class TripModel extends BaseFeedEntity {
    }
 
    public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
-      return duration <= maxNights &&
-            duration >= minNights &&
-            getAvailabilityDates().check(dateFilterItem);
+      return duration <= maxNights
+            && duration >= minNights
+            && getAvailabilityDates().check(dateFilterItem);
    }
 
    public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {

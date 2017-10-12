@@ -57,7 +57,7 @@ public class CachedModel implements Serializable {
    }
 
    public Class getEntityClass() {
-      return entityClass == null? Object.class : entityClass;
+      return entityClass == null ? Object.class : entityClass;
    }
 
    public void setEntityClass(Class entityClass) {
@@ -66,13 +66,13 @@ public class CachedModel implements Serializable {
 
    @Override
    public String toString() {
-      return "CachedEntity{" +
-            "url='" + url + '\'' +
-            ", failed=" + (cacheStatus == Status.FAILED) +
-            ", create=" + progress +
-            ", uuid='" + uuid + '\'' +
-            ", downloadId=" + downloadId +
-            '}';
+      return "CachedEntity{"
+            + "url='" + url + '\''
+            + ", failed=" + (cacheStatus == Status.FAILED)
+            + ", create=" + progress
+            + ", uuid='" + uuid + '\''
+            + ", downloadId=" + downloadId
+            + '}';
    }
 
 }

@@ -23,6 +23,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
    @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME) public static final Uri CONTENT_URI = MessengerDatabase
          .buildUri(TABLE_NAME);
 
+   @SuppressWarnings("MemberName")
    @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE) @PrimaryKey @Column String _id;
    @Column String ownerId;
    @Column String subject;
@@ -166,15 +167,15 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
    @Override
    public String toString() {
-      return "Conversation{" +
-            "_id='" + _id + '\'' +
-            ", ownerId='" + ownerId + '\'' +
-            ", subject='" + subject + '\'' +
-            ", avatar='" + avatar + '\'' +
-            ", status='" + status + '\'' +
-            ", type='" + type + '\'' +
-            ", unreadMessageCount=" + unreadMessageCount +
-            '}';
+      return "Conversation{"
+            + "_id='" + _id + '\''
+            + ", ownerId='" + ownerId + '\''
+            + ", subject='" + subject + '\''
+            + ", avatar='" + avatar + '\''
+            + ", status='" + status + '\''
+            + ", type='" + type + '\''
+            + ", unreadMessageCount=" + unreadMessageCount
+            + '}';
    }
 
    @Override

@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements ListAdapter<BaseItemClass> {
+public class BaseArrayListAdapter<T> extends RecyclerView.Adapter<AbstractCell> implements ListAdapter<T> {
 
    private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
 
    private final AdapterHelper adapterHelper;
    protected final Injector injector;
-   protected List<BaseItemClass> items = new ArrayList<>();
+   protected List<T> items = new ArrayList<>();
 
    protected List<Class> viewTypes = new ArrayList<>();
 
@@ -74,14 +74,14 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
 
    @Override
    public int getItemViewType(int position) {
-      BaseItemClass baseItemClass = this.items.get(position);
+      T baseItemClass = this.items.get(position);
       Class itemClass = baseItemClass.getClass();
       return getClassItemViewType(itemClass);
    }
 
    @Override
    public void onBindViewHolder(AbstractCell cell, int position) {
-      BaseItemClass item = this.getItem(position);
+      T item = this.getItem(position);
 
       cell.prepareForReuse();
       cell.fillWithItem(item);
@@ -99,12 +99,12 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
             .count();
    }
 
-   public BaseItemClass getItem(int position) {
+   public T getItem(int position) {
       return this.items.get(position);
    }
 
    @Override
-   public void addItems(List<BaseItemClass> items) {
+   public void addItems(List<T> items) {
       if (items != null) {
          int insertedAt = this.items.size();
          this.items.addAll(items);
@@ -112,22 +112,22 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
       }
    }
 
-   public void addItems(int index, List<BaseItemClass> result) {
+   public void addItems(int index, List<T> result) {
       if (result != null) {
          this.items.addAll(index, result);
          this.notifyItemRangeInserted(index, result.size());
       }
    }
 
-   public void addItem(int location, BaseItemClass obj) {
+   public void addItem(int location, T obj) {
       this.items.add(location, obj);
    }
 
-   public void addItem(BaseItemClass obj) {
+   public void addItem(T obj) {
       this.items.add(obj);
    }
 
-   public void replaceItem(int location, BaseItemClass obj) {
+   public void replaceItem(int location, T obj) {
       this.items.set(location, obj);
    }
 
@@ -135,7 +135,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
       if (items.size() > location) items.remove(location);
    }
 
-   public void remove(BaseItemClass item) {
+   public void remove(T item) {
       if (item != null) {
          int position = items.indexOf(item);
          if (position != -1) {
@@ -150,7 +150,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
          return;
       }
 
-      final BaseItemClass item = items.remove(fromPosition);
+      final T item = items.remove(fromPosition);
 
       items.add(toPosition, item);
    }
@@ -160,16 +160,16 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
       notifyDataSetChanged();
    }
 
-   public void setItems(List<BaseItemClass> baseItemClasses) {
+   public void setItems(List<T> baseItemClasses) {
       this.items = baseItemClasses;
       this.notifyDataSetChanged();
    }
 
-   public void setItemsNoNotify(List<BaseItemClass> baseItemClasses) {
+   public void setItemsNoNotify(List<T> baseItemClasses) {
       this.items = baseItemClasses;
    }
 
-   public void updateItem(BaseItemClass changedItem) {
+   public void updateItem(T changedItem) {
       Queryable.from(items).forEachR(item -> {
          if (!item.equals(changedItem)) return;
          int position = items.indexOf(item);
@@ -178,13 +178,13 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
       });
    }
 
-   public void clearAndUpdateItems(List<BaseItemClass> updatedItems) {
+   public void clearAndUpdateItems(List<T> updatedItems) {
       items.clear();
       getItems().addAll(updatedItems);
       notifyDataSetChanged();
    }
 
-   public List<BaseItemClass> getItems() {
+   public List<T> getItems() {
       return items;
    }
 

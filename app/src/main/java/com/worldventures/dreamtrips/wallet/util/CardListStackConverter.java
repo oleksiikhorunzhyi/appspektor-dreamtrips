@@ -37,16 +37,15 @@ public class CardListStackConverter {
       }
 
       index = 0;
-      List<CommonCardViewModel> commonCardViewModels =
-            Queryable.from(loadedCards)
-                  .sort((o1, o2) -> o1.recordType().compareTo(o2.recordType()))
-                  .sort((o1, o2) -> compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
-                  .map(loadedCard -> {
-                     CommonCardViewModel model = createCommonCardViewModel(context, loadedCard, isCardDefault(defaultCardId, loadedCard));
-                     index++;
-                     return model;
-                  })
-                  .toList();
+      List<CommonCardViewModel> commonCardViewModels = Queryable.from(loadedCards)
+            .sort((o1, o2) -> o1.recordType().compareTo(o2.recordType()))
+            .sort((o1, o2) -> compare(isCardDefault(defaultCardId, o2), isCardDefault(defaultCardId, o1)))
+            .map(loadedCard -> {
+               CommonCardViewModel model = createCommonCardViewModel(context, loadedCard, isCardDefault(defaultCardId, loadedCard));
+               index++;
+               return model;
+            })
+            .toList();
 
       ArrayList<BaseViewModel> viewModels = new ArrayList<>();
       CommonCardViewModel.StackType currentType = LOYALTY;

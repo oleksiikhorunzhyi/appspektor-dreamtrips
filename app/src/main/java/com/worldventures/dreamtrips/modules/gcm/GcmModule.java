@@ -35,7 +35,8 @@ public class GcmModule {
    }
 
    @Provides
-   NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationCountEventDelegate notificationCountEventDelegate, SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
+   NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationCountEventDelegate notificationCountEventDelegate,
+         SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
       return new NotificationDelegate(context, notificationCountEventDelegate, repository, notificationFactoryHolder);
    }
 

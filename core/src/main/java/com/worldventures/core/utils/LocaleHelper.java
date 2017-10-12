@@ -41,8 +41,8 @@ public class LocaleHelper {
    }
 
    public static boolean compareLocales(Locale lhs, Locale rhs) {
-      return lhs.getCountry().equalsIgnoreCase(rhs.getCountry()) &&
-            lhs.getLanguage().equalsIgnoreCase(rhs.getLanguage());
+      return lhs.getCountry().equalsIgnoreCase(rhs.getCountry())
+            && lhs.getLanguage().equalsIgnoreCase(rhs.getLanguage());
    }
 
    public static String obtainLanguageCode(String localName) {

@@ -26,11 +26,14 @@ public class ToucheableMapView extends MapView {
    @Override
    public boolean dispatchTouchEvent(MotionEvent ev) {
       //deprecated
-      if (mapTouchListener != null) switch (ev.getAction()) {
-         case MotionEvent.ACTION_DOWN:
-            mapTouchListener.onUpdateMap();
-            break;
-      }
+      if (mapTouchListener != null)
+         switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+               mapTouchListener.onUpdateMap();
+               break;
+            default:
+               break;
+         }
       //
       if (mapTouchListener2 != null) {
          mapTouchListener2.onUpdateMap(ev);

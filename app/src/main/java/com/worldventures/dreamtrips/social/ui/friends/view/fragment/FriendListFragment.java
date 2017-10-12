@@ -48,6 +48,8 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
             openFriendSearch("");
             getPresenter().onAddFriendsPressed();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

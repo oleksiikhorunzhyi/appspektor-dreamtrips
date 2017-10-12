@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.util;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
 
-public class PopupMenuUtils {
+public final class PopupMenuUtils {
    private PopupMenuUtils() {
    }
 

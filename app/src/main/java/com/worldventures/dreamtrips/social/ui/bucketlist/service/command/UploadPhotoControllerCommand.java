@@ -18,7 +18,7 @@ import rx.functions.Func1;
 import static com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage.BUCKET_ID_PARAM;
 
 @CommandAction
-public class UploadPhotoControllerCommand extends Command<List<EntityStateHolder<BucketPhoto>>> implements CachedAction<List<EntityStateHolder<BucketPhoto>>> {
+public final class UploadPhotoControllerCommand extends Command<List<EntityStateHolder<BucketPhoto>>> implements CachedAction<List<EntityStateHolder<BucketPhoto>>> {
    private String bucketId;
 
    private List<EntityStateHolder<BucketPhoto>> listOfPhotoHolders;
@@ -92,6 +92,8 @@ public class UploadPhotoControllerCommand extends Command<List<EntityStateHolder
                break;
             case DONE:
                list.remove(photoEntityStateHolder);
+               break;
+            default:
                break;
          }
 

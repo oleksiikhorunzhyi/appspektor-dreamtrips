@@ -30,6 +30,8 @@ class SmartCardExceptionAction extends SmartCardAnalyticsAction {
                   exception.exceptionType(),
                   exception.errorCode()));
             break;
+         default:
+            break;
       }
    }
 

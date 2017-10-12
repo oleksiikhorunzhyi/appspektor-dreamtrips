@@ -26,7 +26,7 @@ import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.vali
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCvvOrThrow;
 
 @CommandAction
-public class AddRecordCommand extends Command<Record> implements InjectableAction {
+public final class AddRecordCommand extends Command<Record> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject MapperyContext mapperyContext;

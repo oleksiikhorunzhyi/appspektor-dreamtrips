@@ -81,6 +81,8 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
          case ENROLL_MERCHANT:
             analyticsInteractor.analyticsActionPipe().send(new EnrollMerchantViewedAction(getAccountUserId()));
             break;
+         default:
+            break;
       }
    }
 

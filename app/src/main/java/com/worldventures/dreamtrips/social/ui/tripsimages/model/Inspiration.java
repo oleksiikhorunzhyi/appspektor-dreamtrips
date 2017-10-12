@@ -65,9 +65,13 @@ public class Inspiration implements Parcelable {
 
    public static final Creator<Inspiration> CREATOR = new Creator<Inspiration>() {
       @Override
-      public Inspiration createFromParcel(Parcel source) {return new Inspiration(source);}
+      public Inspiration createFromParcel(Parcel source) {
+         return new Inspiration(source);
+      }
 
       @Override
-      public Inspiration[] newArray(int size) {return new Inspiration[size];}
+      public Inspiration[] newArray(int size) {
+         return new Inspiration[size];
+      }
    };
 }

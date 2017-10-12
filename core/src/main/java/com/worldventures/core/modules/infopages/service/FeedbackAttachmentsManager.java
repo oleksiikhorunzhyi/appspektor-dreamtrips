@@ -18,8 +18,8 @@ public class FeedbackAttachmentsManager {
 
    @State ArrayList<EntityStateHolder<FeedbackImageAttachment>> statefulImageAttachments = new ArrayList<>();
 
-   private PublishSubject<EntityStateHolder<FeedbackImageAttachment>> statefulAttachmentsObservable =
-         PublishSubject.create();
+   private PublishSubject<EntityStateHolder<FeedbackImageAttachment>> statefulAttachmentsObservable
+         = PublishSubject.create();
 
    public void restoreInstanceState(Bundle savedState) {
       Icepick.restoreInstanceState(this, savedState);
@@ -60,7 +60,7 @@ public class FeedbackAttachmentsManager {
    }
 
    public void removeAll() {
-      for(EntityStateHolder holder : statefulImageAttachments) {
+      for (EntityStateHolder holder : statefulImageAttachments) {
          statefulAttachmentsObservable.onNext(holder);
       }
       statefulImageAttachments.clear();

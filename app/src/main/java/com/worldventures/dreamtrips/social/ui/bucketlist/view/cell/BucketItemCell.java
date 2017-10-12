@@ -192,6 +192,8 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
             imageViewStatusClose.setVisibility(View.INVISIBLE);
             swipeLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             break;
+         default:
+            break;
       }
    }
 

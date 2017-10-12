@@ -1,6 +1,5 @@
 package com.worldventures.core.utils;
 
-import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -81,6 +80,6 @@ public class HttpErrorHandlingUtil {
    private static boolean isHttpExceptionWithPath(Throwable exception) {
       return exception != null && exception.getCause() != null
             && (exception.getCause() instanceof HttpException)
-            && ((HttpException)exception.getCause()).getRequest() == null;
+            && ((HttpException) exception.getCause()).getRequest() == null;
    }
 }

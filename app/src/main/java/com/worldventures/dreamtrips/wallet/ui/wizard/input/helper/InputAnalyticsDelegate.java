@@ -23,7 +23,7 @@ public abstract class InputAnalyticsDelegate {
 
    public abstract void scannedSuccessfully(String smartCardId);
 
-   private static class ScannerDelegate extends InputAnalyticsDelegate {
+   private final static class ScannerDelegate extends InputAnalyticsDelegate {
 
       private ScannerDelegate(WalletAnalyticsInteractor analyticsInteractor) {
          super(analyticsInteractor);
@@ -36,7 +36,7 @@ public abstract class InputAnalyticsDelegate {
       }
    }
 
-   private static class ManualInputDelegate extends InputAnalyticsDelegate {
+   private final static class ManualInputDelegate extends InputAnalyticsDelegate {
 
       private ManualInputDelegate(WalletAnalyticsInteractor analyticsInteractor) {
          super(analyticsInteractor);

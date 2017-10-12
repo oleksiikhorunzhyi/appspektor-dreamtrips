@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import rx.Observable;
 
-public abstract class BaseChatCommand<Result> extends Command<Result> implements InjectableAction {
+public abstract class BaseChatCommand<R> extends Command<R> implements InjectableAction {
 
    protected final String conversationId;
 

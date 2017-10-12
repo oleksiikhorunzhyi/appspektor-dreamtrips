@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.core.janet;
 import android.content.Context;
 import android.util.Pair;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
-import com.worldventures.core.janet.CommandWithError;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +54,7 @@ public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
       return parentResult;
    }
 
-   private static String obtainErrorMessage (ActionHolder holder, Throwable cause) {
+   private static String obtainErrorMessage(ActionHolder holder, Throwable cause) {
       if (holder.action() instanceof CommandWithError) {
          //humanized error message is already set in parent class
          return ((CommandWithError) holder.action()).getErrorMessage();

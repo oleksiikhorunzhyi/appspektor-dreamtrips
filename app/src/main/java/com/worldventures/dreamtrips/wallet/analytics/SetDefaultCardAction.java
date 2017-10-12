@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 @AnalyticsEvent(action = "wallet:Add Default Card:Set as Default Card",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class SetDefaultCardAction extends BaseSetDefaultCardAction {
+public final class SetDefaultCardAction extends BaseSetDefaultCardAction {
 
    private SetDefaultCardAction() {
    }

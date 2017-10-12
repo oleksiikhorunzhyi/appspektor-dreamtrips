@@ -60,9 +60,13 @@ public class WalletDocumentModel extends BaseViewModel<HelpDocsTypeFactory> impl
 
    public static final Creator<WalletDocumentModel> CREATOR = new Creator<WalletDocumentModel>() {
       @Override
-      public WalletDocumentModel createFromParcel(Parcel source) {return new WalletDocumentModel(source);}
+      public WalletDocumentModel createFromParcel(Parcel source) {
+         return new WalletDocumentModel(source);
+      }
 
       @Override
-      public WalletDocumentModel[] newArray(int size) {return new WalletDocumentModel[size];}
+      public WalletDocumentModel[] newArray(int size) {
+         return new WalletDocumentModel[size];
+      }
    };
 }

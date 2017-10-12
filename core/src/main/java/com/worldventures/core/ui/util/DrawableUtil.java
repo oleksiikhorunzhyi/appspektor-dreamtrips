@@ -139,6 +139,8 @@ public class DrawableUtil {
          case ExifInterface.ORIENTATION_ROTATE_90:
             rotate = 90;
             break;
+         default:
+            break;
       }
 
       return rotate;

@@ -219,6 +219,8 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
                   .build();
             locationInteractor.changeSourceLocation(dtlLocation);
             break;
+         default:
+            break;
       }
    }
 

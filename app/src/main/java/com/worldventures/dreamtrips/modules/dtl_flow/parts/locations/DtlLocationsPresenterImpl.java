@@ -110,6 +110,8 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
             locationInteractor.changeSourceLocation(dtlLocation);
             navigateToMerchants();
             break;
+         default:
+            break;
       }
    }
 

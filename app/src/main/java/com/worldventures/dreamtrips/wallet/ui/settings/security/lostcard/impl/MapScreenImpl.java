@@ -106,6 +106,8 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
             case MotionEvent.ACTION_UP:
                popupInfoViewBinding.setVisible(true);
                break;
+            default:
+               break;
          }
       });
    }

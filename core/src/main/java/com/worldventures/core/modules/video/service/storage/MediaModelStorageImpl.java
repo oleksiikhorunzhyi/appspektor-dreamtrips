@@ -19,10 +19,10 @@ import java.util.List;
 
 public class MediaModelStorageImpl extends BaseSnappyRepository implements MediaModelStorage {
 
-   String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
-   String MEDIA_UPLOAD_MODEL = "MEDIA_UPLOAD_MODEL";
-   String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
-   String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
+   final static String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
+   final static String MEDIA_UPLOAD_MODEL = "MEDIA_UPLOAD_MODEL";
+   final static String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
+   final static String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
 
    private final DefaultSnappyOpenHelper defaultSnappyOpenHelper;
 

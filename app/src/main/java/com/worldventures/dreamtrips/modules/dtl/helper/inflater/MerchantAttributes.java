@@ -36,50 +36,78 @@ public abstract class MerchantAttributes implements Serializable {
    public abstract MerchantType type();
    public abstract PartnerStatus partnerStatus();
    public abstract String displayName();
-   @Nullable public abstract String address();
-   @Nullable public abstract String city();
-   @Nullable public abstract String state();
-   @Nullable public abstract String country();
-   @Nullable public abstract Coordinates coordinates();
-   @Nullable public abstract String description();
-   @Nullable public abstract Integer budget();
-   @Nullable public abstract Double distance();
-   @Nullable public abstract String zip();
-   @Nullable public abstract Double rating();
-   @Nullable public abstract String phone();
-   @Nullable public abstract String email();
-   @Nullable public abstract String website();
-   @Nullable public abstract List<Currency> currencies();
-   @Nullable public abstract List<Offer> offers();
-   @Nullable public abstract String timeZone();
-   @Nullable public abstract List<ThinAttribute> categories();
-   @Nullable public abstract List<ThinAttribute> amenities();
-   @Nullable public abstract List<MerchantMedia> images();
-   @Nullable public abstract List<OperationDay> operationDays();
-   @Nullable public abstract List<Disclaimer> disclaimers();
-   @Nullable public abstract ReviewSummary reviewSummary();
+   @Nullable
+   public abstract String address();
+   @Nullable
+   public abstract String city();
+   @Nullable
+   public abstract String state();
+   @Nullable
+   public abstract String country();
+   @Nullable
+   public abstract Coordinates coordinates();
+   @Nullable
+   public abstract String description();
+   @Nullable
+   public abstract Integer budget();
+   @Nullable
+   public abstract Double distance();
+   @Nullable
+   public abstract String zip();
+   @Nullable
+   public abstract Double rating();
+   @Nullable
+   public abstract String phone();
+   @Nullable
+   public abstract String email();
+   @Nullable
+   public abstract String website();
+   @Nullable
+   public abstract List<Currency> currencies();
+   @Nullable
+   public abstract List<Offer> offers();
+   @Nullable
+   public abstract String timeZone();
+   @Nullable
+   public abstract List<ThinAttribute> categories();
+   @Nullable
+   public abstract List<ThinAttribute> amenities();
+   @Nullable
+   public abstract List<MerchantMedia> images();
+   @Nullable
+   public abstract List<OperationDay> operationDays();
+   @Nullable
+   public abstract List<Disclaimer> disclaimers();
+   @Nullable
+   public abstract ReviewSummary reviewSummary();
 
-   @Value.Derived public boolean hasPoints() {
+   @Value.Derived
+   public boolean hasPoints() {
       return offersCount(OfferType.POINTS) > 0;
    }
 
-   @Value.Derived public boolean hasPerks() {
+   @Value.Derived
+   public boolean hasPerks() {
       return offersCount(OfferType.PERK) > 0;
    }
 
-   @Value.Derived public boolean hasOperationDays() {
+   @Value.Derived
+   public boolean hasOperationDays() {
       return operationDays() != null && !operationDays().isEmpty();
    }
 
-   @Value.Derived public boolean hasOffers() {
+   @Value.Derived
+   public boolean hasOffers() {
       return offers() != null && !offers().isEmpty();
    }
 
-   @Value.Derived public int offersCount(OfferType type) {
+   @Value.Derived
+   public int offersCount(OfferType type) {
       return !hasOffers() ? 0 : Queryable.from(offers()).filter(offer -> offer.type() == type).count();
    }
 
-   @Value.Derived public int timeOffset() {
+   @Value.Derived
+   public int timeOffset() {
       try {
          return Integer.valueOf(timeZone());
       } catch (Exception e) {
@@ -87,31 +115,36 @@ public abstract class MerchantAttributes implements Serializable {
       }
    }
 
-   @Value.Derived @Nullable public Currency defaultCurrency() {
+   @Value.Derived
+   @Nullable
+   public Currency defaultCurrency() {
       return currencies() != null && hasPoints() ? Queryable.from(currencies()).first(Currency::isDefault) : null;
    }
 
-   @Value.Derived public Spannable provideFormattedOperationalTime(Context context, boolean includeTime)
+   @Value.Derived
+   public Spannable provideFormattedOperationalTime(Context context, boolean includeTime)
          throws Exception {
       return MerchantHelper.getOperationalTime(context, operationDays(), timeOffset(), includeTime);
    }
 
-   @Value.Derived public String provideFormattedDistance(Resources context, DistanceType distanceType) {
-      final String distanceTypeCaption =
-            context.getString(distanceType == DistanceType.MILES ? R.string.mi : R.string.km);
+   @Value.Derived
+   public String provideFormattedDistance(Resources context, DistanceType distanceType) {
+      final String distanceTypeCaption = context.getString(distanceType == DistanceType.MILES ? R.string.mi : R.string.km);
       final double distance = distanceType ==
             DistanceType.KMS ? distance() : DtlLocationHelper.metresToMiles(distance() * 1000);
       return distance() != null ? context.getString(R.string.distance_caption_format, distance, distanceTypeCaption)
             : "";
    }
 
-   @Value.Derived public String provideFormattedCategories() {
+   @Value.Derived
+   public String provideFormattedCategories() {
       if (categories() == null) return "";
-      List<String> categories =  Queryable.from(categories()).map(ThinAttribute::name).toList();
+      List<String> categories = Queryable.from(categories()).map(ThinAttribute::name).toList();
       return TextUtils.join(", ", categories);
    }
 
-   @Value.Derived public String provideAnalyticsName() {
+   @Value.Derived
+   public String provideAnalyticsName() {
       return String.format(Locale.US, "%s:%s:%s", adoptForAnalytics(city()), adoptForAnalytics(state()),
             adoptForAnalytics(country()));
    }

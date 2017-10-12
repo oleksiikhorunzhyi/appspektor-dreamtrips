@@ -128,6 +128,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             addToLoadedMembers = !TextUtils.isEmpty(member.getPhone().trim());
             if (addToLoadedMembers) member.setEmailIsMain(false);
             break;
+         default:
+            break;
       }
       if (addToLoadedMembers) {
          members.add(member);

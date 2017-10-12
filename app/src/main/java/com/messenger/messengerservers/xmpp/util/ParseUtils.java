@@ -110,6 +110,8 @@ public class ParseUtils {
                   break outerloop;
                }
                break;
+            default:
+               break;
          }
       }
       return presence;
@@ -149,6 +151,8 @@ public class ParseUtils {
                if (parser.getDepth() == initialDepth) {
                   break outerloop;
                }
+               break;
+            default:
                break;
          }
       }
@@ -245,6 +249,8 @@ public class ParseUtils {
                if (parser.getDepth() == initialDepth) {
                   break outerloop;
                }
+               break;
+            default:
                break;
          }
       }
@@ -356,6 +362,8 @@ public class ParseUtils {
                if (parser.getDepth() == initialDepth) {
                   break outerloop;
                }
+            default:
+               break;
          }
       }
       return new XMPPError(condition, conditionText, errorGenerator, errorType, descriptiveTexts, extensions);

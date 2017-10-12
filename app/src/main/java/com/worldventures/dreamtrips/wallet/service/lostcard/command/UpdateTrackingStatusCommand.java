@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
 import com.worldventures.core.janet.dagger.InjectableAction;
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.command.SettingsCommand;
 import com.worldventures.core.modules.settings.model.FlagSetting;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.service.SettingsInteractor;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
@@ -44,8 +44,8 @@ public class UpdateTrackingStatusCommand extends Command<Boolean> implements Inj
    }
 
    private List<Setting> prepareTrackingStatus() {
-      final FlagSetting trackingStatusSetting =
-            new FlagSetting(WalletTrackingStatusStorage.SETTING_TRACKING_STATUS, Setting.Type.FLAG, enabled);
+      final FlagSetting trackingStatusSetting
+            = new FlagSetting(WalletTrackingStatusStorage.SETTING_TRACKING_STATUS, Setting.Type.FLAG, enabled);
       return Collections.singletonList(trackingStatusSetting);
    }
 }

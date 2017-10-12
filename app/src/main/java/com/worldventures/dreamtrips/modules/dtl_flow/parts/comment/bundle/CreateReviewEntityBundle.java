@@ -115,9 +115,13 @@ public class CreateReviewEntityBundle implements Parcelable {
 
    public static final Creator<CreateReviewEntityBundle> CREATOR = new Creator<CreateReviewEntityBundle>() {
       @Override
-      public CreateReviewEntityBundle createFromParcel(Parcel source) {return new CreateReviewEntityBundle(source);}
+      public CreateReviewEntityBundle createFromParcel(Parcel source) {
+         return new CreateReviewEntityBundle(source);
+      }
 
       @Override
-      public CreateReviewEntityBundle[] newArray(int size) {return new CreateReviewEntityBundle[size];}
+      public CreateReviewEntityBundle[] newArray(int size) {
+         return new CreateReviewEntityBundle[size];
+      }
    };
 }

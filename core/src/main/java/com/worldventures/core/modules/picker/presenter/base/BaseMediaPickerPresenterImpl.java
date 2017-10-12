@@ -1,8 +1,8 @@
 package com.worldventures.core.modules.picker.presenter.base;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.worldventures.core.modules.picker.viewmodel.BaseMediaPickerViewModel;
 import com.worldventures.core.modules.picker.view.base.BaseMediaPickerView;
+import com.worldventures.core.modules.picker.viewmodel.BaseMediaPickerViewModel;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +14,7 @@ public abstract class BaseMediaPickerPresenterImpl<V extends BaseMediaPickerView
 
    private final PublishSubject<List<M>> resultPublishSubject = PublishSubject.create();
 
-   public void attachView(V view){
+   public void attachView(V view) {
       super.attachView(view);
    }
 

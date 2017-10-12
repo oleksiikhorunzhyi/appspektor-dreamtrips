@@ -1,20 +1,18 @@
 package com.worldventures.core.modules.auth.api.command;
 
 import com.worldventures.core.R;
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.model.Session;
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.auth.util.SessionUtil;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.storage.SettingsStorage;
-import com.worldventures.core.modules.settings.util.SettingsFactory;
-import com.worldventures.core.modules.settings.util.SettingsManager;
 import com.worldventures.core.service.AuthRetryPolicy;
 import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.modules.auth.service.AuthInteractor;
-import com.worldventures.core.modules.auth.util.SessionUtil;
 
 import java.util.ArrayList;
 import java.util.List;

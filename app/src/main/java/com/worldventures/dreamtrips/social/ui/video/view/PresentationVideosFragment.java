@@ -26,7 +26,8 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseMediaFragment<T> implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
+public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseMediaFragment<T>
+      implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
 
    @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;

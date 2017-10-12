@@ -314,6 +314,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
             case COVER:
                onCoverChosen(image);
                break;
+            default:break;
          }
       }
    }

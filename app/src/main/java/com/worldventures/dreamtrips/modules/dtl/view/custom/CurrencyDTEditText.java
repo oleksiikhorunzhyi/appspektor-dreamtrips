@@ -23,23 +23,24 @@ public class CurrencyDTEditText extends DTEditText {
    }
 
    public void setCurrencySymbol(String symbol) {
+      StringBuilder textBuilder = new StringBuilder(symbol);
       final int padding = getPaddingForCurrency(symbol);
-      if (symbol.length() > 2) symbol = " " + symbol; //TODO think about fix, very-very dirty
+      if (symbol.length() > 2) textBuilder.append(" ").append(symbol); //TODO think about fix, very-very dirty
 
       TextDrawable drawable = TextDrawable.builder()
             .beginConfig()
             .fontSize(getResources().getDimensionPixelSize(R.dimen.font_normal))
             .textColor(getResources().getColor(R.color.black))
             .endConfig()
-            .buildRect(symbol, Color.TRANSPARENT);
+            .buildRect(textBuilder.toString(), Color.TRANSPARENT);
 
       setCompoundDrawablePadding(padding);
       setCompoundDrawables(drawable, null, null, null);
    }
 
    public int getPaddingForCurrency(String symbol) {
-      return symbol.length() > 2 ? getResources().getDimensionPixelSize(R.dimen.spacing_large) :
-             symbol.length() > 1 ? getResources().getDimensionPixelSize(R.dimen.spacing_normal) :
-                  getResources().getDimensionPixelSize(R.dimen.spacing_small);
+      return symbol.length() > 2 ? getResources().getDimensionPixelSize(R.dimen.spacing_large)
+            : symbol.length() > 1 ? getResources().getDimensionPixelSize(R.dimen.spacing_normal)
+            : getResources().getDimensionPixelSize(R.dimen.spacing_small);
    }
 }

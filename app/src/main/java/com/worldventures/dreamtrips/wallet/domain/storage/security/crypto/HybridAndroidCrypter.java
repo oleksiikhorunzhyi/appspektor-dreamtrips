@@ -144,7 +144,8 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
       }
    }
 
-   private SecretKeySpec loadSymmetricKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, KeyStoreException, UnrecoverableEntryException, InvalidKeyException, IOException {
+   private SecretKeySpec loadSymmetricKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException,
+         KeyStoreException, UnrecoverableEntryException, InvalidKeyException, IOException {
       if (!symmetricKeyFile.exists()) return null;
       // load Asymmetric key
       prepareAsymmetricKey();
@@ -158,7 +159,8 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
       return new SecretKeySpec(symmetricKey, symmetricParams.keyType);
    }
 
-   private SecretKeySpec createAndSaveSymmetricKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
+   private SecretKeySpec createAndSaveSymmetricKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException,
+         NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
       // load Asymmetric key
       prepareAsymmetricKey();
       KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);

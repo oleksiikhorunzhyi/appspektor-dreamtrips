@@ -192,16 +192,5 @@ public abstract class BaseFeedEntity implements FeedEntity {
       return uid.hashCode();
    }
 
-   @Override
-   public String toString() {
-      return "BaseFeedEntity{" +
-            "likesCount=" + likesCount +
-            ", liked=" + liked +
-            ", commentsCount=" + commentsCount +
-            ", comments=" + comments +
-            ", owner=" + owner +
-            ", uid='" + uid + '\'' +
-            ", language='" + language + '\'' +
-            '}';
-   }
+
 }

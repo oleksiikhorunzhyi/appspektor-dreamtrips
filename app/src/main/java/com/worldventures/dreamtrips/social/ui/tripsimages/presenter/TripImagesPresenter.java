@@ -117,8 +117,8 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    private void trackUploadAnalyticEvent() {
-      UploadTripImageAnalyticAction action = tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES ?
-            UploadTripImageAnalyticAction.fromMyImages() : UploadTripImageAnalyticAction.fromMemberImages();
+      UploadTripImageAnalyticAction action = tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES
+            ? UploadTripImageAnalyticAction.fromMyImages() : UploadTripImageAnalyticAction.fromMemberImages();
 
       analyticsInteractor.analyticsActionPipe().send(action);
    }

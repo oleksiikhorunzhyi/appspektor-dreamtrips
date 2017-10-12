@@ -40,6 +40,8 @@ public class SendPodcastAnalyticsIfNeedAction extends SendProgressAnalyticsIfNee
             break;
          case 4:
             action = PodcastAnalyticsAction.progress100(podcastName);
+         default:
+            break;
       }
       return action;
    }

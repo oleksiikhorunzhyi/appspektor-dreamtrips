@@ -31,7 +31,7 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
       return new WalletVideoHolderHelperImpl(new ProgressVideoCellHelper(progressView, cachedModelHelper));
    }
 
-   private static class WalletVideoHolderHelperImpl implements WalletVideoHolderHelper {
+   private final static class WalletVideoHolderHelperImpl implements WalletVideoHolderHelper {
 
       private final ProgressVideoCellHelper progressVideoCellHelper;
 

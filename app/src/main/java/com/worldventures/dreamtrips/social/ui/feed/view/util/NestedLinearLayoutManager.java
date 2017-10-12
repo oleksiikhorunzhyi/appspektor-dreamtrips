@@ -54,6 +54,8 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
             width = widthSize;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
+         default:
+            break;
       }
 
       switch (heightMode) {
@@ -61,6 +63,8 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
             height = heightSize;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
+         default:
+            break;
       }
 
       setMeasuredDimension(width, Math.min(height, maxHeight));

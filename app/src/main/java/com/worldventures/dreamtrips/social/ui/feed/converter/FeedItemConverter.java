@@ -103,6 +103,8 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
             return com.worldventures.dreamtrips.social.ui.feed.model.FeedItem.Action.UPDATE;
          case UNKNOWN:
             return com.worldventures.dreamtrips.social.ui.feed.model.FeedItem.Action.UNKNOWN;
+         default:
+            break;
       }
       throw new RuntimeException("No such type");
    }

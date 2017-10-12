@@ -85,6 +85,8 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
          case R.id.action_info_gestures:
             showLockGesturesInfoDialog();
             return true;
+         default:
+            break;
       }
       return false;
    }

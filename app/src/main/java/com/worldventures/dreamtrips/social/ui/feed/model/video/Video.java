@@ -117,10 +117,14 @@ public class Video extends BaseFeedEntity implements Parcelable {
 
    public static final Creator<Video> CREATOR = new Creator<Video>() {
       @Override
-      public Video createFromParcel(Parcel source) {return new Video(source);}
+      public Video createFromParcel(Parcel source) {
+         return new Video(source);
+      }
 
       @Override
-      public Video[] newArray(int size) {return new Video[size];}
+      public Video[] newArray(int size) {
+         return new Video[size];
+      }
    };
 
    @Override

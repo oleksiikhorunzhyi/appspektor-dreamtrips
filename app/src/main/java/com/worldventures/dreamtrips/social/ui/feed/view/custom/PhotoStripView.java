@@ -228,6 +228,8 @@ public class PhotoStripView extends LinearLayout {
                   case 1:
                      cameraAction.call(MediaPickerModel.Type.VIDEO);
                      break;
+                  default:
+                     break;
                }
             }).show();
    }

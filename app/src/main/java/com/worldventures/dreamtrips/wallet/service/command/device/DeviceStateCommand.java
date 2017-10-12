@@ -13,7 +13,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class DeviceStateCommand extends Command<SmartCardStatus> implements CachedAction<SmartCardStatus> {
+public final class DeviceStateCommand extends Command<SmartCardStatus> implements CachedAction<SmartCardStatus> {
 
    private final Func1<SmartCardStatus, SmartCardStatus> func;
    private SmartCardStatus cachedSmartCardStatus;

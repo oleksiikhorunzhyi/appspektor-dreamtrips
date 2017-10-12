@@ -37,7 +37,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_invite)
-public class InviteFragment extends BaseFragment<InvitePresenter> implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
+public class InviteFragment extends BaseFragment<InvitePresenter>
+      implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
 
    @InjectView(R.id.frameContactCount) LinearLayout frameContactCount;
    @InjectView(R.id.lv_users) RecyclerView lvUsers;

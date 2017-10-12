@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class OfflineModeStatusCommand extends Command<Boolean> implements InjectableAction {
+public final class OfflineModeStatusCommand extends Command<Boolean> implements InjectableAction {
 
    @Inject RecordsStorage recordsStorage;
 
@@ -40,7 +40,7 @@ public class OfflineModeStatusCommand extends Command<Boolean> implements Inject
       callback.onSuccess(newValue);
    }
 
-   private static class SaveStatusFunc implements Func1<Boolean, Boolean> {
+   private final static class SaveStatusFunc implements Func1<Boolean, Boolean> {
 
       private final boolean status;
 

@@ -7,10 +7,8 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.worldventures.dreamtrips.R;
-
 /**
- * Behavior is used in {@link R.layout.screen_wallet_cardlist}
+ * Behavior is used in {@link com.worldventures.dreamtrips.R.layout.screen_wallet_cardlist}
  */
 @SuppressWarnings("unused")
 public class ScrollFABBehavior extends FloatingActionButton.Behavior {
@@ -22,9 +20,9 @@ public class ScrollFABBehavior extends FloatingActionButton.Behavior {
    @Override
    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout,
          FloatingActionButton child, View directTargetChild, View target, int nestedScrollAxes) {
-      return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL ||
-            super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target,
-                  nestedScrollAxes);
+      return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL
+            || super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target,
+            nestedScrollAxes);
    }
 
    @Override

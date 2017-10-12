@@ -17,7 +17,7 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction {
    }
 
    public static TripImagesTabViewAnalyticsEvent forTripImages(TripImagesArgs tripImagesArgs) {
-/*
+      /*
       switch (tripImagesType) {
          case MEMBERS_IMAGES:
             return new TripImagesTabViewAnalyticsEvent("member_images");
@@ -28,7 +28,7 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction {
          default:
             return new TripImagesTabViewAnalyticsEvent("my_images");
       }
-*/
+      */
       return new TripImagesTabViewAnalyticsEvent("member_images");
    }
 

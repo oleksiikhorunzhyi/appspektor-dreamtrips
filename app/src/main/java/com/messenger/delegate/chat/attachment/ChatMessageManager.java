@@ -37,7 +37,13 @@ public class ChatMessageManager {
    private final ConversationsDAO conversationsDAO;
 
    @Inject
-   public ChatMessageManager(MessengerConnector messengerConnector, ChatMessageInteractor chatMessageInteractor, PhotoAttachmentDelegate photoAttachmentDelegate, LocationAttachmentDelegate locationAttachmentDelegate, ConversationsDAO conversationsDAO, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
+   public ChatMessageManager(MessengerConnector messengerConnector,
+         ChatMessageInteractor chatMessageInteractor,
+         PhotoAttachmentDelegate photoAttachmentDelegate,
+         LocationAttachmentDelegate locationAttachmentDelegate,
+         ConversationsDAO conversationsDAO,
+         MessageDAO messageDAO,
+         AttachmentDAO attachmentDAO) {
       this.messengerConnector = messengerConnector;
       this.chatMessageInteractor = chatMessageInteractor;
       this.photoAttachmentDelegate = photoAttachmentDelegate;
@@ -92,6 +98,8 @@ public class ChatMessageManager {
             break;
          case AttachmentType.LOCATION:
             retrySendLocationAttachment(conversationId, dataMessage, attachment);
+            break;
+         default:
             break;
       }
    }

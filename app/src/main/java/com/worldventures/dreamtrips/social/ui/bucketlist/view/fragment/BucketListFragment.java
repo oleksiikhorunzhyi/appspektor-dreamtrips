@@ -280,6 +280,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
          case R.id.action_popular:
             getPresenter().popularClicked();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

@@ -59,6 +59,8 @@ public class ConversationSwipeLayoutInflater extends ViewInflater implements Vie
          case R.id.swipe_layout_button_delete:
             if (swipeButtonsListener != null) swipeButtonsListener.onDeleteButtonPressed(conversation);
             break;
+         default:
+            break;
       }
    }
 }

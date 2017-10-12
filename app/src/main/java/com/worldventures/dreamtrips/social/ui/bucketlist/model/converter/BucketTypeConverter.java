@@ -31,6 +31,8 @@ public class BucketTypeConverter implements Converter<BucketType, BucketItem.Buc
             return BucketItem.BucketType.DINING;
          case LOCATION:
             return BucketItem.BucketType.LOCATION;
+         default:
+            break;
       }
       throw new IllegalArgumentException("No such type");
    }

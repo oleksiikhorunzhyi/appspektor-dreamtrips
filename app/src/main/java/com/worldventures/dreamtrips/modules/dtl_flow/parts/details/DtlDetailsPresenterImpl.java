@@ -16,9 +16,9 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.model.session.FeatureManager;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
@@ -97,7 +97,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    protected void validateTablet() {
-      if(getView().isTablet()){
+      if (getView().isTablet()) {
          getView().hideReviewViewsOnTablets();
       }
    }
@@ -274,7 +274,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void showAllReviews() {
-      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()),merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
    }
 
    @Override
@@ -347,11 +347,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
    }
 
-   private void goToReviewList(){
+   private void goToReviewList() {
       Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
    }
 
-   private void goToCommentReview(){
+   private void goToCommentReview() {
       Path path = new DtlCommentReviewPath(merchant);
       History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
       historyBuilder.push(path);

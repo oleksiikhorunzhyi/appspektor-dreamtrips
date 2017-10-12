@@ -11,7 +11,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class AboutSmartCardDataCommand extends Command<AboutSmartCardData> implements CachedAction<AboutSmartCardData> {
+public final class AboutSmartCardDataCommand extends Command<AboutSmartCardData> implements CachedAction<AboutSmartCardData> {
 
    private final Func1<AboutSmartCardData, AboutSmartCardData> func;
 

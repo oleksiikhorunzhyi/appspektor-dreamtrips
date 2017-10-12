@@ -45,9 +45,9 @@ public class UsersDAO extends BaseDAO {
       }
       sb.setCharAt(sb.length() - 1, ')');
 
-      return new RxContentResolver.Query.Builder(null).withSelection("SELECT " + projection +
-            " FROM " + DataUser.TABLE_NAME +
-            " WHERE " + DataUser$Table._ID + " in " + sb.toString()).build();
+      return new RxContentResolver.Query.Builder(null).withSelection("SELECT " + projection
+            + " FROM " + DataUser.TABLE_NAME
+            + " WHERE " + DataUser$Table._ID + " in " + sb.toString()).build();
    }
 
    public Observable<DataUser> getUserById(String id) {
@@ -58,8 +58,8 @@ public class UsersDAO extends BaseDAO {
    }
 
    public Observable<List<DataUser>> getFriends(String currentUserId) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataUser.TABLE_NAME + " " +
-            "WHERE " + DataUser$Table._ID + "<>?" + " AND " + DataUser$Table.FRIEND + "=?")
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataUser.TABLE_NAME + " "
+            + "WHERE " + DataUser$Table._ID + "<>?" + " AND " + DataUser$Table.FRIEND + "=?")
             .withSelectionArgs(new String[]{currentUserId, String.valueOf(1)})
             .withSortOrder("ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC")
             .build();

@@ -24,7 +24,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WAL
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
 
 @CommandAction
-public class UpdateRecordCommand extends Command<Void> implements InjectableAction {
+public final class UpdateRecordCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject WalletAnalyticsInteractor analyticsInteractor;

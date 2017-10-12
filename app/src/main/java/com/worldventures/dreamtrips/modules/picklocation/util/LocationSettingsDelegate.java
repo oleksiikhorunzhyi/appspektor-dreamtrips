@@ -54,6 +54,8 @@ public class LocationSettingsDelegate {
                   break;
             }
             return true;
+         default:
+            break;
       }
       return false;
    }

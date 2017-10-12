@@ -70,6 +70,8 @@ public class PodcastService extends Service {
          case NOTIFICATION_ACTION_STOP:
             onPlayerCleanup();
             break;
+         default:
+            break;
       }
    }
 

@@ -57,9 +57,9 @@ public class UriPathProviderImpl implements UriPathProvider {
          try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor == null) return null;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             if (cursor.moveToFirst()) {
-               return cursor.getString(column_index);
+               return cursor.getString(columnIndex);
             }
          } catch (Exception ignored) {
          } finally {

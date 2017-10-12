@@ -150,10 +150,9 @@ public class BadgeView extends AppCompatTextView {
       if (target instanceof TabWidget) {
 
          // set target to the relevant tab child container
-         target = ((TabWidget) target).getChildTabViewAt(targetTabIndex);
-         this.target = target;
+         this.target = ((TabWidget) target).getChildTabViewAt(targetTabIndex);
 
-         ((ViewGroup) target).addView(container, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+         ((ViewGroup) this.target).addView(container, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
          this.setVisibility(View.GONE);
          container.addView(this);

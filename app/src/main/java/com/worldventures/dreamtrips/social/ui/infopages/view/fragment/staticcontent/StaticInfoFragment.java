@@ -60,7 +60,8 @@ import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<T, P> implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<T, P>
+      implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
    public static final String BLANK_PAGE = "about:blank";

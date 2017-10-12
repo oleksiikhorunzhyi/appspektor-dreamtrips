@@ -105,6 +105,8 @@ class FragmentCompass {
             case ADD:
                fragmentTransaction.add(containerId, fragment, clazzName);
                break;
+            default:
+               break;
          }
          if (backStackEnabled) {
             fragmentTransaction.addToBackStack(route.name());

@@ -169,9 +169,8 @@ public class PhotoPostCreationCell extends BaseAbstractDelegateCell<PhotoCreatio
       currentTags.addAll(getModelObject().getCombinedTags());
       currentTags.addAll(getModelObject().getCachedAddedPhotoTags());
       currentTags.removeAll(getModelObject().getCachedRemovedPhotoTags());
-      List<PhotoTag> notIntersectingSuggestions =
-            PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
-                  new ArrayList<>(currentTags));
+      List<PhotoTag> notIntersectingSuggestions = PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
+            new ArrayList<>(currentTags));
       photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
             tag -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
    }

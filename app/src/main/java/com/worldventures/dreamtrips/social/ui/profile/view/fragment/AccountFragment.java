@@ -43,6 +43,8 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
          switch (item.getItemId()) {
             case R.id.item_logout:
                showLogoutDialog();
+            default:
+               break;
          }
          return true;
       });

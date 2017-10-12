@@ -11,7 +11,7 @@ public final class CommandActionBaseHelper extends Command {
    protected void run(CommandCallback callback) {
    }
 
-   public static class ActionCommandSubscriber<A> extends Subscriber<A> {
+   public final static class ActionCommandSubscriber<A> extends Subscriber<A> {
 
       private CommandCallback<A> callback;
       private volatile boolean executed;

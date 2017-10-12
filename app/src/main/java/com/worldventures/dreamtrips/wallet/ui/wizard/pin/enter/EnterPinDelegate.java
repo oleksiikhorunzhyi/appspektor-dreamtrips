@@ -48,7 +48,7 @@ public abstract class EnterPinDelegate {
 
    public abstract void prepareView(PinView view);
 
-   private static class AddPinDelegate extends EnterPinDelegate {
+   private final static class AddPinDelegate extends EnterPinDelegate {
 
       private AddPinDelegate(WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
@@ -71,7 +71,7 @@ public abstract class EnterPinDelegate {
       }
    }
 
-   private static class ResetPinDelegate extends EnterPinDelegate {
+   private final static class ResetPinDelegate extends EnterPinDelegate {
 
       private ResetPinDelegate(WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);
@@ -96,7 +96,7 @@ public abstract class EnterPinDelegate {
       }
    }
 
-   private static class SetupPinDelegate extends EnterPinDelegate {
+   private final static class SetupPinDelegate extends EnterPinDelegate {
 
       private SetupPinDelegate(WalletAnalyticsInteractor analyticsInteractor, Navigator navigator) {
          super(analyticsInteractor, navigator);

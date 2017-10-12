@@ -22,8 +22,7 @@ class LocationSyncManager {
       if (scheduledLocationFuture == null
             || scheduledLocationFuture.isCancelled()
             || scheduledLocationFuture.isDone()) {
-         scheduledLocationFuture =
-               scheduledExecutor.scheduleAtFixedRate(new LocationTask(), 0, SCHEDULE_TIME, TimeUnit.MINUTES);
+         scheduledLocationFuture = scheduledExecutor.scheduleAtFixedRate(new LocationTask(), 0, SCHEDULE_TIME, TimeUnit.MINUTES);
       }
    }
 

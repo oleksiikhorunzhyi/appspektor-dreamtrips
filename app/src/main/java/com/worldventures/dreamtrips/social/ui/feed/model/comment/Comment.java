@@ -16,7 +16,7 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
    private static final String TEXT_KEY = "description";
 
    private String uid;
-   private String parent_id;
+   private String parentId;
    private String originId; // Parent entity uid
    private String text;
    private User user;
@@ -34,7 +34,7 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
 
    protected Comment(Parcel in) {
       uid = in.readString();
-      parent_id = in.readString();
+      parentId = in.readString();
       text = in.readString();
       user = in.readParcelable(User.class.getClassLoader());
       language = in.readString();
@@ -60,8 +60,8 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
       this.uid = uid;
    }
 
-   public void setParentId(String parent_id) {
-      this.parent_id = parent_id;
+   public void setParentId(String parentId) {
+      this.parentId = parentId;
    }
 
    public void setPostId(String originId) {
@@ -125,7 +125,7 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
    @Override
    public void writeToParcel(Parcel parcel, int i) {
       parcel.writeString(uid);
-      parcel.writeString(parent_id);
+      parcel.writeString(parentId);
       parcel.writeString(text);
       parcel.writeParcelable(user, i);
       parcel.writeString(language);

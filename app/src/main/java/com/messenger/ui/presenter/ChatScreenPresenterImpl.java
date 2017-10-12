@@ -421,6 +421,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                      }
                   });
             return true;
+         default:
+            break;
       }
       return false;
    }
@@ -455,6 +457,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             break;
          case AttachmentMenuItem.IMAGE:
             getView().showPicker();
+            break;
+         default:
             break;
       }
    }
@@ -569,6 +573,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             break;
          case ERROR:
             chatScreen.showError(viewState.getError());
+            break;
+         default:
             break;
       }
    }

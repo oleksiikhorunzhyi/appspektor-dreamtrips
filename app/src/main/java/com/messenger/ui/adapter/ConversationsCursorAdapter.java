@@ -72,6 +72,8 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
             View closedGroupChatLayout = LayoutInflater.from(parent.getContext())
                   .inflate(R.layout.list_item_conversation_group_closed, parent, false);
             return new ClosedGroupConversationViewHolder(closedGroupChatLayout);
+         default:
+            break;
       }
       throw new IllegalStateException("There is no such view type in adapter");
    }

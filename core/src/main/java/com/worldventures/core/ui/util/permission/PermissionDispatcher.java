@@ -91,7 +91,8 @@ public class PermissionDispatcher {
    private boolean hasSelfPermission(Context context, String permission) {
       try {
          return checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
-      } catch (RuntimeException t) {
+      } catch (Exception e) {
+         e.printStackTrace();
          return false;
       }
    }

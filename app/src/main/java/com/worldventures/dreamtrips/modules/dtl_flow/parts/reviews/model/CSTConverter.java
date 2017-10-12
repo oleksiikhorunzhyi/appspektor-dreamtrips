@@ -50,7 +50,7 @@ public class CSTConverter {
                //Week
                time = getDifferenceTime(localCalendar, calendar, Calendar.DAY_OF_WEEK_IN_MONTH);
                if (time > 0) {
-                  if(time == 1){
+                  if (time == 1) {
                      info = String.format(res.getString(R.string.week_ago_text), time);
                   } else {
                      info = String.format(res.getString(R.string.weeks_ago_text), time);

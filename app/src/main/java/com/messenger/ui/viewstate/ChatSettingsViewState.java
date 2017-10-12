@@ -34,9 +34,13 @@ public class ChatSettingsViewState extends LceViewState<Parcelable> {
    }
 
    public static final Parcelable.Creator<ChatSettingsViewState> CREATOR = new Parcelable.Creator<ChatSettingsViewState>() {
-      public ChatSettingsViewState createFromParcel(Parcel source) {return new ChatSettingsViewState(source);}
+      public ChatSettingsViewState createFromParcel(Parcel source) {
+         return new ChatSettingsViewState(source);
+      }
 
-      public ChatSettingsViewState[] newArray(int size) {return new ChatSettingsViewState[size];}
+      public ChatSettingsViewState[] newArray(int size) {
+         return new ChatSettingsViewState[size];
+      }
    };
 
    public ChatSettingsViewState(Parcel in) {

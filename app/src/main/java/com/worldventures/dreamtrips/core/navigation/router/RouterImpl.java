@@ -41,6 +41,8 @@ public class RouterImpl implements Router {
             break;
          case REMOVE:
             remove(route, config);
+         default:
+            break;
       }
    }
 
@@ -58,9 +60,9 @@ public class RouterImpl implements Router {
       ActivityRouter activityRouter = new ActivityRouter(activity);
       Bundle args = getArgs(config);
       args.putSerializable(ComponentPresenter.ROUTE, route);
-      Class<? extends InjectingActivity> clazz = config.isManualOrientationActivity() ?
-            ConfigChangesAwareComponentActivity.class :
-            config.getTransparentBackground() ? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
+      Class<? extends InjectingActivity> clazz = config.isManualOrientationActivity()
+            ? ConfigChangesAwareComponentActivity.class
+            : config.getTransparentBackground() ? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
 
       activityRouter.startActivityWithArgs(clazz, args, config.getFlags());
 

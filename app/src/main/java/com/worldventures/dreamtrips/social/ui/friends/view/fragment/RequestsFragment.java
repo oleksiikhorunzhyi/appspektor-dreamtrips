@@ -66,6 +66,8 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
             getPresenter().onAddFriendsPressed();
             router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity().build());
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

@@ -64,7 +64,7 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
 
    @Override
    public void startScan(RegionBundle bundle) {
-      if (beaconManager.isBound( this)) return;
+      if (beaconManager.isBound(this)) return;
 
       try {
          WalletBeaconClient.logBeacon("Start service :: SmartCard ID - %s", bundle.getMajor());

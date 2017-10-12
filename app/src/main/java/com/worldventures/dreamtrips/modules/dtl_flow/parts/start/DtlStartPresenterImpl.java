@@ -101,6 +101,8 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                   case EXTERNAL:
                      navigatePath(DtlMerchantsPath.getDefault());
                      break;
+                  default:
+                     break;
                }
             });
    }

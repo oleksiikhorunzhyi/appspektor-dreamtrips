@@ -14,7 +14,7 @@ import io.techery.janet.operationsubscriber.view.ErrorView;
 import io.techery.janet.operationsubscriber.view.ProgressView;
 import rx.functions.Action0;
 
-public class FactoryResetOperationView extends ComposableOperationView<ResetSmartCardCommand> {
+public final class FactoryResetOperationView extends ComposableOperationView<ResetSmartCardCommand> {
 
    private FactoryResetOperationView(ProgressView<ResetSmartCardCommand> progressView, ErrorView<ResetSmartCardCommand> errorView) {
       super(progressView, errorView);

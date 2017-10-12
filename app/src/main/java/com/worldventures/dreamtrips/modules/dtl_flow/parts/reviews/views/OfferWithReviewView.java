@@ -148,7 +148,9 @@ public class OfferWithReviewView extends LinearLayout {
       }, 1000);
    }
 
-   private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;}
+   private int getNextItemValue() {
+      return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;
+   }
 
    public interface IMyEventListener {
       void onStartFistPageLoading();

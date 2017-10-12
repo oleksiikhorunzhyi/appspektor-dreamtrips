@@ -31,6 +31,8 @@ class SmartCardPinAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.PIN_RESET:
             attributeMap.put("ocpinreset", "1");
             break;
+         default:
+            break;
       }
    }
 }

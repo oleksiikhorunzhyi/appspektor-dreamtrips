@@ -47,7 +47,7 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.remove) View remove;
 
-   private void hideInfo(){
+   private void hideInfo() {
       photoTitle.setVisibility(View.GONE);
       tagButton.setVisibility(View.GONE);
    }
@@ -157,9 +157,8 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
       currentTags.addAll(getModelObject().getCombinedTags());
       currentTags.addAll(getModelObject().getCachedAddedPhotoTags());
       currentTags.removeAll(getModelObject().getCachedRemovedPhotoTags());
-      List<PhotoTag> notIntersectingSuggestions =
-            PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
-                  new ArrayList<>(currentTags));
+      List<PhotoTag> notIntersectingSuggestions = PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
+            new ArrayList<>(currentTags));
       photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
             tag -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
    }

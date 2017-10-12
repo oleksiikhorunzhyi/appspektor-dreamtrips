@@ -175,6 +175,8 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
          case PROGRESS:
             getView().showFlaggingProgressDialog();
             break;
+         default:
+            break;
       }
    }
 }

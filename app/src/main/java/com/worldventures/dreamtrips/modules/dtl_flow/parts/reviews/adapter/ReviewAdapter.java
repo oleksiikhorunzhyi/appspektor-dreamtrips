@@ -50,6 +50,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             View viewLoading = inflater.inflate(R.layout.view_dtl_item_loading, parent, false);
             viewHolder = new LoadingVH(viewLoading);
             break;
+         default:
+            break;
       }
       return viewHolder;
    }
@@ -60,6 +62,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
          case ITEM:
             final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
             recyclerViewHolder.bind(position);
+            break;
+         default:
             break;
       }
    }
@@ -75,10 +79,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
       return reviewId == null || reviewId.length() == 0 ? LOADING : ITEM;
    }
 
-     /*
+   /*
         Helpers - Pagination
    _________________________________________________________________________________________________
-    */
+   */
 
    public void add(ReviewObject r) {
       mItems.add(r);

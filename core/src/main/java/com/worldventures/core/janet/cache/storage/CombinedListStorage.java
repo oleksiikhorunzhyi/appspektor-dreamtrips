@@ -34,7 +34,7 @@ public abstract class CombinedListStorage<T> implements Storage<List<T>>, Cleara
    @Override
    public void clearMemory() {
       if (memoryStorage instanceof ClearableStorage) {
-         ((ClearableStorage)memoryStorage).clearMemory();
+         ((ClearableStorage) memoryStorage).clearMemory();
       }
    }
 }

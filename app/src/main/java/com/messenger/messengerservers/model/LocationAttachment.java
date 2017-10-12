@@ -10,7 +10,7 @@ import static android.text.TextUtils.isEmpty;
 
 public class LocationAttachment implements Attachment {
 
-   public static String COORDINATE_DIVIDER = ",";
+   public final static String COORDINATE_DIVIDER = ",";
 
    @SerializedName("ll") private String coordinates;
 

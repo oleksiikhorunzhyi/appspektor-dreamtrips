@@ -71,6 +71,8 @@ public class ChatStateExtension implements ExtensionElement {
                   case ELEMENT_DISPLAYED:
                      state = ChatState.NONE;
                      break;
+                  default:
+                     break;
                }
             }
          } catch (Exception ex) {

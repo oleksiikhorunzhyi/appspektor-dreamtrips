@@ -44,7 +44,7 @@ public class AndroidBleService implements WalletBluetoothService {
             .doOnUnsubscribe(adapter::release);
    }
 
-   private static class RxBluetoothAdapter implements Observable.OnSubscribe<Boolean> {
+   private final static class RxBluetoothAdapter implements Observable.OnSubscribe<Boolean> {
 
       private final Context appContext;
       private BroadcastReceiver broadcastReceiver;

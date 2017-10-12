@@ -52,7 +52,7 @@ public class PhotosProviderImpl implements PhotosProvider {
    }
 
    private String selectionArgs() {
-      return MediaStore.Images.Media.DATE_TAKEN + " < " +
-            " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
+      return MediaStore.Images.Media.DATE_TAKEN + " < "
+            + " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
    }
 }

@@ -12,6 +12,8 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
 apply plugin: 'com.github.ben-manes.versions'
+//
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 android {
    compileSdkVersion project.ext.androidConfig.compileSdk

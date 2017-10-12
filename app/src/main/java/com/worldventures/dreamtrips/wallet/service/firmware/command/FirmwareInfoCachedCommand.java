@@ -7,7 +7,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class FirmwareInfoCachedCommand extends CachedValueCommand<FirmwareUpdateData> {
+public final class FirmwareInfoCachedCommand extends CachedValueCommand<FirmwareUpdateData> {
 
    private FirmwareInfoCachedCommand(Func1<FirmwareUpdateData, FirmwareUpdateData> operationFunc) {
       super(operationFunc);

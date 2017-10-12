@@ -65,6 +65,8 @@ public class SendAnalyticsIfNeedAction extends Command<Integer> implements Injec
             break;
          case 4:
             action = WatchVideoAnalyticAction.progress100(language, videoName, chooseAnalyticNamespace());
+         default:
+            break;
       }
       return action;
    }

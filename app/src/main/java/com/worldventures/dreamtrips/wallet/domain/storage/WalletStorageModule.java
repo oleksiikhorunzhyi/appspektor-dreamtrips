@@ -69,7 +69,7 @@ public class WalletStorageModule {
 
    @Provides
    @Singleton
-   SnappyStorageManager SnappyRepositoryImpl(RecordsStorage recordsStorage) {
+   SnappyStorageManager snappyRepositoryImpl(RecordsStorage recordsStorage) {
       return new SnappyStorageManager(Collections.singletonList(recordsStorage));
    }
 

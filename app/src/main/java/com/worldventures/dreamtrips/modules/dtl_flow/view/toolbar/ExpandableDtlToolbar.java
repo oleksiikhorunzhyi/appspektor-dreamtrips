@@ -166,7 +166,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       }
    }
 
-   public void removeSearchFieldFocus(){
+   public void removeSearchFieldFocus() {
       merchantSearchInput.clearFocus();
    }
 

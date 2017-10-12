@@ -31,7 +31,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
    private final WalletAnalyticsInteractor analyticsInteractor;
 
    public AboutPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, 
+         SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor,
          WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;

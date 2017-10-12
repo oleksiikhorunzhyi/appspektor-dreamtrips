@@ -6,7 +6,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-public class LinkHandlerMovementMethod extends LinkMovementMethod {
+public final class LinkHandlerMovementMethod extends LinkMovementMethod {
    private static final int MOVEMENT_TIMEOUT = 650;
    private static LinkHandlerMovementMethod sInstance;
 

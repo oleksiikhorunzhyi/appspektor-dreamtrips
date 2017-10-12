@@ -11,7 +11,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import rx.Observable;
 import rx.Subscriber;
 
-class CheckLocationSettings extends GoogleApiObservable<LocationSettingsResult> {
+final class CheckLocationSettings extends GoogleApiObservable<LocationSettingsResult> {
 
    private final LocationRequest locationRequest;
 

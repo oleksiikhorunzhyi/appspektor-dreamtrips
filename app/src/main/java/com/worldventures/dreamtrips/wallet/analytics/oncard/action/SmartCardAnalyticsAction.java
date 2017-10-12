@@ -92,6 +92,8 @@ public abstract class SmartCardAnalyticsAction extends BaseCardDetailsAction {
          case REWARDS_BEACON:
             analyticsAction = new SmartCardRewardModeAction(analyticsLog);
             break;
+         default:
+            break;
       }
 
       return analyticsAction;

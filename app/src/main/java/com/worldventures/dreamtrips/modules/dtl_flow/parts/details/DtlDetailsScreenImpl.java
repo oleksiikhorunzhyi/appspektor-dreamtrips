@@ -295,7 +295,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       View estimate = ButterKnife.findById(this, R.id.merchant_details_estimate_points);
 
       if (earn != null)
-         RxView.clicks(earn).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
+         RxView.clicks(earn)
+               .compose(RxLifecycleAndroid.bindView(this))
+               .subscribe(aVoid -> getPresenter().onCheckInClicked());
       if (estimate != null) RxView.clicks(estimate)
             .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> getPresenter().onEstimationClick());
@@ -427,6 +429,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
                // The user was asked to change settings, but chose not to
                getPresenter().locationNotGranted();
                break;
+            default:
+               break;
          }
          return true;
       }
@@ -472,7 +476,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void hideReviewViewsOnTablets(){
+   public void hideReviewViewsOnTablets() {
       rateAndReviewBtn.setVisibility(View.GONE);
    }
 

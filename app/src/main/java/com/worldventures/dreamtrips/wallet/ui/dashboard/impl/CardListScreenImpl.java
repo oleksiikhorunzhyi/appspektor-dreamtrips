@@ -209,6 +209,8 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
             builder.title(R.string.wallet_wizard_no_connection_to_card_title);
             builder.content(R.string.wallet_wizard_limited_access);
             break;
+         default:
+            break;
       }
 
       addCardErrorDialog = builder.positiveText(R.string.ok)

@@ -121,6 +121,8 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
                   }
 
                   break;
+               default:
+                  break;
             }
 
             return true;

@@ -63,6 +63,8 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
                         throw new MissingUserPhotoException();
                      }
                      break;
+                  default:
+                     break;
                }
             })
             .flatMap(smartCardUser -> janet.createPipe(SetHomeDisplayTypeAction.class, Schedulers.io())

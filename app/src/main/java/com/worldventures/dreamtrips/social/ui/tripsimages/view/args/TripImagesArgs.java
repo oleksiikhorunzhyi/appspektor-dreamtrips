@@ -71,7 +71,7 @@ public class TripImagesArgs implements Parcelable {
    }
 
    public static class Builder {
-      private static int DEFAULT_PAGE_SIZE = 40;
+      private static final int DEFAULT_PAGE_SIZE = 40;
 
       private int userId;
       private boolean showTimestamps;
@@ -133,9 +133,13 @@ public class TripImagesArgs implements Parcelable {
 
    public static final Creator<TripImagesArgs> CREATOR = new Creator<TripImagesArgs>() {
       @Override
-      public TripImagesArgs createFromParcel(Parcel source) {return new TripImagesArgs(source);}
+      public TripImagesArgs createFromParcel(Parcel source) {
+         return new TripImagesArgs(source);
+      }
 
       @Override
-      public TripImagesArgs[] newArray(int size) {return new TripImagesArgs[size];}
+      public TripImagesArgs[] newArray(int size) {
+         return new TripImagesArgs[size];
+      }
    };
 }

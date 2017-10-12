@@ -70,7 +70,7 @@ public abstract class WalletScreenDelegate {
    }
 
 
-   private static class WalletLinearScreenDelegate extends WalletScreenDelegate {
+   private final static class WalletLinearScreenDelegate extends WalletScreenDelegate {
       private final LinearLayout containerLayout;
 
       private WalletLinearScreenDelegate(View container, boolean visibleConnectionSmartCardLabel,
@@ -121,7 +121,7 @@ public abstract class WalletScreenDelegate {
       }
    }
 
-   private static class WalletConstraintScreenDelegate extends WalletScreenDelegate {
+   private final static class WalletConstraintScreenDelegate extends WalletScreenDelegate {
 
       private WalletConstraintScreenDelegate(View container, boolean visibleConnectionSmartCardLabel,
             boolean visibleHttpConnectionLabel) {

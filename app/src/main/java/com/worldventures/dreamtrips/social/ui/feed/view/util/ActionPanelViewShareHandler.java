@@ -70,6 +70,8 @@ public class ActionPanelViewShareHandler {
             text = context.getString(R.string.bucketlist_share, bucketItem.getName());
             analyticsInteractor.analyticsActionPipe().send(BucketItemAction.share(bucketItem.getUid()));
             break;
+         default:
+            break;
       }
 
       ShareBundle data = new ShareBundle();

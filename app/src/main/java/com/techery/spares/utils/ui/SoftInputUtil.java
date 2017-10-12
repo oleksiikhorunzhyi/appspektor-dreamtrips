@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-public class SoftInputUtil {
+public final class SoftInputUtil {
    private SoftInputUtil() { }
 
    /** Show soft keyboard explicitly */

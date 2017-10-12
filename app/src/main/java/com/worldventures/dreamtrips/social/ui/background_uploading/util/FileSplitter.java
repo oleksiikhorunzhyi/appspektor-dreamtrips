@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FileSplitter {
 
-   public static int CHUNK_SIZE = 1024 * 1024 * 5; // the maximum size of each file "chunk" generated, in bytes
+   public final static int CHUNK_SIZE = 1024 * 1024 * 5; // the maximum size of each file "chunk" generated, in bytes
 
    private File externalCacheDir;
 

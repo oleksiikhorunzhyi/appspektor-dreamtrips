@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.wallet.service.nxt.model.MultiRequestElement
 import java.util.ArrayList;
 import java.util.List;
 
-public class NxtBankCardHelper {
+public final class NxtBankCardHelper {
 
    public static final String PAN = "number";
    public static final String CVV = "cvv";

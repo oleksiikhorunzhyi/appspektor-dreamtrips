@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 

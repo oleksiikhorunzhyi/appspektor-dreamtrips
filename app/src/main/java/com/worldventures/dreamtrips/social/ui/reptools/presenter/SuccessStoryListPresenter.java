@@ -85,6 +85,8 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
             onlyFavorites = true;
             analyticsInteractor.analyticsActionPipe().send(new FilterSuccessStoriesShowFavoriteAction());
             break;
+         default:
+            break;
       }
       reload();
    }

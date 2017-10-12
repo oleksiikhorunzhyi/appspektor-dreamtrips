@@ -61,7 +61,7 @@ public interface ChatScreen extends MessengerScreen {
 
    void dismissProgressDialog();
 
-   void showErrorMessage(@StringRes int error_no_connection);
+   void showErrorMessage(@StringRes int errorNoConnectionRes);
 
    void showPicker();
 }

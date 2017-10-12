@@ -20,7 +20,7 @@ public class SimpleErrorDialogView<T> extends DialogErrorView<T> {
    @Nullable private Action0 dismissAction;
 
    public SimpleErrorDialogView(Context context, int contentResId) {
-      this(context, contentResId, c -> {/*nothing*/});
+      this(context, contentResId, c -> { /*nothing*/ });
    }
 
    public SimpleErrorDialogView(Context context, int messageResId, @NonNull Action1<T> positiveAction) {

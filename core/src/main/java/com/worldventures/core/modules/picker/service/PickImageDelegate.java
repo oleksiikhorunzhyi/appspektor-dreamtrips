@@ -61,6 +61,8 @@ public class PickImageDelegate {
                      .send(new MediaCaptureCanceledCommand(MediaPickerModel.Type.VIDEO));
             }
             break;
+         default:
+            break;
       }
    }
 }

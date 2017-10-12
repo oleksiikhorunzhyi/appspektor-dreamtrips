@@ -150,6 +150,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
          case FRIEND:
             view.showFriendDialog(user);
             break;
+         default:
+            break;
       }
    }
 

@@ -15,7 +15,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class WalletPuckConnectionPresenterImpl extends WalletPresenterImpl<WalletPuckConnectionScreen> implements WalletPuckConnectionPresenter {
 
    private final SmartCardInteractor smartCardInteractor;
-   
+
    public WalletPuckConnectionPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor) {
       super(navigator, deviceConnectionDelegate);

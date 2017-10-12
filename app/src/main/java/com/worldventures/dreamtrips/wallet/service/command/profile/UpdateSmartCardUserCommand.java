@@ -82,7 +82,9 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
             changedFields.lastName());
    }
 
-   private void validateNetwork() {if (!networkService.isAvailable()) throw new NetworkUnavailableException();}
+   private void validateNetwork() {
+      if (!networkService.isAvailable()) throw new NetworkUnavailableException();
+   }
 
    private Observable<SmartCardUser> uploadData(String smartCardId, SmartCardUser user) {
       return pushToSmartCard(smartCardId, user)

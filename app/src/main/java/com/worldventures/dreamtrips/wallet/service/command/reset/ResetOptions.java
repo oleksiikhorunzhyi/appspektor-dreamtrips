@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
-public class ResetOptions {
+public final class ResetOptions {
 
    private boolean withEnterPin = false;
    private boolean withPaymentCards = true;

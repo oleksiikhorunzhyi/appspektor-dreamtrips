@@ -47,9 +47,13 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
    }
 
    public static final Parcelable.Creator<ChatMembersScreenViewState> CREATOR = new Parcelable.Creator<ChatMembersScreenViewState>() {
-      public ChatMembersScreenViewState createFromParcel(Parcel source) {return new ChatMembersScreenViewState(source);}
+      public ChatMembersScreenViewState createFromParcel(Parcel source) {
+         return new ChatMembersScreenViewState(source);
+      }
 
-      public ChatMembersScreenViewState[] newArray(int size) {return new ChatMembersScreenViewState[size];}
+      public ChatMembersScreenViewState[] newArray(int size) {
+         return new ChatMembersScreenViewState[size];
+      }
    };
 
    public ChatMembersScreenViewState(Parcel in) {

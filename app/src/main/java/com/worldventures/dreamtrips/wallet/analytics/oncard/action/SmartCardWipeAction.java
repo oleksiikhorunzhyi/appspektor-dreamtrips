@@ -22,6 +22,8 @@ class SmartCardWipeAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.DEFAULT_CARD_WIPE:
             attributeMap.put("ocwipedefaultcard", "1");
             break;
+         default:
+            break;
       }
    }
 }

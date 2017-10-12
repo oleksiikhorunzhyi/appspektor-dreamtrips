@@ -191,7 +191,8 @@ public class ScrollViewContainer extends RelativeLayout {
             }
             mTimer.schedule(2);
             break;
-
+         default:
+            break;
       }
       super.dispatchTouchEvent(ev);
       return true;

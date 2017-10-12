@@ -32,21 +32,15 @@ public abstract class DtlTransaction {
       return Calendar.getInstance().getTimeInMillis();
    }
 
-   ;
-
    @Value.Default
    public double getBillTotal() {
       return 0d;
    }
 
-   ;
-
    @Value.Default
    public double getPoints() {
       return 0d;
    }
-
-   ;
 
    @Nullable
    public abstract String getReceiptPhotoUrl();
@@ -63,8 +57,6 @@ public abstract class DtlTransaction {
       return false;
    }
 
-   ;
-
    @Nullable
    public abstract DtlTransactionResult getDtlTransactionResult();
 
@@ -73,8 +65,9 @@ public abstract class DtlTransaction {
 
    @Value.Derived
    public boolean isOutOfDate(long currentTimeInMillis) {
-      return currentTimeInMillis - getCheckinTimestamp() > DURATION_OF_LIFE ||
-            getLat() == 0.0d || getLng() == 0.0d;
+      return currentTimeInMillis - getCheckinTimestamp() > DURATION_OF_LIFE
+            || getLat() == 0.0d
+            || getLng() == 0.0d;
    }
 
    @Value.Derived

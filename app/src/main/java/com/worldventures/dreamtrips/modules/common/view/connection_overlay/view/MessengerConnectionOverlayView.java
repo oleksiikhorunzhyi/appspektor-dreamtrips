@@ -51,6 +51,8 @@ public class MessengerConnectionOverlayView implements ConnectionOverlayView {
             disconnectedView.setVisibility(View.VISIBLE);
             connectingView.setVisibility(View.GONE);
             break;
+         default:
+            break;
       }
    }
 

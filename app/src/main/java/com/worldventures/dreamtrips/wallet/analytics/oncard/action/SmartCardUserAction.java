@@ -20,6 +20,8 @@ public abstract class SmartCardUserAction extends SmartCardAnalyticsAction {
          case AnalyticsLog.USER_UNASSIGNED:
             attributeMap.put("ocunassigned ", "1");
             break;
+         default:
+            break;
       }
    }
 

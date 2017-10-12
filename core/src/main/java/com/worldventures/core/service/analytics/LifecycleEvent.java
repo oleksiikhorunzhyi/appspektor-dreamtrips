@@ -8,7 +8,7 @@ import java.lang.ref.WeakReference;
 
 @AnalyticsEvent(
       category = LifecycleEvent.LIFECYCLE_CATEGORY,
-      trackers = {AdobeTracker.TRACKER_KEY, ApptentiveTracker.TRACKER_KEY,})
+      trackers = {AdobeTracker.TRACKER_KEY, ApptentiveTracker.TRACKER_KEY})
 public class LifecycleEvent extends BaseAnalyticsAction {
 
    public static final String LIFECYCLE_CATEGORY = "lifecycle";

@@ -28,7 +28,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implements InjectableAction,
+public final class GetPodcastsCommand extends CommandWithError<List<Podcast>> implements InjectableAction,
       CachedAction<List<Podcast>> {
 
    public static final int PAGE_SIZE = 10;

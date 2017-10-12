@@ -83,6 +83,8 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
          case R.id.action_add_to_bucket:
             getPresenter().addTripToBucket();
             return true;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }

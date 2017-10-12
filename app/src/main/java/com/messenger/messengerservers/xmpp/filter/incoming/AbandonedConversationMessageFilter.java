@@ -29,6 +29,7 @@ public class AbandonedConversationMessageFilter extends BaseIncomingMessageFilte
             break;
          case XmppPacketDetector.MESSAGE:
             return checkIfAbandonedConversation(message.getThread());
+         default: break;
       }
       return Observable.just(false);
    }

@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.service.impl;
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.core.model.session.Feature;
+import com.worldventures.core.model.session.FeatureManager;
 import com.worldventures.dreamtrips.wallet.service.WalletAccessValidator;
 
 import rx.functions.Action0;

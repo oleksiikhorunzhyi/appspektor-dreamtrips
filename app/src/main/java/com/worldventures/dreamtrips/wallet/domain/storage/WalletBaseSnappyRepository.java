@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.wallet.domain.storage;
 
 import android.content.Context;
 
-import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.repository.BaseSnappyRepository;
-import com.worldventures.dreamtrips.core.repository.SnappyAction;
-import com.worldventures.dreamtrips.core.repository.SnappyResult;
+import com.worldventures.core.repository.BaseSnappyRepository;
+import com.worldventures.core.repository.SnappyAction;
+import com.worldventures.core.repository.SnappyResult;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
 
 import java.util.concurrent.ExecutorService;

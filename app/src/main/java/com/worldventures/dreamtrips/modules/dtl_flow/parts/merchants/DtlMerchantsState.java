@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 import java.util.Collections;

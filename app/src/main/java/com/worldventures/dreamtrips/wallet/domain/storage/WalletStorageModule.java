@@ -5,7 +5,7 @@ import android.content.Context;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
-import com.worldventures.dreamtrips.core.repository.DefaultSnappyOpenHelper;
+import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.FirmwareDataStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentFirmwareDataStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.PersistentRecordsStorage;

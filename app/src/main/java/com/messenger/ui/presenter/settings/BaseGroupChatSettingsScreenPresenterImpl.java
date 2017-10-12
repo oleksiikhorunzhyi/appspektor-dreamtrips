@@ -17,9 +17,9 @@ import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import java.util.List;
@@ -64,6 +64,7 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
       connectionStatusStream.subscribe(syncStatus -> {
          if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
             getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+            // TODO: 9/26/17 remove from wallet
          } else cropImageDelegate.cropImage(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel));
       });
    }

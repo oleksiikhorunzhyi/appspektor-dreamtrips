@@ -35,10 +35,12 @@
                   app:layout_scrollFlags="scroll|enterAlways"
                   >
 
-               <include layout="@layout/add_post_button"
+               <include
+                     layout="@layout/add_post_button"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:layout_marginTop="6dp"/>
+                     android:layout_marginTop="6dp"
+                     />
 
             </android.support.v7.widget.CardView>
          </android.support.design.widget.AppBarLayout>

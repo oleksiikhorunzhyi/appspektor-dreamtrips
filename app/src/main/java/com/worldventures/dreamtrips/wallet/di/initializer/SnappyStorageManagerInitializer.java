@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.di.initializer;
 
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorageManager;
 
 import javax.inject.Inject;

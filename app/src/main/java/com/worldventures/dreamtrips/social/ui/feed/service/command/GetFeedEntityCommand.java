@@ -1,20 +1,20 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketItemHttpAction;
 import com.worldventures.dreamtrips.api.multimedia.GetVideoHttpAction;
 import com.worldventures.dreamtrips.api.photos.GetPhotoHttpAction;
 import com.worldventures.dreamtrips.api.post.GetPostHttpAction;
 import com.worldventures.dreamtrips.api.trip.GetTripHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import javax.inject.Inject;

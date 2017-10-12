@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.TagSuggestionActionListener;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 

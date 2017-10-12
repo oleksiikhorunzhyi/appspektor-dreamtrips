@@ -6,7 +6,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 
 public class DtlLocationHelper {
 

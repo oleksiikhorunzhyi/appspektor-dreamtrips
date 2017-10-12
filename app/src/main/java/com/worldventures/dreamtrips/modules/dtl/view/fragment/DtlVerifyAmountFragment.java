@@ -8,12 +8,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;

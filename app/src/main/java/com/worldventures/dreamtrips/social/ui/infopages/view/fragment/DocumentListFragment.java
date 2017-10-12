@@ -5,9 +5,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.infopages.bundle.DocumentBundle;
+import com.worldventures.core.modules.infopages.model.Document;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -15,17 +18,14 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.social.ui.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
-import com.worldventures.dreamtrips.social.ui.infopages.bundle.DocumentBundle;
-import com.worldventures.dreamtrips.social.ui.infopages.model.Document;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.cell.DocumentCell;
-import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
 
 import butterknife.InjectView;
 
-import static com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration.VERTICAL_LIST;
+import static com.worldventures.core.ui.view.DividerItemDecoration.VERTICAL_LIST;
 
 @Layout(R.layout.fragment_documents)
 public abstract class DocumentListFragment<P extends DocumentListPresenter> extends BaseFragment<P> implements CellDelegate<Document>,

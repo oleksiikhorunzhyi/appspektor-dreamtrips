@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
+import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;

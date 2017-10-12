@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Receipt Capture",

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithVideoAttachmentBody;

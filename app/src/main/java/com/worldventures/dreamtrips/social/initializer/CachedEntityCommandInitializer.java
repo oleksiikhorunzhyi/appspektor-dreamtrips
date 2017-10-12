@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.initializer;
 
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.command.MigrateFromCachedEntity;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.video.service.command.ResetCachedModelsInProgressCommand;
+import com.worldventures.core.service.CachedEntityInteractor;
+import com.worldventures.core.service.command.MigrateFromCachedEntityCommand;
 
 public class CachedEntityCommandInitializer implements AppInitializer {
 
@@ -17,7 +17,7 @@ public class CachedEntityCommandInitializer implements AppInitializer {
    @Override
    public void initialize(Injector injector) {
       interactor.getMigrateFromCachedEntityPipe()
-            .createObservableResult(new MigrateFromCachedEntity())
+            .createObservableResult(new MigrateFromCachedEntityCommand())
             .subscribe(command -> interactor.getResetCachedModelsInProgressPipe()
                   .send(new ResetCachedModelsInProgressCommand()));
    }

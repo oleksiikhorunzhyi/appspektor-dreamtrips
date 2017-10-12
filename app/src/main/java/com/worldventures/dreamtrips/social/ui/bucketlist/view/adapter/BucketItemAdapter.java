@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.view.adapter;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 public class BucketItemAdapter extends DraggableArrayListAdapter<BucketItem> {
 

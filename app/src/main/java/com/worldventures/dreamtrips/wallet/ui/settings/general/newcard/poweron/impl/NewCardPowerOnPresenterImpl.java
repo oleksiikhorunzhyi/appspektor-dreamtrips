@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryRese
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowerOnScreen> implements NewCardPowerOnPresenter {
@@ -47,7 +48,8 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
    private void fetchSmartCardId() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> getView().setTitleWithSmartCardID(command.getResult().smartCardId()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
@@ -58,7 +60,8 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
    public void cantTurnOnSmartCard() {
       smartCardInteractor.activeSmartCardPipe()
             .createObservable(new ActiveSmartCardCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
@@ -72,7 +75,8 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
                   .wipePaymentCards(false)
                   .wipeUserSmartCardData(false)
                   .build()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
                   .onSuccess(activeSmartCardCommand -> getNavigator().goUnassignSuccess())
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
@@ -83,7 +87,8 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
    public void navigateNext() {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> handleConnectionSmartCard(bluetoothService.isEnable(), command.getResult()
                         .connectionStatus()

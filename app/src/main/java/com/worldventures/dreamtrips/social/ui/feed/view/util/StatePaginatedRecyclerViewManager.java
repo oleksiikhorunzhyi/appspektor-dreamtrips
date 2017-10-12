@@ -8,7 +8,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.core.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Focusable;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.StateRecyclerView;
@@ -86,7 +86,7 @@ public class StatePaginatedRecyclerViewManager {
          scrollStateAutoplaySubscription.unsubscribe();
       }
    }
-   
+
    public void findFirstCompletelyVisibleItemPosition() {
       Focusable focusableViewHolder = findNearestFocusableViewHolder();
       if (focusableViewHolder != null) focusableViewHolder.onFocused();

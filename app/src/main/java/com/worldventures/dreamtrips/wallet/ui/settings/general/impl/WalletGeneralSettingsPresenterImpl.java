@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -154,7 +155,8 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    private void observeSmartCardUserChanges() {
       smartCardInteractor.smartCardUserPipe()
             .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .map(Command::getResult)
             .subscribe(this::bindSmartCardUser, throwable -> Timber.e(throwable, ""));
    }
@@ -167,7 +169,8 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    private void observeFirmwareUpdates() {
       firmwareInteractor.firmwareInfoCachedPipe()
             .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .map(Command::getResult)
             .subscribe(this::toggleFirmwareBargeOrVersion);
    }
@@ -186,7 +189,8 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> action.call(command.getResult().connectionStatus()))
             );

@@ -4,25 +4,25 @@ import android.net.Uri;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.utils.FileUtils;
+import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CreatePostCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.social.ui.feed.model.SelectedPhoto;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePostCommand;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.FetchLocationFromExifCommand;
-import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    private CreateEntityBundle.Origin origin;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
-   @Inject MediaInteractor mediaInteractor;
+   @Inject MediaPickerInteractor mediaPickerInteractor;
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject PostsInteractor postsInteractor;
@@ -147,22 +147,22 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
 
    }
 
-   public void attachImages(MediaAttachment mediaAttachment) {
-      if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.isEmpty()) return;
+   public void attachImages(MediaPickerAttachment mediaAttachment) {
+      if (view == null || !mediaAttachment.hasImages() || !mediaAttachment.hasVideo()) return;
 
       view.disableImagePicker();
       imageSelected(mediaAttachment);
    }
 
-   private void imageSelected(MediaAttachment mediaAttachment) {
+   private void imageSelected(MediaPickerAttachment mediaAttachment) {
       locallyProcessingImagesCount++;
       invalidateDynamicViews();
-      Observable.from(mediaAttachment.chosenImages)
-            .concatMap(photoGalleryModel -> convertPhotoCreationItem(photoGalleryModel, mediaAttachment.source))
+      Observable.from(mediaAttachment.getChosenImages())
+            .concatMap(this::convertPhotoCreationItem)
             .compose(bindViewToMainComposer())
             .subscribe(newImage -> {
                if (ValidationUtils.isUrl(newImage.getFileUri())) {
-                  mediaInteractor.copyFilePipe()
+                  mediaPickerInteractor.copyFilePipe()
                         .createObservableResult(new CopyFileCommand(context, newImage.getFileUri()))
                         .compose(bindViewToMainComposer())
                         .subscribe(command -> {
@@ -191,10 +191,9 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
       }
    }
 
-   private Observable<PhotoReviewCreationItem> convertPhotoCreationItem(PhotoPickerModel photoGalleryModel,
-         MediaAttachment.Source source) {
+   private Observable<PhotoReviewCreationItem> convertPhotoCreationItem(PhotoPickerModel photoGalleryModel) {
       return tripImagesInteractor.createReviewPhotoCreationItemPipe()
-            .createObservableResult(new CreateReviewPhotoCreationItemCommand(photoGalleryModel, source))
+            .createObservableResult(new CreateReviewPhotoCreationItemCommand(photoGalleryModel))
             .map(Command::getResult);
    }
 

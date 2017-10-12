@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketCoverBody;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
 

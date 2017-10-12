@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.settings;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 

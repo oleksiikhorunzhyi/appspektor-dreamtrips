@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.view.util;
 
 import android.view.View;
+
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -13,12 +13,11 @@ import android.view.inputmethod.EditorInfo;
 
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.CellDelegate;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;

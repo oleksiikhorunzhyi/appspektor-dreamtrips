@@ -1,16 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.GetTransactionResponseSdk;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetUrlTokenResponse;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableGetTransactionResponse;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableGetUrlTokenResponse;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ThrstInfo;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.TransactionDetails;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
-public class TransactionResponseConverter implements Converter<com.worldventures.dreamtrips.api.dtl.merchants.model.GetTransactionResponseSdk, GetTransactionResponse> {
+public class TransactionResponseConverter implements Converter<GetTransactionResponseSdk, GetTransactionResponse> {
 
    @Override
    public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.GetTransactionResponseSdk> sourceClass() {

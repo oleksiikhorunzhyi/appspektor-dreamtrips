@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableThrstInfo;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ThrstInfo;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

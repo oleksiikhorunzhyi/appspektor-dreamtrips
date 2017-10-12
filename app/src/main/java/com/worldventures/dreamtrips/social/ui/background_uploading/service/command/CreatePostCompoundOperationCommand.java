@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.core.utils.FileUtils;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePhotoAttachment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel;
@@ -21,7 +22,6 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableSelectedPhoto;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.SelectedPhoto;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.io.File;
 import java.util.ArrayList;

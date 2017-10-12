@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcon
 import android.os.Bundle;
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.OtaPresenter;

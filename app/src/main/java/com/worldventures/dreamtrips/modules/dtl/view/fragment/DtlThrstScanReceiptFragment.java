@@ -7,13 +7,13 @@ import android.view.View;
 import android.widget.Button;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.gcm.service;
 import android.os.Bundle;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.techery.spares.application.BaseApplicationWithInjector;
+import com.worldventures.core.di.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.gcm.model.MerchantPushMessage;

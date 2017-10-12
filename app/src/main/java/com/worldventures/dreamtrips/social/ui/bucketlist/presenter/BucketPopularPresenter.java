@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketItemAddedFromPopularAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketPopularTabViewAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -11,8 +13,6 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetPopu
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetPopularBucketItemsCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 
 import java.util.List;
 
@@ -90,7 +90,8 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
             .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
                   .onSuccess(createBucketItemHttpAction -> {
                      BucketItem bucketItem = createBucketItemHttpAction.getResult();
-                     analyticsInteractor.analyticsActionPipe().send(new BucketItemAddedFromPopularAnalyticsAction(query));
+                     analyticsInteractor.analyticsActionPipe()
+                           .send(new BucketItemAddedFromPopularAnalyticsAction(query));
                      bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
                            .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
                      view.notifyItemWasAddedToBucketList(bucketItem);

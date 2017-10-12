@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.di.external;
 
 import android.app.Activity;
 
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;

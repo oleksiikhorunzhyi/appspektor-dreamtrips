@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.map.model;
 import android.support.annotation.DrawableRes;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 
 public enum ClusterType {
 

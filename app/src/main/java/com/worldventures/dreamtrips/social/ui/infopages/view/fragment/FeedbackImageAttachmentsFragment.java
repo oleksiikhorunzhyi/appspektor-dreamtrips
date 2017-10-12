@@ -9,15 +9,15 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.OnPageChangedAdapter;
-import com.worldventures.dreamtrips.social.ui.infopages.bundle.FeedbackImageAttachmentsBundle;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.FeedbackImageAttachmentsPresenter;
 
 import java.util.List;

@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.storage.complex_objects.Optional;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

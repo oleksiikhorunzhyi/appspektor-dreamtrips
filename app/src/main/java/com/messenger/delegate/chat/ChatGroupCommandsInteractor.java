@@ -2,7 +2,7 @@ package com.messenger.delegate.chat;
 
 import com.messenger.delegate.chat.command.KickChatCommand;
 import com.messenger.delegate.chat.command.LeaveChatCommand;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

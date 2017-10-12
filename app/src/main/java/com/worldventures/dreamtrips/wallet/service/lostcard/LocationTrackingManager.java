@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;

@@ -4,16 +4,16 @@ import android.app.ActionBar;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_reload_feed)
-public class ReloadFeedCell extends AbstractDelegateCell<ReloadFeedModel, CellDelegate<ReloadFeedModel>> {
+public class ReloadFeedCell extends BaseAbstractDelegateCell<ReloadFeedModel, CellDelegate<ReloadFeedModel>> {
 
    public ReloadFeedCell(View view) {
       super(view);

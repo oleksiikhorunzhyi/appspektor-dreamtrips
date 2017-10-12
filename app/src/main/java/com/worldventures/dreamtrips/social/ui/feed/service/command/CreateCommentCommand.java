@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
+import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.comment.CreateCommentHttpAction;
-import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 

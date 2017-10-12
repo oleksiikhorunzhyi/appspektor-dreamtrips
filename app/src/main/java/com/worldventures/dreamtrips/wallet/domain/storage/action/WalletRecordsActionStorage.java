@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;

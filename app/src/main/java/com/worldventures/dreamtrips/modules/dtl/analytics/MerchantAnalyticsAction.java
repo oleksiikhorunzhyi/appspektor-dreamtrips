@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 
 import java.util.Locale;

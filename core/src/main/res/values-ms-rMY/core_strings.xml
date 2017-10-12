@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_cancel">Batalkan</string>
+   <string name="action_done">Selesai</string>
+   <string name="action_retry">Cuba lagi</string>
+   <string name="camera_record_a_video">Merekod video</string>
+   <string name="camera_take_a_picture">Mengambil foto</string>
+   <string name="error_fail_to_load_documents">Gagal untuk memuatkan dokumen</string>
+   <string name="error_fail_to_load_feedback_reasons">Gagal memuatkan alasan maklum balas</string>
+   <string name="error_fail_to_load_videos">Gagal memuatkan video</string>
+   <string name="error_fail_to_locales">Gagal mendapatkan tempat peristiwa</string>
+   <string name="error_fail_to_login">Gagal untuk log masuk</string>
+   <string name="error_fail_to_send_feedback">Gagal menghantar maklum balas</string>
+   <string name="error_fail_to_update_settings">Gagal mengemas kini tetapan</string>
+   <string name="facebook_error_loading_albums">Tidak dapat memuatkan album</string>
+   <string name="facebook_error_loading_photos">Tidak dapat memuatkan foto</string>
+   <string name="facebook_login_error">Tidak dapat melog masuk ke Facebook</string>
+   <string name="fail">Kegagalan</string>
+   <string name="feedback_could_not_load_attachment">Tidak dapat memuatkan lampiran</string>
+   <string name="media_picker_error_contents">Muatan %1$s gagal</string>
+   <string name="media_picker_fb_albums_actions">Album Facebook</string>
+   <string name="media_picker_fb_photos_actions">Foto Facebook</string>
+   <string name="media_picker_gallery_action">Media galeri</string>
+   <string name="media_picker_limit_reached">Anda hanya boleh memilih sehingga %1$s foto</string>
+   <string name="no_camera_permission">Aplikasi ini tidak boleh berjalan kerana ia tidak mempunyai kebenaran kamera. Aplikasi kini akan keluar.</string>
+   <string name="permission_camera_rationale">Akses ke kamera diperlukan untuk pengesanan</string>
+   <string name="permission_location_rationale">Akses ke lokasi diperlukan untuk pengesanan</string>
+   <string name="photos_selected">%1$d dipilih</string>
+   <string name="picker_photo_limit">Anda boleh memilih sehingga %1$d foto</string>
+   <string name="picker_photo_limit_plural">Anda boleh memilih sehingga %1$d foto</string>
+   <string name="picker_static_add_from_fb">Tambah dari Facebook</string>
+   <string name="picker_static_take_from_camera">Kamera</string>
+   <string name="picker_two_media_type_error">Pilih sama ada foto atau video</string>
+   <string name="picker_video_length_limit">Anda tidak dibenarkan memilih video yang melebihi %1$d saat panjangnya</string>
+   <string name="picker_video_limit">Anda boleh memilih sehingga %1$d video</string>
+   <string name="picker_video_limit_plural">Anda boleh memilih sehingga %1$d video</string>
+</resources>

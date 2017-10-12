@@ -55,7 +55,7 @@
             android:visibility="gone"
             />
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+      <com.worldventures.core.ui.view.custom.EmptyRecyclerView
             android:id="@+id/recyclerViewFilters"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

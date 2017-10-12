@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.functions.Function2;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletAddress;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletAddress;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.AddressRestResponse;

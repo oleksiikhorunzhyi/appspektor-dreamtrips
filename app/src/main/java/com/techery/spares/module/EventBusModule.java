@@ -1,7 +1,7 @@
 package com.techery.spares.module;
 
-import com.techery.spares.module.qualifier.Global;
-import com.techery.spares.module.qualifier.Private;
+import com.worldventures.core.di.qualifier.Global;
+import com.worldventures.core.di.qualifier.Private;
 
 import javax.inject.Singleton;
 

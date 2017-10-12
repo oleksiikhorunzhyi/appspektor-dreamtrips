@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 public abstract class DtlAnalyticsAction extends BaseAnalyticsAction {

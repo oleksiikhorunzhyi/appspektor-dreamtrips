@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.techery.spares.ui.activity.InjectingActivity;
+import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
@@ -38,7 +39,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    protected void onFinishInflate(View view) {
       //noinspection all
-      this.objectGraph = (ObjectGraph) view.getContext().getSystemService(InjectingActivity.OBJECT_GRAPH_SERVICE_NAME);
+      this.objectGraph = (ObjectGraph) view.getContext().getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
       this.walletScreenDelegate = WalletScreenDelegate.create(view, supportConnectionStatusLabel(), supportHttpConnectionStatusLabel());
    }
@@ -67,6 +68,11 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
       final InputMethodManager inputManager = (InputMethodManager) view.getContext()
             .getSystemService(INPUT_METHOD_SERVICE);
       inputManager.hideSoftInputFromWindow(null, 0);
+   }
+
+   @Override
+   public <T> Observable.Transformer<T, T> bindUntilDetach() {
+      return bindUntilEvent(ControllerEvent.DETACH);
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

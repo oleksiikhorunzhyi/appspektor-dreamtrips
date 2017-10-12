@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;

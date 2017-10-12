@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.multimedia.DeleteVideoHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 
 import javax.inject.Inject;

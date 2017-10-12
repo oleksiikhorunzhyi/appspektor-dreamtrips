@@ -6,20 +6,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.membership.model.Member;
 
 import butterknife.InjectView;
 import butterknife.OnCheckedChanged;
 
 @Layout(R.layout.adapter_item_invite_member)
-public class MemberCell extends AbstractDelegateCell<Member, CellDelegate<Member>> {
+public class MemberCell extends BaseAbstractDelegateCell<Member, CellDelegate<Member>> {
 
    @InjectView(R.id.cb_checked) CheckBox cbChecked;
    @InjectView(R.id.tv_name) TextView tvName;

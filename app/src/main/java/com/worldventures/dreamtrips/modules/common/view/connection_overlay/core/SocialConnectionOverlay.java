@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.connection_overlay.core;
 
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.ConnectionOverlayViewFactory;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayView;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayViewFactory;
 

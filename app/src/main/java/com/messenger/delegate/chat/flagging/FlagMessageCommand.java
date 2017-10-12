@@ -1,7 +1,7 @@
 package com.messenger.delegate.chat.flagging;
 
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

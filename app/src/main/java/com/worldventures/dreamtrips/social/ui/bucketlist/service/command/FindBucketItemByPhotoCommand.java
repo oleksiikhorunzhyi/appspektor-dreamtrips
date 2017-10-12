@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
@@ -40,7 +40,8 @@ public class RestoreCompoundOperationsCommand extends Command<List<PostCompoundO
                         break;
                   }
                }
-               compoundOperationsInteractor.compoundOperationsPipe().send(CompoundOperationsCommand.compoundOperationsChanged(cachedModels));
+               compoundOperationsInteractor.compoundOperationsPipe()
+                     .send(CompoundOperationsCommand.compoundOperationsChanged(cachedModels));
                callback.onSuccess(cachedModels);
             }, callback::onFail);
    }

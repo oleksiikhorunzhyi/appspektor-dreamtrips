@@ -5,10 +5,9 @@ import android.app.Application;
 
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.synchmechanism.MessengerConnector;
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
 import com.techery.spares.utils.SimpleActivityLifecycleCallbacks;
-import com.worldventures.dreamtrips.util.ActivityWatcher;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
 
 import javax.inject.Inject;
 

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.util;
 import android.text.TextUtils;
 import android.util.Patterns;
 
-import com.techery.spares.utils.ValidationUtils.VResult;
+import com.worldventures.core.utils.ValidationUtils.VResult;
 import com.worldventures.dreamtrips.R;
 
 import java.util.regex.Matcher;
@@ -42,9 +42,5 @@ public class ValidationUtils {
          return new VResult(false, R.string.password_not_valid);
       }
       return new VResult(true, 0);
-   }
-
-   public static boolean isUrl(String path) {
-      return Patterns.WEB_URL.matcher(path).matches();
    }
 }

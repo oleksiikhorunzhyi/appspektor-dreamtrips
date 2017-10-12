@@ -7,18 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.model.Video;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.social.ui.video.cell.VideoCell;
 import com.worldventures.dreamtrips.social.ui.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
-import com.worldventures.dreamtrips.social.ui.video.model.Video;
 import com.worldventures.dreamtrips.social.ui.video.presenter.PresentationVideosPresenter;
 
 import java.util.List;

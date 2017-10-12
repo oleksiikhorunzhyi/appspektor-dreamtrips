@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.membership.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
+import com.worldventures.core.model.CachedModel;
 
 import java.util.Date;
 

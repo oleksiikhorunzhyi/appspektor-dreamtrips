@@ -6,14 +6,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.ui.fragment.FragmentHelper;
+import com.worldventures.core.model.User;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;

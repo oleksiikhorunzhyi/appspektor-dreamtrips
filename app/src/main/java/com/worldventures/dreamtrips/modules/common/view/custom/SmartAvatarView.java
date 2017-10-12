@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.messenger.ui.widget.AvatarView;
-import com.techery.spares.module.Injector;
 import com.techery.spares.utils.UserStatusAdapter;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
 
 import javax.inject.Inject;
 

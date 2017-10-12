@@ -28,21 +28,21 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.messenger.util.CrashlyticsTracker;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.infopages.StaticPageProvider;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.utils.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 

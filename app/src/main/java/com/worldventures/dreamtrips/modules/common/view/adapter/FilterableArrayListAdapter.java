@@ -8,10 +8,10 @@ import android.text.TextUtils;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.util.CrashlyticsTracker;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.Filterable;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.utils.CrashlyticsTracker;
 
 import java.util.ArrayList;
 import java.util.Collections;

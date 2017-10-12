@@ -3,11 +3,17 @@
 string=""
 
 stringsPathCommon="../app/src/main/res/values/strings.xml"
+stringsPathCore="../core/src/main/res/values/core_strings.xml"
 stringsPathSocial="../app/src/main/resSocial/values/social_strings.xml"
 stringsPathDtl="../app/src/main/res/values/dtl_strings.xml"
 stringsPathMessenger="../app/src/main/resMessenger/values/messenger_strings.xml"
 stringsPathSession="../app/src/main/resSession/values/session_strings.xml"
 stringsPathWallet="../app/src/main/res/values/wallet_strings.xml"
+
+if [[ $* == *"core"* ]];
+then
+    string+=" "$stringsPathCore
+fi
 
 if [[ $* == *"common"* ]];
 then

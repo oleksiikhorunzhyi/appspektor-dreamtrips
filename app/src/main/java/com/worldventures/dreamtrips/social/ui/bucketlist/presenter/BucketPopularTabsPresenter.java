@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import android.os.Bundle;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 import javax.inject.Inject;
 

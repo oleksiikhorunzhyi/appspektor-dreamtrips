@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetInspireMePhotosCommand;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 
 import java.util.ArrayList;
 import java.util.List;

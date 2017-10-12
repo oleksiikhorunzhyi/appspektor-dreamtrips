@@ -4,7 +4,6 @@ import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSimple
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand

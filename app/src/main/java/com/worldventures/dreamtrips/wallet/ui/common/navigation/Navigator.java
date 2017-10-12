@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.common.navigation;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CommonCardViewModel;
@@ -21,6 +21,8 @@ public interface Navigator {
 
    void goBack();
 
+   void goBackWithoutHandler();
+
    void finish();
 
    void goInstallFirmwareWalletStart();
@@ -38,6 +40,8 @@ public interface Navigator {
    void goProvisioningBlocked();
 
    void goCardList();
+
+   void goSuccessProvisioningWithRevertAnimation();
 
    void goAddCard(RecordViewModel recordViewModel);
 
@@ -69,9 +73,9 @@ public interface Navigator {
 
    void goPinProposalUserSetup(PinProposalAction pinProposalAction);
 
-   void goWizardUploadProfile();
+   void goWizardUploadProfile(ProvisioningMode provisioningMode);
 
-   void goWizardEditProfile();
+   void goWizardEditProfile(ProvisioningMode provisioningMode);
 
    void goWizardAssignUser(ProvisioningMode provisioningMode);
 

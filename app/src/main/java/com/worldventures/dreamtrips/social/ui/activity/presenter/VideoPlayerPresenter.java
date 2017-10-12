@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.social.ui.activity.presenter;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.worldventures.core.modules.video.utils.HeadphonesPlugReceiver;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
-import com.worldventures.dreamtrips.social.util.HeadphonesPlugReceiver;
 
 public class VideoPlayerPresenter<T extends VideoPlayerPresenter.View> extends ActivityPresenter<T> {
 

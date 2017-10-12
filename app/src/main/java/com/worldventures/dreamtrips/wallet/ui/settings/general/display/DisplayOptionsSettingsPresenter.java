@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.display;
 
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
 

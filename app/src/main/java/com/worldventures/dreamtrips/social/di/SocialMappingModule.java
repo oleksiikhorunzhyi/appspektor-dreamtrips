@@ -1,5 +1,46 @@
 package com.worldventures.dreamtrips.social.di;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.modules.infopages.model.converter.FeedbackTypeConverter;
+import com.worldventures.core.modules.infopages.model.converter.DocumentTypeReverseConverter;
+import com.worldventures.core.modules.video.model.converter.CategoryConverter;
+import com.worldventures.core.modules.video.model.converter.VideoConverter;
+import com.worldventures.core.modules.video.model.converter.VideoLanguageConverter;
+import com.worldventures.core.modules.video.model.converter.VideoLocaleConverter;
+import com.worldventures.dreamtrips.modules.config.model.converter.ConfigurationConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
+import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
+import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.CircleConverter;
+import com.worldventures.core.modules.infopages.model.converter.DocumentsConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.FeedMetaDataConverter;
+import com.worldventures.core.modules.infopages.model.converter.FeedbackImageAttachmentConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.ImageConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.InspirationModelsConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.MemberImageConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagsParamsConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.PhotoUpdateParamsConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper;
+import com.worldventures.dreamtrips.social.domain.mapping.PrivateProfileConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.PublicProfileConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.RelationshipConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketBodyConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketCoverBodyToUpdateBodyConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketPostBodyConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketPostBodyToUpdateBodyConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketUpdateBodyConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.ShortProfilesConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.TaggedUserConverter;
+import com.worldventures.dreamtrips.social.domain.mapping.YSBHPhotoConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketCategoryConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketCoverPhotoConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketDiningItemConverter;
@@ -13,7 +54,6 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketT
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.PopularBucketItemFromActivityConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.PopularBucketItemFromDinningConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.PopularBucketItemFromLocationConverter;
-import com.worldventures.dreamtrips.modules.config.model.converter.ConfigurationConverter;
 import com.worldventures.dreamtrips.social.ui.feed.converter.CommentConverter;
 import com.worldventures.dreamtrips.social.ui.feed.converter.FeedItemConverter;
 import com.worldventures.dreamtrips.social.ui.feed.converter.HashtagSimpleConverter;
@@ -32,52 +72,12 @@ import com.worldventures.dreamtrips.social.ui.friends.model.converter.ApiUserToU
 import com.worldventures.dreamtrips.social.ui.friends.model.converter.FriendCandidateToUserConverter;
 import com.worldventures.dreamtrips.social.ui.friends.model.converter.FriendProfileToUserConverter;
 import com.worldventures.dreamtrips.social.ui.friends.model.converter.MutualsConverter;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackTypeConverter;
-import com.worldventures.dreamtrips.social.ui.infopages.model.converter.DocumentTypeReverseConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.CircleConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.social.domain.mapping.DocumentsConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.FeedMetaDataConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.FeedbackImageAttachmentConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ImageConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.InspirationModelsConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.MemberImageConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagsParamsConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.PhotoUpdateParamsConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.PrivateProfileConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.PublicProfileConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.RelationshipConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketBodyConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketCoverBodyToUpdateBodyConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketPostBodyConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketPostBodyToUpdateBodyConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketUpdateBodyConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ShortProfilesConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.TaggedUserConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.YSBHPhotoConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper;
 import com.worldventures.dreamtrips.social.ui.membership.model.converter.InviteTemplateConverter;
 import com.worldventures.dreamtrips.social.ui.membership.model.converter.InviteTemplateFromInvitationPreviewConverter;
 import com.worldventures.dreamtrips.social.ui.membership.model.converter.SentInviteConverter;
 import com.worldventures.dreamtrips.social.ui.reptools.model.converter.SuccessStoryConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.MediaEntityConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.VideoSocializedConverter;
-import com.worldventures.dreamtrips.social.ui.video.model.converter.CategoryConverter;
-import com.worldventures.dreamtrips.social.ui.video.model.converter.VideoConverter;
-import com.worldventures.dreamtrips.social.ui.video.model.converter.VideoLanguageConverter;
-import com.worldventures.dreamtrips.social.ui.video.model.converter.VideoLocaleConverter;
 
 import javax.inject.Singleton;
 
@@ -203,6 +203,7 @@ public class SocialMappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
+      //todo move to core
    Converter provideVideoLocaleConverter() {
       return new VideoLocaleConverter();
    }

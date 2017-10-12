@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.service.action.creator;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.api.dtl.merchants.GetThinMerchantsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ImmutableThinMerchantsActionParams;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchantsActionParams;

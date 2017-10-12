@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_back">Back</string>
+   <string name="action_cancel">Cancel</string>
+   <string name="action_done">Done</string>
+   <string name="action_retry">Retry</string>
+   <string name="camera_record_a_video">Record a video</string>
+   <string name="camera_take_a_picture">Take a picture</string>
+   <string name="error_fail_to_load_documents">Failed to load documents</string>
+   <string name="error_fail_to_load_feedback_reasons">Failed to load feedback reasons</string>
+   <string name="error_fail_to_load_videos">Failed to load videos</string>
+   <string name="error_fail_to_locales">Failed to get locales</string>
+   <string name="error_fail_to_login">Failed to login</string>
+   <string name="error_fail_to_send_feedback">Failed to send feedback</string>
+   <string name="error_fail_to_update_settings">Failed to update settings</string>
+   <string name="facebook_error_loading_albums">Could not load albums</string>
+   <string name="facebook_error_loading_photos">Could not load photos</string>
+   <string name="facebook_login_error">Could not login to Facebook</string>
+   <string name="fail">Failure</string>
+   <string name="feedback_could_not_load_attachment">Could not load attachment</string>
+   <string name="media_picker_error_contents">Loading of %s failed.</string>
+   <string name="media_picker_fb_albums_actions">facebook albums</string>
+   <string name="media_picker_fb_photos_actions">facebook photos</string>
+   <string name="media_picker_gallery_action">gallery media</string>
+   <string name="media_picker_limit_reached">You can choose only up to %s photos</string>
+   <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
+   <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+   <string name="permission_location_rationale">Access to the location is needed for detection</string>
+   <string name="photos_selected">%d selected</string>
+   <string name="picker_photo_limit">You can select up to %d photo</string>
+   <string name="picker_photo_limit_plural">You can select up to %d photos</string>
+   <string name="picker_static_add_from_fb">Add from Facebook</string>
+   <string name="picker_static_take_from_camera">Camera</string>
+   <string name="picker_two_media_type_error">Select either photos or a video</string>
+   <string name="picker_video_length_limit">You are not allowed to select videos more that %d sec length</string>
+   <string name="picker_video_limit">You can select up to %d video</string>
+   <string name="picker_video_limit_plural">You can select up to %d videos</string>
+</resources>

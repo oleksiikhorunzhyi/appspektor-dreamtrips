@@ -5,17 +5,17 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Delegate> {
+public class RegionCell extends BaseAbstractDelegateCell<RegionModel, RegionCell.Delegate> {
 
    @InjectView(R.id.textViewAttributeCaption) TextView textViewName;
    @InjectView(R.id.checkBox) CheckBox checkBox;

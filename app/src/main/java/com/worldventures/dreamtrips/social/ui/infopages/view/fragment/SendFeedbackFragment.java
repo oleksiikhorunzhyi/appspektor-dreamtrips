@@ -12,17 +12,17 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.modules.infopages.model.FeedbackType;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.SendFeedbackPresenter;
-import com.worldventures.dreamtrips.social.ui.infopages.view.custom.AttachmentImagesHorizontalView;
 
 import java.util.ArrayList;
 import java.util.List;

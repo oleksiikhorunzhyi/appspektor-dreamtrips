@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
@@ -13,7 +14,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
 
 import javax.inject.Inject;
 
@@ -49,7 +49,7 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
       if (!ReviewStorage.exists(context, String.valueOf(user.getId()), merchant.id())) {
          view.sendToReview(merchant);
       }
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes(), stars)));
    }
 
@@ -59,7 +59,7 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
    }
 
    public void trackSharing(@ShareType String type) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(
                   ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
    }

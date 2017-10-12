@@ -6,10 +6,11 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
+import com.worldventures.dreamtrips.modules.common.utils.UserUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 
@@ -42,9 +43,9 @@ public class CommentCellHelper {
       User owner = comment.getOwner();
       userPhoto.setImageURI(Uri.parse(owner.getAvatar().getThumb()));
       userPhoto.setup(comment.getOwner(), injector);
-      userName.setText(owner.getUsernameWithCompany(context));
+      userName.setText(UserUtils.getUsernameWithCompany(context, owner));
       text.setText(comment.getMessage());
-      CharSequence relativeTimeSpanString = DateTimeUtils.getRelativeTimeSpanString(context.getResources(), comment.getCreatedAt()
+      CharSequence relativeTimeSpanString = TimeUtils.getRelativeTimeSpanString(context.getResources(), comment.getCreatedAt()
             .getTime());
       date.setText(relativeTimeSpanString);
    }

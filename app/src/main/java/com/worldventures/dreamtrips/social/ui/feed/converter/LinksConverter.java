@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.converter;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.feed.model.FeedItemLinks;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.item.Links;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

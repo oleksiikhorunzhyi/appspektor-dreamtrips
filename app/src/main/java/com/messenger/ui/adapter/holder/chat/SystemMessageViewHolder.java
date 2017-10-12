@@ -9,7 +9,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.inflater.MessageCommonInflater;
 import com.messenger.ui.util.chat.SystemMessageTextProvider;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;

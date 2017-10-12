@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.common.activity;
 
+import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.RxLifecycleView;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
-public interface WalletActivityView extends WalletScreen, RxLifecycleView {
+public interface WalletActivityView extends MvpView, RxLifecycleView {
 
    void openBluetoothSettings();
 }

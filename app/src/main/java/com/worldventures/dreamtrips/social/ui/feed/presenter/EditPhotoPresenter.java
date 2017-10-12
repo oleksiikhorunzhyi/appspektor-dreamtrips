@@ -3,13 +3,14 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 import android.net.Uri;
 import android.util.Pair;
 
+import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.FaceRecognitionUtils;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.EditPhotoWithTagsCommand;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import java.util.ArrayList;
 
@@ -50,8 +51,9 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
    public void onResume() {
       super.onResume();
       faceSuggestionSubscription = Observable.from(cachedCreationItems)
-            .flatMap(photoCreationItem -> ImageUtils.getRecognizedFaces(context, ImageUtils.getBitmap(context, Uri.parse(photoCreationItem
-                  .getOriginUrl()), 300, 300))
+            .flatMap(photoCreationItem -> FaceRecognitionUtils.getRecognizedFaces(context, ImageUtils.getBitmap(context, Uri
+                  .parse(photoCreationItem
+                        .getOriginUrl()), 300, 300))
                   .flatMap(photoTags -> Observable.just(new Pair<PhotoCreationItem, ArrayList>(photoCreationItem, photoTags))))
             .compose(new IoToMainComposer<>())
             .subscribe(pair -> {
@@ -116,11 +118,11 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
                   creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()))
             .compose(new IoToMainComposer<>())
             .subscribe(new ActionStateSubscriber<EditPhotoWithTagsCommand>()
-               .onSuccess(command -> view.cancel())
-            .onFail((editPhotoWithTagsCommand, throwable) -> {
-               handleError(editPhotoWithTagsCommand, throwable);
-               view.onPostError();
-            }));
+                  .onSuccess(command -> view.cancel())
+                  .onFail((editPhotoWithTagsCommand, throwable) -> {
+                     handleError(editPhotoWithTagsCommand, throwable);
+                     view.onPostError();
+                  }));
    }
 
    public interface View extends ActionEntityPresenter.View {

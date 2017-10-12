@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.reptools.presenter;
 
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
+import com.worldventures.core.model.session.Feature;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ApptentiveEnrolRepViewedAction;

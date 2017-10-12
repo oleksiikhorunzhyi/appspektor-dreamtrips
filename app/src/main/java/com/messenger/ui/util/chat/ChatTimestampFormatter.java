@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.format.DateUtils;
 
 import com.messenger.util.ChatDateUtils;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;

@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.support.annotation.StringRes;
 
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.EstimatePointsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -61,7 +61,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    public void onCalculateClicked(String userInput) {
       if (!validateInput(userInput)) return;
 
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant.asMerchantAttributes())));
 
       transactionInteractor.estimatePointsActionPipe()

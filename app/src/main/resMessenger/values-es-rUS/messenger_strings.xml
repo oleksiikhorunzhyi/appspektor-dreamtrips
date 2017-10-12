@@ -148,6 +148,9 @@
    <string name="sent_location">ubicación enviada</string>
    <string name="unread_conversation">Conversaciones</string>
 
+   <string name="connection_overlay_disconnected_message">Conexión perdida</string>
+   <string name="connection_overlay_connecting_message">Conectando …</string>
+
    <string name="warning_no_internet_connection">La conexión al Internet está ausente</string>
 
    <string name="chat_update_proposition"><![CDATA[Para ver archivo adjunto, Actualiza a la última versión de la aplicación DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">aquí</a>]]></string>

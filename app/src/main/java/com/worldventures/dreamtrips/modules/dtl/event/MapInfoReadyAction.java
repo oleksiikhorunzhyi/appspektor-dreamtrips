@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.event;
 import android.support.v4.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
+import com.worldventures.core.janet.ValueCommandAction;
 
 import io.techery.janet.command.annotations.CommandAction;
 

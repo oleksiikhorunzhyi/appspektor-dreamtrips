@@ -9,11 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.CSTConverter;
+import com.worldventures.dreamtrips.modules.dtl.util.DtlDateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
-import java.text.ParseException;
 import java.util.List;
 
 public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
@@ -48,7 +46,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       viewHolder.earnedPoints.setText(getEarnedText(transactionsList.get(position).getEarnedPoints()));
       viewHolder.earnedPointsIcon.setVisibility(View.VISIBLE);
       viewHolder.earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-      viewHolder.transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
+      viewHolder.transactionDate.setText(DtlDateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
    }
 
    private String getEarnedText(String earnedPoints) {

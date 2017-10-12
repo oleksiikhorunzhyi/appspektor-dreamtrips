@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_cancel">取消</string>
+   <string name="action_done">完成</string>
+   <string name="action_retry">重試</string>
+   <string name="camera_record_a_video">錄製一個視頻</string>
+   <string name="camera_take_a_picture">拍攝一張照片</string>
+   <string name="error_fail_to_load_documents">無法加載文件</string>
+   <string name="error_fail_to_load_feedback_reasons">無法加載反饋原因</string>
+   <string name="error_fail_to_load_videos">無法加載視頻</string>
+   <string name="error_fail_to_locales">無法獲取當地情況</string>
+   <string name="error_fail_to_login">無法登錄</string>
+   <string name="error_fail_to_send_feedback">無法發送反饋</string>
+   <string name="error_fail_to_update_settings">無法更新設置</string>
+   <string name="facebook_error_loading_albums">無法加載相冊</string>
+   <string name="facebook_error_loading_photos">無法加載照片</string>
+   <string name="facebook_login_error">無法登錄至Facebook</string>
+   <string name="fail">失敗</string>
+   <string name="feedback_could_not_load_attachment">無法加載附件</string>
+   <string name="media_picker_error_contents">加載 %1$s 失敗</string>
+   <string name="media_picker_fb_albums_actions">facebook 相冊</string>
+   <string name="media_picker_fb_photos_actions">facebook 圖片</string>
+   <string name="media_picker_gallery_action">媒體庫</string>
+   <string name="media_picker_limit_reached">您只可以選擇 %1$s 張圖片</string>
+   <string name="no_camera_permission">這個應用程序不能運行，因為它不具有相機權限。應用程序現在將退出。</string>
+   <string name="permission_camera_rationale">需要連接相機方可進行檢測</string>
+   <string name="permission_location_rationale">需要訪問位置方可檢測</string>
+   <string name="photos_selected">%1$d已選擇</string>
+   <string name="picker_photo_limit">您可以選擇最多 %1$d 張照片</string>
+   <string name="picker_photo_limit_plural">您可以選擇最多 %1$d 張照片</string>
+   <string name="picker_static_add_from_fb">添加來自臉書</string>
+   <string name="picker_static_take_from_camera">相機</string>
+   <string name="picker_two_media_type_error">選擇照片或者是一個視頻</string>
+   <string name="picker_video_length_limit">您無權選擇時長超過%1$d秒的視頻</string>
+   <string name="picker_video_limit">您可以選擇最多 %1$d 個視頻</string>
+   <string name="picker_video_limit_plural">您可以選擇最多 %1$d 個視頻</string>
+</resources>

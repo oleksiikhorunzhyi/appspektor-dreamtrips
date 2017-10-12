@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.security
 
-import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import com.nxtid.mobile.NxtMobileResp
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardStatus
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor
@@ -54,7 +52,7 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
       deviceStateCommandContract.result(ImmutableSmartCardStatus.builder().build())
       walletFeatureHelper = WalletFeatureHelperFull()
-      screen = mock()
+      screen = mockScreen(WalletSecuritySettingsScreen::class.java)
       whenever(screen.stealthModeStatus()).thenReturn(stealthToggleSubject.asObservable())
       whenever(screen.lockStatus()).thenReturn(lockToggleSubject.asObservable())
       presenter = WalletSecuritySettingsPresenterImpl(navigator, deviceConnectionDelegate,
@@ -68,13 +66,13 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
       verify(screen, times(1)).setAddRemovePinState(true)
 
       smartCardClient.onEvent(ImmutableEvent
-            .of(SmartCardDevice.EVENT_PIN_STATUS).withData(NxtMobileResp.RESP_PIN_DISABLED))
+            .of(SmartCardDevice.EVENT_PIN_STATUS).withData(RESP_PIN_DISABLED))
       verify(screen, times(1)).setLockToggleEnable(false)
       verify(screen, times(1)).setAddRemovePinState(false)
       Mockito.clearInvocations(screen)
 
       smartCardClient.onEvent(ImmutableEvent
-            .of(SmartCardDevice.EVENT_PIN_STATUS).withData(NxtMobileResp.RESP_PIN_AUTHENTICATED))
+            .of(SmartCardDevice.EVENT_PIN_STATUS).withData(RESP_PIN_AUTHENTICATED))
       setPinEnabledCommandContract.result(true)
       smartCardInteractor.setPinEnabledCommandActionPipe().send(SetPinEnabledCommand(true))
       verify(screen, times(2)).setLockToggleEnable(true)
@@ -83,7 +81,7 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
 
 
       smartCardClient.onEvent(ImmutableEvent
-            .of(SmartCardDevice.EVENT_PIN_STATUS).withData(NxtMobileResp.RESP_PIN_USER_INTERFACING))
+            .of(SmartCardDevice.EVENT_PIN_STATUS).withData(RESP_PIN_USER_INTERFACING))
       setPinEnabledCommandContract.result(false)
       smartCardInteractor.setPinEnabledCommandActionPipe().send(SetPinEnabledCommand(false))
       verify(screen, times(1)).setLockToggleEnable(true)
@@ -91,5 +89,11 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
       verify(screen, times(1)).setLockToggleEnable(false)
       verify(screen, times(1)).setAddRemovePinState(false)
    }
-
+companion object {
+//   val RESP_PIN_NEEDS_TO_AUTHENTICATE = "com.nxtid.mobile.RESP_PIN_NEEDS_TO_AUTHENTICATE"
+   val RESP_PIN_USER_INTERFACING = "com.nxtid.mobile.RESP_PIN_USER_INTERFACING"
+   val RESP_PIN_AUTHENTICATED = "com.nxtid.mobile.RESP_PIN_AUTHENTICATED"
+//   val RESP_PIN_FAILED_ATTEMPT = "com.nxtid.mobile.RESP_PIN_FAILED_ATTEMPT"
+   val RESP_PIN_DISABLED = "com.nxtid.mobile.RESP_PIN_DISABLED"
+}
 }

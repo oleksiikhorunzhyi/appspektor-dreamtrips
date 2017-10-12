@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.domain.storage.security;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.Crypter;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter.AsymmetricKeyParams;

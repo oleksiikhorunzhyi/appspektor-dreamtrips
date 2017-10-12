@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.podcast_player.service;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendProgressAnalyticsIfNeed;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

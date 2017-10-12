@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.social.util.ImageUtils.getBitmap;
+import static com.worldventures.core.utils.ImageUtils.getBitmap;
 import static rx.Observable.fromCallable;
 
 public class SmartCardAvatarHelper {

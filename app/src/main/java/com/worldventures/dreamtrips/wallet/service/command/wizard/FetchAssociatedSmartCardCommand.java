@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.GetAssociatedCardsHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
@@ -40,7 +40,9 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
    protected void run(CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard> callback) throws Throwable {
       SmartCard smartCard = getSmartCardFromCache();
       SmartCardUser user = getSmartCardUserFromCache();
-      if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE && user != null) {
+      if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE && user != null
+            // TODO: this check for backward compatibility 1.21 -> 1.23
+            && (user.userPhoto() != null && user.userPhoto().uri() != null)) {
          callback.onSuccess(createAssociatedCard(smartCard, walletStorage.getSmartCardDetails()));
          return;
       }

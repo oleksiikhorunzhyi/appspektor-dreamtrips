@@ -4,17 +4,17 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.filter.BoolFilter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_one_checkbox)
-public abstract class BoolCell<T extends BoolFilter, D extends CellDelegate<T>> extends AbstractDelegateCell<T, D> {
+public abstract class BoolCell<T extends BoolFilter, D extends CellDelegate<T>> extends BaseAbstractDelegateCell<T, D> {
 
    @InjectView(R.id.checkFavorites) CheckBox checkFavorites;
    @InjectView(R.id.textViewFavorite) TextView title;

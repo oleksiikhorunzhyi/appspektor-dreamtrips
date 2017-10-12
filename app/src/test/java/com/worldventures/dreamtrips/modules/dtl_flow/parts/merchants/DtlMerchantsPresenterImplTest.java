@@ -2,10 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.ThinMerchant;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.dtl.service.AttributesInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;

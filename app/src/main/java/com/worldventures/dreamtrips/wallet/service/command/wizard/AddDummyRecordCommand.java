@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
@@ -21,7 +21,6 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
-import static com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService.GENERIC;
 import static com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils.obtainRecordVersion;
 import static rx.Observable.just;
 

@@ -5,8 +5,8 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.lang.ref.WeakReference;
 

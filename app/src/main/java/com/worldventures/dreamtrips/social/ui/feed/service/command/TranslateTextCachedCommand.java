@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.messenger.api.TranslationInteractor;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
 import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

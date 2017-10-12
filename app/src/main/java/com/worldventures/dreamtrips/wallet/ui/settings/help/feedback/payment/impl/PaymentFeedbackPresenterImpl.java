@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.impl;
 
 
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor;
+import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
@@ -22,8 +22,8 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
 
    public PaymentFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaInteractor mediaInteractor) {
-      super(navigator, deviceConnectionDelegate, feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+         WalletSettingsInteractor walletSettingsInteractor, MediaPickerInteractor mediaPickerInteractor) {
+      super(navigator, deviceConnectionDelegate, feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
       this.paymentFeedbackDelegate = new PaymentFeedbackDelegate();
    }
 
@@ -38,7 +38,7 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
 
    private void observeUpdateStateAttachments() {
       getAttachmentsManager().getAttachmentsObservable()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(holder -> {
                final int attachmentsCount = getAttachmentsManager().getAttachments().size();
                getView().changeAddPhotosButtonEnabled(attachmentsCount < MAX_PHOTOS_ATTACHMENT);
@@ -60,7 +60,7 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
                   .startWith(true),
             (isMerchantNameValid, isAttachmentsUploadFinished)
                   -> isMerchantNameValid && isAttachmentsUploadFinished)
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(enable -> getView().changeActionSendMenuItemEnabled(enable));
    }
 

@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.social.ui.settings.util;
 
 import android.content.Context;
 
+import com.worldventures.core.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup.Type.GENERAL;
-import static com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup.Type.NOTIFICATIONS;
+import static com.worldventures.core.modules.settings.model.SettingsGroup.Type.GENERAL;
+import static com.worldventures.core.modules.settings.model.SettingsGroup.Type.NOTIFICATIONS;
 
 public class SettingsGroupFactory {
 

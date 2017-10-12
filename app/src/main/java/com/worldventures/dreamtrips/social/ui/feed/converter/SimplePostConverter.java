@@ -14,6 +14,6 @@ public class SimplePostConverter extends PostConverter<PostSimple> {
 
    @Override
    public TextualPost convert(MapperyContext mapperyContext, PostSimple apiPost) {
-      return super.convert(mapperyContext,  apiPost);
+      return super.convert(mapperyContext, apiPost);
    }
 }

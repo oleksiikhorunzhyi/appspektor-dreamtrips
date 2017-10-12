@@ -6,19 +6,16 @@ import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.push_notifications.SubscribeToPushNotificationsHttpAction;
 import com.worldventures.dreamtrips.api.push_notifications.model.ImmutablePushSubscriptionParams;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -31,7 +28,7 @@ public class SubscribeToPushNotificationsCommand extends Command<Void> implement
    @Inject Janet janet;
    @Inject AppVersionNameBuilder appVersionNameBuilder;
    @Inject SnappyRepository snappyRepository;
-   @Inject @ForApplication Context context;
+   @Inject Context context;
 
    private final boolean isTokenChangedFromCallback;
 

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.impl;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.WalletProgressView;
 import com.worldventures.dreamtrips.wallet.ui.widget.WalletProgressWidget;
@@ -25,11 +27,27 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WizardUploadProfileScreenImpl extends WalletBaseController<WizardUploadProfileScreen, WizardUploadProfilePresenter> implements WizardUploadProfileScreen {
 
+   private static final String KEY_PROVISION_MODE = "WizardEditProfileScreen#PROVISION_MODE_KEY";
+
    private WalletProgressWidget progressWidget;
 
    @Inject WizardUploadProfilePresenter presenter;
 
+   public static WizardUploadProfileScreenImpl create(@NonNull ProvisioningMode provisioningMode) {
+      final Bundle args = new Bundle();
+      args.putSerializable(KEY_PROVISION_MODE, provisioningMode);
+      return new WizardUploadProfileScreenImpl(args);
+   }
+
    private MaterialDialog retryUploadDataDialog = null;
+
+   public WizardUploadProfileScreenImpl() {
+      super();
+   }
+
+   public WizardUploadProfileScreenImpl(Bundle args) {
+      super(args);
+   }
 
    @Override
    protected void onFinishInflate(View view) {
@@ -72,6 +90,13 @@ public class WizardUploadProfileScreenImpl extends WalletBaseController<WizardUp
                .build();
       }
       if (!retryUploadDataDialog.isShowing()) retryUploadDataDialog.show();
+   }
+
+   @Override
+   public ProvisioningMode getProvisionMode() {
+      return (!getArgs().isEmpty() && getArgs().containsKey(KEY_PROVISION_MODE))
+            ? (ProvisioningMode) getArgs().getSerializable(KEY_PROVISION_MODE)
+            : null;
    }
 
    @Override

@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListSt
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 
 import io.techery.janet.command.annotations.CommandAction;
-import rx.functions.Func2;
 
 @CommandAction
 public abstract class FeedItemsStorageBaseCommand extends ListStorageCommand<FeedItem> {

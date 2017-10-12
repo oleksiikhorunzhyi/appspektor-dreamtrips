@@ -163,6 +163,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         >
+
                      <TextView
                            android:id="@+id/tw_forgot_member_id"
                            android:layout_width="wrap_content"
@@ -181,6 +182,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         >
+
                      <TextView
                            android:id="@+id/tw_forgot_password"
                            android:layout_width="wrap_content"

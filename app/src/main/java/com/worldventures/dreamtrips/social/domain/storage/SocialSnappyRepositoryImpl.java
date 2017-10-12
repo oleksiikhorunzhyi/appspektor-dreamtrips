@@ -6,8 +6,9 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.dreamtrips.core.repository.BaseSnappyRepository;
-import com.worldventures.dreamtrips.core.repository.DefaultSnappyOpenHelper;
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.repository.BaseSnappyRepository;
+import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
@@ -16,11 +17,7 @@ import com.worldventures.dreamtrips.social.ui.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.UndefinedFeedItem;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLanguage;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoLocale;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,13 +31,10 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    private static final String BUCKET_LIST = "bucket_items";
    private static final String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
    private static final String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
-   private static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
-   private static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
    private static final String TRANSLATION = "translation";
    private static final String CIRCLES = "circles";
    private static final String FILTER_CIRCLE = "FILTER_CIRCLE";
    private static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
-   private static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
    private static final String PODCASTS = "PODCASTS";
    private static final String CATEGORIES = "categories";
 
@@ -129,25 +123,6 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    // Rep Tools
    ///////////////////////////////////////////////////////////////////////////
 
-   @Override
-   public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
-      act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
-   }
-
-   @Override
-   public VideoLocale getLastSelectedVideoLocale() {
-      return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LOCALE, VideoLocale.class)).orNull();
-   }
-
-   @Override
-   public void saveLastSelectedVideoLanguage(VideoLanguage videoLocale) {
-      act(db -> db.put(LAST_SELECTED_VIDEO_LANGUAGE, videoLocale));
-   }
-
-   @Override
-   public VideoLanguage getLastSelectedVideoLanguage() {
-      return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LANGUAGE, VideoLanguage.class)).orNull();
-   }
 
    ///////////////////////////////////////////////////////////////////////////
    // Cached translations
@@ -196,20 +171,6 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    @Override
    public void saveFeedFriendPickedCircle(Circle circle) {
       act(db -> db.put(FILTER_FEED_FRIEND_FILTER_CIRCLE, circle));
-   }
-
-   ///////////////////////////////////////////////////////////////////////////
-   // Feedback
-   ///////////////////////////////////////////////////////////////////////////
-
-   @Override
-   public List<FeedbackType> getFeedbackTypes() {
-      return readList(FEEDBACK_TYPES, FeedbackType.class);
-   }
-
-   @Override
-   public void setFeedbackTypes(List<FeedbackType> types) {
-      putList(FEEDBACK_TYPES, types);
    }
 
    ///////////////////////////////////////////////////////////////////////////

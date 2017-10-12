@@ -12,7 +12,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.core.utils.Size;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageView;
 

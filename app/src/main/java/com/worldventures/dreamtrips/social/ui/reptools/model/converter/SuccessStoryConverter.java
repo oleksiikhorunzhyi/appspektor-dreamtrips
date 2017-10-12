@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.reptools.model.converter;
 
-
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;
 
 import io.techery.mappery.MapperyContext;

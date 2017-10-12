@@ -6,16 +6,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.MutualFriendsBundle;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserActionDelegate;
@@ -28,7 +28,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public abstract class BaseUserCell<D extends UserActionDelegate> extends AbstractDelegateCell<User, D> {
+public abstract class BaseUserCell<D extends UserActionDelegate> extends BaseAbstractDelegateCell<User, D> {
 
    @Inject Presenter.TabletAnalytic tabletAnalytic;
    @Inject FragmentManager fragmentManager;

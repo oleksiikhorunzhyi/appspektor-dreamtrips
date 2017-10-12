@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
-import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
+import com.worldventures.core.janet.ValueCommandAction;
 
 import io.techery.janet.command.annotations.CommandAction;
 

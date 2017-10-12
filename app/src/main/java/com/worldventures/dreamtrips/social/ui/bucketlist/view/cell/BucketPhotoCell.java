@@ -4,20 +4,22 @@ import android.content.Context;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.custom.horizontal_photo_view.cell.StatefulPhotoCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
-import com.worldventures.dreamtrips.modules.common.view.horizontal_photo_view.cell.StatefulPhotoCell;
 
+import butterknife.ButterKnife;
 import butterknife.OnLongClick;
 import timber.log.Timber;
 
-@Layout(R.layout.adapter_item_bucket_photo_upload_cell)
+@Layout(R.layout.item_horizantal_photo_cell)
 public class BucketPhotoCell extends StatefulPhotoCell<BucketPhoto, BucketPhotoUploadCellDelegate> {
 
    public BucketPhotoCell(View view) {
       super(view);
+      ButterKnife.inject(this, itemView);
    }
 
    @OnLongClick(R.id.imageViewPhoto)

@@ -5,7 +5,7 @@
       android:layout_height="match_parent"
       >
 
-   <com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView
+   <com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ScaleImageView
          android:id="@+id/imageViewTripImage"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

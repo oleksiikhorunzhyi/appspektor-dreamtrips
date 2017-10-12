@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 

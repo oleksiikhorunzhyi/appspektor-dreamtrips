@@ -22,19 +22,25 @@ public class PinProposalPresenterImpl extends WalletPresenterImpl<PinProposalScr
       this.wizardInteractor = wizardInteractor;
    }
 
+   private PinProposalAction pinProposalAction;
+
    @Override
    public void attachView(PinProposalScreen view) {
       super.attachView(view);
-      final PinProposalAction pinProposalAction = getView().getPinProposalAction();
+      pinProposalAction = getView().getPinProposalAction();
       final String cardNickName = getView().getCardNickName();
-      this.pinProposalDelegate = PinProposalDelegate.create(getNavigator(), pinProposalAction, cardNickName, wizardInteractor);
+      this.pinProposalDelegate = PinProposalDelegate.create(getNavigator(), pinProposalAction, cardNickName);
       pinProposalDelegate.setupView(view);
       getView().preparePinOptionalDialog(pinProposalDelegate);
    }
 
    @Override
    public void goBack() {
-      getNavigator().goBack();
+      if (pinProposalAction == PinProposalAction.RECORDS) {
+         getNavigator().goBackWithoutHandler();
+      } else {
+         getNavigator().goSuccessProvisioningWithRevertAnimation();
+      }
    }
 
    @Override

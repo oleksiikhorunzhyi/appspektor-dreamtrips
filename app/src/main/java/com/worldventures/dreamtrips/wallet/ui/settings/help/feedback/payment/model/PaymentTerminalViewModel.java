@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.worldventures.dreamtrips.BR;
 import com.worldventures.dreamtrips.wallet.domain.entity.settings.payment_feedback.PaymentType;
 
-import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.isNotEmpty;
+import static com.worldventures.core.utils.ProjectTextUtils.isNotEmpty;
 
 public class PaymentTerminalViewModel extends BaseObservable {
 

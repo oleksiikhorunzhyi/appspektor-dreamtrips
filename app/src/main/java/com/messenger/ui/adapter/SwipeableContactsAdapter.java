@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.messenger.ui.adapter.cell.SwipeableUserCell;
 import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 
 public class SwipeableContactsAdapter<T> extends BaseDelegateAdapter<T> implements SwipeLayoutContainer {

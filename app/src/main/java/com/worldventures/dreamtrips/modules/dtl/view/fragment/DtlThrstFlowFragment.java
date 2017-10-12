@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -36,7 +37,9 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
       ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
       final String cookieString = "\"auth=" + token + "; Domain=.thrst.com; Path=/;\"";
 
-      WebView.setWebContentsDebuggingEnabled(true);
+      if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+         WebView.setWebContentsDebuggingEnabled(true);
+      }
       webView.init();
       webView.setWebChromeClient(new WebChromeClient());
       webView.setWebViewClient(new WebViewClient());

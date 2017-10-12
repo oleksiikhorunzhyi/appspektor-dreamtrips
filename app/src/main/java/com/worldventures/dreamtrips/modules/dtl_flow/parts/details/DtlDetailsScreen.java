@@ -76,4 +76,6 @@ public interface DtlDetailsScreen extends DtlScreen {
    void hideOrderFromMenu();
 
    void hideEarnFlowButton();
+
+   boolean isTablet();
 }

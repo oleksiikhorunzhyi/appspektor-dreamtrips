@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTr
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 
 import javax.inject.Inject;
 
@@ -31,6 +31,7 @@ import icepick.State;
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
@@ -136,7 +137,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   .withPoints(points)))
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
-                  .onSuccess(action -> view.openVerify(action.getResult())));
+                  .onSuccess(
+                        action -> view.openVerify(action.getResult())
+                  )
+            );
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -177,6 +181,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withUploadTask(uploadTask)))
+            .subscribeOn(Schedulers.io())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onSuccess(action -> checkVerification(action.getResult()))
                   .onFail(apiErrorViewAdapter::handleError));
    }

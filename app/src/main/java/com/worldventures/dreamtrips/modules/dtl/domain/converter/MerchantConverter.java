@@ -55,6 +55,8 @@ public class MerchantConverter implements Converter<com.worldventures.dreamtrips
             .categories(merchant.categories() != null ? mapperyContext.convert(merchant.categories(), ThinAttribute.class) : null)
             .amenities(merchant.categories() != null ? mapperyContext.convert(merchant.amenities(), ThinAttribute.class) : null)
             .reviews(merchant.reviews() != null ? mapperyContext.convert(merchant.reviews(), Reviews.class) : null)
+            .useThrstFlow(merchant.useThrstFlow())
+            .thrstFullCapabilityUrl(merchant.thrstFullCapabilityUrl())
             .build();
    }
 }

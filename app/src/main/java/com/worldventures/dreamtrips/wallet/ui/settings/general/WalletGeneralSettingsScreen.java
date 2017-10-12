@@ -1,209 +1,35 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
-import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 
 import java.util.List;
 
-import butterknife.InjectView;
-import butterknife.InjectViews;
-import butterknife.OnClick;
-import io.techery.janet.operationsubscriber.view.OperationView;
+public interface WalletGeneralSettingsScreen extends WalletScreen, FactoryResetView {
 
-public class WalletGeneralSettingsScreen extends WalletLinearLayout<WalletGeneralSettingsPresenter.Screen, WalletGeneralSettingsPresenter, WalletGeneralSettingsPath> implements WalletGeneralSettingsPresenter.Screen {
+   void setPreviewPhoto(@Nullable SmartCardUserPhoto photo);
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
+   void setUserName(String firstName, String middleName, String lastName);
 
-   @InjectView(R.id.profile_name) TextView profileName;
-   @InjectView(R.id.profile_photo) SimpleDraweeView profilePhoto;
+   void firmwareUpdateCount(int count);
 
-   @InjectView(R.id.badgeFirmwareUpdates) BadgeView badgeFirmwareUpdates;
+   void showFirmwareVersion();
 
-   @InjectViews({R.id.item_setup_new_sc, R.id.item_restart_sc, R.id.item_display_options}) public List<View> toggleableItems;
+   void showFirmwareBadge();
 
-   private MaterialDialog confirmFactoryResetDialog = null;
-   private MaterialDialog noConnectionDialog = null;
-   private MaterialDialog confirmRestartSmartCardDialog = null;
+   void showSCNonConnectionDialog();
 
-   public WalletGeneralSettingsScreen(Context context) {
-      this(context, null);
-   }
+   void showConfirmFactoryResetDialog();
 
-   public WalletGeneralSettingsScreen(Context context, AttributeSet attrs) {
-      super(context, attrs);
-   }
+   void showConfirmRestartSCDialog();
 
-   @Override
-   protected void onFinishInflate() {
-      super.onFinishInflate();
-      if (isInEditMode()) return;
-      toolbar.setNavigationOnClickListener(v -> onNavigationClick());
-      badgeFirmwareUpdates.hide();
-   }
+   Context getViewContext();
 
-   @NonNull
-   @Override
-   public WalletGeneralSettingsPresenter createPresenter() {
-      return new WalletGeneralSettingsPresenter(getContext(), getInjector());
-   }
+   List<View> getToggleableItems();
 
-   protected void onNavigationClick() {
-      presenter.goBack();
-   }
-
-   @OnClick(R.id.item_smartcard_profile)
-   void onClickProfile() {
-      presenter.openProfileScreen();
-   }
-
-   @OnClick(R.id.item_about)
-   void onClickAbout() {
-      presenter.openAboutScreen();
-   }
-
-   @OnClick(R.id.item_firmware_updates)
-   void onClickSoftwareUpdate() {
-      presenter.openSoftwareUpdateScreen();
-   }
-
-   @OnClick(R.id.item_display_options)
-   void onClickDisplayOptions() {
-      presenter.openDisplayOptionsScreen();
-   }
-
-   @OnClick(R.id.item_factory_reset)
-   void onClickReset() {
-      presenter.onClickFactoryResetSmartCard();
-   }
-
-   @OnClick(R.id.item_setup_new_sc)
-   void onClickSetupNewSmartCard() {
-      presenter.openSetupNewSmartCardScreen();
-   }
-
-   @OnClick(R.id.item_restart_sc)
-   void onClickRestart() {
-      presenter.onClickRestartSmartCard();
-   }
-
-   @Override
-   public void firmwareUpdateCount(int count) {
-      badgeFirmwareUpdates.setText(String.valueOf(count));
-   }
-
-   @Override
-   public void showFirmwareVersion() {
-      badgeFirmwareUpdates.hide(true);
-   }
-
-   @Override
-   public void showFirmwareBadge() {
-      badgeFirmwareUpdates.show(true);
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
-   }
-
-   @Override
-   public void setPreviewPhoto(@Nullable SmartCardUserPhoto photo) {
-      if (photo != null) {
-         profilePhoto.setImageURI(photo.uri());
-      } //// TODO: 5/23/17 add placeholder
-   }
-
-   @Override
-   public void setUserName(String firstName, String middleName, String lastName) {
-      String fullName
-            = (TextUtils.isEmpty(firstName) ? "" : firstName + " ")
-            + (TextUtils.isEmpty(middleName) ? "" : middleName + " ")
-            + (TextUtils.isEmpty(lastName) ? "" : lastName + " ");
-
-      profileName.setText(fullName);
-   }
-
-   @Override
-   public void showSCNonConnectionDialog() {
-      if (noConnectionDialog == null) {
-         noConnectionDialog = new MaterialDialog.Builder(getContext())
-               .title(R.string.wallet_card_settings_cant_connected)
-               .content(R.string.wallet_card_settings_message_cant_connected)
-               .positiveText(R.string.ok)
-               .build();
-      }
-      if (!noConnectionDialog.isShowing()) noConnectionDialog.show();
-   }
-
-   @Override
-   public void showConfirmRestartSCDialog() {
-      if (confirmRestartSmartCardDialog == null) {
-         confirmRestartSmartCardDialog = new MaterialDialog.Builder(getContext())
-               .title(R.string.wallet_card_settings_turn_off_your_sc)
-               .content(R.string.wallet_card_settings_are_you_sure)
-               .positiveText(R.string.wallet_card_settings_power_off)
-               .negativeText(R.string.cancel)
-               .onPositive(((dialog, which) -> presenter.onConfirmedRestartSmartCard()))
-               .build();
-      }
-      if (!confirmRestartSmartCardDialog.isShowing()) confirmRestartSmartCardDialog.show();
-   }
-
-   @Override
-   public void showConfirmFactoryResetDialog() {
-      if (confirmFactoryResetDialog == null) {
-         confirmFactoryResetDialog = new MaterialDialog.Builder(getContext())
-               .content(R.string.wallet_confirm_factory_reset_msg)
-               .positiveText(R.string.wallet_continue_label)
-               .negativeText(R.string.cancel)
-               .onPositive((dialog, which) -> presenter.openFactoryResetScreen())
-               .build();
-      }
-      if (!confirmFactoryResetDialog.isShowing()) confirmFactoryResetDialog.show();
-   }
-
-   @Override
-   protected void onDetachedFromWindow() {
-      if (noConnectionDialog != null) noConnectionDialog.dismiss();
-      if (confirmFactoryResetDialog != null) confirmFactoryResetDialog.dismiss();
-      if (confirmRestartSmartCardDialog != null) confirmRestartSmartCardDialog.dismiss();
-      super.onDetachedFromWindow();
-   }
-
-   @Override
-   public View getView() {
-      return this;
-   }
-
-   @Override
-   public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
-      return FactoryResetOperationView.create(getContext(),
-            factoryResetDelegate::factoryReset,
-            () -> {
-            },
-            R.string.wallet_error_enter_pin_title,
-            R.string.wallet_error_enter_pin_msg,
-            R.string.retry,
-            R.string.cancel,
-            R.string.loading,
-            false);
-   }
 }

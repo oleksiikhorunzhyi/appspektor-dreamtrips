@@ -13,9 +13,8 @@ import android.text.style.StyleSpan;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
-import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.ShareType;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -24,8 +23,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 

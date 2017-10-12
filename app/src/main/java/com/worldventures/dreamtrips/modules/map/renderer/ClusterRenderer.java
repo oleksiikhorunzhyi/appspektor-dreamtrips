@@ -20,6 +20,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
@@ -57,7 +58,7 @@ public class ClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
    protected void onBeforeClusterRendered(Cluster<DtlClusterItem> cluster, MarkerOptions markerOptions) {
       Observable.from(cluster.getItems())
             .distinct(item -> item.getMerchant().asMerchantAttributes().hasOffers())
-            .compose(RxLifecycle.bindView(pin))
+            .compose(RxLifecycleAndroid.bindView(pin))
             .toList()
             .subscribe(merchants -> setupClusterRendering(cluster, markerOptions, merchants));
    }

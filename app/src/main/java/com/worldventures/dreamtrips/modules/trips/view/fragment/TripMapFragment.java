@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
@@ -276,7 +276,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
       getPresenter().onCameraChanged();
       switch (item.getItemId()) {
          case R.id.action_filter:
-            ((MainActivity) getActivity()).openRightDrawer();
+            ((SocialMainActivity) getActivity()).openRightDrawer();
             break;
          case R.id.action_list:
             moveToListView();

@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelComm
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
-import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
+import com.worldventures.dreamtrips.social.ui.video.service.command.MigrateFromCachedEntity;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;

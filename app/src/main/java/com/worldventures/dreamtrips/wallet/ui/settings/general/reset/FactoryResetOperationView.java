@@ -64,7 +64,7 @@ public class FactoryResetOperationView extends ComposableOperationView<ResetSmar
 
       @Override
       public void showError(Object o, Throwable throwable) {
-         if(!(throwable instanceof CancelException)) {
+         if (!(throwable instanceof CancelException)) {
             super.showError(o, throwable);
          }
       }
@@ -92,5 +92,8 @@ public class FactoryResetOperationView extends ComposableOperationView<ResetSmar
                .cancelListener(dialogInterface -> cancelAction.call())
                .build();
       }
+
+      @Override
+      public void onProgressChanged(int i) { /* nothing */ }
    }
 }

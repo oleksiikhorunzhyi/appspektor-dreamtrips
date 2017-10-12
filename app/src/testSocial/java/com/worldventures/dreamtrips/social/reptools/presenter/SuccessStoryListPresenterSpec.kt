@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.social.reptools.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter
-import com.worldventures.dreamtrips.modules.reptools.service.SuccessStoriesInteractor
-import com.worldventures.dreamtrips.modules.reptools.service.command.GetSuccessStoriesCommand
+import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory
+import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryListPresenter
+import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor
+import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

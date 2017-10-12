@@ -6,7 +6,7 @@
       android:orientation="vertical"
       >
 
-   <com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView
+   <com.worldventures.dreamtrips.social.ui.feed.view.custom.HashtagTextView
          android:id="@+id/post"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
          android:textColor="@color/black"
          />
 
-   <com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView
+   <com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView
          android:id="@+id/translate_view"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -33,19 +33,26 @@
          style="@style/TranslateButton"
          />
 
-   <com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView
-         android:id="@+id/videoAttachment"
+   <FrameLayout
+         android:id="@+id/video_windowed_container"
          android:layout_width="match_parent"
-         android:layout_height="@dimen/video_creation_cell_height"
-         android:visibility="gone"
-         />
+         android:layout_height="match_parent">
+
+      <com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView
+            android:id="@+id/videoAttachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+
+   </FrameLayout>
 
    <FrameLayout
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          >
 
-      <com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView
+      <com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageView
             android:id="@+id/collage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

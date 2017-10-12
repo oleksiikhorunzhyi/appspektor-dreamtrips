@@ -27,8 +27,11 @@ import android.widget.ImageView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+
+import junit.framework.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +73,8 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    @DrawableRes int navigationIconResource;
    private boolean showNavigation;
    private boolean showFilterBar;
+
+   private TestInteface mInterface;
 
    public ExpandableDtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
@@ -139,7 +144,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    protected void bindSearchQueryPersisting() {
       RxDtlToolbar.merchantSearchTextChanges(this)
             .filter(s -> !isCollapsed())
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(searchQuery -> this.searchQuery = searchQuery);
    }
 
@@ -166,6 +171,10 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       }
    }
 
+   public void removeSearchFieldFocus(){
+      merchantSearchInput.clearFocus();
+   }
+
    @Override
    protected void updateToolbarCaptions() {
       if (collapsed) {
@@ -173,16 +182,15 @@ public class ExpandableDtlToolbar extends DtlToolbar {
          if (TextUtils.isEmpty(searchQuery)) {
             merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
          } else {
-            if (searchQuery.equals(getContext().getString(R.string.filter_merchant_food))) {
-               searchQueryTitle = defaultEmptySearchCaption;
-            }
             merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
          }
       } else {
          if (TextUtils.isEmpty(searchQuery)) {
             merchantSearchInput.setHint(defaultEmptySearchCaption);
          }
-         if (!merchantSearchInput.hasFocus()) merchantSearchInput.setText(searchQuery);
+         if (!merchantSearchInput.hasFocus() || merchantSearchInput.getText().toString().isEmpty()) {
+            merchantSearchInput.setText(searchQuery);
+         }
          locationSearchInput.setText(locationTitle);
          locationSearchInput.selectAll();
       }
@@ -344,5 +352,18 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    @Override
    public void onRestoreInstanceState(Parcelable state) {
       super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+   }
+
+   @OnClick(R.id.transaction_container)
+   public void onClick() {
+      mInterface.onClickTransactions();
+   }
+
+   public void setTestInterface(TestInteface interfaces){
+      mInterface = interfaces;
+   }
+
+   public interface TestInteface {
+      void onClickTransactions();
    }
 }

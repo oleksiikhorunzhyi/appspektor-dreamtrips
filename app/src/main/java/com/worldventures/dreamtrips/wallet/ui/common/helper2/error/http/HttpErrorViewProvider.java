@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorView;
 
@@ -52,13 +52,13 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
          final Object action = ((JanetActionException) throwable).getAction();
          final String httpErrorMessage = httpErrorHandlingUtil.handleJanetHttpError(action, throwable, null);
          if (httpErrorMessage == null) return null;
-         return new SimpleErrorView<>(context, cancelAction, httpErrorMessage);
+         return new SimpleErrorView<>(context, httpErrorMessage, cancelAction);
       }
 
       if (throwable instanceof HttpException) {
          final Response response = ((HttpException) throwable).getResponse();
          if (response != null && response.getStatus() >= 500) {
-            return new SimpleErrorView<>(context, cancelAction, context.getString(R.string.error_internal_server));
+            return new SimpleErrorView<>(context, context.getString(R.string.error_internal_server), cancelAction);
          } else if (throwable.getCause() != null) {
             // if there is no response at all - it might be connection exception, try to handle cause
             throwable = throwable.getCause();

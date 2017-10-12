@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -61,7 +60,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject PresentationInteractor presentationInteractor;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject AttributesInteractor attributesInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;
 
@@ -254,6 +253,15 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void setMerchantType(List<String> merchantType) {
       filterDataInteractor.searchMerchantType(merchantType);
+   }
+
+   @Override
+   public void onTransactionClick() {
+      if (getView().getTransactionNumber() == 0){
+         getView().showNoTransactionMessage();
+      } else {
+         getView().goToTransactionPage();
+      }
    }
 
    @Override

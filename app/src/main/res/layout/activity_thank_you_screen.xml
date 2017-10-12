@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentScreenImpl
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+   <include
+         android:id="@+id/include_thank_you_screen"
+         layout="@layout/include_thank_you_screen"
+         />
+
+   <LinearLayout
+         android:id="@+id/emptyView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:gravity="center"
+         android:orientation="vertical"
+         android:padding="@dimen/spacing_large"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:id="@+id/captionNoMerchants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/merchants_no_results"
+            android:textSize="@dimen/font_medium"
+            android:visibility="visible"
+            />
+   </LinearLayout>
+
+   <LinearLayout
+         android:id="@+id/errorView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:padding="@dimen/spacing_large"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="160dp"
+            android:gravity="center"
+            android:text="@string/dtl_load_error"
+            android:textSize="@dimen/font_normal"
+            />
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_medium"
+            android:text="@string/dtl_load_merchant_error_caption"
+            android:textSize="@dimen/font_normal"
+            />
+
+   </LinearLayout>
+
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlPaymentScreenImpl>

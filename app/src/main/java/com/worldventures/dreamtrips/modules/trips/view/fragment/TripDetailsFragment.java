@@ -20,17 +20,17 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.TextViewLinkHandler;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundle;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.List;
 
@@ -40,7 +40,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import rx.Observable;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_trip_details)
 @MenuResource(R.menu.menu_detailed_trip)
@@ -172,8 +171,8 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    }
 
    @Override
-   public void openFullscreen(FullScreenImagesBundle data) {
-      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+   public void openFullscreen(TripViewPagerBundle data) {
+      router.moveTo(Route.TRIP_FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(data)
             .build());

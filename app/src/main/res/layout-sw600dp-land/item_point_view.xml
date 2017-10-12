@@ -64,6 +64,17 @@
                />
 
          <Button
+               android:id="@+id/merchant_details_pay"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:layout_marginRight="@dimen/spacing_tiny"
+               android:text="@string/dtl_thrst_text_button"
+               android:visibility="gone"
+               android:theme="@style/DtlButtonPurpleTheme"
+               />
+
+         <Button
                android:id="@+id/merchant_details_estimate_points"
                android:layout_width="0dp"
                android:layout_height="wrap_content"

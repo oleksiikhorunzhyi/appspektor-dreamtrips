@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.modules.video.model.CachedModel;
+import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
 
 public abstract class CachedEntityCommand extends CommandWithError<CachedModel> {
 

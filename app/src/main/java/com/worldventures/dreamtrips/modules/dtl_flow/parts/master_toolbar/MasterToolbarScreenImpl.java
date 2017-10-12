@@ -21,6 +21,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -32,8 +33,12 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeade
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
 import java.util.List;
@@ -44,6 +49,10 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -81,20 +90,54 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
 
    protected void initDtlToolbar() {
       RxDtlToolbar.merchantSearchApplied(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(getPresenter()::applySearch);
       RxDtlToolbar.filterButtonClicks(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
       RxDtlToolbar.offersOnlyToggleChanges(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(getPresenter()::offersOnlySwitched);
+      RxDtlToolbar.transactionButtonClicks(toolbar)
+            .compose(RxLifecycleAndroid.bindView(this))
+            .subscribe(aVoid -> onClickTransaction());
+   }
+
+   private void onClickTransaction() {
+      if (DtlMerchantsScreenImpl.transactionCounter == 0){
+         showNoTransactionMessage();
+         DtlMerchantsScreenImpl.transactionCounter++;
+      } else {
+         goToTransactionPage();
+      }
+   }
+
+   public void showNoTransactionMessage() {
+      SweetAlertDialog errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.dtl_no_transaction_message));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
+   public void goToTransactionPage() {
+      Path path = new DtlTransactionListPath(FlowUtil.currentMaster(getContext()));
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      Path asd = FlowUtil.currentMaster(getContext());
+      if (!asd.equals(path)){
+         historyBuilder.push(path);
+         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+      }
+
+
    }
 
    @Override
    public void connectToggleUpdate() {
       RxDtlToolbar.offersOnlyToggleChanges(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
@@ -137,7 +180,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
 
       RxView.clicks(autoDetectNearMe)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .throttleFirst(3L, TimeUnit.SECONDS)
             .subscribe(aVoid -> onNearMeClicked());
    }
@@ -147,7 +190,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       Observable<Boolean> clicks = RxView.clicks(toolbar.getLocationSearchInput())
             .flatMap(aVoid -> Observable.just(Boolean.TRUE));
 
-      Observable.merge(clicks, focus).compose(RxLifecycle.bindView(this)).subscribe(this::onPopupVisibilityChange);
+      Observable.merge(clicks, focus).compose(RxLifecycleAndroid.bindView(this)).subscribe(this::onPopupVisibilityChange);
    }
 
    protected void onPopupVisibilityChange(boolean visible) {

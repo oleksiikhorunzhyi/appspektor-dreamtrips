@@ -1,5 +1,5 @@
 import com.worldventures.dreamtrips.BaseTest
-import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil
+import com.worldventures.dreamtrips.social.ui.feed.view.util.HashtagSuggestionUtil
 import org.junit.Test
 import kotlin.test.assertEquals
 

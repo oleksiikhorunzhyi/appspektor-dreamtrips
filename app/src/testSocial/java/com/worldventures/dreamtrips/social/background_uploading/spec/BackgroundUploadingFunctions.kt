@@ -1,16 +1,17 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
-import com.worldventures.dreamtrips.modules.background_uploading.model.*
-import com.worldventures.dreamtrips.modules.background_uploading.service.command.*
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.*
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.*
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment
-import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle
-import com.worldventures.dreamtrips.modules.feed.model.ImmutableSelectedPhoto
-import com.worldventures.dreamtrips.modules.feed.service.command.CreatePhotosCommand
-import com.worldventures.dreamtrips.modules.feed.service.command.CreatePostCommand
-import com.worldventures.dreamtrips.modules.feed.service.command.CreateVideoCommand
+import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle
+import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableSelectedPhoto
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePhotosCommand
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePostCommand
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreateVideoCommand
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.listOfMockPhotos
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.mockCreatedPost
+import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.Contract
 import java.util.*
@@ -78,18 +79,25 @@ internal fun createPostBodyWithScheduledVideo() =
             .state(PostBody.State.SCHEDULED)
             .build()
 
-internal fun createPostBodyWithUploadedVideo(uploadId: String = "fsdafsdfsfdsadf", videoUid: String? = null) =
-      ImmutablePostWithVideoAttachmentBody.builder()
-            .text("testText")
-            .location(Location(20.0, 20.0))
-            .origin(CreateEntityBundle.Origin.FEED)
-            .videoPath("file://blabla")
-            .size(1000L)
-            .durationInSeconds(100)
-            .uploadId(uploadId)
-            .videoUid(videoUid)
-            .state(PostBody.State.UPLOADED)
-            .build()
+internal fun createPostBodyWithUploadedVideo(uploadId: String = "fsdafsdfsfdsadf", videoUid: String? = null,
+                                             futurePostId: String? = null) : PostWithVideoAttachmentBody {
+   val post = TextualPost()
+   post.uid = futurePostId
+
+   val entity = ImmutablePostWithVideoAttachmentBody.builder()
+         .text("testText")
+         .location(Location(20.0, 20.0))
+         .origin(CreateEntityBundle.Origin.FEED)
+         .videoPath("file://blabla")
+         .size(1000L)
+         .durationInSeconds(100)
+         .uploadId(uploadId)
+         .videoUid(videoUid)
+         .state(PostBody.State.UPLOADED)
+         .createdPost(if (futurePostId != null) post else null)
+         .build()
+   return entity
+}
 
 internal fun createPhotoAttachment(id: Int, state: PostBody.State) =
       ImmutablePhotoAttachment.builder()

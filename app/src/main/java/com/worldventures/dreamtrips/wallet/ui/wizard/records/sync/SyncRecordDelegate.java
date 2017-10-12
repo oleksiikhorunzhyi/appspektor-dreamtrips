@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.records.sync;
 
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
@@ -8,15 +8,13 @@ import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNe
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
-import com.worldventures.dreamtrips.wallet.ui.wizard.records.finish.PaymentSyncFinishPath;
 
-import flow.Flow;
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-abstract class SyncRecordDelegate {
+public abstract class SyncRecordDelegate {
 
    protected final SmartCardInteractor smartCardInteractor;
    protected final RecordInteractor recordInteractor;
@@ -26,6 +24,10 @@ abstract class SyncRecordDelegate {
       this.smartCardInteractor = smartCardInteractor;
       this.recordInteractor = recordInteractor;
       this.navigator = navigator;
+   }
+
+   protected final void performComplete() {
+      navigator.goPaymentSyncFinished();
    }
 
    public abstract void retry();
@@ -66,10 +68,10 @@ abstract class SyncRecordDelegate {
       private void observeSyncCard(SyncView view) {
          recordInteractor.syncRecordOnNewDevicePipe()
                .observe()
-               .compose(RxLifecycle.bindView(view.getView()))
+               .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<SyncRecordOnNewDeviceCommand>provideOperationView())
-                     .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
+                     .onSuccess(command -> performComplete())
                      .create());
       }
    }
@@ -102,7 +104,7 @@ abstract class SyncRecordDelegate {
       private void observeOfflineModeStateCheck(SyncView view) {
          smartCardInteractor.restoreOfflineModeDefaultStatePipe()
                .observe()
-               .compose(RxLifecycle.bindView(view.getView()))
+               .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<RestoreOfflineModeDefaultStateCommand>provideOperationView())
                      .onStart(command -> view.setProgressInPercent(0))
@@ -113,10 +115,10 @@ abstract class SyncRecordDelegate {
       private void observeSyncPaymentCards(SyncView view) {
          recordInteractor.recordsSyncPipe()
                .observe()
-               .compose(RxLifecycle.bindView(view.getView()))
+               .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<SyncRecordsCommand>provideOperationView())
-                     .onSuccess(command -> navigator.single(new PaymentSyncFinishPath(), Flow.Direction.REPLACE))
+                     .onSuccess(command -> performComplete())
                      .create());
       }
 
@@ -124,7 +126,7 @@ abstract class SyncRecordDelegate {
          recordInteractor.recordsSyncPipe()
                .observe()
                .filter(action -> action.status == ActionState.Status.PROGRESS)
-               .compose(RxLifecycle.bindView(view.getView()))
+               .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(new ActionStateSubscriber<SyncRecordsCommand>()
                      .onProgress((command, progress) -> handleProgressSyncCard(view, command.getLocalOnlyRecordsCount(), progress))

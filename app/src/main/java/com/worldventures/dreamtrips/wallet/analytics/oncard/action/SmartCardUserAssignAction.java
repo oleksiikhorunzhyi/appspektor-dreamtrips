@@ -14,6 +14,6 @@ class SmartCardUserAssignAction extends SmartCardUserAction {
 
    @Override
    public void setUserId(int userId) {
-      if(userId != 0) attributeMap.put("ocmemassigned", String.valueOf(userId));
+      if (userId != 0) attributeMap.put("ocmemassigned", String.valueOf(userId));
    }
 }

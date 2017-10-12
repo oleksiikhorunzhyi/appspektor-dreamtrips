@@ -6,7 +6,6 @@ import android.support.v4.util.Pair;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.core.api.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
+import com.worldventures.dreamtrips.wallet.service.command.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.wallet.util.CachedPhotoUtil;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
@@ -35,7 +35,7 @@ import io.techery.mappery.MapperyContext;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implements InjectableAction {

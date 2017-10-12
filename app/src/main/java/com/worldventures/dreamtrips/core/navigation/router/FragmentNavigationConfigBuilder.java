@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 
 public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
 
@@ -42,6 +43,11 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
 
    public FragmentNavigationConfigBuilder backStackEnabled(boolean backStackEnabled) {
       navigationConfig.backStackEnabled = backStackEnabled;
+      return this;
+   }
+
+   public FragmentNavigationConfigBuilder animationConfig(AnimationConfig animationConfig) {
+      navigationConfig.animationConfig = animationConfig;
       return this;
    }
 

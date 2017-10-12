@@ -142,6 +142,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
       restoreState(savedInstanceState);
       //
       this.presenter.takeView(this);
+      this.presenter.onViewTaken();
    }
 
    protected void restoreState(Bundle savedInstanceState) {

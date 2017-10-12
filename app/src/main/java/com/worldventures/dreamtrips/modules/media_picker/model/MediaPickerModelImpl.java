@@ -10,6 +10,8 @@ import java.io.Serializable;
 
 public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelable, Serializable {
 
+   private static final String PATH_DEVIDER = "/";
+
    protected MediaAttachment.Source source;
    protected String absolutePath;
    protected Uri uri;
@@ -45,6 +47,10 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
       return absolutePath;
    }
 
+   public void setAbsolutePath(String absolutePath) {
+      this.absolutePath = absolutePath;
+   }
+
    @Override
    public Uri getUri() {
       return uri;
@@ -65,6 +71,10 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
       return dateTaken;
    }
 
+   public void setDateTaken(long dateTaken) {
+      this.dateTaken = dateTaken;
+   }
+
    @Override
    public long getPickedTime() {
       return pickedTime;
@@ -72,6 +82,11 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
 
    public void setPickedTime(long pickedTime) {
       this.pickedTime = pickedTime;
+   }
+
+   public String getFileName() {
+      return absolutePath != null && absolutePath.contains(PATH_DEVIDER) ?
+            absolutePath.substring(absolutePath.lastIndexOf(PATH_DEVIDER)) : "";
    }
 
    @Override

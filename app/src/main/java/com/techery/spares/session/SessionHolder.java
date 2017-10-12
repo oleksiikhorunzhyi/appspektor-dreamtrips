@@ -10,17 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.inject.Inject;
+public class SessionHolder extends ComplexObjectStorage<UserSession> {
 
-// generic here is for backward compatibility - to excape changing usage thoughout project
-// TODO :: 11.11.16 remove unused generic and it's usage
-public class SessionHolder<S> extends ComplexObjectStorage<UserSession> {
-
-   private final String[] supportedLanguageCodes = new String[] {"en-us", "el-cy", "el-gr", "es-us", "hu-hu", "ms-my",
+   private final static String[] supportedLanguageCodes = new String[]{"en-us", "el-cy", "el-gr", "es-us", "hu-hu", "ms-my",
          "ro-hu", "sv-se", "zh", "zh-cn", "zh-hk", "zh-tw", "zh-sg"};
    private final List<Locale> supportedLocales;
 
-   @Inject public SessionHolder(SimpleKeyValueStorage keyValueStorage) {
+   public SessionHolder(SimpleKeyValueStorage keyValueStorage) {
       super(keyValueStorage, "SESSION_KEY", UserSession.class);
       supportedLocales = new ArrayList<>(Queryable.from(supportedLanguageCodes)
             .map(LocaleHelper::buildFromLanguageCode).toList());

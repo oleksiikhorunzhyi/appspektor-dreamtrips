@@ -4,11 +4,11 @@ import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
@@ -29,7 +29,7 @@ import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class SyncRecordsCommand extends Command<Void> implements InjectableAction {
@@ -37,7 +37,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
    @Inject RecordInteractor recordInteractor;
    @Inject SmartCardInteractor interactor;
    @Inject NxtInteractor nxtInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
    @Inject @Named(JANET_WALLET) Janet janet;
 

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.model.converter;
 
 import com.worldventures.dreamtrips.api.trip.model.TripWithDetails;
-import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 

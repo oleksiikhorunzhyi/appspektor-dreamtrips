@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
-import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter
+import com.worldventures.dreamtrips.social.ui.reptools.presenter.RepToolsPresenter
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

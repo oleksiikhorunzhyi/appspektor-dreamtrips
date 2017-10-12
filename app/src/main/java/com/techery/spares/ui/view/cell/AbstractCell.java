@@ -1,22 +1,14 @@
 package com.techery.spares.ui.view.cell;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.worldventures.dreamtrips.core.navigation.router.Router;
-
-import javax.inject.Inject;
-
 import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 
 public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements BaseCell<T> {
 
    private T modelObject;
-
-   @Inject protected Router router;
-
-   private EventBus eventBus;
 
    public AbstractCell(View view) {
       super(view);
@@ -34,16 +26,11 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
       });
    }
 
+   protected Resources getResources() {
+      return itemView.getResources();
+   }
+
    protected void onAttachedToWindow(View v) { }
-
-   @Override
-   public void setEventBus(EventBus bus) {
-      this.eventBus = bus;
-   }
-
-   public EventBus getEventBus() {
-      return eventBus;
-   }
 
    public T getModelObject() {
       return modelObject;
@@ -76,8 +63,5 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
 
    @Override
    public void clearResources() {
-      if (eventBus != null && eventBus.isRegistered(this)) {
-         eventBus.unregister(this);
-      }
    }
 }

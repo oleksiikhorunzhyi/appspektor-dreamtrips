@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand;
+import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareUpdateType;
 
@@ -16,14 +15,17 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
+
 @CommandAction
 public class PrepareForUpdateCommand extends Command<FirmwareUpdateType> implements InjectableAction {
 
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janet;
+   @Inject @Named(JANET_WALLET) Janet janet;
    @Inject FirmwareRepository firmwareRepository;
 
    @Override
    protected void run(CommandCallback<FirmwareUpdateType> callback) throws Throwable {
+      callback.onProgress(0);
       final FirmwareUpdateData updateData = ImmutableFirmwareUpdateData.builder()
             .from(firmwareRepository.getFirmwareUpdateData())
             .isStarted(true)

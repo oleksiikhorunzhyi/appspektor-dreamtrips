@@ -33,6 +33,7 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter {
 
    public ThinMerchantsAdapter(Context context, Injector injector) {
       super(context, injector);
+      this.injector.inject(this);
       this.distanceType = FilterHelper.provideDistanceFromSettings(db);
    }
 
@@ -48,7 +49,7 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter {
       if (cell instanceof DtlMerchantExpandableCell) {
          DtlMerchantExpandableCell holder = (DtlMerchantExpandableCell) cell;
          holder.setDistanceType(distanceType);
-         holder.setExpanded(expandedMerchantIds.contains(((ThinMerchant) getItem(position)).id()));
+         holder.setExpanded(false);
       }
       super.onBindViewHolder(cell, position);
    }

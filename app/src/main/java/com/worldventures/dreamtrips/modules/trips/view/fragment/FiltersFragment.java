@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
@@ -78,13 +78,13 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
 
    @OnClick(R.id.textViewApplyFilter)
    void applyFilter() {
-      ((MainActivity) getActivity()).closeRightDrawer();
+      ((SocialMainActivity) getActivity()).closeRightDrawer();
       getPresenter().acceptFilters();
    }
 
    @OnClick(R.id.textViewResetFilter)
    void resetFilter() {
-      ((MainActivity) getActivity()).closeRightDrawer();
+      ((SocialMainActivity) getActivity()).closeRightDrawer();
       getPresenter().resetFilters();
    }
 

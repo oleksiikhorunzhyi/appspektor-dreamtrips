@@ -58,10 +58,18 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void onClickFood();
 
+   void onClickTransaction();
+
    void updateMerchantType(List<String> type);
 
    int getMerchantType();
 
    void loadMerchantsAndAmenities(List<String> merchantType , int stringResource);
+
+   int getTransactionNumber();
+
+   void showNoTransactionMessage();
+
+   void goToTransactionPage();
 
 }

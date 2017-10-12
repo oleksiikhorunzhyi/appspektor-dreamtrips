@@ -13,7 +13,9 @@ import android.widget.LinearLayout;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +31,16 @@ public class DtlToolbar extends LinearLayout {
    @InjectView(R.id.filterDiningsSwitch) protected SwitchCompat filterDiningsSwitch;
    @InjectView(R.id.dtlToolbarMerchantSearchInput) protected AppCompatEditText merchantSearchInput;
    @InjectView(R.id.dtlToolbarLocationSearchInput) protected AppCompatEditText locationSearchInput;
+   @InjectView(R.id.transaction_container) protected LinearLayout transactionContainer;
 
    protected List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
+   protected List<TransactionButtonListener> transactionButtonListeners = new ArrayList<>();
 
    protected String searchQuery;
    protected FocusedMode focusedMode;
    protected String locationTitle;
    protected String defaultEmptySearchCaption;
+   protected String currentSelectedFilter;
 
    public DtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
@@ -62,12 +67,16 @@ public class DtlToolbar extends LinearLayout {
 
    @CallSuper
    protected void initAttributes(AttributeSet attrs) {
-      defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
+      String selectedMerchantFilter = DtlMerchantsScreenImpl.currentSelectedFilter;
+      if (selectedMerchantFilter == null)
+         defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
+      else
+         defaultEmptySearchCaption = selectedMerchantFilter;
    }
 
    protected void bindSearchQueryPersisting() {
       RxDtlToolbar.merchantSearchTextChanges(this)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(searchQuery -> this.searchQuery = searchQuery);
    }
 
@@ -76,7 +85,7 @@ public class DtlToolbar extends LinearLayout {
       if (TextUtils.isEmpty(searchQuery)) {
          merchantSearchInput.setHint(defaultEmptySearchCaption);
       } else {
-         if (searchQuery.equals(getContext().getString(R.string.filter_merchant_food))) {
+         if (searchQuery.equals(getContext().getString(R.string.filter_merchant_dining))) {
             searchQuery = defaultEmptySearchCaption;
          }
          merchantSearchInput.setHint(searchQuery);
@@ -129,6 +138,11 @@ public class DtlToolbar extends LinearLayout {
    @OnClick(R.id.dtlfb_rootView)
    protected void filterButtonClicked(View view) {
       Queryable.from(filterButtonListeners).forEachR(listener -> listener.onFilterButtonClicked());
+   }
+
+   @OnClick(R.id.transaction_container)
+   protected void transactionButtonClicked(View view) {
+      Queryable.from(transactionButtonListeners).forEachR(listener -> listener.onTransactionButtonClicked());
    }
 
    @OnClick(R.id.dtlToolbarMerchantSearchInput)
@@ -194,6 +208,20 @@ public class DtlToolbar extends LinearLayout {
    public interface FilterButtonListener {
 
       void onFilterButtonClicked();
+   }
+
+   public interface TransactionButtonListener {
+
+      void onTransactionButtonClicked();
+   }
+
+   public void addTransactionButtonListener(@NonNull TransactionButtonListener listener) {
+      if (checkListenerNull(listener)) return;
+      transactionButtonListeners.add(listener);
+   }
+
+   public void removeTransactionButtonListener(TransactionButtonListener listener) {
+      transactionButtonListeners.remove(listener);
    }
 
    ///////////////////////////////////////////////////////////////////////////

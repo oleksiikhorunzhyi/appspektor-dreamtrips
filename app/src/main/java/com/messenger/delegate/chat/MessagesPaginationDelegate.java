@@ -37,11 +37,11 @@ public class MessagesPaginationDelegate {
    private boolean hasMoreElements = true;
    private final PublishSubject<PaginationStatus> paginationStateObservable = PublishSubject.create();
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final ActionPipe<LoadChatMessagesCommand> loadMessagesPipe;
 
    @Inject
-   public MessagesPaginationDelegate(SessionHolder<UserSession> sessionHolder, ChatExtensionInteractor chatExtensionInteractor) {
+   public MessagesPaginationDelegate(SessionHolder sessionHolder, ChatExtensionInteractor chatExtensionInteractor) {
       this.sessionHolder = sessionHolder;
       this.loadMessagesPipe = chatExtensionInteractor.getLoadChatMessagesCommandActionPipe();
    }

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
-import com.worldventures.dreamtrips.api.profile.model.PrivateUserProfile;
 import com.worldventures.dreamtrips.api.session.model.Account;
 import com.worldventures.dreamtrips.api.session.model.Subscription;
 import com.worldventures.dreamtrips.modules.common.model.User;

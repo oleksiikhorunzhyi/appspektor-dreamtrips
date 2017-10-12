@@ -20,6 +20,11 @@ public class DaggerActionServiceWrapper extends ActionServiceWrapper {
       this.injector = new CommandInjector(((Injector) appContext).getObjectGraph());
    }
 
+   public DaggerActionServiceWrapper(ActionService service, CommandInjector commandInjector) {
+      super(service);
+      this.injector = commandInjector;
+   }
+
    @Override
    protected <A> boolean onInterceptSend(ActionHolder<A> holder) {
       A action = holder.action();
@@ -49,11 +54,11 @@ public class DaggerActionServiceWrapper extends ActionServiceWrapper {
       return false;
    }
 
-   private static class CommandInjector {
+   public static class CommandInjector {
 
       private ObjectGraph objectGraph;
 
-      private CommandInjector(ObjectGraph objectGraph) {
+      public CommandInjector(ObjectGraph objectGraph) {
          this.objectGraph = objectGraph;
       }
 

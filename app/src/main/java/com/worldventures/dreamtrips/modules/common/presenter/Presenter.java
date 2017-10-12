@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.github.pwittchen.reactivenetwork.library.Connectivity;
 import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
@@ -21,13 +20,12 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
 import icepick.Icepick;
 import io.techery.janet.CancelException;
 import rx.Observable;
@@ -35,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
+import static com.worldventures.dreamtrips.core.utils.ThrowableUtils.getCauseByType;
 
 public class Presenter<VT extends Presenter.View> {
 
@@ -43,8 +41,7 @@ public class Presenter<VT extends Presenter.View> {
 
    @Inject protected Context context;
    @Inject protected ActivityRouter activityRouter;
-   @Inject @Global protected EventBus eventBus;
-   @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject protected SessionHolder appSessionHolder;
    @Inject protected AnalyticsInteractor analyticsInteractor;
    @Inject protected FeatureManager featureManager;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
@@ -52,8 +49,6 @@ public class Presenter<VT extends Presenter.View> {
    @Inject protected OfflineErrorInteractor offlineErrorInteractor;
    @Inject ConnectionInfoProvider connectionInfoProvider;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
-
-   protected int priorityEventBus = 0;
 
    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
    private PublishSubject<Void> pauseViewStopper = PublishSubject.create();
@@ -82,11 +77,9 @@ public class Presenter<VT extends Presenter.View> {
 
    public void takeView(VT view) {
       this.view = view;
-      try {
-         eventBus.registerSticky(this, priorityEventBus);
-      } catch (Exception ignored) {
-         Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
-      }
+   }
+
+   public void onViewTaken() {
       initConnectionOverlay();
    }
 
@@ -107,7 +100,6 @@ public class Presenter<VT extends Presenter.View> {
    public void dropView() {
       destroyViewStopper.onNext(null);
       this.view = null;
-      if (eventBus.isRegistered(this)) eventBus.unregister(this);
    }
 
    public void onStart() {

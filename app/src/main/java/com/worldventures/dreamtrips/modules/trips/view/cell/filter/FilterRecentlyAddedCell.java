@@ -23,6 +23,11 @@ public class FilterRecentlyAddedCell extends BoolCell<FilterRecentlyAddedModel, 
       cellDelegate.onFilterShowRecentlyAddedEvent(b);
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public interface Delegate extends CellDelegate<FilterRecentlyAddedModel> {
       void onFilterShowRecentlyAddedEvent(boolean enabled);
    }

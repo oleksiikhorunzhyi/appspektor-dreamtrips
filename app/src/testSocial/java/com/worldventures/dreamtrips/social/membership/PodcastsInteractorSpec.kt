@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.podcasts.model.ImmutablePodcast
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper
-import com.worldventures.dreamtrips.modules.membership.model.Podcast
-import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor
-import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand
-import com.worldventures.dreamtrips.modules.video.model.CachedModel
+import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper
+import com.worldventures.dreamtrips.social.ui.membership.model.Podcast
+import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor
+import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPodcastsCommand
+import com.worldventures.dreamtrips.social.ui.video.model.CachedModel
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

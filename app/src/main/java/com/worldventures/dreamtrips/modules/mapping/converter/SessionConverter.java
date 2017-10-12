@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.mapping.converter;
 import com.worldventures.dreamtrips.api.session.model.Session;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
 
 import org.jetbrains.annotations.NotNull;
 

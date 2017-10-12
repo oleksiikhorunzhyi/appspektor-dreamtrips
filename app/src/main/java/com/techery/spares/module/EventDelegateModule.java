@@ -9,7 +9,7 @@ import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
-import com.worldventures.dreamtrips.modules.membership.delegate.MembersSelectedEventDelegate;
+import com.worldventures.dreamtrips.social.ui.membership.delegate.MembersSelectedEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 

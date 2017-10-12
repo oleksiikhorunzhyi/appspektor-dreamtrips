@@ -19,10 +19,10 @@ public class MessengerConnector {
 
    private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
    private final MessengerServerFacade messengerServerFacade;
-   private final SessionHolder<UserSession> appSessionHolder;
+   private final SessionHolder appSessionHolder;
    private final MessengerSyncDelegate messengerSyncDelegate;
 
-   public MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder<UserSession> appSessionHolder,
+   public MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder appSessionHolder,
          MessengerServerFacade messengerServerFacade, MessengerSyncDelegate messengerSyncDelegate) {
       this.appSessionHolder = appSessionHolder;
       this.messengerServerFacade = messengerServerFacade;

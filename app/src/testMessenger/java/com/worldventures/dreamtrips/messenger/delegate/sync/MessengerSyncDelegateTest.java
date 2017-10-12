@@ -19,11 +19,15 @@ import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.synchmechanism.MessengerSyncDelegate;
+import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
+import com.worldventures.dreamtrips.api.api_common.service.MonolithHttpService;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockContactLoader;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockConversationsLoader;
+import com.worldventures.dreamtrips.mobilesdk.authentication.AuthData;
+import com.worldventures.dreamtrips.mobilesdk.config.ConfigDataProvider;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 
 import org.junit.Before;
@@ -38,6 +42,7 @@ import java.util.List;
 import io.techery.janet.ActionState;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -109,7 +114,11 @@ public class MessengerSyncDelegateTest extends MessengerBaseTest {
       daggerActionService.registerProvider(UsersDelegate.class, () -> usersDelegate);
       daggerActionService.registerProvider(UsersDAO.class, () -> usersDAO);
 
-      reLoginInteractor = new ReLoginInteractor(httpClient);
+      MonolithHttpService authService = new MonolithHttpService(Mockito.mock(ConfigDataProvider.class), () -> (AuthData) () -> null,
+            httpClient, new GsonConverter(new GsonProvider().provideGson())
+      );
+
+      reLoginInteractor = new ReLoginInteractor(authService);
       messengerSyncDelegate = new MessengerSyncDelegate(janet, reLoginInteractor);
    }
 

@@ -4,8 +4,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
+import com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

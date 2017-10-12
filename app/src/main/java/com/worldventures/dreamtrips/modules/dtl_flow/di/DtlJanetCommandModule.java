@@ -12,6 +12,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAct
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.creator.UrlTokenCreator;
 
 import dagger.Module;
 
@@ -28,7 +31,9 @@ import dagger.Module;
             NearbyLocationAction.class,
             ReviewMerchantsAction.class,
             AddReviewAction.class,
-            FlaggingReviewAction.class
+            FlaggingReviewAction.class,
+            UrlTokenAction.class,
+            TransactionPilotAction.class
       },
       complete = false, library = true)
 public class DtlJanetCommandModule {

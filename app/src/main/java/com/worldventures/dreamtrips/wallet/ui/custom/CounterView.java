@@ -13,7 +13,6 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -23,7 +22,9 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.databinding.ViewCounterBinding;
+import com.worldventures.dreamtrips.databinding.WalletCustomViewCounterBinding;
+
+import static android.view.LayoutInflater.from;
 
 @InverseBindingMethods(value = {
       @InverseBindingMethod(
@@ -40,7 +41,7 @@ public class CounterView extends LinearLayout implements TextSwitcher.ViewFactor
    private int minValue = DEFAULT_MIN_VALUE;
    private int maxValue = DEFAULT_MAX_VALUE;
 
-   private ViewCounterBinding binding;
+   private WalletCustomViewCounterBinding binding;
 
    private OnCountChangeListener countChangeListener;
 
@@ -58,7 +59,7 @@ public class CounterView extends LinearLayout implements TextSwitcher.ViewFactor
    }
 
    private void init(Context context, AttributeSet attrs) {
-      binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.view_counter, this, true);
+      binding = DataBindingUtil.inflate(from(context), R.layout.wallet_custom_view_counter, this, true);
       initSwitcher();
       initListeners();
       initAttrs(context, attrs);

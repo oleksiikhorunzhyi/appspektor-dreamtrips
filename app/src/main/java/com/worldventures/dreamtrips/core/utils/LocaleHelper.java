@@ -26,7 +26,7 @@ public class LocaleHelper {
       return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
    }
 
-   public static boolean isOwnLanguage(SessionHolder<UserSession> sessionHolder, @Nullable String languageCode) {
+   public static boolean isOwnLanguage(SessionHolder sessionHolder, @Nullable String languageCode) {
       if (!sessionHolder.get().isPresent()) return false;
 
       String locale = sessionHolder.get().get().getLocale();

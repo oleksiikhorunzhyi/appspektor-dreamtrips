@@ -12,7 +12,9 @@ import com.google.zxing.Result;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
@@ -119,6 +121,11 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    @Override
    public void openScanReceipt(DtlTransaction dtlTransaction) {
       dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
+   }
+
+   @Override
+   public void openThrstFlow() {
+      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().build());
    }
 
    @Override

@@ -27,6 +27,7 @@
    <string name="dtl_perks_description">Előnyök</string>
    <string name="dtl_description">Leírás</string>
    <string name="ok">OK</string>
+   <string name="continue_option">Tovább</string>
    <string name="permission_camera_rationale">A felismeréshez szükséges a kamerához való hozzáférés engedélyezése </string>
    <string name="permission_location_rationale">A felismeréshez szükséges a helyzethez való hozzáférés engedélyezése </string>
    <string name="no_camera_permission">Az alkalmazás nem futtatható, mivel nem rendelkezik a kamerához való hozzáférési engedéllyel. Az alkalmazás most kilép. </string>
@@ -48,7 +49,7 @@
    <string name="dtl_earn">Pontgyűjtés</string>
    <string name="dtl_dt_points">%1$d DreamTrips pontok</string>
    <string name="suggest_merchant">Kereskedő javaslat</string>
-   <string name="suggest_merchant_title">DT Local eszközök</string>
+   <string name="dt_local_tools">DT Local eszközök</string>
    <string name="dtl_details_share_title">Dreamtrips-pontokat fogok szerezni itt: %1$s</string>
    <string name="dtl_wait_for_receipt">Várjon… Nyugta feltöltése</string>
    <string name="dtl_wait_for_earn">Várjon… Pontok összegyűjtése</string>
@@ -79,7 +80,7 @@
    <string name="merchant_working_hours_caption">óra</string>
    <string name="filter_amenities_error_caption">A szórakozási lehetőségeket nem lehet betölteni jelenleg</string>
    <string name="merchants_no_results">Nincs találat \n Próbáld meg módosítani a szűrőket, vagy adj meg egy új helyet.</string>
-   <string name="merchants_no_results_offers_only">Sajnos nincs ajánlat a területeden még. Kapcsold ki az ajánlatokat, hogy lásd a közeli éttermeket.</string>
+   <string name="merchants_no_results_offers_only">Sajnos nincs ajánlat a területeden még.</string>
    <string name="dtl_try_again">Próbáld újra</string>
    <string name="dtl_load_more">Több betöltése</string>
 
@@ -88,7 +89,59 @@
    <string name="dtl_load_merchant_error_caption">Az eredményeket nem lehet betölteni jelenleg.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Étel &amp; Ital</string>
+   <string name="dtlt_search_hint">Étkezés</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Szűrők</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_dining">Étkezés</string>
+   <string name="filter_merchant_entertainment">Szórakoztatás</string>
+   <string name="filter_merchant_spas">Fürdők</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">Értékelés</string>
+   <string name="first_reviews_text">Légy első, aki véleményt ír erről a helyről</string>
+   <string name="format_review_text">%1$d Értékelés</string>
+   <string name="format_reviews_text">%1$d Értékelés</string>
+   <string name="reviews_text">Értékelés</string>
+   <string name="without_reviews_text">0 Értékelés</string>
+   <string name="years_ago_text">%1$d évvel ezelőtt</string>
+   <string name="months_ago_text">%1$d perccel ezelőtt</string>
+   <string name="weeks_ago_text">%1$d héttel ezelőtt</string>
+   <string name="days_ago_text">%1$d nappal ezelőtt</string>
+   <string name="hours_ago_text">%1$d órával ezelőtt</string>
+   <string name="min_ago_text">%1$d perccel ezelőtt</string>
+   <string name="sec_ago_text">%1$d másodperccel ezelőtt</string>
+   <string name="total_reviews_text"> Összes értékelés olvasás (%1$d)</string>
+   <string name="to_be_first_reviews">Legyél első értékelő</string>
+   <string name="tvVerifiedReview">Ellenőrzött vevő</string>
+   <string name="review_comment_minor_letter">A véleménynek legalább %1$d karakter hosszúnak kell lennie.</string>
+   <string name="review_comment_major_letter">A véleménynek %1$d karakternél rövidebbnek kell lennie.</string>
+   <string name="review_comment_discard_changes">Biztosan törlöd ezt az értékelést?</string>
+   <string name="titleReview">Értékelés</string>
+   <string name="hint_comment_review">Milyen volt a kiszolgálás, környezet, étel, stb.?</string>
+   <string name="snack_review_success">Az értékelést beküldtük és látható lesz amint elfogadásra kerül.</string>
+   <string name="menu_post">Poszt</string>
+   <string name="tv_read_more">Olvass többet</string>
+   <string name="action_add_review">Vélemény hozzáadása</string>
+   <string name="text_awaiting_approval_review">Egy korábbi értékelés jóváhagyásra vár ehhez a helyszínhez. Elfogadás után nézheted meg ezt a helyszínt újra.</string>
+   <string name="comment_review_title_sorry">Sajnáljuk</string>
+   <string name="comment_review_profanity_text">Az értékelés trágár szavakat tartalmaz, így nem lehet beküldeni. Kérjük, módosítsa az értékelést és próbálja újra.\"</string>
+   <string name="comment_review_no_internet_message">Probléma adódott a Dreamtrips szerverrel történt kommunikációban. Próbálja újra.</string>
+   <string name="comment_review_no_internet_confirm_text">Próbáld újra</string>
+   <string name="comment_review_no_internet_cancel_text">Mégse</string>
+   <string name="comment_review_error_unknown_title">Sajnáljuk</string>
+   <string name="comment_review_error_unknown_text">Probléma adódott a Dreamtrips szerverrel történt kommunikációban. Próbálja újra.</string>
+   <string name="comment_review_error_unknown_confirm">Próbáld újra</string>
+   <string name="comment_review_error_unknown_cancel">Mégse</string>
+   <string name="comment_review_error_limited_reached_content">Minden szerverünk foglalt most. Kérjük, próbálja meg újra egy perc múlva</string>
+   <string name="comment_review_unrecognized_error_content">Hoppá, valami történt Dolgozunk a probléma elhárításán. Kérjük, próbálja meg újra holnap.</string>
+   <string name="comment_review_confirm_text">OK</string>
+   <string name="comment_review_error_limited_reached_confirm">OK</string>
+   <string name="comment_review_unrecognized_error_confirm">OK</string>
+
+   <string name="flag_text_menu">Jelölés</string>
+   <string name="review_min_char">perc %1$d </string>
+   <string name="review_max_char">max %1$d</string>
+   <string name="input_major_limit">Az Ön értékelése elérte a maximum méretet. Lerövidítettük, hogy elférjen.</string>
+
+   <string name="text_add_photos_and_videos">Fénykép hozzáadása</string>
 </resources>

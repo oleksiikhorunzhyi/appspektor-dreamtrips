@@ -5,7 +5,7 @@ import android.content.Context;
 import com.crashlytics.android.Crashlytics;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 
 import io.techery.janet.CancelException;
 import io.techery.janet.helper.JanetActionException;

@@ -3,9 +3,7 @@ package com.worldventures.dreamtrips.modules.common.command;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
-
-import java.lang.ref.WeakReference;
+import com.worldventures.dreamtrips.modules.common.service.UploadingFileManager;
 
 import javax.inject.Inject;
 

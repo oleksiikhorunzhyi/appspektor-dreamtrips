@@ -63,7 +63,7 @@ class MediaInteractorSpec : BaseSpec({
          val janet = Janet.Builder()
                .addService(service)
                .build()
-         service.registerProvider(PhotosProvider::class.java) { PhotosProvider { photos }}
+         service.registerProvider(PhotosProvider::class.java) { PhotosProvider { date: Date, i: Int -> photos }}
          service.registerProvider(VideosProvider::class.java) { VideosProvider { videos }}
          mediaInteractor = MediaInteractor(janet)
          service.registerProvider(MediaInteractor::class.java) { mediaInteractor }

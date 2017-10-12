@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import org.jetbrains.annotations.Nullable;
 
 import io.techery.janet.operationsubscriber.view.ErrorView;
+import rx.functions.Action0;
 import rx.functions.Action1;
 
 public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
@@ -26,6 +27,11 @@ public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
    public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId, Action1<T> positiveAction, Action1<T> negativeAction) {
       this.throwable = throwable;
       this.errorView = new SimpleErrorDialogView<>(context, messageResId, positiveAction, negativeAction);
+   }
+
+   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId, Action1<T> positiveAction, Action1<T> negativeAction, Action0 dismissAction) {
+      this.throwable = throwable;
+      this.errorView = new SimpleErrorDialogView<>(context, messageResId, positiveAction, negativeAction, dismissAction);
    }
 
    @Override

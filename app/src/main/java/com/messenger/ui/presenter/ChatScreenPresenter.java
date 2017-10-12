@@ -6,6 +6,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 
 public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, ChatLayoutViewState> {
    boolean sendMessage(String message);
@@ -39,5 +40,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
    void onTimestampViewClicked(int position);
 
    void onReloadHistoryRequired();
+
+   void imagesPicked(MediaPickerAttachment mediaPickerAttachment);
 }
 

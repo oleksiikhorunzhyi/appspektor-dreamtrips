@@ -31,7 +31,7 @@ import static org.mockito.Mockito.doReturn;
 @PrepareForTest(MessengerDatabase.class)
 public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
 
-   @Mock SessionHolder<UserSession> sessionHolder;
+   @Mock SessionHolder sessionHolder;
    @Mock Optional<UserSession> userSessionOptional;
    @Mock ConversationsDAO conversationsDAO;
 

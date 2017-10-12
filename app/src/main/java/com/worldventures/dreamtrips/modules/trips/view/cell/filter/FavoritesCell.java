@@ -24,6 +24,11 @@ public class FavoritesCell extends BoolCell<FilterFavoriteModel, FavoritesCell.D
       cellDelegate.onFilterShowFavoritesEvent(b);
    }
 
+   @Override
+   public boolean shouldInject() {
+      return false;
+   }
+
    public interface Delegate extends CellDelegate<FilterFavoriteModel> {
       void onFilterShowFavoritesEvent(boolean enabled);
    }

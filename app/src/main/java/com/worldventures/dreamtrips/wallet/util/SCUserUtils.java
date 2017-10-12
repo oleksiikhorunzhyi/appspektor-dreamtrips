@@ -12,7 +12,7 @@ public class SCUserUtils {
 
    public static String userFullName(@NonNull String firstName, @NonNull String middleName, @NonNull String lastName) {
       return firstName +
-                     (middleName.isEmpty() ? "" : " ") + middleName
-                     + (lastName.isEmpty() ? "" : " ") + lastName;
+            (middleName.isEmpty() ? "" : " ") + middleName
+            + (lastName.isEmpty() ? "" : " ") + lastName;
    }
 }

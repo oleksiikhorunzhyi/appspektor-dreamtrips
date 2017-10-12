@@ -18,6 +18,10 @@ import java.io.File;
 
 public class CroppingUtils {
 
+   public static void startSquareCropping(Activity activity, Uri fileFrom, Uri fileTo) {
+      startCropping(activity, fileFrom, fileTo, 1, 1);
+   }
+
    public static void startCropping(Activity activity, Uri fileFrom, Uri fileTo, int ratioX, int ratioY) {
       obtainBasicUCrop(activity, fileFrom, fileTo).withAspectRatio(ratioX, ratioY).start(activity);
    }

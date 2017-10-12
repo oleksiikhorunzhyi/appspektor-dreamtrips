@@ -65,7 +65,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @InjectView(R.id.photos) RecyclerView mRecycler;
 
    @Inject MerchantsInteractor merchantInteractor;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    private static final String BRAND_ID = "1";
    private User user;
@@ -184,8 +184,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    public void handleStringReview(String stringReview) {
+      if (stringReview == null)  return;
       // Character \n should not be part of the counting at any place. (beginning, middle or end)
-      stringReviewLength = stringReview.replaceAll("\n", "").trim().length();
+      stringReviewLength = stringReview.replaceAll("\n", " ").trim().length();
 
       setInputChars(stringReviewLength);
 

@@ -15,9 +15,9 @@ import java.util.List;
 
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
-class DisplayOptionsPagerAdapter extends PagerAdapter {
+public class DisplayOptionsPagerAdapter extends PagerAdapter {
 
-   static final List<Integer> DISPLAY_OPTIONS = new ArrayList<Integer>() {
+   public static final List<Integer> DISPLAY_OPTIONS = new ArrayList<Integer>() {
       {
          add(SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY);
          add(SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME);
@@ -39,7 +39,7 @@ class DisplayOptionsPagerAdapter extends PagerAdapter {
    private final SmartCardUser smartCardUser;
    private final DisplayOptionsClickListener clickListener;
 
-   DisplayOptionsPagerAdapter(@NonNull Context context, @NonNull SmartCardUser smartCardUser, DisplayOptionsClickListener clickListener) {
+   public DisplayOptionsPagerAdapter(@NonNull Context context, @NonNull SmartCardUser smartCardUser, DisplayOptionsClickListener clickListener) {
       inflater = LayoutInflater.from(context);
       this.smartCardUser = smartCardUser;
       this.clickListener = clickListener;
@@ -47,7 +47,7 @@ class DisplayOptionsPagerAdapter extends PagerAdapter {
 
    @Override
    public Object instantiateItem(ViewGroup collection, int position) {
-      ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.adapter_item_wallet_settings_display, collection, false);
+      ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.item_wallet_settings_display, collection, false);
 
       DisplayOptionsViewHolder holder = new DisplayOptionsViewHolder(layout);
       holder.bindData(DISPLAY_OPTIONS.get(position), DISPLAY_OPTION_TITLES.get(position), smartCardUser);

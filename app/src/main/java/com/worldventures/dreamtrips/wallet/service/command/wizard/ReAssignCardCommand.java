@@ -2,10 +2,9 @@ package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
 import com.worldventures.dreamtrips.api.smart_card.user_association.UpdateDeviceIdHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
@@ -19,14 +18,16 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
+
 @CommandAction
 public class ReAssignCardCommand extends Command<Void> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject RecordInteractor recordInteractor;
-   @Inject @Named(JanetModule.JANET_WALLET) Janet janetWallet;
+   @Inject @Named(JANET_WALLET) Janet janetWallet;
    @Inject SystemPropertiesProvider systemPropertiesProvider;
-   @Inject SnappyRepository snappyRepository;
+   @Inject WalletStorage walletStorage;
    @Inject MapperyContext mappery;
 
    private final String scId;
@@ -38,7 +39,7 @@ public class ReAssignCardCommand extends Command<Void> implements InjectableActi
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       updateDeviceId()
-            .flatMap(smartCardInfo -> new ProcessSmartCardInfoDelegate(snappyRepository, janetWallet, mappery)
+            .flatMap(smartCardInfo -> new ProcessSmartCardInfoDelegate(walletStorage, janetWallet, mappery)
                   .processSmartCardInfo(smartCardInfo))
             .subscribe(result -> {
                recordInteractor.syncRecordStatusPipe() // set default value for this flow

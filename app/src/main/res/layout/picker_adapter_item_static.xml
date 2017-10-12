@@ -12,7 +12,7 @@
             />
    </data>
 
-   <com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout
+   <com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout
          xmlns:app="http://schemas.android.com/apk/res-auto"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
@@ -41,12 +41,12 @@
                android:layout_height="wrap_content"
                android:layout_marginTop="@dimen/spacing_medium"
                android:gravity="center"
-               android:textColor="@{staticModel.colorRes != 0 ? staticModel.colorRes : @color/grey}"
+               app:buttonTextColor="@{staticModel.colorRes != 0 ? staticModel.colorRes : @color/grey}"
                android:textSize="@dimen/font_normal"
                android:text="@{staticModel.titleRes}"
                />
       </LinearLayout>
 
-   </com.worldventures.dreamtrips.modules.bucketlist.view.custom.SquareLayout>
+   </com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.SquareLayout>
 
 </layout>

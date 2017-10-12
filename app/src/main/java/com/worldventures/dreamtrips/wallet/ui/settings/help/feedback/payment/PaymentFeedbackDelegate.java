@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutablePayme
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.Merchant;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.PaymentTerminal;
 import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.infopages.model.FeedbackImageAttachment;
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackAttachmentsManager;
+import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackAttachmentsManager;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.MerchantViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentFeedbackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.model.PaymentTerminalViewModel;

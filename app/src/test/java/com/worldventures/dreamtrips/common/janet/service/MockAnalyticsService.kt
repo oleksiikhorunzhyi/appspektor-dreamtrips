@@ -11,7 +11,5 @@ class MockAnalyticsService : ActionService() {
    override fun <A : Any?> cancel(holder: ActionHolder<A>?) {
    }
 
-   override fun getSupportedAnnotationType(): Class<*> {
-      return AnalyticsEvent::class.java
-   }
+   override fun getSupportedAnnotationType() = AnalyticsEvent::class.java
 }

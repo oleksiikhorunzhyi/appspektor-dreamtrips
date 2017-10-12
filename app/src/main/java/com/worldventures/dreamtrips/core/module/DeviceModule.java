@@ -6,7 +6,13 @@ import com.jaredrummler.android.device.DeviceName;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.api.session.model.ImmutableDevice;
-import com.worldventures.dreamtrips.modules.background_uploading.util.FileSplitter;
+import com.worldventures.dreamtrips.core.utils.FilePathProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProviderImpl;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProviderImpl;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
+import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProviderImpl;
 
 import javax.inject.Singleton;
 
@@ -36,7 +42,27 @@ public class DeviceModule {
    }
 
    @Provides
-   FileSplitter provideDevice(Context context) {
-      return new FileSplitter(context.getExternalCacheDir());
+   @Singleton
+   DeviceInfoProvider provideDeviceInfoProvider(Context context) {
+      return new DeviceInfoProviderImpl(context);
    }
+
+   @Provides
+   @Singleton
+   ConnectionInfoProvider connectionInfoProvider(Context context) {
+      return new ConnectionInfoProviderImpl(context);
+   }
+
+   @Provides
+   @Singleton
+   AppInfoProvider provideAppInfoProvider(Context context) {
+      return new AppInfoProviderImpl(context);
+   }
+
+   @Singleton
+   @Provides
+   FilePathProvider provideFilePathProvider(@ForApplication Context context) {
+      return new FilePathProvider(context);
+   }
+
 }

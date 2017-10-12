@@ -6,8 +6,8 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder
 import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor
-import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand
+import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor
+import com.worldventures.dreamtrips.social.ui.infopages.service.command.SendFeedbackCommand
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor

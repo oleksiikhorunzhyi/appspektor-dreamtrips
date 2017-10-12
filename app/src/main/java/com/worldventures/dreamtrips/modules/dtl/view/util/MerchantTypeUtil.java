@@ -24,9 +24,9 @@ public class MerchantTypeUtil {
     }
 
     public static int getStringResource(String type) {
-        int stringResource = R.string.filter_merchant_food;
+        int stringResource = R.string.filter_merchant_dining;
         if (type.equals(FilterData.SPAS)) {
-            stringResource = R.string.text_to_filter_by_spa;
+            stringResource = R.string.filter_merchant_spas;
         } else if (type.equals(FilterData.ENTERTAINMENT)) {
             stringResource = R.string.filter_merchant_entertainment;
         }

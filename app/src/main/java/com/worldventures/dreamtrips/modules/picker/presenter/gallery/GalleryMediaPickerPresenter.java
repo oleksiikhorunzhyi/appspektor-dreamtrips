@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.picker.presenter.gallery;
 
 import com.worldventures.dreamtrips.modules.picker.model.GalleryMediaPickerViewModel;
 import com.worldventures.dreamtrips.modules.picker.presenter.base.BaseMediaPickerPresenter;
+import com.worldventures.dreamtrips.modules.picker.util.strategy.PhotoPickLimitStrategy;
+import com.worldventures.dreamtrips.modules.picker.util.strategy.VideoPickLimitStrategy;
 import com.worldventures.dreamtrips.modules.picker.view.gallery.GalleryMediaPickerView;
 
 import java.util.List;
@@ -19,9 +21,8 @@ public interface GalleryMediaPickerPresenter extends BaseMediaPickerPresenter<Ga
 
    void openCameraForVideo();
 
-   void attachMedia();
-
    void handleCameraClick();
 
-   Observable<List<GalleryMediaPickerViewModel>> capturedMedia();
+   void itemPicked(GalleryMediaPickerViewModel pickedItem, int position,
+         VideoPickLimitStrategy videoPickLimitStrategy, PhotoPickLimitStrategy photoPickLimitStrategy);
 }

@@ -64,8 +64,8 @@ abstract class BaseSpec(spekBody: SpecBody.() -> Unit) : Spek(spekBody) {
             }
             .build()
 
-      fun mockSessionHolder(): SessionHolder<UserSession> {
-         val sessionHolder: SessionHolder<UserSession> = mock()
+      fun mockSessionHolder(): SessionHolder {
+         val sessionHolder: SessionHolder = mock()
          val userSession: UserSession = mock()
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
          return sessionHolder;

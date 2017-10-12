@@ -43,7 +43,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    };
 
    @Inject
-   SessionHolder<UserSession> appSessionHolder;
+   SessionHolder appSessionHolder;
 
    private final Merchant merchant;
    private static final String BRAND_ID = "1";

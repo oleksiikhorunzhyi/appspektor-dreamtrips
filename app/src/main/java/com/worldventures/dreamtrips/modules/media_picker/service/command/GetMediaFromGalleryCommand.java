@@ -20,10 +20,16 @@ public class GetMediaFromGalleryCommand extends Command<List<MediaPickerModel>> 
 
    @Inject MediaInteractor mediaInteractor;
 
-   private boolean queryVideos;
+   private final boolean queryVideos;
+   private final int count;
 
    public GetMediaFromGalleryCommand(boolean queryVideos) {
+      this(queryVideos, Integer.MAX_VALUE);
+   }
+
+   public GetMediaFromGalleryCommand(boolean queryVideos, int count) {
       this.queryVideos = queryVideos;
+      this.count = count;
    }
 
    @Override
@@ -33,23 +39,23 @@ public class GetMediaFromGalleryCommand extends Command<List<MediaPickerModel>> 
    }
 
    private Observable<List<MediaPickerModelImpl>> getPhotosObservable() {
-      return mediaInteractor.getPhotosFromGalleryPipe().createObservableResult(new GetPhotosFromGalleryCommand())
+      return mediaInteractor.getPhotosFromGalleryPipe().createObservableResult(new GetPhotosFromGalleryCommand(count))
             .map(getPhotosFromGalleryCommand -> new ArrayList<MediaPickerModelImpl>(getPhotosFromGalleryCommand.getResult()));
    }
 
    private Observable<List<MediaPickerModelImpl>> getVideosObservable() {
       if (!queryVideos) return Observable.just(new ArrayList<>());
-      return mediaInteractor.getVideosFromGalleryPipe().createObservableResult(new GetVideosFromGalleryCommand())
+      return mediaInteractor.getVideosFromGalleryPipe().createObservableResult(new GetVideosFromGalleryCommand(count))
          .map(getVideosFromGalleryCommand -> new ArrayList<MediaPickerModelImpl>(getVideosFromGalleryCommand.getResult()));
    }
 
    private List<MediaPickerModel> zipPhotosAndVideos(List<MediaPickerModelImpl> photos, List<MediaPickerModelImpl> videos) {
-      List<MediaPickerModelImpl> mediaItemsList = new ArrayList<>();
+      List<MediaPickerModel> mediaItemsList = new ArrayList<>();
       mediaItemsList.addAll(photos);
       mediaItemsList.addAll(videos);
       Collections.sort(mediaItemsList, (mediaItem1, mediaItem2)
             -> compareDatesDescending(mediaItem1.getDateTaken(), mediaItem2.getDateTaken()));
-      return new ArrayList<>(mediaItemsList);
+      return mediaItemsList.size() > count? mediaItemsList.subList(0, count) : mediaItemsList;
    }
 
    private int compareDatesDescending(long date1, long date2) {

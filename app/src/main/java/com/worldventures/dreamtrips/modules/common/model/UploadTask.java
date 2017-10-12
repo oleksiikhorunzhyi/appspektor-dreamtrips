@@ -3,9 +3,6 @@ package com.worldventures.dreamtrips.modules.common.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

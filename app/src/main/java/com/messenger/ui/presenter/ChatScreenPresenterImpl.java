@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.analytics.AddFriendsToChatAction;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
@@ -37,7 +38,6 @@ import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingPresenter;
 import com.messenger.ui.util.AttachmentMenuProvider;
 import com.messenger.ui.util.ChatContextualMenuProvider;
-import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.util.menu.ChatToolbarMenuProvider;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatPath;
@@ -52,8 +52,9 @@ import com.messenger.util.PickLocationDelegate;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModelImpl;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -88,7 +89,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
    @Inject StartChatDelegate startChatDelegate;
    @Inject MessageTranslationDelegate messageTranslationDelegate;
    @Inject AttachmentMenuProvider attachmentMenuProvider;
-   @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
    @Inject PickLocationDelegate pickLocationDelegate;
    @Inject LoadConversationDelegate loadConversationDelegate;
    @Inject ChatExtensionInteractor chatExtensionInteractor;
@@ -120,7 +120,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
       connectToLastVisibleItemStream();
       connectToShareLocationsStream();
       bindMessagePaginationDelegate();
-      connectToPhotoPicker();
       connectToClearEvents();
 
       getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
@@ -135,12 +134,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
          connectChatStateDelegate();
          connectShowSendMessageAction();
       }
-   }
-
-   @Override
-   public void onDetachedFromWindow() {
-      disconnectFromPhotoPicker();
-      super.onDetachedFromWindow();
    }
 
    ///////////////////////////////////////////////////
@@ -206,9 +199,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
       screen.setTitle(conversation, participants);
       boolean conversationIsPresent = ConversationHelper.isPresent(conversation);
       screen.enableInput(conversationIsPresent);
-      if (!conversationIsPresent) {
-         hidePhotoPicker();
-      }
       enableUnreadMessagesUi(conversation);
    }
 
@@ -414,7 +404,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
    public boolean onToolbarMenuItemClick(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.action_add:
-            TrackingHelper.addPeopleToChat();
+            analyticsInteractor.analyticsActionPipe().send(new AddFriendsToChatAction());
             Flow.get(getContext()).set(new ExistingChatPath(conversationId));
             return true;
          case R.id.action_settings:
@@ -461,21 +451,23 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
       switch (attachmentMenuItem.getType()) {
          case AttachmentMenuItem.LOCATION:
             //noinspection ConstantConditions
-            hidePhotoPicker();
             pickLocationDelegate.pickLocation();
             break;
          case AttachmentMenuItem.IMAGE:
-            showPhotoPicker();
+            getView().showPicker();
             break;
       }
    }
 
-   private void hidePhotoPicker() {
-      messengerMediaPickerDelegate.hidePhotoPicker();
+   @Override
+   public void imagesPicked(MediaPickerAttachment mediaPickerAttachment) {
+      sendImages(Queryable.from(mediaPickerAttachment.getChosenImages())
+            .map(MediaPickerModelImpl::getAbsolutePath)
+            .toList());
    }
 
-   private void showPhotoPicker() {
-      messengerMediaPickerDelegate.showMultiPhotoPicker();
+   public void sendImages(List<String> filePaths) {
+      chatMessageManager.sendImages(conversationId, filePaths);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -510,22 +502,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
       new ExternalMapLauncher(context).setLocationWithMarker(latLng.latitude, latLng.longitude)
             .setZoomLevel(LiteMapInflater.ZOOM_LEVEL)
             .launch();
-   }
-
-   private void connectToPhotoPicker() {
-      messengerMediaPickerDelegate.register();
-      messengerMediaPickerDelegate.getImagePathsStream().compose(bindViewIoToMainComposer()).subscribe(photos -> {
-         hidePhotoPicker();
-         sendImages(Queryable.from(photos).toList());
-      }, e -> Timber.e(e, "Error while image picking"));
-   }
-
-   private void sendImages(List<String> filePaths) {
-      chatMessageManager.sendImages(conversationId, filePaths);
-   }
-
-   private void disconnectFromPhotoPicker() {
-      messengerMediaPickerDelegate.unregister();
    }
 
    ///////////////////////////////////////////////////////////////////////////

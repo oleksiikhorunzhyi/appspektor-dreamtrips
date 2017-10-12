@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <dimen name="feed_item_height">300dp</dimen>
+   <dimen name="suggested_size">120dp</dimen>
+
+   <dimen name="template_height">380dp</dimen>
+
+</resources>

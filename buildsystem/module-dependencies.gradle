@@ -5,6 +5,7 @@ ext {
          { o -> o.maven { url 'https://maven.google.com' } },
          { o -> o.maven { url 'https://jitpack.io' } },
          { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },
+         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/libs-snapshot' } },
          { o -> o.maven { url 'http://dl.bintray.com/techery/android' } },
          { o -> o.maven { url 'http://dl.bintray.com/populov/maven' } },
          { o -> o.maven { url 'http://dl.bintray.com/amulyakhare/maven' } },
@@ -12,7 +13,6 @@ ext {
          { o -> o.maven { url 'https://maven.fabric.io/public' } },
          { o -> o.maven { url 'https://clojars.org/repo/' } },
          { o -> o.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
-         { o -> o.maven { url 'http://nexus.idamob.ru/content/groups/public' } },
          { o -> o.maven { url 'https://github.com/shaubert/maven-repo/raw/master/snapshots' } },
          { o -> o.maven { url 'http://repository.jetbrains.com/all' } },
          { o -> o.flatDir { dirs 'libs' } }
@@ -29,13 +29,19 @@ ext {
          eventbus    : [c: 'de.greenrobot:eventbus:2.4.0'],
    ]
    // rx
-   def rxjavaVersion = '1.2.3'
+   def rxjavaVersion = '1.3.0'
+   def rxbinding = '1.0.1'
+   def rxlifecycle = '1.0'
    moduleDependencies.rx = [
          rxjava               : [c: "io.reactivex:rxjava:$rxjavaVersion"],
-         rxandroid            : [c: 'io.reactivex:rxandroid:1.1.0'],
-         rxbinding            : [c: 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'],
-         rxlifecycle          : [c: 'com.trello:rxlifecycle:0.4.0'],
-         rxlifecycleComponents: [c: 'com.trello:rxlifecycle-components:0.4.0'],
+         rxandroid            : [c: 'io.reactivex:rxandroid:1.2.1'],
+
+         rxbinding            : [c: "com.jakewharton.rxbinding:rxbinding:$rxbinding"],
+         rxbindingSupportV4   : [c: "com.jakewharton.rxbinding:rxbinding-support-v4:$rxbinding"],
+         rxbindingSupportV7   : [c: "com.jakewharton.rxbinding:rxbinding-appcompat-v7:$rxbinding"],
+
+         rxlifecycle          : [c: "com.trello:rxlifecycle-android:$rxlifecycle"],
+         rxlifecycleComponents: [c: "com.trello:rxlifecycle-components:$rxlifecycle"],
    ]
    // di
    def daggerVersion = '1.2.2'
@@ -73,7 +79,7 @@ ext {
          mobileSdkApi             : [c: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkCompiler        : [a: "com.worldventures.dreamtrips:mobilesdk-commons-compiler:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.14-RELEASE-1.22-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.21-DTL-DEV-SNAPSHOT'],
          // janet
          janetHttpService         : [c: "com.github.techery.janet-http:service:$janetHttpVersion"],
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
@@ -88,17 +94,19 @@ ext {
          gson                     : [c: 'com.google.code.gson:gson:2.7'],
          // util
          reactivenetwork          : [c: 'com.github.pwittchen:reactivenetwork:0.5.2'],
-         networkevents            : [c: 'com.github.pwittchen:networkevents:2.1.2'], //deprecated], use reactive network lib above
          // smack / xmpp
          smackAndroid             : [c: "org.igniterealtime.smack:smack-android-extensions:$smackVersion"],
          smackTcp                 : [c: "org.igniterealtime.smack:smack-tcp:$smackVersion"],
+         // beacons
+         altBeacon                : [c: 'org.altbeacon:android-beacon-library:2.12'],
+         slf4                     : [ct: 'com.github.bright:slf4android:0.1.3'],
    ]
    // smartcard
    moduleDependencies.smartcard = [
-         service: [c: 'io.techery.janet:smartcard:0.21.3-SNAPSHOT'],
+         service: [c: 'io.techery.janet:smartcard:0.21.4-SNAPSHOT'],
    ]
    // services
-   def googleServicesVersion = '11.0.2'
+   def googleServicesVersion = '11.2.0'
    moduleDependencies.services = [
          // amazon
          amazonCore    : [c: 'com.amazonaws:aws-android-sdk-core:2.2.6'],
@@ -118,13 +126,17 @@ ext {
    // presentation frameworks
    def mosbyVersion = '2.0.0'
    def flowVersion = '0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
+   def conductorVersion = '2.1.4'
    moduleDependencies.presentation = [
-         mosbyMvp      : [c: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],
-         mosbyCommon   : [c: "com.hannesdorfmann.mosby:mvp-common:$mosbyVersion"],
-         mosbyViewstate: [c: "com.hannesdorfmann.mosby:viewstate:$mosbyVersion"],
-         flow          : [c: "com.github.almozavr.flow:flow:$flowVersion"],
-         flowPath      : [c: "com.github.almozavr.flow:flow-path:$flowVersion"],
-         butterknife   : [c: 'com.jakewharton:butterknife:6.1.0'],
+         mosbyMvp             : [c: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],
+         mosbyCommon          : [c: "com.hannesdorfmann.mosby:mvp-common:$mosbyVersion"],
+         mosbyViewstate       : [c: "com.hannesdorfmann.mosby:viewstate:$mosbyVersion"],
+         flow                 : [c: "com.github.almozavr.flow:flow:$flowVersion"],
+         flowPath             : [c: "com.github.almozavr.flow:flow-path:$flowVersion"],
+         conductor            : [c: "com.bluelinelabs:conductor:$conductorVersion"],
+         conductorSupport     : [c: "com.bluelinelabs:conductor-support:$conductorVersion"],
+         conductorRxLifecycle : [c: "com.bluelinelabs:conductor-rxlifecycle:$conductorVersion"],
+         butterknife          : [c: 'com.jakewharton:butterknife:6.1.0'],
    ]
    // media
    moduleDependencies.media = [
@@ -136,7 +148,7 @@ ext {
          picasso       : [c: 'com.squareup.picasso:picasso:2.5.2'],
    ]
    // ui (views/layouts/widgets)
-   def googleLibrariesVersion = '25.2.0'
+   def googleLibrariesVersion = '26.0.2'
    moduleDependencies.ui = [
          googleAppcompat7      : [c: "com.android.support:appcompat-v7:${googleLibrariesVersion}"],
          googleDesign          : [c: "com.android.support:design:${googleLibrariesVersion}"],
@@ -154,7 +166,7 @@ ext {
          materialDialogsCommons: [c: 'com.github.afollestad.material-dialogs:commons:0.8.6.2'],
          // FAB
          floatingactionbutton  : [c: 'com.getbase:floatingactionbutton:1.10.0'],
-         fabbutton             : [c: 'mbanje.kurt:fabbutton:1.2.1'],
+         fabbutton             : [c: 'mbanje.kurt:fabbutton:1.2.5-SNAPSHOT@aar'],
          // Layouts
          expandablelayout      : [c: 'com.github.traex.expandablelayout:library:1.3'],
          shadowlayout          : [c: 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'],
@@ -187,7 +199,7 @@ ext {
          jodaTimeAndroid          : [c: "net.danlew:android.joda:$jodaTimeVersion"],
          androidMapsUtils         : [c: 'com.google.maps.android:android-maps-utils:0.4'],
          androidReactiveLocation  : [c: 'pl.charmas.android:android-reactive-location:0.8@aar'],
-         operationActionSubscriber: [c: 'com.github.techery:OperationActionSubscriber:1.0.0'],
+         operationActionSubscriber: [c: 'com.github.techery:OperationActionSubscriber:1.0.3'],
          collectionsQuery         : [c: 'com.innahema:collections-query:0.2.9'],
          weakHandler              : [c: 'com.badoo.mobile:android-weak-handler:1.1'],
          mappery                  : [c: 'com.github.techery:mappery:0.0.2'],
@@ -207,6 +219,7 @@ ext {
 
          junit                : [tc: 'junit:junit:4.12'],
          junitRunner          : [tc: 'org.junit.platform:junit-platform-runner:1.0.0-M4'],
+         junitRunnerJupiter   : [tc: 'org.junit.jupiter:junit-jupiter-api:5.0.0-M4'],
 
          robolectric          : [tc: "org.robolectric:robolectric:$roboelectricVersion"],
          robolectricMultidex  : [tc: "org.robolectric:shadows-multidex:$roboelectricVersion"],

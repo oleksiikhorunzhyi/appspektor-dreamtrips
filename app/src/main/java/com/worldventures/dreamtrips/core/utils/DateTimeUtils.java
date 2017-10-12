@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
@@ -43,13 +44,14 @@ public class DateTimeUtils {
    public static final String MEMBER_FORMAT = "MMM dd, hha";
 
    public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
-   public static final String FEED_DATE_FORMAT = "MMM d 'at' h:mma";
+   public static final String FEED_DATE_FORMAT = "MMM d, yyyy  h:mm a";
    public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
    public static final String ISO_FORMAT_WITH_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
    public static final String PODCAST_DATE_FORMAT = "MMM d, yyyy";
    public static final String TRIP_FILTER_ANALYTIC_DATE_FORMAT = "MM-dd-yyyy";
    public static final String REVIEWS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
    public static final String UTC = "UTC";
+   private static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
 
    private DateTimeUtils() {
    }
@@ -359,6 +361,21 @@ public class DateTimeUtils {
       } else {
          return res.getString(R.string.years_ago, (int) Math.floor(deltaMinutes / (60 * 24 * 365.25)));
       }
+   }
+
+   public static String getStringDateFromStringUTC(String utcString){
+      try {
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
+         utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
+         Date utcDate = utcFormatter.parse(utcString);
+
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(TRANSACTION_DATE_FORMAT);
+         dateFormatter.setTimeZone(TimeZone.getDefault());
+         return dateFormatter.format(utcDate);
+      } catch(ParseException parseException) {
+         parseException.printStackTrace();
+      }
+      return "";
    }
 
 }

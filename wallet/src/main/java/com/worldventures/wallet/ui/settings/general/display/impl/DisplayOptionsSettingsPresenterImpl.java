@@ -100,7 +100,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<SetHomeDisplayTypeAction>provideSaveDisplayTypeOperationView())
                   .onSuccess(command -> {
-                     if (mustSaveUserProfile && getView().getDisplayOptionsSource().isSettings()) {
+                     if (getView().getDisplayOptionsSource().isSettings()) {
                         goBack();
                      } else {
                         getNavigator().goBackToProfile();

@@ -153,7 +153,7 @@ public class NavigatorImpl implements Navigator {
             routerLazy.get().getBackstack().subList(0, routerLazy.get().getBackstackSize() - 2)
       );
       backstack.add(constructTransaction(new WalletSettingsProfileScreenImpl()));
-      routerLazy.get().setBackstack(backstack, new RevertHorizontalChangeHandler());
+      routerLazy.get().setBackstack(backstack, new HorizontalChangeHandler());
    }
 
    @Override

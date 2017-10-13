@@ -22,10 +22,7 @@ import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardAction
 import com.worldventures.dreamtrips.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.model.*
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
-import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor
-import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor
+import com.worldventures.dreamtrips.wallet.service.*
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand
@@ -145,7 +142,7 @@ class WizardInteractorSpec : BaseSpec({
 
       fun createWizardInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
 
-      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), TestSchedulerProvider())
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

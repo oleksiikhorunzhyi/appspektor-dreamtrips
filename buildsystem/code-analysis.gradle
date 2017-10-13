@@ -6,7 +6,7 @@ apply plugin: 'jacoco'
 check.dependsOn 'analizeCode'
 
 task analizeCode() {
-   dependsOn 'checkstyle'//, 'pmd', 'findbugs'
+   dependsOn 'checkstyle', 'pmd'//, 'findbugs'
 }
 
 checkstyle {
@@ -29,7 +29,7 @@ task checkstyle(type: Checkstyle) {
 }
 
 task pmd(type: Pmd) {
-   ignoreFailures = false
+   ignoreFailures = true
    ruleSetFiles = files("${project.rootDir}/quality/pmd/pmd-ruleset.xml")
    ruleSets = []
 

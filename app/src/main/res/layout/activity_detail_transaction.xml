@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/root_reviews_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_actionbar"
+            style="@style/ToolBarStyle"
+            ></android.support.v7.widget.Toolbar>
+
+      <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textColor="@color/merchant_landscape_title_color"
+            android:textSize="@dimen/font_large"
+            android:textStyle="normal"
+            android:visibility="gone"
+            />
+   </RelativeLayout>
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:background="@color/white"
+         android:gravity="center_horizontal"
+         android:orientation="vertical"
+         android:paddingBottom="30dp"
+         android:paddingLeft="50dp"
+         android:paddingRight="50dp"
+         android:paddingTop="30dp"
+         >
+
+      <TextView
+            android:id="@+id/textView26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Thank You!"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
+
+      <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="We hace acepted your payment."
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
+
+      <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="Please show this screen\nto your server."
+            android:textSize="16sp"
+            android:textStyle="bold"
+            />
+
+      <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:cardCornerRadius="4dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            >
+
+      <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="20dp"
+            >
+
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               >
+
+            <ImageView
+                  android:id="@+id/imageView3"
+                  android:layout_width="50dp"
+                  android:layout_height="50dp"
+                  app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
+                  />
+
+            <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:paddingLeft="10dp"
+                  >
+
+               <TextView
+                     android:id="@+id/textView15"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentStart="true"
+                     android:layout_alignParentTop="true"
+                     android:text="$14.75"
+                     android:textSize="26sp"
+                     android:textStyle="bold"
+                     />
+
+               <TextView
+                     android:id="@+id/textView25"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_alignParentStart="true"
+                     android:layout_alignParentTop="true"
+                     android:text="Total Amount Paid"
+                     android:textSize="14sp"
+                     />
+
+            </LinearLayout>
+
+         </LinearLayout>
+
+         <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="10dp"
+               >
+
+            <TextView
+                  android:id="@+id/textView24"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentStart="true"
+                  android:layout_alignParentTop="true"
+                  android:text="Tip Amount:"
+                  android:textSize="16sp"
+                  />
+
+            <TextView
+                  android:id="@+id/textView23"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  android:text="$3.00"
+                  android:textSize="16sp"
+                  />
+         </RelativeLayout>
+
+      </LinearLayout>
+
+      </android.support.v7.widget.CardView>
+
+      <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+         <TextView
+               android:id="@+id/textView28"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentEnd="true"
+               android:text="$9.75"
+               android:textSize="16sp"
+               />
+
+         <TextView
+               android:id="@+id/textView27"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_below="@+id/textView244"
+               android:layout_marginTop="10dp"
+               android:text="Tip Amount:"
+               android:textSize="16sp"
+               />
+
+         <TextView
+               android:id="@+id/textView244"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_alignParentTop="true"
+               android:text="Tip Amount:"
+               android:textSize="16sp"
+               />
+
+         <TextView
+               android:id="@+id/textView233"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentEnd="true"
+               android:layout_below="@+id/textView28"
+               android:layout_marginTop="10dp"
+               android:text="$2.00"
+               android:textSize="16sp"
+               />
+      </RelativeLayout>
+
+      <TextView
+            android:id="@+id/textView29"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="You have earned 2 points"
+            android:textStyle="bold"
+            />
+
+      <TextView
+            android:id="@+id/textView33"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="2017-Oct-10 13:21:26"
+            />
+
+      <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+         <TextView
+               android:id="@+id/textView31"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:layout_centerHorizontal="true"
+               android:layout_marginTop="20dp"
+               android:text="Review Merchant"
+               />
+
+         <TextView
+               android:id="@+id/textView32"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_above="@+id/textView31"
+               android:layout_centerHorizontal="true"
+               android:text="View your receipt"
+               />
+      </RelativeLayout>
+
+      <TextView
+            android:id="@+id/textView30"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            />
+
+
+   </LinearLayout>
+
+
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl>

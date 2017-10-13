@@ -63,9 +63,9 @@
                   android:text="20"
                   android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
                   android:layout_gravity="center_vertical"
-                  android:textColor="@color/transaction_color_points"
+                  android:textStyle="bold"
                   android:layout_marginLeft="@dimen/left_transaction_space"
-                  android:textStyle="bold"/>
+                  android:textColor="@color/earned_point_transaction"/>
 
             <ImageView
                   android:id="@+id/earned_points_icon"

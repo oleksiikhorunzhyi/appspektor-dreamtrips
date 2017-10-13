@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
@@ -25,7 +26,7 @@ public interface DtlReviewsScreen extends DtlScreen {
 
    void userHasPendingReview();
 
-   void setEventListener(OfferWithReviewView.IMyEventListener listener);
+   void setEventListener(ScrollEventListener listener);
 
    String getMerchantId();
 

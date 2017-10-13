@@ -10,18 +10,32 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.TransactionsAdapter;
+import com.worldventures.dreamtrips.modules.common.listener.PaginationScrollListener;
+import com.worldventures.dreamtrips.modules.common.listener.RecyclerClickListener;
+import com.worldventures.dreamtrips.modules.common.listener.RecyclerTouchListener;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.SearchableTransactionsAdapter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter.PageableTransactionAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import flow.Flow;
 
 public class TransactionView extends LinearLayout {
 
    private RecyclerView recyclerView;
-   private TransactionsAdapter transactionsAdapter;
-   private LinearLayoutManager layoutManager;
+   private SearchableTransactionsAdapter searchableTransactionsAdapter;
+   private PageableTransactionAdapter pageableTransactionAdapter;
    private Context context;
+   private boolean isLoading = false;
+   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private RecyclerView.OnItemTouchListener onItemTouchListener;
+   private RecyclerView.OnScrollListener scrollingListener;
+   private ScrollEventListener scrollEventListener;
 
    public TransactionView(Context context) {
       this(context, null);
@@ -37,78 +51,115 @@ public class TransactionView extends LinearLayout {
    private void init() {
       final View v = LayoutInflater.from(getContext()).inflate(R.layout.activity_transaction_list, this, true);
       recyclerView = (RecyclerView) v.findViewById(R.id.recycler_adapter);
-      layoutManager = new LinearLayoutManager(getContext());
-      recyclerView.setLayoutManager(layoutManager);
-      recyclerView.setHasFixedSize(true);
-
-      List<TransactionModel> transactionList = generateMockedTransactionList(); //Mocked data
-
-      transactionsAdapter = new TransactionsAdapter(context, transactionList);
-      recyclerView.setAdapter(transactionsAdapter);
+      initRecycler();
+      resetViewData();
    }
 
-   /** Only for mocking purposes **/
-   private  List<TransactionModel> generateMockedTransactionList(){
-
-      List<TransactionModel> tempTransactionList = new ArrayList<>();
-
-      TransactionModel transactionModel = new TransactionModel();
-      transactionModel.setMerchantName("Merchant 1");
-      transactionModel.setEarnedPoints("1");
-      transactionModel.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
-      transactionModel.setRewardStatus(true);
-      tempTransactionList.add(0, transactionModel);
-
-      TransactionModel transactionModel1 = new TransactionModel();
-      transactionModel1.setMerchantName("Merchant 2");
-      transactionModel1.setEarnedPoints("2");
-      transactionModel1.setTransactionDate("2017-09-12T14:00:00.000Z UTC");
-      transactionModel1.setRewardStatus(true);
-      tempTransactionList.add(1, transactionModel1);
-
-      TransactionModel transactionModel2 = new TransactionModel();
-      transactionModel2.setMerchantName("Merchant 3");
-      transactionModel2.setEarnedPoints("3");
-      transactionModel2.setTransactionDate("2017-09-11T22:30:00.000Z UTC");
-      transactionModel2.setRewardStatus(false);
-      tempTransactionList.add(2, transactionModel2);
-
-      TransactionModel transactionModel3 = new TransactionModel();
-      transactionModel3.setMerchantName("Merchant 4");
-      transactionModel3.setEarnedPoints("3");
-      transactionModel3.setTransactionDate("2017-09-07T16:30:00.000Z UTC");
-      transactionModel3.setRewardStatus(false);
-      tempTransactionList.add(3, transactionModel3);
-
-      TransactionModel transactionModel4 = new TransactionModel();
-      transactionModel4.setMerchantName("Merchant 5");
-      transactionModel4.setEarnedPoints("3");
-      transactionModel4.setTransactionDate("2017-9-12T14:22:14.000Z UTC");
-      transactionModel4.setRewardStatus(true);
-      tempTransactionList.add(4, transactionModel4);
-
-      TransactionModel transactionModel5 = new TransactionModel();
-      transactionModel5.setMerchantName("Merchant 6");
-      transactionModel5.setEarnedPoints("3");
-      transactionModel5.setTransactionDate("2017-09-12T14:00:00.000Z UTC");
-      transactionModel5.setRewardStatus(false);
-      tempTransactionList.add(5, transactionModel5);
-
-      TransactionModel transactionModel6 = new TransactionModel();
-      transactionModel6.setMerchantName("Merchant 7");
-      transactionModel6.setEarnedPoints("3");
-      transactionModel6.setTransactionDate("2017-09-11T22:30:00.000Z UTC");
-      transactionModel6.setRewardStatus(true);
-      tempTransactionList.add(6, transactionModel6);
-
-      TransactionModel transactionModel7 = new TransactionModel();
-      transactionModel7.setMerchantName("Merchant 8");
-      transactionModel7.setEarnedPoints("3");
-      transactionModel7.setTransactionDate("Whatever heather");
-      transactionModel7.setTransactionDate("2017-09-07T16:30:00.000Z UTC");
-      transactionModel7.setRewardStatus(false);
-      tempTransactionList.add(7, transactionModel7);
-
-      return tempTransactionList;
+   public void loadData(List<TransactionModel> transactions) {
+      loadPage(transactions);
    }
+
+   private void loadPage(List<TransactionModel> transactions) {
+      pageableTransactionAdapter.addItems(transactions);
+      isLoading = false;
+   }
+
+   public void resetViewData() {
+      pageableTransactionAdapter = new PageableTransactionAdapter(getContext());
+      recyclerView.setAdapter(pageableTransactionAdapter);
+   }
+
+   public void setAllTransactionsList(List<TransactionModel> transactions){
+      searchableTransactionsAdapter = new SearchableTransactionsAdapter(context, transactions);
+      setSearchableAdapter();
+   }
+
+   public void setSearchableAdapter(){
+      if(recyclerView.getAdapter()!=searchableTransactionsAdapter) recyclerView.setAdapter(searchableTransactionsAdapter);
+   }
+
+   public void setPageableAdapter(){
+      if(recyclerView.getAdapter()!=pageableTransactionAdapter) recyclerView.setAdapter(pageableTransactionAdapter);
+   }
+
+   public void filterByMerchantName(String searchString){
+      searchableTransactionsAdapter.getFilter().filter(searchString);
+   }
+
+   public void clearSearch(){
+      if(searchableTransactionsAdapter!=null && !searchableTransactionsAdapter.getAllItems().isEmpty()){
+            //add all results on pageable adapter
+            pageableTransactionAdapter.setTransactionsList(searchableTransactionsAdapter.getAllItems());
+      }
+      setPageableAdapter();
+   }
+
+   private void initRecycler() {
+      recyclerView.setLayoutManager(linearLayoutManager);
+      recyclerView.addItemDecoration(new MarginDecoration(getContext()));
+      recyclerView.setHasFixedSize(false);
+
+      onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
+            new RecyclerClickListener() {
+               @Override
+               public void onClick(View view, int position) {
+                  DtlTransactionPath path = new DtlTransactionPath(FlowUtil.currentMaster(getContext()));
+                  Flow.get(getContext()).set(path);
+               }
+
+               @Override
+               public void onLongClick(View view, int position) {
+               }
+            });
+      recyclerView.addOnItemTouchListener(onItemTouchListener);
+
+      scrollingListener = new PaginationScrollListener(linearLayoutManager) {
+         @Override
+         protected void loadMoreItems() {
+            showLoadingFooter(true);
+            isLoading = true;
+            getMoreTransactions();
+         }
+
+         @Override
+         public boolean isLoading() {
+            return isLoading;
+         }
+      };
+
+      recyclerView.addOnScrollListener(scrollingListener);
+
+   }
+
+   public boolean hasAllItems(){
+      return searchableTransactionsAdapter==null? false : !searchableTransactionsAdapter.getAllItems().isEmpty();
+   }
+
+   public boolean hasTransactions(){
+      return !pageableTransactionAdapter.getCurrentItems().isEmpty();
+   }
+
+   public void showLoadingFooter(boolean show) {
+      if (show)
+         pageableTransactionAdapter.addLoadingFooter();
+      else
+         pageableTransactionAdapter.removeLoadingFooter();
+   }
+
+   private void getMoreTransactions() {
+      int lastIndex = getNextItemValue();
+      recyclerView.postDelayed(new Runnable() {
+         @Override
+         public void run() {
+            if (scrollEventListener != null) scrollEventListener.onScrollBottomReached(lastIndex);
+         }
+      }, 1000);
+   }
+
+   private int getNextItemValue() { return pageableTransactionAdapter.isEmpty() ? 0 : pageableTransactionAdapter.getItemCount() - 1;}
+
+   public void setScrollEventListener(ScrollEventListener scrollEventListener) {
+      this.scrollEventListener = scrollEventListener;
+   }
+
 }

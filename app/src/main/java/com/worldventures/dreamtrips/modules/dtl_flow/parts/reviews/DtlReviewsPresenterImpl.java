@@ -7,6 +7,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -35,7 +36,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
 
-   OfferWithReviewView.IMyEventListener listener = new OfferWithReviewView.IMyEventListener() {
+   ScrollEventListener listener = new ScrollEventListener() {
       @Override
       public void onScrollBottomReached(int indexOf) {
          addMoreReviews(indexOf);

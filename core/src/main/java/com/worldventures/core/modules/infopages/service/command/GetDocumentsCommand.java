@@ -98,7 +98,7 @@ public class GetDocumentsCommand extends MappableApiActionCommand<GetDocumentsHt
    }
 
    private void clearCacheIfNeeded() {
-      if (refresh) cachedDocuments = null;
+      if (refresh) { cachedDocuments = null; }
    }
 
    protected int getPage() {
@@ -110,8 +110,8 @@ public class GetDocumentsCommand extends MappableApiActionCommand<GetDocumentsHt
 
    public List<Document> items() {
       List<Document> documents = new ArrayList<>();
-      if (cachedDocuments != null) documents.addAll(cachedDocuments);
-      if (getResult() != null) documents.addAll(getResult());
+      if (cachedDocuments != null) { documents.addAll(cachedDocuments); }
+      if (getResult() != null) { documents.addAll(getResult()); }
       return documents;
    }
 

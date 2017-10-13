@@ -56,7 +56,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Override
    protected <A> boolean onInterceptSend(ActionHolder<A> holder) {
       A action = holder.action();
-      if (action instanceof BaseHttpAction) prepareNewHttpAction((BaseHttpAction) action);
+      if (action instanceof BaseHttpAction) { prepareNewHttpAction((BaseHttpAction) action); }
 
       return false;
    }

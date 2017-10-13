@@ -10,7 +10,7 @@ public final class SoftInputUtil {
 
    /** Show soft keyboard explicitly */
    public static void showSoftInputMethod(View view) {
-      if (view == null) return;
+      if (view == null) { return; }
       //
       view.requestFocus();
       InputMethodManager inputManager = (InputMethodManager) view.getContext()
@@ -42,7 +42,7 @@ public final class SoftInputUtil {
 
    /** Hide soft keyboard if visible */
    public static void hideSoftInputMethod(View view) {
-      if (view == null) return;
+      if (view == null) { return; }
       //
       InputMethodManager inputManager = (InputMethodManager) view.getContext()
             .getSystemService(Context.INPUT_METHOD_SERVICE);

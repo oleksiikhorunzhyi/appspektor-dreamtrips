@@ -37,8 +37,8 @@ public class StatefulHorizontalPhotosView<T extends ImagePathHolder, D extends C
    }
 
    public void init(Injector injector) {
-      if (isInEditMode()) return;
-      if (imagesAdapter != null) return;
+      if (isInEditMode()) { return; }
+      if (imagesAdapter != null) { return; }
 
       imagesAdapter = new IgnoreFirstItemAdapter(getContext(), injector);
 
@@ -78,7 +78,7 @@ public class StatefulHorizontalPhotosView<T extends ImagePathHolder, D extends C
 
    public void removeItem(EntityStateHolder<T> photoStateHolder) {
       EntityStateHolder<T> item = findItem(photoStateHolder);
-      if (item != null) imagesAdapter.remove(item);
+      if (item != null) { imagesAdapter.remove(item); }
    }
 
    public EntityStateHolder findItem(EntityStateHolder<T> photoStateHolder) {

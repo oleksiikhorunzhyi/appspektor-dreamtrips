@@ -2,10 +2,10 @@ package com.worldventures.core.modules.video.service.command;
 
 
 import com.worldventures.core.R;
-import com.worldventures.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.api.member_videos.GetMemberVideoLocalesHttpAction;
 import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.dreamtrips.api.member_videos.GetMemberVideoLocalesHttpAction;
 
 import java.util.List;
 

@@ -62,7 +62,7 @@ public class ProjectTextUtils {
       String superLowerCase = superString.toLowerCase();
       String subLowerCase = subString.toLowerCase();
 
-      if (!superLowerCase.contains(subLowerCase)) return Integer.MAX_VALUE;
+      if (!superLowerCase.contains(subLowerCase)) { return Integer.MAX_VALUE; }
 
       return superLowerCase.indexOf(subLowerCase);
    }

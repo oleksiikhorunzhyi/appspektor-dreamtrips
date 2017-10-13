@@ -51,8 +51,8 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
    @Override
    public void onActivityStarted(Activity activity) {
       visibleActivityCount++;
-      if (!isSessionExist()) return;
-      if (visibleActivityCount != 1) return;
+      if (!isSessionExist()) { return; }
+      if (visibleActivityCount != 1) { return; }
 
       handler.post(() -> {
          for (OnStartStopAppListener listener : listeners) {
@@ -76,7 +76,7 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
       visibleActivityCount--;
 
       handler.postDelayed(() -> {
-         if (visibleActivityCount != 0) return;
+         if (visibleActivityCount != 0) { return; }
 
          for (OnStartStopAppListener listener : listeners) {
             listener.onStopApplication();

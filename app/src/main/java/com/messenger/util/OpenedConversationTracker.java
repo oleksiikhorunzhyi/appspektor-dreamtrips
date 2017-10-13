@@ -28,7 +28,7 @@ public class OpenedConversationTracker {
 
    public void addOpenedConversation(String conversationId) {
       Integer prevCount = openedConversationIds.get(conversationId);
-      if (prevCount == null) prevCount = 0;
+      if (prevCount == null) { prevCount = 0; }
       openedConversationIds.put(conversationId, prevCount + 1);
       //
       streamWriter.onNext(conversationId);

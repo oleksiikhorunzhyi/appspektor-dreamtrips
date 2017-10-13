@@ -46,20 +46,20 @@ public class AdobeTracker extends Tracker {
 
    @Override
    public void onCreate(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (checkNullAndWarn(activity)) { return; }
       Config.setDebugLogging(debugLogging);
       Config.setContext(activity.getApplicationContext());
    }
 
    @Override
    public void onResume(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (checkNullAndWarn(activity)) { return; }
       Config.collectLifecycleData(activity);
    }
 
    @Override
    public void onPause(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (checkNullAndWarn(activity)) { return; }
       Config.pauseCollectingLifecycleData();
    }
 
@@ -69,7 +69,7 @@ public class AdobeTracker extends Tracker {
       if (data != null) {
          contextData.putAll(data);
       }
-      if (getHeaderData() != null) contextData.putAll(getHeaderData());
+      if (getHeaderData() != null) { contextData.putAll(getHeaderData()); }
 
       String preparedViewState = prepareViewState(viewState);
 

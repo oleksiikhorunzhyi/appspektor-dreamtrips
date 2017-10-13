@@ -62,8 +62,7 @@ public class ToolbarPresenter {
    public void attachPathAttrs(PathAttrs pathAttrs) {
       initToolbar();
       //
-      if (pathAttrs.isDrawerEnabled()) enableDrawerNavigationButton();
-      else enableUpNavigationButton();
+      if (pathAttrs.isDrawerEnabled()) { enableDrawerNavigationButton(); } else { enableUpNavigationButton(); }
    }
 
    public void hideBackButtonInLandscape() {
@@ -81,14 +80,15 @@ public class ToolbarPresenter {
    }
 
    private void enableDrawerNavigationButton() {
-      if (context.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
+      if (context.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
          toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+      }
 
       toolbar.setNavigationOnClickListener(view -> openDrawer());
    }
 
    private void openDrawer() {
-      if (navigationDrawerPresenter != null) navigationDrawerPresenter.openDrawer();
+      if (navigationDrawerPresenter != null) { navigationDrawerPresenter.openDrawer(); }
    }
 
 }

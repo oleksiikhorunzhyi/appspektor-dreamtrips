@@ -132,8 +132,8 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, C
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       DataUser user = (DataUser) o;
 

@@ -69,14 +69,14 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
       mCursor = c;
       mDataValid = cursorPresent;
       mRowIDColumn = cursorPresent ? c.getColumnIndexOrThrow("_id") : -1;
-      if (mRowIDColumn != -1) setHasStableIds(true);
+      if (mRowIDColumn != -1) { setHasStableIds(true); }
 
       mChangeObserver = new ChangeObserver();
       mDataSetObserver = new MyDataSetObserver();
 
       if (cursorPresent) {
-         if (mChangeObserver != null) c.registerContentObserver(mChangeObserver);
-         if (mDataSetObserver != null) c.registerDataSetObserver(mDataSetObserver);
+         if (mChangeObserver != null) { c.registerContentObserver(mChangeObserver); }
+         if (mDataSetObserver != null) { c.registerDataSetObserver(mDataSetObserver); }
       }
    }
 
@@ -175,13 +175,13 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
       }
       Cursor oldCursor = mCursor;
       if (oldCursor != null) {
-         if (mChangeObserver != null) oldCursor.unregisterContentObserver(mChangeObserver);
-         if (mDataSetObserver != null) oldCursor.unregisterDataSetObserver(mDataSetObserver);
+         if (mChangeObserver != null) { oldCursor.unregisterContentObserver(mChangeObserver); }
+         if (mDataSetObserver != null) { oldCursor.unregisterDataSetObserver(mDataSetObserver); }
       }
       mCursor = newCursor;
       if (newCursor != null) {
-         if (mChangeObserver != null) newCursor.registerContentObserver(mChangeObserver);
-         if (mDataSetObserver != null) newCursor.registerDataSetObserver(mDataSetObserver);
+         if (mChangeObserver != null) { newCursor.registerContentObserver(mChangeObserver); }
+         if (mDataSetObserver != null) { newCursor.registerDataSetObserver(mDataSetObserver); }
          mRowIDColumn = newCursor.getColumnIndexOrThrow("_id");
          mDataValid = true;
          // notify the observers about the new cursor

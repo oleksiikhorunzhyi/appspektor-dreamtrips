@@ -1,12 +1,13 @@
 package com.worldventures.core.modules.picker.service;
+
 import com.worldventures.core.janet.SessionActionPipeCreator;
-import com.worldventures.core.modules.picker.command.MediaAttachmentPrepareCommand;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
 import com.worldventures.core.modules.picker.command.GetPhotosFromGalleryCommand;
-import com.worldventures.core.modules.picker.command.GetVideosFromGalleryCommand;
-import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.command.GetVideoDurationCommand;
+import com.worldventures.core.modules.picker.command.GetVideosFromGalleryCommand;
 import com.worldventures.core.modules.picker.command.ImageCapturedCommand;
+import com.worldventures.core.modules.picker.command.MediaAttachmentPrepareCommand;
 import com.worldventures.core.modules.picker.command.MediaCaptureCanceledCommand;
 import com.worldventures.core.modules.picker.command.VideoCapturedCommand;
 
@@ -35,7 +36,8 @@ public class MediaPickerInteractor {
       this.getMediaFromGalleryPipe = sessionActionPipeCreator.createPipe(GetMediaFromGalleryCommand.class, Schedulers.io());
       this.getVideoDurationPipe = sessionActionPipeCreator.createPipe(GetVideoDurationCommand.class, Schedulers.io());
       this.mediaCaptureCanceledPipe = sessionActionPipeCreator.createPipe(MediaCaptureCanceledCommand.class, Schedulers.io());
-      this.mediaAttachmentPreparePipe = sessionActionPipeCreator.createPipe(MediaAttachmentPrepareCommand.class, Schedulers.computation());
+      this.mediaAttachmentPreparePipe = sessionActionPipeCreator.createPipe(MediaAttachmentPrepareCommand.class, Schedulers
+            .computation());
    }
 
    public ActionPipe<ImageCapturedCommand> imageCapturedPipe() {

@@ -34,11 +34,11 @@ public class PermissionSubscriber extends Subscriber<PermissionsResult> {
    @Override
    public void onNext(PermissionsResult permissionsResult) {
       if (permissionsResult.shouldShowRequestPermissionRationale) {
-         if (permissionRationaleAction != null) permissionRationaleAction.call();
+         if (permissionRationaleAction != null) { permissionRationaleAction.call(); }
       } else if (PermissionUtils.verifyPermissions(permissionsResult.grantResults)) {
-         if (permissionGrantedAction != null) permissionGrantedAction.call();
+         if (permissionGrantedAction != null) { permissionGrantedAction.call(); }
       } else {
-         if (permissionDeniedAction != null) permissionDeniedAction.call();
+         if (permissionDeniedAction != null) { permissionDeniedAction.call(); }
       }
    }
 }

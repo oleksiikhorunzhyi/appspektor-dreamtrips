@@ -61,6 +61,6 @@ public class ConversationAnalyticsDelegate {
       boolean isTripChat = ConversationHelper.isTripChat(conversation);
       if (isTripChat) {
          return chatWithHost ? AnalyticsType.TRIP_CHAT_WITH_HOST : AnalyticsType.TRIP_CHAT;
-      } else return AnalyticsType.GROUP_CHAT;
+      } else { return AnalyticsType.GROUP_CHAT; }
    }
 }

@@ -89,7 +89,7 @@ public class DrawableUtil {
          return new Pair<>(fileImage, new Size(0, 0));
       } finally {
          try {
-            if (bitmap != null) bitmap.recycle();
+            if (bitmap != null) { bitmap.recycle(); }
             stream.flush();
             stream.close();
          } catch (Exception e) {

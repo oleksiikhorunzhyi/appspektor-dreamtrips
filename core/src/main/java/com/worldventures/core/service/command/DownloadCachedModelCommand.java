@@ -69,8 +69,8 @@ public class DownloadCachedModelCommand extends CachedEntityCommand implements I
    }
 
    private void onProgress(Command.CommandCallback<CachedModel> callback, int progress) {
-      if (progress == 0) progress = PROGRESS_START_MIN;
-      if (progress <= lastProgress) return;
+      if (progress == 0) { progress = PROGRESS_START_MIN; }
+      if (progress <= lastProgress) { return; }
       lastProgress = progress;
       cachedModel.setProgress(progress);
       db.saveDownloadMediaModel(cachedModel);
@@ -92,7 +92,7 @@ public class DownloadCachedModelCommand extends CachedEntityCommand implements I
 
    @Override
    protected void cancel() {
-      if (downloadFileCommand != null) downloadFileCommand.cancel();
+      if (downloadFileCommand != null) { downloadFileCommand.cancel(); }
       cachedModel.setProgress(0);
       db.saveDownloadMediaModel(cachedModel);
    }
@@ -104,12 +104,12 @@ public class DownloadCachedModelCommand extends CachedEntityCommand implements I
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       DownloadCachedModelCommand that = (DownloadCachedModelCommand) o;
 
-      if (cachedModel != null ? !cachedModel.equals(that.cachedModel) : that.cachedModel != null) return false;
+      if (cachedModel != null ? !cachedModel.equals(that.cachedModel) : that.cachedModel != null) { return false; }
       return file != null ? file.equals(that.file) : that.file == null;
    }
 

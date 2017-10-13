@@ -132,7 +132,7 @@ public class BaseArrayListAdapter<T> extends RecyclerView.Adapter<AbstractCell> 
    }
 
    public void remove(int location) {
-      if (items.size() > location) items.remove(location);
+      if (items.size() > location) { items.remove(location); }
    }
 
    public void remove(T item) {
@@ -171,7 +171,7 @@ public class BaseArrayListAdapter<T> extends RecyclerView.Adapter<AbstractCell> 
 
    public void updateItem(T changedItem) {
       Queryable.from(items).forEachR(item -> {
-         if (!item.equals(changedItem)) return;
+         if (!item.equals(changedItem)) { return; }
          int position = items.indexOf(item);
          items.set(position, changedItem);
          notifyItemChanged(position);

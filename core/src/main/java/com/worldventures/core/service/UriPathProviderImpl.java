@@ -56,14 +56,14 @@ public class UriPathProviderImpl implements UriPathProvider {
          Cursor cursor = null;
          try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if (cursor == null) return null;
+            if (cursor == null) { return null; }
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             if (cursor.moveToFirst()) {
                return cursor.getString(columnIndex);
             }
          } catch (Exception ignored) {
          } finally {
-            if (cursor != null) cursor.close();
+            if (cursor != null) { cursor.close(); }
          }
       } else if ("file".equalsIgnoreCase(uri.getScheme())) {
          return uri.getPath();

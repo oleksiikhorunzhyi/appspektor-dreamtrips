@@ -24,9 +24,9 @@ public class CachedEntityDelegate {
             .observe()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DownloadCachedModelCommand>()
-               .onStart(startedCommand -> downloadFileCommandList.add(startedCommand))
-               .onSuccess(successCommand -> downloadFileCommandList.remove(successCommand))
-               .onFail((failedCommand, throwable) -> downloadFileCommandList.remove(failedCommand)));
+                  .onStart(startedCommand -> downloadFileCommandList.add(startedCommand))
+                  .onSuccess(successCommand -> downloadFileCommandList.remove(successCommand))
+                  .onFail((failedCommand, throwable) -> downloadFileCommandList.remove(failedCommand)));
    }
 
    public void cancelCaching(CachedModel cachedModel, String path) {

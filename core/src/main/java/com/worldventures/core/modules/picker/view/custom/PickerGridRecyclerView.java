@@ -26,7 +26,7 @@ public class PickerGridRecyclerView extends RecyclerView {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      if (isInEditMode()) return;
+      if (isInEditMode()) { return; }
    }
 
    @Override

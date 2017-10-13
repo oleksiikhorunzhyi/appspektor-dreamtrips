@@ -62,7 +62,7 @@ public class MessagesPaginationDelegate {
    }
 
    public void loadNextPage() {
-      if (!hasMoreElements || loading.get()) return;
+      if (!hasMoreElements || loading.get()) { return; }
 
       loading.set(true);
 
@@ -126,7 +126,7 @@ public class MessagesPaginationDelegate {
    }
 
    private void handleConnectionState(SyncStatus state) {
-      if (state == SyncStatus.CONNECTED && page == 0) loadNextPage();
+      if (state == SyncStatus.CONNECTED && page == 0) { loadNextPage(); }
    }
 
    public boolean hasMoreElements() {

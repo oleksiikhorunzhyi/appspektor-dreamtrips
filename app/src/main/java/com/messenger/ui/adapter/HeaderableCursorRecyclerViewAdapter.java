@@ -51,7 +51,7 @@ public abstract class HeaderableCursorRecyclerViewAdapter<VH extends RecyclerVie
    @Override
    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int i) {
       int headerCount = getHeaderViewCount();
-      if (i > headerCount - 1) super.onBindViewHolder(holder, i - headerCount);
+      if (i > headerCount - 1) { super.onBindViewHolder(holder, i - headerCount); }
    }
 
    @Override

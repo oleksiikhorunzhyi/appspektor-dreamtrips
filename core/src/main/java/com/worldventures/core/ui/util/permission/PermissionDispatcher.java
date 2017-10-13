@@ -44,7 +44,7 @@ public class PermissionDispatcher {
     */
    public Observable<PermissionsResult> requestPermission(String[] permissions, boolean shouldShowRequestRationale) {
       Activity activity = activityReference.get();
-      if (activity == null) return Observable.empty();
+      if (activity == null) { return Observable.empty(); }
 
       // Use 2 lower bytes, this ensures the uniqueness.
       int requestCode = (char) System.currentTimeMillis();

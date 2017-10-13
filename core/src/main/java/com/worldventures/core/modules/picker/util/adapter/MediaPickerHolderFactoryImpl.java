@@ -12,17 +12,17 @@ import com.worldventures.core.databinding.PickerAdapterItemPhotoFacebookBinding;
 import com.worldventures.core.databinding.PickerAdapterItemPhotoGalleryBinding;
 import com.worldventures.core.databinding.PickerAdapterItemStaticBinding;
 import com.worldventures.core.databinding.PickerAdapterItemVideoGalleryBinding;
-import com.worldventures.core.modules.picker.viewmodel.FacebookAlbumPickerViewModel;
-import com.worldventures.core.modules.picker.viewmodel.FacebookPhotoPickerViewModel;
-import com.worldventures.core.modules.picker.viewmodel.GalleryPhotoPickerViewModel;
-import com.worldventures.core.modules.picker.viewmodel.GalleryVideoPickerViewModel;
-import com.worldventures.core.modules.picker.viewmodel.IrregularPhotoPickerViewModel;
 import com.worldventures.core.modules.picker.util.adapter.holder.BaseMediaPickerHolder;
 import com.worldventures.core.modules.picker.util.adapter.holder.FacebookAlbumPickerHolder;
 import com.worldventures.core.modules.picker.util.adapter.holder.FacebookPhotoPickerHolder;
 import com.worldventures.core.modules.picker.util.adapter.holder.GalleryPhotoHolder;
 import com.worldventures.core.modules.picker.util.adapter.holder.GalleryVideoHolder;
 import com.worldventures.core.modules.picker.util.adapter.holder.IrregularPhotoHolder;
+import com.worldventures.core.modules.picker.viewmodel.FacebookAlbumPickerViewModel;
+import com.worldventures.core.modules.picker.viewmodel.FacebookPhotoPickerViewModel;
+import com.worldventures.core.modules.picker.viewmodel.GalleryPhotoPickerViewModel;
+import com.worldventures.core.modules.picker.viewmodel.GalleryVideoPickerViewModel;
+import com.worldventures.core.modules.picker.viewmodel.IrregularPhotoPickerViewModel;
 
 public class MediaPickerHolderFactoryImpl implements MediaPickerHolderFactory {
    @Override

@@ -119,7 +119,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
       @Override
       public void onStopApplication() {
-         if (getView() != null) getView().invalidateAllSwipedLayouts();
+         if (getView() != null) { getView().invalidateAllSwipedLayouts(); }
       }
    };
 

@@ -35,7 +35,7 @@ class UserDataFetcher {
    }
 
    public Observable<List<DataUser>> fetchUserData(List<MessengerUser> messengerUsers) {
-      if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
+      if (messengerUsers.isEmpty()) { return Observable.just(Collections.emptyList()); }
 
       List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
 
@@ -85,9 +85,9 @@ class UserDataFetcher {
    }
 
    private boolean hasHostBadge(@Nullable List<String> badges) {
-      if (badges == null || badges.isEmpty()) return false;
+      if (badges == null || badges.isEmpty()) { return false; }
       for (String badge : badges) {
-         if (TextUtils.equals(badge, HOST_BADGE)) return true;
+         if (TextUtils.equals(badge, HOST_BADGE)) { return true; }
       }
       return false;
    }

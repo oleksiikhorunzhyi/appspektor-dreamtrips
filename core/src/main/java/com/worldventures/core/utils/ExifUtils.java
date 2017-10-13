@@ -49,7 +49,7 @@ public final class ExifUtils {
 
       for (String attribute : attributes) {
          String value = oldExif.getAttribute(attribute);
-         if (value != null) newExif.setAttribute(attribute, value);
+         if (value != null) { newExif.setAttribute(attribute, value); }
       }
 
       Queryable.from(customParams).forEachR(arg -> newExif.setAttribute(arg.first, arg.second));

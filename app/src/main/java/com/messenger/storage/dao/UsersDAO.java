@@ -27,13 +27,13 @@ public class UsersDAO extends BaseDAO {
    }
 
    public Observable<List<DataUser>> getUsersByIds(List<String> ids) {
-      if (ids == null || ids.isEmpty()) return Observable.from(Collections.emptyList());
+      if (ids == null || ids.isEmpty()) { return Observable.from(Collections.emptyList()); }
 
       return query(obtainUsersByIdsQuery(ids, "*"), DataUser.CONTENT_URI).compose(DaoTransformers.toEntityList(DataUser.class));
    }
 
    public Observable<List<String>> getExitingUserByIds(List<String> ids) {
-      if (ids == null || ids.isEmpty()) return Observable.from(Collections.emptyList());
+      if (ids == null || ids.isEmpty()) { return Observable.from(Collections.emptyList()); }
 
       return query(obtainUsersByIdsQuery(ids, DataUser$Table._ID), DataUser.CONTENT_URI).compose(DaoTransformers.toUserId());
    }

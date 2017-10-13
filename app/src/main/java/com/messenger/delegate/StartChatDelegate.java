@@ -12,8 +12,8 @@ import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.core.model.User;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +39,7 @@ public class StartChatDelegate {
    }
 
    public void startSingleChat(User user, @NotNull Action1<DataConversation> crossingAction) {
-      if (user.getUsername() == null) return;
+      if (user.getUsername() == null) { return; }
 
       usersDAO.getUserById(user.getUsername())
             .first()
@@ -72,7 +72,7 @@ public class StartChatDelegate {
 
    private Observable<DataConversation> startSingleChatObservable(DataUser participant) {
       DataConversation conversation = createConversationHelper.getExistingSingleConversation(participant.getId());
-      if (conversation != null) return Observable.just(conversation);
+      if (conversation != null) { return Observable.just(conversation); }
 
       return createConversationHelper.createNewConversation(Collections.singletonList(participant), "")
             .doOnNext(dataConversation -> {

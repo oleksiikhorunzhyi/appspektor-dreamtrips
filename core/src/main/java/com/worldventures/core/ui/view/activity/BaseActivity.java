@@ -126,7 +126,7 @@ public abstract class BaseActivity extends InjectingActivity {
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (pickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
+      if (pickerFacebookService.onActivityResult(requestCode, resultCode, data)) { return; }
       pickImageDelegate.onActivityResult(requestCode, resultCode, data);
       super.onActivityResult(requestCode, resultCode, data);
    }

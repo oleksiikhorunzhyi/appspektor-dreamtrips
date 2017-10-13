@@ -83,7 +83,7 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
 
    private void saveSettings(Session session) {
       List<Setting> settings = session.getSettings();
-      if (settings == null) settings = new ArrayList<>();
+      if (settings == null) { settings = new ArrayList<>(); }
       settingsStorage.saveSettings(settings, true);
    }
 

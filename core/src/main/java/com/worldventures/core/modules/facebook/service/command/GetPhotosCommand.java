@@ -61,7 +61,7 @@ public class GetPhotosCommand extends CommandWithError<List<FacebookPhoto>> impl
          }
       }
       graphResponse = graphRequest.executeAndWait();
-      callback.onSuccess(facebookHelper.processList(graphResponse, new TypeToken<List<FacebookPhoto>>(){}));
+      callback.onSuccess(facebookHelper.processList(graphResponse, new TypeToken<List<FacebookPhoto>>() {}));
    }
 
    private String getRoute() {

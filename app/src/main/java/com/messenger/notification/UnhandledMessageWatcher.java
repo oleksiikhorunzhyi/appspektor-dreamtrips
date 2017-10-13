@@ -50,7 +50,7 @@ public class UnhandledMessageWatcher {
    }
 
    public void start(Activity activity) {
-      if (currentActivity == activity) return;
+      if (currentActivity == activity) { return; }
       this.currentActivity = activity;
       subscribeToMessagesUpdates();
    }

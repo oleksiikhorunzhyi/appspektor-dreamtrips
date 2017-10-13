@@ -32,8 +32,7 @@ public class HttpErrorHandlingUtil {
       }
       if (action instanceof ServiceLabel && exception instanceof HttpServiceException) {
          String errorReason = errorParser.parseReason((ServiceLabel) action);
-         if (TextUtils.isEmpty(errorReason)) return fallbackMessage;
-         else return errorReason;
+         if (TextUtils.isEmpty(errorReason)) { return fallbackMessage; } else { return errorReason; }
       }
       if (exception.getCause() != null) {
          return handleJanetHttpError(action, exception.getCause(), fallbackMessage, noConnectionMessage);
@@ -63,7 +62,7 @@ public class HttpErrorHandlingUtil {
    }
 
    public static String obtainHttpErrorMessage(Throwable exception) {
-      if (!isHttpExceptionWithPath(exception)) return null;
+      if (!isHttpExceptionWithPath(exception)) { return null; }
 
       HttpException httpException = (HttpException) exception.getCause();
       return httpException.getCause() != null ? httpException.getCause().getMessage()
@@ -71,7 +70,7 @@ public class HttpErrorHandlingUtil {
    }
 
    public static String obtainHttpErrorPath(Throwable exception) {
-      if (!isHttpExceptionWithPath(exception)) return null;
+      if (!isHttpExceptionWithPath(exception)) { return null; }
 
       String url = ((HttpException) exception.getCause()).getRequest().getUrl();
       return Uri.parse(url).getPath();

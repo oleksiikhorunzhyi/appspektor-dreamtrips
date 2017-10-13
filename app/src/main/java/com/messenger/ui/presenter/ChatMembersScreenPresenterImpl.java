@@ -165,7 +165,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
    }
 
    protected void addListItems(List<Object> items) {
-      if (getView() == null) return;
+      if (getView() == null) { return; }
       getViewState().setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
       getView().setAdapterItems(items);
       getView().showContent();
@@ -174,8 +174,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
    @SuppressWarnings("all")
    protected void setConversationNameInputFieldVisible(boolean show) {
       ChatMembersScreen view = getView();
-      if (show) view.slideInConversationNameEditText();
-      else view.slideOutConversationNameEditText();
+      if (show) { view.slideInConversationNameEditText(); } else { view.slideOutConversationNameEditText(); }
    }
 
    @Override

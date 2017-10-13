@@ -28,7 +28,7 @@ public class DaggerActionServiceWrapper extends ActionServiceWrapper {
    @Override
    protected <A> boolean onInterceptSend(ActionHolder<A> holder) {
       A action = holder.action();
-      if (!(action instanceof InjectableAction)) return false;
+      if (!(action instanceof InjectableAction)) { return false; }
       try {
          injector.inject(action);
       } catch (Throwable throwable) {

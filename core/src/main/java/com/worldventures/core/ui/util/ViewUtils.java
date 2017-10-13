@@ -164,8 +164,9 @@ public final class ViewUtils {
    }
 
    public static void setCompatDrawable(View view, @DrawableRes int resId) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) view.setBackgroundResource(resId);
-      else view.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), resId));
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) { view.setBackgroundResource(resId); } else {
+         view.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), resId));
+      }
    }
 
    public static void setTextColor(@NonNull Button view, @ColorRes int color) {
@@ -176,12 +177,12 @@ public final class ViewUtils {
       if (!android.text.TextUtils.isEmpty(text)) {
          setViewVisibility(textView, View.VISIBLE);
          textView.setText(text);
-      } else setViewVisibility(textView, View.GONE);
+      } else { setViewVisibility(textView, View.GONE); }
    }
 
    public static void setViewVisibility(View view, int visibility) {
       Preconditions.checkNotNull(view, "view is null");
-      if (view.getVisibility() != visibility) view.setVisibility(visibility);
+      if (view.getVisibility() != visibility) { view.setVisibility(visibility); }
    }
 
    public static void setViewVisibility(int visibility, View... views) {

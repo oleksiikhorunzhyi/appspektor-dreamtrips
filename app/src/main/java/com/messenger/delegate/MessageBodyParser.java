@@ -30,7 +30,7 @@ public class MessageBodyParser {
 
       try {
          messageBody = gson.fromJson(messageBodyJson, MessageBody.class);
-         if (!validateMessageBody(messageBody)) messageBody = UNSUPPORTED_MESSAGE_BODY;
+         if (!validateMessageBody(messageBody)) { messageBody = UNSUPPORTED_MESSAGE_BODY; }
       } catch (JsonSyntaxException syntaxException) {
          Timber.e(syntaxException, "Fail to parse message body");
          messageBody = UNSUPPORTED_MESSAGE_BODY;
@@ -45,7 +45,7 @@ public class MessageBodyParser {
          return false;
       } else if (attachments != null && !attachments.isEmpty()) {
          for (AttachmentHolder attachment : attachments) {
-            if (attachment == null) return false;
+            if (attachment == null) { return false; }
          }
       }
       return true;

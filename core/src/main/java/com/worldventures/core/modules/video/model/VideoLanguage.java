@@ -1,7 +1,6 @@
 package com.worldventures.core.modules.video.model;
 
 
-
 import com.worldventures.core.model.Filterable;
 
 import java.io.Serializable;

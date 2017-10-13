@@ -49,7 +49,8 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private void logoutComplete(CommandCallback<Void> callback) {
-      analyticsInteractor.analyticsActionPipe().send(new com.worldventures.core.modules.auth.service.analytics.LogoutAction());
+      analyticsInteractor.analyticsActionPipe()
+            .send(new com.worldventures.core.modules.auth.service.analytics.LogoutAction());
       callback.onSuccess(null);
    }
 

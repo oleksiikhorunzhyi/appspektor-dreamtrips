@@ -45,7 +45,7 @@ public class GetMediaFromGalleryCommand extends Command<List<MediaPickerModel>> 
    }
 
    private Observable<List<MediaPickerModelImpl>> getVideosObservable() {
-      if (!queryVideos) return Observable.just(new ArrayList<>());
+      if (!queryVideos) { return Observable.just(new ArrayList<>()); }
       return mediaPickerInteractor.getVideosFromGalleryPipe()
             .createObservableResult(new GetVideosFromGalleryCommand(count))
             .map(getVideosFromGalleryCommand -> new ArrayList<MediaPickerModelImpl>(getVideosFromGalleryCommand.getResult()));
@@ -61,7 +61,7 @@ public class GetMediaFromGalleryCommand extends Command<List<MediaPickerModel>> 
    }
 
    private int compareDatesDescending(long date1, long date2) {
-      if (date1 == date2) return 0;
+      if (date1 == date2) { return 0; }
       return date1 < date2 ? 1 : -1;
    }
 }

@@ -131,7 +131,7 @@ public class AnalyticsService extends ActionService {
       Field[] declaredFields = actionClass.getDeclaredFields();
       for (Field field : declaredFields) {
          FieldAttribute fieldAttribute = getFieldAttribute(field, actionHolder.action());
-         if (fieldAttribute != null) result.add(fieldAttribute);
+         if (fieldAttribute != null) { result.add(fieldAttribute); }
          result.addAll(getFieldAttributeList(field, actionHolder.action()));
       }
       if (actionClass.getSuperclass() != null) {
@@ -149,8 +149,7 @@ public class AnalyticsService extends ActionService {
          if (value != null) {
             String stringValue = String.valueOf(value);
             //skip empty values
-            if (!TextUtils.isEmpty(stringValue))
-               return new FieldAttribute(annotation.value(), stringValue);
+            if (!TextUtils.isEmpty(stringValue)) { return new FieldAttribute(annotation.value(), stringValue); }
          }
       }
       return null;
@@ -171,7 +170,7 @@ public class AnalyticsService extends ActionService {
    }
 
    private void tryLogEvent(@NonNull String type, String category, String action, Map<String, Object> data) {
-      if (!analyticsLogEnabled) return;
+      if (!analyticsLogEnabled) { return; }
       //
       StringBuilder stringBuilder = new StringBuilder("Analytic event sending attempted:\n");
       //

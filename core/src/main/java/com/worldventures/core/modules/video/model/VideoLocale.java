@@ -38,12 +38,12 @@ public class VideoLocale implements Serializable, Filterable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       VideoLocale that = (VideoLocale) o;
 
-      if (title != null ? !title.equals(that.title) : that.title != null) return false;
+      if (title != null ? !title.equals(that.title) : that.title != null) { return false; }
       return !(country != null ? !country.equals(that.country) : that.country != null);
    }
 

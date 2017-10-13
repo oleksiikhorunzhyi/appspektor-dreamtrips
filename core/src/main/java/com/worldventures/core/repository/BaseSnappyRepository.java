@@ -43,13 +43,12 @@ public abstract class BaseSnappyRepository {
             snappyDb = openDbInstance(context);
             action.call(snappyDb);
          } catch (SnappydbException e) {
-            if (isNotFound(e)) Timber.v("Nothing found");
-            else Timber.w(e, "DB fails to act");
+            if (isNotFound(e)) { Timber.v("Nothing found"); } else { Timber.w(e, "DB fails to act"); }
          } catch (NullPointerException e) {
             Timber.v(e, "Snappy instance is null");
          } finally {
             try {
-               if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
+               if (snappyDb != null && snappyDb.isOpen()) { snappyDb.close(); }
             } catch (SnappydbException e) {
                Timber.w(e, "DB fails to close");
             }
@@ -66,15 +65,14 @@ public abstract class BaseSnappyRepository {
             Timber.v("DB action result: %s", result);
             return result;
          } catch (SnappydbException e) {
-            if (isNotFound(e)) Timber.v("Nothing found");
-            else Timber.w(e, "DB fails to act with result");
+            if (isNotFound(e)) { Timber.v("Nothing found"); } else { Timber.w(e, "DB fails to act with result"); }
             return null;
          } catch (NullPointerException e) {
             Timber.v(e, "Snappy instance is null");
             return null;
          } finally {
             try {
-               if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
+               if (snappyDb != null && snappyDb.isOpen()) { snappyDb.close(); }
             } catch (SnappydbException e) {
                Timber.w(e, "DB fails to close");
             }

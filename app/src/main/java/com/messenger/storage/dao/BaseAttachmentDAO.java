@@ -26,13 +26,13 @@ public abstract class BaseAttachmentDAO<E extends BaseProviderModel> extends Bas
    }
 
    public void save(@Nullable List<E> attachments) {
-      if (attachments == null || attachments.isEmpty()) return;
+      if (attachments == null || attachments.isEmpty()) { return; }
 
       bulkInsert(attachments, getModelAdapter(), getModelTableUri());
    }
 
    public void save(@Nullable E attachment) {
-      if (attachment == null) return;
+      if (attachment == null) { return; }
       // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
       save(Collections.singletonList(attachment));
    }

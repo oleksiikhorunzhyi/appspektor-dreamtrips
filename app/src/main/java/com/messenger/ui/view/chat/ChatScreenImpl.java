@@ -125,7 +125,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
       recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
          @Override
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (adapter == null || adapter.getCursor() == null) return;
+            if (adapter == null || adapter.getCursor() == null) { return; }
 
             int headersCount = adapter.getHeaderViewCount();
             int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
@@ -133,7 +133,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             int totalItem = linearLayoutManager.getItemCount();
             onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem - headersCount);
 
-            if (dy > 0) return;
+            if (dy > 0) { return; }
 
             if (firstVisibleItem <= THRESHOLD + headersCount && totalItem > headersCount) {
                getPresenter().onNextPageReached();
@@ -252,7 +252,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
    private void onLastVisibleMessageChanged(Cursor cursor, int position) {
       DataMessage message = cursor.isClosed() || !cursor.moveToPosition(position) ? null : MessageDAO.fromCursor(cursor, false);
-      if (message != null) lastVisibleItemStream.onNext(message);
+      if (message != null) { lastVisibleItemStream.onNext(message); }
    }
 
 
@@ -298,7 +298,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
    @Override
    public void dismissProgressDialog() {
-      if (progressDialog != null) progressDialog.dismiss();
+      if (progressDialog != null) { progressDialog.dismiss(); }
    }
 
    @Override
@@ -308,7 +308,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
    @Override
    public void setShowMarkUnreadMessage(boolean needShow) {
-      if (adapter != null) adapter.setNeedMarkUnreadMessages(needShow);
+      if (adapter != null) { adapter.setNeedMarkUnreadMessages(needShow); }
    }
 
    @Override

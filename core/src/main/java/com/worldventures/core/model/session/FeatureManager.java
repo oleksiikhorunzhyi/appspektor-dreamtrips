@@ -31,9 +31,9 @@ public class FeatureManager {
 
    public void with(@Feature.FeatureName String name, OnFeatureAvailable onAvailable, OnFeatureMissing onMissing) {
       if (available(name)) {
-         if (onAvailable != null) onAvailable.onAvailable();
+         if (onAvailable != null) { onAvailable.onAvailable(); }
       } else {
-         if (onMissing != null) onMissing.onMissing();
+         if (onMissing != null) { onMissing.onMissing(); }
       }
    }
 

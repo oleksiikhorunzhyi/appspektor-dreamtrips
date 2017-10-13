@@ -84,7 +84,8 @@ public class ChatMessagesEventDelegate {
             .doOnNext(messageDAO::deleteMessageByIds)
             .subscribeOn(Schedulers.io())
             .publish();
-      observable.subscribe(deletedMessageIds -> { }, e -> Timber.e(e, "Something went wrong while messages were deleting"));
+      observable.subscribe(deletedMessageIds -> {
+      }, e -> Timber.e(e, "Something went wrong while messages were deleting"));
       observable.connect();
       return observable;
    }

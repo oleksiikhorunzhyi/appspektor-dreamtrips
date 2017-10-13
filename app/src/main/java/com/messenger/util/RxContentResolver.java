@@ -48,7 +48,7 @@ public class RxContentResolver {
          }
          subscriber.onNext(null);
       }).doOnUnsubscribe(() -> {
-         if (contentObserver[0] != null) unsubscribeFromContentUpdates(contentObserver[0]);
+         if (contentObserver[0] != null) { unsubscribeFromContentUpdates(contentObserver[0]); }
       }).onBackpressureLatest().flatMap(aVoid -> fetchCursor(query));
    }
 
@@ -108,20 +108,20 @@ public class RxContentResolver {
 
       @Override
       public boolean equals(Object o) {
-         if (this == o) return true;
-         if (o == null || getClass() != o.getClass()) return false;
+         if (this == o) { return true; }
+         if (o == null || getClass() != o.getClass()) { return false; }
 
          Query query = (Query) o;
 
-         if (!Arrays.equals(projection, query.projection)) return false;
+         if (!Arrays.equals(projection, query.projection)) { return false; }
          if (selection != null ? !selection.equals(query.selection) : query.selection != null) {
             return false;
          }
-         if (!Arrays.equals(selectionArgs, query.selectionArgs)) return false;
+         if (!Arrays.equals(selectionArgs, query.selectionArgs)) { return false; }
          if (sortOrder != null ? !sortOrder.equals(query.sortOrder) : query.sortOrder != null) {
             return false;
          }
-         if (uri != null ? !uri.equals(query.uri) : query.uri != null) return false;
+         if (uri != null ? !uri.equals(query.uri) : query.uri != null) { return false; }
 
          return true;
       }

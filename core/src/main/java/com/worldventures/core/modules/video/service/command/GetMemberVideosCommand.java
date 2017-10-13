@@ -57,7 +57,7 @@ public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>
    }
 
    public static GetMemberVideosCommand forRepVideos(com.worldventures.core.modules.video.model.VideoLanguage videoLanguage) {
-      if (videoLanguage == null) return new GetMemberVideosCommand(VideoType.DTAPPREP);
+      if (videoLanguage == null) { return new GetMemberVideosCommand(VideoType.DTAPPREP); }
       return new GetMemberVideosCommand(VideoType.DTAPPREP, ImmutableVideoLanguage.builder()
             .title(videoLanguage.getTitle())
             .localeName(videoLanguage.getLocaleName())
@@ -69,7 +69,7 @@ public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>
    }
 
    public static GetMemberVideosCommand forHelpVideos(com.worldventures.core.modules.video.model.VideoLanguage videoLanguage) {
-      if (videoLanguage == null) return new GetMemberVideosCommand(VideoType.DT_APP_HELP_GENERAL);
+      if (videoLanguage == null) { return new GetMemberVideosCommand(VideoType.DT_APP_HELP_GENERAL); }
       return new GetMemberVideosCommand(VideoType.DT_APP_HELP_GENERAL, ImmutableVideoLanguage.builder()
             .title(videoLanguage.getTitle())
             .localeName(videoLanguage.getLocaleName())
@@ -77,7 +77,7 @@ public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>
    }
 
    public static GetMemberVideosCommand forHelpSmartCardVideos(com.worldventures.core.modules.video.model.VideoLanguage videoLanguage) {
-      if (videoLanguage == null) return new GetMemberVideosCommand(VideoType.DTAPPHELPSMARTCARD);
+      if (videoLanguage == null) { return new GetMemberVideosCommand(VideoType.DTAPPHELPSMARTCARD); }
       return new GetMemberVideosCommand(VideoType.DTAPPHELPSMARTCARD, ImmutableVideoLanguage.builder()
             .title(videoLanguage.getTitle())
             .localeName(videoLanguage.getLocaleName())

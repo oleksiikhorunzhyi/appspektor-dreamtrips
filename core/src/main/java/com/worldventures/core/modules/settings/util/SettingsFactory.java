@@ -1,8 +1,8 @@
 package com.worldventures.core.modules.settings.util;
 
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.model.FlagSetting;
 import com.worldventures.core.modules.settings.model.SelectSetting;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.model.SettingsGroup;
 
 import java.util.ArrayList;

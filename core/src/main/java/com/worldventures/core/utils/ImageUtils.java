@@ -106,11 +106,11 @@ public class ImageUtils {
    }
 
    public static String getImageExtensionFromPath(String path) {
-      if (path == null) return "";
+      if (path == null) { return ""; }
       //
       int index = path.lastIndexOf(".");
       //
-      if (index < 0) return "";
+      if (index < 0) { return ""; }
       return path.substring(index);
    }
 

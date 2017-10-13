@@ -145,9 +145,9 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
       if (filters.get(IncomingMessageFilterType.ALL) != null) {
          packetFilters.addAll(filters.get(IncomingMessageFilterType.ALL));
       }
-      if (filters.get(type) != null) packetFilters.addAll(filters.get(type));
+      if (filters.get(type) != null) { packetFilters.addAll(filters.get(type)); }
 
-      if (packetFilters.isEmpty()) return Observable.just(packet);
+      if (packetFilters.isEmpty()) { return Observable.just(packet); }
       return Observable.from(packetFilters).flatMap(filter -> filter.skipPacket(packet))
             // provide default accumulated value value of false for reduce()
             .reduce(false, (accumulatedValue, accumulatingValue) -> accumulatedValue || accumulatingValue)
@@ -156,7 +156,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
    }
 
    private void filterAndInterceptIncomingMessage(Stanza packet) {
-      if (!facade.isActive()) return;
+      if (!facade.isActive()) { return; }
       filterIncomingStanzaWithType(IncomingMessageFilterType.MESSAGE, packet).subscribe(this::interceptIncomingMessage, e -> Timber
             .e(e, "Filters -- Error during filtering message"));
    }
@@ -238,7 +238,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
    private void interceptIncomingPresence(Stanza stanza) {
       Presence presence = (Presence) stanza;
       Type presenceType = presence.getType();
-      if (presenceType == null) return;
+      if (presenceType == null) { return; }
 
       String fromJid = stanza.getFrom();
       boolean processed = processGroupChatParticipantsActions(presence, fromJid);
@@ -258,7 +258,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
    private boolean processGroupChatParticipantsActions(Presence presence, String fromJid) {
       MUCUser mucUser = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
-      if (mucUser == null || !JidCreatorHelper.isGroupJid(fromJid)) return false;
+      if (mucUser == null || !JidCreatorHelper.isGroupJid(fromJid)) { return false; }
       //
       String conversationId = JidCreatorHelper.obtainId(fromJid);
       MUCItem item = mucUser.getItem();

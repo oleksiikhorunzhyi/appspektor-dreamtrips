@@ -4,9 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.model.FlagSetting;
 import com.worldventures.core.modules.settings.model.SelectSetting;
+import com.worldventures.core.modules.settings.model.Setting;
 
 import java.lang.reflect.Type;
 

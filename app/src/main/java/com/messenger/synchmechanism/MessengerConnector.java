@@ -77,9 +77,9 @@ public class MessengerConnector {
    }
 
    public void connect() {
-      if (messengerServerFacade.isConnected() || !SessionHolderHelper.hasEntity(appSessionHolder)) return;
+      if (messengerServerFacade.isConnected() || !SessionHolderHelper.hasEntity(appSessionHolder)) { return; }
       UserSession userSession = appSessionHolder.get().get();
-      if (userSession.getUser() == null) return;
+      if (userSession.getUser() == null) { return; }
       messengerServerFacade.connect(userSession.getUsername(), userSession.getLegacyApiToken());
    }
 

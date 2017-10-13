@@ -27,7 +27,8 @@ public class CroppingUtils {
    }
 
    public static void startCropping(Context context, Fragment fragment, int requestCode, String fileFrom, String fileTo, int ratioX, int ratioY) {
-      obtainBasicUCrop(context, Uri.fromFile(new File(fileFrom)), Uri.fromFile(new File(fileTo))).withAspectRatio(ratioX, ratioY).start(context, fragment, requestCode);
+      obtainBasicUCrop(context, Uri.fromFile(new File(fileFrom)), Uri.fromFile(new File(fileTo))).withAspectRatio(ratioX, ratioY)
+            .start(context, fragment, requestCode);
    }
 
    private static UCrop obtainBasicUCrop(Context context, Uri from, Uri to) {

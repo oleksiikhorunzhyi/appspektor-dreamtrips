@@ -49,7 +49,7 @@ public class FeedbackAttachmentsManager {
             break;
          }
       }
-      if (!existingHolderRefreshed) statefulImageAttachments.add(newHolder);
+      if (!existingHolderRefreshed) { statefulImageAttachments.add(newHolder); }
 
       statefulAttachmentsObservable.onNext(newHolder);
    }

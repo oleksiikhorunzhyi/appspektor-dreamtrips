@@ -24,7 +24,7 @@ public class ChatItemFrameLayout extends FrameLayout {
    }
 
    private void init(AttributeSet attrs) {
-      if (attrs == null) return;
+      if (attrs == null) { return; }
 
       TypedArray arr = getContext().obtainStyledAttributes(attrs, R.styleable.ChatItemFrameLayout);
       backgroundForFollowingMessage = arr.getResourceId(R.styleable.ChatItemFrameLayout_background_following, 0);

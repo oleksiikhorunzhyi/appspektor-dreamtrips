@@ -55,7 +55,7 @@ public class FileUtils {
    private static boolean isExcepted(String filePath, List<String> exceptedFilePaths) {
       for (String exceptFilePath : exceptedFilePaths) {
          //exceptedFilePath contains "file://" and unlike filePath
-         if (exceptFilePath.endsWith(filePath)) return true;
+         if (exceptFilePath.endsWith(filePath)) { return true; }
       }
       return false;
    }
@@ -102,7 +102,7 @@ public class FileUtils {
    public static String getDirectory(String foldername) {
       File directory;
       directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + foldername);
-      if (!directory.exists()) directory.mkdirs();
+      if (!directory.exists()) { directory.mkdirs(); }
 
       return directory.getAbsolutePath();
    }
@@ -110,10 +110,13 @@ public class FileUtils {
    public static String byteCountToDisplaySize(long size) {
       String displaySize;
 
-      if (size / ONE_GB > 0) displaySize = String.valueOf(size / ONE_GB) + " GB";
-      else if (size / ONE_MB > 0) displaySize = String.valueOf(size / ONE_MB) + " MB";
-      else if (size / ONE_KB > 0) displaySize = String.valueOf(size / ONE_KB) + " KB";
-      else displaySize = String.valueOf(size) + " bytes";
+      if (size / ONE_GB > 0) { displaySize = String.valueOf(size / ONE_GB) + " GB"; } else if (size / ONE_MB > 0) {
+         displaySize = String.valueOf(size / ONE_MB) + " MB";
+      } else if (size / ONE_KB > 0) {
+         displaySize = String.valueOf(size / ONE_KB) + " KB";
+      } else {
+         displaySize = String.valueOf(size) + " bytes";
+      }
 
       return displaySize;
    }

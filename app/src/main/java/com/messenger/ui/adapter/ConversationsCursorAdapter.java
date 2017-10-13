@@ -94,7 +94,7 @@ public class ConversationsCursorAdapter extends CursorRecyclerViewAdapter<BaseCo
             return VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
          case GROUP:
          default:
-            if (abandoned) return VIEW_TYPE_GROUP_CLOSED_CONVERSATION;
+            if (abandoned) { return VIEW_TYPE_GROUP_CLOSED_CONVERSATION; }
             return VIEW_TYPE_GROUP_CONVERSATION;
       }
    }

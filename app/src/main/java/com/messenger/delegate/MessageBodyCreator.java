@@ -22,9 +22,9 @@ public class MessageBodyCreator {
    public MessageBody provideForTextAndAttachment(String text, AttachmentHolder attachmentHolder) {
       MessageBody.Builder builder = new MessageBody.Builder();
 
-      if (attachmentHolder != null) builder.attachments(Collections.singletonList(attachmentHolder));
+      if (attachmentHolder != null) { builder.attachments(Collections.singletonList(attachmentHolder)); }
 
-      if (!TextUtils.isEmpty(text)) builder.text(text);
+      if (!TextUtils.isEmpty(text)) { builder.text(text); }
 
       return builder.locale(generateMessageLocale(LocaleHelper.getDefaultLocale())).build();
    }

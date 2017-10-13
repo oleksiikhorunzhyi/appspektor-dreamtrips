@@ -11,7 +11,7 @@ public final class LinkHandlerMovementMethod extends LinkMovementMethod {
    private static LinkHandlerMovementMethod sInstance;
 
    public static LinkHandlerMovementMethod getInstance() {
-      if (sInstance == null) sInstance = new LinkHandlerMovementMethod();
+      if (sInstance == null) { sInstance = new LinkHandlerMovementMethod(); }
       return sInstance;
    }
 

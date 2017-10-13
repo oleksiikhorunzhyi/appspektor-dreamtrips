@@ -7,9 +7,9 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.model.FlagSetting;
 import com.worldventures.core.modules.settings.model.SelectSetting;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.util.SettingsFactory;
 
 import java.lang.reflect.Type;
@@ -42,8 +42,9 @@ public class SettingsDeserializer<T extends Setting> implements JsonDeserializer
          name = gson.fromJson(nameElement.getAsJsonPrimitive(), String.class);
       }
       Setting model;
-      if (name == null || !modelByName.containsKey(name)) model = new Setting<>("", Setting.Type.UNKNOWN, "");
-      else model = gson.fromJson(json, modelByName.get(name));
+      if (name == null || !modelByName.containsKey(name)) {
+         model = new Setting<>("", Setting.Type.UNKNOWN, "");
+      } else { model = gson.fromJson(json, modelByName.get(name)); }
 
       return (T) model;
    }

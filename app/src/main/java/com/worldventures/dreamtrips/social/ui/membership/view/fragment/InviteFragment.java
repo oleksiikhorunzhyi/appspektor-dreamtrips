@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.membership.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,8 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
@@ -33,11 +36,17 @@ import com.worldventures.dreamtrips.social.ui.membership.view.dialog.AddContactD
 import java.util.Comparator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+import static com.worldventures.core.ui.util.permission.PermissionConstants.READ_PHONE_CONTACTS;
+
 @Layout(R.layout.fragment_invite)
 public class InviteFragment extends BaseFragment<InvitePresenter> implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
+
+   @Inject PermissionUtils permissionUtils;
 
    @InjectView(R.id.frameContactCount) LinearLayout frameContactCount;
    @InjectView(R.id.lv_users) RecyclerView lvUsers;
@@ -49,8 +58,8 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
    @InjectView(R.id.bt_continue) Button buttonContinue;
    @InjectView(R.id.textViewContactCount) TextView textViewSelectedCount;
 
-   FilterableArrayListAdapter<Member> adapter;
-   RecyclerViewStateDelegate stateDelegate;
+   private FilterableArrayListAdapter<Member> adapter;
+   private RecyclerViewStateDelegate stateDelegate;
 
    private boolean inhibitSpinner = true;
    private WeakHandler weakHandler;
@@ -181,7 +190,6 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
    @OnClick(R.id.iv_add_contact)
    public void addContact() {
       getPresenter().addContactRequired();
-      new AddContactDialog(getActivity()).show(getPresenter()::addMember);
    }
 
    @Override
@@ -277,4 +285,29 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
       if (!tvSearch.hasFocus())
          buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
    }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      Snackbar.make(getView(), permissionUtils.equals(permissions, READ_PHONE_CONTACTS)?
+            R.string.no_permission_to_read_contacts : R.string.no_permission_to_write_contacts, Snackbar.LENGTH_SHORT).show();
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      new MaterialDialog.Builder(getContext())
+            .content(permissionUtils.equals(permissions, READ_PHONE_CONTACTS)?
+                  R.string.permission_to_read_contacts : R.string.permission_to_write_contacts)
+            .positiveText(R.string.dialog_ok)
+            .negativeText(R.string.dialog_cancel)
+            .onPositive((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(permissions, true))
+            .onNegative((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(permissions, false))
+            .cancelable(false)
+            .show();
+   }
+
+   @Override
+   public void showAddContactDialog() {
+      new AddContactDialog(getActivity()).show(getPresenter()::addMember);
+   }
+
 }

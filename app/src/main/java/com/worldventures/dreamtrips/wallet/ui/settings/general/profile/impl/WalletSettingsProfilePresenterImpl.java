@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.impl;
 
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.wallet.analytics.settings.SmartCardProfileAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -38,16 +40,21 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    private final SmartCardUserDataInteractor smartCardUserDataInteractor;
    private final WalletSocialInfoProvider socialInfoProvider;
    private final WalletProfileDelegate delegate;
+   private final PickerPermissionChecker pickerPermissionChecker;
+   private final PermissionUtils permissionUtils;
 
    private SmartCardUser user;
 
    public WalletSettingsProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         SmartCardUserDataInteractor smartCardUserDataInteractor, WalletSocialInfoProvider socialInfoProvider) {
+         SmartCardUserDataInteractor smartCardUserDataInteractor, WalletSocialInfoProvider socialInfoProvider,
+         PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.socialInfoProvider = socialInfoProvider;
+      this.pickerPermissionChecker = pickerPermissionChecker;
+      this.permissionUtils = permissionUtils;
       this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
@@ -57,11 +64,11 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
 
       fetchProfile();
       observeChangeFields(view);
+      registerPermissionCallbacks();
 
       delegate.observeProfileUploading(view, this::applyChanges, throwable -> view.setDoneButtonEnabled(isDataChanged()));
       delegate.observePickerAndCropper(view);
       delegate.sendAnalytics(new SmartCardProfileAction());
-
    }
 
    private void observeChangeFields(WalletSettingsProfileScreen view) {
@@ -78,6 +85,13 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> setUser(command.getResult()), throwable -> Timber.e(throwable, ""));
+   }
+
+   private void registerPermissionCallbacks() {
+      pickerPermissionChecker.registerCallback(
+            () -> getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb())),
+            () -> getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
    }
 
    @SuppressWarnings("ConstantConditions")
@@ -153,6 +167,12 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    public void goBack() {
       Timber.d("WTF :: navigateBack");
       getNavigator().goBack();
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 
    @SuppressWarnings("ConstantConditions")

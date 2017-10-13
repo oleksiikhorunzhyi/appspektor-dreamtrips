@@ -8,8 +8,11 @@ import android.util.Patterns;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.membership.delegate.MembersSelectedEventDelegate;
@@ -23,6 +26,7 @@ import com.worldventures.dreamtrips.social.ui.membership.service.analytics.Searc
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.ViewInviteScreenAction;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPhoneContactsCommand;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetSentInvitesCommand;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,12 +39,17 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
+import static com.worldventures.core.ui.util.permission.PermissionConstants.READ_PHONE_CONTACTS;
+import static com.worldventures.core.ui.util.permission.PermissionConstants.WRITE_PHONE_CONTACTS;
+
 public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
    @Inject InviteShareInteractor inviteShareInteractor;
    @Inject SearchFocusChangedDelegate searchFocusChangedDelegate;
    @Inject MembersSelectedEventDelegate membersSelectedEventDelegate;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject PermissionDispatcher permissionDispatcher;
+   @Inject PermissionUtils permissionUtils;
 
    @State ArrayList<Member> members = new ArrayList<>();
 
@@ -52,7 +61,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       subscribeToContactLoading();
       subscribeToSentInvitesLoading();
       if (members.isEmpty()) loadMembers();
-      else contactsLoaded();
+      else contactsLoaded(members);
       view.setAdapterComparator(getSelectedComparator());
       reportSelectedMembers();
    }
@@ -69,11 +78,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPhoneContactsCommand>()
                   .onStart(command -> view.startLoading())
-                  .onSuccess(command -> {
-                     members.clear();
-                     members.addAll(command.getResult());
-                     contactsLoaded();
-                  }));
+                  .onSuccess(command -> contactsLoaded(command.getResult())));
    }
 
    private void subscribeToSentInvitesLoading() {
@@ -82,6 +87,37 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetSentInvitesCommand>()
                   .onSuccess(this::sentInvitesLoaded));
+   }
+
+   private void checkPermissions(String[] permissions, boolean withExplanation) {
+      permissionDispatcher.requestPermission(permissions, withExplanation)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber()
+                  .onPermissionDeniedAction(() -> onPermissionDenied(permissions))
+                  .onPermissionGrantedAction(() -> onPermissionGranted(permissions))
+                  .onPermissionRationaleAction(() -> {
+                     if (withExplanation) view.showPermissionExplanationText(permissions);
+                     else onPermissionDenied(permissions);
+                  }));
+   }
+
+   private void onPermissionDenied(String[] permissions) {
+      view.showPermissionDenied(permissions);
+      if (permissionUtils.equals(permissions, READ_PHONE_CONTACTS)) contactsLoaded(members);
+   }
+
+   private void onPermissionGranted(String[] permissions) {
+      if (permissionUtils.equals(permissions, READ_PHONE_CONTACTS)) {
+         Type type = Type.from(view.getSelectedType());
+         inviteShareInteractor.getPhoneContactsPipe().send(new GetPhoneContactsCommand(type));
+      } else if (permissionUtils.equals(permissions, WRITE_PHONE_CONTACTS)) {
+         view.showAddContactDialog();
+      }
+   }
+
+   public void recheckPermissionAccepted(String[] permissions, boolean withExplanation) {
+      if (withExplanation) checkPermissions(permissions, false);
+      else onPermissionDenied(permissions);
    }
 
    private void sentInvitesLoaded(GetSentInvitesCommand command) {
@@ -96,11 +132,13 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
    }
 
    public void loadMembers() {
-      Type type = Type.from(view.getSelectedType());
-      inviteShareInteractor.getPhoneContactsPipe().send(new GetPhoneContactsCommand(type));
+      checkPermissions(READ_PHONE_CONTACTS, true);
    }
 
-   private void contactsLoaded() {
+   private void contactsLoaded(List<Member> contacts) {
+      members.clear();
+      members.addAll(contacts);
+
       inviteShareInteractor.getSentInvitesPipe().send(new GetSentInvitesCommand());
       analyticsInteractor.analyticsActionPipe().send(new InviteShareContactsAction());
    }
@@ -295,9 +333,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
    public void addContactRequired() {
       analyticsInteractor.analyticsActionPipe().send(new AddContactInviteScreenAction());
+      checkPermissions(WRITE_PHONE_CONTACTS, true);
    }
 
-   public interface View extends Presenter.View {
+   public interface View extends Presenter.View, PermissionUIComponent {
       void startLoading();
 
       void finishLoading();
@@ -321,5 +360,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       void openTemplateView();
 
       void continueAction2();
+
+      void showAddContactDialog();
    }
 }

@@ -10,6 +10,7 @@ import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
@@ -58,6 +59,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.VideoFeedItemDetail
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.UploadingPostsSectionCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedViewInjector;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateFeedPostFragment;
@@ -142,6 +144,7 @@ import dagger.Provides;
             DescriptionCreatorPresenter.class,
             UploadingPostsSectionCell.class,
             VideoFeedItemDetailsCell.class,
+            PhotoStripView.class,
       },
       complete = false,
       library = true)
@@ -178,9 +181,9 @@ public class FeedActivityModule {
    @Singleton
    FeedActionHandlerDelegate provideFeedActionHandlerDelegate(FeedInteractor feedInteractor, FlagsInteractor flagsInteractor,
          TripImagesInteractor tripImagesInteractor, PostsInteractor postsInteractor, BucketInteractor bucketInteractor,
-         AnalyticsInteractor analyticsInteractor) {
+         AnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher) {
       return new FeedActionHandlerDelegate(feedInteractor, flagsInteractor, tripImagesInteractor, postsInteractor,
-            bucketInteractor, analyticsInteractor);
+            bucketInteractor, analyticsInteractor, permissionDispatcher);
    }
 
    @Provides
@@ -207,7 +210,8 @@ public class FeedActivityModule {
    @Provides
    PhotoStripDelegate providePhotoStripDelegate(@ForActivity Injector injector, MediaPickerInteractor mediaInteractor,
          AppConfigurationInteractor appConfigurationInteractor, PickImageDelegate pickImageDelegate,
-         CapturedRowMediaHelper capturedRowMediaHelper, PermissionDispatcher permissionDispatcher) {
-      return new PhotoStripDelegate(injector, mediaInteractor, appConfigurationInteractor, pickImageDelegate, capturedRowMediaHelper, permissionDispatcher);
+         CapturedRowMediaHelper capturedRowMediaHelper, PermissionDispatcher permissionDispatcher, PermissionUtils permissionUtils) {
+      return new PhotoStripDelegate(injector, mediaInteractor, appConfigurationInteractor, pickImageDelegate, capturedRowMediaHelper,
+            permissionDispatcher, permissionUtils);
    }
 }

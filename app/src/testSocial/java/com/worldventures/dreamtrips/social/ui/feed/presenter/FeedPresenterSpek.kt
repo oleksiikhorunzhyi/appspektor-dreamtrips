@@ -5,6 +5,8 @@ import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
 import com.worldventures.core.modules.picker.model.PhotoPickerModel
+import com.worldventures.core.ui.util.permission.PermissionDispatcher
+import com.worldventures.core.ui.util.permission.PermissionsResult
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec.Companion.anyString
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
@@ -144,16 +146,16 @@ class FeedPresenterSpek : PresenterBaseSpec({
       }
 
       describe("Refresh feed") {
-         it("Refresh feed succeeds, view should update loading status and finishLoading, SuggestPhotoCommand should be sent") {
-            val testSubscriber = TestSubscriber<ActionState<SuggestedPhotoCommand>>()
-            suggestedPhotoInteractor.suggestedPhotoCommandActionPipe.observe().subscribe(testSubscriber)
+         it("Refresh feed succeeds, view should update loading status and finishLoading and check permission to suggest user's photos") {
+            var permissionObservable = Observable.just(PermissionsResult(-1, null, IntArray(1)))
+            whenever(permissionDispatcher.requestPermission(anyArray(), ArgumentMatchers.anyBoolean())).thenReturn(permissionObservable)
 
             presenter.subscribeRefreshFeeds()
             feedInteractor.refreshAccountFeedPipe.send(GetAccountFeedCommand.Refresh("circleId"))
 
             verify(view, VerificationModeFactory.times(1)).updateLoadingStatus(false)
             verify(view, VerificationModeFactory.times(1)).finishLoading()
-            testSubscriber.assertValueCount(1)
+            verify(permissionDispatcher, times(1)).requestPermission(anyArray(), ArgumentMatchers.anyBoolean())
          }
       }
 
@@ -375,6 +377,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
       lateinit var assetStatusInteractor: PingAssetStatusInteractor
       lateinit var suggestedPhotoInteractor: SuggestedPhotoInteractor
       lateinit var userNotificationInteractor: UserNotificationInteractor
+      lateinit var permissionDispatcher: PermissionDispatcher
 
       val feedActionHandlerDelegate: FeedActionHandlerDelegate = mock()
       val snappy: SnappyRepository = mock()
@@ -412,6 +415,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
          suggestedPhotoInteractor = SuggestedPhotoInteractor(SessionActionPipeCreator(janet))
          circlesInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
          userNotificationInteractor = UserNotificationInteractor(SessionActionPipeCreator(janet))
+         permissionDispatcher = mock()
 
          prepareInjector().apply {
             registerProvider(SnappyRepository::class.java, { snappy })
@@ -428,18 +432,12 @@ class FeedPresenterSpek : PresenterBaseSpec({
             registerProvider(UserNotificationInteractor::class.java, { userNotificationInteractor })
             registerProvider(UploadingPresenterDelegate::class.java, { uploadingPresenterDelegate })
             registerProvider(CompoundOperationsInteractor::class.java, { compoundOperationsInteractor })
+            registerProvider(PermissionDispatcher::class.java, { permissionDispatcher})
 
             inject(presenter)
          }
 
          presenter.takeView(view)
-      }
-
-      fun providePhotoPickerModel(): PhotoPickerModel {
-         val model = PhotoPickerModel()
-         model.absolutePath = "dfsaasdfasdf"
-         model.dateTaken = 100L
-         return model
       }
 
       fun provideCompoundOperation(): PostCompoundOperationModel<PostBody> {

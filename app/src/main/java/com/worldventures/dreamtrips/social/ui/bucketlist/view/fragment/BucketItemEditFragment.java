@@ -18,9 +18,12 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -39,6 +42,8 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.BucketHoriz
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -47,6 +52,9 @@ import icepick.State;
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
 public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle> implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @Optional @InjectView(R.id.done) ImageView imageViewDone;
    @Optional @InjectView(R.id.bucket_header) ViewGroup bucketHeader;
@@ -147,7 +155,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    protected void setupPhotoCellCallbacks() {
       bucketPhotosView.enableAddPhotoCell(model -> {
          if (isVisibleOnScreen()) {
-            showMediaPicker();
+            getPresenter().openPickerRequired();
          }
       });
       bucketPhotosView.setPhotoCellDelegate(new BucketPhotoUploadCellDelegate() {
@@ -278,6 +286,20 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    @Override
    public String getDescription() {
       return editTextDescription.getText().toString();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    @Override

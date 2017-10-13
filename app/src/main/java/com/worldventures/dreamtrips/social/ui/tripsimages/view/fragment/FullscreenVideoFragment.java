@@ -6,8 +6,6 @@ import android.os.Looper;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.worldventures.core.di.qualifier.ForActivity;
-import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
@@ -21,7 +19,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.popup.FeedItemMenuBuilde
 import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.FullscreenVideoPresenter;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
@@ -39,9 +36,7 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
       implements FullscreenVideoPresenter.View {
 
    @Inject Router router;
-   @Inject @ForActivity Injector injector;
    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
-   @Inject SocialViewPagerState socialViewPagerState;
 
    @InjectView(R.id.videoView) VideoView videoView;
    @InjectView(R.id.flag) FlagView flag;

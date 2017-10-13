@@ -16,4 +16,6 @@ public interface WizardEditProfilePresenter extends WalletPresenter<WizardEditPr
    void choosePhoto();
 
    void onUserDataConfirmed();
+
+   void recheckPermission(String[] permissions, boolean userAnswer);
 }

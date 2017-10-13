@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.social.ui.feed.service.analytics.LikeAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
@@ -36,16 +39,18 @@ public class FeedActionHandlerDelegate {
    private BucketInteractor bucketInteractor;
    private AnalyticsInteractor analyticsInteractor;
    private FeedEntityEditingView feedEntityEditingView;
+   private PermissionDispatcher permissionDispatcher;
 
    public FeedActionHandlerDelegate(FeedInteractor feedInteractor, FlagsInteractor flagsInteractor,
          TripImagesInteractor tripImagesInteractor, PostsInteractor postsInteractor, BucketInteractor bucketInteractor,
-         AnalyticsInteractor analyticsInteractor) {
+         AnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher) {
       this.feedInteractor = feedInteractor;
       this.flagDelegate = new FlagDelegate(flagsInteractor);
       this.tripImagesInteractor = tripImagesInteractor;
       this.postsInteractor = postsInteractor;
       this.bucketInteractor = bucketInteractor;
       this.analyticsInteractor = analyticsInteractor;
+      this.permissionDispatcher = permissionDispatcher;
    }
 
    public void setFeedEntityEditingView(FeedEntityEditingView feedEntityEditingView) {
@@ -78,8 +83,9 @@ public class FeedActionHandlerDelegate {
    }
 
    public void onDownloadImage(String url, Observable.Transformer stopper, Action2<Command, Throwable> errorAction) {
-      tripImagesInteractor.downloadImageActionPipe()
-            .createObservable(new DownloadImageCommand(url))
+      permissionDispatcher.requestPermission(PermissionConstants.WRITE_EXTERNAL_STORAGE, false)
+            .filter(permissionResult -> PermissionUtils.verifyPermissions(permissionResult.grantResults))
+            .flatMap(o -> tripImagesInteractor.downloadImageActionPipe().createObservable(new DownloadImageCommand(url)))
             .compose(stopper)
             .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
                   .onFail(errorAction::call));

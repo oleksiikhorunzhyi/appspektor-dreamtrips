@@ -14,6 +14,8 @@ import com.worldventures.core.modules.video.model.VideoLocale;
 import com.worldventures.core.modules.video.service.MemberVideosInteractor;
 import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.core.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
@@ -29,22 +31,27 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.worldventures.core.ui.util.permission.PermissionConstants.WRITE_EXTERNAL_STORAGE;
+
 public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelpVideoScreen> implements WalletHelpVideoPresenter {
 
    private final MemberVideosInteractor memberVideosInteractor;
    private final CachedEntityInteractor cachedEntityInteractor;
    private final CachedEntityDelegate cachedEntityDelegate;
+   private final PermissionDispatcher permissionDispatcher;
 
    private final WalletHelpVideoDelegate helpVideoDelegate;
 
    public WalletHelpVideoPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         MemberVideosInteractor memberVideosInteractor,
-         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, WalletHelpVideoDelegate helpVideoDelegate) {
+         MemberVideosInteractor memberVideosInteractor, CachedEntityInteractor cachedEntityInteractor,
+         CachedEntityDelegate cachedEntityDelegate, WalletHelpVideoDelegate helpVideoDelegate,
+         PermissionDispatcher permissionDispatcher) {
       super(navigator, deviceConnectionDelegate);
       this.memberVideosInteractor = memberVideosInteractor;
       this.cachedEntityInteractor = cachedEntityInteractor;
       this.cachedEntityDelegate = cachedEntityDelegate;
       this.helpVideoDelegate = helpVideoDelegate;
+      this.permissionDispatcher = permissionDispatcher;
    }
 
    @Override
@@ -160,7 +167,10 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
 
    @Override
    public void downloadVideo(CachedModel entity) {
-      cachedEntityDelegate.startCaching(entity, helpVideoDelegate.getPathForCache(entity));
+      permissionDispatcher.requestPermission(WRITE_EXTERNAL_STORAGE, false)
+            .compose(getView().bindUntilDetach())
+            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() ->
+                  cachedEntityDelegate.startCaching(entity, helpVideoDelegate.getPathForCache(entity))));
    }
 
    @Override

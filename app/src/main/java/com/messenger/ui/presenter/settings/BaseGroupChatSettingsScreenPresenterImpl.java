@@ -116,4 +116,8 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
    public void applyNewChatSubject(String subject) {
       throw new IllegalStateException("Method was not implemented");
    }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+
+   }
 }

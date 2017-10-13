@@ -14,7 +14,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action0;
 import timber.log.Timber;
 
-public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<AuthorizedStaticInfoPresenter.View> {
+public class AuthorizedStaticInfoPresenter<T extends AuthorizedStaticInfoPresenter.View> extends WebViewFragmentPresenter<T> {
 
    public static final int LIFE_DURATION = 30; // mins
 

@@ -8,11 +8,13 @@ import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.modules.auth.api.command.LogoutCommand;
 import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.service.DownloadFileInteractor;
 import com.worldventures.core.service.command.DownloadFileCommand;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
@@ -36,6 +38,7 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPrivate
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.SocialCropImageManager;
 
@@ -48,6 +51,7 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.functions.Action0;
 import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> implements UploadingListenerPresenter {
@@ -65,6 +69,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    @Inject AccountTimelineStorageDelegate accountTimelineStorageDelegate;
    @Inject CachedModelHelper cachedModelHelper;
    @Inject DownloadFileInteractor downloadFileInteractor;
+   @Inject PickerPermissionChecker pickerPermissionChecker;
+   @Inject PermissionUtils permissionUtils;
 
    @State boolean shouldReload;
    @State PickerMode pickerMode;
@@ -262,11 +268,26 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    }
 
    public void photoClicked() {
-      view.openAvatarPicker();
+      askPermissions(view::openAvatarPicker);
    }
 
    public void coverClicked() {
-      view.openCoverPicker();
+      askPermissions(view::openCoverPicker);
+   }
+
+   private void askPermissions(Action0 permissionsAcceptedAction) {
+      pickerPermissionChecker.registerCallback(
+            permissionsAcceptedAction::call,
+            () -> view.showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> view.showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
+
+      pickerPermissionChecker.checkPermission();
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 
    private void uploadAvatar(String fileThumbnail) {
@@ -378,7 +399,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
       uploadingPresenterDelegate.onUploadCancel(compoundOperationModel);
    }
 
-   public interface View extends ProfilePresenter.View {
+   public interface View extends ProfilePresenter.View, PermissionUIComponent {
 
       void openAvatarPicker();
 

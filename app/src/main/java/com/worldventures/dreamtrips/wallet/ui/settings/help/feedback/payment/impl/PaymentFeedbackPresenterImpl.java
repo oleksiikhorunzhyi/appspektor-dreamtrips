@@ -2,8 +2,10 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.im
 
 
 import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
@@ -21,9 +23,10 @@ public class PaymentFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<Paym
    private final PaymentFeedbackDelegate paymentFeedbackDelegate;
 
    public PaymentFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaPickerInteractor mediaPickerInteractor) {
-      super(navigator, deviceConnectionDelegate, feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
+         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
+         MediaPickerInteractor mediaPickerInteractor, PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
+      super(navigator, deviceConnectionDelegate, feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor,
+            pickerPermissionChecker, permissionUtils);
       this.paymentFeedbackDelegate = new PaymentFeedbackDelegate();
    }
 

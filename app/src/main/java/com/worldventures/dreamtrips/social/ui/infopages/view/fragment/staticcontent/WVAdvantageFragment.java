@@ -5,13 +5,14 @@ import android.view.View;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Layout(R.layout.fragment_webview)
-public class WVAdvantageFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
+public class WVAdvantageFragment extends AuthorizedStaticInfoFragment<AuthorizedStaticInfoPresenter, UrlBundle> {
 
    @Override
    protected String getURL() {

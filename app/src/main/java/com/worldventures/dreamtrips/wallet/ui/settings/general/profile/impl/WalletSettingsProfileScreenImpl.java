@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
@@ -49,6 +52,8 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
    private static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
 
    @Inject WalletSettingsProfilePresenter presenter;
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    private WalletCropImageService cropImageService;
    private ScreenWalletSettingsProfileBinding binding;
@@ -288,5 +293,19 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return true;
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 }

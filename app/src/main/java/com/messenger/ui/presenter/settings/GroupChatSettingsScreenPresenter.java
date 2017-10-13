@@ -14,4 +14,6 @@ public interface GroupChatSettingsScreenPresenter extends ChatSettingsScreenPres
    void applyNewChatSubject(String subject);
 
    void onLeaveButtonClick();
+
+   void recheckPermission(String[] permissions, boolean userAnswer);
 }

@@ -7,11 +7,13 @@ import com.bluelinelabs.conductor.Router;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.core.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.video.service.MemberVideosInteractor;
 import com.worldventures.core.service.CachedEntityDelegate;
 import com.worldventures.core.service.CachedEntityInteractor;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalActivityModule;
@@ -432,9 +434,10 @@ public class WalletActivityModule {
    @Provides
    WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
-         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor) {
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor,
+         PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
       return new WizardEditProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
-            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor);
+            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor, pickerPermissionChecker, permissionUtils);
    }
 
    @Provides
@@ -599,9 +602,9 @@ public class WalletActivityModule {
    WalletSettingsProfilePresenter provideWalletSettingsProfilePresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
-         WalletSocialInfoProvider socialInfoProvider) {
-      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate,
-            smartCardInteractor, analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider);
+         WalletSocialInfoProvider socialInfoProvider, PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
+      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider, pickerPermissionChecker, permissionUtils);
    }
 
    @Provides
@@ -666,9 +669,10 @@ public class WalletActivityModule {
    DisplayOptionsSettingsPresenter provideDisplayOptionsSettingsPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          SmartCardUserDataInteractor smartCardUserDataInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         WalletSocialInfoProvider socialInfoProvider) {
+         WalletSocialInfoProvider socialInfoProvider, PickerPermissionChecker pickerPermissionChecker,
+         PermissionUtils permissionUtils) {
       return new DisplayOptionsSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
-            smartCardUserDataInteractor, analyticsInteractor, socialInfoProvider);
+            smartCardUserDataInteractor, analyticsInteractor, socialInfoProvider, pickerPermissionChecker, permissionUtils);
    }
 
    @Provides
@@ -752,10 +756,10 @@ public class WalletActivityModule {
    @Provides
    WalletHelpVideoPresenter provideWalletHelpVideoPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         MemberVideosInteractor memberVideosInteractor,
-         CachedEntityInteractor cachedEntityInteractor, CachedEntityDelegate cachedEntityDelegate, Context context) {
+         MemberVideosInteractor memberVideosInteractor, CachedEntityInteractor cachedEntityInteractor,
+         CachedEntityDelegate cachedEntityDelegate, Context context, PermissionDispatcher permissionDispatcher) {
       return new WalletHelpVideoPresenterImpl(navigator, deviceConnectionDelegate, memberVideosInteractor,
-            cachedEntityInteractor, cachedEntityDelegate, new WalletHelpVideoDelegate(context));
+            cachedEntityInteractor, cachedEntityDelegate, new WalletHelpVideoDelegate(context), permissionDispatcher);
    }
 
    @Provides
@@ -775,18 +779,20 @@ public class WalletActivityModule {
    SendFeedbackPresenter providesSendFeedbackPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaPickerInteractor mediaPickerInteractor) {
+         MediaPickerInteractor mediaPickerInteractor, PickerPermissionChecker pickerPermissionChecker,
+         PermissionUtils permissionUtils) {
       return new SendFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
+            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor, pickerPermissionChecker, permissionUtils);
    }
 
    @Provides
    PaymentFeedbackPresenter providePaymentFeedbackPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaPickerInteractor mediaPickerInteractor) {
+         MediaPickerInteractor mediaPickerInteractor, PickerPermissionChecker pickerPermissionChecker,
+         PermissionUtils permissionUtils) {
       return new PaymentFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
+            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor, pickerPermissionChecker, permissionUtils);
    }
 
    @Provides

@@ -3,7 +3,9 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
@@ -42,17 +44,22 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    private final SmartCardUserDataInteractor smartCardUserDataInteractor;
    private final WalletSocialInfoProvider socialInfoProvider;
    private final WalletProfileDelegate delegate;
+   private final PickerPermissionChecker pickerPermissionChecker;
+   private final PermissionUtils permissionUtils;
 
    private boolean mustSaveUserProfile;
    private SmartCardUser user;
 
    public DisplayOptionsSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider) {
+         WalletAnalyticsInteractor analyticsInteractor, WalletSocialInfoProvider socialInfoProvider,
+         PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.socialInfoProvider = socialInfoProvider;
+      this.pickerPermissionChecker = pickerPermissionChecker;
+      this.permissionUtils = permissionUtils;
       this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
@@ -63,6 +70,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
       observeHomeDisplay();
       observeUserProfileUploading();
       fetchDisplayType();
+      registerPermissionCallbacks();
    }
 
    private void initiateData() {
@@ -124,6 +132,13 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    @Override
    public void fetchDisplayType() {smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));}
 
+   private void registerPermissionCallbacks() {
+      pickerPermissionChecker.registerCallback(
+            () -> getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb())),
+            () -> getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
+   }
+
    @Override
    public void savePhoneNumber(ProfileViewModel profile) {
       final SmartCardUserPhone enteredPhone = delegate.createPhone(profile);
@@ -156,7 +171,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
 
    @Override
    public void choosePhoto() {
-      getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()));
+      pickerPermissionChecker.checkPermission();
    }
 
    @Override
@@ -183,6 +198,12 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
             .doOnNext(command -> smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType))
             .subscribe(command -> {
             }, throwable -> Timber.e(throwable, ""));
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 
    @Override

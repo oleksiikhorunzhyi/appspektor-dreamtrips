@@ -4,18 +4,15 @@ import com.worldventures.core.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ShareInspirationImageAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.DownloadImageDelegate;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateSubscriber;
-
 public class FullscreenInspireMePresenter extends Presenter<FullscreenInspireMePresenter.View> {
 
-   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject DownloadImageDelegate downloadImageDelegate;
 
    private Inspiration inspiration;
 
@@ -40,11 +37,7 @@ public class FullscreenInspireMePresenter extends Presenter<FullscreenInspireMeP
 
    public void onShareOptionChosen(@ShareType String type) {
       if (type.equals(ShareType.EXTERNAL_STORAGE)) {
-         tripImagesInteractor.downloadImageActionPipe()
-               .createObservable(new DownloadImageCommand(inspiration.getUrl()))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                     .onFail(this::handleError));
+         downloadImageDelegate.downloadImage(inspiration.getUrl(), bindView(), this::handleError);
       } else {
          view.openShare(inspiration.getUrl(), inspiration.getQuote() + " - " + inspiration.getAuthor(), type);
       }

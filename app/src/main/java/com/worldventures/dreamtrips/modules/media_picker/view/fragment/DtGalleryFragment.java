@@ -126,7 +126,7 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter, Gall
    }
 
    private void checkPermissionsForCamera(Action0 grantedAction) {
-      permissionSubscription = permissionDispatcher.requestPermission(PermissionConstants.CAMERA_STORE_PERMISSIONS)
+      permissionSubscription = permissionDispatcher.requestPermission(PermissionConstants.READ_STORAGE_PERMISSION)
             .subscribe(new PermissionSubscriber().onPermissionRationaleAction(this::showRationaleForCamera)
                   .onPermissionGrantedAction(grantedAction)
                   .onPermissionDeniedAction(this::showDeniedForCamera));

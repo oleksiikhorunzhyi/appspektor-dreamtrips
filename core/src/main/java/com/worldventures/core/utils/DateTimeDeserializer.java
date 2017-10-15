@@ -15,7 +15,7 @@ import timber.log.Timber;
 
 public class DateTimeDeserializer implements JsonDeserializer<Date> {
 
-   private DateFormat[] dateFormats;
+   private final DateFormat[] dateFormats;
 
    public DateTimeDeserializer() {
       dateFormats = DateTimeUtils.getISO1DateFormats();
@@ -26,8 +26,7 @@ public class DateTimeDeserializer implements JsonDeserializer<Date> {
       for (DateFormat format : dateFormats) {
          try {
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = format.parse(json.getAsString());
-            return date;
+            return format.parse(json.getAsString());
          } catch (ParseException ignored) {
          }
       }

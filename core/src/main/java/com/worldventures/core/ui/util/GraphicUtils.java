@@ -15,12 +15,15 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import static android.text.TextUtils.isEmpty;
 
 //todo rename to FrescoUtils
-public class GraphicUtils {
+public final class GraphicUtils {
 
    public static final String IMAGERY_URL_PATTERN = "%s?width=%d&height=%d";
 
    // this is the biggest size that Fresco's SimpleDraweeView can handle
    private static final int DEFAULT_DRESCO_MAX_IMAGE_SIZE = 4096;
+
+   private GraphicUtils() {
+   }
 
    public static PipelineDraweeController provideFrescoResizingController(Uri uri, DraweeController oldController) {
       return provideFrescoResizingController(uri, oldController, DEFAULT_DRESCO_MAX_IMAGE_SIZE, DEFAULT_DRESCO_MAX_IMAGE_SIZE);

@@ -7,8 +7,8 @@ import com.worldventures.core.modules.infopages.model.Document;
 
 public class DocumentBundle implements Parcelable {
 
-   private Document document;
-   private String analyticsAction;
+   private final Document document;
+   private final String analyticsAction;
 
    public DocumentBundle(Document document, String analyticsAction) {
       this.document = document;

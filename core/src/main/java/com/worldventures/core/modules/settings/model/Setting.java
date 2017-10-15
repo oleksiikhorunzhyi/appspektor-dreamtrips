@@ -14,7 +14,7 @@ public class Setting<T extends Serializable> implements Parcelable, Serializable
    protected T value;
 
    public Setting() {
-
+      //do nothing
    }
 
    public Setting(String name, Type type, T value) {

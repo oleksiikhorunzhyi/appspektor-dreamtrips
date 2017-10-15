@@ -48,6 +48,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
       this(context, null);
    }
 
+   @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
    public BaseMediaPickerLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
       super(context, attrs);
       initView();

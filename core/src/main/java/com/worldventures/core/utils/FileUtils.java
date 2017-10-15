@@ -18,11 +18,14 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class FileUtils {
+public final class FileUtils {
 
    private static final long ONE_KB = 1024;
    private static final long ONE_MB = ONE_KB * ONE_KB;
    private static final long ONE_GB = ONE_KB * ONE_MB;
+
+   private FileUtils() {
+   }
 
    public static long getFileSize(String path) {
       return new File(path).length();
@@ -110,12 +113,12 @@ public class FileUtils {
    public static String byteCountToDisplaySize(long size) {
       String displaySize;
 
-      if (size / ONE_GB > 0) { displaySize = String.valueOf(size / ONE_GB) + " GB"; } else if (size / ONE_MB > 0) {
-         displaySize = String.valueOf(size / ONE_MB) + " MB";
+      if (size / ONE_GB > 0) { displaySize = (size / ONE_GB) + " GB"; } else if (size / ONE_MB > 0) {
+         displaySize = (size / ONE_MB) + " MB";
       } else if (size / ONE_KB > 0) {
-         displaySize = String.valueOf(size / ONE_KB) + " KB";
+         displaySize = (size / ONE_KB) + " KB";
       } else {
-         displaySize = String.valueOf(size) + " bytes";
+         displaySize = (size) + " bytes";
       }
 
       return displaySize;

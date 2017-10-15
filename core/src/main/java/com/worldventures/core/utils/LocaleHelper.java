@@ -7,7 +7,10 @@ import com.worldventures.core.model.session.SessionHolder;
 
 import java.util.Locale;
 
-public class LocaleHelper {
+public final class LocaleHelper {
+
+   private LocaleHelper() {
+   }
 
    public static String getDefaultLocaleFormatted() {
       return formatLocale(LocaleHelper.getDefaultLocale());
@@ -23,7 +26,7 @@ public class LocaleHelper {
    }
 
    public static String formatLocale(Locale locale) {
-      return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
+      return TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
    }
 
    public static boolean isOwnLanguage(SessionHolder sessionHolder, @Nullable String languageCode) {

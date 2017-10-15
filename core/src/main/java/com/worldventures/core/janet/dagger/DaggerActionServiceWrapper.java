@@ -38,16 +38,24 @@ public class DaggerActionServiceWrapper extends ActionServiceWrapper {
    }
 
    @Override
-   protected <A> void onInterceptCancel(ActionHolder<A> holder) {}
+   protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+      //do nothing
+   }
 
    @Override
-   protected <A> void onInterceptStart(ActionHolder<A> holder) {}
+   protected <A> void onInterceptStart(ActionHolder<A> holder) {
+      //do nothing
+   }
 
    @Override
-   protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {}
+   protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+      //do nothing
+   }
 
    @Override
-   protected <A> void onInterceptSuccess(ActionHolder<A> holder) {}
+   protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+      //do nothing
+   }
 
    @Override
    protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
@@ -56,7 +64,7 @@ public class DaggerActionServiceWrapper extends ActionServiceWrapper {
 
    public static class CommandInjector {
 
-      private ObjectGraph objectGraph;
+      private final ObjectGraph objectGraph;
 
       public CommandInjector(ObjectGraph objectGraph) {
          this.objectGraph = objectGraph;

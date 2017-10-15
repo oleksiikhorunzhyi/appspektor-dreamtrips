@@ -11,6 +11,7 @@ public class PhotoPickerModel extends MediaPickerModelImpl {
    private Size size;
 
    public PhotoPickerModel() {
+      //do nothing
    }
 
    public PhotoPickerModel(String absolutePath, Size size) {

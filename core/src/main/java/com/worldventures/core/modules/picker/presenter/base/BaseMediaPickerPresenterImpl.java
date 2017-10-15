@@ -14,10 +14,6 @@ public abstract class BaseMediaPickerPresenterImpl<V extends BaseMediaPickerView
 
    private final PublishSubject<List<M>> resultPublishSubject = PublishSubject.create();
 
-   public void attachView(V view) {
-      super.attachView(view);
-   }
-
    @Override
    public void detachView(boolean retainInstance) {
       super.detachView(retainInstance);
@@ -26,6 +22,7 @@ public abstract class BaseMediaPickerPresenterImpl<V extends BaseMediaPickerView
 
    @Override
    public void loadItems() {
+      //do nothing
    }
 
    @Override

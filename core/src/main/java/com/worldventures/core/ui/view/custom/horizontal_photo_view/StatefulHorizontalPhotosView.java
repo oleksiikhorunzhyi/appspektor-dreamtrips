@@ -21,7 +21,7 @@ public class StatefulHorizontalPhotosView<T extends ImagePathHolder, D extends C
       extends RecyclerView {
 
    private IgnoreFirstItemAdapter imagesAdapter;
-   private AddPhotoModel createBtnObject = new AddPhotoModel();
+   private final AddPhotoModel createBtnObject = new AddPhotoModel();
 
    private CellDelegate<AddPhotoModel> addPhotoCellDelegate;
    private D photoCellDelegate;

@@ -6,16 +6,13 @@ import java.io.Serializable;
 
 public class Circle implements Serializable, Comparable<Circle> {
 
+   private String id;
+   private String name;
+
    public static Circle withTitle(String title) {
       Circle all = new Circle();
       all.name = title;
       return all;
-   }
-
-   private String id;
-   private String name;
-
-   public Circle() {
    }
 
    public String getId() {

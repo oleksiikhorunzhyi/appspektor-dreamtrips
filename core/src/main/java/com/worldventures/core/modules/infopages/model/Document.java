@@ -10,6 +10,7 @@ public class Document implements Parcelable {
    private String url;
 
    public Document() {
+      super();
    }
 
    public Document(String name, String originalName, String url) {

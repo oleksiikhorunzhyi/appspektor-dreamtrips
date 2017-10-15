@@ -33,8 +33,7 @@ public final class ViewUtils {
       Display display = activity.getWindowManager().getDefaultDisplay();
       Point size = new Point();
       display.getSize(size);
-      int width = size.x;
-      return width;
+      return size.x;
    }
 
    public static int getMinSideSize(Activity activity) {
@@ -45,8 +44,7 @@ public final class ViewUtils {
       Display display = activity.getWindowManager().getDefaultDisplay();
       Point size = new Point();
       display.getSize(size);
-      int height = size.y;
-      return height;
+      return size.y;
    }
 
    public static void removeSupportGlobalLayoutListener(View view, ViewTreeObserver.OnGlobalLayoutListener listener) {
@@ -157,10 +155,12 @@ public final class ViewUtils {
       }
 
       Rect viewRect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
-      if (screenRect.left > viewRect.right || screenRect.right < viewRect.left || screenRect.top > viewRect.bottom || screenRect.bottom < viewRect.top) {
-         return false;
-      }
-      return true;
+      return !(
+            screenRect.left > viewRect.right
+                  || screenRect.right < viewRect.left
+                  || screenRect.top > viewRect.bottom
+                  || screenRect.bottom < viewRect.top
+      );
    }
 
    public static void setCompatDrawable(View view, @DrawableRes int resId) {

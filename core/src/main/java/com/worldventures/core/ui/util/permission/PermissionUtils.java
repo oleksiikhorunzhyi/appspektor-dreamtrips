@@ -3,8 +3,12 @@ package com.worldventures.core.ui.util.permission;
 import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
 
-public class PermissionUtils {
-   public static boolean verifyPermissions(@Nullable int[] grantResults) {
+final class PermissionUtils {
+
+   private PermissionUtils() {
+   }
+
+   static boolean verifyPermissions(@Nullable int... grantResults) {
       if (grantResults == null) { return false; }
 
       for (int result : grantResults) {

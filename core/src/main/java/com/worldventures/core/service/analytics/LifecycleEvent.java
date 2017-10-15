@@ -20,7 +20,7 @@ public class LifecycleEvent extends BaseAnalyticsAction {
    public static final String ACTION_ONSAVESTATE = "save_state";
    public static final String ACTION_ONRESTORESTATE = "restore_state";
 
-   private String action;
+   private final String action;
    private Bundle state;
    private WeakReference<Activity> weakActivity;
 

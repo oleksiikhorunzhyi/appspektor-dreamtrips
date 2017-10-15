@@ -94,10 +94,9 @@ public class GalleryMediaPickerLayout extends BaseMediaPickerLayout<GalleryMedia
       final IrregularPhotoPickerViewModel item = (IrregularPhotoPickerViewModel) getAdapter().getItem(position);
       if (item.getAttachType() == IrregularPhotoPickerViewModel.CAMERA) {
          presenter.handleCameraClick();
-      } else if (item.getAttachType() == IrregularPhotoPickerViewModel.FACEBOOK) {
-         if (getOnNextClickListener() != null) {
-            getOnNextClickListener().onNextClick(null);
-         }
+      } else if (item.getAttachType() == IrregularPhotoPickerViewModel.FACEBOOK
+            && getOnNextClickListener() != null) {
+         getOnNextClickListener().onNextClick(null);
       }
    }
 

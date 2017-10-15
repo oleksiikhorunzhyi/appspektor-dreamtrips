@@ -27,6 +27,7 @@ public class CachedEntity implements Serializable {
    }
 
    public CachedEntity() {
+      //do nothing
    }
 
    public boolean isFailed() {
@@ -84,7 +85,7 @@ public class CachedEntity implements Serializable {
    }
 
    public static String getFileName(String url) {
-      return url.substring(url.lastIndexOf("/") + 1);
+      return url.substring(url.lastIndexOf('/') + 1);
    }
 
    @Override

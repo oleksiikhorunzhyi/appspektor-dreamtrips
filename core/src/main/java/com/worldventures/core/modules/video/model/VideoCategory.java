@@ -3,8 +3,9 @@ package com.worldventures.core.modules.video.model;
 import java.util.List;
 
 public class VideoCategory {
-   private String category;
-   private List<Video> videos;
+
+   private final String category;
+   private final List<Video> videos;
 
    public VideoCategory(String category, List<Video> videos) {
       this.category = category;

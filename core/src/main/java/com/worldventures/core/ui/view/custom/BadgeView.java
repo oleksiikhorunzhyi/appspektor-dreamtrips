@@ -423,8 +423,7 @@ public class BadgeView extends AppCompatTextView {
 
    private int dipToPixels(int dip) {
       Resources r = getResources();
-      float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, r.getDisplayMetrics());
-      return (int) px;
+      return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, r.getDisplayMetrics());
    }
 
 }

@@ -12,11 +12,11 @@ import rx.schedulers.Schedulers;
 
 public class CachedEntityInteractor {
 
-   private ActionPipe<MigrateFromCachedEntityCommand> migrateFromCachedEntityPipe;
-   private ActionPipe<DownloadCachedModelCommand> downloadCachedModelPipe;
-   private ActionPipe<DeleteCachedModelCommand> deleteCachedModelPipe;
-   private ActionPipe<ResetCachedModelsInProgressCommand> resetCachedModelsInProgressPipe;
-   private ActionPipe<UpdateStatusCachedEntityCommand> updateStatusCachedEntityCommandPipe;
+   private final ActionPipe<MigrateFromCachedEntityCommand> migrateFromCachedEntityPipe;
+   private final ActionPipe<DownloadCachedModelCommand> downloadCachedModelPipe;
+   private final ActionPipe<DeleteCachedModelCommand> deleteCachedModelPipe;
+   private final ActionPipe<ResetCachedModelsInProgressCommand> resetCachedModelsInProgressPipe;
+   private final ActionPipe<UpdateStatusCachedEntityCommand> updateStatusCachedEntityCommandPipe;
 
    public CachedEntityInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this.migrateFromCachedEntityPipe = sessionActionPipeCreator.createPipe(MigrateFromCachedEntityCommand.class, Schedulers

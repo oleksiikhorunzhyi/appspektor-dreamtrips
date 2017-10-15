@@ -14,9 +14,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class CachedEntityDelegate {
 
-   private CachedEntityInteractor cachedEntityInteractor;
-
-   private List<DownloadCachedModelCommand> downloadFileCommandList = new ArrayList<>();
+   private final CachedEntityInteractor cachedEntityInteractor;
+   private final List<DownloadCachedModelCommand> downloadFileCommandList = new ArrayList<>();
 
    public CachedEntityDelegate(CachedEntityInteractor cachedEntityInteractor) {
       this.cachedEntityInteractor = cachedEntityInteractor;

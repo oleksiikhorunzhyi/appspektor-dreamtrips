@@ -21,9 +21,6 @@ public class MediaPickerDialogPresenterImpl extends MvpBasePresenter<MediaPicker
 
    @State ArrayList<BaseMediaPickerViewModel> pickerAttachment;
 
-   public MediaPickerDialogPresenterImpl() {
-   }
-
    @Override
    public void attachView(MediaPickerDialogView view) {
       super.attachView(view);

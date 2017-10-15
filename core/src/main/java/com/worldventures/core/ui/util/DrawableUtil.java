@@ -28,7 +28,7 @@ public class DrawableUtil {
 
    public static final String CACHE_DIR = "dreamtrips_cache_images";
 
-   private Context context;
+   private final Context context;
 
    public DrawableUtil(Context context) {
       this.context = context;

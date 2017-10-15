@@ -8,7 +8,7 @@ import rx.Observable;
 @CommandAction
 public class ImageCapturedCommand extends Command<String> {
 
-   private String filePath;
+   private final String filePath;
 
    public ImageCapturedCommand(String filePath) {
       this.filePath = filePath;

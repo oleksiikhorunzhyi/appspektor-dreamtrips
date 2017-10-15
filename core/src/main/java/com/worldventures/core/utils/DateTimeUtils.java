@@ -19,6 +19,7 @@ import java.util.Locale;
 import timber.log.Timber;
 
 public final class DateTimeUtils {
+
    private static final String FILTER_PATTERN = "dd MMM yyyy";
    public static final int TOMORROW = 1;
    public static final int THIS_WEEK = 2;

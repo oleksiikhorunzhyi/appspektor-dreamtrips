@@ -18,7 +18,7 @@ public class SelectSetting extends Setting<String> {
    }
 
    public SelectSetting() {
-
+      //do nothing
    }
 
    public SelectSetting(String name, Type type, String value, List<String> options) {

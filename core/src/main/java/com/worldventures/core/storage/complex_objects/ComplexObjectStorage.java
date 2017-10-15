@@ -18,7 +18,7 @@ public class ComplexObjectStorage<T> implements ObjectStorage<T> {
    private final Type type;
    private Optional<T> cachedInstance = Optional.absent();
 
-   {
+   { //NOPMD
       gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateTimeDeserializer()).create();
    }
 

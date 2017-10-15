@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class AttachmentsRemovedCommand extends Command<List<FeedbackImageAttachment>> {
 
-   private List<FeedbackImageAttachment> attachments;
+   private final List<FeedbackImageAttachment> attachments;
 
    public AttachmentsRemovedCommand(List<FeedbackImageAttachment> attachments) {
       this.attachments = attachments;

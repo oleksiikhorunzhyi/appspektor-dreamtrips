@@ -5,10 +5,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 public final class SdkVersionUtils {
-   private SdkVersionUtils() {
-   }
 
    private static int targetSdkVersion = -1;
+
+   private SdkVersionUtils() {
+   }
 
    public static int getTargetSdkVersion(Context context) {
       if (targetSdkVersion != -1) { return targetSdkVersion; }

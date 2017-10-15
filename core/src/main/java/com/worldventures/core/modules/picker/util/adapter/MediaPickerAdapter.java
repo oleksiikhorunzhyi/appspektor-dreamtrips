@@ -12,8 +12,8 @@ import java.util.List;
 
 public class MediaPickerAdapter<M extends BaseMediaPickerViewModel> extends RecyclerView.Adapter<BaseMediaPickerHolder> {
 
+   private final MediaPickerHolderFactory factory;
    protected List<M> items;
-   private MediaPickerHolderFactory factory;
 
    public MediaPickerAdapter(List<M> items, MediaPickerHolderFactory holderTypeFactory) {
       this.items = items;

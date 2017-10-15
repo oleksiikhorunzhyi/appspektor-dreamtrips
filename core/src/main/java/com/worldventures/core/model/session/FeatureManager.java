@@ -5,7 +5,7 @@ import com.worldventures.core.model.User;
 
 public class FeatureManager {
 
-   private SessionHolder sessionHolder;
+   private final SessionHolder sessionHolder;
 
    public FeatureManager(SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;

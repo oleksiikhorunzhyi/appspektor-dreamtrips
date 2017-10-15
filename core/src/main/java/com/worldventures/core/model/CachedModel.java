@@ -25,6 +25,7 @@ public class CachedModel implements Serializable {
    }
 
    public CachedModel() {
+      //do nothing
    }
 
    @Status.CacheStatus

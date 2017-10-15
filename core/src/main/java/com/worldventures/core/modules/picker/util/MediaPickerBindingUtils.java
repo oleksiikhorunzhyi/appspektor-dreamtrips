@@ -26,10 +26,8 @@ public final class MediaPickerBindingUtils {
 
    @BindingAdapter("pickerDisplayUri")
    public static void setImage(SimpleDraweeView draweeView, Uri uri) {
-      if (draweeView.getTag() != null) {
-         if (uri.equals(draweeView.getTag())) {
-            return;
-         }
+      if (draweeView.getTag() != null && uri.equals(draweeView.getTag())) {
+         return;
       }
 
       draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));

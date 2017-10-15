@@ -9,8 +9,8 @@ import java.util.List;
 
 public class FeedbackImageAttachmentsBundle implements Parcelable {
 
-   private int position;
-   private List<FeedbackImageAttachment> attachments;
+   private final int position;
+   private final List<FeedbackImageAttachment> attachments;
 
    public FeedbackImageAttachmentsBundle(int position, List<FeedbackImageAttachment> attachments) {
       this.position = position;

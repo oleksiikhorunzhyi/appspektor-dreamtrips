@@ -11,9 +11,9 @@ public class FacebookAlbumPickerViewModel extends FacebookMediaPickerViewModel<F
    private static final String GRAPH_URL = "https://graph.facebook.com/";
    private static final String COVER_URL = "/picture?type=album&access_token=";
    private static final String PARAMS = "&type=normal";
-   private String id;
-   private String name;
-   private int count;
+   private final String id;
+   private final String name;
+   private final int count;
 
    public FacebookAlbumPickerViewModel(String id, String name, int count, FacebookCoverPhoto coverPhoto) {
       super(coverPhoto);

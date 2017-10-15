@@ -24,11 +24,14 @@ import com.worldventures.core.ui.util.DrawableUtil;
 import rx.Observable;
 import rx.Subscriber;
 
-public class ImageUtils {
+public final class ImageUtils {
 
    public static final String MIME_TYPE_GIF = "image/gif";
 
    private static final String PATTERN = "%s?width=%d&height=%d";
+
+   private ImageUtils() {
+   }
 
    private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiverListener bitmapReciveListener, BitmapErrorReceiverListener errorReceiverListener) {
       DataSubscriber dataSubscriber = new BaseDataSubscriber<CloseableReference<CloseableBitmap>>() {
@@ -43,11 +46,10 @@ public class ImageUtils {
                try {
                   CloseableBitmap closeableBitmap = closeableReference.get();
                   Bitmap bitmap = closeableBitmap.getUnderlyingBitmap();
-                  if (bitmap != null && !bitmap.isRecycled()) {
-                     //you can use bitmap here
-                     if (bitmapReciveListener != null) {
-                        bitmapReciveListener.onBitmapReceived(bitmap.copy(bitmap.getConfig(), true));
-                     }
+                  if (bitmap != null
+                        && !bitmap.isRecycled()
+                        && bitmapReciveListener != null) {
+                     bitmapReciveListener.onBitmapReceived(bitmap.copy(bitmap.getConfig(), true));
                   }
                } finally {
                   imageReference.close();
@@ -108,7 +110,7 @@ public class ImageUtils {
    public static String getImageExtensionFromPath(String path) {
       if (path == null) { return ""; }
       //
-      int index = path.lastIndexOf(".");
+      int index = path.lastIndexOf('.');
       //
       if (index < 0) { return ""; }
       return path.substring(index);

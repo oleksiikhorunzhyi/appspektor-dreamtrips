@@ -27,11 +27,10 @@ public class AdobeTracker extends Tracker {
    private static final String DEVICE_ID = "deviceid";
    private static final String WIFI_CONNECTED = "wifi";
 
-   private String lastTrackedViewState;
-
-   private ConnectionInfoProvider connectionInfoProvider;
-   private DeviceInfoProvider deviceInfoProvider;
+   private final ConnectionInfoProvider connectionInfoProvider;
+   private final DeviceInfoProvider deviceInfoProvider;
    private final boolean debugLogging;
+   private String lastTrackedViewState;
 
    public AdobeTracker(DeviceInfoProvider deviceInfoProvider, ConnectionInfoProvider connectionInfoProvider, boolean debugLogging) {
       this.connectionInfoProvider = connectionInfoProvider;

@@ -18,20 +18,17 @@ import java.util.Map;
 
 public class SettingsDeserializer<T extends Setting> implements JsonDeserializer<T> {
 
-   private Gson gson;
-   private Map<String, Class<? extends Setting>> modelByName = new HashMap<>();
-
-   {
-      modelByName.put(SettingsFactory.DISTANCE_UNITS, SelectSetting.class);
-      modelByName.put(SettingsFactory.FRIEND_REQUEST, FlagSetting.class);
-      modelByName.put(SettingsFactory.NEW_MESSAGE, FlagSetting.class);
-      modelByName.put(SettingsFactory.PHOTO_TAGGING, FlagSetting.class);
-   }
+   private final Gson gson;
+   private final Map<String, Class<? extends Setting>> modelByName = new HashMap<>();
 
    public SettingsDeserializer() {
       gson = new GsonBuilder().serializeNulls()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
+      modelByName.put(SettingsFactory.DISTANCE_UNITS, SelectSetting.class);
+      modelByName.put(SettingsFactory.FRIEND_REQUEST, FlagSetting.class);
+      modelByName.put(SettingsFactory.NEW_MESSAGE, FlagSetting.class);
+      modelByName.put(SettingsFactory.PHOTO_TAGGING, FlagSetting.class);
    }
 
    @Override

@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 
 public class UriPathProviderImpl implements UriPathProvider {
 
-   private Context context;
+   private final Context context;
 
    public UriPathProviderImpl(Context context) {
       this.context = context;
@@ -61,7 +61,7 @@ public class UriPathProviderImpl implements UriPathProvider {
             if (cursor.moveToFirst()) {
                return cursor.getString(columnIndex);
             }
-         } catch (Exception ignored) {
+         } catch (Exception ignored) { //NOPMD
          } finally {
             if (cursor != null) { cursor.close(); }
          }

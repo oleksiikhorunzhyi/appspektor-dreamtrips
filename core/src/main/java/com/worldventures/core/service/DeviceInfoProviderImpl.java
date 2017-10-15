@@ -7,7 +7,8 @@ import android.provider.Settings;
 import com.worldventures.core.ui.util.ViewUtils;
 
 public class DeviceInfoProviderImpl implements DeviceInfoProvider {
-   private Context context;
+
+   private final Context context;
 
    public DeviceInfoProviderImpl(Context context) {
       this.context = context;

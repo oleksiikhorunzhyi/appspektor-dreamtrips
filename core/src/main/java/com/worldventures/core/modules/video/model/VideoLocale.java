@@ -7,10 +7,11 @@ import java.io.Serializable;
 import java.util.List;
 
 public class VideoLocale implements Serializable, Filterable {
-   private String title;
-   private String country;
-   private String icon;
-   private List<VideoLanguage> languages;
+
+   private final String title;
+   private final String country;
+   private final String icon;
+   private final List<VideoLanguage> languages;
 
    public VideoLocale(String title, String country, String icon, List<VideoLanguage> languages) {
       this.title = title;

@@ -17,8 +17,8 @@ import rx.Observable;
 
 public final class CapturedRowMediaHelper {
 
-   private MediaPickerInteractor mediaPickerInteractor;
-   private DrawableUtil drawableUtil;
+   private final MediaPickerInteractor mediaPickerInteractor;
+   private final DrawableUtil drawableUtil;
 
    public CapturedRowMediaHelper(MediaPickerInteractor mediaPickerInteractor, DrawableUtil drawableUtil) {
       this.mediaPickerInteractor = mediaPickerInteractor;

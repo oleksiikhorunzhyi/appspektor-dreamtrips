@@ -64,7 +64,9 @@ public class MediaModelStorageImpl extends BaseSnappyRepository implements Media
    public void deleteAllMediaEntities() {
       act(db -> {
          String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
-         for (String key : keys) db.del(key);
+         for (String key : keys) {
+            db.del(key);
+         }
       });
    }
 

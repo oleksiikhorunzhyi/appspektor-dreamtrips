@@ -15,7 +15,7 @@ import timber.log.Timber;
 
 public class PhotosProviderImpl implements PhotosProvider {
 
-   private Context context;
+   private final Context context;
 
    public PhotosProviderImpl(Context context) {
       this.context = context;

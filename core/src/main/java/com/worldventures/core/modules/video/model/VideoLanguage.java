@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 public class VideoLanguage implements Serializable, Filterable {
 
-   private String title;
-   private String localeName;
+   private final String title;
+   private final String localeName;
 
    public VideoLanguage(String title, String localeName) {
       this.title = title;

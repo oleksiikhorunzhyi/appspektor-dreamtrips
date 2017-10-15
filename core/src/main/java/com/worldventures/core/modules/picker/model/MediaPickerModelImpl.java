@@ -20,6 +20,7 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
    protected boolean checked;
 
    public MediaPickerModelImpl() {
+      //do nothing
    }
 
    public MediaPickerModelImpl(String absolutePath, long dateTaken) {
@@ -28,7 +29,7 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
       this.uri = Uri.parse(isAbsolutePathUrl() ? this.absolutePath : "file://" + this.absolutePath);
    }
 
-   public boolean isAbsolutePathUrl() {
+   public final boolean isAbsolutePathUrl() {
       // TODO Remove this check outside of this model
       return ValidationUtils.isUrl(absolutePath);
    }

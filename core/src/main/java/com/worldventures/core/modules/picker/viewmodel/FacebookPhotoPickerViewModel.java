@@ -10,8 +10,7 @@ import java.util.List;
 
 public class FacebookPhotoPickerViewModel extends FacebookMediaPickerViewModel<List<FacebookPhoto.ImageSource>> {
 
-   private List<FacebookPhoto.ImageSource> images;
-
+   private final List<FacebookPhoto.ImageSource> images;
    private boolean checked;
    private long pickedTime;
 
@@ -64,7 +63,7 @@ public class FacebookPhotoPickerViewModel extends FacebookMediaPickerViewModel<L
 
    @Override
    public Uri getUriFromSource(List<FacebookPhoto.ImageSource> source) {
-      String imageUrl = (source.size() > 2)
+      String imageUrl = source.size() > 2
             ? source.get(source.size() / 2 + 1).getSource()
             : source.get(0).getSource();
       return Uri.parse(imageUrl);

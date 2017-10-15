@@ -25,10 +25,12 @@ public class PermissionSubscriber extends Subscriber<PermissionsResult> {
 
    @Override
    public void onCompleted() {
+      //do nothing
    }
 
    @Override
    public void onError(Throwable e) {
+      //do nothing
    }
 
    @Override

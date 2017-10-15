@@ -27,6 +27,9 @@ import java.util.Set;
  * Implementation of an {@link Optional} containing a reference.
  */
 final class Present<T> extends Optional<T> {
+
+   private static final long serialVersionUID = 0;
+
    private final T reference;
 
    Present(T reference) {
@@ -94,6 +97,4 @@ final class Present<T> extends Optional<T> {
    public String toString() {
       return "Optional.of(" + reference + ")";
    }
-
-   private static final long serialVersionUID = 0;
 }

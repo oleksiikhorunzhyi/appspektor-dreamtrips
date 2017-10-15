@@ -21,7 +21,7 @@ public class FacebookHelper {
 
    public final static List<String> LOGIN_PERMISSIONS = Collections.singletonList("user_photos");
 
-   private Gson gson;
+   private final Gson gson;
 
    public FacebookHelper(Gson gson) {
       this.gson = gson;

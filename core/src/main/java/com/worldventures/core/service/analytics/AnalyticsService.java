@@ -162,8 +162,9 @@ public class AnalyticsService extends ActionService {
          field.setAccessible(true);
          Map<String, String> map = (Map<String, String>) field.get(action);
          if (map != null) {
-            for (Map.Entry<String, String> entry : map.entrySet())
+            for (Map.Entry<String, String> entry : map.entrySet()) {
                fieldAttributeList.add(new FieldAttribute(entry.getKey(), entry.getValue()));
+            }
          }
       }
       return fieldAttributeList;
@@ -172,13 +173,14 @@ public class AnalyticsService extends ActionService {
    private void tryLogEvent(@NonNull String type, String category, String action, Map<String, Object> data) {
       if (!analyticsLogEnabled) { return; }
       //
-      StringBuilder stringBuilder = new StringBuilder("Analytic event sending attempted:\n");
+      StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.append("Analytic event sending attempted:\n");
       //
-      stringBuilder.append("\t\tType: ").append(type).append("\n");
+      stringBuilder.append("\t\tType: ").append(type).append('\n');
       if (!TextUtils.isEmpty(category)) {
-         stringBuilder.append("\t\tCategory: ").append(category).append("\n");
+         stringBuilder.append("\t\tCategory: ").append(category).append('\n');
       }
-      stringBuilder.append("\t\tAction: ").append(action).append("\n");
+      stringBuilder.append("\t\tAction: ").append(action).append('\n');
       //
       if (!data.isEmpty()) {
          stringBuilder.append("Data:\n");
@@ -188,7 +190,7 @@ public class AnalyticsService extends ActionService {
                      .append(dataEntry.getKey())
                      .append(": ")
                      .append(dataEntry.getValue())
-                     .append("\n");
+                     .append('\n');
             }
          }
       }
@@ -197,13 +199,14 @@ public class AnalyticsService extends ActionService {
 
    @Override
    protected <A> void cancel(ActionHolder<A> holder) {
+      //do nothing
    }
 
    private static class FieldAttribute {
-      private String name;
-      private String value;
+      private final String name;
+      private final String value;
 
-      public FieldAttribute(String name, String value) {
+      FieldAttribute(String name, String value) {
          this.name = name;
          this.value = value;
       }

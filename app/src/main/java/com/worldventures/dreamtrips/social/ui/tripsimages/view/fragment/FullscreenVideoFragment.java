@@ -6,19 +6,19 @@ import android.os.Looper;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 import com.worldventures.dreamtrips.social.ui.feed.view.popup.FeedItemMenuBuilder;
+import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.SocialViewPagerState;
@@ -124,7 +124,7 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
          if (videoView == null) {
             handler.postDelayed(this::playVideo, 500);
          } else {
-           playVideo();
+            playVideo();
          }
       }
    }

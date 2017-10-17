@@ -3,14 +3,17 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.ScheduleCompoundOperationCommand;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
-import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
-import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableVideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
@@ -22,10 +25,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePostCom
 import com.worldventures.dreamtrips.social.ui.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ProcessAttachmentsAndPost;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CreatePhotoCreationItemCommand;
 
@@ -187,7 +186,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
          updatePickerAndStripState();
          view.removeImage(item);
 
-         if (item.getSource() == MediaAttachment.Source.PHOTO_STRIP) {
+         if (item.getSource() == MediaPickerAttachment.Source.PHOTO_STRIP) {
             PhotoPickerModel samePathVideo = new PhotoPickerModel(item.getFilePath(), 0);
             photoStripDelegate.removeItem(samePathVideo);
          }

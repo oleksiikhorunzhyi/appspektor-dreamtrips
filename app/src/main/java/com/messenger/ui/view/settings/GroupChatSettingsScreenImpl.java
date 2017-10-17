@@ -17,8 +17,8 @@ import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenterImpl;
 import com.messenger.ui.widget.ChatSettingsRow;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
 
 import java.util.List;
 

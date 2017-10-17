@@ -2,7 +2,7 @@ package com.messenger.delegate.conversation.command;
 
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.model.Conversation;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

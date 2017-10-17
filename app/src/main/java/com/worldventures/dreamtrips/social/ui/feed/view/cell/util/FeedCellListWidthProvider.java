@@ -5,9 +5,9 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.view.WindowManager;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +72,8 @@ public class FeedCellListWidthProvider {
    public int getFeedCellWidth(Route route) {
       Config config = makeConfig(route);
       Func0<Integer> widthFunc = configWidthMap.get(config);
-      if (widthFunc == null) throw new IllegalStateException("No width func found for route. Supply corresponding config.");
+      if (widthFunc == null)
+         throw new IllegalStateException("No width func found for route. Supply corresponding config.");
       return widthFunc.call();
    }
 

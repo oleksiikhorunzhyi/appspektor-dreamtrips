@@ -10,10 +10,9 @@ import android.widget.Toast;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyRecordCommand;
-import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
+import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsScreen;
@@ -24,21 +23,17 @@ import java.util.List;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 
 public class WalletFeatureHelperRelease implements WalletFeatureHelper {
 
    private final Janet janet;
    private final RecordInteractor recordInteractor;
-   private final WizardInteractor wizardInteractor;
 
-   public WalletFeatureHelperRelease(Janet walletJanet, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
+   public WalletFeatureHelperRelease(Janet walletJanet, RecordInteractor recordInteractor) {
       this.janet = walletJanet;
       this.recordInteractor = recordInteractor;
-      this.wizardInteractor = wizardInteractor;
    }
 
    @Override
@@ -109,16 +104,6 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
                         .send(new AddDummyRecordCommand(user, true));
                }
             });
-   }
-
-   @Override
-   public void navigateFromSetupUserScreen(Navigator navigator) {
-      wizardInteractor.provisioningStatePipe()
-            .createObservable(ProvisioningModeCommand.fetchState())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
-                  .onSuccess(command ->
-                        navigator.goWizardAssignUser(command.getResult())));
    }
 
    @Override

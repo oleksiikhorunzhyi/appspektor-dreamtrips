@@ -28,9 +28,6 @@
    <string name="dtl_description">Descriere</string>
    <string name="ok">OK</string>
    <string name="continue_option">Continuați</string>
-   <string name="permission_camera_rationale"> Este nevoie de acces la camera foto pentru a putea detecta </string>
-   <string name="permission_location_rationale">Este nevoie de acces la locație pentru a putea detecta </string>
-   <string name="no_camera_permission">Această aplicație nu poate funcționa deoarece nu are acces la camera foto. Aplicația se va închide.</string>
    <string name="no_location_permission">Această aplicație nu poate funcționa deoarece nu are acces la locație. Aplicația se va închide.</string>
    <string name="dtl_checkin_location_error">Serviciile de localizare trebuie să fie activate pentru a face check-in</string>
    <string name="dtl_barcode_title">Scanați codul QR</string>
@@ -89,13 +86,13 @@
    <string name="dtl_load_merchant_error_caption">Rezultatele nu au putut fi încărcate în acest moment.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Dining</string>
+   <string name="dtlt_search_hint">Luarea Mesei</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Filtre</string>
    <!-- DtlFilterButton Options Merchants Type strings -->
-   <string name="filter_merchant_dining">Dining</string>
+   <string name="filter_merchant_dining">Luarea Mesei</string>
    <string name="filter_merchant_entertainment">Divertisment</string>
-   <string name="filter_merchant_spas">Centre SPA</string>
+   <string name="filter_merchant_spas">Spa-uri</string>
    <!-- Reviews Merchants -->
    <string name="rate_and_reviews_text">Evaluează și scrie o recenzie</string>
    <string name="first_reviews_text">Fiți primul care evaluează această locație</string>
@@ -103,10 +100,15 @@
    <string name="format_reviews_text">%1$d Recenzii</string>
    <string name="reviews_text">Recenzii</string>
    <string name="without_reviews_text">0 Recenzii</string>
+   <string name="year_ago_text">acum %1$d ani</string>
    <string name="years_ago_text">acum %1$d ani</string>
+   <string name="month_ago_text">acum %1$d luni</string>
    <string name="months_ago_text">acum %1$d luni</string>
+   <string name="week_ago_text">acum %1$d săptămâni</string>
    <string name="weeks_ago_text">acum %1$d săptămâni</string>
+   <string name="day_ago_text">acum %1$d zile</string>
    <string name="days_ago_text">acum %1$d zile</string>
+   <string name="hour_ago_text">acum %1$d ore</string>
    <string name="hours_ago_text">acum %1$d ore</string>
    <string name="min_ago_text">%%1$d%1$d min în urmă</string>
    <string name="sec_ago_text">%1$d sec în urmă</string>

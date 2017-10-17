@@ -13,7 +13,7 @@ import com.messenger.messengerservers.chat.ChatManager;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.InitialPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGenerator;
-import com.messenger.util.CrashlyticsTracker;
+import com.worldventures.core.utils.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;

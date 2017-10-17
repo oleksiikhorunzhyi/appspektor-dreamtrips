@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
 import android.support.annotation.StringRes;
 
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetSearchUsersCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetUsersCommand;
 

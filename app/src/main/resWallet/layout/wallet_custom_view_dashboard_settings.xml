@@ -19,7 +19,7 @@
          android:src="@drawable/ic_wallet_vector_settings"
          />
 
-   <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView
+   <com.worldventures.core.ui.view.custom.BadgeView
          android:id="@+id/badge_view"
          android:layout_width="16dp"
          android:layout_height="16dp"

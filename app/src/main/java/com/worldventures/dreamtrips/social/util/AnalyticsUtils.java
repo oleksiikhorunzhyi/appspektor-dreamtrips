@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.util;
 
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
+import com.worldventures.core.model.ShareType;
 
 public class AnalyticsUtils {
 

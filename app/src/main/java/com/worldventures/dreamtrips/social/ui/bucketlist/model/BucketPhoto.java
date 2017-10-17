@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
+import com.worldventures.core.model.ImagePathHolder;
 
 import java.io.Serializable;
 

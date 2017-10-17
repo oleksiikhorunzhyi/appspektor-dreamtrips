@@ -5,17 +5,17 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_feed_item_photo_atachment)
-public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDelegate<Photo>> {
+public class SubPhotoAttachmentCell extends BaseAbstractDelegateCell<Photo, CellDelegate<Photo>> {
 
    @InjectView(R.id.iv_photo) SimpleDraweeView photo;
    @InjectView(R.id.tag) ImageView tag;

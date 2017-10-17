@@ -8,19 +8,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.PhotoPostCreationDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,7 +33,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_photo_post)
-public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> implements ResizeableCell{
+public class PhotoPostCreationCell extends BaseAbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> implements ResizeableCell {
 
    private static final int DEGREE_PER_ONE_ROTATION = 90;
 
@@ -139,7 +139,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
       }
 
       boolean normalRotationPosition = (getModelObject().getRotation() / DEGREE_PER_ONE_ROTATION) % 2 == 0;
-      double aspectRatio = normalRotationPosition ? (double) height / width :  (double) width / height;
+      double aspectRatio = normalRotationPosition ? (double) height / width : (double) width / height;
       return (int) (cellWidth * aspectRatio);
    }
 

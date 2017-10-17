@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersAdapter;
-import com.techery.spares.adapter.HeaderItem;
+import com.worldventures.core.ui.view.adapter.HeaderItem;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;

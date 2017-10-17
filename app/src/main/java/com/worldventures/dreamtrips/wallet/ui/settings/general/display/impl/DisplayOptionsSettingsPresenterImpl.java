@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.display.impl;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
@@ -33,6 +33,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<DisplayOptionsSettingsScreen> implements DisplayOptionsSettingsPresenter {
@@ -77,7 +78,8 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
             smartCardInteractor.getDisplayTypePipe().observeSuccess()
                   .map(Command::getResult),
             Pair::new)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .take(1)
             .doOnSubscribe(this::fetchDisplayType)
             .subscribe(pair -> getView().setupViewPager(user, pair.second), t -> Timber.e(t, ""));
@@ -87,13 +89,15 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
       getDisplayTypeOperationView.showProgress(null);
       smartCardInteractor.getDisplayTypePipe().observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getDisplayTypeOperationView)
                   .create()
             );
       smartCardInteractor.saveDisplayTypePipe().observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<SetHomeDisplayTypeAction>provideSaveDisplayTypeOperationView())
                   .onSuccess(command -> {
                      if (mustSaveUserProfile && getView().getDisplayOptionsSource().isSettings()) {

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
 import android.net.Uri;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.SingleCommentBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;

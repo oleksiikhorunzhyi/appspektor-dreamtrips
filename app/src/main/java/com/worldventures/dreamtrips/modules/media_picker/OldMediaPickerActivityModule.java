@@ -1,9 +1,6 @@
 package com.worldventures.dreamtrips.modules.media_picker;
 
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.MediaPickerPresenter;
@@ -17,15 +14,8 @@ import dagger.Provides;
 @Module(injects = {
       MediaPickerFragment.class,
       MediaPickerPresenter.class,
-      PhotoPickerLayout.class,
-}, complete = false, library = true)
+      PhotoPickerLayout.class,}, complete = false, library = true)
 public class OldMediaPickerActivityModule {
-
-   @Provides
-   @Singleton
-   PickImageDelegate pickImageDelegate(ActivityRouter activityRouter, MediaInteractor mediaInteractor) {
-      return new PickImageDelegate(activityRouter, mediaInteractor);
-   }
 
    @Provides
    @Singleton

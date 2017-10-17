@@ -3,16 +3,16 @@ package com.worldventures.dreamtrips.social.ui.friends.view.cell;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.friends.model.AcceptanceHeaderModel;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_all_friends_accepted)
-public class AcceptanceHeaderCell extends AbstractDelegateCell<AcceptanceHeaderModel, CellDelegate<AcceptanceHeaderModel>> {
+public class AcceptanceHeaderCell extends BaseAbstractDelegateCell<AcceptanceHeaderModel, CellDelegate<AcceptanceHeaderModel>> {
 
    @InjectView(R.id.tv_accepted) TextView acceptedTextView;
 

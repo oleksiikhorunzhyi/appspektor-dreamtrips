@@ -34,7 +34,7 @@ public class WizardManualInputPresenterImpl extends WalletPresenterImpl<WizardMa
    private void observeScidInput() {
       //noinspection ConstantConditions
       getView().scidInput()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(scid -> getView().buttonEnable(scid.length() == getView().getScIdLength()));
    }
 

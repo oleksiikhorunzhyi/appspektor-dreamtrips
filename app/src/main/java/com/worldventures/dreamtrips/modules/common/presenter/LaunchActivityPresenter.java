@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.messenger.synchmechanism.MessengerConnector;
-import com.techery.spares.utils.ValidationUtils;
+import com.worldventures.core.modules.auth.api.command.LoginCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.auth.service.analytics.LoginAction;
+import com.worldventures.core.modules.auth.service.analytics.LoginErrorAction;
+import com.worldventures.core.modules.auth.util.SessionUtil;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.service.analytics.command.ClearHeadersCommand;
+import com.worldventures.core.service.analytics.command.SetUserIdsHeadersCommand;
+import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.utils.tracksystem.command.ClearHeadersCommand;
-import com.worldventures.dreamtrips.core.utils.tracksystem.command.SetUserIdsHeadersCommand;
-import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginAction;
-import com.worldventures.dreamtrips.modules.auth.service.analytics.LoginErrorAction;
-import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
 import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.HttpResponseSnifferDelegate;
 import com.worldventures.dreamtrips.modules.common.service.ClearStoragesInteractor;

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.navigation.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
 
 import io.techery.janet.ActionPipe;

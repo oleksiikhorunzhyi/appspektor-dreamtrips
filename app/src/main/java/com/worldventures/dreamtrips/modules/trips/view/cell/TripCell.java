@@ -2,16 +2,16 @@ package com.worldventures.dreamtrips.modules.trips.view.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripFeedViewInjector;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_trip)
-public class TripCell extends AbstractDelegateCell<TripModel, TripCellDelegate> {
+public class TripCell extends BaseAbstractDelegateCell<TripModel, TripCellDelegate> {
 
    private TripFeedViewInjector tripFeedViewInjector;
 

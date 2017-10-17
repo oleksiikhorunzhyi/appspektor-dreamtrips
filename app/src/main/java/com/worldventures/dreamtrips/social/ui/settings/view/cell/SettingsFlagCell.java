@@ -4,18 +4,18 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.settings.model.FlagSetting;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.settings.model.FlagSetting;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.settings.util.SettingsManager;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_settings_flag)
-public class SettingsFlagCell extends AbstractDelegateCell<FlagSetting, CellDelegate<FlagSetting>> {
+public class SettingsFlagCell extends BaseAbstractDelegateCell<FlagSetting, CellDelegate<FlagSetting>> {
 
    @InjectView(R.id.settings_title) TextView settingsTitle;
    @InjectView(R.id.flag_checkbox) CheckBox flag;

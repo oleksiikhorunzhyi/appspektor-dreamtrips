@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.friends.service.command;
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.model.Circle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.circles.GetCirclesHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 
 import java.util.ArrayList;
 import java.util.List;

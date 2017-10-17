@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate;
 
-import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 public interface PhotoPostCreationDelegate extends CellDelegate<PhotoCreationItem> {
 

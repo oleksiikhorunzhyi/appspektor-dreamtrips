@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.BaseMediaCommand;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
 import java.util.ArrayList;
 import java.util.List;

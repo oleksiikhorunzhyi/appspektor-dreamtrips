@@ -8,8 +8,8 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 
 import static com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder.PointPosition.BOTTOM_LEFT;

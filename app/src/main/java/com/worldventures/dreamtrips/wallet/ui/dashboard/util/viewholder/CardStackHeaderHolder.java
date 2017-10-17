@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder;
 
-import com.techery.spares.adapter.HeaderItem;
+import com.worldventures.core.ui.view.adapter.HeaderItem;
 import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 
 import org.immutables.value.Value;

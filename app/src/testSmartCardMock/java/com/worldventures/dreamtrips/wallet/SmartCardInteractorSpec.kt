@@ -8,10 +8,10 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionFail
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.cache.CacheResultWrapper
+import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record

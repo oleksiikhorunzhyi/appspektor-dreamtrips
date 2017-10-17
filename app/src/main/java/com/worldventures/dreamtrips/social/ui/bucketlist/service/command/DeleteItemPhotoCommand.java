@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.bucketlist.DeletePhotoFromBucketItemHttpAction;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 

@@ -5,10 +5,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.view.dialog.FriendActionDialogDelegate;
 

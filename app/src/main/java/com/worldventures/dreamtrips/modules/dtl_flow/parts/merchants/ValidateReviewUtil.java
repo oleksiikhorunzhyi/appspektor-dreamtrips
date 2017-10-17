@@ -4,8 +4,8 @@ import android.content.Context;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 
 public class ValidateReviewUtil {
@@ -25,7 +25,9 @@ public class ValidateReviewUtil {
       }
 
       ratingBar.setRating(parseAverage(reviewSummary.ratingAverage()));
-      ratingText.setText(ViewUtils.getLabelReviews(context, total));
+      ratingText.setText(ViewUtils.getLabelReviews(total,
+            context.getResources().getString(R.string.format_review_text),
+            context.getResources().getString(R.string.format_reviews_text)));
    }
 
    private static int parseTotal(String value) {

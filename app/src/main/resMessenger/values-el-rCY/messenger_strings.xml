@@ -3,7 +3,7 @@
    <!-- messenger-->
    <string name="error_something_went_wrong">Κάτι δεν πήγε καλά</string>
    <string name="error_no_connection">Δεν είστε συνδεδεμένοι</string>
-   <string name="messenger">Messenger</string>
+   <string name="messenger">Μηνύματα</string>
    <string name="chat">Συνομιλία</string>
 
    <!---->
@@ -147,6 +147,9 @@
    <string name="sent_photo">εστάλη φωτογραφία</string>
    <string name="sent_location">αποστολή τοποθεσίας</string>
    <string name="unread_conversation">Συζητήσεις</string>
+
+   <string name="connection_overlay_disconnected_message">Η σύνδεση χάθηκε</string>
+   <string name="connection_overlay_connecting_message">Σύνδεση…</string>
 
    <string name="warning_no_internet_connection">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
 

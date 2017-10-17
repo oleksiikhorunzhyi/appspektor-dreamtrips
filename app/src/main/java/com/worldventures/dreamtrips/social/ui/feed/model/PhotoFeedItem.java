@@ -5,9 +5,9 @@ import android.os.Parcel;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class PhotoFeedItem extends FeedItem<Photo> {

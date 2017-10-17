@@ -1,11 +1,17 @@
 package com.worldventures.dreamtrips.modules.common.view.dialog;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.techery.spares.ui.fragment.InjectingDialogFragment;
+import com.worldventures.core.ui.view.fragment.InjectingDialogFragment;
+
+import butterknife.ButterKnife;
 
 public class BaseDialogFragment extends InjectingDialogFragment {
 
@@ -14,6 +20,13 @@ public class BaseDialogFragment extends InjectingDialogFragment {
    public BaseDialogFragment show(FragmentManager manager) {
       this.show(manager, TAG);
       return this;
+   }
+
+   @Override
+   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      final View rootView = super.onCreateView(inflater, container, savedInstanceState);
+      ButterKnife.inject(this, rootView);
+      return rootView;
    }
 
    @Override

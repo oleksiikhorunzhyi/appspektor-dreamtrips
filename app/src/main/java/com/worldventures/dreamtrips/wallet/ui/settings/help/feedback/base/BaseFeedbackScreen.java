@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base;
 
 import android.content.Context;
 
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.social.ui.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 

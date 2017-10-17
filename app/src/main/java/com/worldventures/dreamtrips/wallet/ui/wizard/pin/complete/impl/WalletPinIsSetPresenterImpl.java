@@ -1,18 +1,16 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.impl;
 
-
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PinWasSetAction;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.complete.WalletPinIsSetScreen;
-
-import io.techery.janet.helper.ActionStateSubscriber;
 
 public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIsSetScreen> implements WalletPinIsSetPresenter {
 
@@ -40,10 +38,8 @@ public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIs
 
    @Override
    public void navigateToNextScreen() {
-      wizardInteractor.provisioningStatePipe()
-            .createObservable(ProvisioningModeCommand.fetchState())
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
-                  .onSuccess(command -> getNavigator().goWizardAssignUser(command.getResult())));
+      wizardInteractor.provisioningStatePipe().send(ProvisioningModeCommand.clear());
+      wizardInteractor.activateSmartCardPipe().send(new ActivateSmartCardCommand());
+      getNavigator().goPaymentSyncFinished();
    }
 }

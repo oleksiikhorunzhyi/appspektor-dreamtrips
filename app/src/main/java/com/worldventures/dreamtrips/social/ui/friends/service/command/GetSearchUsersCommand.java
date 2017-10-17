@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.friends.service.command;
 
-
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.friends.SearchFriendsHttpAction;
 import com.worldventures.dreamtrips.api.friends.model.ImmutableSearchParams;
 import com.worldventures.dreamtrips.api.friends.model.SearchParams;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 

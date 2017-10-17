@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 
 import org.jetbrains.annotations.NotNull;

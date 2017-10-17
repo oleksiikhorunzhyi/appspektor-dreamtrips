@@ -14,11 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
+import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketPopularPresenter;
@@ -26,9 +29,6 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketPopular
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 
 import butterknife.InjectView;
 
@@ -98,7 +98,7 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
    public void onSelectedFromPager() {
       getPresenter().onSelected();
    }
-   
+
    private RecyclerView.LayoutManager getLayoutManager() {
       if (isTabletLandscape()) {
          return new GridLayoutManager(getActivity(), 3);

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountTimelineCommand;

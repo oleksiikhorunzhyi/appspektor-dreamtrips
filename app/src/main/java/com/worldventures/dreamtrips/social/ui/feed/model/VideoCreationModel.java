@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.feed.model;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
 
 import org.immutables.value.Value;
@@ -12,7 +11,8 @@ import org.immutables.value.Value;
 public abstract class VideoCreationModel {
 
    public abstract Uri uri();
-   @Nullable public abstract VideoMetadata videoMetadata();
+   @Nullable
+   public abstract VideoMetadata videoMetadata();
    public abstract State state();
    public abstract boolean canDelete();
 

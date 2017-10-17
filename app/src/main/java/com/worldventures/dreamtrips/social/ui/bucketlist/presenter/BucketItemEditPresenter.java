@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.Appte
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketPostBody;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
@@ -191,7 +192,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    }
 
    @NonNull
-   private ImmutableBucketPostBody createBucketPostBody() {
+   private BucketPostBody createBucketPostBody() {
       return ImmutableBucketPostBody.builder()
             .id(bucketItem.getUid())
             .name(view.getTitle())

@@ -48,14 +48,14 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
             .createObservable(new GetSuccessStoriesCommand())
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetSuccessStoriesCommand>()
-               .onSuccess(command -> {
-                  view.finishLoading();
-                  view.setItems(performFiltering(command.getResult()));
-               })
-               .onFail((command, throwable) -> {
-                  view.finishLoading();
-                  handleError(command, throwable);
-               }));
+                  .onSuccess(command -> {
+                     view.finishLoading();
+                     view.setItems(performFiltering(command.getResult()));
+                  })
+                  .onFail((command, throwable) -> {
+                     view.finishLoading();
+                     handleError(command, throwable);
+                  }));
    }
 
    @Override

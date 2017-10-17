@@ -2,10 +2,14 @@ package com.messenger.di;
 
 import android.content.Context;
 
+import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.StartChatDelegate;
+import com.messenger.delegate.chat.ChatMessagesEventDelegate;
+import com.messenger.delegate.chat.event.ChatEventInteractor;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.conversation.helper.CreateConversationHelper;
+import com.messenger.delegate.user.JoinedChatEventDelegate;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -13,10 +17,7 @@ import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import javax.inject.Singleton;
 
@@ -28,12 +29,13 @@ import io.techery.janet.Janet;
 public class MessengerDelegateModule {
 
    @Provides
-   ChatFacadeManager provideChatFacadeManager(@ForApplication Injector injector) {
-      return new ChatFacadeManager(injector);
+   ChatFacadeManager provideChatFacadeManager(ChatMessagesEventDelegate chatMessagesDelegate, GroupChatEventDelegate groupChatEventDelegate,
+         JoinedChatEventDelegate joinedChatDelegate, ChatEventInteractor chatEventInteractor) {
+      return new ChatFacadeManager(chatMessagesDelegate, groupChatEventDelegate, joinedChatDelegate, chatEventInteractor);
    }
 
    @Provides
-   UserSectionHelper provideUserSectionHelper(@ForApplication Context context, SessionHolder appSessionHolder) {
+   UserSectionHelper provideUserSectionHelper(Context context, SessionHolder appSessionHolder) {
       return new UserSectionHelper(context, appSessionHolder);
    }
 

@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.video.presenter;
 
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.modules.video.model.Video;
+import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.ViewVideosTabAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.TrainingVideosPresenter;
-import com.worldventures.dreamtrips.social.ui.video.model.Video;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetMemberVideosCommand;
 
 import java.util.List;
 

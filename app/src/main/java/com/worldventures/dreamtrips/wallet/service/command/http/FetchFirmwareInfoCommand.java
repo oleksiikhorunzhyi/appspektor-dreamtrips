@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.firmware.GetFirmwareHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareResponse;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;

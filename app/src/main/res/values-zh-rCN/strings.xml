@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="action_done">完成</string>
-   <string name="action_cancel">取消</string>
    <string name="action_filter">筛选</string>
    <string name="action_like">点赞</string>
    <string name="trips">DreamTrips</string>
@@ -19,9 +17,6 @@
    <string name="flag_description_title">检举</string>
    <string name="flag_description_positive">接受</string>
    <string name="flag_description_negative">取消</string>
-   <string name="facebook_error_loading_albums">无法加载相册</string>
-   <string name="facebook_error_loading_photos">无法加载照片</string>
-   <string name="facebook_login_error">无法登录至Facebook</string>
    <string name="fab_posted">成功地发布至脸书</string>
    <string name="facebook_posting_error">无法发布至Facebook</string>
    <string-array name="share_dialog_items">
@@ -63,7 +58,7 @@
    <string name="social_add_friend_yes">是</string>
    <string name="social_add_friend_no">不是</string>
    <string name="coming_soon">即将推出</string>
-   <string name="loading">载入中...</string>
+   <string name="loading">载入中…</string>
    <string name="post_visibility_public">公开的</string>
    <string name="post">帖子</string>
 
@@ -100,19 +95,11 @@
 
    <string name="feed_share_post_button">分享一张照片，一个视频或者想法</string>
 
-   <string name="camera">相机</string>
    <string name="library">图书馆</string>
-   <string name="camera_take_a_picture">拍摄一张照片</string>
-   <string name="camera_record_a_video">录制一个视频</string>
-   <string name="add_from_facebook">添加来自Facebook</string>
 
-   <string name="photos_selected">%1$d已选</string>
 
-   <string name="media_picker_error_contents">加载 %1$s 失败。</string>
-   <string name="media_picker_gallery_action">媒体库</string>
-   <string name="media_picker_fb_albums_actions">facebook 相册</string>
-   <string name="media_picker_fb_photos_actions">facebook 图片</string>
-   <string name="media_picker_limit_reached">您只可以选择 %1$s 张图片</string>
+
+   <string name="nav_back">回去</string>
 
    <string name="logout_component">退出</string>
 
@@ -161,12 +148,6 @@
 
    <string name="beta_label">Beta版</string>
 
-   <string name="picker_two_media_type_error">选择照片或者是一个视频</string>
-   <string name="picker_photo_limit">您可以选择最多 %1$d 张照片</string>
-   <string name="picker_photo_limit_plural">您可以选择最多 %1$d 张照片</string>
-   <string name="picker_video_limit">您可以选择最多 %1$d 个视频</string>
-   <string name="picker_video_limit_plural">您可以选择最多 %1$d 个视频</string>
-   <string name="picker_video_length_limit">您无权选择时长超过%1$d的视频</string>
 
    <string name="photo_strip_read_storage_permission_explanation">需要许可读取存储空间，才能建议媒体内容。</string>
 </resources>

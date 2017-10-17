@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.model;
 
 import android.os.Parcel;
 
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.core.model.BaseEntity;
 
 public class CategoryItem extends BaseEntity {
 

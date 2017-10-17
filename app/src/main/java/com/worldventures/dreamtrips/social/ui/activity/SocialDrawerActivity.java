@@ -13,12 +13,12 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.component.RootComponentsProvider;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -37,6 +37,7 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
    @Inject protected RootComponentsProvider rootComponentsProvider;
    @Inject DrawerOpenedEventDelegate drawerOpenedEventDelegate;
 
+   @Inject
    protected NavigationDrawerPresenter navigationDrawerPresenter;
 
    @State int defaultActionBarContentInset;
@@ -70,8 +71,6 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
 
    private void initNavDrawer() {
       setupDrawerLayout();
-      navigationDrawerPresenter = new NavigationDrawerPresenter();
-      inject(navigationDrawerPresenter);
       navigationDrawerPresenter.attachView(getNavigationDrawer(), rootComponentsProvider.getActiveComponents());
       navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
       navigationDrawerPresenter.setOnItemSelected(this::itemSelected);

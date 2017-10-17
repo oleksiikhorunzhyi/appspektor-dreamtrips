@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;

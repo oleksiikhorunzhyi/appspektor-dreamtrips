@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
+import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.UpdateBucketItemPositionHttpAction;
-import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 

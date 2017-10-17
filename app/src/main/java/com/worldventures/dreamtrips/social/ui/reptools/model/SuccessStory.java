@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.reptools.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.techery.spares.adapter.HeaderItem;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
+import com.worldventures.core.model.BaseEntity;
+import com.worldventures.core.model.Filterable;
+import com.worldventures.core.ui.view.adapter.HeaderItem;
 
 public class SuccessStory extends BaseEntity implements Parcelable, Filterable, HeaderItem {
 

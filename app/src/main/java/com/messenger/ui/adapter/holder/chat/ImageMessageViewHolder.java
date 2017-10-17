@@ -14,8 +14,8 @@ import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.MessageDAO;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

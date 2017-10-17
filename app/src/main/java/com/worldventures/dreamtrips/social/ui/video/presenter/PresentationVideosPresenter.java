@@ -4,12 +4,17 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.modules.video.model.Video;
+import com.worldventures.core.modules.video.model.VideoCategory;
+import com.worldventures.core.modules.video.service.MemberVideosInteractor;
+import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
+import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
+import com.worldventures.core.modules.video.utils.CachedModelHelper;
+import com.worldventures.core.service.CachedEntityDelegate;
+import com.worldventures.core.service.CachedEntityInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.LoadCanceledAction;
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.MemberVideosViewedAction;
@@ -17,12 +22,6 @@ import com.worldventures.dreamtrips.social.ui.membership.service.analytics.Membe
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.MembershipVideoStartedDownloadingAction;
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.MembershipVideoStartedPlayingAction;
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.MembershipVideoViewedAction;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
-import com.worldventures.dreamtrips.social.ui.video.model.Video;
-import com.worldventures.dreamtrips.social.ui.video.model.VideoCategory;
-import com.worldventures.dreamtrips.social.ui.video.service.MemberVideosInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.command.GetMemberVideosCommand;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +37,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
    @Inject CachedModelHelper cachedModelHelper;
-   @Inject protected SnappyRepository db;
-   @Inject protected SocialSnappyRepository socialDb;
+   @Inject protected MediaModelStorage mediaModelStorage;
    @Inject protected MemberVideosInteractor memberVideosInteractor;
 
    protected List<Object> currentItems;
@@ -93,7 +91,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
    private void attachCacheToVideos(List<VideoCategory> categories) {
       Queryable.from(categories).forEachR(cat -> Queryable.from(cat.getVideos()).forEachR(video -> {
-         CachedModel e = db.getDownloadMediaModel(video.getUid());
+         CachedModel e = mediaModelStorage.getDownloadMediaModel(video.getUid());
          video.setCacheEntity(e);
       }));
    }
@@ -179,7 +177,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    }
 
    protected String obtainVideoLanguage(Video video) {
-      return !TextUtils.isEmpty(video.getLanguage())? video.getLanguage() : "null";
+      return !TextUtils.isEmpty(video.getLanguage()) ? video.getLanguage() : "null";
    }
 
    private String getPathForCache(CachedModel entity) {

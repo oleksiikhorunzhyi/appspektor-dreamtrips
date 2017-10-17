@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.common.janet.service
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent
+import com.worldventures.core.service.analytics.AnalyticsEvent
 import io.techery.janet.ActionHolder
 import io.techery.janet.ActionService
 

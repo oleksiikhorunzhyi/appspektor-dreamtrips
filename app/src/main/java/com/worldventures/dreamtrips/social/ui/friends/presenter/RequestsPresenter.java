@@ -2,23 +2,23 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
 import com.innahema.collections.query.functions.Action1;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.model.User;
+import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.friends.model.AcceptanceHeaderModel;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 import com.worldventures.dreamtrips.social.ui.friends.model.RequestHeaderModel;
+import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.AcceptAllFriendRequestsCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.DeleteFriendRequestCommand;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetRequestsCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.service.analytics.FriendRelationshipAnalyticAction;
@@ -33,9 +33,9 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.INCOMING_REQUEST;
-import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.OUTGOING_REQUEST;
-import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.REJECTED;
+import static com.worldventures.core.model.User.Relationship.INCOMING_REQUEST;
+import static com.worldventures.core.model.User.Relationship.OUTGOING_REQUEST;
+import static com.worldventures.core.model.User.Relationship.REJECTED;
 
 public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
@@ -85,9 +85,9 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
          sortedItems.add(incomingHeader);
       }
 
-      if (acceptedRequestsCount != 0){
+      if (acceptedRequestsCount != 0) {
          sortedItems.add(new AcceptanceHeaderModel(acceptedRequestsCount));
-      } else if(!incoming.isEmpty()) {
+      } else if (!incoming.isEmpty()) {
          sortedItems.addAll(incoming);
       }
 

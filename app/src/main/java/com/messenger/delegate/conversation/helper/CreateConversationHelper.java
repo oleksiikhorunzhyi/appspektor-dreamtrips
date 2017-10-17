@@ -11,9 +11,8 @@ import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.List;
 import java.util.UUID;

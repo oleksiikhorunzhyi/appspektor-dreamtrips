@@ -14,9 +14,8 @@ import com.messenger.ui.model.Group;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.model.SwipeDataUser;
 import com.messenger.ui.util.recyclerview.Header;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 
 public class StateRecyclerView extends EmptyRecyclerView {
 
@@ -34,7 +34,7 @@ public class StateRecyclerView extends EmptyRecyclerView {
 
    public void setup(Bundle savedInstanceState, RecyclerView.Adapter adapter) {
       setup(savedInstanceState, adapter, new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-    }
+   }
 
    public void setup(Bundle savedInstanceState, RecyclerView.Adapter adapter, LinearLayoutManager linearLayoutManager) {
       this.adapter = adapter;

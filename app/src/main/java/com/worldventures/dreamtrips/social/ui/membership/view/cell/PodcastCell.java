@@ -9,15 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.modules.video.utils.CachedModelHelper;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.custom.PinProgressButton;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 import com.worldventures.dreamtrips.social.ui.membership.view.cell.delegate.PodcastCellDelegate;
 import com.worldventures.dreamtrips.social.ui.video.cell.ProgressVideoCellHelper;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 
 import javax.inject.Inject;
 
@@ -25,7 +25,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_podcast)
-public class PodcastCell extends AbstractDelegateCell<Podcast, PodcastCellDelegate> {
+public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDelegate> {
 
    @InjectView(R.id.image) SimpleDraweeView image;
    @InjectView(R.id.play) ImageView play;

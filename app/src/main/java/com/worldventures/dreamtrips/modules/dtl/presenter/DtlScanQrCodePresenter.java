@@ -8,7 +8,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.services.cognitoidentity.model.InvalidParameterException;
 import com.crashlytics.android.Crashlytics;
-import com.techery.spares.module.qualifier.Global;
+import com.worldventures.core.di.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -178,7 +178,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
    }
 
    private void processTransactionResult(DtlEarnPointsAction action) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new ScanMerchantEvent(merchant.asMerchantAttributes(),
                   action.getTransaction().getMerchantToken())));
       view.hideProgress();

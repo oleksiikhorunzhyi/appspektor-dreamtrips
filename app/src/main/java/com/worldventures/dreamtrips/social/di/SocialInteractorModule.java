@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.social.di;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.core.utils.FilePathProvider;
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.LikesInteractor;
@@ -17,15 +15,12 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedStorag
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFeedStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.social.ui.infopages.service.DocumentsInteractor;
-import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
+import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.ProgressAnalyticInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.MemberVideosInteractor;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
+import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 
 import javax.inject.Singleton;
 
@@ -74,18 +69,6 @@ public class SocialInteractorModule {
 
    @Provides
    @Singleton
-   MemberVideosInteractor provideMemberVideosInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new MemberVideosInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
-   FeedbackInteractor provideFeedbackInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new FeedbackInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
    ProfileInteractor provideProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          SessionHolder sessionHolder) {
       return new ProfileInteractor(sessionActionPipeCreator, sessionHolder);
@@ -101,12 +84,6 @@ public class SocialInteractorModule {
    @Singleton
    OfflineErrorInteractor provideOfflineErrorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new OfflineErrorInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
-   DocumentsInteractor provideDocumentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new DocumentsInteractor(sessionActionPipeCreator);
    }
 
    @Provides
@@ -167,11 +144,5 @@ public class SocialInteractorModule {
    @Singleton
    FlagsInteractor provideFlagsProvider(SessionActionPipeCreator sessionActionPipeCreator) {
       return new FlagsInteractor(sessionActionPipeCreator);
-   }
-
-   @Singleton
-   @Provides
-   CachedModelHelper provideCachedModelHelper(FilePathProvider filePathProvider) {
-      return new CachedModelHelper(filePathProvider);
    }
 }

@@ -3,16 +3,16 @@ package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 import android.view.View;
 
 import com.appyvet.rangebar.RangeBar;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_filters)
-public class FilterRangeBarsCell extends AbstractDelegateCell<FilterModel, FilterRangeBarsCell.Delegate> {
+public class FilterRangeBarsCell extends BaseAbstractDelegateCell<FilterModel, FilterRangeBarsCell.Delegate> {
 
    @InjectView(R.id.rangeBarDay) RangeBar rangeBarDay;
    @InjectView(R.id.rangeBarPrice) RangeBar rangeBarPrice;

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.records.add.impl;
 
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.dreamtrips.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.dreamtrips.wallet.analytics.SetDefaultCardAction;
@@ -33,6 +33,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.smartcard.action.settings.CheckPinStatusAction;
 import io.techery.janet.smartcard.event.PinStatusEvent;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDetailsScreen> implements AddCardDetailsPresenter {
@@ -74,7 +75,8 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
       recordInteractor
             .bankCardPipe()
             .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .map(Command::getResult)
             .subscribe(record -> {
                this.record = record;
@@ -90,7 +92,8 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             wizardInteractor.pinOptionalActionPipe()
                   .observeSuccess()
                   .map(Command::getResult), (isEnabled, shouldAsk) -> !isEnabled && shouldAsk)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .take(1)
             .subscribe(this::handlePinOptions);
    }
@@ -105,14 +108,15 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private void observeDefaultCardChangeByUser() {
       getView().setAsDefaultPaymentCardCondition()
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(this::onUpdateStatusDefaultCard);
    }
 
    private void observeSavingCardDetailsData() {
       recordInteractor.addRecordPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationAddRecord())
                   .onSuccess(this::onCardAdd)
                   .create());
@@ -139,7 +143,8 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    private void presetRecordToDefaultIfNeeded() {
       Observable.zip(fetchLocalRecords(), fetchDefaultRecordId(),
             (records, defaultRecordId) -> (records.isEmpty() || defaultRecordId == null))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(shouldBeDefault -> getView().defaultPaymentCard(shouldBeDefault), throwable -> Timber.e(throwable, ""));
    }
 
@@ -155,7 +160,8 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             .flatMap(defaultRecordId -> fetchLocalRecords().map(records ->
                   Queryable.from(records).firstOrDefault(element -> defaultRecordId.equals(element.id()))))
             .filter(defaultRecord -> defaultRecord != null)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(defaultRecord -> getView().showChangeCardDialog(defaultRecord), throwable -> Timber.e(throwable, ""));
    }
 
@@ -201,7 +207,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private void observeMandatoryFields() {
       Observable.combineLatest(observeCardNickName(), getView().getCvvObservable(), this::checkMandatoryFields)
-            .compose(bindView())
+            .compose(getView().bindUntilDetach())
             .subscribe(getView()::setEnableButton);
    }
 

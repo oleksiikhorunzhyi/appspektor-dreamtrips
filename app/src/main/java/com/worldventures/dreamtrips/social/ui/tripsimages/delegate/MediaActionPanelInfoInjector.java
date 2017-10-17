@@ -7,12 +7,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
+import com.worldventures.dreamtrips.modules.common.utils.UserUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 
 import java.util.Date;
 
@@ -54,7 +55,7 @@ public class MediaActionPanelInfoInjector {
       userPhoto.setVisibility(TextUtils.isEmpty(photo) ? View.GONE : View.VISIBLE);
       userPhoto.setImageURI(Uri.parse(photo));
 
-      userName.setText(user.getUsernameWithCompany(context));
+      userName.setText(UserUtils.getUsernameWithCompany(context, user));
 
       userPhoto.setup(user, injector);
    }

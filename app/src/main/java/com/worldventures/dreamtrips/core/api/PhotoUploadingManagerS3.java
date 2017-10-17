@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 

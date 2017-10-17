@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.flags.service;
 
-import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.flags.command.FlagItemCommand;
 import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
+import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;

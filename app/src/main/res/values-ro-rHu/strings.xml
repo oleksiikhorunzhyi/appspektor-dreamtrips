@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="action_done">Terminat</string>
-   <string name="action_cancel">Anulați</string>
    <string name="action_filter">Filtrați</string>
    <string name="action_like">Apreciați</string>
    <string name="trips">DreamTrips</string>
@@ -19,9 +17,6 @@
    <string name="flag_description_title">Marcați</string>
    <string name="flag_description_positive">Acceptați</string>
    <string name="flag_description_negative">Anulați</string>
-   <string name="facebook_error_loading_albums">Albumele nu au putut fi încărcate </string>
-   <string name="facebook_error_loading_photos">Fotografiile nu au putut fi încărcate</string>
-   <string name="facebook_login_error"> Autentificarea pe Facebook nu a reușit </string>
    <string name="fab_posted">S-a postat pe Facebook</string>
    <string name="facebook_posting_error">Postarea pe Facebook nu a reușit</string>
    <string-array name="share_dialog_items">
@@ -100,19 +95,11 @@
 
    <string name="feed_share_post_button">Distribuiți o fotografie, un videoclip sau o idee</string>
 
-   <string name="camera">Aparat foto</string>
    <string name="library">Bibliotecă</string>
-   <string name="camera_take_a_picture">Faceți o fotografie</string>
-   <string name="camera_record_a_video">Înregistrați un videoclip</string>
-   <string name="add_from_facebook">Adăugați de pe Facebook</string>
 
-   <string name="photos_selected">%1$d selectate</string>
 
-   <string name="media_picker_error_contents">Încărcarea a %1$s eșuat.</string>
-   <string name="media_picker_gallery_action">galerie media</string>
-   <string name="media_picker_fb_albums_actions">albume facebook</string>
-   <string name="media_picker_fb_photos_actions">fotografii facebook</string>
-   <string name="media_picker_limit_reached">Puteți alege până la %1$s fotografii</string>
+
+   <string name="nav_back">Înapoi</string>
 
    <string name="logout_component">Deconectare</string>
 
@@ -161,12 +148,6 @@
 
    <string name="beta_label">Beta</string>
 
-   <string name="picker_two_media_type_error">Alegeți fie fotografii, fie un videoclip</string>
-   <string name="picker_photo_limit">Puteți alege până la %1$d fotografie</string>
-   <string name="picker_photo_limit_plural">Puteți alege până la %1$d fotografii</string>
-   <string name="picker_video_limit">Puteți alege până la %1$d videoclip</string>
-   <string name="picker_video_limit_plural">Puteți alege până la %1$d videoclipuri</string>
-   <string name="picker_video_length_limit">Nu aveți permisiunea să selectați videoclipuri mai lungi de %1$d secunde</string>
 
    <string name="photo_strip_read_storage_permission_explanation">Avem nevoie de permisiune pentru a accesa spațiul de stocare, pentru a vă sugera conținutul media</string>
 </resources>

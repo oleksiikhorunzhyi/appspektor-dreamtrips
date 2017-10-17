@@ -2,15 +2,15 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.janet.AnalyticsService;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.core.janet.TimberServiceWrapper;
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
-import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper.CommandInjector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.TimberServiceWrapper;
+import com.worldventures.core.janet.cache.CacheResultWrapper;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.core.janet.dagger.DaggerActionServiceWrapper.CommandInjector;
 import com.worldventures.dreamtrips.mobilesdk.DreamtripsApiProvider;
+import com.worldventures.core.service.analytics.AnalyticsService;
 import com.worldventures.dreamtrips.wallet.service.SmartCardErrorServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 import com.worldventures.dreamtrips.wallet.util.TimberLogger;

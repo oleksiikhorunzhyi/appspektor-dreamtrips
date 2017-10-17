@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
@@ -10,9 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AttributesActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableAttributesActionParams;
-import java.util.List;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.ActionPipe;

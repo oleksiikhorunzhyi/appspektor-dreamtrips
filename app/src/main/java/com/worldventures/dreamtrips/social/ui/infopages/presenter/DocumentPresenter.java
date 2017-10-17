@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.social.ui.infopages.model.Document;
+import com.worldventures.core.modules.infopages.model.Document;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.ViewDocumentAnalyticAction;
 
 import javax.inject.Inject;

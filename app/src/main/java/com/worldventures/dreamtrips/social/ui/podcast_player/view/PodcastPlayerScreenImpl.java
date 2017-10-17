@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.layout.BaseViewStateLinearLayout;
 import com.worldventures.dreamtrips.social.ui.podcast_player.presenter.PodcastPresenter;
@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.social.ui.podcast_player.view.custom.DtMedia
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
 
 public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPlayerScreen, PodcastPresenter> implements PodcastPlayerScreen {
 

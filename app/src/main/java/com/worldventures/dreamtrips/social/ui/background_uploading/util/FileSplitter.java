@@ -34,7 +34,7 @@ public class FileSplitter {
       BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
       in.skip(fromChunk * CHUNK_SIZE);
       for (int subFile = fromChunk; subFile < chunkCount; subFile++) {
-         File chunk =  new File(externalCacheDir + file.getName() + "." + subFile);
+         File chunk = new File(externalCacheDir + file.getName() + "." + subFile);
 
          chunks.add(chunk);
 

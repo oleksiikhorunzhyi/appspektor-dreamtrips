@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common;
 
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.janet.api_lib.ResponseListener;
-import com.worldventures.dreamtrips.core.module.ApiModule;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.HttpResponseSnifferDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.api.response.HeaderChangedInformerListener;

@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.layoutma
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.utils.Size;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageView;
 
 import java.util.ArrayList;

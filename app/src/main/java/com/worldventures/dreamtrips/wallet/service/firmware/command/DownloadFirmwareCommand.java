@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.common.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareRepository;

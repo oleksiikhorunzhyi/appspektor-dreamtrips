@@ -148,6 +148,9 @@
    <string name="sent_location">lokasi yang dihantar</string>
    <string name="unread_conversation">Perbualan</string>
 
+   <string name="connection_overlay_disconnected_message">Sambungan terputus</string>
+   <string name="connection_overlay_connecting_message">Menyambung…</string>
+
    <string name="warning_no_internet_connection">Tidak terdapat sambungan internet </string>
 
    <string name="chat_update_proposition"><![CDATA[Kemas kini kepada versi terkini DreamTrips App untuk melihat lampiran <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">di sini</a>]]></string>

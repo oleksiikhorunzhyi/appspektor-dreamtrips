@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.OnClick;

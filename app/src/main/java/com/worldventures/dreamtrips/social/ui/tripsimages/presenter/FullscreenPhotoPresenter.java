@@ -3,15 +3,12 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedEntityHolder;
@@ -21,6 +18,9 @@ import com.worldventures.dreamtrips.social.ui.feed.service.TranslationFeedIntera
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
+import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;

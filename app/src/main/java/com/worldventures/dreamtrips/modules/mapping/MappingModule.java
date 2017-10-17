@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.mapping;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.AccountToUserConverter;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.mapping.converter.FeatureConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.SessionConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.SettingConverter;

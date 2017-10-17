@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.impl;
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pa
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair.ForcePairKeyScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ForcePairKeyPresenterImpl extends WalletPresenterImpl<ForcePairKeyScreen> implements ForcePairKeyPresenter {
 
@@ -30,7 +31,8 @@ public class ForcePairKeyPresenterImpl extends WalletPresenterImpl<ForcePairKeyS
    private void observeCreateAndConnectSmartCard() {
       firmwareInteractor.connectForFirmwareUpdatePipe()
             .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(new ActionPipeCacheWiper<>(firmwareInteractor.connectForFirmwareUpdatePipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationConnect())
                   .onSuccess(command -> smartCardConnected())

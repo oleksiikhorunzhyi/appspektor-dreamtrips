@@ -148,6 +148,9 @@
    <string name="sent_location">发送了位置</string>
    <string name="unread_conversation">对话</string>
 
+   <string name="connection_overlay_disconnected_message">失去连接</string>
+   <string name="connection_overlay_connecting_message">连接中…</string>
+
    <string name="warning_no_internet_connection">互联网连接不存在</string>
 
    <string name="chat_update_proposition"><![CDATA[要查看附件，请更新到DreamTrips应用程序的最新版本到<a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">这里</a>]]></string>

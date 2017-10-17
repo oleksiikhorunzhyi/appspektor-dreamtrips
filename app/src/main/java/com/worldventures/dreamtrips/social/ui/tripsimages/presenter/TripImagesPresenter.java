@@ -1,15 +1,16 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
+import com.worldventures.dreamtrips.modules.trips.service.analytics.UploadTripImageAnalyticAction;
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
@@ -20,7 +21,6 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedEntity
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.PostCreatedCommand;
-import com.worldventures.dreamtrips.modules.trips.service.analytics.UploadTripImageAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
@@ -145,6 +145,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    void loadNext() {
+      loading = true;
       tripImagesInteractor.baseTripImagesCommandActionPipe()
             .send(tripImagesCommandFactory.provideLoadMoreCommand(tripImagesArgs, currentItems));
    }
@@ -209,7 +210,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    void onFeedItemAdded(TextualPost textualPost) {
-      if (!textualPost.getAttachments().isEmpty() ) {
+      if (!textualPost.getAttachments().isEmpty()) {
          List<BaseMediaEntity> mediaEntities = Queryable.from(textualPost.getAttachments())
                .map(this::fromFeedEntityHolder)
                .filter(item -> item != null)

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
+import com.worldventures.core.model.session.Feature;
+import com.worldventures.core.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;

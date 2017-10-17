@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http;
 
 import android.content.Context;
 
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorView;
 
@@ -46,15 +46,6 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
 
       boolean parentIsJanetException = parentThrowable != null && parentThrowable instanceof JanetActionException;
 
-      if (throwable instanceof JanetActionException || parentIsJanetException) {
-         if (parentIsJanetException) throwable = parentThrowable;
-
-         final Object action = ((JanetActionException) throwable).getAction();
-         final String httpErrorMessage = httpErrorHandlingUtil.handleJanetHttpError(action, throwable, null);
-         if (httpErrorMessage == null) return null;
-         return new SimpleErrorView<>(context, httpErrorMessage, cancelAction);
-      }
-
       if (throwable instanceof HttpException) {
          final Response response = ((HttpException) throwable).getResponse();
          if (response != null && response.getStatus() >= 500) {
@@ -63,6 +54,16 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
             // if there is no response at all - it might be connection exception, try to handle cause
             throwable = throwable.getCause();
          }
+      }
+
+      if (throwable instanceof JanetActionException || parentIsJanetException) {
+         if (parentIsJanetException) throwable = parentThrowable;
+
+         final Object action = ((JanetActionException) throwable).getAction();
+         final String httpErrorMessage = httpErrorHandlingUtil.handleJanetHttpError(action, throwable, null,
+               context.getString(R.string.no_connection));
+         if (httpErrorMessage == null) return null;
+         return new SimpleErrorView<>(context, httpErrorMessage, cancelAction);
       }
 
       if (throwable instanceof UnknownHostException || throwable instanceof ConnectException) {

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.TranslateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TranslatePhotoCommand;

@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.post.CreatePostHttpAction;
 import com.worldventures.dreamtrips.api.post.CreateVideoPostHttpAction;
 import com.worldventures.dreamtrips.api.post.model.request.PostData;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithPhotoAttachmentBody;

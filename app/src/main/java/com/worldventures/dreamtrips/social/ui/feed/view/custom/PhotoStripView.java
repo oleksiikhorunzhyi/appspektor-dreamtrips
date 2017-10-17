@@ -21,20 +21,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.social.ui.feed.model.PickerIrregularPhotoModel;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.PhotoStripButtonCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.PhotoStripPhotoCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.PhotoStripVideoCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.PhotoStripItemDecorator;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModelImpl;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,7 +101,8 @@ public class PhotoStripView extends LinearLayout {
       if (attrs != null) {
          TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PhotoStripView, 0, 0);
          try {
-            errorPlankHeight = (int) a.getDimension(R.styleable.PhotoStripView_errorPlankHeight, context.getResources().getDimension(R.dimen.photo_strip_error_message_height));
+            errorPlankHeight = (int) a.getDimension(R.styleable.PhotoStripView_errorPlankHeight, context.getResources()
+                  .getDimension(R.dimen.photo_strip_error_message_height));
             errorMessageView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, errorPlankHeight));
             errorMessageView.setBackgroundColor(a.getColor(R.styleable.PhotoStripView_errorPlankColor, getColor(R.color.white)));
             errorMessageView.setTextSize(TypedValue.COMPLEX_UNIT_PX, a.getDimension(R.styleable.PhotoStripView_errorTextSize, 15));
@@ -118,26 +119,26 @@ public class PhotoStripView extends LinearLayout {
       mediaAdapter = new BaseDelegateAdapter(getContext(), injector);
       mediaAdapter.registerCell(PhotoPickerModel.class, PhotoStripPhotoCell.class);
       mediaAdapter.registerDelegate(PhotoPickerModel.class, model -> {
-         if(eventListener != null) {
+         if (eventListener != null) {
             PhotoPickerModel pickedModel = ((PhotoPickerModel) model).copy();
-            pickedModel.setSource(MediaAttachment.Source.PHOTO_STRIP);
+            pickedModel.setSource(MediaPickerAttachment.Source.PHOTO_STRIP);
             eventListener.photoPickStatusChanged(pickedModel);
          }
       });
 
       mediaAdapter.registerCell(VideoPickerModel.class, PhotoStripVideoCell.class);
       mediaAdapter.registerDelegate(VideoPickerModel.class, model -> {
-         if(eventListener != null) {
+         if (eventListener != null) {
             VideoPickerModel pickedModel = ((VideoPickerModel) model).copy();
-            pickedModel.setSource(MediaAttachment.Source.PHOTO_STRIP);
+            pickedModel.setSource(MediaPickerAttachment.Source.PHOTO_STRIP);
             eventListener.videoPickStatusChanged(pickedModel);
          }
       });
 
       mediaAdapter.registerCell(PickerIrregularPhotoModel.class, PhotoStripButtonCell.class);
-      mediaAdapter.registerDelegate(PickerIrregularPhotoModel.class,  model -> {
-         if(eventListener == null) return;
-         if( ((PickerIrregularPhotoModel)model).getType() == PickerIrregularPhotoModel.CAMERA ) {
+      mediaAdapter.registerDelegate(PickerIrregularPhotoModel.class, model -> {
+         if (eventListener == null) return;
+         if (((PickerIrregularPhotoModel) model).getType() == PickerIrregularPhotoModel.CAMERA) {
             eventListener.openCameraRequired();
          } else {
             eventListener.openPhotoPickerRequired();
@@ -147,10 +148,10 @@ public class PhotoStripView extends LinearLayout {
       photosContainer.setAdapter(mediaAdapter);
    }
 
-   private int getColor(@ColorRes int colorId){
-      if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+   private int getColor(@ColorRes int colorId) {
+      if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
          return getResources().getColor(colorId, null);
-      } else{
+      } else {
          return getResources().getColor(colorId);
       }
    }
@@ -161,7 +162,7 @@ public class PhotoStripView extends LinearLayout {
 
       List items = new ArrayList(photos);
       PickerIrregularPhotoModel cameraItem = new PickerIrregularPhotoModel(PickerIrregularPhotoModel.CAMERA,
-            R.drawable.ic_picker_camera, R.string.camera, R.color.share_camera_color);
+            R.drawable.ic_picker_camera, R.string.picker_static_take_from_camera, R.color.share_camera_color);
       PickerIrregularPhotoModel libraryItem = new PickerIrregularPhotoModel(PickerIrregularPhotoModel.LIBRARY,
             R.drawable.ic_photo_strip_library, R.string.library, R.color.share_camera_color);
       items.add(0, cameraItem);
@@ -173,8 +174,8 @@ public class PhotoStripView extends LinearLayout {
    public void updateMediaModel(MediaPickerModel updatedModel) {
       MediaPickerModelImpl updatedItem = (MediaPickerModelImpl) updatedModel;
 
-      for (Object item: mediaAdapter.getItems()) {
-         if (! (item instanceof MediaPickerModelImpl)) continue;
+      for (Object item : mediaAdapter.getItems()) {
+         if (!(item instanceof MediaPickerModelImpl)) continue;
 
          MediaPickerModelImpl notUpdatedModel = (MediaPickerModelImpl) item;
          if (updatedItem.getFileName().equals(notUpdatedModel.getFileName())) {

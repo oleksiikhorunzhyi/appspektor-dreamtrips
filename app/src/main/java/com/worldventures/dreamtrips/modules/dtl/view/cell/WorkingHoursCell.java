@@ -4,15 +4,16 @@ import android.graphics.Typeface;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
 
 import java.util.Calendar;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_dtl_details_working_hours_cell)
-public class WorkingHoursCell extends AbstractCell<OperationDay> {
+public class WorkingHoursCell extends BaseAbstractCell<OperationDay> {
 
    @InjectView(R.id.workingDay) TextView workingDay;
    @InjectView(R.id.workingHours) TextView workingHours;
@@ -39,7 +40,7 @@ public class WorkingHoursCell extends AbstractCell<OperationDay> {
       workingDay.setText(DateTimeUtils.getDisplayWeekDay(dayOfWeek.getDay(), Calendar.LONG, LocaleHelper.getDefaultLocale()));
       workingHours.setText(MerchantHelper.formatOperationDayHours(itemView.getContext(), operationDays));
       //
-      if (DateTimeUtils.isSameDayOfWeek(dayOfWeek, timezone)) {
+      if (OperationalHoursUtils.isSameDayOfWeek(dayOfWeek, timezone)) {
          workingHours.setTypeface(null, Typeface.BOLD);
          workingDay.setTypeface(null, Typeface.BOLD);
       }

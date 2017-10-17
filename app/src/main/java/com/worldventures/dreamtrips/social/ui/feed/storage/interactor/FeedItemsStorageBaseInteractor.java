@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.interactor;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedItemsStorageBaseCommand;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
 
-public abstract class FeedItemsStorageBaseInteractor<C extends FeedItemsStorageBaseCommand>  {
+public abstract class FeedItemsStorageBaseInteractor<C extends FeedItemsStorageBaseCommand> {
 
    private ActionPipe<C> feedItemsStoragePipe;
 

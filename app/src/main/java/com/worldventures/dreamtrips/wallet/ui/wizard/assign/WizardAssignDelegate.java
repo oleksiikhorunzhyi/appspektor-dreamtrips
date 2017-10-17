@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.RestoreO
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.records.SyncAction;
 
 import java.util.Collections;
@@ -75,8 +76,7 @@ public abstract class WizardAssignDelegate {
 
       @Override
       protected void toNextScreen(WizardAssignUserScreen view) {
-         activateSmartCard();
-         navigator.goCardList();
+         navigator.goPinProposalUserSetup(PinProposalAction.WIZARD);
       }
    }
 

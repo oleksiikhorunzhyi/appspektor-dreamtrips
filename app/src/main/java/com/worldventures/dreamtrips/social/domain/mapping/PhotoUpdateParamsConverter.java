@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.photos.model.ImmutableCoordinate;
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotoUpdateParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotoUpdateParams;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
@@ -26,8 +26,8 @@ public class PhotoUpdateParamsConverter implements Converter<UploadTask, PhotoUp
       params.title(uploadTask.getTitle());
       params.shotAt(uploadTask.getShotAt());
       params.coordinate(ImmutableCoordinate.builder()
-            .lat((double)uploadTask.getLatitude())
-            .lng((double)uploadTask.getLongitude()).build());
+            .lat((double) uploadTask.getLatitude())
+            .lng((double) uploadTask.getLongitude()).build());
       if (uploadTask.getTags() != null) {
          params.addAllTags(uploadTask.getTags());
       }

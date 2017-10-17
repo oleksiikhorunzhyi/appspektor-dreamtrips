@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceTypeAction;
 
 import io.techery.janet.ActionPipe;

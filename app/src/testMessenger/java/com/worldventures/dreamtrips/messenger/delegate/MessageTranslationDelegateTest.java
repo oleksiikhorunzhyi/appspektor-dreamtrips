@@ -7,8 +7,8 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.TranslationsDAO;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -32,7 +32,6 @@ import static com.worldventures.dreamtrips.AssertUtil.assertSubscriberWithoutErr
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;

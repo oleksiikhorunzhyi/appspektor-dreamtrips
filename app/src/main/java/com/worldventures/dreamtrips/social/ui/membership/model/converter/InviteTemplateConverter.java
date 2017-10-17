@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.membership.model.converter;
 
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.invitation.model.InvitationTemplate;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.social.ui.membership.model.InviteTemplate;
 
 import io.techery.mappery.MapperyContext;

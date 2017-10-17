@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.social.ui.activity.presenter;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.worldventures.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.LaunchUpdatingVideoProcessingCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.LaunchUpdatingVideoProcessingCommand;
 
 import javax.inject.Inject;
 

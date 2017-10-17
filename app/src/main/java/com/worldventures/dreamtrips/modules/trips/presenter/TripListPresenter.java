@@ -1,15 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.BaseAnalyticsAction;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand;
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
@@ -21,6 +14,13 @@ import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTri
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsApptentiveAnalyticAction;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewMapDreamTripsAnalyticAction;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewTripDetailsAnalyticAction;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 
 import java.util.List;
 

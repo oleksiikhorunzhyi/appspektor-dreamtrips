@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.model.converter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.feed.model.VideoQuality;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
-import java.util.Date;
 import java.util.List;
 
 import io.techery.mappery.MapperyContext;

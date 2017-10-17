@@ -16,21 +16,21 @@ import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.Feature;
+import com.worldventures.core.model.session.FeatureManager;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.custom.BadgeView;
+import com.worldventures.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.LocaleHelper;
+import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.profile.service.analytics.TapMyProfileAnalyticAction;
@@ -49,7 +49,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_profile)
-public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate> {
+public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDelegate> {
 
    @InjectView(R.id.user_cover) SimpleDraweeView userCover;
    @InjectView(R.id.user_photo) SmartAvatarView userPhoto;
@@ -260,7 +260,7 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
    }
 
    private void setFriendsCount(int count) {
-      int stringResource = QuantityHelper.chooseResource(count,  R.string.profile_friends_formatter, R.string.profile_friend_formatter, R.string.profile_friends_formatter);
+      int stringResource = QuantityHelper.chooseResource(count, R.string.profile_friends_formatter, R.string.profile_friend_formatter, R.string.profile_friends_formatter);
       friends.setText(String.format(context.getString(stringResource), count));
    }
 

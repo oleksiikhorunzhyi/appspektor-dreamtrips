@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.profile.model;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.model.User;
 
 public class FriendGroupRelation {
 

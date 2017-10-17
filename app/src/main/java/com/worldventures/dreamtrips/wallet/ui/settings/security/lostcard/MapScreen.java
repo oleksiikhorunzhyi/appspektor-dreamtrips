@@ -23,5 +23,5 @@ public interface MapScreen extends MvpView {
 
    OperationView<FetchAddressWithPlacesCommand> provideOperationView();
 
-   <T> LifecycleTransformer<T> bindToLifecycle();
+   <T> LifecycleTransformer<T> bindUntilDetach();
 }

@@ -17,7 +17,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.chat.ChatPath;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;

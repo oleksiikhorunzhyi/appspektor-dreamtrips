@@ -1,22 +1,21 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
+import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMediaFromGalleryCommand;
-import com.worldventures.dreamtrips.modules.media_picker.util.CapturedRowMediaHelper;
 
 import io.techery.janet.Command;
 import rx.Observable;
@@ -25,17 +24,17 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.permission.PermissionConstants.STORE_PERMISSIONS;
-import static com.worldventures.dreamtrips.core.permission.PermissionConstants.CAMERA_PERMISSIONS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.worldventures.core.ui.util.permission.PermissionConstants.CAMERA_PERMISSIONS;
+import static com.worldventures.core.ui.util.permission.PermissionConstants.STORE_PERMISSIONS;
 
 public class PhotoStripDelegate {
 
    private static final int PHOTO_STRIP_COUNT_LIMIT = 20;
 
    private Injector injector;
-   private MediaInteractor mediaInteractor;
+   private MediaPickerInteractor mediaPickerInteractor;
    private AppConfigurationInteractor appConfigurationInteractor;
    private PickImageDelegate pickImageDelegate;
    private CapturedRowMediaHelper capturedRowMediaHelper;
@@ -55,10 +54,10 @@ public class PhotoStripDelegate {
    private int photoAvailableLimit;
    private int videoMaxLength;
 
-   public PhotoStripDelegate(Injector injector, MediaInteractor mediaInteractor, AppConfigurationInteractor appConfigurationInteractor,
+   public PhotoStripDelegate(Injector injector, MediaPickerInteractor mediaPickerInteractor, AppConfigurationInteractor appConfigurationInteractor,
          PickImageDelegate pickImageDelegate, CapturedRowMediaHelper capturedRowMediaHelper, PermissionDispatcher permissionDispatcher) {
       this.injector = injector;
-      this.mediaInteractor = mediaInteractor;
+      this.mediaPickerInteractor = mediaPickerInteractor;
       this.appConfigurationInteractor = appConfigurationInteractor;
       this.pickImageDelegate = pickImageDelegate;
       this.capturedRowMediaHelper = capturedRowMediaHelper;
@@ -93,7 +92,7 @@ public class PhotoStripDelegate {
    }
 
    private void loadMedia() {
-      mediaInteractor.getMediaFromGalleryPipe()
+      mediaPickerInteractor.getMediaFromGalleryPipe()
             .createObservableResult(new GetMediaFromGalleryCommand(videoEnabled, PHOTO_STRIP_COUNT_LIMIT))
             .compose(bindIoToMain(stopper))
             .map(Command::getResult)
@@ -151,14 +150,14 @@ public class PhotoStripDelegate {
          return;
       }
 
-      model.setSource(MediaAttachment.Source.PHOTO_STRIP);
+      model.setSource(MediaPickerAttachment.Source.PHOTO_STRIP);
       photoAvailableLimit += model.isChecked() ? -1 : +1;
       photoStrip.updateMediaModel(model);
       newMediaAction.call(model.copy());
    }
 
    private void videoPickStatusChanged(VideoPickerModel model) {
-      model.setSource(MediaAttachment.Source.PHOTO_STRIP);
+      model.setSource(MediaPickerAttachment.Source.PHOTO_STRIP);
       if (checkLimitVideoException(model) || checkTwoMediaTypeException(model)) {
          removeItem(model);
       } else {
@@ -217,7 +216,7 @@ public class PhotoStripDelegate {
             .subscribe(videoPickerModel -> {
                if (!checkMaxVideoLengthException(videoPickerModel, videoLengthLimit)) {
                   videoPickerModel.setChecked(true);
-                  videoPickerModel.setSource(MediaAttachment.Source.CAMERA);
+                  videoPickerModel.setSource(MediaPickerAttachment.Source.CAMERA);
                   newMediaAction.call(videoPickerModel);
                }
                unsubscribeCameraSubscription();
@@ -229,14 +228,14 @@ public class PhotoStripDelegate {
             .compose(bindIoToMain(stopper))
             .subscribe(photoPickerModel -> {
                photoPickerModel.setChecked(true);
-               photoPickerModel.setSource(MediaAttachment.Source.CAMERA);
+               photoPickerModel.setSource(MediaPickerAttachment.Source.CAMERA);
                newMediaAction.call(photoPickerModel);
                unsubscribeCameraSubscription();
             });
    }
 
    private void subscribeToCaptureCancellation() {
-      mediaInteractor.mediaCaptureCanceledPipe()
+      mediaPickerInteractor.mediaCaptureCanceledPipe()
             .observeSuccess()
             .compose(bindIoToMain(stopper))
             .subscribe(type -> unsubscribeCameraSubscription());

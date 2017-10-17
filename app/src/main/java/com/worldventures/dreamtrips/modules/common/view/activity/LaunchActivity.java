@@ -8,17 +8,17 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.modules.infopages.StaticPageProvider;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.core.SocialConnectionOverlay;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.view.SocialConnectionOverlayViewFactory;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
 
 import javax.inject.Inject;
 

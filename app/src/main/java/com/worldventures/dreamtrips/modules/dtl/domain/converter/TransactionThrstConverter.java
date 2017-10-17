@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.TransactionDetailsThrst;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableTransactionDetails;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.TransactionDetails;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
-public class TransactionThrstConverter implements Converter<com.worldventures.dreamtrips.api.dtl.merchants.model.TransactionDetailsThrst, TransactionDetails> {
+public class TransactionThrstConverter implements Converter<TransactionDetailsThrst, TransactionDetails> {
 
     @Override
     public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.TransactionDetailsThrst> sourceClass() {

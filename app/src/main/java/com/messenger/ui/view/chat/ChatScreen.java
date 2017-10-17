@@ -10,12 +10,13 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.view.layout.MessengerScreen;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
 import java.util.List;
 
 import rx.Observable;
 
-public interface ChatScreen extends MessengerScreen {
+public interface ChatScreen extends MessengerScreen, PermissionUIComponent {
 
    void showLoading();
 

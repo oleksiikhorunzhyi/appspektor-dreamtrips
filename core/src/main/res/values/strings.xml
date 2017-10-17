@@ -2,6 +2,7 @@
 <resources>
    <string name="action_back">Back</string>
    <string name="action_cancel">Cancel</string>
+   <string name="action_ok">OK</string>
    <string name="action_done">Done</string>
    <string name="action_retry">Retry</string>
    <string name="camera_record_a_video">Record a video</string>
@@ -35,4 +36,6 @@
    <string name="picker_video_length_limit">You are not allowed to select videos more that %d sec length</string>
    <string name="picker_video_limit">You can select up to %d video</string>
    <string name="picker_video_limit_plural">You can select up to %d videos</string>
+   <string name="picker_no_permission_to_read_storage">Cannot load your photos</string>
+   <string name="picker_rational_message_to_read_storage">Need access to camera storage to show your photos</string>
 </resources>

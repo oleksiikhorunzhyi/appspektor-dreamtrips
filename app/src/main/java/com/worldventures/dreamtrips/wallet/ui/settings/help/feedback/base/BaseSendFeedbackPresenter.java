@@ -27,4 +27,5 @@ public interface BaseSendFeedbackPresenter<S extends BaseFeedbackScreen> extends
 
    void openFullScreenPhoto(EntityStateHolder<FeedbackImageAttachment> holder);
 
+   void recheckPermission(String[] permissions, boolean userAnswer);
 }

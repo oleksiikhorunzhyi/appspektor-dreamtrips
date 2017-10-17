@@ -3,15 +3,15 @@ package com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcon
 import android.os.Bundle;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollRepPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.EnrolRepViewedAction;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 @Layout(R.layout.fragment_webview)
-public class EnrollRepFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
+public class EnrollRepFragment extends AuthorizedStaticInfoFragment<EnrollRepPresenter, UrlBundle> implements EnrollRepPresenter.View {
 
    @Override
    protected String getURL() {
@@ -19,7 +19,7 @@ public class EnrollRepFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
    }
 
    @Override
-   protected AuthorizedStaticInfoPresenter createPresenter(Bundle savedInstanceState) {
+   protected EnrollRepPresenter createPresenter(Bundle savedInstanceState) {
       return new EnrollRepPresenter(getURL());
    }
 
@@ -28,6 +28,22 @@ public class EnrollRepFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
       super.afterCreateView(rootView);
       webView.getSettings().setLoadWithOverviewMode(true);
       webView.getSettings().setUseWideViewPort(true);
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.permission_location_for_localization_web_page)
+            .positiveText(R.string.dialog_ok)
+            .negativeText(R.string.dialog_cancel)
+            .onPositive((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(true))
+            .onNegative((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(false))
+            .cancelable(false)
+            .show();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
    }
 
    @Override

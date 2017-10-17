@@ -73,7 +73,7 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
    }
 
    void checkPermissions(Action0 permissionsGrantedAction) {
-      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_STORE_PERMISSIONS)
+      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
             .compose(getView().lifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

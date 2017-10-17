@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
@@ -20,6 +22,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteI
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketPostBody;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
 
 import java.util.Calendar;
@@ -27,6 +30,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 import io.techery.janet.CancelException;
 import io.techery.janet.Command;
@@ -36,12 +41,24 @@ import rx.schedulers.Schedulers;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View, EntityStateHolder<BucketPhoto>> {
 
+   @Inject PickerPermissionChecker pickerPermissionChecker;
+   @Inject PermissionUtils permissionUtils;
+
    private Date selectedDate;
    private boolean savingItem = false;
    private Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
 
    public BucketItemEditPresenter(BucketBundle bundle) {
       super(bundle);
+   }
+
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      pickerPermissionChecker.registerCallback(
+            () -> view.showMediaPicker(),
+            () -> view.showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> view.showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
    }
 
    @Override
@@ -70,6 +87,16 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
          putCoverPhotoAsFirst(bucketItem.getPhotos());
          view.setImages(entityStateHolders);
       });
+   }
+
+   public void openPickerRequired() {
+      pickerPermissionChecker.checkPermission();
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 
    @Override
@@ -210,7 +237,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             .equals(photoEntityStateHolder));
    }
 
-   public interface View extends BucketDetailsBasePresenter.View<EntityStateHolder<BucketPhoto>> {
+   public interface View extends BucketDetailsBasePresenter.View<EntityStateHolder<BucketPhoto>>, PermissionUIComponent {
       void showError();
 
       void setCategoryItems(List<CategoryItem> items, CategoryItem selectedItem);

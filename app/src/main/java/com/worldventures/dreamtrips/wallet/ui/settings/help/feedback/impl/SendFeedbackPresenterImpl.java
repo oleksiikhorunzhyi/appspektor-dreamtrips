@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.impl;
 
 
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
@@ -17,10 +19,10 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.base.impl.B
 public class SendFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<SendFeedbackScreen> implements SendFeedbackPresenter {
 
    public SendFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         FeedbackInteractor feedbackInteractor,
-         WalletSettingsInteractor walletSettingsInteractor, MediaPickerInteractor mediaPickerInteractor) {
+         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
+         MediaPickerInteractor mediaPickerInteractor, PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
       super(navigator, deviceConnectionDelegate, feedbackInteractor, walletSettingsInteractor,
-            mediaPickerInteractor);
+            mediaPickerInteractor, pickerPermissionChecker, permissionUtils);
    }
 
    @Override

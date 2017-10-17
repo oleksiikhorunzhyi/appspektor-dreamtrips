@@ -11,10 +11,13 @@ import android.widget.Button;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
@@ -44,6 +47,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.VideoMediaTi
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -51,6 +56,9 @@ import butterknife.OnClick;
 public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFragmentWithArgs<T, TripImagesArgs>
       implements TripImagesPresenter.View, SelectablePagerFragment {
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @InjectView(R.id.recyclerView) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipeLayout) SwipeRefreshLayout refreshLayout;
@@ -156,6 +164,20 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @OnClick(R.id.fab_photo)
    public void actionPhoto() {
       getPresenter().addPhotoClicked();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    @Override

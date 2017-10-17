@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.core.modules.infopages.service.CancelableFeedbackAttachmentsManager;
@@ -13,6 +14,7 @@ import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.core.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.command.MediaAttachmentPrepareCommand;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
@@ -37,15 +39,20 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
    private final WalletSettingsInteractor settingsInteractor;
    private final MediaPickerInteractor mediaPickerInteractor;
    private final CancelableFeedbackAttachmentsManager attachmentsManager;
+   private final PickerPermissionChecker pickerPermissionChecker;
+   private final PermissionUtils permissionUtils;
 
    private int attachmentsCount;
 
    public BaseFeedbackPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor, MediaPickerInteractor mediaPickerInteractor) {
+         FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor, MediaPickerInteractor mediaPickerInteractor,
+         PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
       super(navigator, deviceConnectionDelegate);
       this.feedbackInteractor = feedbackInteractor;
       this.settingsInteractor = walletSettingsInteractor;
       this.mediaPickerInteractor = mediaPickerInteractor;
+      this.pickerPermissionChecker = pickerPermissionChecker;
+      this.permissionUtils = permissionUtils;
       this.attachmentsManager = new CancelableFeedbackAttachmentsManager(feedbackInteractor.uploadAttachmentPipe());
    }
 
@@ -54,6 +61,14 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
       super.attachView(view);
       observeAttachmentsPreparation();
       observeAttachments();
+      registerPermissionCallbacks();
+   }
+
+   private void registerPermissionCallbacks() {
+      pickerPermissionChecker.registerCallback(
+            () -> getView().pickPhoto(),
+            () -> getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
    }
 
    @Override
@@ -133,7 +148,7 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    @Override
    public void chosenAttachments() {
-      getView().pickPhoto();
+      pickerPermissionChecker.checkPermission();
    }
 
    @Override
@@ -188,6 +203,12 @@ public abstract class BaseFeedbackPresenterImpl<S extends BaseFeedbackScreen> ex
 
    protected CancelableFeedbackAttachmentsManager getAttachmentsManager() {
       return attachmentsManager;
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 
    @Override

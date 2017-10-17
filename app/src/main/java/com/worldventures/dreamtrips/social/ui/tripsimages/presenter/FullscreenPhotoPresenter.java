@@ -31,8 +31,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.Trip
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.TripImageShareAnalyticsEvent;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoTagsCommand;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TranslatePhotoCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.DownloadImageDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoBundle;
 
 import java.io.IOException;
@@ -51,8 +51,9 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
    @Inject TranslationFeedInteractor translationFeedInteractor;
-   private FlagDelegate flagDelegate;
+   @Inject DownloadImageDelegate downloadImageDelegate;
 
+   private FlagDelegate flagDelegate;
    private Photo photo;
 
    public FullscreenPhotoPresenter(Photo photo) {
@@ -199,11 +200,7 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
    public void onShareOptionChosen(@ShareType String type) {
       if (type.equals(ShareType.EXTERNAL_STORAGE)) {
          if (view.isVisibleOnScreen()) {
-            tripImagesInteractor.downloadImageActionPipe()
-                  .createObservable(new DownloadImageCommand(photo.getImagePath()))
-                  .compose(bindViewToMainComposer())
-                  .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                        .onFail(this::handleError));
+            downloadImageDelegate.downloadImage(photo.getImagePath(), bindView(), this::handleError);
          }
       } else {
          view.openShare(photo.getImagePath(), photo.getTitle(), type);

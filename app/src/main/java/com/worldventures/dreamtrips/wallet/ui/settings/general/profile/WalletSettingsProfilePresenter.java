@@ -24,4 +24,6 @@ public interface WalletSettingsProfilePresenter extends WalletPresenter<WalletSe
    void handleBackOnDataChanged();
 
    void revertChanges();
+
+   void recheckPermission(String[] permissions, boolean userAnswer);
 }

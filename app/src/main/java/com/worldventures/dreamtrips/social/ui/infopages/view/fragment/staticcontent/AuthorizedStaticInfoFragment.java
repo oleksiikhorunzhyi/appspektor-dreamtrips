@@ -10,7 +10,8 @@ import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStat
 
 import java.net.HttpURLConnection;
 
-public abstract class AuthorizedStaticInfoFragment<P extends Parcelable> extends StaticInfoFragment<AuthorizedStaticInfoPresenter, P> implements AuthorizedStaticInfoPresenter.View {
+public abstract class AuthorizedStaticInfoFragment<PR extends AuthorizedStaticInfoPresenter, P extends Parcelable> extends StaticInfoFragment<PR, P>
+      implements AuthorizedStaticInfoPresenter.View {
 
    @Override
    public void afterCreateView(View rootView) {
@@ -32,7 +33,7 @@ public abstract class AuthorizedStaticInfoFragment<P extends Parcelable> extends
    }
 
    @Override
-   protected AuthorizedStaticInfoPresenter createPresenter(Bundle savedInstanceState) {
-      return new AuthorizedStaticInfoPresenter(getURL());
+   protected PR createPresenter(Bundle savedInstanceState) {
+      return (PR) new AuthorizedStaticInfoPresenter(getURL());
    }
 }

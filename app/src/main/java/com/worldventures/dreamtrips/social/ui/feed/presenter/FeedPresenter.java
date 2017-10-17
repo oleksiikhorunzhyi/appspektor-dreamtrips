@@ -9,6 +9,9 @@ import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -76,12 +79,14 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject PingAssetStatusInteractor assetStatusInteractor;
    @Inject SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
+   @Inject PermissionDispatcher permissionDispatcher;
 
    Circle filterCircle;
    List<PostCompoundOperationModel> postUploads;
    boolean shouldShowSuggestionItems;
    @State ArrayList<FeedItem> feedItems;
    @State int unreadConversationCount;
+   @State boolean permissionPreviouslyDenied = false;
 
    @Override
    public void onViewTaken() {
@@ -184,10 +189,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       view.refreshFeedItems(feedItems, postUploads, shouldShowSuggestionItems);
    }
 
-   public void refreshFeed() {
-      feedInteractor.getRefreshAccountFeedPipe().send(new GetAccountFeedCommand.Refresh(filterCircle.getId()));
-   }
-
    void subscribeToStorage() {
       feedStorageDelegate.observeStorageCommand()
             .compose(bindViewToMainComposer())
@@ -217,7 +218,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       boolean noMoreFeeds = freshItems.size() == 0;
       view.updateLoadingStatus(noMoreFeeds);
       view.finishLoading();
-      suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
+      if (!permissionPreviouslyDenied) suggestPhotoPermission();
    }
 
    private void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
@@ -225,6 +226,25 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       view.updateLoadingStatus(false);
       view.finishLoading();
    }
+
+   public void refreshFeed() {
+      view.startLoading();
+      feedInteractor.getRefreshAccountFeedPipe().send(new GetAccountFeedCommand.Refresh(filterCircle.getId()));
+   }
+
+   private void suggestPhotoPermission() {
+      permissionDispatcher.requestPermission(PermissionConstants.READ_STORAGE_PERMISSION, false)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber()
+                  .onPermissionDeniedAction(() -> {
+                     permissionPreviouslyDenied = true;
+                     refreshFeedItems();
+                  })
+                  .onPermissionGrantedAction(() ->
+                        suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand())
+                  ));
+   }
+
 
    void subscribeLoadNextFeeds() {
       feedInteractor.getLoadNextAccountFeedPipe()

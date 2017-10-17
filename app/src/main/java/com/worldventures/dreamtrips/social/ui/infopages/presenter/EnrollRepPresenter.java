@@ -3,50 +3,57 @@ package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 import android.location.Location;
 
 import com.worldventures.core.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.social.ui.infopages.util.PermissionLocationDelegate;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
-import java.util.concurrent.TimeUnit;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
-import rx.Observable;
+public class EnrollRepPresenter extends AuthorizedStaticInfoPresenter<EnrollRepPresenter.View> {
 
-public class EnrollRepPresenter extends AuthorizedStaticInfoPresenter {
-
-   @Inject LocationDelegate locationDelegate;
    @Inject StaticPageProvider staticPageProvider;
+   @Inject PermissionLocationDelegate permissionLocationDelegate;
 
    public EnrollRepPresenter(String url) {
       super(url);
    }
 
    @Override
+   public void takeView(EnrollRepPresenter.View view) {
+      permissionLocationDelegate.setNeedRationalAction(view::showPermissionExplanationText);
+      super.takeView(view);
+   }
+
+   @Override
    public void load() {
-      doWithLocation()
-            .subscribe(location -> {
-               updateUrlWithLocation(location);
-               super.load();
-            }, e -> super.load());
+      permissionLocationDelegate.setLocationObtainedAction(location -> {
+         updateUrlWithLocation(location);
+         super.load();
+      });
+      permissionLocationDelegate.requestPermission(true, bindView());
    }
 
    @Override
    protected void reload() {
-      doWithLocation()
-            .subscribe(location -> {
-               updateUrlWithLocation(location);
-               super.reload();
-            }, e -> super.reload());
+      permissionLocationDelegate.setLocationObtainedAction(location -> {
+         updateUrlWithLocation(location);
+         super.reload();
+      });
+      permissionLocationDelegate.requestPermission(true, bindView());
    }
 
-   private void updateUrlWithLocation(Location location) {
-      url = staticPageProvider.getEnrollRepWithLocation(location.getLatitude(), location.getLongitude());
+   private void updateUrlWithLocation(@Nullable Location location) {
+      if (location == null) return;
+      url = staticPageProvider.getEnrollWithLocation(location.getLatitude(), location.getLongitude());
    }
 
-   private Observable<Location> doWithLocation() {
-      return Observable.merge(
-            Observable.timer(2, TimeUnit.SECONDS).flatMap(unit -> Observable.error(new IllegalStateException())),
-            locationDelegate.requestLocationUpdate())
-            .take(1)
-            .compose(bindViewToMainComposer());
+   public void recheckPermissionAccepted(boolean recheckAccepted) {
+      permissionLocationDelegate.recheckPermissionAccepted(recheckAccepted, bindView());
    }
+
+   public interface View extends AuthorizedStaticInfoPresenter.View, PermissionUIComponent {
+
+   }
+
 }

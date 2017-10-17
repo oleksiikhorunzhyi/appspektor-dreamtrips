@@ -9,6 +9,8 @@ import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.service.CachedEntityDelegate;
 import com.worldventures.core.service.CachedEntityInteractor;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -27,6 +29,8 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.worldventures.core.ui.util.permission.PermissionConstants.WRITE_EXTERNAL_STORAGE;
+
 public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Presenter<T> {
 
    @Inject PodcastsInteractor podcastsInteractor;
@@ -34,6 +38,7 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
    @Inject CachedEntityDelegate cachedEntityDelegate;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject CachedModelHelper cachedModelHelper;
+   @Inject PermissionDispatcher permissionDispatcher;
 
    private boolean loading;
    private boolean hasMore;
@@ -118,7 +123,10 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
    }
 
    public void downloadPodcast(CachedModel entity) {
-      cachedEntityDelegate.startCaching(entity, getPathForPodcastCache(entity));
+      permissionDispatcher.requestPermission(WRITE_EXTERNAL_STORAGE, false)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() ->
+                  cachedEntityDelegate.startCaching(entity, getPathForPodcastCache(entity))));
    }
 
    public void deleteCachedPodcast(CachedModel entity) {

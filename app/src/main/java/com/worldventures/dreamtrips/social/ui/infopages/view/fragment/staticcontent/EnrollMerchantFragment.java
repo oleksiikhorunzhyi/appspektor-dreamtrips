@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMerchant
 import javax.inject.Inject;
 
 @Layout(R.layout.fragment_webview)
-public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<MerchantIdBundle> {
+public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<AuthorizedStaticInfoPresenter, MerchantIdBundle> {
 
    @Inject MerchantStaticPageProvider merchantStaticPageProvider;
 

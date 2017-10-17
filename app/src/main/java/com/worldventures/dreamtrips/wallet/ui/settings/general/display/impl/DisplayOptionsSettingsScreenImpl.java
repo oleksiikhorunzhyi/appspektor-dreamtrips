@@ -17,9 +17,13 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.DialogWalletDisplayOptionsEnterUserPhoneBinding;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
@@ -65,7 +69,9 @@ import rx.Observable;
 import static android.view.View.OVER_SCROLL_NEVER;
 import static android.view.View.inflate;
 
-public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter> implements DisplayOptionsSettingsScreen {
+public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter>
+      implements DisplayOptionsSettingsScreen {
+
    public static String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
    public static String KEY_DISPLAY_OPTIONS_SOURCE = "key_smart_card_user";
 
@@ -74,6 +80,8 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
    private CircleIndicator indicator;
 
    @Inject DisplayOptionsSettingsPresenter presenter;
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    private WalletCropImageService cropImageService;
 
@@ -253,6 +261,20 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
          countryCode.setSelection(countryCode.getText().length());
       });
       builder.show();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    @Override

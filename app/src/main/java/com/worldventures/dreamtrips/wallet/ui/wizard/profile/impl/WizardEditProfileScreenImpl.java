@@ -14,7 +14,10 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
 import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
@@ -55,6 +58,8 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    private static final String KEY_PROVISION_MODE = "WizardEditProfileScreen#PROVISION_MODE_KEY";
 
    @Inject WizardEditProfilePresenter presenter;
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    public static WizardEditProfileScreenImpl create(@NonNull ProvisioningMode provisioningMode) {
       final Bundle args = new Bundle();
@@ -149,6 +154,20 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    protected void navigateButtonClick() {
       getPresenter().back();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    void onChoosePhotoClick(String initialPhotoUrl) {

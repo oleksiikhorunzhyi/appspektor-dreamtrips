@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 
-public interface BaseFeedbackScreen extends WalletScreen {
+public interface BaseFeedbackScreen extends WalletScreen, PermissionUIComponent {
 
    void changeActionSendMenuItemEnabled(boolean enable);
 

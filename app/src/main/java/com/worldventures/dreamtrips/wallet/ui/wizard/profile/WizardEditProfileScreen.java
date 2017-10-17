@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
 
-public interface WizardEditProfileScreen extends WalletScreen, WalletProfilePhotoView {
+public interface WizardEditProfileScreen extends WalletScreen, WalletProfilePhotoView, PermissionUIComponent {
 
    OperationView<SetupUserDataCommand> provideOperationView();
 

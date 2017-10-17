@@ -21,4 +21,6 @@ public interface DisplayOptionsSettingsPresenter extends WalletPresenter<Display
    void saveAvatar(String imageUri);
 
    void choosePhoto();
+
+   void recheckPermission(String[] permissions, boolean userAnswer);
 }

@@ -2,14 +2,15 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile.impl;
 
 
 import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.PhotoWasSetAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.SetupUserAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
-import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
@@ -34,17 +35,22 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletSocialInfoProvider socialInfoProvider;
+   private final PickerPermissionChecker pickerPermissionChecker;
+   private final PermissionUtils permissionUtils;
 
    private final WalletProfileDelegate delegate;
 
    public WizardEditProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor) {
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor,
+         PickerPermissionChecker pickerPermissionChecker, PermissionUtils permissionUtils) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.socialInfoProvider = socialInfoProvider;
+      this.pickerPermissionChecker = pickerPermissionChecker;
+      this.permissionUtils = permissionUtils;
       this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
    }
 
@@ -55,6 +61,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
          attachProfile(getView());
       }
       observeSetupUserCommand(getView());
+      registerPermissionCallbacks();
 
       delegate.observePickerAndCropper(getView());
       delegate.sendAnalytics(new SetupUserAction());
@@ -87,6 +94,19 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
       ));
    }
 
+   private void registerPermissionCallbacks() {
+      pickerPermissionChecker.registerCallback(
+            () -> getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb())),
+            () -> getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
+   }
+
    @Override
    public void back() {
       getNavigator().goBack();
@@ -95,7 +115,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    @SuppressWarnings("ConstantConditions")
    @Override
    public void choosePhoto() {
-      getView().pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()));
+      pickerPermissionChecker.checkPermission();
    }
 
    @Override

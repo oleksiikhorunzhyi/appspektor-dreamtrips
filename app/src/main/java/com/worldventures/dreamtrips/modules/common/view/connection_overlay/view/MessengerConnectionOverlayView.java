@@ -14,14 +14,14 @@ import rx.subjects.PublishSubject;
 
 public class MessengerConnectionOverlayView implements ConnectionOverlayView {
 
-   private Context context;
+   private final Context context;
 
-   private ViewGroup parentView;
+   private final ViewGroup parentView;
    private View overlayView;
    private View disconnectedView;
    private View connectingView;
 
-   private PublishSubject retryObservable = PublishSubject.create();
+   private final PublishSubject retryObservable = PublishSubject.create();
 
    public MessengerConnectionOverlayView(Context context, @Nullable ViewGroup contentView) {
       this.context = context;
@@ -33,7 +33,9 @@ public class MessengerConnectionOverlayView implements ConnectionOverlayView {
    }
 
    public void setConnectionState(ConnectionState connectionState) {
-      if (parentView == null) return;
+      if (parentView == null) {
+         return;
+      }
 
       attachOverlayViewIfNeeded();
 

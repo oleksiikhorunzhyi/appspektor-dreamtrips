@@ -108,6 +108,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * }
  * </pre>
  */
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error (WMC=117, ATFD=39, TCC=0.020833333333333332)
 public class ViewServer implements Runnable {
    /**
     * The default port used to start view servers.
@@ -163,6 +164,7 @@ public class ViewServer implements Runnable {
     * @param context A Context used to check whether the application is
     *                debuggable, this can be the application context
     */
+   @SuppressWarnings("PMD.NonThreadSafeSingleton") //TODO: fix it
    public static ViewServer get(Context context) {
       ApplicationInfo info = context.getApplicationInfo();
       if (BUILD_TYPE_USER.equals(Build.TYPE) && (info.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
@@ -521,35 +523,43 @@ public class ViewServer implements Runnable {
 
       @Override
       public void addWindow(Activity activity) {
+         //do nothing
       }
 
       @Override
       public void removeWindow(Activity activity) {
+         //do nothing
       }
 
       @Override
       public void addWindow(View view, String name) {
+         //do nothing
       }
 
       @Override
       public void removeWindow(View view) {
+         //do nothing
       }
 
       @Override
       public void setFocusedWindow(Activity activity) {
+         //do nothing
       }
 
       @Override
       public void setFocusedWindow(View view) {
+         //do nothing
       }
 
       @Override
       public void run() {
+         //do nothing
       }
    }
 
    private class ViewServerWorker implements Runnable, WindowListener {
-      private Socket mClient;
+
+      private final Socket mClient;
       private boolean mNeedWindowListUpdate;
       private boolean mNeedFocusedWindowUpdate;
 
@@ -851,6 +861,7 @@ public class ViewServer implements Runnable {
 
       @Override
       public void onActivityStarted(Activity activity) {
+         //do nothing
       }
 
       @Override
@@ -860,14 +871,17 @@ public class ViewServer implements Runnable {
 
       @Override
       public void onActivityPaused(Activity activity) {
+         //do nothing
       }
 
       @Override
       public void onActivityStopped(Activity activity) {
+         //do nothing
       }
 
       @Override
       public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+         //do nothing
       }
 
       @Override

@@ -82,14 +82,16 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
    private void loadFlags() {
       getView().showFlagsLoadingDialog();
-      if (getFlagsSubscription != null) getFlagsSubscription.unsubscribe();
+      if (getFlagsSubscription != null) {
+         getFlagsSubscription.unsubscribe();
+      }
       getFlagsSubscription = flagsInteractor.getFlagsPipe()
             .createObservable(new GetFlagsCommand())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetFlagsCommand>()
-               .onSuccess(this::onFlagsLoadingSuccess)
-               .onFail(this::onFlagsLoadingError));
+                  .onSuccess(this::onFlagsLoadingSuccess)
+                  .onFail(this::onFlagsLoadingError));
    }
 
    private void onFlagsLoadingSuccess(GetFlagsCommand getFlagsCommand) {

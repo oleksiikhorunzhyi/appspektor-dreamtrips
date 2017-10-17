@@ -18,7 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.worldventures.dreamtrips.social.ui.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand.BUCKET_TYPE_EXTRA;
 
 public class RecentlyAddedBucketItemStorage implements ActionStorage<List<BucketItem>>, ClearableStorage {
-   private Map<BucketType, List<BucketItem>> mapOfItems = new ConcurrentHashMap<>();
+
+   private final Map<BucketType, List<BucketItem>> mapOfItems = new ConcurrentHashMap<>();
 
    @Override
    public void save(@Nullable CacheBundle params, List<BucketItem> data) {

@@ -82,7 +82,9 @@ public abstract class LegacyBaseActivity extends BaseActivity {
 
    @Override
    public void onBackPressed() {
-      if (handleBackPressed()) return;
+      if (handleBackPressed()) {
+         return;
+      }
       FragmentManager fm = getSupportFragmentManager();
 
       if (fm.getBackStackEntryCount() > 1) {
@@ -94,12 +96,14 @@ public abstract class LegacyBaseActivity extends BaseActivity {
    }
 
    private boolean checkChildFragments(FragmentManager fragmentManager) {
-      if (fragmentManager.getFragments() != null) for (Fragment fragment : fragmentManager.getFragments()) {
-         if (fragment != null && fragment.isVisible()) {
-            FragmentManager childFm = fragment.getChildFragmentManager();
-            if (!checkChildFragments(childFm) && childFm.getBackStackEntryCount() > 0) {
-               childFm.popBackStack();
-               return true;
+      if (fragmentManager.getFragments() != null) {
+         for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment != null && fragment.isVisible()) {
+               FragmentManager childFm = fragment.getChildFragmentManager();
+               if (!checkChildFragments(childFm) && childFm.getBackStackEntryCount() > 0) {
+                  childFm.popBackStack();
+                  return true;
+               }
             }
          }
       }
@@ -108,17 +112,18 @@ public abstract class LegacyBaseActivity extends BaseActivity {
    }
 
    protected void onTopLevelBackStackPopped() {
-      if (getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
+      if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+         finish();
+      }
    }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
-      switch (item.getItemId()) {
-         case android.R.id.home:
-            finish();
-            return true;
-         default:
-            return super.onOptionsItemSelected(item);
+      if (item.getItemId() == android.R.id.home) {
+         finish();
+         return true;
+      } else {
+         return super.onOptionsItemSelected(item);
       }
    }
 

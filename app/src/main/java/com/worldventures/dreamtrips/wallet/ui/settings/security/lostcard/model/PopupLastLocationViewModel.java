@@ -11,8 +11,6 @@ public class PopupLastLocationViewModel extends BaseObservable {
    private String address = "";
    private String lastConnectedDate = "";
 
-   public PopupLastLocationViewModel() {}
-
    @Bindable
    public String getPlace() {
       return place;

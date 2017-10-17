@@ -47,7 +47,9 @@ public class SimpleErrorDialogView<T> extends DialogErrorView<T> {
             .content(contentResId)
             .positiveText(positiveResId)
             .onPositive((dialog, which) -> {
-               if (positiveAction != null) positiveAction.call(t);
+               if (positiveAction != null) {
+                  positiveAction.call(t);
+               }
             });
       if (negativeAction != null) {
          builder.negativeText(negativeResId).onNegative((dialog, which) -> negativeAction.call(t));

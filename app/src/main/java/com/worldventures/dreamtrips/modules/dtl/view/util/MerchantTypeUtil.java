@@ -8,7 +8,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData
 import java.util.ArrayList;
 import java.util.List;
 
-public class MerchantTypeUtil {
+public final class MerchantTypeUtil {
+
+   private MerchantTypeUtil() {
+   }
 
    public static List<String> getMerchantTypeList(String type) {
 

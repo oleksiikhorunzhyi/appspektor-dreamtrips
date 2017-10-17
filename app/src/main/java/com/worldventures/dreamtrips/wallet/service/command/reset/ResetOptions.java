@@ -26,7 +26,7 @@ public final class ResetOptions {
 
    public static class Builder {
 
-      private ResetOptions resetOptions;
+      private final ResetOptions resetOptions;
 
       public Builder() {
          resetOptions = new ResetOptions();

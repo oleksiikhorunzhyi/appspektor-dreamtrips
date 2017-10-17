@@ -162,7 +162,9 @@ public class BankCardWidget extends FrameLayout {
 
       static BankCardResource fromAttrId(int attrId) {
          for (BankCardResource drawables : values()) {
-            if (drawables.attrId == attrId) return drawables;
+            if (drawables.attrId == attrId) {
+               return drawables;
+            }
          }
          throw new IllegalArgumentException();
       }

@@ -21,9 +21,6 @@ public class Podcast {
 
    private transient CachedModel entity;
 
-   public Podcast() {
-   }
-
    public void setTitle(String title) {
       this.title = title;
    }

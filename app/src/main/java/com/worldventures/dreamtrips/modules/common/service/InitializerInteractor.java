@@ -8,8 +8,8 @@ import io.techery.janet.ActionPipe;
 
 public class InitializerInteractor {
 
-   private AuthInteractor authInteractor;
-   private ActionPipe<InitializeCommand> initializeCommandActionPipe;
+   private final AuthInteractor authInteractor;
+   private final ActionPipe<InitializeCommand> initializeCommandActionPipe;
 
    public InitializerInteractor(SessionActionPipeCreator sessionActionPipeCreator, AuthInteractor authInteractor) {
       this.authInteractor = authInteractor;

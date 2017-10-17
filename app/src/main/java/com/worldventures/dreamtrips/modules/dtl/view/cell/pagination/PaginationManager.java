@@ -19,7 +19,9 @@ public class PaginationManager {
                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
                if (!loading && isRecyclerScrollable(recyclerView) && lastVisibleItemPosition == itemCount - 1) {
                   loading = true;
-                  if (paginationListener != null) paginationListener.loadNextPage();
+                  if (paginationListener != null) {
+                     paginationListener.loadNextPage();
+                  }
                }
             }
          });

@@ -57,7 +57,9 @@ public class PhotoUploadingManagerS3 {
          e.printStackTrace();
       }
 
-      if (path == null) return null;
+      if (path == null) {
+         return null;
+      }
 
       File file = new File(path);
       String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);

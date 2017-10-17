@@ -160,6 +160,8 @@ public class WizardTermsScreenImpl extends WalletBaseController<WizardTermsScree
 
    @Override
    public void hideError() {
-      if (errorDialog != null) errorDialog.dismiss();
+      if (errorDialog != null) {
+         errorDialog.dismiss();
+      }
    }
 }

@@ -124,11 +124,21 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    }
 
    private void dismissDialogs() {
-      if (installFirmwareErrorDialog != null) installFirmwareErrorDialog.dismiss();
-      if (forceUpdateDialog != null) forceUpdateDialog.dismiss();
-      if (addCardErrorDialog != null) addCardErrorDialog.dismiss();
-      if (factoryResetConfirmationDialog != null) factoryResetConfirmationDialog.dismiss();
-      if (scNonConnectionDialog != null) scNonConnectionDialog.dismiss();
+      if (installFirmwareErrorDialog != null) {
+         installFirmwareErrorDialog.dismiss();
+      }
+      if (forceUpdateDialog != null) {
+         forceUpdateDialog.dismiss();
+      }
+      if (addCardErrorDialog != null) {
+         addCardErrorDialog.dismiss();
+      }
+      if (factoryResetConfirmationDialog != null) {
+         factoryResetConfirmationDialog.dismiss();
+      }
+      if (scNonConnectionDialog != null) {
+         scNonConnectionDialog.dismiss();
+      }
    }
 
    @Override
@@ -227,7 +237,9 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
 
    @Override
    public void showFirmwareUpdateBtn() {
-      if (btnFirmwareAvailable.getVisibility() == VISIBLE) return;
+      if (btnFirmwareAvailable.getVisibility() == VISIBLE) {
+         return;
+      }
       btnFirmwareAvailable.setVisibility(VISIBLE);
       badgeView.show();
    }
@@ -280,7 +292,9 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
                .onPositive((dialog, which) -> getPresenter().navigateToFirmwareUpdate())
                .build();
       }
-      if (!factoryResetConfirmationDialog.isShowing()) factoryResetConfirmationDialog.show();
+      if (!factoryResetConfirmationDialog.isShowing()) {
+         factoryResetConfirmationDialog.show();
+      }
    }
 
    @Override
@@ -328,7 +342,9 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
             new RecyclerItemClickListener.OnItemClickListener() {
                @Override
                public void onItemClick(View view, int position) {
-                  if (!getPresenter().isCardDetailSupported()) return;
+                  if (!getPresenter().isCardDetailSupported()) {
+                     return;
+                  }
                   if (multiAdapter.getItemViewType(position) == R.layout.item_wallet_record) {
                      showDetails(view, (int) (dimension * VISIBLE_SCALE * -1));
                   }
@@ -380,7 +396,9 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
                .positiveText(R.string.ok)
                .build();
       }
-      if (!scNonConnectionDialog.isShowing()) scNonConnectionDialog.show();
+      if (!scNonConnectionDialog.isShowing()) {
+         scNonConnectionDialog.show();
+      }
    }
 
    @Override

@@ -36,7 +36,9 @@ public class WalletLoadMoreModel extends BaseViewModel<HelpDocsTypeFactory> impl
       dest.writeByte(this.visible ? (byte) 1 : (byte) 0);
    }
 
-   public WalletLoadMoreModel() {}
+   public WalletLoadMoreModel() {
+      //do nothing
+   }
 
    protected WalletLoadMoreModel(Parcel in) {
       this.loading = in.readByte() != 0;

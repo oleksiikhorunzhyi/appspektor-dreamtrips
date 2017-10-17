@@ -6,5 +6,5 @@ public interface AttributedPath {
 
    PathAttrs getAttrs();
 
-   public void onPreDispatch(AppCompatActivity activity);
+   void onPreDispatch(AppCompatActivity activity);
 }

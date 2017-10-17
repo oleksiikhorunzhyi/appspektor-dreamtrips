@@ -40,7 +40,9 @@ public class ExpandableOfferView extends ExpandableLayout {
    protected void expand(View v) {
       super.expand(v);
 
-      if (isAnimationRunning()) return;
+      if (isAnimationRunning()) {
+         return;
+      }
       AnimationUtils.rotateByDegrees(rotateView, 180, getDuration());
    }
 
@@ -48,7 +50,9 @@ public class ExpandableOfferView extends ExpandableLayout {
    protected void collapse(View v) {
       super.collapse(v);
 
-      if (isAnimationRunning()) return;
+      if (isAnimationRunning()) {
+         return;
+      }
       AnimationUtils.rotateByDegrees(rotateView, 0, getDuration());
    }
 

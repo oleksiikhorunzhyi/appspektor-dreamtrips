@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 public class CollageView extends FrameLayout {
 
-   private List<CollageItem> items = new ArrayList<>();
+   private final List<CollageItem> items = new ArrayList<>();
    private ItemClickListener itemClickListener;
    private int side; //usually this layout is square. side = width; width = MATCH_PARENT;
 
@@ -69,7 +69,9 @@ public class CollageView extends FrameLayout {
    }
 
    private void fillLayout() {
-      if (items.isEmpty()) return;
+      if (items.isEmpty()) {
+         return;
+      }
       LayoutManager layoutManager = LayoutManagerFactory.getManager(items.size());
       layoutManager.initialize(getContext(), items);
       layoutManager.setAttributes(padding, textSize, iconResId);

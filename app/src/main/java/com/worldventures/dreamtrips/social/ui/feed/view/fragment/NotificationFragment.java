@@ -101,7 +101,9 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
    private String createHeaderString(Object item) {
       if (item instanceof FeedItem) {
          return getString(((FeedItem) item).getReadAt() == null ? R.string.notifaction_new : R.string.notifaction_older);
-      } else return null;
+      } else {
+         return null;
+      }
    }
 
    @Override

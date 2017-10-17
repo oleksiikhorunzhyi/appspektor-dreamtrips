@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.adapter.DashboardHo
 
 public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
-   private CommonCardViewModel.StackType name;
+   private final CommonCardViewModel.StackType name;
 
    public CardGroupHeaderModel(CommonCardViewModel.StackType name) {
       this.name = name;

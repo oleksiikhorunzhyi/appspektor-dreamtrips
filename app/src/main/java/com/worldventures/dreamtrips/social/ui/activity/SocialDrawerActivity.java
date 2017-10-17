@@ -146,7 +146,9 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
       Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
       // check if current
       boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
-      if (theSame) return;
+      if (theSame) {
+         return;
+      }
       //
       navigationDrawerPresenter.setCurrentComponent(component);
       // check if in stack

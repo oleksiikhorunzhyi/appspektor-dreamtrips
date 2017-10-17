@@ -39,7 +39,9 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
 
    @Override
    public void onResume() {
-      if (view.getItemsCount() == 0) reload();
+      if (view.getItemsCount() == 0) {
+         reload();
+      }
    }
 
    public void reload() {

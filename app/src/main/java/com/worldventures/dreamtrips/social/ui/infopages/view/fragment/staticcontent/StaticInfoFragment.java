@@ -221,7 +221,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       };
       webChromeClient.setOnToggledFullscreen(fullscreen -> {
          // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
-         AppCompatActivity compatActivity = (AppCompatActivity) StaticInfoFragment.this.activity.get();
+         AppCompatActivity compatActivity = (AppCompatActivity) activity.get();
          if (fullscreen) {
             if (compatActivity != null && compatActivity.getSupportActionBar() != null) {
                compatActivity.getSupportActionBar().hide();
@@ -250,11 +250,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       webView.setWebChromeClient(webChromeClient);
 
       webView.setOnKeyListener((v, keyCode, event) -> {
-         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-               webView.goBack();
-               return true;
-            }
+         if (event.getAction() == KeyEvent.ACTION_DOWN
+               && keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
+            webView.goBack();
+            return true;
          }
          return false;
       });
@@ -265,7 +264,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
                lockOrientationIfNeeded();
             });
 
-      if (savedState != null) webView.restoreState(savedState);
+      if (savedState != null) {
+         webView.restoreState(savedState);
+      }
    }
 
    @Override
@@ -273,7 +274,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       isLoading = false;
       if (!(isDetached() || isRemoving() || refreshLayout == null)) {
          weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
+            if (refreshLayout != null) {
+               refreshLayout.setRefreshing(false);
+            }
          });
       }
    }
@@ -317,7 +320,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    @Override
    public void load(String url) {
-      if (!isLoading && savedState == null) webView.loadUrl(url, getHeaders());
+      if (!isLoading && savedState == null) {
+         webView.loadUrl(url, getHeaders());
+      }
    }
 
    private Map<String, String> getHeaders() {
@@ -340,8 +345,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    @Override
    public void setRefreshing(boolean refreshing) {
       weakHandler.post(() -> {
-         if (refreshLayout == null || (refreshLayout.isRefreshing() && refreshing) || (!refreshLayout.isRefreshing() && !refreshing))
+         if (refreshLayout == null || (refreshLayout.isRefreshing() && refreshing) || (!refreshLayout.isRefreshing() && !refreshing)) {
             return;
+         }
          //
          refreshLayout.setRefreshing(refreshing);
       });
@@ -349,9 +355,15 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    @Override
    public void showError(int errorCode) {
-      if (getPresenter() != null) getPresenter().setInErrorState(true);
-      if (isDetached() || isRemoving() || getActivity() == null) return;
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && getActivity().isDestroyed()) return;
+      if (getPresenter() != null) {
+         getPresenter().setInErrorState(true);
+      }
+      if (isDetached() || isRemoving() || getActivity() == null) {
+         return;
+      }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && getActivity().isDestroyed()) {
+         return;
+      }
 
       int errorText;
       switch (errorCode) {
@@ -398,7 +410,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    @Override
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
-      if (webView != null) webView.saveState(outState);
+      if (webView != null) {
+         webView.saveState(outState);
+      }
    }
 
    @Override
@@ -447,7 +461,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    protected void unlockOrientationIfNeeded() {
-      if (ViewUtils.isFullVisibleOnScreen(this)) unlockOrientation(getActivity());
+      if (ViewUtils.isFullVisibleOnScreen(this)) {
+         unlockOrientation(getActivity());
+      }
    }
 
    @Override
@@ -531,7 +547,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
          }
          isLoading = true;
          weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
+            if (refreshLayout != null) {
+               refreshLayout.setRefreshing(true);
+            }
          });
          cleanError();
       }
@@ -572,7 +590,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
       @Override
       public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
          super.onReceivedError(view, errorCode, description, failingUrl);
-         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) showError(errorCode);
+         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            showError(errorCode);
+         }
       }
 
       @Override

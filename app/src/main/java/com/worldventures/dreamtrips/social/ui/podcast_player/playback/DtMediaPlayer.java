@@ -13,12 +13,11 @@ import timber.log.Timber;
 public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateListener,
       MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
-   private Context context;
-
-   private MediaPlayer mediaPlayer;
+   private final Context context;
+   private final MediaPlayer mediaPlayer;
+   private final ReplaySubject<State> stateObservable = ReplaySubject.create(1);
+   private final Uri uri;
    private State state;
-   private ReplaySubject<State> stateObservable = ReplaySubject.create(1);
-   private Uri uri;
    private int bufferPercentage;
    private boolean playbackCompleted;
 

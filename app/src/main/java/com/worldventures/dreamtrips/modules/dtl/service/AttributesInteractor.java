@@ -46,7 +46,10 @@ public class AttributesInteractor {
             provideFilterDataObservable(),
             new AttributesUpdateFunc())
             .take(1)
-            .map(param -> AttributesAction.create(param, (merchantType != null && !merchantType.isEmpty()) ? merchantType : ImmutableFilterData.builder().build().getMerchantType()))
+            .map(param -> AttributesAction.create(param, (merchantType != null && !merchantType.isEmpty()) ? merchantType : ImmutableFilterData
+                  .builder()
+                  .build()
+                  .getMerchantType()))
             .subscribe(attributesPipe::send);
    }
 

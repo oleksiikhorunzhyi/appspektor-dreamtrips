@@ -8,7 +8,7 @@ import java.util.List;
 public abstract class MultiHolderAdapter<ITEM extends BaseViewModel> extends RecyclerView.Adapter<BaseHolder> {
 
    protected List<ITEM> items;
-   private HolderTypeFactory factory;
+   private final HolderTypeFactory factory;
 
    public MultiHolderAdapter(List<ITEM> items, HolderTypeFactory holderTypeFactory) {
       this.items = items;
@@ -78,7 +78,9 @@ public abstract class MultiHolderAdapter<ITEM extends BaseViewModel> extends Rec
    public void remove(ITEM item) {
       if (item != null) {
          int position = items.indexOf(item);
-         if (position != -1) remove(position);
+         if (position != -1) {
+            remove(position);
+         }
          notifyItemRemoved(position);
       }
    }

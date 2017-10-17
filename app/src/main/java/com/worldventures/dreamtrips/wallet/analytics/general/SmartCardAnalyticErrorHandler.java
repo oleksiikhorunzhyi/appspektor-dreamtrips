@@ -10,7 +10,7 @@ public class SmartCardAnalyticErrorHandler {
 
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   private String currentNavigationState;
+   private String currentNavigationState; //NOPMD
 
    public SmartCardAnalyticErrorHandler(SmartCardErrorServiceWrapper errorServiceWrapper,
          WalletAnalyticsServiceWrapper analyticsServiceWrapper, WalletAnalyticsInteractor analyticsInteractor) {

@@ -36,6 +36,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
    @Column long lastActiveDate;
    @Column long clearTime;
 
+   @SuppressWarnings("PMD.UnnecessaryConstructor")
    public DataConversation() {}
 
    public DataConversation(Conversation conversation) {
@@ -156,8 +157,12 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) { return true; }
-      if (o == null || getClass() != o.getClass()) { return false; }
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       DataConversation that = (DataConversation) o;
 
@@ -214,9 +219,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
       private long clearDate;
       private int unreadMessageCount = 0;
       private long leftTime;
-
-      public Builder() {
-      }
 
       public Builder id(String val) {
          id = val;

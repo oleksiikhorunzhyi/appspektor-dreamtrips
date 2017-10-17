@@ -60,7 +60,9 @@ public class FullscreenInspireMeFragment extends BaseFragmentWithArgs<Fullscreen
 
    @Override
    public void onDestroyView() {
-      if (imageryView != null && imageryView.getController() != null) imageryView.getController().onDetach();
+      if (imageryView != null && imageryView.getController() != null) {
+         imageryView.getController().onDetach();
+      }
       super.onDestroyView();
    }
 

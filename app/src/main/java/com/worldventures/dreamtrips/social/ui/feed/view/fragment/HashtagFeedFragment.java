@@ -247,7 +247,9 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    private void searchPosts(String query) {
       getPresenter().setQuery(query);
-      if (searchItem != null) releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+      if (searchItem != null) {
+         releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+      }
       getPresenter().onRefresh();
       clearSuggestions();
       getPresenter().cancelLastSuggestionRequest();
@@ -282,13 +284,17 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void startLoading() {
       statePaginatedRecyclerViewManager.startLoading();
-      if (emptyView != null) emptyView.setVisibility(View.GONE);
+      if (emptyView != null) {
+         emptyView.setVisibility(View.GONE);
+      }
    }
 
    @Override
    public void finishLoading() {
       statePaginatedRecyclerViewManager.finishLoading();
-      if (emptyView != null) emptyView.setVisibility(View.VISIBLE);
+      if (emptyView != null) {
+         emptyView.setVisibility(View.VISIBLE);
+      }
    }
 
    @Override
@@ -325,18 +331,26 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void showSuggestionProgress() {
-      if (suggestions != null) suggestions.showProgress();
+      if (suggestions != null) {
+         suggestions.showProgress();
+      }
    }
 
    @Override
    public void hideSuggestionProgress() {
-      if (suggestions != null) suggestions.hideProgress();
+      if (suggestions != null) {
+         suggestions.hideProgress();
+      }
    }
 
    private void releaseSearchFocus(@Nullable View search) {
       new WeakHandler().postDelayed(() -> {
-         if (search != null) search.clearFocus();
-         if (getView() != null) getView().requestFocus(); //check for multiple fast device rotation
+         if (search != null) {
+            search.clearFocus();
+         }
+         if (getView() != null) {
+            getView().requestFocus(); //check for multiple fast device rotation
+         }
       }, 50);
    }
 

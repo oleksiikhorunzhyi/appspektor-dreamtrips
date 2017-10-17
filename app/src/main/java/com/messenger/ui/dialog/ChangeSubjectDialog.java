@@ -26,10 +26,14 @@ public class ChangeSubjectDialog {
    public ChangeSubjectDialog(Context context, String currentSubject) {
       dialog = new AlertDialog.Builder(context).setView(obtainDialogUi(context, currentSubject))
             .setNegativeButton(R.string.action_cancel, (dialog, which) -> {
-               if (cancelListener != null) { cancelListener.call(); }
+               if (cancelListener != null) {
+                  cancelListener.call();
+               }
             })
             .setPositiveButton(R.string.ok, (dialog, which1) -> {
-               if (positiveListener != null) { positiveListener.call(etSubject.getText().toString()); }
+               if (positiveListener != null) {
+                  positiveListener.call(etSubject.getText().toString());
+               }
             })
             .setTitle(R.string.change_subject)
             .create();

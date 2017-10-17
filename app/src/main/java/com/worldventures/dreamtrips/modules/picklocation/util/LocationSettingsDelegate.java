@@ -17,8 +17,7 @@ public class LocationSettingsDelegate {
 
    private static final int REQUEST_CHECK_SETTINGS = 4165;
 
-   private PublishSubject<Boolean> locationSettingsStateObservable = PublishSubject.create();
-
+   private final PublishSubject<Boolean> locationSettingsStateObservable = PublishSubject.create();
    private final WeakReference<Activity> weakActivity;
 
    public LocationSettingsDelegate(Activity activity) {
@@ -30,7 +29,9 @@ public class LocationSettingsDelegate {
    }
 
    public void startLocationSettingsResolution(Status status) {
-      if (!checkActivity()) return;
+      if (!checkActivity()) {
+         return;
+      }
       try {
          status.startResolutionForResult(weakActivity.get(), REQUEST_CHECK_SETTINGS);
       } catch (IntentSender.SendIntentException e) {
@@ -39,7 +40,9 @@ public class LocationSettingsDelegate {
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (!checkActivity()) return false;
+      if (!checkActivity()) {
+         return false;
+      }
       switch (requestCode) {
          case REQUEST_CHECK_SETTINGS:
             switch (resultCode) {

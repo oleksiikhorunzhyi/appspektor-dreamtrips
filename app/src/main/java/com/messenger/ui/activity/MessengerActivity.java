@@ -49,8 +49,12 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
    @Override
    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (pickLocationDelegate.onActivityResult(requestCode, resultCode, data)) { return; }
-      if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) { return; }
+      if (pickLocationDelegate.onActivityResult(requestCode, resultCode, data)) {
+         return;
+      }
+      if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) {
+         return;
+      }
       super.onActivityResult(requestCode, resultCode, data);
    }
 

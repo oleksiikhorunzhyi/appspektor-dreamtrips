@@ -48,10 +48,14 @@ public class WalletProfileDelegate {
             .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation(this))
                   .onSuccess(setupUserDataCommand -> {
                      sendAnalytics(new ProfileChangesSavedAction());
-                     if (onSuccess != null) onSuccess.call(setupUserDataCommand.getResult());
+                     if (onSuccess != null) {
+                        onSuccess.call(setupUserDataCommand.getResult());
+                     }
                   })
                   .onFail((command, throwable) -> {
-                     if (onFailure != null) onFailure.call(throwable);
+                     if (onFailure != null) {
+                        onFailure.call(throwable);
+                     }
                   })
                   .create());
 

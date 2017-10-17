@@ -63,7 +63,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
 
    private Observable<Void> revertPhoto(ChangedFields changedFields, SmartCardUser user) {
       final SmartCardUserPhoto userPhoto = user.userPhoto();
-      if (changedFields.photo() == null || userPhoto == null) return Observable.just(null);
+      if (changedFields.photo() == null || userPhoto == null) {
+         return Observable.just(null);
+      }
       return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
             .createObservableResult(new UpdateSmartCardUserPhotoCommand(userPhoto.uri()))
             .map(action -> null);

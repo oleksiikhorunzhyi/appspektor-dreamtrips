@@ -13,23 +13,19 @@ import java.util.Date;
 
 public class Comment implements Parcelable, Serializable, UidItem, TranslatableItem {
 
-   private static final String TEXT_KEY = "description";
-
    private String uid;
    private String parentId;
-   private String originId; // Parent entity uid
    private String text;
    private User user;
    private Date createdAt;
-   private Date updatedAt;
    private boolean update;
-   private String company;
    private String language;
 
    private transient String translation;
    private transient boolean translated;
 
    public Comment() {
+      //do nothing
    }
 
    protected Comment(Parcel in) {
@@ -52,10 +48,6 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
       }
    };
 
-   public void setCompany(String company) {
-      this.company = company;
-   }
-
    public void setUid(String uid) {
       this.uid = uid;
    }
@@ -64,20 +56,12 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
       this.parentId = parentId;
    }
 
-   public void setPostId(String originId) {
-      this.originId = originId;
-   }
-
    public void setText(String text) {
       this.text = text;
    }
 
    public void setUser(User user) {
       this.user = user;
-   }
-
-   public void setUpdatedAt(Date updatedAt) {
-      this.updatedAt = updatedAt;
    }
 
    public void setUpdate(boolean update) {
@@ -133,8 +117,12 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       Comment comment = (Comment) o;
 

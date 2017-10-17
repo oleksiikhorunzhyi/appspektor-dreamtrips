@@ -14,7 +14,8 @@ public enum ClusterType {
       this.resource = resource;
    }
 
-   public @DrawableRes int asResource() {
+   public @DrawableRes
+   int asResource() {
       return resource;
    }
 

@@ -360,7 +360,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override
@@ -405,7 +407,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private void actionFilter() {
-      if (getActivity().findViewById(R.id.action_filter) == null && getCollapseView() == null) return;
+      if (getActivity().findViewById(R.id.action_filter) == null && getCollapseView() == null) {
+         return;
+      }
 
       getPresenter().actionFilter();
    }
@@ -433,7 +437,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    private View getCollapseView() {
       Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
 
-      if (toolbar == null) return null;
+      if (toolbar == null) {
+         return null;
+      }
 
       View collapseView = null;
       for (int i = 0; i < toolbar.getChildCount(); i++) {

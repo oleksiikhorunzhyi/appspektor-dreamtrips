@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.model.CardGroupHead
 
 public class CardGroupHeaderHolder extends BaseHolder<CardGroupHeaderModel> {
 
-   private ItemWalletCardGroupNameBinding binding;
+   private final ItemWalletCardGroupNameBinding binding;
 
    public CardGroupHeaderHolder(ItemWalletCardGroupNameBinding binding) {
       super(binding.getRoot());

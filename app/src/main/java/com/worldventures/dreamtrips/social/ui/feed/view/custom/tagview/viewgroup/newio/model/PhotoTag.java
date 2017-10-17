@@ -21,6 +21,7 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable, Comparable
     * For serialization
     */
    public PhotoTag() {
+      //do nothing
    }
 
    public PhotoTag(TagPosition position, int targetUserId) {
@@ -77,14 +78,20 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable, Comparable
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       PhotoTag photoTag = (PhotoTag) o;
 
       if (targetUserId != photoTag.targetUserId && (user == null || photoTag.getUser() == null || user.getId() != photoTag
             .getUser()
-            .getId())) return false;
+            .getId())) {
+         return false;
+      }
       Timber.v("-------------");
       Timber.v(photoTag.getProportionalPosition().toString());
       Timber.v(position.toString());

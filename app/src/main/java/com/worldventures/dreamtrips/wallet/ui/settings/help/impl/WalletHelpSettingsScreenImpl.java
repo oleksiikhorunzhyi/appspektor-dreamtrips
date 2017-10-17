@@ -24,9 +24,6 @@ public class WalletHelpSettingsScreenImpl extends WalletBaseController<WalletHel
 
    private BottomSheetDialog bottomSheetFeedbackDialog;
 
-   public WalletHelpSettingsScreenImpl() {
-   }
-
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);

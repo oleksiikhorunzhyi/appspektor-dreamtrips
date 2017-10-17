@@ -10,7 +10,10 @@ import android.renderscript.RSRuntimeException;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
-public class RSBlur {
+public final class RSBlur {
+
+   private RSBlur() {
+   }
 
    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
    public static Bitmap blur(Context context, Bitmap bitmap, int radius) throws RSRuntimeException {

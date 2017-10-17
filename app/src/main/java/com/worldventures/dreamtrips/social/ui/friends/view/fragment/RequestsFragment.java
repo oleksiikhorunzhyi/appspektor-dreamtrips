@@ -150,15 +150,19 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override
    public void openUser(UserBundle userBundle) {
-      if (isVisibleOnScreen()) router.moveTo(routeCreator.createRoute(userBundle.getUser()
-            .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
-            .visible(false)
-            .build()).data(userBundle).build());
+      if (isVisibleOnScreen()) {
+         router.moveTo(routeCreator.createRoute(userBundle.getUser()
+               .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
+               .visible(false)
+               .build()).data(userBundle).build());
+      }
    }
 
    @Override

@@ -122,13 +122,21 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
 
       @Override
       public boolean equals(Object o) {
-         if (this == o) return true;
-         if (o == null || getClass() != o.getClass()) return false;
+         if (this == o) {
+            return true;
+         }
+         if (o == null || getClass() != o.getClass()) {
+            return false;
+         }
 
          BlurInfo blurInfo = (BlurInfo) o;
 
-         if (position != blurInfo.position) return false;
-         if (isBlurred != blurInfo.isBlurred) return false;
+         if (position != blurInfo.position) {
+            return false;
+         }
+         if (isBlurred != blurInfo.isBlurred) {
+            return false;
+         }
          return uri != null ? uri.equals(blurInfo.uri) : blurInfo.uri == null;
 
       }

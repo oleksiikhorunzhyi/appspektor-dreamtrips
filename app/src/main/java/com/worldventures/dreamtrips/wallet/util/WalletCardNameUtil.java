@@ -8,7 +8,10 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.widget.TextView;
 
-public class WalletCardNameUtil {
+public final class WalletCardNameUtil {
+
+   private WalletCardNameUtil() {
+   }
 
    public static void bindSpannableStringToTarget(TextView targetTextView, int bodyStringResId, int postfixStrinResId, boolean isRequired, boolean asHint) {
       SpannableStringBuilder bodyStringBuilder = new SpannableStringBuilder()

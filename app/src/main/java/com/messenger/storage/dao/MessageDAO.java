@@ -49,6 +49,7 @@ public class MessageDAO extends BaseDAO {
       super(context, rxContentResolver);
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<DataMessage> getMessage(String messageId) {
       RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " "
             + "WHERE " + DataMessage$Table._ID + "=?").withSelectionArgs(new String[]{messageId}).build();
@@ -56,6 +57,7 @@ public class MessageDAO extends BaseDAO {
       return query(q, DataMessage.CONTENT_URI).compose(DaoTransformers.toEntity(DataMessage.class));
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<DataMessage> getLastOtherUserMessage(String conversationId, String ownerId, long lastMessageDate) {
       RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " "
             + "WHERE " + DataMessage$Table.FROMID + "<>? "
@@ -71,7 +73,7 @@ public class MessageDAO extends BaseDAO {
       return query(q, DataMessage.CONTENT_URI).compose(DaoTransformers.toEntity(DataMessage.class));
    }
 
-
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
       RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT m.*, "
             // message author
@@ -139,6 +141,7 @@ public class MessageDAO extends BaseDAO {
       });
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public void deleteMessagesByConversation(String conversationId) {
       // TODO: fucking sqlite does not execute DELETE with JOINed tables
       // TODO: somewhen we replace this code via FOREIGN KEY

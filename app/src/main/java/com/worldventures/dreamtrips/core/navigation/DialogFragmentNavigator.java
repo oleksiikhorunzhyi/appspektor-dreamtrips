@@ -85,7 +85,9 @@ public class DialogFragmentNavigator implements Navigator {
          super.onActivityCreated(savedInstanceState);
          BaseFragment currentFragment = (BaseFragment) getActivity().getSupportFragmentManager()
                .findFragmentById(getView().getId());
-         if (currentFragment != null && currentFragment.getClass().getName().equals(route.getClazzName())) return;
+         if (currentFragment != null && currentFragment.getClass().getName().equals(route.getClazzName())) {
+            return;
+         }
          //
          router.moveTo(route, NavigationConfigBuilder.forFragment()
                .backStackEnabled(true)
@@ -104,7 +106,9 @@ public class DialogFragmentNavigator implements Navigator {
       @Override
       public void onPause() {
          super.onPause();
-         if (isLastInStack()) OrientationUtil.unlockOrientation(getActivity());
+         if (isLastInStack()) {
+            OrientationUtil.unlockOrientation(getActivity());
+         }
       }
 
       private boolean isLastInStack() {

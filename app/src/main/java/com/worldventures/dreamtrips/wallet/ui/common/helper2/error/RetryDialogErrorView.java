@@ -37,7 +37,9 @@ public class RetryDialogErrorView<T> extends DialogErrorView<T> {
             .onPositive((dialog, which) -> retryAction.call(t))
             .negativeText(R.string.cancel)
             .onNegative((dialog, which) -> {
-               if (cancelAction != null) cancelAction.call(t);
+               if (cancelAction != null) {
+                  cancelAction.call(t);
+               }
             })
             .build();
    }

@@ -6,12 +6,12 @@ import java.util.Map;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class OpenedConversationTracker {
+public final class OpenedConversationTracker {
 
-   private PublishSubject<String> streamWriter = PublishSubject.create();
-   private Observable<String> streamReader = streamWriter.replay(1).autoConnect();
+   private final PublishSubject<String> streamWriter = PublishSubject.create();
+   private final Observable<String> streamReader = streamWriter.replay(1).autoConnect();
 
-   private Map<String, Integer> openedConversationIds;
+   private final Map<String, Integer> openedConversationIds;
 
    public OpenedConversationTracker() {
       //expected max opened 2 conversation at he same time from push notifications
@@ -28,7 +28,9 @@ public class OpenedConversationTracker {
 
    public void addOpenedConversation(String conversationId) {
       Integer prevCount = openedConversationIds.get(conversationId);
-      if (prevCount == null) { prevCount = 0; }
+      if (prevCount == null) {
+         prevCount = 0;
+      }
       openedConversationIds.put(conversationId, prevCount + 1);
       //
       streamWriter.onNext(conversationId);

@@ -11,8 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 

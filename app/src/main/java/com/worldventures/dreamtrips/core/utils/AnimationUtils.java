@@ -77,8 +77,9 @@ public final class AnimationUtils {
       Animation animation = new Animation() {
          @Override
          protected void applyTransformation(float interpolatedTime, Transformation t) {
-            if (interpolatedTime == 1) view.setVisibility(View.GONE);
-            else {
+            if (interpolatedTime == 1) {
+               view.setVisibility(View.GONE);
+            } else {
                view.getLayoutParams().height = viewHeight - (int) (viewHeight * interpolatedTime);
                view.requestLayout();
             }

@@ -9,7 +9,7 @@ import rx.subjects.ReplaySubject;
 
 public class AudioFocusDelegate implements AudioManager.OnAudioFocusChangeListener {
 
-   private AudioManager audioManager;
+   private final AudioManager audioManager;
 
    private ReplaySubject<AudioFocusState> replaySubject;
 

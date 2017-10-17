@@ -160,7 +160,9 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    private void showKeyboard() {
       recyclerView.postDelayed(() -> {
-         if (recyclerView == null || inputContainer == null || input == null) return;
+         if (recyclerView == null || inputContainer == null || input == null) {
+            return;
+         }
          //
          recyclerView.scrollBy(0, Integer.MAX_VALUE);
          inputContainer.setVisibility(View.VISIBLE);
@@ -177,7 +179,9 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @Override
    public void setLikePanel(FeedEntity entity) {
-      if (likersPanel == null || !getArgs().shouldShowLikersPanel()) return;
+      if (likersPanel == null || !getArgs().shouldShowLikersPanel()) {
+         return;
+      }
       likersPanelHelper.setup(likersPanel, entity);
       likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
             new UsersLikedEntityBundle(entity, entity.getLikesCount())));
@@ -284,7 +288,9 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @Override
    public void openInput() {
-      if (isVisibleOnScreen()) SoftInputUtil.showSoftInputMethod(input);
+      if (isVisibleOnScreen()) {
+         SoftInputUtil.showSoftInputMethod(input);
+      }
    }
 
    protected int getLoadMorePosition() {

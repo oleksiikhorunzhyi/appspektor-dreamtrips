@@ -18,12 +18,11 @@ public class MediaRefresher {
 
    private static final int REFRESH_INTERVAL_SEC = 30;
 
-   private TripImagesInteractor tripImagesInteractor;
-   private TripImagesCommandFactory tripImagesCommandFactory;
-
+   private final TripImagesInteractor tripImagesInteractor;
+   private final TripImagesCommandFactory tripImagesCommandFactory;
+   private final List<BaseMediaEntity> lastPhotos = new ArrayList<>();
+   private final PublishSubject<List<BaseMediaEntity>> newPhotosSubject = PublishSubject.create();
    private Subscription activeRefreshSubscription;
-   private List<BaseMediaEntity> lastPhotos = new ArrayList<>();
-   private PublishSubject<List<BaseMediaEntity>> newPhotosSubject = PublishSubject.create();
 
    public MediaRefresher(TripImagesInteractor tripImagesInteractor, TripImagesCommandFactory tripImagesCommandFactory) {
       this.tripImagesInteractor = tripImagesInteractor;

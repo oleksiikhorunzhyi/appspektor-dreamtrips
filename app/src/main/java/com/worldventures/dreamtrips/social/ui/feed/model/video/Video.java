@@ -20,6 +20,7 @@ public class Video extends BaseFeedEntity implements Parcelable {
    private long duration;
 
    public Video() {
+      //do nothing
    }
 
    public String getUploadId() {

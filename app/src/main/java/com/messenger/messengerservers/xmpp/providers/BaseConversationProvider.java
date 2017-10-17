@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<T> {
+
    private static final String CONVERSATION = "chat";
    private static final String CONVERSATION_THREAD = "thread";
    private static final String CONVERSATION_UNREAD_COUNT = "unread-count";
@@ -57,18 +58,9 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
       while (!done) {
          int eventType = parser.next();
          String elementName = parser.getName();
-         switch (eventType) {
-            case XmlPullParser.START_TAG:
-               switch (elementName) {
-                  case CONVERSATION:
-                     conversations.add(parseConversation(parser));
-                     break;
-                  default:
-                     break;
-               }
-               break;
-            default:
-               break;
+         if (eventType == XmlPullParser.START_TAG
+               && elementName.equals(CONVERSATION)) {
+            conversations.add(parseConversation(parser));
          }
          done = eventType == XmlPullParser.END_TAG && getEndElement().equalsIgnoreCase(elementName);
       }

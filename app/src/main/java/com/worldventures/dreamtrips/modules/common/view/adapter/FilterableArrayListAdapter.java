@@ -59,7 +59,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
    ///////////////////////////////////////////////////////////////////////////
 
    public void setFilter(String query) {
-      if (cachedItems.isEmpty()) cachedItems.addAll(items);
+      if (cachedItems.isEmpty()) {
+         cachedItems.addAll(items);
+      }
       this.query = query;
       if (TextUtils.isEmpty(query)) {
          flushFilter();
@@ -75,7 +77,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
                   mainHandler.post(() -> {
                      items.clear();
                      items.addAll(filtered);
-                     if (comparator != null) Collections.sort(items, comparator);
+                     if (comparator != null) {
+                        Collections.sort(items, comparator);
+                     }
                      notifyDataSetChanged();
                   });
                }
@@ -92,7 +96,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
    }
 
    public void setFilteredItems(List<T> filteredItems) {
-      if (cachedItems.isEmpty()) cachedItems.addAll(items);
+      if (cachedItems.isEmpty()) {
+         cachedItems.addAll(items);
+      }
       mainHandler.post(() -> {
          items.clear();
          items.addAll(filteredItems);
@@ -114,7 +120,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
          query = null;
          items.clear();
          items.addAll(cachedItems);
-         if (comparator != null) Collections.sort(items, comparator);
+         if (comparator != null) {
+            Collections.sort(items, comparator);
+         }
          notifyDataSetChanged();
          filterHandler.post(cachedItems::clear);
       }
@@ -138,8 +146,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
 
    @Override
    public void addItem(int location, T item) {
-      if (query == null) super.addItem(location, item);
-      else {
+      if (query == null) {
+         super.addItem(location, item);
+      } else {
          filterHandler.post(() -> cachedItems.add(location, item));
          setFilter(query);
       }
@@ -147,8 +156,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
 
    @Override
    public void addItems(List<T> items) {
-      if (query == null) super.addItems(items);
-      else {
+      if (query == null) {
+         super.addItems(items);
+      } else {
          filterHandler.post(() -> cachedItems.addAll(items));
          setFilter(query);
       }
@@ -156,8 +166,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
 
    @Override
    public void replaceItem(int location, T item) {
-      if (query == null) super.replaceItem(location, item);
-      else {
+      if (query == null) {
+         super.replaceItem(location, item);
+      } else {
          filterHandler.post(() -> cachedItems.set(location, item));
          setFilter(query);
       }
@@ -165,8 +176,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
 
    @Override
    public void remove(int location) {
-      if (query == null) super.remove(location);
-      else {
+      if (query == null) {
+         super.remove(location);
+      } else {
          filterHandler.post(() -> cachedItems.remove(location));
          setFilter(query);
       }
@@ -175,8 +187,9 @@ public class FilterableArrayListAdapter<T extends Filterable> extends BaseDelega
    @Override
    public void setItems(List<T> items) {
       this.items = items;
-      if (query == null) notifyDataSetChanged();
-      else {
+      if (query == null) {
+         notifyDataSetChanged();
+      } else {
          filterHandler.post(() -> {
             cachedItems.clear();
             cachedItems.addAll(items);

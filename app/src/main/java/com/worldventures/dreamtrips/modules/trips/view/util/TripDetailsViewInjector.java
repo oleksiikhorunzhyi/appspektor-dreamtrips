@@ -79,7 +79,9 @@ public class TripDetailsViewInjector extends TripViewInjector {
          addToBucketItem.setIcon(iconBucket);
          addToBucketItem.setEnabled(!tripModel.isInBucketList());
       }
-      if (textViewDescription != null) textViewDescription.setText(Html.fromHtml(tripModel.getDescription()));
+      if (textViewDescription != null) {
+         textViewDescription.setText(Html.fromHtml(tripModel.getDescription()));
+      }
    }
 
    public int getCurrentActivePhotoPosition() {

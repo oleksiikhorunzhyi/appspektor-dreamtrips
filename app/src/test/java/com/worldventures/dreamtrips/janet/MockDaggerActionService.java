@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.janet;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.common.Injector;
 import com.worldventures.dreamtrips.common.ObjectProvider;
-import com.worldventures.core.janet.dagger.InjectableAction;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionService;
@@ -26,7 +26,9 @@ public class MockDaggerActionService extends ActionServiceWrapper {
    @Override
    protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
       A action = holder.action();
-      if (!(action instanceof InjectableAction)) return false;
+      if (!(action instanceof InjectableAction)) {
+         return false;
+      }
       try {
          InjectableAction injectableAction = (InjectableAction) action;
          injector.inject(injectableAction);
@@ -38,18 +40,22 @@ public class MockDaggerActionService extends ActionServiceWrapper {
 
    @Override
    protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptStart(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override

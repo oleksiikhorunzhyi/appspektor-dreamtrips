@@ -44,7 +44,7 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
    public ErrorView<T> create(T t, @Nullable Throwable parentThrowable, Throwable throwable) {
       throwable = throwable instanceof HttpServiceException ? throwable.getCause() : throwable;
 
-      boolean parentIsJanetException = parentThrowable != null && parentThrowable instanceof JanetActionException;
+      boolean parentIsJanetException = parentThrowable instanceof JanetActionException;
 
       if (throwable instanceof HttpException) {
          final Response response = ((HttpException) throwable).getResponse();
@@ -57,12 +57,16 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
       }
 
       if (throwable instanceof JanetActionException || parentIsJanetException) {
-         if (parentIsJanetException) throwable = parentThrowable;
+         if (parentIsJanetException) {
+            throwable = parentThrowable;
+         }
 
          final Object action = ((JanetActionException) throwable).getAction();
          final String httpErrorMessage = httpErrorHandlingUtil.handleJanetHttpError(action, throwable, null,
                context.getString(R.string.no_connection));
-         if (httpErrorMessage == null) return null;
+         if (httpErrorMessage == null) {
+            return null;
+         }
          return new SimpleErrorView<>(context, httpErrorMessage, cancelAction);
       }
 

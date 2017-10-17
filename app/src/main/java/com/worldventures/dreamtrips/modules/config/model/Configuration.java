@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.config.model;
 
 public class Configuration {
 
-   private UpdateRequirement updateRequirement;
-   private VideoRequirement videoRequirement;
+   private final UpdateRequirement updateRequirement;
+   private final VideoRequirement videoRequirement;
 
    public Configuration() {
       videoRequirement = new VideoRequirement();

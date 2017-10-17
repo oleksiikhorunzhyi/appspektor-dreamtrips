@@ -128,7 +128,9 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    void initItems() {
-      if (currentItems == null) currentItems = new ArrayList<>();
+      if (currentItems == null) {
+         currentItems = new ArrayList<>();
+      }
    }
 
    void initCreateMediaFlow() {
@@ -173,7 +175,9 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
       loading = false;
       lastPageReached = baseMediaCommand.lastPageReached();
       view.finishLoading();
-      if (baseMediaCommand.isReload()) currentItems.clear();
+      if (baseMediaCommand.isReload()) {
+         currentItems.clear();
+      }
       currentItems.addAll(baseMediaCommand.getItems());
       updateItemsInView();
       tripImagesInteractor.checkVideoProcessingStatusPipe().send(new CheckVideoProcessingStatusCommand(currentItems));

@@ -11,7 +11,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DeletePostCommand extends ApiActionCommand<DeletePostHttpAction, FeedEntity> implements InjectableAction {
 
-   private FeedEntity feedEntity;
+   private final FeedEntity feedEntity;
 
    public DeletePostCommand(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;

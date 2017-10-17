@@ -99,7 +99,9 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
                .positiveText(R.string.wallet_close)
                .build();
       }
-      if (!infoLockGesturesDialog.isShowing()) infoLockGesturesDialog.show();
+      if (!infoLockGesturesDialog.isShowing()) {
+         infoLockGesturesDialog.show();
+      }
    }
 
    private void onBackClick() {
@@ -108,7 +110,9 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (infoLockGesturesDialog != null) infoLockGesturesDialog.dismiss();
+      if (infoLockGesturesDialog != null) {
+         infoLockGesturesDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

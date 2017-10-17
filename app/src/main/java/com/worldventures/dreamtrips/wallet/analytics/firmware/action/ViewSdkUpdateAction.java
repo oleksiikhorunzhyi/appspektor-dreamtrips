@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.wallet.analytics.firmware.action;
 
 import android.support.annotation.NonNull;
 
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.core.service.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
-import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 
 @AnalyticsEvent(action = "wallet:SmartCard Update:Step 1",

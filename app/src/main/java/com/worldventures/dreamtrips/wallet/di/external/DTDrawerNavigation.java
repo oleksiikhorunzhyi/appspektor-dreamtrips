@@ -84,7 +84,9 @@ class DTDrawerNavigation implements WalletNavigationDelegate {
             .positiveColorRes(R.color.theme_main_darker)
             .negativeColorRes(R.color.theme_main_darker)
             .onPositive((materialDialog, dialogAction) -> {
-               if (logoutAction != null) logoutAction.call();
+               if (logoutAction != null) {
+                  logoutAction.call();
+               }
             })
             .show();
    }

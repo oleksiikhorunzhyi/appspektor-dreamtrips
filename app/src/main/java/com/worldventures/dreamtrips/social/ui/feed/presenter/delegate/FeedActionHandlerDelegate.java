@@ -29,12 +29,12 @@ import rx.functions.Action2;
 
 public class FeedActionHandlerDelegate {
 
-   private FeedInteractor feedInteractor;
-   private FlagDelegate flagDelegate;
-   private TripImagesInteractor tripImagesInteractor;
-   private PostsInteractor postsInteractor;
-   private BucketInteractor bucketInteractor;
-   private AnalyticsInteractor analyticsInteractor;
+   private final FeedInteractor feedInteractor;
+   private final FlagDelegate flagDelegate;
+   private final TripImagesInteractor tripImagesInteractor;
+   private final PostsInteractor postsInteractor;
+   private final BucketInteractor bucketInteractor;
+   private final AnalyticsInteractor analyticsInteractor;
    private FeedEntityEditingView feedEntityEditingView;
 
    public FeedActionHandlerDelegate(FeedInteractor feedInteractor, FlagsInteractor flagsInteractor,

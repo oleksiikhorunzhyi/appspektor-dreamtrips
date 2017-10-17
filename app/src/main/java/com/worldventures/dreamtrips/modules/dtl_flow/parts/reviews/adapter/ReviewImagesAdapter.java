@@ -16,10 +16,11 @@ import java.util.List;
 
 public class ReviewImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-   private List<ReviewImages> imagesList;
-   private String userComment;
    private final static int HEADER_TYPE = 0;
    private final static int ITEM_TYPE = 1;
+
+   private final List<ReviewImages> imagesList;
+   private final String userComment;
 
    public ReviewImagesAdapter(String userComment, List<ReviewImages> imagesList) {
       this.userComment = userComment;
@@ -46,7 +47,7 @@ public class ReviewImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
       if (holder instanceof ImagesViewHolder) {
 
-         if (imagesList.size() > 0 && position > 0) {
+         if (!imagesList.isEmpty() && position > 0) {
 
             ImagesViewHolder imagesViewHolder = (ImagesViewHolder) holder;
             String urlString = imagesList.get(position - 1).normalUrl();
@@ -66,8 +67,9 @@ public class ReviewImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
    @Override
    public int getItemViewType(int position) {
-      if (position == 0)
+      if (position == 0) {
          return HEADER_TYPE;
+      }
 
       return ITEM_TYPE;
    }

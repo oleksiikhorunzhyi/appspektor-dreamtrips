@@ -326,7 +326,9 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       final float prevTranslationX = ViewCompat.getTranslationX(oldHolder.itemView);
       final float prevTranslationY = ViewCompat.getTranslationY(oldHolder.itemView);
       final float prevAlpha = ViewCompat.getAlpha(oldHolder.itemView);
-      if (!mAddAnimations.contains(oldHolder)) endAnimation(oldHolder);
+      if (!mAddAnimations.contains(oldHolder)) {
+         endAnimation(oldHolder);
+      }
       int deltaX = (int) (toX - fromX - prevTranslationX);
       int deltaY = (int) (toY - fromY - prevTranslationY);
       // recover prev translation state after ending animation
@@ -335,7 +337,9 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       ViewCompat.setAlpha(oldHolder.itemView, prevAlpha);
       if (newHolder != null && newHolder.itemView != null) {
          // carry over translation values
-         if (!mAddAnimations.contains(newHolder)) endAnimation(newHolder);
+         if (!mAddAnimations.contains(newHolder)) {
+            endAnimation(newHolder);
+         }
          ViewCompat.setTranslationX(newHolder.itemView, -deltaX);
          ViewCompat.setTranslationY(newHolder.itemView, -deltaY);
          ViewCompat.setAlpha(newHolder.itemView, 0);
@@ -414,10 +418,9 @@ public class MediaItemAnimation extends SimpleItemAnimator {
    private void endChangeAnimation(List<ChangeInfo> infoList, ViewHolder item) {
       for (int i = infoList.size() - 1; i >= 0; i--) {
          ChangeInfo changeInfo = infoList.get(i);
-         if (endChangeAnimationIfNecessary(changeInfo, item)) {
-            if (changeInfo.oldHolder == null && changeInfo.newHolder == null) {
-               infoList.remove(changeInfo);
-            }
+         if (endChangeAnimationIfNecessary(changeInfo, item)
+               && changeInfo.oldHolder == null && changeInfo.newHolder == null) {
+            infoList.remove(changeInfo);
          }
       }
    }
@@ -624,13 +627,19 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    private static class VpaListenerAdapter implements ViewPropertyAnimatorListener {
       @Override
-      public void onAnimationStart(View view) {}
+      public void onAnimationStart(View view) {
+         //do nothing
+      }
 
       @Override
-      public void onAnimationEnd(View view) {}
+      public void onAnimationEnd(View view) {
+         //do nothing
+      }
 
       @Override
-      public void onAnimationCancel(View view) {}
+      public void onAnimationCancel(View view) {
+         //do nothing
+      }
    }
 
 

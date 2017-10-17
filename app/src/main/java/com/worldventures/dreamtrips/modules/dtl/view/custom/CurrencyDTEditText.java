@@ -25,7 +25,9 @@ public class CurrencyDTEditText extends DTEditText {
    public void setCurrencySymbol(String symbol) {
       StringBuilder textBuilder = new StringBuilder(symbol);
       final int padding = getPaddingForCurrency(symbol);
-      if (symbol.length() > 2) textBuilder.append(" ").append(symbol); //TODO think about fix, very-very dirty
+      if (symbol.length() > 2) {
+         textBuilder.append(' ').append(symbol); //TODO think about fix, very-very dirty
+      }
 
       TextDrawable drawable = TextDrawable.builder()
             .beginConfig()

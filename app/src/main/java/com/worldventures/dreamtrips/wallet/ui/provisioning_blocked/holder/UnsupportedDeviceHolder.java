@@ -10,5 +10,7 @@ public class UnsupportedDeviceHolder extends BaseHolder<UnsupportedDeviceModel> 
    }
 
    @Override
-   public void setData(UnsupportedDeviceModel data) {}
+   public void setData(UnsupportedDeviceModel data) {
+      //do nothing
+   }
 }

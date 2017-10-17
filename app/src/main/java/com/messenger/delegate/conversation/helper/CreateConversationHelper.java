@@ -23,7 +23,7 @@ import rx.Observable;
 
 public class CreateConversationHelper {
 
-   private SessionHolder appSessionHolder;
+   private final SessionHolder appSessionHolder;
    private final MessengerServerFacade messengerServerFacade;
 
    @Inject
@@ -37,7 +37,9 @@ public class CreateConversationHelper {
    }
 
    public Observable<DataConversation> createNewConversation(List<DataUser> participants, @Nullable String subject) {
-      if (BuildConfig.DEBUG && participants.size() < 1) throw new RuntimeException();
+      if (BuildConfig.DEBUG && participants.isEmpty()) {
+         throw new RuntimeException();
+      }
       return participants.size() == 1 ? createSingleChat(participants.get(0)
             .getId()) : createMultiUserChat(participants, subject);
    }
@@ -83,8 +85,7 @@ public class CreateConversationHelper {
 
    public DataConversation getExistingSingleConversation(String participantId) {
       String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(getUsername(), participantId);
-      DataConversation existingConversation = ConversationsDAO.getConversationById(conversationId);
-      return existingConversation;
+      return ConversationsDAO.getConversationById(conversationId);
    }
 
    private Observable<DataConversation> setMultiUserChatData(DataConversation conversation, List<DataUser> newParticipants, @Nullable String subject) {

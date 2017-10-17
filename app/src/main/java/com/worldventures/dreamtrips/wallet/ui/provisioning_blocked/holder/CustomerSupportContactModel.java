@@ -18,11 +18,17 @@ public class CustomerSupportContactModel extends BaseViewModel<ProvisionBlockedT
    public int describeContents() { return 0; }
 
    @Override
-   public void writeToParcel(Parcel dest, int flags) {}
+   public void writeToParcel(Parcel dest, int flags) {
+      //do nothing
+   }
 
-   public CustomerSupportContactModel() {}
+   public CustomerSupportContactModel() {
+      //do nothing
+   }
 
-   protected CustomerSupportContactModel(Parcel in) {}
+   protected CustomerSupportContactModel(Parcel in) {
+      //do nothing
+   }
 
    public static final Creator<CustomerSupportContactModel> CREATOR = new Creator<CustomerSupportContactModel>() {
       @Override

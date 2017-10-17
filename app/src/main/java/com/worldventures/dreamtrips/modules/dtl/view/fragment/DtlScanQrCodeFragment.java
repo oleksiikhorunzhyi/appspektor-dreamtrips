@@ -136,12 +136,16 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
          progressDialog.setTitleText(getString(titleText));
          progressDialog.setCancelable(false);
          progressDialog.show();
-      } else progressDialog.setTitle(getString(titleText));
+      } else {
+         progressDialog.setTitle(getString(titleText));
+      }
    }
 
    @Override
    public void hideProgress() {
-      if (progressDialog != null) progressDialog.dismissWithAnimation();
+      if (progressDialog != null) {
+         progressDialog.dismissWithAnimation();
+      }
    }
 
    @Override
@@ -174,7 +178,9 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    }
 
    private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
-      if (alertDialog != null && alertDialog.isShowing()) return;
+      if (alertDialog != null && alertDialog.isShowing()) {
+         return;
+      }
       //
       alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getString(R.string.alert))
             .setContentText(getString(R.string.dtl_photo_upload_error))

@@ -97,7 +97,9 @@ public final class SecureMultipleRecordsCommand extends Command<List<Record>> im
    }
 
    private void sendTokenizationAnalytics(List<Record> records, boolean success) {
-      if (actionType == null || records.isEmpty()) return;
+      if (actionType == null || records.isEmpty()) {
+         return;
+      }
 
       Queryable.from(records).forEachR(recordWithError -> analyticsInteractor.walletAnalyticsPipe()
             .send(new TokenizationAnalyticsLocationCommand(

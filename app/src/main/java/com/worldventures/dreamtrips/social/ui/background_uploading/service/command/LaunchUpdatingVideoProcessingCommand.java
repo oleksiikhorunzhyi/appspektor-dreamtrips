@@ -19,9 +19,6 @@ public class LaunchUpdatingVideoProcessingCommand extends Command<Void> implemen
 
    @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
 
-   public LaunchUpdatingVideoProcessingCommand() {
-   }
-
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       pingAssetStatusInteractor.performUpdateVideoStatusPipe()

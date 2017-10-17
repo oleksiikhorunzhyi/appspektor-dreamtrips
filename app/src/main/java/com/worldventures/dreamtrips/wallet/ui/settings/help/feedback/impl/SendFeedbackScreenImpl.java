@@ -15,9 +15,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.EntityStateHolder;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
@@ -154,7 +154,9 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
 
    @Override
    public void changeActionSendMenuItemEnabled(boolean enable) {
-      if (actionSendMenuItem != null) actionSendMenuItem.setEnabled(enable);
+      if (actionSendMenuItem != null) {
+         actionSendMenuItem.setEnabled(enable);
+      }
    }
 
    @Override

@@ -5,13 +5,13 @@ import com.worldventures.core.janet.ValueCommandAction;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class ShowMapInfoAction extends ValueCommandAction<Object> {
+public final class ShowMapInfoAction extends ValueCommandAction<Object> {
+
+   private ShowMapInfoAction() {
+      super(null);
+   }
 
    public static ShowMapInfoAction create() {
       return new ShowMapInfoAction();
-   }
-
-   public ShowMapInfoAction() {
-      super(null);
    }
 }

@@ -58,12 +58,8 @@ public class NotificationsSettingsFragment extends SettingsFragment implements C
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
-      switch (item.getItemId()) {
-         case R.id.done:
-            getPresenter().applyChanges();
-            break;
-         default:
-            break;
+      if (item.getItemId() == R.id.done) {
+         getPresenter().applyChanges();
       }
       return super.onOptionsItemSelected(item);
    }

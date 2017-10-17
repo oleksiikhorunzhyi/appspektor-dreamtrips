@@ -1,9 +1,9 @@
 package com.messenger.delegate.command.avatar;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
-import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

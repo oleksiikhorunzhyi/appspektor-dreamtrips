@@ -9,6 +9,7 @@ public class ChatSettingsViewState extends LceViewState<Parcelable> {
    private UploadingState uploadAvatar;
 
    public ChatSettingsViewState() {
+      //do nothing
    }
 
 

@@ -8,7 +8,7 @@ import com.messenger.messengerservers.xmpp.extensions.SystemMessageExtension;
 
 public final class XmppMessageConverter {
 
-   private Gson gson;
+   private final Gson gson;
    private MessageBodyParser messageBodyParser;
 
    public XmppMessageConverter() {

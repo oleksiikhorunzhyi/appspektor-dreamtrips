@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview; //NOPMD TODO: Resolve naming
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
@@ -13,42 +13,42 @@ import flow.path.Path;
 @Layout(R.layout.activity_detail_review)
 public class DtlDetailReviewPath extends DtlDetailPath {
 
-    private final String merchantName;
-    private final ReviewObject reviewObject;
-    private final String merchantId;
-    private final boolean isFromListReview;
+   private final String merchantName;
+   private final ReviewObject reviewObject;
+   private final String merchantId;
+   private final boolean isFromListReview;
 
-    public DtlDetailReviewPath(MasterDetailPath path, String merchantName, ReviewObject reviewObject, String merchantId, boolean isFromListReview) {
-        super(path);
-        this.merchantName = merchantName;
-        this.reviewObject = reviewObject;
-        this.merchantId = merchantId;
-        this.isFromListReview = isFromListReview;
-    }
+   public DtlDetailReviewPath(MasterDetailPath path, String merchantName, ReviewObject reviewObject, String merchantId, boolean isFromListReview) {
+      super(path);
+      this.merchantName = merchantName;
+      this.reviewObject = reviewObject;
+      this.merchantId = merchantId;
+      this.isFromListReview = isFromListReview;
+   }
 
-    @Override
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITHOUT_DRAWER;
-    }
+   @Override
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITHOUT_DRAWER;
+   }
 
-    @Override
-    public Path getMasterToolbarPath() {
-        return MasterToolbarPath.INSTANCE;
-    }
+   @Override
+   public Path getMasterToolbarPath() {
+      return MasterToolbarPath.INSTANCE;
+   }
 
-    public String getMerchant() {
-        return merchantName;
-    }
+   public String getMerchant() {
+      return merchantName;
+   }
 
-    public ReviewObject getReviewObject() {
-        return reviewObject;
-    }
+   public ReviewObject getReviewObject() {
+      return reviewObject;
+   }
 
-    public String getMerchantId() {
-        return merchantId;
-    }
+   public String getMerchantId() {
+      return merchantId;
+   }
 
-    public boolean isFromListReview() {
-        return isFromListReview;
-    }
+   public boolean isFromListReview() {
+      return isFromListReview;
+   }
 }

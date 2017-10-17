@@ -16,7 +16,10 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 
 
-public class CroppingUtils {
+public final class CroppingUtils {
+
+   private CroppingUtils() {
+   }
 
    public static void startSquareCropping(Activity activity, Uri fileFrom, Uri fileTo) {
       startCropping(activity, fileFrom, fileTo, 1, 1);

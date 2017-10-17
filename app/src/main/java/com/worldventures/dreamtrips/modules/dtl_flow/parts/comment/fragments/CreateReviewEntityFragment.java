@@ -35,7 +35,9 @@ public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragm
 
          @Override
          public void onChildViewRemoved(View parent, View child) {
-            if (isResumed()) backStackDelegate.setListener(() -> onBack());
+            if (isResumed()) {
+               backStackDelegate.setListener(() -> onBack());
+            }
          }
       });
       //
@@ -83,8 +85,11 @@ public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragm
    @Override
    protected void onTitleFocusChanged(boolean hasFocus) {
       super.onTitleFocusChanged(hasFocus);
-      if (hasFocus) hideMediaPicker();
-      else name.requestFocus();
+      if (hasFocus) {
+         hideMediaPicker();
+      } else {
+         name.requestFocus();
+      }
    }
 
    @OnClick(R.id.image)

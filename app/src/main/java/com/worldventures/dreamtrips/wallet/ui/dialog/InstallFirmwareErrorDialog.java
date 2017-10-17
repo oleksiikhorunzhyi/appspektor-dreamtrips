@@ -17,7 +17,7 @@ import rx.functions.Action0;
 
 public class InstallFirmwareErrorDialog {
 
-   private Dialog dialog;
+   private final Dialog dialog;
    private Action0 retryAction;
    private Action0 cancelAction;
 

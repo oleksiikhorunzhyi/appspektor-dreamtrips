@@ -38,6 +38,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class ConversationsDAO extends BaseDAO {
+
    public static final String MESSAGE_TYPE_COLUMN = "messageType";
    public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
    public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
@@ -50,7 +51,7 @@ public class ConversationsDAO extends BaseDAO {
    public static final String RECIPIENT_FIRST_NAME_COLUMN = "recipientFirstName";
    public static final String RECIPIENT_LAST_NAME_COLUMN = "recipientLastName";
 
-   private SessionHolder appSessionHolder;
+   private final SessionHolder appSessionHolder;
 
    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder appSessionHolder) {
       super(context, rxContentResolver);
@@ -84,6 +85,7 @@ public class ConversationsDAO extends BaseDAO {
       });
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<Pair<DataConversation, List<DataUser>>> getConversationWithParticipants(String conversationId) {
       //TODO: rename DataUser#_ID field to userId, because we don't use cursor with DataUser in list
       String stringQuery = "SELECT c.*, u.*"
@@ -133,6 +135,7 @@ public class ConversationsDAO extends BaseDAO {
             .queryClose();
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type, String searchQuery) {
       String currentUserId = appSessionHolder.get().get().getUser().getUsername(); // username is id for messenger
 
@@ -185,7 +188,7 @@ public class ConversationsDAO extends BaseDAO {
             + "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) ");
       StringBuilder whereBuilder = new StringBuilder();
 
-      boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
+      boolean onlyGroup = type != null && type.equals(ConversationType.GROUP);
       if (onlyGroup) {
          whereBuilder.append("WHERE c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
       }

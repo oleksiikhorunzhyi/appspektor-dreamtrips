@@ -123,7 +123,9 @@ public class DtlLocationChangeScreenImpl
 
    @Override
    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery) {
-      if (dtlLocation == null) return;
+      if (dtlLocation == null) {
+         return;
+      }
       switch (dtlLocation.locationSourceType()) {
          case NEAR_ME:
          case EXTERNAL:

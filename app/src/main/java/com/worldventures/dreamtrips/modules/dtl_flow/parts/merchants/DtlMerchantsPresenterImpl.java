@@ -169,25 +169,38 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    void onStartMerchantsLoad(MerchantsAction action) {
-      if (action.isRefresh()) getView().clearMerchants();
+      if (action.isRefresh()) {
+         getView().clearMerchants();
+      }
    }
 
    void onMerchantsLoaded(MerchantsAction action) {
-      if (action.isRefresh()) getView().onRefreshSuccess();
-      else getView().onLoadNextSuccess();
+      if (action.isRefresh()) {
+         getView().onRefreshSuccess();
+      } else {
+         getView().onLoadNextSuccess();
+      }
 
       setItemsOrRedirect(action.merchants());
    }
 
    void onMerchantsLoading(MerchantsAction action, Integer progress) {
-      if (action.isRefresh()) getView().onRefreshProgress();
-      else getView().onLoadNextProgress();
+      if (action.isRefresh()) {
+         getView().onRefreshProgress();
+      } else {
+         getView().onLoadNextProgress();
+      }
    }
 
    void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
-      if (!action.isRefresh()) getView().setRefreshedItems(action.merchants());
-      if (action.isRefresh()) getView().onRefreshError(action.getErrorMessage());
-      else getView().onLoadNextError();
+      if (!action.isRefresh()) {
+         getView().setRefreshedItems(action.merchants());
+      }
+      if (action.isRefresh()) {
+         getView().onRefreshError(action.getErrorMessage());
+      } else {
+         getView().onLoadNextError();
+      }
    }
 
    private void connectSelections() {
@@ -198,8 +211,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void setItemsOrRedirect(List<ThinMerchant> items) {
-      if (items.isEmpty()) onEmptyMerchantsLoaded();
-      else getView().setRefreshedItems(items);
+      if (items.isEmpty()) {
+         onEmptyMerchantsLoaded();
+      } else {
+         getView().setRefreshedItems(items);
+      }
    }
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
@@ -299,13 +315,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    @Override
    public void onToggleExpand(boolean expand, ThinMerchant merchant) {
-      if (!expand) return;
+      if (!expand) {
+         return;
+      }
       sendAnalyticsAction(new MerchantsListingExpandEvent(merchant.asMerchantAttributes()));
    }
 
    @Override
    public void onRetryMerchantClick() {
-      if (actionParamsHolder == null) return;
+      if (actionParamsHolder == null) {
+         return;
+      }
 
       fullMerchantInteractor.load(actionParamsHolder);
    }
@@ -342,7 +362,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
          getView().clearMerchants();
          getView().showEmpty(true);
          getView().showNoMerchantsCaption(isFilterDefault, isOffersOnly);
-      } else navigateToPath(new DtlLocationChangePath());
+      } else {
+         navigateToPath(new DtlLocationChangePath());
+      }
    }
 
    private boolean isAllowRedirect(boolean isFilterDefault) {
@@ -380,7 +402,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    protected void onToggleSelection(ToggleMerchantSelectionAction action) {
-      if (action.isClearSelection()) getView().clearSelection();
-      else getView().toggleSelection(action.getResult());
+      if (action.isClearSelection()) {
+         getView().clearSelection();
+      } else {
+         getView().toggleSelection(action.getResult());
+      }
    }
 }

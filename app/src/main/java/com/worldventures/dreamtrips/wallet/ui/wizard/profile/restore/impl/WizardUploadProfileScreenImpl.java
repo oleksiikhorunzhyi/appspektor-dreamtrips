@@ -89,7 +89,9 @@ public class WizardUploadProfileScreenImpl extends WalletBaseController<WizardUp
                .onPositive((dialog, which) -> getPresenter().retryUpload())
                .build();
       }
-      if (!retryUploadDataDialog.isShowing()) retryUploadDataDialog.show();
+      if (!retryUploadDataDialog.isShowing()) {
+         retryUploadDataDialog.show();
+      }
    }
 
    @Override
@@ -101,7 +103,9 @@ public class WizardUploadProfileScreenImpl extends WalletBaseController<WizardUp
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (retryUploadDataDialog != null) retryUploadDataDialog.dismiss();
+      if (retryUploadDataDialog != null) {
+         retryUploadDataDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

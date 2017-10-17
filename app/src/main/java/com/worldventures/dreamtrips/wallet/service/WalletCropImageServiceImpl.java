@@ -48,15 +48,21 @@ public class WalletCropImageServiceImpl implements WalletCropImageService {
 
    @Override
    public void destroy() {
-      if (!croppedImagesStream.hasCompleted()) croppedImagesStream.onCompleted();
+      if (!croppedImagesStream.hasCompleted()) {
+         croppedImagesStream.onCompleted();
+      }
    }
 
    @Override
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (!CroppingUtils.isCroppingResult(requestCode, resultCode)) return false;
+      if (!CroppingUtils.isCroppingResult(requestCode, resultCode)) {
+         return false;
+      }
 
       Pair<String, Throwable> resultPair = CroppingUtils.obtainResults(requestCode, resultCode, data);
-      if (resultPair == null) return true;
+      if (resultPair == null) {
+         return true;
+      }
 
       onCropFinished(resultPair.first, String.valueOf(resultPair.second));
       return true;

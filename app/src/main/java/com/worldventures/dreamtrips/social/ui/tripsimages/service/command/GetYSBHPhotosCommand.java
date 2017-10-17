@@ -60,8 +60,9 @@ public class GetYSBHPhotosCommand extends CommandWithError<List<YSBHPhoto>> impl
 
    @Override
    protected void run(CommandCallback<List<YSBHPhoto>> callback) throws Throwable {
-      if (fromCache && cachedItems != null) callback.onSuccess(cachedItems);
-      else {
+      if (fromCache && cachedItems != null) {
+         callback.onSuccess(cachedItems);
+      } else {
          janet.createPipe(GetYSBHPhotosHttpAction.class)
                .createObservableResult(new GetYSBHPhotosHttpAction(page, PER_PAGE))
                .map(GetYSBHPhotosHttpAction::response)

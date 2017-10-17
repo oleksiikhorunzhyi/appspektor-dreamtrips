@@ -52,8 +52,9 @@ public class GetUsersMediaCommand extends BaseMediaCommand implements Injectable
 
    @Override
    protected void run(CommandCallback<List<BaseMediaEntity>> callback) throws Throwable {
-      if (fromCache) callback.onSuccess(cachedItems);
-      else {
+      if (fromCache) {
+         callback.onSuccess(cachedItems);
+      } else {
          janet.createPipe(GetUserMultimediaHttpAction.class)
                .createObservableResult(new GetUserMultimediaHttpAction(userId, ImmutableMultimediaPaginatedParams.builder()
                      .before(before)

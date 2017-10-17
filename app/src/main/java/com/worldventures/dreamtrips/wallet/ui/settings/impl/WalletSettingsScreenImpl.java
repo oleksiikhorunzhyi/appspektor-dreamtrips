@@ -30,9 +30,6 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
 
    @Inject WalletSettingsPresenter presenter;
 
-   public WalletSettingsScreenImpl() {
-   }
-
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
@@ -75,7 +72,7 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
       if (version != null) {
          builder.append(getString(R.string.wallet_card_settings_version, version.nordicAppVersion())).append("\n");
       }
-      builder.append(getString(R.string.wallet_card_settings_battery_level, batteryLevel)).append("\n")
+      builder.append(getString(R.string.wallet_card_settings_battery_level, batteryLevel)).append("\n");
       // TODO: 5/5/17 Implement this ffs
       //                  .append(getString(R.string.wallet_card_settings_last_sync, formattedLastSync));
 
@@ -85,8 +82,11 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
    @Override
    public void firmwareUpdateCount(int count) {
       badgeFirmwareUpdates.setText(String.valueOf(count));
-      if (count > 0) badgeFirmwareUpdates.show(true);
-      else badgeFirmwareUpdates.hide(true);
+      if (count > 0) {
+         badgeFirmwareUpdates.show(true);
+      } else {
+         badgeFirmwareUpdates.hide(true);
+      }
    }
 
    @Override

@@ -47,7 +47,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       super.takeView(view);
       subscribeToChangingCircles();
       subscribeToRemovedFriends();
-      if (isNeedPreload()) reload();
+      if (isNeedPreload()) {
+         reload();
+      }
    }
 
    private void subscribeToRemovedFriends() {
@@ -107,7 +109,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.refreshUsers(users);
       view.finishLoading();
       loading = false;
-      if (!finishedLoadingAllData) nextPage++;
+      if (!finishedLoadingAllData) {
+         nextPage++;
+      }
    }
 
    protected void onError(GetUsersCommand getUsersCommand, Throwable throwable) {

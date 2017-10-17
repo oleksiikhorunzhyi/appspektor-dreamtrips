@@ -55,14 +55,24 @@ public class PaymentFeedbackViewModel extends BaseObservable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       PaymentFeedbackViewModel that = (PaymentFeedbackViewModel) o;
 
-      if (attemptsView != null ? !attemptsView.equals(that.attemptsView) : that.attemptsView != null) return false;
-      if (merchantView != null ? !merchantView.equals(that.merchantView) : that.merchantView != null) return false;
-      if (terminalView != null ? !terminalView.equals(that.terminalView) : that.terminalView != null) return false;
+      if (attemptsView != null ? !attemptsView.equals(that.attemptsView) : that.attemptsView != null) {
+         return false;
+      }
+      if (merchantView != null ? !merchantView.equals(that.merchantView) : that.merchantView != null) {
+         return false;
+      }
+      if (terminalView != null ? !terminalView.equals(that.terminalView) : that.terminalView != null) {
+         return false;
+      }
       return infoView != null ? infoView.equals(that.infoView) : that.infoView == null;
 
    }

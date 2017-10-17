@@ -13,7 +13,7 @@ public class OnSwipeGestureListener implements View.OnTouchListener {
    private int swipeThreshold = SWIPE_THRESHOLD_DEFAULT;
    private int swipeVelocityThreshold = SWIPE_VELOCITY_THRESHOLD_DEFAULT;
 
-   private GestureDetector gestureDetector;
+   private final GestureDetector gestureDetector;
 
    public void setSwipeThreshold(int swipeThreshold) {
       this.swipeThreshold = swipeThreshold;
@@ -76,17 +76,22 @@ public class OnSwipeGestureListener implements View.OnTouchListener {
    }
 
    public void onSingleTap() {
+      //do nothing
    }
 
    public void onSwipeRight() {
+      //do nothing
    }
 
    public void onSwipeLeft() {
+      //do nothing
    }
 
    public void onSwipeTop() {
+      //do nothing
    }
 
    public void onSwipeBottom() {
+      //do nothing
    }
 }

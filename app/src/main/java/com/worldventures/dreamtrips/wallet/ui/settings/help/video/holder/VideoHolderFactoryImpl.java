@@ -27,12 +27,11 @@ public class VideoHolderFactoryImpl implements VideoTypeFactory {
 
    @Override
    public BaseHolder holder(ViewGroup parent, int viewType) {
-      switch (viewType) {
-         case R.layout.adapter_item_video:
-            return new WalletVideoHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)),
-                  videoActionsCallback, videoHolderDelegate);
-         default:
-            throw new IllegalArgumentException();
+      if (viewType == R.layout.adapter_item_video) {
+         return new WalletVideoHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)),
+               videoActionsCallback, videoHolderDelegate);
+      } else {
+         throw new IllegalArgumentException();
       }
    }
 }

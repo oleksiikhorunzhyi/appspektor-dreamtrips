@@ -63,7 +63,9 @@ public final class DtlTransactionAction extends Command<DtlTransaction> implemen
 
    @Override
    protected void run(CommandCallback<DtlTransaction> callback) throws Throwable {
-      if (transaction == null) transaction = db.getDtlTransaction(id);
+      if (transaction == null) {
+         transaction = db.getDtlTransaction(id);
+      }
       //changing
       if (updateFunc != null) {
          transaction = updateFunc.call(transaction);

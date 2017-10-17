@@ -13,7 +13,8 @@ import android.graphics.drawable.shapes.Shape;
 import android.os.Build;
 
 public final class RoundDrawableWrapper extends ShapeDrawable {
-   private Drawable baseDrawable;
+
+   private final Drawable baseDrawable;
 
    private RoundDrawableWrapper(Builder builder) {
       super(builder.shape);
@@ -74,12 +75,10 @@ public final class RoundDrawableWrapper extends ShapeDrawable {
    }
 
    public static final class Builder {
+
       private Drawable drawable;
       private int color;
       private Shape shape = new OvalShape();
-
-      public Builder() {
-      }
 
       public Builder color(int val) {
          color = val;
@@ -92,7 +91,7 @@ public final class RoundDrawableWrapper extends ShapeDrawable {
       }
 
       public Builder round() {
-         Shape shape = new OvalShape();
+//         Shape shape = new OvalShape(); //TODO: Why is it here?
          return this;
       }
 

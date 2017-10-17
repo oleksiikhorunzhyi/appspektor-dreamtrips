@@ -42,7 +42,9 @@ class ProcessSmartCardInfoDelegate {
             .middleName(user.middleName() != null ? user.middleName() : "")
             .lastName(user.lastName() != null ? user.lastName() : "");
 
-      if (user.phone() != null) userBuilder.phoneNumber(mappery.convert(user.phone(), SmartCardUserPhone.class));
+      if (user.phone() != null) {
+         userBuilder.phoneNumber(mappery.convert(user.phone(), SmartCardUserPhone.class));
+      }
 
       final SmartCardUser scUser = userBuilder.build();
 

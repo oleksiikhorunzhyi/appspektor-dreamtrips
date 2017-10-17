@@ -16,8 +16,8 @@ public class HashtagSuggestionCommand extends MappableApiActionCommand<GetHashta
    private static final int PAGE = 1;
    private static final int PER_PAGE = 10;
 
-   private String fullQueryText;
-   private String query;
+   private final String fullQueryText;
+   private final String query;
 
    public HashtagSuggestionCommand(String fullText, String query) {
       this.fullQueryText = fullText;

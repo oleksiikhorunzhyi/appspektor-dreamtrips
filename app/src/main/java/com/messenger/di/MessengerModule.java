@@ -67,7 +67,7 @@ public class MessengerModule {
 
    @Provides
    public AppNotification provideInAppNotification(App app) {
-      return new AppNotificationImpl(app);
+      return new AppNotificationImpl();
    }
 
    @Provides

@@ -35,7 +35,7 @@ public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView
 
    private static final int MAP_ANIMATION_THRESHOLD_MS = 300;
 
-   private Context context;
+   private final Context context;
 
    @Inject LocationDelegate locationDelegate;
    @Inject LocationSettingsDelegate locationSettingsDelegate;
@@ -106,7 +106,7 @@ public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView
 
    private void onLocationError(Throwable e) {
       if (e instanceof LocationDelegate.LocationException) {
-         Status status = (((LocationDelegate.LocationException) e).getStatus());
+         Status status = ((LocationDelegate.LocationException) e).getStatus();
          locationSettingsDelegate.startLocationSettingsResolution(status);
       } else {
          getView().showObtainLocationError();

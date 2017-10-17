@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 @Layout(R.layout.screen_group_settings)
 public class GroupSettingsPath extends StyledPath {
-   private String conversationId;
+
+   private final String conversationId;
 
    public GroupSettingsPath(String conversationId) {
       this.conversationId = conversationId;

@@ -7,9 +7,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
-public class DtlLocationHelper {
+public final class DtlLocationHelper {
 
    public static final double MAX_DISTANCE = 50;
+
+   private DtlLocationHelper() {
+   }
 
    /**
     * Check if deviceLocation in near enough to city center
@@ -74,7 +77,7 @@ public class DtlLocationHelper {
 
    public static double distance(LatLng currentLocation, LatLng targetLocation) {
       float[] distance = new float[1];
-      android.location.Location.distanceBetween(targetLocation.latitude, targetLocation.longitude, currentLocation.latitude, currentLocation.longitude, distance);
+      Location.distanceBetween(targetLocation.latitude, targetLocation.longitude, currentLocation.latitude, currentLocation.longitude, distance);
       return distance[0];
    }
 }

@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 public class ChatTimestampProvider {
 
-   private ChatTimestampFormatter timestampFormatter;
+   private final ChatTimestampFormatter timestampFormatter;
 
    @Inject
    public ChatTimestampProvider(ChatTimestampFormatter timestampFormatter) {
@@ -23,7 +23,9 @@ public class ChatTimestampProvider {
 
    public boolean shouldShowAutomaticTimestamp(Cursor cursor) {
       String messageType = cursor.getString(cursor.getColumnIndex(DataMessage$Table.TYPE));
-      if (MessageHelper.isSystemMessage(messageType)) { return true; }
+      if (MessageHelper.isSystemMessage(messageType)) {
+         return true;
+      }
 
       int dateColumnIndex = cursor.getColumnIndex(DataMessage$Table.DATE);
       long currentDate = cursor.getLong(dateColumnIndex);

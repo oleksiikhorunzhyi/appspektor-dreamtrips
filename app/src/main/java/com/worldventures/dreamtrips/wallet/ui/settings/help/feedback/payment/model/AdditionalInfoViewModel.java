@@ -26,8 +26,12 @@ public class AdditionalInfoViewModel extends BaseObservable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       AdditionalInfoViewModel that = (AdditionalInfoViewModel) o;
 

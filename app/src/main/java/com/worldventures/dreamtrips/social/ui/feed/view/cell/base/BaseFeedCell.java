@@ -93,7 +93,9 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
 
    private boolean isMineItem(FeedItem feedItem) {
       Optional<UserSession> userSessionOptional = sessionHolder.get();
-      if (feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent()) return false;
+      if (feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent()) {
+         return false;
+      }
 
       int accountId = userSessionOptional.get().getUser().getId();
       int ownerId = feedItem.getItem().getOwner().getId();
@@ -128,7 +130,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
    }
 
    protected void onMore() {
-
+      //do nothing
    }
 
    public interface FeedCellDelegate<ITEM> extends CellDelegate<ITEM> {

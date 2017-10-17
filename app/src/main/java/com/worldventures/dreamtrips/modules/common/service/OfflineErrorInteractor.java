@@ -7,7 +7,7 @@ import io.techery.janet.ActionPipe;
 
 public class OfflineErrorInteractor {
 
-   private ActionPipe<OfflineErrorCommand> offlineErrorCommandPipe;
+   private final ActionPipe<OfflineErrorCommand> offlineErrorCommandPipe;
 
    public OfflineErrorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       offlineErrorCommandPipe = sessionActionPipeCreator.createPipe(OfflineErrorCommand.class);

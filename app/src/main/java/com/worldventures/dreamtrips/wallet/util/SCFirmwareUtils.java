@@ -12,7 +12,7 @@ public final class SCFirmwareUtils {
    private final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
    private final static int SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW = 1070;
 
-   private final static String UNKNOWN_VERSION = "0.0.0.0";
+   private final static String UNKNOWN_VERSION = "0.0.0.0";//NOPMD
 
    private SCFirmwareUtils() {}
 

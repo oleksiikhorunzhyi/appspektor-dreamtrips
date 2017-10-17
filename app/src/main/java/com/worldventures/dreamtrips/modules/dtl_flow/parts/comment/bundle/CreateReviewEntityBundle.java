@@ -10,7 +10,7 @@ public class CreateReviewEntityBundle implements Parcelable {
 
    private MediaPickerAttachment mediaAttachment;
    private boolean showPickerImmediately;
-   private Origin origin; // origin is needed for analytics
+   private final Origin origin; // origin is needed for analytics
    private int minCharactersAllow;
    private int maxCharactersAllow;
    private String merchantId;
@@ -24,7 +24,7 @@ public class CreateReviewEntityBundle implements Parcelable {
    }
 
    public CreateReviewEntityBundle(boolean showPickerImmediately, Origin origin, int minChar, int maxChar, String merchantId, boolean isFromAddReview,
-                           Merchant merchant, boolean isVerified) {
+         Merchant merchant, boolean isVerified) {
       this.showPickerImmediately = showPickerImmediately;
       this.origin = origin;
       this.minCharactersAllow = minChar;

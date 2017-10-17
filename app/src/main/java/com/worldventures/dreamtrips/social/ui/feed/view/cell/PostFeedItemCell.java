@@ -83,7 +83,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
          configurationSubscription = configurationInteractor.configurationActionPipe()
                .observeSuccess().subscribe(configurationCommand -> {
                   // happens when there is another feed opened on the top of this one
-                  if (getCurrentRoute() != activeCellRoute) return;
+                  if (getCurrentRoute() != activeCellRoute) {
+                     return;
+                  }
                   List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
                   if (attachments != null && attachments.size() > 0) {
                      if (attachments.get(0).getItem() instanceof Photo) {
@@ -214,7 +216,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void processTags(List<FeedEntityHolder> attachments) {
-      if (tag != null) tag.setVisibility(hasTags(attachments) ? View.VISIBLE : View.GONE);
+      if (tag != null) {
+         tag.setVisibility(hasTags(attachments) ? View.VISIBLE : View.GONE);
+      }
    }
 
    private boolean hasTags(List<FeedEntityHolder> attachments) {

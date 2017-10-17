@@ -47,7 +47,9 @@ public class StateRecyclerView extends EmptyRecyclerView {
       addOnScrollListener(new RecyclerView.OnScrollListener() {
          @Override
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (offsetYListener != null) offsetYListener.onScroll(StateRecyclerView.this.computeVerticalScrollOffset());
+            if (offsetYListener != null) {
+               offsetYListener.onScroll(StateRecyclerView.this.computeVerticalScrollOffset());
+            }
          }
       });
    }
@@ -71,7 +73,7 @@ public class StateRecyclerView extends EmptyRecyclerView {
    }
 
    public float getScrollOffset() {
-      return StateRecyclerView.this.computeVerticalScrollOffset();
+      return computeVerticalScrollOffset();
    }
 
    public interface OffsetYListener {

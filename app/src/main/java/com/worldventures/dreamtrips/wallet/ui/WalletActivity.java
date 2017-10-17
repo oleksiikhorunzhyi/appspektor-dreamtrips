@@ -119,8 +119,12 @@ public class WalletActivity extends BaseActivity implements WalletActivityView {
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (cropImageService.onActivityResult(requestCode, resultCode, data)) return;
-      if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) return;
+      if (cropImageService.onActivityResult(requestCode, resultCode, data)) {
+         return;
+      }
+      if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) {
+         return;
+      }
       super.onActivityResult(requestCode, resultCode, data);
    }
 

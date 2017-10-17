@@ -38,10 +38,12 @@ import java.util.List;
  * Due to issues with JitPack
  * https://github.com/techery/PinEntryEditText
  */
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class PinEntryEditText extends AppCompatEditText {
    private static final String XML_NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
 
    private String mMask = null;
+   @SuppressWarnings("PMD.AvoidStringBufferField") //TODO: Resolve this PMD error
    private StringBuilder mMaskChars = null;
    private String mSingleCharHint = null;
    private int mAnimatedType = 0;
@@ -56,7 +58,7 @@ public class PinEntryEditText extends AppCompatEditText {
    private Paint mLastCharPaint;
    private Paint mSingleCharPaint;
    private Drawable mPinBackground;
-   private Rect mTextHeight = new Rect();
+   private final Rect mTextHeight = new Rect();
    private boolean mIsDigitSquare = false;
 
    private OnClickListener mClickListener;
@@ -67,8 +69,7 @@ public class PinEntryEditText extends AppCompatEditText {
    private Paint mLinesPaint;
    private boolean mAnimate = false;
    private boolean mHasError = false;
-   private ColorStateList mOriginalTextColors;
-   private int[][] mStates = new int[][]{
+   private final int[][] mStates = new int[][]{
          new int[]{android.R.attr.state_selected}, // selected
          new int[]{android.R.attr.state_active}, // error
          new int[]{android.R.attr.state_focused}, // focused
@@ -156,6 +157,7 @@ public class PinEntryEditText extends AppCompatEditText {
          }
 
          public void onDestroyActionMode(ActionMode mode) {
+            //do nothing
          }
 
          public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -226,7 +228,7 @@ public class PinEntryEditText extends AppCompatEditText {
    @Override
    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
       super.onSizeChanged(w, h, oldw, oldh);
-      mOriginalTextColors = getTextColors();
+      ColorStateList mOriginalTextColors = getTextColors();
       if (mOriginalTextColors != null) {
          mLastCharPaint.setColor(mOriginalTextColors.getDefaultColor());
          mCharPaint.setColor(mOriginalTextColors.getDefaultColor());
@@ -443,6 +445,7 @@ public class PinEntryEditText extends AppCompatEditText {
          va.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+               //do nothing
             }
 
             @Override
@@ -452,10 +455,12 @@ public class PinEntryEditText extends AppCompatEditText {
 
             @Override
             public void onAnimationCancel(Animator animation) {
+               //do nothing
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
+               //do nothing
             }
          });
       }
@@ -493,6 +498,7 @@ public class PinEntryEditText extends AppCompatEditText {
 
             @Override
             public void onAnimationStart(Animator animation) {
+               //do nothing
             }
 
             @Override
@@ -502,11 +508,12 @@ public class PinEntryEditText extends AppCompatEditText {
 
             @Override
             public void onAnimationCancel(Animator animation) {
+               //do nothing
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-
+               //do nothing
             }
          });
       }

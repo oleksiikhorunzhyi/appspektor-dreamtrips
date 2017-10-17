@@ -51,8 +51,11 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       super.takeView(view);
       subscribeToContactLoading();
       subscribeToSentInvitesLoading();
-      if (members.isEmpty()) loadMembers();
-      else contactsLoaded();
+      if (members.isEmpty()) {
+         loadMembers();
+      } else {
+         contactsLoaded();
+      }
       view.setAdapterComparator(getSelectedComparator());
       reportSelectedMembers();
    }
@@ -122,11 +125,15 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
       switch (Type.from(view.getSelectedType())) {
          case EMAIL:
             addToLoadedMembers = !TextUtils.isEmpty(member.getEmail().trim());
-            if (addToLoadedMembers) member.setEmailIsMain(true);
+            if (addToLoadedMembers) {
+               member.setEmailIsMain(true);
+            }
             break;
          case SMS:
             addToLoadedMembers = !TextUtils.isEmpty(member.getPhone().trim());
-            if (addToLoadedMembers) member.setEmailIsMain(false);
+            if (addToLoadedMembers) {
+               member.setEmailIsMain(false);
+            }
             break;
          default:
             break;
@@ -275,7 +282,9 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
 
    private Comparator<Member> getSelectedComparator() {
       return (lhs, rhs) -> {
-         if (!lhs.isChecked() && !rhs.isChecked()) return lhs.getName().compareTo(rhs.getName());
+         if (!lhs.isChecked() && !rhs.isChecked()) {
+            return lhs.getName().compareTo(rhs.getName());
+         }
          //
          return lhs.isChecked() && !rhs.isChecked() ? -1 : !lhs.isChecked() && rhs.isChecked() ? 1 : 0;
       };

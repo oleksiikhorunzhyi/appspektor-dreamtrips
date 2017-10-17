@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 @Layout(R.layout.screen_chat)
 public class ChatPath extends StyledPath {
 
-   private String conversationId;
+   private final String conversationId;
 
    public ChatPath(String conversationId) {
       this.conversationId = conversationId;
@@ -26,8 +26,12 @@ public class ChatPath extends StyledPath {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) { return true; }
-      if (o == null || getClass() != o.getClass()) { return false; }
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       ChatPath chatPath = (ChatPath) o;
 

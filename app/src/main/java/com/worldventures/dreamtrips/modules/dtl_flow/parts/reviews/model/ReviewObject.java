@@ -21,7 +21,9 @@ public class ReviewObject implements Parcelable {
    private boolean isVerifiedReview;
    private List<ReviewImages> urlReviewImages;
 
-   public ReviewObject() {}
+   public ReviewObject() {
+      //do nothing
+   }
 
    public ReviewObject(String reviewId, String urlImageUser, String nameUser, float ratingCommentUser, String timeWrote, String comment, boolean isVerifiedReview, List<ReviewImages> urlReviewImages) {
       this.reviewId = reviewId;

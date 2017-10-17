@@ -235,7 +235,9 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @Override
    public void cancel() {
-      if (dialog != null && dialog.isShowing()) dialog.dismiss();
+      if (dialog != null && dialog.isShowing()) {
+         dialog.dismiss();
+      }
 
       router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
@@ -265,7 +267,9 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    protected boolean onBack() {
       try {
-         if (getChildFragmentManager().popBackStackImmediate()) return true;
+         if (getChildFragmentManager().popBackStackImmediate()) {
+            return true;
+         }
       } catch (Exception e) {
          Timber.e(e, "OnBack error"); //for avoid application crash
       }
@@ -286,7 +290,9 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @OnClick(R.id.content_layout)
    void onSpaceClicked() {
-      if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
+      if (ViewUtils.isTablet(getActivity())) {
+         getPresenter().cancelClicked();
+      }
    }
 
    @Override

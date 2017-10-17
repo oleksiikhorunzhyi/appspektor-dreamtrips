@@ -42,10 +42,13 @@ public class ExpandableLayout extends RelativeLayout {
       final int contentID = typedArray.getResourceId(com.andexert.expandablelayout.library.R.styleable.ExpandableLayout_el_contentLayout, -1);
       contentLayout = (FrameLayout) rootView.findViewById(com.andexert.expandablelayout.library.R.id.view_expandable_contentLayout);
 
-      if (headerID == -1 || contentID == -1)
+      if (headerID == -1 || contentID == -1) {
          throw new IllegalArgumentException("HeaderLayout and ContentLayout cannot be null!");
+      }
 
-      if (isInEditMode()) return;
+      if (isInEditMode()) {
+         return;
+      }
 
       duration = typedArray.getInt(com.andexert.expandablelayout.library.R.styleable.ExpandableLayout_el_duration, getContext()
             .getResources()

@@ -35,7 +35,9 @@ public class GetCompatibleDevicesCommand extends Command<List<Device>> implement
                .subscribe(
                      devices -> {
                         allDevices.addAll(devices);
-                        if (devices.size() < pageSize) hasMore[0] = false;
+                        if (devices.size() < pageSize) {
+                           hasMore[0] = false;
+                        }
                         page[0]++;
                      },
                      t -> {

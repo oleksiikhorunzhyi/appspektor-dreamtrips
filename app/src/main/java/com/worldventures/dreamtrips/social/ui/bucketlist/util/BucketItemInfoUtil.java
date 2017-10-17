@@ -7,8 +7,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
-public class BucketItemInfoUtil {
+public final class BucketItemInfoUtil {
 
+   private BucketItemInfoUtil() {
+   }
 
    public static String getMediumResUrl(Context context, BucketItem bucketItem) {
       int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);

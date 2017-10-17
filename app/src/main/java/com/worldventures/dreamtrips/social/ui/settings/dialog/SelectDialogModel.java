@@ -11,6 +11,7 @@ public class SelectDialogModel implements Parcelable {
    private int selectedPosition;
 
    public SelectDialogModel() {
+      //do nothing
    }
 
    protected SelectDialogModel(Parcel in) {

@@ -71,7 +71,9 @@ public final class GetPodcastsCommand extends CommandWithError<List<Podcast>> im
    }
 
    private void clearCacheIfNeeded() {
-      if (refresh) cachedData = null;
+      if (refresh) {
+         cachedData = null;
+      }
    }
 
    private int getPage() {
@@ -104,8 +106,12 @@ public final class GetPodcastsCommand extends CommandWithError<List<Podcast>> im
 
    public List<Podcast> getItems() {
       List<Podcast> podcasts = new ArrayList<>();
-      if (cachedData != null) podcasts.addAll(cachedData);
-      if (getResult() != null) podcasts.addAll(getResult());
+      if (cachedData != null) {
+         podcasts.addAll(cachedData);
+      }
+      if (getResult() != null) {
+         podcasts.addAll(getResult());
+      }
       return podcasts;
    }
 

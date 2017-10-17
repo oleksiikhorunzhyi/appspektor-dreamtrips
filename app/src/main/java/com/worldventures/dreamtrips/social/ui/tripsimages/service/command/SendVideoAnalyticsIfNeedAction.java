@@ -29,10 +29,13 @@ public class SendVideoAnalyticsIfNeedAction extends SendProgressAnalyticsIfNeed<
 
    @Override
    protected WatchVideoAnalyticAction chooseAnalyticAction(int currentStep, int expectedAnalyticStep) {
-      if (expectedAnalyticStep == 0)
+      if (expectedAnalyticStep == 0) {
          return WatchVideoAnalyticAction.startVideo(language, videoName, chooseAnalyticNamespace());
+      }
 
-      if (currentStep < expectedAnalyticStep) return null;
+      if (currentStep < expectedAnalyticStep) {
+         return null;
+      }
 
       WatchVideoAnalyticAction action = null;
       switch (currentStep) {
@@ -54,11 +57,15 @@ public class SendVideoAnalyticsIfNeedAction extends SendProgressAnalyticsIfNeed<
    }
 
    private String chooseAnalyticNamespace() {
-      if (launchComponent.equals(HelpVideosPresenter.class)) return WatchVideoAnalyticAction.HELP_VIDEO_NAMESPASE;
-      if (launchComponent.equals(PresentationVideosPresenter.class))
+      if (launchComponent.equals(HelpVideosPresenter.class)) {
+         return WatchVideoAnalyticAction.HELP_VIDEO_NAMESPASE;
+      }
+      if (launchComponent.equals(PresentationVideosPresenter.class)) {
          return WatchVideoAnalyticAction.MEMBERSHIP_VIDEOS_NAMESPASE;
-      if (launchComponent.equals(TrainingVideosPresenter.class))
+      }
+      if (launchComponent.equals(TrainingVideosPresenter.class)) {
          return WatchVideoAnalyticAction.REPTOOLS_TRAINING_VIDEOS_NAMESPASE;
+      }
       return null;
    }
 

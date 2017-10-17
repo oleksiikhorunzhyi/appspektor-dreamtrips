@@ -28,13 +28,14 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
    private static final String ELEMENT_BODY = "body";
    private static final String ELEMENT_SERVICE = "service";
 
-   private MessageBodyParser messageBodyParser;
+   private final MessageBodyParser messageBodyParser;
 
    public MessagePageProvider(Gson gson) {
       this.messageBodyParser = new MessageBodyParser(gson);
    }
 
    @Override
+   @SuppressWarnings("PMD.SwitchDensity")
    public MessagePageIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
       ArrayList<Message> loadedMessages = new ArrayList<>();
       int loadedMessageCount = 0;
@@ -96,6 +97,7 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                      //noinspection all //messageBuilder cannot be null
                      messageBuilder.messageBody(messageBodyParser.
                            parseMessageBody(parser.nextText()));
+                     break;
                   default:
                      break;
                }
@@ -105,10 +107,16 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                   case ELEMENT_TO:
                   case ELEMENT_FROM:
                   case ELEMENT_SERVICE:
-                     if (messageBuilder == null) break;
+                     if (messageBuilder == null) {
+                        break;
+                     }
                      Message message = messageBuilder.build();
-                     if (TextUtils.isEmpty(message.getId())) break;
-                     if (MessageType.MESSAGE.equals(message.getType()) && message.getMessageBody() == null) break;
+                     if (TextUtils.isEmpty(message.getId())) {
+                        break;
+                     }
+                     if (MessageType.MESSAGE.equals(message.getType()) && message.getMessageBody() == null) {
+                        break;
+                     }
                      loadedMessages.add(message);
                      break;
                   case ELEMENT_CHAT:

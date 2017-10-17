@@ -198,8 +198,11 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> {
-                     if (command.getResult().connectionStatus().isConnected()) onConnected.call();
-                     else getView().showSCNonConnectionDialog();
+                     if (command.getResult().connectionStatus().isConnected()) {
+                        onConnected.call();
+                     } else {
+                        getView().showSCNonConnectionDialog();
+                     }
                   })
             );
    }

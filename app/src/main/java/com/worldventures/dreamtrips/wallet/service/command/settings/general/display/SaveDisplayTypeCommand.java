@@ -47,7 +47,9 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
    protected void run(CommandCallback<Void> callback) throws Throwable {
       Observable.just(user)
             .doOnNext(smartCardUser -> {
-               if (smartCardUser == null) throw new NullPointerException("User cannot be null at this point");
+               if (smartCardUser == null) {
+                  throw new NullPointerException("User cannot be null at this point");
+               }
 
                switch (displayType) {
                   case DISPLAY_PHONE_AND_NAME:

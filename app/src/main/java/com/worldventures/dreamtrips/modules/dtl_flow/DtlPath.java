@@ -19,6 +19,7 @@ public abstract class DtlPath extends MasterDetailPath implements AttributedPath
 
    @Override
    public void onPreDispatch(AppCompatActivity activity) {
+      //do nothing
    }
 
    @Override

@@ -118,14 +118,18 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
       // timeout was set according to the issue:
       // https://code.google.com/p/android/issues/detail?id=77712
       weakHandler.postDelayed(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       }, 100);
    }
 
    @Override
    public void finishLoading() {
       weakHandler.postDelayed(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       }, 100);
       stateDelegate.restoreStateIfNeeded();
    }
@@ -141,7 +145,9 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override
@@ -158,9 +164,11 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    public void openFriendPrefs(UserBundle userBundle) {
-      if (isVisibleOnScreen()) router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
-            .data(userBundle)
-            .build());
+      if (isVisibleOnScreen()) {
+         router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
+               .data(userBundle)
+               .build());
+      }
    }
 
    @Override
@@ -179,10 +187,12 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    public void openUser(UserBundle userBundle) {
-      if (isVisibleOnScreen()) router.moveTo(routeCreator.createRoute(userBundle.getUser()
-            .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
-            .visible(false)
-            .build()).data(userBundle).build());
+      if (isVisibleOnScreen()) {
+         router.moveTo(routeCreator.createRoute(userBundle.getUser()
+               .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
+               .visible(false)
+               .build()).data(userBundle).build());
+      }
 
    }
 

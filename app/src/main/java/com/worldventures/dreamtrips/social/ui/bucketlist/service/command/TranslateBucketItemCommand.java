@@ -40,7 +40,9 @@ public class TranslateBucketItemCommand extends CommandWithError<BucketItem> imp
    }
 
    private Observable<BucketItem> translateDescription(BucketItem translatedBucketItem) {
-      if (TextUtils.isEmpty(translatedBucketItem.getDescription())) return Observable.just(bucketItem);
+      if (TextUtils.isEmpty(translatedBucketItem.getDescription())) {
+         return Observable.just(bucketItem);
+      }
       return janet.createPipe(TranslateTextCachedCommand.class, Schedulers.io())
             .createObservableResult(new TranslateTextCachedCommand(translatedBucketItem.getDescription(),
                   LocaleHelper.getDefaultLocaleFormatted()))

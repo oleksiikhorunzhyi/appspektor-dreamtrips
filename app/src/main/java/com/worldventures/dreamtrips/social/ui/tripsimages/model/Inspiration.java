@@ -11,6 +11,7 @@ public class Inspiration implements Parcelable {
    private String author;
 
    public Inspiration() {
+      //do nothing
    }
 
    public String getUrl() {

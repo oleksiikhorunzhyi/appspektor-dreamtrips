@@ -59,7 +59,9 @@ public class VideoMicroserviceModule {
    @Provides
    OkHttpClient provideJanetOkHttpClient(@Named(JANET_QUALIFIER) Interceptor interceptor) {
       OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-      if (BuildConfig.DEBUG) okHttpClientBuilder.interceptors().add(interceptor);
+      if (BuildConfig.DEBUG) {
+         okHttpClientBuilder.interceptors().add(interceptor);
+      }
       okHttpClientBuilder.connectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       okHttpClientBuilder.readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       okHttpClientBuilder.writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);

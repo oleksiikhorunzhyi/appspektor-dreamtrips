@@ -12,7 +12,7 @@ import rx.Observable;
 
 public class AbandonedConversationMessageFilter extends BaseIncomingMessageFilter {
 
-   private LoadConversationDelegate loadConversationDelegate;
+   private final LoadConversationDelegate loadConversationDelegate;
 
    public AbandonedConversationMessageFilter(LoadConversationDelegate loadConversationDelegate) {
       this.loadConversationDelegate = loadConversationDelegate;
@@ -29,7 +29,8 @@ public class AbandonedConversationMessageFilter extends BaseIncomingMessageFilte
             break;
          case XmppPacketDetector.MESSAGE:
             return checkIfAbandonedConversation(message.getThread());
-         default: break;
+         default:
+            break;
       }
       return Observable.just(false);
    }

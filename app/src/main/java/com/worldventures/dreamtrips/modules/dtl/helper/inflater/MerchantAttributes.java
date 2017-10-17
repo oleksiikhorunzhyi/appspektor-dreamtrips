@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve PMD error (WMC=49, ATFD=11, TCC=0.0)
 @Value.Immutable
 public abstract class MerchantAttributes implements Serializable {
 
@@ -138,7 +139,9 @@ public abstract class MerchantAttributes implements Serializable {
 
    @Value.Derived
    public String provideFormattedCategories() {
-      if (categories() == null) return "";
+      if (categories() == null) {
+         return "";
+      }
       List<String> categories = Queryable.from(categories()).map(ThinAttribute::name).toList();
       return TextUtils.join(", ", categories);
    }

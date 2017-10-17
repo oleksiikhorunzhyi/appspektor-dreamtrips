@@ -4,13 +4,16 @@ import android.support.annotation.NonNull;
 
 import java.util.regex.Pattern;
 
-public class WalletValidateHelper {
+public final class WalletValidateHelper {
 
    private static final Pattern CARD_NAME_PATTERN = Pattern.compile("^[\\-a-zA-Z0-9](?:(?:\\s|-)*[\\-a-zA-Z0-9\\s])*$");
    private static final Pattern FIRST_NAME_PATTERN = Pattern.compile("^\\s*[a-zA-Z][a-zA-Z\\-]{0,19}[a-zA-Z]\\s*$");
    private static final Pattern MIDDLE_NAME_PATTERN = Pattern.compile("^[a-zA-Z]{0,21}+");
    private static final Pattern LAST_NAME_PATTERN = Pattern.compile("^\\s*[a-zA-Z][a-zA-Z\\-\\s]*[a-zA-Z]\\.?\\s*$");
    private static final Pattern SCID_PATTERN = Pattern.compile("^\\d+$");
+
+   private WalletValidateHelper() {
+   }
 
    public static void validateUserFullNameOrThrow(@NonNull String firstName, @NonNull String middleName, @NonNull String lastName) throws FormatException {
       if (!isValidFirstName(firstName)) {
@@ -29,7 +32,9 @@ public class WalletValidateHelper {
    }
 
    public static boolean isValidLastName(String lastName) {
-      if (lastName == null || lastName.length() > 21 || lastName.length() < 2) return false;
+      if (lastName == null || lastName.length() > 21 || lastName.length() < 2) {
+         return false;
+      }
       return LAST_NAME_PATTERN.matcher(lastName).matches();
    }
 
@@ -48,7 +53,9 @@ public class WalletValidateHelper {
    }
 
    public static void validateCardNameOrThrow(String cardName) throws CardNameFormatException {
-      if (!isValidCardName(cardName)) throw new CardNameFormatException();
+      if (!isValidCardName(cardName)) {
+         throw new CardNameFormatException();
+      }
    }
 
    public static boolean isValidCardName(String cardName) {
@@ -57,6 +64,8 @@ public class WalletValidateHelper {
    }
 
    public static void validateCvvOrThrow(String cvv, String cardNumber) throws CvvFormatException {
-      if (!validateCardCvv(cvv, cardNumber)) throw new CvvFormatException();
+      if (!validateCardCvv(cvv, cardNumber)) {
+         throw new CvvFormatException();
+      }
    }
 }

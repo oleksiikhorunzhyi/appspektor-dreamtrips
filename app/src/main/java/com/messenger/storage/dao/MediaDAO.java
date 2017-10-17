@@ -34,6 +34,7 @@ public class MediaDAO extends BaseDAO {
       super(context, rxContentResolver);
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<List<PhotoAttachment>> getPhotoAttachmentsSinceTime(String conversationId, String currentUserId, long syncTime) {
       RxContentResolver.Query query = new RxContentResolver.Query.Builder(null)
             .withSelection(" SELECT p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " as " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + ","
@@ -68,8 +69,9 @@ public class MediaDAO extends BaseDAO {
 
    private List<PhotoAttachment> obtainPhotoAttachmentListFromCursor(Cursor cursor) {
       ArrayList<PhotoAttachment> photoAttachments = new ArrayList<>();
-      while (cursor.moveToNext()) photoAttachments.add(obtainPhotoAttachmentFromCursor(cursor));
-
+      while (cursor.moveToNext()) {
+         photoAttachments.add(obtainPhotoAttachmentFromCursor(cursor));
+      }
       cursor.close();
       return photoAttachments;
    }

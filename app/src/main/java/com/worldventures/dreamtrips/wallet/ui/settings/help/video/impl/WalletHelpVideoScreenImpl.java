@@ -91,7 +91,9 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
       }
 
       @Override
-      public void onNothingSelected(AdapterView<?> parent) {}
+      public void onNothingSelected(AdapterView<?> parent) {
+         //do nothing
+      }
    };
 
    private void initAdapter() {
@@ -210,7 +212,9 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
 
    @Override
    public void setSelectedLocale(int index) {
-      if (videoLocales != null) videoLocales.setSelection(index);
+      if (videoLocales != null) {
+         videoLocales.setSelection(index);
+      }
    }
 
    @Override

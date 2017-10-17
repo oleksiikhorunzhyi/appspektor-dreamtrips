@@ -5,10 +5,11 @@ import android.os.Parcelable;
 
 public class EditChatMembersViewState extends LceViewState<Parcelable> {
 
-   public EditChatMembersViewState() {
-   }
-
    private String searchFilter;
+
+   public EditChatMembersViewState() {
+      //do nothing
+   }
 
    public String getSearchFilter() {
       return searchFilter;

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.worldventures.core.janet.dagger.InjectableAction;
-import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.command.GetPhotosFromGalleryCommand;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 

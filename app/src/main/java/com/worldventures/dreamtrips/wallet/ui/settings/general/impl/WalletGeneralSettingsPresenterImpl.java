@@ -48,7 +48,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
          SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, FactoryResetInteractor factoryResetInteractor,
          WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
       super(navigator, deviceConnectionDelegate);
-      this.smartCardInteractor  = smartCardInteractor;
+      this.smartCardInteractor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.featureHelper = walletFeatureHelper;

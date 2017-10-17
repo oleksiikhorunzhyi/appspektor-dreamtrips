@@ -25,7 +25,9 @@ public class MerchantCommonDataInflater extends MerchantDataInflater {
       if (merchantAttributes.rating() != 0.0d) {
          ViewUtils.setViewVisibility(rating, View.VISIBLE);
          rating.setRating(Double.valueOf(merchantAttributes.rating()).intValue());
-      } else ViewUtils.setViewVisibility(rating, View.GONE);
+      } else {
+         ViewUtils.setViewVisibility(rating, View.GONE);
+      }
 
       if (!merchantAttributes.hasOffers()) {
          earnPointsBadge.setVisibility(View.GONE);

@@ -40,7 +40,9 @@ public class SwipeRefreshLayoutWithText extends SwipeRefreshLayout {
    }
 
    public void setInfoText(@StringRes int resource) {
-      if (!(getChildAt(1) instanceof ViewGroup)) throw new IllegalStateException("Child must be instance of ViewGroup");
+      if (!(getChildAt(1) instanceof ViewGroup)) {
+         throw new IllegalStateException("Child must be instance of ViewGroup");
+      }
       //
       if (infoTextView == null) {
          infoTextView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.layout_refresh_info, null, false);

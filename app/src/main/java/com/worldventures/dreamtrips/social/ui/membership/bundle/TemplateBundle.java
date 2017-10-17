@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.social.ui.membership.model.InviteTemplate;
 
 public class TemplateBundle implements Parcelable {
 
-   private InviteTemplate inviteTemplate;
+   private final InviteTemplate inviteTemplate;
 
    public TemplateBundle(InviteTemplate inviteTemplate) {
       this.inviteTemplate = inviteTemplate;

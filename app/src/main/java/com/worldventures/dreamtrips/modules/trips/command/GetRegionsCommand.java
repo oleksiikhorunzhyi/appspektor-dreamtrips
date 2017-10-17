@@ -26,9 +26,6 @@ public class GetRegionsCommand extends Command<List<RegionModel>> implements Inj
 
    private List<RegionModel> cachedData;
 
-   public GetRegionsCommand() {
-   }
-
    @Override
    public List<RegionModel> getCacheData() {
       return getResult();

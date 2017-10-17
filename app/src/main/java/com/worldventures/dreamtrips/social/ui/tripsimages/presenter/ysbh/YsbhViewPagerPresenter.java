@@ -57,7 +57,9 @@ public class YsbhViewPagerPresenter extends BaseImageViewPagerPresenter<BaseImag
                   .onSuccess(getYSBHPhotosCommand -> {
                      loading = false;
                      lastPageReached = getYSBHPhotosCommand.lastPageReached();
-                     if (getYSBHPhotosCommand.getPage() == 1) currentItems.clear();
+                     if (getYSBHPhotosCommand.getPage() == 1) {
+                        currentItems.clear();
+                     }
                      currentItems.addAll(getYSBHPhotosCommand.getResult());
                      view.setItems(getItems());
                   }));

@@ -1,21 +1,21 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview; //NOPMD TODO: Resolve naming
 
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlDetailReviewPresenter extends DtlPresenter<DtlDetailReviewScreen, ViewState.EMPTY> {
 
-    void onBackPressed();
+   void onBackPressed();
 
-    int getMenuFlag();
+   int getMenuFlag();
 
-    void sendFlag();
+   void sendFlag();
 
-    void onItemClick();
+   void onItemClick();
 
-    void validateComingFrom();
+   void validateComingFrom();
 
-    void navigateToListReview(String message);
+   void navigateToListReview(String message);
 
-    void navigateToDetail(String message);
+   void navigateToDetail(String message);
 }

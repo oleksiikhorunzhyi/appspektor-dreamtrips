@@ -121,7 +121,7 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
       searchView.setOnQueryTextListener(onQueryTextListener);
    }
 
-   private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+   private final SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
          return false;
@@ -143,14 +143,18 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
       stateDelegate.restoreStateIfNeeded();
    }
@@ -171,7 +175,7 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
 
    @Override
    public void onCellClicked(PopularBucketItem model) {
-
+      //do nothing
    }
 
    @Override

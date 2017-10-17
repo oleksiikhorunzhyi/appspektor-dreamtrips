@@ -108,10 +108,12 @@ public final class NxtBankCardHelper {
 
    private static void safelyAddElement(List<MultiRequestElement> list,
          String operation, String tokenName, @Nullable String value, String refId) {
-      if (!isEmpty(value)) list.add(ImmutableMultiRequestElement.builder()
-            .operation(operation).tokenName(tokenName)
-            .value(value).referenceId(refId)
-            .build());
+      if (!isEmpty(value)) {
+         list.add(ImmutableMultiRequestElement.builder()
+               .operation(operation).tokenName(tokenName)
+               .value(value).referenceId(refId)
+               .build());
+      }
    }
 
    private static void safelyAddEncodedElement(List<MultiRequestElement> list,
@@ -144,15 +146,19 @@ public final class NxtBankCardHelper {
 
    @Nullable
    public static String getResponseErrorMessage(@Nullable List<MultiErrorResponse> errorResponseList) {
-      if (errorResponseList == null || errorResponseList.isEmpty()) return null;
+      if (errorResponseList == null || errorResponseList.isEmpty()) {
+         return null;
+      }
 
       StringBuilder sb = new StringBuilder("[");
       for (int i = 0; i < errorResponseList.size(); i++) {
-         if (i > 0) sb.append(", ");
+         if (i > 0) {
+            sb.append(", ");
+         }
          MultiErrorResponse errorResponse = errorResponseList.get(i);
          sb.append(String.format("\"%s\" : \"%s\"", errorResponse.code(), errorResponse.message()));
       }
-      sb.append("]");
+      sb.append(']');
 
       return sb.toString();
    }

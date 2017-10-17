@@ -13,19 +13,17 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantActio
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.inject.Inject;
-
 public class FullMerchantStorage implements Storage<Merchant>, ActionStorage<Merchant>, ClearableStorage {
 
    public static final String BUNDLE_MERCHANT_ID = "BUNDLE_MERCHANT_ID";
 
-   private Map<String, Merchant> cache = new ConcurrentHashMap<>();
-
-   @Inject public FullMerchantStorage() {}
+   private final Map<String, Merchant> cache = new ConcurrentHashMap<>();
 
    @Override
    public synchronized void save(@Nullable CacheBundle params, Merchant merchant) {
-      if (merchant != null) cache.put(merchant.id(), merchant);
+      if (merchant != null) {
+         cache.put(merchant.id(), merchant);
+      }
    }
 
    @Override

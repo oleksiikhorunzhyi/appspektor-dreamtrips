@@ -6,17 +6,13 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.LocationsA
 
 import java.util.Locale;
 
-import javax.inject.Inject;
-
 public class LocationsActionCreator implements HttpActionCreator<LocationsHttpAction, LocationsActionParams> {
-
-   @Inject
-   public LocationsActionCreator() {}
 
    @Override
    public LocationsHttpAction createAction(LocationsActionParams params) {
-      if (params.location() == null && params.query() == null)
+      if (params.location() == null && params.query() == null) {
          throw new NullPointerException("Can't create LocationsHttpAction : locations or query must be present");
+      }
       return params.location() != null ? createNearbyHttpAction(params.location()) : createLocationSearchHttpAction(params
             .query());
    }

@@ -59,7 +59,9 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
          public void onViewAttachedToWindow(View v) {
             photoTitle.addTextChangedListener(textWatcher);
             photoTitle.setOnFocusChangeListener((view, hasFocus) -> {
-               if (!hasFocus) photoContainer.requestFocus();
+               if (!hasFocus) {
+                  photoContainer.requestFocus();
+               }
                cellDelegate.onPhotoTitleFocusChanged(hasFocus);
             });
          }
@@ -142,7 +144,9 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
 
       photoTagHolderManager.setTagDeletedListener(photoTag -> {
          boolean removed = getModelObject().getCachedAddedPhotoTags().remove(photoTag);
-         if (!removed) getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         if (!removed) {
+            getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         }
          addTagSuggestions(photoTagHolderManager);
          invalidateTags();
       });

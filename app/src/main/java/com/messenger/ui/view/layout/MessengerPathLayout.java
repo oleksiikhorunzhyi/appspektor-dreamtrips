@@ -44,5 +44,6 @@ public abstract class MessengerPathLayout<V extends MessengerScreen, P extends M
 
    /** Safe method to init UI with path provided */
    protected void onPrepared() {
+      //do nothing
    }
 }

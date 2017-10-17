@@ -18,12 +18,11 @@ import static flow.FlowDelegate.NonConfigurationInstance;
 
 public class FlowActivityHelper {
 
-   private WeakReference<Activity> activityRef;
-   //
-   protected FlowDelegate flowSupport;
-   protected StateParceler parceler;
-   protected Flow.Dispatcher dispatcher;
-   protected History defaultBackstack;
+   private final WeakReference<Activity> activityRef;
+   private final StateParceler parceler;
+   private final Flow.Dispatcher dispatcher;
+   private History defaultBackstack;
+   private FlowDelegate flowSupport;
 
    private boolean created;
 
@@ -37,7 +36,9 @@ public class FlowActivityHelper {
    public void onCreate(Bundle savedInstanceState) {
       created = true;
       Activity activity = activityRef.get();
-      if (activity == null) throw new IllegalStateException("Can't create scope for null activity");
+      if (activity == null) {
+         throw new IllegalStateException("Can't create scope for null activity");
+      }
 
       NonConfigurationInstance nonConfig;
       if (activity instanceof FragmentActivity) {
@@ -69,7 +70,9 @@ public class FlowActivityHelper {
    }
 
    public void onResume() {
-      if (flowSupport != null) flowSupport.onResume();
+      if (flowSupport != null) {
+         flowSupport.onResume();
+      }
    }
 
    public void onPause() {
@@ -85,7 +88,9 @@ public class FlowActivityHelper {
    @Nullable
    public Object getSystemService(String name) {
       Object flow = null;
-      if (flowSupport != null) flow = flowSupport.getSystemService(name);
+      if (flowSupport != null) {
+         flow = flowSupport.getSystemService(name);
+      }
       return flow;
    }
 }

@@ -18,8 +18,8 @@ import static com.messenger.messengerservers.constant.MessageType.SYSTEM_LEAVE;
 
 public class SystemMessageTextProvider {
 
-   private Resources resources;
-   private String currentUserId;
+   private final Resources resources;
+   private final String currentUserId;
 
    public SystemMessageTextProvider(Context context, String currentUserId) {
       resources = context.getResources();

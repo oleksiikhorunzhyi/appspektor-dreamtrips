@@ -137,7 +137,9 @@ public class PhotoStripView extends LinearLayout {
 
       mediaAdapter.registerCell(PickerIrregularPhotoModel.class, PhotoStripButtonCell.class);
       mediaAdapter.registerDelegate(PickerIrregularPhotoModel.class, model -> {
-         if (eventListener == null) return;
+         if (eventListener == null) {
+            return;
+         }
          if (((PickerIrregularPhotoModel) model).getType() == PickerIrregularPhotoModel.CAMERA) {
             eventListener.openCameraRequired();
          } else {
@@ -157,8 +159,9 @@ public class PhotoStripView extends LinearLayout {
    }
 
    public void showMedia(Collection<MediaPickerModel> photos) {
-      if (mediaAdapter == null)
+      if (mediaAdapter == null) {
          throw new RuntimeException("You should provide injector first");
+      }
 
       List items = new ArrayList(photos);
       PickerIrregularPhotoModel cameraItem = new PickerIrregularPhotoModel(PickerIrregularPhotoModel.CAMERA,
@@ -175,7 +178,9 @@ public class PhotoStripView extends LinearLayout {
       MediaPickerModelImpl updatedItem = (MediaPickerModelImpl) updatedModel;
 
       for (Object item : mediaAdapter.getItems()) {
-         if (!(item instanceof MediaPickerModelImpl)) continue;
+         if (!(item instanceof MediaPickerModelImpl)) {
+            continue;
+         }
 
          MediaPickerModelImpl notUpdatedModel = (MediaPickerModelImpl) item;
          if (updatedItem.getFileName().equals(notUpdatedModel.getFileName())) {
@@ -208,10 +213,14 @@ public class PhotoStripView extends LinearLayout {
          }
 
          @Override
-         public void onAnimationCancel(Animator animation) {}
+         public void onAnimationCancel(Animator animation) {
+            //do nothing
+         }
 
          @Override
-         public void onAnimationRepeat(Animator animation) {}
+         public void onAnimationRepeat(Animator animation) {
+            //do nothing
+         }
       });
       animation.start();
    }
@@ -235,7 +244,9 @@ public class PhotoStripView extends LinearLayout {
    }
 
    public void askUserForPermissions(String[] permissions, Action2<String[], Boolean> userAnswerListener) {
-      if (permissions != PermissionConstants.STORE_PERMISSIONS) return;
+      if (permissions != PermissionConstants.STORE_PERMISSIONS) {
+         return;
+      }
 
       new MaterialDialog.Builder(getContext())
             .content(R.string.photo_strip_read_storage_permission_explanation)

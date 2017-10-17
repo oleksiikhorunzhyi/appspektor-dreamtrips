@@ -9,7 +9,7 @@ import io.techery.janet.operationsubscriber.view.ErrorView;
 public class CustomDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
 
    private final MaterialDialog materialDialog;
-   private Class<? extends Throwable> throwable;
+   private final Class<? extends Throwable> throwable;
 
    public CustomDialogErrorViewProvider(MaterialDialog dialog, Class<? extends Throwable> throwable) {
       this.materialDialog = dialog;
@@ -27,7 +27,9 @@ public class CustomDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
       return new ErrorView<T>() {
          @Override
          public void showError(T t, Throwable throwable) {
-            if (materialDialog != null) materialDialog.show();
+            if (materialDialog != null) {
+               materialDialog.show();
+            }
          }
 
          @Override
@@ -37,7 +39,9 @@ public class CustomDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
 
          @Override
          public void hideError() {
-            if (materialDialog != null) materialDialog.dismiss();
+            if (materialDialog != null) {
+               materialDialog.dismiss();
+            }
          }
       };
    }

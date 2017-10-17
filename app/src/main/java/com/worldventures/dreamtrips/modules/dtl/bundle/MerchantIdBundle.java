@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class MerchantIdBundle implements Parcelable {
 
-   private String merchantId;
+   private final String merchantId;
 
    public MerchantIdBundle(String merchantId) {
       this.merchantId = merchantId;

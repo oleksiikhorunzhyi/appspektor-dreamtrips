@@ -18,8 +18,8 @@ public class SwipeableWrapperAdapter<A extends RecyclerView.Adapter & SwipeLayou
       extends BaseWrapperAdapter<VH>
       implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
-   private SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
-   private SwipeLayoutContainer swipeLayoutContainer;
+   private final SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
+   private final SwipeLayoutContainer swipeLayoutContainer;
 
    public SwipeableWrapperAdapter(A adapter) {
       super(adapter);

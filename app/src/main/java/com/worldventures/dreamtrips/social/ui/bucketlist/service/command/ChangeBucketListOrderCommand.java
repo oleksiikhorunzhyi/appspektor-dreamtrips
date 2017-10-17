@@ -9,8 +9,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class ChangeBucketListOrderCommand extends ApiActionCommand<UpdateBucketItemPositionHttpAction, Object> {
 
-   private String uid;
-   private int position;
+   private final String uid;
+   private final int position;
 
    public ChangeBucketListOrderCommand(String uid, int position) {
       this.uid = uid;

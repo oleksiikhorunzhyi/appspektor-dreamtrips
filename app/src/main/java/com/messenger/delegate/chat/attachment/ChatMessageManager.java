@@ -88,7 +88,9 @@ public class ChatMessageManager {
 
       if (dataAttachment != null) {
          retrySendAttachment(dataConversation.getId(), failedMessage, dataAttachment);
-      } else chatMessageInteractor.getResendMessagePipe().send(new RetrySendMessageCommand(failedMessage));
+      } else {
+         chatMessageInteractor.getResendMessagePipe().send(new RetrySendMessageCommand(failedMessage));
+      }
    }
 
    public void retrySendAttachment(String conversationId, DataMessage dataMessage, DataAttachment attachment) {

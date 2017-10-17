@@ -65,7 +65,9 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
 
    @Override
    protected void syncUIStateWithModel() {
-      if (!appSessionHolder.get().isPresent()) return;
+      if (!appSessionHolder.get().isPresent()) {
+         return;
+      }
 
       User firstUser = getModelObject().getLinks().getUsers().get(0);
       notificationAvatar.setImageURI(Uri.parse(firstUser.getAvatar().getThumb()));
@@ -83,7 +85,9 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
          notificationImage.setVisibility(View.VISIBLE);
          String url = getModelObject().previewImage(itemView.getResources());
 
-         if (url != null) notificationImage.setImageURI(Uri.parse(url));
+         if (url != null) {
+            notificationImage.setImageURI(Uri.parse(url));
+         }
       }
 
       itemView.setOnClickListener(v -> open(getModelObject()));
@@ -91,9 +95,13 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
    }
 
    private void open(FeedItem item) {
-      if (item.getType() != Type.UNDEFINED) openByType(item.getType(), item.getAction());
-      else if (item.getAction() != null) openByAction(getModelObject().getLinks(), item.getAction());
-      else Timber.w("Can't open event model by type or action");
+      if (item.getType() != Type.UNDEFINED) {
+         openByType(item.getType(), item.getAction());
+      } else if (item.getAction() != null) {
+         openByAction(getModelObject().getLinks(), item.getAction());
+      } else {
+         Timber.w("Can't open event model by type or action");
+      }
    }
 
    private void openByType(Type type, FeedItem.Action action) {
@@ -144,7 +152,7 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
 
    private void openFullscreenPhoto() {
       List<BaseMediaEntity> items = new ArrayList<>();
-      items.add((new PhotoMediaEntity((Photo) getModelObject().getItem())));
+      items.add(new PhotoMediaEntity((Photo) getModelObject().getItem()));
       router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()
                   .mediaEntityList(items)

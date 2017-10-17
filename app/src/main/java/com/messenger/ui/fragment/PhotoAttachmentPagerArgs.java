@@ -9,8 +9,9 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 import java.util.List;
 
 public class PhotoAttachmentPagerArgs implements Parcelable {
-   private List<PhotoAttachment> currentItems;
-   private int currentItemPosition;
+
+   private final List<PhotoAttachment> currentItems;
+   private final int currentItemPosition;
 
    public PhotoAttachmentPagerArgs(List<PhotoAttachment> currentItems, int currentItemPosition) {
       this.currentItems = currentItems;

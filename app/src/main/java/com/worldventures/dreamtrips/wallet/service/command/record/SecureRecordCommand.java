@@ -86,7 +86,9 @@ public final class SecureRecordCommand extends Command<Record> implements Inject
    }
 
    private void sendTokenizationAnalytics(Record record, boolean success) {
-      if (actionType == null) return;
+      if (actionType == null) {
+         return;
+      }
 
       analyticsInteractor.walletAnalyticsPipe().send(new TokenizationAnalyticsLocationCommand(
             TokenizationCardAction.from(record, success, actionType, secureForLocalStorage)

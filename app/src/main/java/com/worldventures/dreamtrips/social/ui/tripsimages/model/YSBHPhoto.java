@@ -9,6 +9,7 @@ public class YSBHPhoto implements Parcelable {
    private String title;
 
    public YSBHPhoto() {
+      //do nothing
    }
 
    public int getId() {

@@ -5,11 +5,11 @@ import android.view.View;
 
 public abstract class ModuleViewImpl<P extends ModulePresenter> implements ModuleView<P> {
 
-   private View parentView;
+   private final View parentView;
 
    protected P presenter;
 
-   private View.OnAttachStateChangeListener parentAttachedStateListener = new View.OnAttachStateChangeListener() {
+   private final View.OnAttachStateChangeListener parentAttachedStateListener = new View.OnAttachStateChangeListener() {
       @Override
       public void onViewAttachedToWindow(View v) {
          onParentViewAttachedToWindow();

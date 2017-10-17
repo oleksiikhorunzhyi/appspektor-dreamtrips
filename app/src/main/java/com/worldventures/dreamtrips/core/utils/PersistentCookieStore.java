@@ -31,7 +31,6 @@ import timber.log.Timber;
  */
 public class PersistentCookieStore implements CookieStore {
 
-   private static final String LOG_TAG = "PersistentCookieStore";
    private static final String COOKIE_PREFS = "CookiePrefsFile";
    private static final String COOKIE_NAME_PREFIX = "cookie_";
 
@@ -43,6 +42,8 @@ public class PersistentCookieStore implements CookieStore {
     *
     * @param context Context to attach cookie store to
     */
+   //TODO: fix this PMD error https://pmd.github.io/pmd-5.6.1/pmd-java/rules/java/design.html#AvoidDeeplyNestedIfStmts
+   @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
    public PersistentCookieStore(Context context) {
       cookiePrefs = context.getSharedPreferences(COOKIE_PREFS, 0);
       cookies = new HashMap<>();
@@ -57,8 +58,9 @@ public class PersistentCookieStore implements CookieStore {
                if (encodedCookie != null) {
                   HttpCookie decodedCookie = decodeCookie(encodedCookie);
                   if (decodedCookie != null) {
-                     if (!cookies.containsKey(entry.getKey()))
-                        cookies.put(entry.getKey(), new ConcurrentHashMap<String, HttpCookie>());
+                     if (!cookies.containsKey(entry.getKey())) {
+                        cookies.put(entry.getKey(), new ConcurrentHashMap<>());
+                     }
                      cookies.get(entry.getKey()).put(name, decodedCookie);
                   }
                }
@@ -74,10 +76,14 @@ public class PersistentCookieStore implements CookieStore {
 
       // Save cookie into local store, or remove if expired
       if (!cookie.hasExpired()) {
-         if (!cookies.containsKey(uri.getHost())) cookies.put(uri.getHost(), new ConcurrentHashMap<>());
+         if (!cookies.containsKey(uri.getHost())) {
+            cookies.put(uri.getHost(), new ConcurrentHashMap<>());
+         }
          cookies.get(uri.getHost()).put(name, cookie);
       } else {
-         if (cookies.containsKey(uri.toString())) cookies.get(uri.getHost()).remove(name);
+         if (cookies.containsKey(uri.toString())) {
+            cookies.get(uri.getHost()).remove(name);
+         }
       }
 
       // Save cookie into persistent store
@@ -94,7 +100,9 @@ public class PersistentCookieStore implements CookieStore {
    @Override
    public List<HttpCookie> get(URI uri) {
       ArrayList<HttpCookie> ret = new ArrayList<HttpCookie>();
-      if (cookies.containsKey(uri.getHost())) ret.addAll(cookies.get(uri.getHost()).values());
+      if (cookies.containsKey(uri.getHost())) {
+         ret.addAll(cookies.get(uri.getHost()).values());
+      }
       return ret;
    }
 
@@ -131,8 +139,9 @@ public class PersistentCookieStore implements CookieStore {
    @Override
    public List<HttpCookie> getCookies() {
       ArrayList<HttpCookie> ret = new ArrayList<HttpCookie>();
-      for (String key : cookies.keySet())
+      for (String key : cookies.keySet()) {
          ret.addAll(cookies.get(key).values());
+      }
 
       return ret;
    }
@@ -140,12 +149,13 @@ public class PersistentCookieStore implements CookieStore {
    @Override
    public List<URI> getURIs() {
       ArrayList<URI> ret = new ArrayList<URI>();
-      for (String key : cookies.keySet())
+      for (String key : cookies.keySet()) {
          try {
             ret.add(new URI(key));
          } catch (URISyntaxException e) {
             Timber.e(e, "Can't get uri");
          }
+      }
 
       return ret;
    }
@@ -157,7 +167,9 @@ public class PersistentCookieStore implements CookieStore {
     * @return cookie encoded as String
     */
    protected String encodeCookie(SerializableHttpCookie cookie) {
-      if (cookie == null) return null;
+      if (cookie == null) {
+         return null;
+      }
       ByteArrayOutputStream os = new ByteArrayOutputStream();
       try {
          ObjectOutputStream outputStream = new ObjectOutputStream(os);

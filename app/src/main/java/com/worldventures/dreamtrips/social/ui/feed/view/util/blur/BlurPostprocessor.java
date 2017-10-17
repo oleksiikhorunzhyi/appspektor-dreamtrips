@@ -16,7 +16,7 @@ public class BlurPostprocessor extends BasePostprocessor {
    private static final int MAX_RADIUS = 25;
    private static final int DEFAULT_DOWN_SAMPLING = 1;
 
-   private Context context;
+   private final Context context;
    private int radius;
    private int sampling;
 

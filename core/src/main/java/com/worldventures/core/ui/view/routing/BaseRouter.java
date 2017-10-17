@@ -70,7 +70,7 @@ public class BaseRouter {
       getContext().startActivity(intent);
    }
 
-   protected void startService(Class<? extends Service> serviceClass) {
+   public void startService(Class<? extends Service> serviceClass) {
       startServiceIntent(new Intent(getContext(), serviceClass));
    }
 

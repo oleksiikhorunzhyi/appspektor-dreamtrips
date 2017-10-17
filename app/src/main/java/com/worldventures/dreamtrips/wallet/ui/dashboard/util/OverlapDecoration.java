@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.util.viewholder.CardGrou
 
 public class OverlapDecoration extends RecyclerView.ItemDecoration {
 
-   private int vertOverlap = 0;
+   private final int vertOverlap;
 
    public OverlapDecoration(int vertOverlap) {
       if (vertOverlap >= 0) {
@@ -22,8 +22,7 @@ public class OverlapDecoration extends RecyclerView.ItemDecoration {
          return false;
       }
       View prevView = parent.getChildAt(itemPosition - 1);
-      boolean prevIsHeader = prevView != null && parent.getChildViewHolder(prevView) instanceof CardGroupHeaderHolder;
-      return !prevIsHeader;
+      return !(prevView != null && parent.getChildViewHolder(prevView) instanceof CardGroupHeaderHolder); //NOPMD
    }
 
    @Override

@@ -6,8 +6,8 @@ import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 
 public class UsersLikedEntityBundle extends BaseUsersBundle {
 
-   private FeedEntity feedEntity;
-   private int likersCount;
+   private final FeedEntity feedEntity;
+   private final int likersCount;
 
    public UsersLikedEntityBundle(FeedEntity feedEntity, int likersCount) {
       this.feedEntity = feedEntity;

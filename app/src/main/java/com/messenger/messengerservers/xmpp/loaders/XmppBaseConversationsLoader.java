@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.messenger.messengerservers.constant.Affiliation;
-import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.Participant;
@@ -77,7 +76,7 @@ abstract class XmppBaseConversationsLoader {
    }
 
    private boolean groupChatInvalid(@NonNull Conversation conversation, @NonNull List<Participant> members) {
-      boolean isGroupChat = !TextUtils.equals(conversation.getType(), ConversationType.CHAT);
+      boolean isGroupChat = !TextUtils.equals(conversation.getType(), CHAT);
       return isGroupChat && members.size() < 2;
    }
 

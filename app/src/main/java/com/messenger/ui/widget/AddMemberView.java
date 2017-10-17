@@ -108,9 +108,13 @@ public class AddMemberView extends RelativeLayout {
    }
 
    private boolean removeLastUserIfExist() {
-      if (chosenUsers == null || chosenUsers.isEmpty()) { return false; }
+      if (chosenUsers == null || chosenUsers.isEmpty()) {
+         return false;
+      }
       DataUser removedUser = chosenUsers.remove(chosenUsers.size() - 1);
-      for (Action1<DataUser> action : removeUserCallbacks) action.call(removedUser);
+      for (Action1<DataUser> action : removeUserCallbacks) {
+         action.call(removedUser);
+      }
       updateChosenUsers();
       return true;
    }

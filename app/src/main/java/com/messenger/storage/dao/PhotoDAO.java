@@ -50,6 +50,7 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
       return DataPhotoAttachment$Table.PHOTOATTACHMENTID;
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<List<DataPhotoAttachment>> getPhotoAttachments(String conversationId) {
       RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT p.* "
             + "FROM " + DataPhotoAttachment.TABLE_NAME + " p "

@@ -8,7 +8,13 @@ import java.util.Comparator;
 
 public final class LocationComparator implements Comparator<DtlLocation> {
 
-   private String subString;
+   public final static Comparator<DtlLocation> CATEGORY_COMPARATOR = (lhs, rhs) -> lhs.type().ordinal() - rhs.type()
+         .ordinal();
+
+   public final static Comparator<DtlLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) -> lhs.longName()
+         .compareToIgnoreCase(rhs.longName());
+
+   private final String subString;
 
    public static Comparator<DtlLocation> provideComparator(String query) {
       return new LocationComparator(query);
@@ -28,10 +34,4 @@ public final class LocationComparator implements Comparator<DtlLocation> {
          return ALPHABETICAL_COMPARATOR.compare(lhs, rhs);
       }
    }
-
-   public final static Comparator<DtlLocation> CATEGORY_COMPARATOR = (lhs, rhs) -> lhs.type().ordinal() - rhs.type()
-         .ordinal();
-
-   public final static Comparator<DtlLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) -> lhs.longName()
-         .compareToIgnoreCase(rhs.longName());
 }

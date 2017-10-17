@@ -97,7 +97,7 @@ public class SmartCardSyncManager {
       interactor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
-            .filter(smartCard -> connectionStatus == ConnectionStatus.CONNECTED
+            .filter(smartCard -> connectionStatus == CONNECTED
                   && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
             .takeUntil(interactor.disconnectPipe().observeSuccess())
             .take(1)
@@ -214,7 +214,9 @@ public class SmartCardSyncManager {
    }
 
    private void connectSyncSmartCard() {
-      if (featureHelper.isSampleCardMode()) return;
+      if (featureHelper.isSampleCardMode()) {
+         return;
+      }
       Observable.interval(WalletConstants.AUTO_SYNC_PERIOD_MINUTES, TimeUnit.MINUTES)
             .mergeWith(recordInteractor.cardsListPipe().observeSuccess()
                   .map(cardListCommand -> null))

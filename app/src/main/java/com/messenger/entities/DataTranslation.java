@@ -28,6 +28,7 @@ public class DataTranslation extends BaseProviderModel<DataTranslation> {
    @TranslationStatus.Status @Column() int translateStatus;
 
    public DataTranslation() {
+      //do nothing
    }
 
    public DataTranslation(String id, String translation, @TranslationStatus.Status int translateStatus) {

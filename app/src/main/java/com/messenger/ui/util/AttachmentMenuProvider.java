@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 public class AttachmentMenuProvider {
 
-   private Resources res;
+   private final Resources res;
 
    @Inject
    public AttachmentMenuProvider(Context context) {

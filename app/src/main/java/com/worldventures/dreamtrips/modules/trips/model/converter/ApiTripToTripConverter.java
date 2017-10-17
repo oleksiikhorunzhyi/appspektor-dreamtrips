@@ -30,7 +30,9 @@ public abstract class ApiTripToTripConverter<T extends Trip> implements Converte
       tripModel.setTripId(trip.tripId());
       tripModel.setName(trip.name());
       tripModel.setDescription(trip.description());
-      if (trip.images() != null)  tripModel.setImages(mapperyContext.convert(trip.images(), TripImage.class));
+      if (trip.images() != null) {
+         tripModel.setImages(mapperyContext.convert(trip.images(), TripImage.class));
+      }
       tripModel.setAvailable(trip.available());
       tripModel.setFeatured(trip.featured());
       tripModel.setPlatinum(trip.platinum());
@@ -39,8 +41,12 @@ public abstract class ApiTripToTripConverter<T extends Trip> implements Converte
       tripModel.setRewardsLimit(trip.rewardsLimit());
       tripModel.setSoldOut(trip.soldOut());
       tripModel.setLocation(location(trip.location()));
-      if (trip.region() != null) tripModel.setRegion(mapperyContext.convert(trip.region(), RegionModel.class));
-      if (trip.activities() != null) tripModel.setActivities(mapperyContext.convert(trip.activities(), ActivityModel.class));
+      if (trip.region() != null) {
+         tripModel.setRegion(mapperyContext.convert(trip.region(), RegionModel.class));
+      }
+      if (trip.activities() != null) {
+         tripModel.setActivities(mapperyContext.convert(trip.activities(), ActivityModel.class));
+      }
       tripModel.setDuration(trip.duration());
       tripModel.setHasMultipleDates(trip.hasMultipleDates());
       tripModel.setDates(dates(trip.dates()));

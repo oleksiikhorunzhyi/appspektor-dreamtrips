@@ -80,7 +80,6 @@ public class HtmlTagHandler implements Html.TagHandler {
             text.setSpan(replace, where, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
          }
       }
-      return;
    }
 
    /**

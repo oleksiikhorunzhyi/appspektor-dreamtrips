@@ -113,7 +113,9 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
          });
       }
 
-      if (dialog != null) dialog.dismiss();
+      if (dialog != null) {
+         dialog.dismiss();
+      }
       dialog = builder.build();
       dialog.show();
    }
@@ -149,7 +151,9 @@ public class WizardChargingScreenImpl extends WalletBaseController<WizardChargin
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (dialog != null) dialog.dismiss();
+      if (dialog != null) {
+         dialog.dismiss();
+      }
       super.onDetach(view);
    }
 }

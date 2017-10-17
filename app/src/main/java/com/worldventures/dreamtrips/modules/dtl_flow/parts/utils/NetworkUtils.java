@@ -5,7 +5,10 @@ import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
-public class NetworkUtils {
+public final class NetworkUtils {
+
+   private NetworkUtils() {
+   }
 
    public static String getIpAddress(boolean useIPv4) {
       try {
@@ -19,8 +22,9 @@ public class NetworkUtils {
                   boolean isIPv4 = sAddr.indexOf(':') < 0;
 
                   if (useIPv4) {
-                     if (isIPv4)
+                     if (isIPv4) {
                         return sAddr;
+                     }
                   } else {
                      if (!isIPv4) {
                         int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
@@ -30,7 +34,8 @@ public class NetworkUtils {
                }
             }
          }
-      } catch (Exception ignored) { } // for now eat exceptions
+      } catch (Exception ignored) {
+      } // for now eat exceptions
       return "";
    }
 }

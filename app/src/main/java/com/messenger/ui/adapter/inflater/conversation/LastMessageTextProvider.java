@@ -19,10 +19,9 @@ import com.worldventures.dreamtrips.R;
 
 public class LastMessageTextProvider {
 
-   private Context context;
-   private DataUser currentUser;
-
-   private SystemMessageTextProvider systemMessageTextProvider;
+   private final Context context;
+   private final DataUser currentUser;
+   private final SystemMessageTextProvider systemMessageTextProvider;
 
    public LastMessageTextProvider(Context context, DataUser currentUser) {
       this.context = context;
@@ -54,11 +53,13 @@ public class LastMessageTextProvider {
       String messageText = "";
       if (message.getType() != null) {
          if (MessageHelper.isUserMessage(message)) {
-            if (MessageVersionHelper.isUnsupported(attachmentType))
+            if (MessageVersionHelper.isUnsupported(attachmentType)) {
                messageText = Html.fromHtml(context.getString(R.string.chat_update_proposition)).toString();
-            else if (translation != null && translation.getTranslateStatus() == TranslationStatus.TRANSLATED)
+            } else if (translation != null && translation.getTranslateStatus() == TranslationStatus.TRANSLATED) {
                messageText = translation.getTranslation();
-            else messageText = message.getText();
+            } else {
+               messageText = message.getText();
+            }
 
             String messageAuthorName = sender.getDisplayedName();
             if (TextUtils.equals(sender.getId(), currentUser.getId())) {

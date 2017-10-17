@@ -27,7 +27,7 @@ public class HoldableButton extends AppCompatButton {
    private boolean isHoldStarted;
    private int holdEventCount;
 
-   private Runnable holdRunnable = new Runnable() {
+   private final Runnable holdRunnable = new Runnable() {
       @Override
       public void run() {
          if (!isHoldStarted) {

@@ -41,7 +41,9 @@ public class AndroidPropertiesProvider implements SystemPropertiesProvider {
    }
 
    private String capitalize(String name) {
-      if (TextUtils.isEmpty(name)) return "";
+      if (TextUtils.isEmpty(name)) {
+         return "";
+      }
 
       char firstLetter = name.charAt(0);
       return Character.isUpperCase(firstLetter) ? name : Character.toUpperCase(firstLetter) + name.substring(1);
@@ -59,12 +61,19 @@ public class AndroidPropertiesProvider implements SystemPropertiesProvider {
       String pseudoDeviceId = getPseudoDeviceId();
       String serialNumber = Build.SERIAL;
 
-      if (androidId != null) sb.append(androidId);
-      if (pseudoDeviceId != null) sb.append(pseudoDeviceId);
-      if (serialNumber != null && !TextUtils.equals(serialNumber, "unknown")) sb.append(serialNumber);
+      if (androidId != null) {
+         sb.append(androidId);
+      }
+      if (pseudoDeviceId != null) {
+         sb.append(pseudoDeviceId);
+      }
+      if (serialNumber != null && !TextUtils.equals(serialNumber, "unknown")) {
+         sb.append(serialNumber);
+      }
 
-      if (sb.length() == 0)
+      if (sb.length() == 0) {
          throw new RuntimeException("Unique device indentifier wasn't obtained");
+      }
 
       return sb.toString();
    }

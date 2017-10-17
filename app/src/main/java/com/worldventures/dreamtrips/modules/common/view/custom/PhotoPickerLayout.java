@@ -88,7 +88,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
          rect.bottom = rect.bottom - getPanelHeight();
          boolean isTransparentClicked = getPanelState() != PanelState.EXPANDED && rect.contains((int) ev.getX(), (int) ev
                .getY());
-         if (isTransparentClicked) return false;
+         if (isTransparentClicked) {
+            return false;
+         }
       }
       return super.dispatchTouchEvent(ev);
    }
@@ -139,7 +141,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
    public void setup(FragmentManager fragmentManager, boolean isVisible) {
       this.fragmentManager = fragmentManager;
-      if (isVisible) updatePickerDelegate();
+      if (isVisible) {
+         updatePickerDelegate();
+      }
    }
 
    public void updatePickerDelegate() {
@@ -151,7 +155,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     */
    private void openGallery() {
       post(() -> {
-         if (ViewCompat.isAttachedToWindow(PhotoPickerLayout.this)) {
+         if (ViewCompat.isAttachedToWindow(this)) {
             router.moveTo(Route.GALLERY, NavigationConfigBuilder.forFragment()
                   .fragmentManager(fragmentManager)
                   .backStackEnabled(true)
@@ -181,7 +185,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
    }
 
    public void updatePickedItemsCount(int pickedCount) {
-      if (selectedCount == null) return;
+      if (selectedCount == null) {
+         return;
+      }
       //
       if (pickedCount == 0) {
          selectedCount.setText(null);
@@ -218,9 +224,14 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
    }
 
    private void updateCancelButtonState() {
-      if (cancel == null) return;
-      if (fragmentManager.getBackStackEntryCount() < 2) cancel.setText(R.string.action_cancel);
-      else cancel.setText(R.string.nav_back);
+      if (cancel == null) {
+         return;
+      }
+      if (fragmentManager.getBackStackEntryCount() < 2) {
+         cancel.setText(R.string.action_cancel);
+      } else {
+         cancel.setText(R.string.nav_back);
+      }
    }
 
    public void showPanel(boolean photoMultipickEnabled, int photoPickLimit) {
@@ -233,7 +244,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
       this.videoPickingEnabled = videoPickingEnabled;
       this.videoLengthLimit = videoLengthLimit;
 
-      if (photoPickerListener != null) photoPickerListener.onOpened();
+      if (photoPickerListener != null) {
+         photoPickerListener.onOpened();
+      }
       photoPickerDelegate.onOpened();
 
       isShown = true;
@@ -245,12 +258,17 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
       }
       updateCancelButtonState();
       int panelHeight = (int) getResources().getDimension(R.dimen.picker_panel_height);
-      if (isKeyboardClosed) handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
-      else setPanelHeight(panelHeight);
+      if (isKeyboardClosed) {
+         handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
+      } else {
+         setPanelHeight(panelHeight);
+      }
    }
 
    public void hidePanel() {
-      if (photoPickerListener != null) photoPickerListener.onClosed();
+      if (photoPickerListener != null) {
+         photoPickerListener.onClosed();
+      }
       photoPickerDelegate.onClosed();
 
       isShown = false;
@@ -258,7 +276,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
       setPanelHeight(0);
       setScrollableView(null);
       //
-      if (!ViewCompat.isAttachedToWindow(this)) return;
+      if (!ViewCompat.isAttachedToWindow(this)) {
+         return;
+      }
       clearAllBackStack();
    }
 

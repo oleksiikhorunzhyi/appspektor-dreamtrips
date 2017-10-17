@@ -66,14 +66,18 @@ public abstract class BaseUserCell<D extends UserActionDelegate> extends BaseAbs
 
    @OnClick(R.id.tv_mutual)
    void onMutualClick() {
-      if (!mutualFriendsUtil.hasMutualFriends(getModelObject())) return;
+      if (!mutualFriendsUtil.hasMutualFriends(getModelObject())) {
+         return;
+      }
       //
       createActionPanelNavigationWrapper().navigate(Route.MUTUAL_FRIENDS, new MutualFriendsBundle(getModelObject().getId()));
    }
 
    @OnClick(R.id.sdv_avatar)
    void onUserClicked() {
-      if (cellDelegate != null) cellDelegate.userClicked(getModelObject());
+      if (cellDelegate != null) {
+         cellDelegate.userClicked(getModelObject());
+      }
    }
 
    protected String createMutualString() {

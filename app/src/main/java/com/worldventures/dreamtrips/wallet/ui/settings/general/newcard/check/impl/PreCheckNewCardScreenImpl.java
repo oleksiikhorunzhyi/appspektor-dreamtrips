@@ -57,7 +57,9 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
                .negativeText(R.string.cancel)
                .build();
       }
-      if (!addCardContinueDialog.isShowing()) addCardContinueDialog.show();
+      if (!addCardContinueDialog.isShowing()) {
+         addCardContinueDialog.show();
+      }
    }
 
    @Override
@@ -82,7 +84,9 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (addCardContinueDialog != null) addCardContinueDialog.dismiss();
+      if (addCardContinueDialog != null) {
+         addCardContinueDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

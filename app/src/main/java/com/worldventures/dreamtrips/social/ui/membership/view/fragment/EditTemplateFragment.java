@@ -161,6 +161,8 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
    }
 
    private void cacheMessage() {
-      if (etMessage != null) savedMessage = getMessage();
+      if (etMessage != null) {
+         savedMessage = getMessage();
+      }
    }
 }

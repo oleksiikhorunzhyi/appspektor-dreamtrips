@@ -123,7 +123,9 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    }
 
    private void onCardAdd(AddRecordCommand command) {
-      if (command.setAsDefaultRecord()) trackSetAsDefault(command.getResult());
+      if (command.setAsDefaultRecord()) {
+         trackSetAsDefault(command.getResult());
+      }
       trackAddedCard(record, command.setAsDefaultRecord());
       smartCardInteractor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
       wizardInteractor.pinOptionalActionPipe().send(PinOptionalCommand.fetch());

@@ -30,7 +30,9 @@ public abstract class AuthorizedStaticInfoFragment<P extends Parcelable> extends
    @Override
    protected void onReceivedHttpError(int errorCode) {
       super.onReceivedHttpError(errorCode);
-      if (errorCode == HttpURLConnection.HTTP_UNAUTHORIZED) getPresenter().reLogin();
+      if (errorCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+         getPresenter().reLogin();
+      }
    }
 
    @Override

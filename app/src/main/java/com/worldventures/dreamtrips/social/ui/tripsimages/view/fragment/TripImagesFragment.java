@@ -217,7 +217,9 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void openCreatePhoto(MediaPickerAttachment mediaAttachment) {
-      if (isCreatePhotoAlreadyAttached()) return;
+      if (isCreatePhotoAlreadyAttached()) {
+         return;
+      }
       router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())

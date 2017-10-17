@@ -18,11 +18,17 @@ public class UnsupportedDeviceModel extends BaseViewModel<ProvisionBlockedTypeFa
    public int describeContents() { return 0; }
 
    @Override
-   public void writeToParcel(Parcel dest, int flags) {}
+   public void writeToParcel(Parcel dest, int flags) {
+      //do nothing
+   }
 
-   public UnsupportedDeviceModel() {}
+   public UnsupportedDeviceModel() {
+      //do nothing
+   }
 
-   protected UnsupportedDeviceModel(Parcel in) {}
+   protected UnsupportedDeviceModel(Parcel in) {
+      //do nothing
+   }
 
    public static final Creator<UnsupportedDeviceModel> CREATOR = new Creator<UnsupportedDeviceModel>() {
       @Override

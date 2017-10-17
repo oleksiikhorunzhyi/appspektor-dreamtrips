@@ -69,7 +69,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       showAdditionalContainerIfNeeded();
 
       recyclerView.post(() -> {
-         if (recyclerView != null) recyclerView.scrollBy(0, 1);
+         if (recyclerView != null) {
+            recyclerView.scrollBy(0, 1);
+         }
       });
    }
 
@@ -90,7 +92,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    }
 
    private boolean isNeedToShowInputPanel(View view) {
-      if (view == null) return false;
+      if (view == null) {
+         return false;
+      }
       //
       int[] location = new int[2];
       view.getLocationOnScreen(location);
@@ -153,7 +157,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
 
    private void showContainer(@IdRes int containerId) {
       View container = ButterKnife.findById(getActivity(), containerId);
-      if (container != null) container.setVisibility(View.VISIBLE);
+      if (container != null) {
+         container.setVisibility(View.VISIBLE);
+      }
    }
 
    private void showAdditionalInfoIfNeeded() {
@@ -170,7 +176,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    }
 
    private void showAdditionalContainerIfNeeded() {
-      if (additionalContainer == null) return;
+      if (additionalContainer == null) {
+         return;
+      }
       if (isShowAdditionalInfo()) {
          additionalContainer.setVisibility(View.VISIBLE);
       } else {

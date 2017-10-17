@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.analytics.oncard.action;
 
-import com.worldventures.core.service.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
 
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
 import io.techery.janet.smartcard.model.analytics.AnalyticsLogEntryBattery;

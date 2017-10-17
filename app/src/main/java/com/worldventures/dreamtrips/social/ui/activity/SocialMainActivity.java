@@ -124,6 +124,8 @@ public class SocialMainActivity extends SocialDrawerActivity<MainActivityPresent
       }
 
       closeLeftDrawer();
-      if (currentComponent == null && component.shouldFinishMainActivity()) finish();
+      if (currentComponent == null && component.shouldFinishMainActivity()) {
+         finish();
+      }
    }
 }

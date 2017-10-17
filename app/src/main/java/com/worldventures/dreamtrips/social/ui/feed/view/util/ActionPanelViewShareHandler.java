@@ -22,9 +22,9 @@ import rx.functions.Action1;
 
 public class ActionPanelViewShareHandler {
 
-   private Router router;
+   private final Router router;
+   private final AnalyticsInteractor analyticsInteractor;
    private Action1<String> downloadPhotoAction;
-   private AnalyticsInteractor analyticsInteractor;
 
    public ActionPanelViewShareHandler(Router router, AnalyticsInteractor analyticsInteractor) {
       this.router = router;

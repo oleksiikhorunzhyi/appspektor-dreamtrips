@@ -18,7 +18,8 @@ import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 public class FlagPopupMenu extends PopupMenu {
-   private Context context;
+
+   private final Context context;
    private DialogConfirmationCallback dialogConfirmationCallback;
 
    public FlagPopupMenu(Context context, View anchor) {

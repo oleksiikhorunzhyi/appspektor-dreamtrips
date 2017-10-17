@@ -34,7 +34,9 @@ public final class IntentUtils {
    }
 
    public static Intent newDialerIntent(String phone) {
-      if (TextUtils.isEmpty(phone)) return null;
+      if (TextUtils.isEmpty(phone)) {
+         return null;
+      }
       Intent intent = new Intent(Intent.ACTION_DIAL);
       intent.setData(Uri.parse("tel:" + phone));
       return intent;

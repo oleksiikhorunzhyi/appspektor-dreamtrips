@@ -63,14 +63,17 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
             .compose(bindViewIoToMainComposer())
             .timeout(15, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
             .subscribe(this::onLocationObtained, throwable -> {
-               if (throwable instanceof TimeoutException) getView().hideProgress();
+               if (throwable instanceof TimeoutException) {
+                  getView().hideProgress();
+               }
             });
    }
 
    @Override
    public void onLocationResolutionGranted() {
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
+      }
       //
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
@@ -86,8 +89,9 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
    public void loadNearMeRequested() {
       screenMode = ScreenMode.AUTO_NEAR_ME;
 
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
+      }
 
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
@@ -132,9 +136,11 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     * @param e exception that {@link LocationDelegate} subscription returned
     */
    private void onLocationError(Throwable e) {
-      if (e instanceof LocationDelegate.LocationException)
+      if (e instanceof LocationDelegate.LocationException) {
          getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-      else onLocationResolutionDenied();
+      } else {
+         onLocationResolutionDenied();
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -152,7 +158,9 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
    }
 
    private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
-      if (throwable instanceof CancelException) return;
+      if (throwable instanceof CancelException) {
+         return;
+      }
       getView().informUser(action.getErrorMessage());
       getView().hideProgress();
    }

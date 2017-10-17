@@ -15,7 +15,7 @@ import rx.Observable;
 public class RxContentResolver {
 
    private final ContentResolver contentResolver;
-   private CursorFetcher<Query> cursorFetcher;
+   private final CursorFetcher<Query> cursorFetcher;
    private final HandlerThread thread;
 
    public RxContentResolver(ContentResolver contentResolver, CursorFetcher<Query> cursorFetcher) {
@@ -48,7 +48,9 @@ public class RxContentResolver {
          }
          subscriber.onNext(null);
       }).doOnUnsubscribe(() -> {
-         if (contentObserver[0] != null) { unsubscribeFromContentUpdates(contentObserver[0]); }
+         if (contentObserver[0] != null) {
+            unsubscribeFromContentUpdates(contentObserver[0]);
+         }
       }).onBackpressureLatest().flatMap(aVoid -> fetchCursor(query));
    }
 
@@ -108,22 +110,28 @@ public class RxContentResolver {
 
       @Override
       public boolean equals(Object o) {
-         if (this == o) { return true; }
-         if (o == null || getClass() != o.getClass()) { return false; }
+         if (this == o) {
+            return true;
+         }
+         if (o == null || getClass() != o.getClass()) {
+            return false;
+         }
 
          Query query = (Query) o;
 
-         if (!Arrays.equals(projection, query.projection)) { return false; }
+         if (!Arrays.equals(projection, query.projection)) {
+            return false;
+         }
          if (selection != null ? !selection.equals(query.selection) : query.selection != null) {
             return false;
          }
-         if (!Arrays.equals(selectionArgs, query.selectionArgs)) { return false; }
+         if (!Arrays.equals(selectionArgs, query.selectionArgs)) {
+            return false;
+         }
          if (sortOrder != null ? !sortOrder.equals(query.sortOrder) : query.sortOrder != null) {
             return false;
          }
-         if (uri != null ? !uri.equals(query.uri) : query.uri != null) { return false; }
-
-         return true;
+         return uri != null ? uri.equals(query.uri) : query.uri == null;
       }
 
       @Override
@@ -159,7 +167,7 @@ public class RxContentResolver {
             this.uri = uri;
          }
 
-         public Builder withProjection(String[] projection) {
+         public Builder withProjection(String... projection) {
             this.projection = projection;
             return this;
          }
@@ -169,7 +177,7 @@ public class RxContentResolver {
             return this;
          }
 
-         public Builder withSelectionArgs(String[] selectionArgs) {
+         public Builder withSelectionArgs(String... selectionArgs) {
             this.selectionArgs = selectionArgs;
             return this;
          }

@@ -109,7 +109,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    protected void initToolbar() {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       RxDtlToolbar.actionViewClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
             .compose(RxLifecycleAndroid.bindView(this))
@@ -134,7 +136,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void setFilterButtonState(boolean isDefault) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.setFilterEnabled(!isDefault);
    }
 
@@ -201,7 +205,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    private void releaseMapFragment() {
       android.app.Fragment fragment = getActivity().getFragmentManager().findFragmentByTag(MAP_TAG);
-      if (fragment == null) return;
+      if (fragment == null) {
+         return;
+      }
 
       getActivity().getFragmentManager().beginTransaction().remove(fragment).commit();
    }
@@ -242,13 +248,18 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void showProgress(boolean show) {
-      if (show) showBlockingProgress();
-      else hideBlockingProgress();
+      if (show) {
+         showBlockingProgress();
+      } else {
+         hideBlockingProgress();
+      }
    }
 
    @Override
    public void addLocationMarker(LatLng location) {
-      if (locationPin != null) locationPin.remove();
+      if (locationPin != null) {
+         locationPin.remove();
+      }
       locationPin = googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_pin))
             .position(location));
    }
@@ -269,7 +280,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void prepareInfoWindow(@Nullable LatLng location, int height) {
-      if (location == null) return;
+      if (location == null) {
+         return;
+      }
       int center = (dtlToolbar == null ? getHeight() / 2 : (getHeight() - dtlToolbar.getBottom()) / 2) - height;
       int offset = markerHeight - center;
       animateTo(location, offset);
@@ -282,7 +295,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void connectToggleUpdate() {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
 
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
             .compose(RxLifecycleAndroid.bindView(this))
@@ -291,7 +306,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.toggleOffersOnly(enabled);
    }
 
@@ -333,7 +350,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    private void hideErrorIfNeed() {
-      if (errorDialog != null && errorDialog.isShowing()) errorDialog.dismiss();
+      if (errorDialog != null && errorDialog.isShowing()) {
+         errorDialog.dismiss();
+      }
    }
 
    @Override
@@ -358,13 +377,17 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
    @Override
    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.setLocationCaption(DtlToolbarHelper.provideLocationCaption(getResources(), dtlLocation));
    }
 
    @Override
    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.setSearchCaption(searchCaption);
    }
 

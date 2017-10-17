@@ -188,8 +188,9 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    @Override
    public void setup(TripModel tripModel) {
       tripDetailsViewInjector.initTripData(tripModel);
-      if (toolbarLandscape != null)
+      if (toolbarLandscape != null) {
          ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
+      }
    }
 
    @Override

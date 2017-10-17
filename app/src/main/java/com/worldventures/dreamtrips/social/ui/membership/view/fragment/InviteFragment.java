@@ -135,7 +135,9 @@ public class InviteFragment extends BaseFragment<InvitePresenter>
          buttonContinue.setVisibility(View.GONE);
       } else {
          containerTemplates.setVisibility(View.GONE);
-         if (!tvSearch.hasFocus() && getPresenter().isVisible()) buttonContinue.setVisibility(View.VISIBLE);
+         if (!tvSearch.hasFocus() && getPresenter().isVisible()) {
+            buttonContinue.setVisibility(View.VISIBLE);
+         }
       }
    }
 
@@ -162,14 +164,18 @@ public class InviteFragment extends BaseFragment<InvitePresenter>
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
       stateDelegate.restoreStateIfNeeded();
    }
@@ -197,7 +203,9 @@ public class InviteFragment extends BaseFragment<InvitePresenter>
 
    @Override
    public void move(Member member, int to) {
-      if (to > 0) lvUsers.scrollToPosition(0);
+      if (to > 0) {
+         lvUsers.scrollToPosition(0);
+      }
       //
       adapter.moveItemSafely(member, to);
    }
@@ -275,7 +283,8 @@ public class InviteFragment extends BaseFragment<InvitePresenter>
    @Override
    public void showNextStepButtonVisibility(boolean isVisible) {
       frameContactCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-      if (!tvSearch.hasFocus())
+      if (!tvSearch.hasFocus()) {
          buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
+      }
    }
 }

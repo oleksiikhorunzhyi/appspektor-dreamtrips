@@ -58,7 +58,9 @@ public class DtlLocationsScreenImpl
    protected void onPostAttachToWindowView() {
       initToolbar();
       //
-      if (getPath().isShowNoMerchantsCaption()) emptyMerchantsCaption.setVisibility(View.VISIBLE);
+      if (getPath().isShowNoMerchantsCaption()) {
+         emptyMerchantsCaption.setVisibility(View.VISIBLE);
+      }
       //
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));

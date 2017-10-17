@@ -28,9 +28,6 @@ public class GetCirclesCommand extends CommandWithError<List<Circle>> implements
 
    private List<Circle> cachedData;
 
-   public GetCirclesCommand() {
-   }
-
    @Override
    protected void run(CommandCallback<List<Circle>> callback) throws Throwable {
       if (cachedData == null || cachedData.isEmpty()) {

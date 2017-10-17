@@ -78,7 +78,9 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    @Override
    protected void updateUi() {
       super.updateUi();
-      if (!isCachedUploadTaskEmpty()) view.attachPhotos(cachedCreationItems);
+      if (!isCachedUploadTaskEmpty()) {
+         view.attachPhotos(cachedCreationItems);
+      }
       invalidateDynamicViews();
    }
 
@@ -148,7 +150,9 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    public void attachImages(MediaPickerAttachment mediaAttachment) {
-      if (view == null || !mediaAttachment.hasImages() || !mediaAttachment.hasVideo()) return;
+      if (view == null || !mediaAttachment.hasImages() || !mediaAttachment.hasVideo()) {
+         return;
+      }
 
       view.disableImagePicker();
       imageSelected(mediaAttachment);

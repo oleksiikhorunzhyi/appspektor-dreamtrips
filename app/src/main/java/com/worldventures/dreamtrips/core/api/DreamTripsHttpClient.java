@@ -71,14 +71,11 @@ public class DreamTripsHttpClient implements HttpClient {
       String statusText = connection.getResponseMessage();
       int statusCode = connection.getResponseCode();
       InputStream content = connection.getErrorStream();
-      if (content == null) {
-         // HEAD method doesn't have a body
-         if (!request.getMethod().equals("HEAD")) {
-            try {
-               content = connection.getInputStream();
-            } catch (IOException ioe) {
-               Timber.e(ioe, "IO Exception");
-            }
+      if (content == null && !request.getMethod().equals("HEAD")) {
+         try {
+            content = connection.getInputStream();
+         } catch (IOException ioe) {
+            Timber.e(ioe, "IO Exception");
          }
       }
 

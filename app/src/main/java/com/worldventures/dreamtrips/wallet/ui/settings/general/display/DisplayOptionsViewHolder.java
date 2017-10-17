@@ -79,10 +79,14 @@ public class DisplayOptionsViewHolder {
 
       switch (type) {
          case DISPLAY_PICTURE_ONLY:
-            if (userPhoto != null) photo.setImageURI(userPhoto.uri());
+            if (userPhoto != null) {
+               photo.setImageURI(userPhoto.uri());
+            }
             break;
          case DISPLAY_PICTURE_AND_NAME:
-            if (userPhoto != null) photo.setImageURI(userPhoto.uri());
+            if (userPhoto != null) {
+               photo.setImageURI(userPhoto.uri());
+            }
             firstName.setText(user.firstName());
             break;
          case DISPLAY_NAME_ONLY:
@@ -111,7 +115,11 @@ public class DisplayOptionsViewHolder {
 
    private void updateViewsAlpha(float alpha) {
       title.setAlpha(alpha);
-      if (addPhoto != null) addPhoto.setAlpha(alpha);
-      if (addPhone != null) addPhone.setAlpha(alpha);
+      if (addPhoto != null) {
+         addPhoto.setAlpha(alpha);
+      }
+      if (addPhone != null) {
+         addPhone.setAlpha(alpha);
+      }
    }
 }

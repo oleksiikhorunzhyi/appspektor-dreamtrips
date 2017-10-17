@@ -36,7 +36,9 @@ public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
 
       Pair<BaseHttpAction, Throwable> errorPair = obtainHttpException(holder, e);
       //we intercept http errors and not from login (only login is nor authorized)
-      if (errorPair == null || !(errorPair.first instanceof AuthorizedHttpAction)) return parentResult;
+      if (errorPair == null || !(errorPair.first instanceof AuthorizedHttpAction)) {
+         return parentResult;
+      }
 
       Throwable cause = errorPair.second;
 
@@ -64,7 +66,9 @@ public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
    }
 
    private void notifyListener(boolean noInternet, String path, String errorMessage) {
-      if (failListener != null) failListener.onFail(noInternet, path, errorMessage);
+      if (failListener != null) {
+         failListener.onFail(noInternet, path, errorMessage);
+      }
    }
 
    public interface HttpFailListener {

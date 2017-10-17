@@ -33,7 +33,9 @@ public final class ImageTextItemFactory {
    }
 
    private static ImageTextItem create(Context context, String contact, @DrawableRes int icon, Intent intent, ImageTextItem.Type type) {
-      if (TextUtils.isEmpty(contact)) { return null; }
+      if (TextUtils.isEmpty(contact)) {
+         return null;
+      }
       return new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type);
    }
 }

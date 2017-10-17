@@ -46,6 +46,7 @@ public class RecordListCommand extends CachedValueCommand<List<Record>> implemen
    }
 
    public RecordListCommand() {
+      //do nothing
    }
 
    public RecordListCommand(Func1<List<Record>, List<Record>> operationFunc) {

@@ -4,8 +4,8 @@ import android.net.Uri;
 import android.util.Pair;
 
 import com.worldventures.core.janet.dagger.InjectableAction;
-import com.worldventures.core.utils.Size;
 import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
+import com.worldventures.core.utils.Size;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;

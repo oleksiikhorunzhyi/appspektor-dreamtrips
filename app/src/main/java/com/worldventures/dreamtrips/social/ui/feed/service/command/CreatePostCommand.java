@@ -49,8 +49,11 @@ public class CreatePostCommand extends CommandWithError<TextualPost> implements 
 
    @Override
    protected void run(CommandCallback<TextualPost> callback) throws Throwable {
-      if (videoPost) uploadVideoPost(callback);
-      else uploadPost(callback);
+      if (videoPost) {
+         uploadVideoPost(callback);
+      } else {
+         uploadPost(callback);
+      }
    }
 
    private void uploadPost(CommandCallback<TextualPost> callback) {

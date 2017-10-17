@@ -54,6 +54,7 @@ public abstract class BaseInAppNotificationView extends SwipeLayout implements S
 
    @Override
    public void onStartOpen(SwipeLayout layout) {
+      //do nothing
    }
 
    @Override
@@ -68,19 +69,21 @@ public abstract class BaseInAppNotificationView extends SwipeLayout implements S
 
    @Override
    public void onStartClose(SwipeLayout layout) {
+      //do nothing
    }
 
    @Override
    public void onClose(SwipeLayout layout) {
+      //do nothing
    }
 
    @Override
    public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-
+      //do nothing
    }
 
    @Override
    public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-
+      //do nothing
    }
 }

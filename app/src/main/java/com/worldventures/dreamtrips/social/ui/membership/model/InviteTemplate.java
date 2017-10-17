@@ -10,14 +10,14 @@ import java.util.List;
 
 public class InviteTemplate implements Parcelable, HeaderItem {
 
-   private int id;
-   private String title;
+   private final int id;
+   private final String title;
+   private final String coverUrl;
+   private final String video;
+   private final String locale;
+   private final String content;
    private Type type;
    private String category;
-   private String coverUrl;
-   private String video;
-   private String locale;
-   private String content;
 
    private List<Member> to = new ArrayList<>();
    private String from;

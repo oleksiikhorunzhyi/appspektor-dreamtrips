@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class UnlikeEntityCommand extends ApiActionCommand<DislikeHttpAction, FeedEntity> {
 
-   private FeedEntity feedEntity;
+   private final FeedEntity feedEntity;
 
    public UnlikeEntityCommand(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;

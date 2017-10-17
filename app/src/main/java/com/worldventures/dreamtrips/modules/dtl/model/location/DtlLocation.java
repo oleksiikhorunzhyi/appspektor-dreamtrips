@@ -40,27 +40,35 @@ public abstract class DtlLocation {
 
    @Value.Default
    public String analyticsName() {
-      if (isExternal() && locatedIn() != null)
+      if (isExternal() && locatedIn() != null) {
          return String.format("%s:%s:%s", longName(), getLongNameFor(LocationType.STATE), getLongNameFor(LocationType.COUNTRY));
-      else return "-:-:-";
+      } else {
+         return "-:-:-";
+      }
    }
 
    @Value.Derived
    public String provideFormattedLocation() {
-      if (coordinates() == null) return "";
+      if (coordinates() == null) {
+         return "";
+      }
       return String.format(Locale.US, "%1$f,%2$f", coordinates().latitude, coordinates().longitude);
    }
 
    @Value.Derived
    public boolean isOutOfMinDistance(android.location.Location location) {
-      if (coordinates() == null) return false;
+      if (coordinates() == null) {
+         return false;
+      }
       LatLng coordinates = DtlLocationHelper.asLatLng(location);
       return !DtlLocationHelper.checkMinDistance(coordinates(), coordinates);
    }
 
    @Value.Derived
    public boolean isOutOfMaxDistance(LatLng location) {
-      if (coordinates() == null) return false;
+      if (coordinates() == null) {
+         return false;
+      }
       return !DtlLocationHelper.checkMaxDistance(coordinates(), location);
    }
 

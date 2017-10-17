@@ -89,7 +89,9 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    }
 
    protected void setupAdapter() {
-      if (injector == null) throw new NullPointerException("Set injector before setup adapter");
+      if (injector == null) {
+         throw new NullPointerException("Set injector before setup adapter");
+      }
 
       baseDelegateAdapter = new BaseDelegateAdapter<>(getContext(), injector);
       baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
@@ -108,7 +110,9 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
 
    private void attachDrawerListener() {
       DrawerLayout drawer = ButterKnife.<DrawerLayout>findById(getRootView(), R.id.drawer);
-      if (drawer != null) drawer.addDrawerListener(drawerListener);
+      if (drawer != null) {
+         drawer.addDrawerListener(drawerListener);
+      }
    }
 
    private void bindAmenitiesErrorButton() {
@@ -136,10 +140,15 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    @Override
    public void toggleDrawer(boolean show) {
       DrawerLayout drawer = ButterKnife.<DrawerLayout>findById(getRootView(), R.id.drawer);
-      if (drawer == null) return;
+      if (drawer == null) {
+         return;
+      }
 
-      if (show) drawer.openDrawer(Gravity.RIGHT);
-      else drawer.closeDrawer(Gravity.RIGHT);
+      if (show) {
+         drawer.openDrawer(Gravity.RIGHT);
+      } else {
+         drawer.closeDrawer(Gravity.RIGHT);
+      }
    }
 
    @Override
@@ -181,7 +190,9 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
    }
 
    private void updateSelection(FilterData filterData) {
-      if (baseDelegateAdapter.getItemCount() == 0) return;
+      if (baseDelegateAdapter.getItemCount() == 0) {
+         return;
+      }
 
       if (filterData.selectedAmenities().isEmpty()) { // show none selected as all selected
          selectionManager.setSelectionForAll(true);
@@ -207,8 +218,9 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
       amenitiesProgress.setVisibility(GONE);
       amenitiesErrorView.setVisibility(GONE);
       baseDelegateAdapter.clearAndUpdateItems(amenities);
-      if (!amenities.isEmpty())
+      if (!amenities.isEmpty()) {
          baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getContext().getString(R.string.dtl_amenities), true));
+      }
       updateSelection(filterData);
    }
 

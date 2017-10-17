@@ -87,7 +87,9 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
             if (propertyId == BR.recordName) {
                presenter.validateRecordName(detailViewModel.getRecordName().trim());
             } else if (propertyId == BR.defaultRecord) {
-               if (detailViewModel.getRecordModel().isDefaultCard() == detailViewModel.isDefaultRecord()) return;
+               if (detailViewModel.getRecordModel().isDefaultCard() == detailViewModel.isDefaultRecord()) {
+                  return;
+               }
                presenter.changeDefaultCard(detailViewModel.isDefaultRecord());
             }
          }
@@ -149,7 +151,9 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
                .onPositive((dialog, which) -> dialog.dismiss())
                .build();
       }
-      if (!networkConnectionErrorDialog.isShowing()) networkConnectionErrorDialog.show();
+      if (!networkConnectionErrorDialog.isShowing()) {
+         networkConnectionErrorDialog.show();
+      }
    }
 
    @Override
@@ -249,7 +253,9 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (networkConnectionErrorDialog != null) networkConnectionErrorDialog.dismiss();
+      if (networkConnectionErrorDialog != null) {
+         networkConnectionErrorDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

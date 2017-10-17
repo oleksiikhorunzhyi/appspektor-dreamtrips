@@ -12,7 +12,8 @@ public class ClearMemoryInteractor {
    private final ActionPipe<ClearMerchantsStorageAction> clearMerchantsActionActionPipe;
 
    public ClearMemoryInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      this.clearMerchantsActionActionPipe = sessionActionPipeCreator.createPipe(ClearMerchantsStorageAction.class, Schedulers.io());
+      this.clearMerchantsActionActionPipe = sessionActionPipeCreator.createPipe(ClearMerchantsStorageAction.class, Schedulers
+            .io());
    }
 
    public void clearMerchantsMemoryCache() {

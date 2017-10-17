@@ -10,7 +10,9 @@ public class SupportedDeviceModel extends BaseViewModel<SupportDeviceItemTypeFac
 
    private String device;
 
-   public SupportedDeviceModel() {}
+   public SupportedDeviceModel() {
+      //do nothing
+   }
 
    public SupportedDeviceModel(String device) {
       this.device = device;

@@ -14,6 +14,7 @@ public class Hashtag implements Parcelable, Serializable {
    String name;
 
    public Hashtag() {
+      //do nothing
    }
 
    public Hashtag(String name) {
@@ -56,8 +57,12 @@ public class Hashtag implements Parcelable, Serializable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       Hashtag hashtag1 = (Hashtag) o;
 

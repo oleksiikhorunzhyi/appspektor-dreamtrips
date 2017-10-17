@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import java.util.Calendar;
 import java.util.Date;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder {
 
    protected int notificationId;
@@ -146,8 +147,12 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       FeedItem<?> that = (FeedItem<?>) o;
 
@@ -156,7 +161,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
    @Override
    public int hashCode() {
-      if (item == null) return super.hashCode();
+      if (item == null) {
+         return super.hashCode();
+      }
       return item.hashCode();
    }
 
@@ -165,12 +172,16 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    }
 
    public boolean contentSame(@Nullable FeedItem feedItem) {
-      if (feedItem == null) return false;
+      if (feedItem == null) {
+         return false;
+      }
 
       FeedEntity feedEntity = getItem();
       FeedEntity otherFeedEntity = feedItem.getItem();
 
-      if (feedEntity == null) return false;
+      if (feedEntity == null) {
+         return false;
+      }
       return feedEntity.contentSame(otherFeedEntity);
    }
 
@@ -244,7 +255,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
 
    public String infoText(Resources resources, int accountId) {
-      if (!links.hasUsers()) return null;
+      if (!links.hasUsers()) {
+         return null;
+      }
 
       String result;
       User actionOwner = links.getUsers().get(0);
@@ -269,7 +282,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
    }
 
    private String getActionCaption(Resources resources, boolean isAccountsItem, boolean ownAction, boolean isTrip) {
-      if (action == null) return "";
+      if (action == null) {
+         return "";
+      }
       //
       switch (action) {
          case BOOK:
@@ -300,7 +315,9 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
 
 
    private String getTypeCaption(Resources resources) {
-      if (type == null) return "";
+      if (type == null) {
+         return "";
+      }
 
       switch (type) {
          case TRIP:

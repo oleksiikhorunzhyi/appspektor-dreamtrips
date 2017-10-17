@@ -54,7 +54,9 @@ public class BucketPhotoFullscreenFragment extends BaseFragmentWithArgs<BucketFu
 
    @Override
    public void hideCoverProgress() {
-      if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismissWithAnimation();
+      if (progressDialog != null && progressDialog.isShowing()) {
+         progressDialog.dismissWithAnimation();
+      }
    }
 
    @Override

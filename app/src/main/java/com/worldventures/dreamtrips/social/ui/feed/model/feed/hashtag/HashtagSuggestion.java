@@ -14,6 +14,7 @@ public class HashtagSuggestion implements Parcelable {
    }
 
    public HashtagSuggestion() {
+      //do nothing
    }
 
    public String getName() {

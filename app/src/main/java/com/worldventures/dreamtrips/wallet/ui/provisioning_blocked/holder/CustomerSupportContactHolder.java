@@ -10,5 +10,7 @@ public class CustomerSupportContactHolder extends BaseHolder<CustomerSupportCont
    }
 
    @Override
-   public void setData(CustomerSupportContactModel data) {}
+   public void setData(CustomerSupportContactModel data) {
+      //do nothing
+   }
 }

@@ -109,7 +109,9 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
    @OnClick(R.id.more)
    public void onMoreClick() {
       if (isMine) {
-         if (onMoreClickListener != null) onMoreClickListener.onClick(feedItem);
+         if (onMoreClickListener != null) {
+            onMoreClickListener.onClick(feedItem);
+         }
       } else {
          PopupMenu popup = new PopupMenu(getContext(), more);
          popup.inflate(R.menu.menu_feed_flag);
@@ -183,7 +185,9 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
             tvCommentsCount.setVisibility(View.VISIBLE);
             Spanned text = Html.fromHtml(String.format(res.getString(QuantityHelper.chooseResource(commentsCount, R.string.comments_count_one, R.string.comments_count_other)), commentsCount));
             tvCommentsCount.setText(text);
-         } else tvCommentsCount.setVisibility(View.GONE);
+         } else {
+            tvCommentsCount.setVisibility(View.GONE);
+         }
       }
 
       if (likes != null) {

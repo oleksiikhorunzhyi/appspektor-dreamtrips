@@ -68,14 +68,17 @@ public class NxtHttpService extends ActionServiceWrapper {
 
    @Override
    protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptStart(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+      //do nothing
    }
 
    @Override

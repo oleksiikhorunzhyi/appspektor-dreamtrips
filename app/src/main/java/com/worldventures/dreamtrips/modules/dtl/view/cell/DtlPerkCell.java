@@ -54,7 +54,9 @@ public class DtlPerkCell extends BaseAbstractDelegateCell<Offer, CellDelegate<Of
 
    private void bindImage() {
       MerchantMedia media = Queryable.from(getModelObject().images()).firstOrDefault();
-      if (media == null) return;
+      if (media == null) {
+         return;
+      }
       //
       image.setImageUrl(media.getImagePath());
    }
@@ -63,18 +65,26 @@ public class DtlPerkCell extends BaseAbstractDelegateCell<Offer, CellDelegate<Of
       if (MerchantHelper.isOfferExpiringSoon(getModelObject())) {
          ViewUtils.setTextOrHideView(expirationBar, MerchantHelper.
                getOfferExpiringCaption(itemView.getContext(), getModelObject(), LocaleHelper.getDefaultLocale()));
-      } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
+      } else {
+         ViewUtils.setViewVisibility(View.GONE, expirationBar);
+      }
    }
 
    private void bindDescription() {
-      if (getModelObject().description() != null) title.setText(getModelObject().title());
+      if (getModelObject().description() != null) {
+         title.setText(getModelObject().title());
+      }
    }
 
    private void bindOperationDays() {
       List<OperationDay> operationDays = getModelObject().operationDays();
-      if (operationDays == null) return;
+      if (operationDays == null) {
+         return;
+      }
       //
-      String concatDays =  OperationalHoursUtils.concatOperationDays(operationDays, LocaleHelper.getDefaultLocale(), itemView.getResources().getString(R.string.everyday));
+      String concatDays = OperationalHoursUtils.concatOperationDays(operationDays, LocaleHelper.getDefaultLocale(), itemView
+            .getResources()
+            .getString(R.string.everyday));
       this.operationDays.setText(concatDays);
    }
 }

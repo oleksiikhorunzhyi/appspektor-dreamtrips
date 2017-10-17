@@ -14,11 +14,10 @@ public class SupportDeviceItemHolderFactoryImpl implements SupportDeviceItemType
 
    @Override
    public BaseHolder holder(ViewGroup parent, int viewType) {
-      switch (viewType) {
-         case R.layout.item_wallet_supported_device_item:
-            return new SupportedDeviceHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
-         default:
-            throw new IllegalArgumentException();
+      if (viewType == R.layout.item_wallet_supported_device_item) {
+         return new SupportedDeviceHolder(bind(from(parent.getContext()).inflate(viewType, parent, false)));
+      } else {
+         throw new IllegalArgumentException();
       }
    }
 

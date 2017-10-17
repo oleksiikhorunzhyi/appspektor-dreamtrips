@@ -32,8 +32,9 @@ public class UnsubscribeFromPushCommand extends Command<Void> implements Injecta
    protected void run(CommandCallback<Void> callback) throws Throwable {
       final String pushToken = snappyRepository.getGcmRegToken();
       final String sessionToken = appSessionHolder.get().get().getApiToken();
-      if (TextUtils.isEmpty(pushToken)) callback.onSuccess(null);
-      else {
+      if (TextUtils.isEmpty(pushToken)) {
+         callback.onSuccess(null);
+      } else {
          UnsubscribeFromPushNotificationsHttpAction unsubscribeFromPushAction = new UnsubscribeFromPushNotificationsHttpAction(pushToken);
          unsubscribeFromPushAction.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(sessionToken));
          janet.createPipe(UnsubscribeFromPushNotificationsHttpAction.class, Schedulers.io())

@@ -61,7 +61,9 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
 
    private Observable<SmartCardUser> checkUserPhotoAndUploadToServer(String smartCardId, SmartCardUser user) {
       final SmartCardUserPhoto photo = user.userPhoto();
-      if (photo == null) return Observable.just(user);
+      if (photo == null) {
+         return Observable.just(user);
+      }
       return uploadPhotoOnServer(smartCardId, photo)
             .map(photoUrl -> attachPhotoUrlToUser(user, photoUrl));
    }

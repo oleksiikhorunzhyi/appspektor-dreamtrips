@@ -26,6 +26,7 @@ public class DescriptionReviewBundle implements Parcelable {
    }
 
    public DescriptionReviewBundle() {
+      //do nothing
    }
 
    protected DescriptionReviewBundle(Parcel in) {

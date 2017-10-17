@@ -15,7 +15,9 @@ public class FeedItemDeserializer extends FeedEntityDeserializer<FeedItem> {
    @Override
    public FeedItem deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
       FeedItem item = super.deserialize(json, typeOfT, context);
-      if (item.getType() == null) item.setType(UNDEFINED);
+      if (item.getType() == null) {
+         item.setType(UNDEFINED);
+      }
       return item;
    }
 }

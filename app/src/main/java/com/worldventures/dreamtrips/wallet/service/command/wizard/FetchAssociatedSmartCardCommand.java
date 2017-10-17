@@ -66,7 +66,9 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
 
 
    private Observable<FetchAssociatedSmartCardCommand.AssociatedCard> handleResponse(List<SmartCardInfo> listSmartCardInfo) {
-      if (listSmartCardInfo.isEmpty()) return Observable.just(ImmutableAssociatedCard.of(false));
+      if (listSmartCardInfo.isEmpty()) {
+         return Observable.just(ImmutableAssociatedCard.of(false));
+      }
       final SmartCardInfo smartCardInfo = listSmartCardInfo.get(0);
 
       return new ProcessSmartCardInfoDelegate(walletStorage, janetWallet, mappery)

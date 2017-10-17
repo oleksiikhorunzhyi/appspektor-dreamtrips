@@ -35,7 +35,9 @@ public final class SmartCardFirmwareCommand extends Command<SmartCardFirmware> i
 
    @Override
    protected void run(CommandCallback<SmartCardFirmware> callback) throws Throwable {
-      if (cachedSmartCardFirmware == null) cachedSmartCardFirmware = createDefault();
+      if (cachedSmartCardFirmware == null) {
+         cachedSmartCardFirmware = createDefault();
+      }
       SmartCardFirmware smartCardFirmware = func.call(cachedSmartCardFirmware);
       callback.onSuccess(smartCardFirmware);
    }

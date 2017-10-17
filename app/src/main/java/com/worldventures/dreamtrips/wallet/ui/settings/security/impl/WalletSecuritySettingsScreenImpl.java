@@ -54,9 +54,6 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
    private Observable<Boolean> stealthModeSwitcherObservable;
    private MaterialDialog noConnectionDialog = null;
 
-   public WalletSecuritySettingsScreenImpl() {
-   }
-
    @Override
    protected void onAttach(@NonNull View view) {
       super.onAttach(view);
@@ -177,7 +174,9 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
                .positiveText(R.string.ok)
                .build();
       }
-      if (!noConnectionDialog.isShowing()) noConnectionDialog.show();
+      if (!noConnectionDialog.isShowing()) {
+         noConnectionDialog.show();
+      }
    }
 
    @Override
@@ -216,7 +215,9 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (noConnectionDialog != null) noConnectionDialog.dismiss();
+      if (noConnectionDialog != null) {
+         noConnectionDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

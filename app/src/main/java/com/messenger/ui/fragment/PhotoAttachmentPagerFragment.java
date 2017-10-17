@@ -22,7 +22,8 @@ public class PhotoAttachmentPagerFragment extends BaseImageViewPagerFragment<Pho
    }
 
    public static class Presenter extends BaseImageViewPagerPresenter<BaseImageViewPagerPresenter.View> {
-      private List<PhotoAttachment> photoAttachments;
+
+      private final List<PhotoAttachment> photoAttachments;
 
       public Presenter(boolean lastPageReached, int selectedPosition, List<PhotoAttachment> photoAttachments) {
          super(lastPageReached, selectedPosition);

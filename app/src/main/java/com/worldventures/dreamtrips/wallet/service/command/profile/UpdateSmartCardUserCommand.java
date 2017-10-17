@@ -83,7 +83,9 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    }
 
    private void validateNetwork() {
-      if (!networkService.isAvailable()) throw new NetworkUnavailableException();
+      if (!networkService.isAvailable()) {
+         throw new NetworkUnavailableException();
+      }
    }
 
    private Observable<SmartCardUser> uploadData(String smartCardId, SmartCardUser user) {
@@ -132,10 +134,10 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
       return !changedFields.firstName().equals(user.firstName())
             || !changedFields.middleName().equals(user.middleName())
             || !changedFields.lastName().equals(user.lastName())
-            || !equals(user.phoneNumber(), changedFields.phone());
+            || !equalsDirectly(user.phoneNumber(), changedFields.phone());
    }
 
-   private boolean equals(Object a, Object b) {
+   private boolean equalsDirectly(Object a, Object b) {
       return (a == b) || (a != null && a.equals(b));
    }
 

@@ -129,7 +129,9 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    @Override
    public void savePhoneNumber(ProfileViewModel profile) {
       final SmartCardUserPhone enteredPhone = delegate.createPhone(profile);
-      if (enteredPhone == null) return;
+      if (enteredPhone == null) {
+         return;
+      }
 
       user = ImmutableSmartCardUser.builder()
             .from(user)

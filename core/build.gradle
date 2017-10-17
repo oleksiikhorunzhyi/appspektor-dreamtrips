@@ -19,7 +19,7 @@ android {
       multiDexEnabled true
    }
 
-   dataBinding{
+   dataBinding {
       enabled = true
    }
 

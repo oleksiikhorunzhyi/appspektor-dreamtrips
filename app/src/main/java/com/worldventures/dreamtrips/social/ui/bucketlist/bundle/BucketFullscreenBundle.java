@@ -7,8 +7,9 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 
 public class BucketFullscreenBundle implements Parcelable {
-   private BucketItem bucketItem;
-   private BucketPhoto bucketPhoto;
+
+   private final BucketItem bucketItem;
+   private final BucketPhoto bucketPhoto;
 
    public BucketFullscreenBundle(BucketItem bucketItem, BucketPhoto bucketPhoto) {
       this.bucketItem = bucketItem;

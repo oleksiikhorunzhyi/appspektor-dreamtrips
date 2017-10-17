@@ -67,7 +67,9 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    }
 
    private void onBluetoothStateChanged(boolean state) {
-      if (!state && getView() != null) getView().openBluetoothSettings();
+      if (!state && getView() != null) {
+         getView().openBluetoothSettings();
+      }
    }
 
    private void auxiliaryDisconnectSmartCard() {

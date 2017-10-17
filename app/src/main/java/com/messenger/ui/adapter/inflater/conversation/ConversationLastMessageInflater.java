@@ -52,11 +52,13 @@ public class ConversationLastMessageInflater extends ViewInflater {
       String messageText = "";
       if (message.getType() != null) {
          if (MessageHelper.isUserMessage(message)) {
-            if (MessageVersionHelper.isUnsupported(attachmentType))
+            if (MessageVersionHelper.isUnsupported(attachmentType)) {
                messageText = Html.fromHtml(context.getString(R.string.chat_update_proposition)).toString();
-            else if (dataTranslation.getTranslateStatus() == TranslationStatus.TRANSLATED)
+            } else if (dataTranslation.getTranslateStatus() == TranslationStatus.TRANSLATED) {
                messageText = dataTranslation.getTranslation();
-            else messageText = message.getText();
+            } else {
+               messageText = message.getText();
+            }
 
             String messageAuthorName = messageAuthor.getDisplayedName();
             if (TextUtils.equals(message.getFromId(), currentUser.getId())) {

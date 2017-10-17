@@ -67,8 +67,12 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
    protected void localesLoaded(List<VideoLocale> locales) {
       if (videoLocale == null) {
          videoLocale = getCurrentLocale(locales, context.getResources().getConfiguration().locale);
-         if (videoLocale == null) videoLocale = getCurrentLocale(locales, Locale.US);
-         if (videoLocale != null) videoLanguage = getCurrentLanguage(videoLocale.getLanguages());
+         if (videoLocale == null) {
+            videoLocale = getCurrentLocale(locales, Locale.US);
+         }
+         if (videoLocale != null) {
+            videoLanguage = getCurrentLanguage(videoLocale.getLanguages());
+         }
       }
       setHeaderLocale();
       view.setLocales(locales, videoLocale);

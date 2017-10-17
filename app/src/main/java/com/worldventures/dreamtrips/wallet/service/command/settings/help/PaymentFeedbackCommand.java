@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.wallet.service.command.settings.help;
 
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.feedback.SendPaymentFeedbackHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutablePaymentFeedback;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.PaymentFeedback;
-import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 
 import java.util.List;
 

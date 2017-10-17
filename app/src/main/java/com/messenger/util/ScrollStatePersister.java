@@ -16,7 +16,9 @@ public class ScrollStatePersister {
          int position = linearLayoutManager.findFirstVisibleItemPosition();
          bundle.putInt(STATE_SCROLL_POSITION, position);
          View item = linearLayoutManager.findViewByPosition(position);
-         if (item != null) { bundle.putInt(STATE_SCROLL_OFFSET, item.getTop()); }
+         if (item != null) {
+            bundle.putInt(STATE_SCROLL_OFFSET, item.getTop());
+         }
       }
       return bundle;
    }

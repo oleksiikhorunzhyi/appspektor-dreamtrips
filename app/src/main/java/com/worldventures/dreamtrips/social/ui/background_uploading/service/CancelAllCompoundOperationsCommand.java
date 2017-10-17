@@ -12,9 +12,6 @@ public class CancelAllCompoundOperationsCommand extends CompoundOperationsComman
 
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
 
-   public CancelAllCompoundOperationsCommand() {
-   }
-
    @Override
    protected void run(CommandCallback callback) throws Throwable {
       synchronized (this) {

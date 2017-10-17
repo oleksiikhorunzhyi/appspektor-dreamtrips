@@ -4,7 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 
-public class SCUserUtils {
+public final class SCUserUtils {
+
+   private SCUserUtils() {
+   }
 
    public static String userFullName(@NonNull SmartCardUser user) {
       return userFullName(user.firstName(), user.middleName(), user.lastName());

@@ -30,7 +30,9 @@ public abstract class DialogErrorView<T> implements ErrorView<T> {
 
    @Override
    public final void hideError() {
-      if (dialog != null) dialog.dismiss();
+      if (dialog != null) {
+         dialog.dismiss();
+      }
    }
 
 }

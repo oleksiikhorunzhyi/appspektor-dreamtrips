@@ -27,11 +27,11 @@ public class StatePaginatedRecyclerViewManager {
    @InjectView(R.id.recyclerView) public StateRecyclerView stateRecyclerView;
    @InjectView(R.id.swipe_container) public SwipeRefreshLayout swipeContainer;
 
-   private WeakHandler weakHandler;
+   private final WeakHandler weakHandler;
    private PaginationViewManager paginationViewManager;
    private LinearLayoutManager layoutManager;
 
-   private PublishSubject<Integer> scrollStateSubject = PublishSubject.create();
+   private final PublishSubject<Integer> scrollStateSubject = PublishSubject.create();
    private Subscription scrollStateAutoplaySubscription;
 
    public StatePaginatedRecyclerViewManager(View rootView) {
@@ -89,7 +89,9 @@ public class StatePaginatedRecyclerViewManager {
 
    public void findFirstCompletelyVisibleItemPosition() {
       Focusable focusableViewHolder = findNearestFocusableViewHolder();
-      if (focusableViewHolder != null) focusableViewHolder.onFocused();
+      if (focusableViewHolder != null) {
+         focusableViewHolder.onFocused();
+      }
    }
 
    private Focusable findNearestFocusableViewHolder() {
@@ -106,7 +108,9 @@ public class StatePaginatedRecyclerViewManager {
 
       for (int i = firstItemPosition; i <= lastItemPosition; i++) {
          RecyclerView.ViewHolder viewHolder = stateRecyclerView.findViewHolderForLayoutPosition(i);
-         if (viewHolder == null) continue;
+         if (viewHolder == null) {
+            continue;
+         }
          float viewHolderCenterPosition = viewHolder.itemView.getY() + viewHolder.itemView.getHeight() / 2;
          float positionDelta = Math.abs(centerPositionY - viewHolderCenterPosition);
 
@@ -152,13 +156,17 @@ public class StatePaginatedRecyclerViewManager {
 
    public void startLoading() {
       weakHandler.post(() -> {
-         if (swipeContainer != null) swipeContainer.setRefreshing(true);
+         if (swipeContainer != null) {
+            swipeContainer.setRefreshing(true);
+         }
       });
    }
 
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (swipeContainer != null) swipeContainer.setRefreshing(false);
+         if (swipeContainer != null) {
+            swipeContainer.setRefreshing(false);
+         }
       });
    }
 

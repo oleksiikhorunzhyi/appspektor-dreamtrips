@@ -15,14 +15,13 @@ public class PinProposalPresenterImpl extends WalletPresenterImpl<PinProposalScr
 
    private final WizardInteractor wizardInteractor;
    private PinProposalDelegate pinProposalDelegate;
+   private PinProposalAction pinProposalAction;
 
    public PinProposalPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WizardInteractor wizardInteractor) {
       super(navigator, deviceConnectionDelegate);
       this.wizardInteractor = wizardInteractor;
    }
-
-   private PinProposalAction pinProposalAction;
 
    @Override
    public void attachView(PinProposalScreen view) {

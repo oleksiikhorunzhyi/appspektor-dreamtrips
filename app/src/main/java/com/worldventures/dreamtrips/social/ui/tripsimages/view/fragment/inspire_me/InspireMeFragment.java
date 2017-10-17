@@ -124,7 +124,9 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
 
    @Override
    public void updatePhotos(List<Inspiration> items, boolean forceUpdate) {
-      if (forceUpdate) adapter.clear();
+      if (forceUpdate) {
+         adapter.clear();
+      }
 
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BaseDiffUtilCallback(adapter.getItems(), items));
       adapter.setItemsNoNotify(items);

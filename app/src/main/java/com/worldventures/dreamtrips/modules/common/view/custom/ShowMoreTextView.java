@@ -111,12 +111,21 @@ public class ShowMoreTextView extends AppCompatTextView {
       extendClickableArea = a.getBoolean(R.styleable.ShowMoreTextView_smtv_extendClickableArea, false);
       fullText = getText().toString();
       //
-      if (symbolsLimit <= 0)
+      if (symbolsLimit <= 0) {
          throw new IllegalStateException("ShowMoreTextView: invalid symbolsLimit - \'" + symbolsLimit + "\'");
-      if (captionCollapsed == null || captionCollapsed.isEmpty()) captionCollapsed = DEF_CAPTION_COLLAPSED;
-      if (captionExpanded == null || captionExpanded.isEmpty()) captionExpanded = DEF_CAPTION_EXPANDED;
-      if (separatorExpanded == null || separatorExpanded.isEmpty()) separatorExpanded = DEF_SEPARATOR_EXPANDED;
-      if (separatorCollapsed == null || separatorCollapsed.isEmpty()) separatorCollapsed = DEF_SEPARATOR_COLLAPSED;
+      }
+      if (captionCollapsed == null || captionCollapsed.isEmpty()) {
+         captionCollapsed = DEF_CAPTION_COLLAPSED;
+      }
+      if (captionExpanded == null || captionExpanded.isEmpty()) {
+         captionExpanded = DEF_CAPTION_EXPANDED;
+      }
+      if (separatorExpanded == null || separatorExpanded.isEmpty()) {
+         separatorExpanded = DEF_SEPARATOR_EXPANDED;
+      }
+      if (separatorCollapsed == null || separatorCollapsed.isEmpty()) {
+         separatorCollapsed = DEF_SEPARATOR_COLLAPSED;
+      }
       //
       a.recycle();
       setMovementMethod(extendClickableArea ? HigherLinkMovementMethod.getInstance() : LinkMovementMethod.getInstance());
@@ -128,7 +137,9 @@ public class ShowMoreTextView extends AppCompatTextView {
    }
 
    private void drawCollapsed() {
-      if (fullText.length() <= symbolsLimit) return;
+      if (fullText.length() <= symbolsLimit) {
+         return;
+      }
       appendPressableCaption(fullText.substring(0, symbolsLimit), DEF_SEPARATOR_COLLAPSED, captionCollapsed);
    }
 
@@ -156,7 +167,9 @@ public class ShowMoreTextView extends AppCompatTextView {
 
       @Override
       public void updateDrawState(TextPaint ds) {
-         if (typeface == null) typeface = Typeface.create(ds.getTypeface(), Typeface.BOLD);
+         if (typeface == null) {
+            typeface = Typeface.create(ds.getTypeface(), Typeface.BOLD);
+         }
          ds.setTypeface(typeface);
          ds.setColor(captionColor);
       }
@@ -224,8 +237,11 @@ public class ShowMoreTextView extends AppCompatTextView {
 
    private void pokeListeners() {
       if (listener != null) {
-         if (collapsed) listener.onCollapsed(this);
-         else listener.onExpanded(this);
+         if (collapsed) {
+            listener.onCollapsed(this);
+         } else {
+            listener.onExpanded(this);
+         }
       }
       //
       if (simpleListener != null) {
@@ -319,7 +335,9 @@ public class ShowMoreTextView extends AppCompatTextView {
       }
 
       public static MovementMethod getInstance() {
-         if (sInstance == null) sInstance = new HigherLinkMovementMethod();
+         if (sInstance == null) {
+            sInstance = new HigherLinkMovementMethod();
+         }
 
          return sInstance;
       }

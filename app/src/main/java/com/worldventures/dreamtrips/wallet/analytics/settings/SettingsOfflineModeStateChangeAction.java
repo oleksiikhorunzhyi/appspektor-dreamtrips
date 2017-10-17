@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.analytics.settings;
 
 import com.worldventures.core.service.analytics.ActionPart;
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.core.service.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AttributeMap;
-import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
 import java.util.HashMap;

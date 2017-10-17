@@ -138,7 +138,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public boolean onToolbarMenuItemClick(MenuItem item) {
-      if (item.getItemId() == R.id.action_share) onShareClick();
+      if (item.getItemId() == R.id.action_share) {
+         onShareClick();
+      }
       return super.onToolbarMenuItemClick(item);
    }
 
@@ -159,7 +161,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
       if (!merchant.asMerchantAttributes().hasOffers()) {
          getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
-      } else processTransaction();
+      } else {
+         processTransaction();
+      }
    }
 
    private void processTransaction() {
@@ -225,9 +229,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void onLocationError(Throwable e) {
-      if (e instanceof LocationDelegate.LocationException)
+      if (e instanceof LocationDelegate.LocationException) {
          getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-      else {
+      } else {
          locationNotGranted();
          Timber.e(e, "Something went wrong while location update");
       }
@@ -263,7 +267,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onOfferClick(Offer offer) {
       MerchantMedia imageUrl = Queryable.from(offer.images()).firstOrDefault();
-      if (imageUrl == null) return;
+      if (imageUrl == null) {
+         return;
+      }
       Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getImagePath()));
    }
 

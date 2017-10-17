@@ -49,7 +49,9 @@ public class MediaHeaderCell extends BaseAbstractDelegateCell<MediaHeader, Video
 
    @OnClick(R.id.wrapper_spinner_language)
    void onLanguageClicked() {
-      if (cellDelegate != null) cellDelegate.onLanguageClicked();
+      if (cellDelegate != null) {
+         cellDelegate.onLanguageClicked();
+      }
    }
 
    @Override

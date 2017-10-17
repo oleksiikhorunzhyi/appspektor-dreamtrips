@@ -36,7 +36,9 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
    protected void run(CommandCallback<T> callback) {
       getFileObservable(fileUri).flatMap(this::upload)
             .doOnNext(action -> {
-               if (action.status == ActionState.Status.PROGRESS) callback.onProgress(action.progress);
+               if (action.status == ActionState.Status.PROGRESS) {
+                  callback.onProgress(action.progress);
+               }
             })
             .compose(nextAction())
             .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));

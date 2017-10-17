@@ -40,6 +40,7 @@ public class ClearIQProvider extends IQProvider<BaseClearChatIQ> {
                if (ELEMENT_QUERY.equals(parser.getName())) {
                   done = true;
                }
+               break;
             default:
                break;
          }

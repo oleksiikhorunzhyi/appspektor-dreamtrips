@@ -52,7 +52,9 @@ public final class DeviceStateCommand extends Command<SmartCardStatus> implement
 
    @Override
    protected void run(CommandCallback<SmartCardStatus> callback) throws Throwable {
-      if (cachedSmartCardStatus == null) cachedSmartCardStatus = createDefault();
+      if (cachedSmartCardStatus == null) {
+         cachedSmartCardStatus = createDefault();
+      }
       SmartCardStatus newSmartCardStatus = func.call(cachedSmartCardStatus);
       callback.onSuccess(newSmartCardStatus);
    }

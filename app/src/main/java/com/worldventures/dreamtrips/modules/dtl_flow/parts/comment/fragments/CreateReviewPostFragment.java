@@ -78,9 +78,6 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    private CreateReviewEntityBundle bundle;
 
-   public CreateReviewPostFragment() {
-   }
-
    public static CreateReviewPostFragment newInstance(Bundle arguments) {
       CreateReviewPostFragment f = new CreateReviewPostFragment();
       if (arguments != null) {
@@ -122,10 +119,8 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @OnClick(R.id.container_add_photos_and_videos)
    void onImage() {
-      if (isAvailableToPost()) {
-         if (getPresenter().getRemainingPhotosCount() > 0) {
-            showMediaPicker();
-         }
+      if (isAvailableToPost() && getPresenter().getRemainingPhotosCount() > 0) {
+         showMediaPicker();
       }
    }
 
@@ -204,7 +199,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public int getSizeComment() {
-      if (mComment == null) throw new IllegalStateException("Comment must exist.");
+      if (mComment == null) {
+         throw new IllegalStateException("Comment must exist.");
+      }
       String review = mComment.getText().toString();
       int lineJumpOccurrences = 0;
       for (int i = 0; i < review.length(); i++) {
@@ -530,7 +527,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       if (merchant.reviews().total().equals("") || merchant.reviews().total().equals("0")) {
          navigateToDetail(getContext().getString(R.string.snack_review_success));
       } else {
-         Path path = new DtlReviewsPath(Flow.get(getContext()).getHistory().top(), merchant, getContext().getString(R.string.snack_review_success));
+         Path path = new DtlReviewsPath(Flow.get(getContext())
+               .getHistory()
+               .top(), merchant, getContext().getString(R.string.snack_review_success));
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
          historyBuilder.pop();
          historyBuilder.pop();

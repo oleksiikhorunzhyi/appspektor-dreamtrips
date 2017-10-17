@@ -173,7 +173,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @Override
    public void cancel() {
-      if (dialog != null && dialog.isShowing()) dialog.dismiss();
+      if (dialog != null && dialog.isShowing()) {
+         dialog.dismiss();
+      }
 
       router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
@@ -205,7 +207,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    protected boolean onBack() {
       try {
-         if (getChildFragmentManager().popBackStackImmediate()) return true;
+         if (getChildFragmentManager().popBackStackImmediate()) {
+            return true;
+         }
       } catch (Exception e) {
          Timber.e(e, "OnBack error"); //for avoid application crash
       }
@@ -226,7 +230,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @OnClick(R.id.content_layout)
    void onSpaceClicked() {
-      if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
+      if (ViewUtils.isTablet(getActivity())) {
+         getPresenter().cancelClicked();
+      }
    }
 
    @Override

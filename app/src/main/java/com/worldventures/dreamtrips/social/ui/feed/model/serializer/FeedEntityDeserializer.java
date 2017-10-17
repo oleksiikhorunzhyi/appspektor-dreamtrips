@@ -23,9 +23,9 @@ import static com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder
 
 public class FeedEntityDeserializer<T extends FeedEntityHolder> implements JsonDeserializer<T> {
 
-   private Map<FeedEntityHolder.Type, Class<? extends FeedEntityHolder>> modelByType = new HashMap<>();
+   private static final Map<FeedEntityHolder.Type, Class<? extends FeedEntityHolder>> modelByType = new HashMap<>();
 
-   {
+   static {
       modelByType.put(TRIP, TripFeedItem.class);
       modelByType.put(POST, PostFeedItem.class);
       modelByType.put(PHOTO, PhotoFeedItem.class);
@@ -40,8 +40,9 @@ public class FeedEntityDeserializer<T extends FeedEntityHolder> implements JsonD
       if (!typeElement.isJsonNull()) {
          type = context.deserialize(typeElement.getAsJsonPrimitive(), FeedEntityHolder.Type.class);
       }
-      if (type == null) type = UNDEFINED;
-      FeedEntityHolder model = context.deserialize(json, modelByType.get(type));
-      return (T) model;
+      if (type == null) {
+         type = UNDEFINED;
+      }
+      return (T) context.deserialize(json, modelByType.get(type));
    }
 }

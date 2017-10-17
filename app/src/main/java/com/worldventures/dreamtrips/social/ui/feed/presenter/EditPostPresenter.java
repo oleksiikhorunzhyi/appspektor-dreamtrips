@@ -31,7 +31,9 @@ public class EditPostPresenter extends ActionEntityPresenter<ActionEntityPresent
 
    @Override
    public void takeView(View view) {
-      if (isCachedTextEmpty()) cachedText = post.getDescription();
+      if (isCachedTextEmpty()) {
+         cachedText = post.getDescription();
+      }
       if (hasPhotoAttachments()) {
          Queryable.from(post.getAttachments())
                .forEachR(attachment -> cachedCreationItems.add(createItemFromPhoto((Photo) attachment.getItem())));
@@ -39,7 +41,9 @@ public class EditPostPresenter extends ActionEntityPresenter<ActionEntityPresent
          selectedVideoPathUri = Uri.parse(((Video) post.getAttachments().get(0).getItem()).getThumbnail());
       }
       super.takeView(view);
-      if (location == null) updateLocation(post.getLocation());
+      if (location == null) {
+         updateLocation(post.getLocation());
+      }
    }
 
    @Override

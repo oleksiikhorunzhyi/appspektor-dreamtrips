@@ -70,14 +70,18 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (swipeContainer != null) swipeContainer.setRefreshing(true);
+         if (swipeContainer != null) {
+            swipeContainer.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (swipeContainer != null) swipeContainer.setRefreshing(false);
+         if (swipeContainer != null) {
+            swipeContainer.setRefreshing(false);
+         }
       });
    }
 

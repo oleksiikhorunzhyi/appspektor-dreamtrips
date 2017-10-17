@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 public class SelectableHeaderItem implements Parcelable {
 
-   private String headerCaption = "";
-   private boolean selected;
+   private String headerCaption;
+   private final boolean selected;
 
    public SelectableHeaderItem(String headerCaption, boolean isSelected) {
       this.headerCaption = headerCaption;
@@ -68,15 +68,19 @@ public class SelectableHeaderItem implements Parcelable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       SelectableHeaderItem that = (SelectableHeaderItem) o;
 
-      if (selected != that.selected) return false;
-      if (!headerCaption.equals(that.headerCaption)) return false;
-
-      return true;
+      if (selected != that.selected) {
+         return false;
+      }
+      return headerCaption.equals(that.headerCaption);
    }
 
    @Override

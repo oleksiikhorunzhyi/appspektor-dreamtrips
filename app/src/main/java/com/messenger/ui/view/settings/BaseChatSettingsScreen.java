@@ -85,7 +85,7 @@ public abstract class BaseChatSettingsScreen<S extends ChatSettingsScreen, P ext
       notificationsSettingsRow = new ChatSettingsRow(getContext());
       notificationsSettingsRow.setIcon(R.drawable.ic_notifications_black_24_px);
       notificationsSettingsRow.setTitle(R.string.chat_settings_row_notifications);
-      notificationsSettingsRow.enableSwitch(((compoundButton, b) -> getPresenter().onNotificationsSwitchClicked(b)));
+      notificationsSettingsRow.enableSwitch((compoundButton, b) -> getPresenter().onNotificationsSwitchClicked(b));
       parent.addView(notificationsSettingsRow);
    }
 

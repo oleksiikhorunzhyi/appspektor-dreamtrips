@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.im
 
 
 import com.worldventures.core.model.EntityStateHolder;
-import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SendWalletFeedbackCommand;

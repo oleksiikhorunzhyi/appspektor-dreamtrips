@@ -13,7 +13,9 @@ public class WalletDocumentModel extends BaseViewModel<HelpDocsTypeFactory> impl
    private String originalName;
    private String url;
 
-   public WalletDocumentModel() {}
+   public WalletDocumentModel() {
+      //do nothing
+   }
 
    public WalletDocumentModel(Document document) {
       this(document.getName(), document.getOriginalName(), document.getUrl());

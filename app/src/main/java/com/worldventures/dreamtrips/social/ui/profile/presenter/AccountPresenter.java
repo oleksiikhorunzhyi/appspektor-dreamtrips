@@ -73,10 +73,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
 
    List<PostCompoundOperationModel> postUploads;
 
-   public AccountPresenter() {
-      super();
-   }
-
    @Override
    public void onViewTaken() {
       super.onViewTaken();
@@ -314,7 +310,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
             case COVER:
                onCoverChosen(image);
                break;
-            default:break;
+            default:
+               break;
          }
       }
    }

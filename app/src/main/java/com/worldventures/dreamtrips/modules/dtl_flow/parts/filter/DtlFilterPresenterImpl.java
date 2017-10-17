@@ -26,7 +26,9 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
    private PublishSubject<Void> hideStopper = PublishSubject.create();
 
    private void closeDrawer() {
-      if (view != null) view.toggleDrawer(false);
+      if (view != null) {
+         view.toggleDrawer(false);
+      }
    }
 
    @Override

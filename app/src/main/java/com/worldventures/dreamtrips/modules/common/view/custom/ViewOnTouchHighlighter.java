@@ -20,10 +20,11 @@ import android.view.View;
  * Colors should be in 'argb' format! 'rgb' will make view transparent on animation end
  */
 public class ViewOnTouchHighlighter implements View.OnTouchListener {
-   private int colorNormal;
-   private int colorPress;
-   private long duration;
-   private ValueAnimator anim = new ValueAnimator();
+
+   private final int colorNormal;
+   private final int colorPress;
+   private final long duration;
+   private final ValueAnimator anim = new ValueAnimator();
 
    public ViewOnTouchHighlighter(int colorNormal, int colorPress, long duration) {
       this.colorNormal = colorNormal;

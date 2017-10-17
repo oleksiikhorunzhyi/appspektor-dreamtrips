@@ -15,7 +15,9 @@ public class LoaderCell extends AbstractCell<LoadMore> {
    }
 
    @Override
-   protected void syncUIStateWithModel() {}
+   protected void syncUIStateWithModel() {
+      //do nothing
+   }
 
    @Override
    public boolean shouldInject() {

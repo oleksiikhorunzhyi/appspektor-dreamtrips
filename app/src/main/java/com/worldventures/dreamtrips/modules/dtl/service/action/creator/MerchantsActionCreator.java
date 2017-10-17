@@ -18,13 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import javax.inject.Inject;
-
 
 public class MerchantsActionCreator implements HttpActionCreator<CategoryMerchantsHttpAction, MerchantsActionParams> {
-
-   @Inject
-   public MerchantsActionCreator() {}
 
    @Override
    public CategoryMerchantsHttpAction createAction(MerchantsActionParams params) {
@@ -54,7 +49,9 @@ public class MerchantsActionCreator implements HttpActionCreator<CategoryMerchan
    }
 
    private static List<String> provideAmenitiesParameter(FilterData filterData) {
-      if (filterData.selectedAmenities().isEmpty()) return null;
+      if (filterData.selectedAmenities().isEmpty()) {
+         return null;
+      }
 
       final String parameter = "amenity:" + Queryable.from(filterData.selectedAmenities())
             .map(Attribute::id)

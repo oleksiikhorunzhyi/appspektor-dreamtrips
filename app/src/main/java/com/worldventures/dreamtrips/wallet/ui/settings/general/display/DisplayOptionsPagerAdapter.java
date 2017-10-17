@@ -18,7 +18,7 @@ import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 public class DisplayOptionsPagerAdapter extends PagerAdapter {
 
    public static final List<Integer> DISPLAY_OPTIONS = new ArrayList<Integer>() {
-      {
+      {//NOPMD
          add(SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY);
          add(SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME);
          add(SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY);
@@ -27,7 +27,7 @@ public class DisplayOptionsPagerAdapter extends PagerAdapter {
    };
 
    private static final List<Integer> DISPLAY_OPTION_TITLES = new ArrayList<Integer>() {
-      {
+      {//NOPMD
          add(R.string.wallet_settings_general_display_photo_only);
          add(R.string.wallet_settings_general_display_photo_first_name);
          add(R.string.wallet_settings_general_display_full_name_only);
@@ -58,7 +58,6 @@ public class DisplayOptionsPagerAdapter extends PagerAdapter {
 
       return layout;
    }
-
 
    @Override
    public void destroyItem(ViewGroup collection, int position, Object view) {

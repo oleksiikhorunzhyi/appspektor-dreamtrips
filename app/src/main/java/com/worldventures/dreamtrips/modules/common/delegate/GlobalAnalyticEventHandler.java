@@ -12,10 +12,9 @@ import io.techery.janet.Command;
 
 public class GlobalAnalyticEventHandler {
 
-   private AnalyticsInteractor analyticsInteractor;
-
-   private CachedEntityInteractor cachedEntityInteractor;
-   private DreamTripsCommandServiceWrapper commandServiceWrapper;
+   private final AnalyticsInteractor analyticsInteractor;
+   private final CachedEntityInteractor cachedEntityInteractor;
+   private final DreamTripsCommandServiceWrapper commandServiceWrapper;
 
    public GlobalAnalyticEventHandler(AnalyticsInteractor analyticsInteractor, CachedEntityInteractor cachedEntityInteractor, DreamTripsCommandServiceWrapper commandServiceWrapper) {
       this.analyticsInteractor = analyticsInteractor;

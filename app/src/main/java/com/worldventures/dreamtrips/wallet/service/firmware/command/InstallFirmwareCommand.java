@@ -100,7 +100,10 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    }
 
    public int getCurrentStep() {
-      if (loadFirmwareFilesCommand == null) return 0;
-      else return loadFirmwareFilesCommand.getCurrentStep();
+      if (loadFirmwareFilesCommand == null) {
+         return 0;
+      } else {
+         return loadFirmwareFilesCommand.getCurrentStep();
+      }
    }
 }

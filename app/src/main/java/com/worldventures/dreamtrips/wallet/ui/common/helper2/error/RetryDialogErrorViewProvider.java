@@ -11,8 +11,8 @@ import rx.functions.Action1;
 
 public class RetryDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
 
-   private Class<? extends Throwable> throwable;
-   private ErrorView<T> errorView;
+   private final Class<? extends Throwable> throwable;
+   private final ErrorView<T> errorView;
 
    public RetryDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int message, @NonNull Action1<T> retryAction) {
       this.throwable = throwable;

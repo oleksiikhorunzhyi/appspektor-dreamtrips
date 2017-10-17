@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 public class TripFeedItem extends FeedItem<TripModel> {
 
    public TripFeedItem() {
+      //do nothing
    }
 
    public TripFeedItem(Parcel in) {

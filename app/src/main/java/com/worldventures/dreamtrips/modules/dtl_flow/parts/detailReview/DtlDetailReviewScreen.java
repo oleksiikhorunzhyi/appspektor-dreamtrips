@@ -1,24 +1,24 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview; //NOPMD TODO: Resolve naming
 
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlDetailReviewScreen extends DtlScreen {
 
-    void enableInputs();
+   void enableInputs();
 
-    void disableInputs();
+   void disableInputs();
 
-    void finish();
+   void finish();
 
-    void onRefreshSuccess();
+   void onRefreshSuccess();
 
-    void onRefreshProgress();
+   void onRefreshProgress();
 
-    void onRefreshError(String error);
+   void onRefreshError(String error);
 
-    void showEmpty(boolean isShow);
+   void showEmpty(boolean isShow);
 
-    String getMerchantId();
+   String getMerchantId();
 
-    boolean isFromListReview();
+   boolean isFromListReview();
 }

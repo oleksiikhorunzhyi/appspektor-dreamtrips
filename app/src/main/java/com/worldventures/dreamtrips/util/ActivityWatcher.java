@@ -16,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
+
    private static final int TIMER_FOR_DISCONNECT = 2000;
 
    private final Handler handler = new Handler();
@@ -39,7 +40,7 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
 
    @Override
    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+      //do nothing
    }
 
    private boolean isSessionExist() {
@@ -51,8 +52,12 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
    @Override
    public void onActivityStarted(Activity activity) {
       visibleActivityCount++;
-      if (!isSessionExist()) { return; }
-      if (visibleActivityCount != 1) { return; }
+      if (!isSessionExist()) {
+         return;
+      }
+      if (visibleActivityCount != 1) {
+         return;
+      }
 
       handler.post(() -> {
          for (OnStartStopAppListener listener : listeners) {
@@ -63,12 +68,12 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
 
    @Override
    public void onActivityResumed(Activity activity) {
-
+      //do nothing
    }
 
    @Override
    public void onActivityPaused(Activity activity) {
-
+      //do nothing
    }
 
    @Override
@@ -76,7 +81,9 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
       visibleActivityCount--;
 
       handler.postDelayed(() -> {
-         if (visibleActivityCount != 0) { return; }
+         if (visibleActivityCount != 0) {
+            return;
+         }
 
          for (OnStartStopAppListener listener : listeners) {
             listener.onStopApplication();
@@ -86,11 +93,12 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
 
    @Override
    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
+      //do nothing
    }
 
    @Override
    public void onActivityDestroyed(Activity activity) {
+      //do nothing
    }
 
    public interface OnStartStopAppListener {

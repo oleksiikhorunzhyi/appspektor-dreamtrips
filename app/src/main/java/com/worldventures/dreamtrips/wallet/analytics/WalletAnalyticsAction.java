@@ -17,7 +17,9 @@ public abstract class WalletAnalyticsAction extends BaseAnalyticsAction {
    @Attribute("batterystatus") String batteryLevel;
    @Attribute("currentversion") String currentVersion;
 
-   public WalletAnalyticsAction() {}
+   public WalletAnalyticsAction() {
+      //do nothing
+   }
 
    public WalletAnalyticsAction(String scId) {
       cid = scId;

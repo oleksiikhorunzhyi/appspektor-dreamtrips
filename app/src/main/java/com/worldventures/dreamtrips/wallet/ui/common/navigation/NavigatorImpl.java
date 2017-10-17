@@ -14,8 +14,8 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler;
 import com.bluelinelabs.conductor.internal.NoOpControllerChangeHandler;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.impl.CardListScreenImpl;
@@ -94,6 +94,7 @@ import java.util.List;
 import dagger.Lazy;
 import timber.log.Timber;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class NavigatorImpl implements Navigator {
 
    private final Lazy<Router> routerLazy;
@@ -503,7 +504,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goSystemSettings() {
-      routerLazy.get().getActivity().startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+      routerLazy.get().getActivity().startActivity(new Intent(Settings.ACTION_SETTINGS));
    }
 
    @Override
@@ -513,7 +514,7 @@ public class NavigatorImpl implements Navigator {
          routerLazy.get()
                .getActivity()
                .startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-      } catch (android.content.ActivityNotFoundException exception) {
+      } catch (ActivityNotFoundException exception) {
          routerLazy.get()
                .getActivity()
                .startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
@@ -561,12 +562,6 @@ public class NavigatorImpl implements Navigator {
    private void withoutLast(Controller controller) {
       withoutLast(constructTransaction(controller));
    }
-
-   private void withoutLast(Controller controller, ControllerChangeHandler pushChangeHandler,
-         ControllerChangeHandler popChangeHandler) {
-      withoutLast(constructTransaction(controller, pushChangeHandler, popChangeHandler));
-   }
-
 
    private RouterTransaction constructImmediateTransaction(Controller controller) {
       return constructTransaction(controller, new NoOpControllerChangeHandler(), new NoOpControllerChangeHandler());

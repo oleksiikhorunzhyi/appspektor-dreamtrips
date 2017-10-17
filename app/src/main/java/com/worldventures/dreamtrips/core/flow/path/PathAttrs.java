@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.core.flow.path;
 
 public class PathAttrs {
 
+   public static final PathAttrs WITH_DRAWER = PathAttrs.withDrawer(true);
+   public static final PathAttrs WITHOUT_DRAWER = PathAttrs.withDrawer(false);
+
    private boolean drawerEnabled;
 
    public boolean isDrawerEnabled() {
@@ -13,7 +16,4 @@ public class PathAttrs {
       pathAttrs.drawerEnabled = enabled;
       return pathAttrs;
    }
-
-   public static final PathAttrs WITH_DRAWER = PathAttrs.withDrawer(true);
-   public static final PathAttrs WITHOUT_DRAWER = PathAttrs.withDrawer(false);
 }

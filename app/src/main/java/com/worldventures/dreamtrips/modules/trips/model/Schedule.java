@@ -16,6 +16,7 @@ public class Schedule implements Serializable {
    private static final String PATTERN_MONTH_AND_DAY = "MMM d";
    private static final String PATTERN_DAY = "d";
    private static final String PATTERN_YEAR_AND_DAY = "d, yyyy";
+   private static final String TIMEZONE_UTC = "UTC";
 
    private final static SimpleDateFormat SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY;
    private final static SimpleDateFormat SIMPLE_DATE_FORMAT_MONTH_DAY;
@@ -24,35 +25,32 @@ public class Schedule implements Serializable {
 
    static {
       SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY = new SimpleDateFormat(PATTERN_YEAR_MONTH_AND_DAY, LocaleHelper.getDefaultLocale());
-      SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY.setTimeZone(TimeZone.getTimeZone("UTC"));
+      SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
       SIMPLE_DATE_FORMAT_MONTH_DAY = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, LocaleHelper.getDefaultLocale());
-      SIMPLE_DATE_FORMAT_MONTH_DAY.setTimeZone(TimeZone.getTimeZone("UTC"));
+      SIMPLE_DATE_FORMAT_MONTH_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
       SIMPLE_DATE_FORMAT_DAY = new SimpleDateFormat(PATTERN_DAY, LocaleHelper.getDefaultLocale());
-      SIMPLE_DATE_FORMAT_DAY.setTimeZone(TimeZone.getTimeZone("UTC"));
+      SIMPLE_DATE_FORMAT_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
       SIMPLE_DATE_FORMAT_YEAR_DAY = new SimpleDateFormat(PATTERN_YEAR_AND_DAY, LocaleHelper.getDefaultLocale());
-      SIMPLE_DATE_FORMAT_YEAR_DAY.setTimeZone(TimeZone.getTimeZone("UTC"));
+      SIMPLE_DATE_FORMAT_YEAR_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
    }
 
 
    @SerializedName("start_on") private Date startOn;
    @SerializedName("end_on") private Date endOn;
 
-   public Schedule() {
-   }
-
-   public java.util.Date getStartDate() {
+   public Date getStartDate() {
       return startOn;
    }
 
-   public void setStartDate(java.util.Date startOn) {
+   public void setStartDate(Date startOn) {
       this.startOn = startOn;
    }
 
-   public java.util.Date getEndDate() {
+   public Date getEndDate() {
       return endOn;
    }
 
-   public void setEndDate(java.util.Date endDate) {
+   public void setEndDate(Date endDate) {
       this.endOn = endDate;
    }
 
@@ -61,15 +59,15 @@ public class Schedule implements Serializable {
             .getEndDate()) || endOn.before(dateFilterItem.getEndDate()));
    }
 
-   public String getStartDateString() {
+   public synchronized String getStartDateString() {
       return SIMPLE_DATE_FORMAT_MONTH_DAY.format(getStartDate());
    }
 
    @Override
-   public String toString() {
-      Calendar calendarStart = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+   public synchronized String toString() {
+      Calendar calendarStart = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC));
       calendarStart.setTimeInMillis(startOn.getTime());
-      Calendar calendarEnd = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+      Calendar calendarEnd = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC));
       calendarEnd.setTimeInMillis(endOn.getTime());
 
       return new StringBuilder().append(calendarStart.get(Calendar.YEAR) != calendarEnd.get(Calendar.YEAR) ? SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY

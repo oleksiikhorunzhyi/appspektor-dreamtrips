@@ -32,7 +32,9 @@ public class DownloadFirmwareCommand extends Command<Void> implements Injectable
    protected void run(CommandCallback<Void> callback) throws Throwable {
       final FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
       final FirmwareInfo firmwareInfo = firmwareUpdateData.firmwareInfo();
-      if (firmwareInfo == null) throw new IllegalStateException("Firmware is not available");
+      if (firmwareInfo == null) {
+         throw new IllegalStateException("Firmware is not available");
+      }
 
       janet.createPipe(DownloadFileCommand.class)
             .createObservableResult(new DownloadFileCommand(getAppropriateFirmwareFile(appContext), firmwareInfo.url()))

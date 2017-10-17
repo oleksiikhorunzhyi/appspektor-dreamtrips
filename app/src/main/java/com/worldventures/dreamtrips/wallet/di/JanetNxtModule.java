@@ -70,7 +70,9 @@ public class JanetNxtModule {
    @Named(JANET_NXT)
    OkHttpClient provideJanetOkHttp3Client(@Named(JANET_NXT) Interceptor interceptor) {
       OkHttpClient.Builder builder = new OkHttpClient.Builder();
-      if (BuildConfig.DEBUG) builder.addInterceptor(interceptor);
+      if (BuildConfig.DEBUG) {
+         builder.addInterceptor(interceptor);
+      }
       builder.connectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       builder.readTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
       builder.writeTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
@@ -105,7 +107,7 @@ public class JanetNxtModule {
          WalletSocialInfoProvider socialInfoProvider, MapperyContext mapperyContext, @Named(JANET_NXT) HttpClient httpClient) {
       return new NxtHttpService(nxtSessionHolder, appVersionNameBuilder, socialInfoProvider, mapperyContext,
             BuildConfig.NXT_API, httpClient, new GsonConverter(
-                  new GsonProvider().provideBuilder()
+            new GsonProvider().provideBuilder()
                   .registerTypeAdapterFactory(new GsonAdaptersMultiRequestBody())
                   .registerTypeAdapterFactory(new GsonAdaptersMultiRequestElement())
                   .registerTypeAdapterFactory(new GsonAdaptersMultiResponseBody())

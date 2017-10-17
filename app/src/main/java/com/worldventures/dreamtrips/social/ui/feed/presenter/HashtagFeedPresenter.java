@@ -113,11 +113,15 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
       if (!TextUtils.isEmpty(query)) {
          interactor.getRefreshFeedsByHashtagsPipe().send(new FeedByHashtagCommand.Refresh(query, FEEDS_PER_PAGE));
          subscribeToStorage();
-      } else view.finishLoading();
+      } else {
+         view.finishLoading();
+      }
    }
 
    public boolean loadNext() {
-      if (feedItems.isEmpty() || TextUtils.isEmpty(query)) return false;
+      if (feedItems.isEmpty() || TextUtils.isEmpty(query)) {
+         return false;
+      }
       interactor.getLoadNextFeedsByHashtagsPipe()
             .send(new FeedByHashtagCommand.LoadNext(query, FEEDS_PER_PAGE, feedItems.get(feedItems.size() - 1)
                   .getCreatedAt()));

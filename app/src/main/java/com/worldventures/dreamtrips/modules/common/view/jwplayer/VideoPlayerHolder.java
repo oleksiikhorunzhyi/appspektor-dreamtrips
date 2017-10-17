@@ -11,9 +11,6 @@ public class VideoPlayerHolder {
    private VideoContainerView videoContainerView;
    private VideoView videoView;
 
-   public VideoPlayerHolder() {
-   }
-
    public void init(JWPlayerView jwPlayerView, VideoContainerView videoContainerView, VideoView videoView) {
       this.videoContainerView = videoContainerView;
       this.jwPlayerView = jwPlayerView;

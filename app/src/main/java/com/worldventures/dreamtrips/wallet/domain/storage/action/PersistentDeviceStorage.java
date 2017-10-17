@@ -12,6 +12,7 @@ import io.techery.janet.smartcard.model.FirmwareVersion;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.janet.smartcard.model.User;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public final class PersistentDeviceStorage implements DeviceStorage {
 
    private final WalletStorage db;
@@ -261,7 +262,7 @@ public final class PersistentDeviceStorage implements DeviceStorage {
 
    @Override
    public void removeUserPhoto() {
-
+      //do nothing
    }
 
    @Override

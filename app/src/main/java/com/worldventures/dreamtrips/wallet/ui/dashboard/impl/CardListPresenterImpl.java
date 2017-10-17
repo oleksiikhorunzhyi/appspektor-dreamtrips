@@ -69,6 +69,7 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> implements CardListPresenter {
 
    private final SmartCardInteractor smartCardInteractor;
@@ -157,7 +158,9 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    @SuppressWarnings("ConstantConditions")
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
-      if (featureHelper.addingCardIsNotSupported()) return;
+      if (featureHelper.addingCardIsNotSupported()) {
+         return;
+      }
       if (status.isFailAfterProvision()) {
          getView().modeSyncPaymentsFab();
       } else {
@@ -241,7 +244,9 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
       if (firmwareUpdateData.updateAvailable()) {
-         if (firmwareUpdateData.updateCritical()) getView().showForceFirmwareUpdateDialog();
+         if (firmwareUpdateData.updateCritical()) {
+            getView().showForceFirmwareUpdateDialog();
+         }
          getView().showFirmwareUpdateBtn();
       } else {
          getView().hideFirmwareUpdateBtn();
@@ -382,7 +387,9 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnCompleted(() -> {
-               if (operationView.isProgressVisible()) operationView.hideProgress();
+               if (operationView.isProgressVisible()) {
+                  operationView.hideProgress();
+               }
             })
             .subscribe(OperationActionSubscriber.forView(operationView).create());
    }
@@ -412,8 +419,11 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> {
-                     if (command.getResult().connectionStatus().isConnected()) onConnected.call();
-                     else getView().showSCNonConnectionDialog();
+                     if (command.getResult().connectionStatus().isConnected()) {
+                        onConnected.call();
+                     } else {
+                        getView().showSCNonConnectionDialog();
+                     }
                   })
             );
    }

@@ -7,7 +7,7 @@ buildscript {
 
    dependencies {
       classpath project.ext.pluginDependencies.android
-      classpath (project.ext.pluginDependencies.proguard) {
+      classpath(project.ext.pluginDependencies.proguard) {
          force = true
       }
       classpath project.ext.pluginDependencies.kotlin

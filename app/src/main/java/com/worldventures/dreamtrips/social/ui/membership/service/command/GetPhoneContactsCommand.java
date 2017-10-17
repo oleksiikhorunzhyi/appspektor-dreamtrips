@@ -70,23 +70,34 @@ public class GetPhoneContactsCommand extends Command<List<Member>> implements In
          member.setId(id);
 
          String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-         if (TextUtils.isEmpty(name)) continue;
-         else member.setName(name);
+         if (TextUtils.isEmpty(name)) {
+            continue;
+         } else {
+            member.setName(name);
+         }
 
          switch (type) {
             case EMAIL:
                String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                member.setEmail(email);
-               if (TextUtils.isEmpty(member.getEmail())) break;
-               if (TextUtils.isEmpty(member.getName())) break;
+               if (TextUtils.isEmpty(member.getEmail())) {
+                  break;
+               }
+               if (TextUtils.isEmpty(member.getName())) {
+                  break;
+               }
                member.setEmailIsMain(true);
                result.add(member);
                break;
             case SMS:
                String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                member.setPhone(ProjectPhoneNumberUtils.normalizeNumber(phone));
-               if (TextUtils.isEmpty(phone)) break;
-               if (TextUtils.isEmpty(member.getName())) break;
+               if (TextUtils.isEmpty(phone)) {
+                  break;
+               }
+               if (TextUtils.isEmpty(member.getName())) {
+                  break;
+               }
                member.setEmailIsMain(false);
                result.add(member);
                break;

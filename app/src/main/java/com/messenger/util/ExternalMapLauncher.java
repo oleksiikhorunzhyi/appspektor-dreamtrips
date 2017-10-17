@@ -10,7 +10,7 @@ import android.net.Uri;
  */
 public class ExternalMapLauncher {
 
-   private Context context;
+   private final Context context;
 
    private double latitude;
    private double longitude;

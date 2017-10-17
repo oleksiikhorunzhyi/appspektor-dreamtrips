@@ -15,10 +15,10 @@ public final class FlipAnim {
    private AnimatorSet setRightOut;
    private AnimatorSet setLeftIn;
    private boolean isBackVisible = false;
-   private View cardFrontLayout;
-   private View cardBackLayout;
-
-   private WeakHandler handler = new WeakHandler();
+   private final View cardFrontLayout;
+   private final View cardBackLayout;
+   
+   private final WeakHandler handler = new WeakHandler();
 
    private FlipAnim(View cardFrontLayout, View cardBackLayout) {
       this.cardFrontLayout = cardFrontLayout;
@@ -59,12 +59,7 @@ public final class FlipAnim {
       });
 
       setLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.wallet_smart_card_flip_in_animation);
-      setLeftIn.addListener(new AnimatorListenerAdapter() {
-         @Override
-         public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-         }
-      });
+      setLeftIn.addListener(new AnimatorListenerAdapter() {});
    }
 
    public static class Builder {

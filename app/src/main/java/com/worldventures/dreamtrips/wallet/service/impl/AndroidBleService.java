@@ -37,7 +37,9 @@ public class AndroidBleService implements WalletBluetoothService {
    @Override
    public Observable<Boolean> observeEnablesState() {
       BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-      if (bluetoothAdapter == null) return Observable.empty();
+      if (bluetoothAdapter == null) {
+         return Observable.empty();
+      }
 
       RxBluetoothAdapter adapter = new RxBluetoothAdapter(appContext);
       return Observable.create(adapter)

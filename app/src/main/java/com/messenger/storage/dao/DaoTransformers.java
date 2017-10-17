@@ -11,7 +11,10 @@ import java.util.List;
 
 import rx.Observable;
 
-public class DaoTransformers {
+public final class DaoTransformers {
+
+   private DaoTransformers() {
+   }
 
    public static <T extends Model> Observable.Transformer<Cursor, T> toEntity(Class<T> table) {
       return cursorObservable -> cursorObservable.map(cursor -> {

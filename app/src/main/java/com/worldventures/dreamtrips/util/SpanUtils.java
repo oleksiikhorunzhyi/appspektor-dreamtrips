@@ -7,7 +7,10 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.widget.TextView;
 
-public class SpanUtils {
+public final class SpanUtils {
+
+   private SpanUtils() {
+   }
 
    public static void stripUnderlines(TextView textView) {
       Spannable s = (Spannable) textView.getText();
@@ -35,7 +38,9 @@ public class SpanUtils {
    }
 
    public static SpannableStringBuilder trimSpannable(SpannableStringBuilder spannable) {
-      if (TextUtils.isEmpty(spannable)) { return spannable; }
+      if (TextUtils.isEmpty(spannable)) {
+         return spannable;
+      }
 
       int trimStart = 0;
       int trimEnd = 0;

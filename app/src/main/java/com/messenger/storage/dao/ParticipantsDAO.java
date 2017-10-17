@@ -80,6 +80,7 @@ public class ParticipantsDAO extends BaseDAO {
       bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public void deleteBySyncTime(long time, @NonNull String conversationId) {
       String where = DataParticipant$Table.SYNCTIME + " < " + "?"
             + " AND " + DataParticipant$Table.CONVERSATIONID + " =? "

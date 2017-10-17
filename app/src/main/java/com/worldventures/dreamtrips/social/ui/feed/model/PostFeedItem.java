@@ -9,6 +9,7 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 public class PostFeedItem extends FeedItem<TextualPost> {
 
    public PostFeedItem() {
+      //do nothing
    }
 
    public PostFeedItem(Parcel in) {

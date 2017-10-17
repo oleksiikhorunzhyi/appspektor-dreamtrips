@@ -12,7 +12,7 @@ import static android.view.LayoutInflater.from;
 
 public class HelpDocsHolderFactoryImpl implements HelpDocsTypeFactory {
 
-   private DocumentHolder.Callback documentCallback;
+   private final DocumentHolder.Callback documentCallback;
 
    public HelpDocsHolderFactoryImpl(DocumentHolder.Callback documentCallback) {
       this.documentCallback = documentCallback;

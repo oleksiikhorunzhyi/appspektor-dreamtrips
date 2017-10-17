@@ -21,7 +21,7 @@ public class Links implements Serializable, Parcelable {
    }
 
    public boolean hasUsers() {
-      return users != null && users.size() > 0;
+      return users != null && !users.isEmpty();
    }
 
    public void setUsers(List<User> users) {
@@ -43,7 +43,9 @@ public class Links implements Serializable, Parcelable {
       dest.writeTypedList(this.users);
    }
 
-   public Links() {}
+   public Links() {
+      //do nothing
+   }
 
    protected Links(Parcel in) {
       this.users = in.createTypedArrayList(User.CREATOR);

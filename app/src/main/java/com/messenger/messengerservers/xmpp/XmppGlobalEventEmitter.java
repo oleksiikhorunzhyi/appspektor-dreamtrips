@@ -54,7 +54,9 @@ import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAG
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
+
    private final Map<IncomingMessageFilterType, List<IncomingMessageFilter>> filters;
    private XmppServerFacade facade;
    private XmppMessageConverter messageConverter;
@@ -86,12 +88,14 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
       connection.addAsyncStanzaListener(this::interceptClearChatIncomingStanza, new StanzaTypeFilter(ClearChatIQ.class));
       connection.addAsyncStanzaListener(this::interceptRevertClearingChatIncomingStanza, new StanzaTypeFilter(RevertClearChatIQ.class));
 
-      MultiUserChatManager.getInstanceFor(connection).addInvitationListener(XmppGlobalEventEmitter.this::onChatInvited);
+      MultiUserChatManager.getInstanceFor(connection).addInvitationListener(
+            (__, room, inviter, reason, password, message) -> onChatInvited(room)
+      );
 
       Roster.getInstanceFor(connection).addRosterListener(rosterListener);
    }
 
-   private RosterListener rosterListener = new RosterListener() {
+   private final RosterListener rosterListener = new RosterListener() {
       @Override
       public void entriesAdded(Collection<String> addresses) {
          facade.getConnectionObservable()
@@ -105,7 +109,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
       @Override
       public void entriesUpdated(Collection<String> addresses) {
-
+         //do nothing
       }
 
       @Override
@@ -115,11 +119,11 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
       @Override
       public void presenceChanged(Presence presence) {
-
+         //do nothing
       }
    };
 
-   private void onChatInvited(XMPPConnection conn, MultiUserChat room, String inviter, String reason, String password, Message message) {
+   private void onChatInvited(MultiUserChat room) {
       notifyReceiveInvite(JidCreatorHelper.obtainId(room.getRoom()));
    }
 
@@ -145,9 +149,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
       if (filters.get(IncomingMessageFilterType.ALL) != null) {
          packetFilters.addAll(filters.get(IncomingMessageFilterType.ALL));
       }
-      if (filters.get(type) != null) { packetFilters.addAll(filters.get(type)); }
+      if (filters.get(type) != null) {
+         packetFilters.addAll(filters.get(type));
+      }
 
-      if (packetFilters.isEmpty()) { return Observable.just(packet); }
+      if (packetFilters.isEmpty()) {
+         return Observable.just(packet);
+      }
       return Observable.from(packetFilters).flatMap(filter -> filter.skipPacket(packet))
             // provide default accumulated value value of false for reduce()
             .reduce(false, (accumulatedValue, accumulatingValue) -> accumulatedValue || accumulatingValue)
@@ -156,7 +164,9 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
    }
 
    private void filterAndInterceptIncomingMessage(Stanza packet) {
-      if (!facade.isActive()) { return; }
+      if (!facade.isActive()) {
+         return;
+      }
       filterIncomingStanzaWithType(IncomingMessageFilterType.MESSAGE, packet).subscribe(this::interceptIncomingMessage, e -> Timber
             .e(e, "Filters -- Error during filtering message"));
    }
@@ -238,7 +248,9 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
    private void interceptIncomingPresence(Stanza stanza) {
       Presence presence = (Presence) stanza;
       Type presenceType = presence.getType();
-      if (presenceType == null) { return; }
+      if (presenceType == null) {
+         return;
+      }
 
       String fromJid = stanza.getFrom();
       boolean processed = processGroupChatParticipantsActions(presence, fromJid);
@@ -258,7 +270,9 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
    private boolean processGroupChatParticipantsActions(Presence presence, String fromJid) {
       MUCUser mucUser = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
-      if (mucUser == null || !JidCreatorHelper.isGroupJid(fromJid)) { return false; }
+      if (mucUser == null || !JidCreatorHelper.isGroupJid(fromJid)) {
+         return false;
+      }
       //
       String conversationId = JidCreatorHelper.obtainId(fromJid);
       MUCItem item = mucUser.getItem();

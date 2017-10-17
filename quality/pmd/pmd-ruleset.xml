@@ -23,12 +23,18 @@
    </rule>
    <rule ref="rulesets/java/braces.xml" />
    <rule ref="rulesets/java/strings.xml">
-      <exclude name="InsufficientStringBufferDeclaration"/>
-      <exclude name="ConsecutiveAppendsShouldReuse"/>
+      <exclude name="InsufficientStringBufferDeclaration" />
+      <exclude name="ConsecutiveAppendsShouldReuse" />
+      <exclude name="InefficientEmptyStringCheck" />
    </rule>
    <rule ref="rulesets/java/strings.xml/ConsecutiveLiteralAppends">
       <properties>
          <property name="threshold" value="3" />
+      </properties>
+   </rule>
+   <rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals">
+      <properties>
+         <property name="skipAnnotations" value="true" />
       </properties>
    </rule>
    <rule ref="rulesets/java/basic.xml" />
@@ -41,11 +47,14 @@
       <exclude name="VariableNamingConventions" />
       <exclude name="GenericsNaming" />
       <exclude name="AvoidFieldNameMatchingMethodName" />
+      <exclude name="BooleanGetMethodName" />
    </rule>
    <rule ref="rulesets/java/unnecessary.xml">
       <exclude name="UselessParentheses" />
    </rule>
-   <rule ref="rulesets/java/unusedcode.xml" />
+   <rule ref="rulesets/java/unusedcode.xml">
+      <exclude name="UnusedFormalParameter" />
+   </rule>
    <!--Controversial-->
    <rule ref="rulesets/java/controversial.xml">
       <exclude name="AvoidPrefixingMethodParameters" />
@@ -59,6 +68,8 @@
       <exclude name="AvoidFinalLocalVariable" />
       <exclude name="AssignmentInOperand" />
       <exclude name="OneDeclarationPerLine" />
+      <exclude name="AvoidLiteralsInIfCondition" />
+      <exclude name="UseObjectForClearerAPI" />
    </rule>
    <rule ref="rulesets/java/controversial.xml/DefaultPackage">
       <properties>
@@ -71,11 +82,6 @@
             ]]>
             </value>
          </property>
-      </properties>
-   </rule>
-   <rule ref="rulesets/java/controversial.xml/AvoidLiteralsInIfCondition">
-      <properties>
-         <property name="ignoreMagicNumbers" value="-1,0,1" />
       </properties>
    </rule>
    <!--Design-->
@@ -91,6 +97,9 @@
       <exclude name="CompareObjectsWithEquals" />
       <exclude name="AbstractClassWithoutAnyMethod" />
       <exclude name="UseLocaleWithCaseConversions" />
+      <exclude name="ConstructorCallsOverridableMethod" />
+      <exclude name="UseVarargs" />
+      <exclude name="MissingStaticMethodInNonInstantiatableClass" />
    </rule>
    <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
       <properties>

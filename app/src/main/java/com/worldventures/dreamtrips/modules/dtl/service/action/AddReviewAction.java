@@ -32,6 +32,7 @@ public class AddReviewAction extends Command<CommentReview> implements Injectabl
    private final String authorIpAddress;
    private final List<PhotoReviewCreationItem> selectedImagesList;
 
+   @SuppressWarnings("PMD.UseObjectForClearerAPI") //TODO: Resolve this PMD error. Create container object for values.
    public static AddReviewAction create(RequestReviewParams params, String reviewText,
          String rating, Boolean verified, String deviceFingerprint, String authorIpAddress, List<PhotoReviewCreationItem> selectedImagesList) {
       return new AddReviewAction(params, reviewText,

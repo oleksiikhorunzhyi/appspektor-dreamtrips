@@ -9,7 +9,9 @@ public class LocationConverter implements Converter<com.worldventures.dreamtrips
 
    @Override
    public Location convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.post.model.response.Location apiLocation) {
-      if (apiLocation == null) return null;
+      if (apiLocation == null) {
+         return null;
+      }
       Location location = new Location();
       if (apiLocation.lat() != null) {
          location.setLat(apiLocation.lat());

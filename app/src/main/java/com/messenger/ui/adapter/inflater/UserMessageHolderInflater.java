@@ -30,8 +30,12 @@ public class UserMessageHolderInflater {
       this.previousMessageFromSameUser = previousMessageFromSameUser;
       this.isGroup = isGroup;
 
-      if (avatarImageView != null) updateAvatar();
-      if (nameTextView != null) updateName();
+      if (avatarImageView != null) {
+         updateAvatar();
+      }
+      if (nameTextView != null) {
+         updateName();
+      }
    }
 
    private void updateAvatar() {

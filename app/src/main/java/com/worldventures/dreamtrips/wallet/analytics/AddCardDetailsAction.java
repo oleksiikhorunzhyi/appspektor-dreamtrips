@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.analytics;
 
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.core.service.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
-import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 @AnalyticsEvent(action = "wallet:Add a Card:Card Detail",

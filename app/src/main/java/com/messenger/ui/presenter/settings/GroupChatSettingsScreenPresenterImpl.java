@@ -102,7 +102,9 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
       super.applyViewState();
       ChatSettingsViewState viewState = getViewState();
       ChatSettingsViewState.UploadingState uploadingState = getViewState().getUploadAvatar();
-      if (uploadingState == null) return;
+      if (uploadingState == null) {
+         return;
+      }
       if (uploadingState == ChatSettingsViewState.UploadingState.UPLOADING) {
          getView().showChangingAvatarProgressBar();
       } else {

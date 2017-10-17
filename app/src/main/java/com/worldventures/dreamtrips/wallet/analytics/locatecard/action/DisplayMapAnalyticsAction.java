@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.analytics.locatecard.action;
 
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.core.service.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
-import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 
 @AnalyticsEvent(action = "wallet:settings:locate smartcard:display location",

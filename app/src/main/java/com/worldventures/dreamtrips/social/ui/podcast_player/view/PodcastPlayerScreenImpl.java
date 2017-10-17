@@ -60,7 +60,9 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
       mediaController.setDuration(duration);
       mediaController.setProgress(currentPosition, bufferPercentage);
 
-      if (progressBar != null) progressListener.onProgress(duration, currentPosition, bufferPercentage);
+      if (progressBar != null) {
+         progressListener.onProgress(duration, currentPosition, bufferPercentage);
+      }
    }
 
    @Override

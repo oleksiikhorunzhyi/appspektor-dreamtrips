@@ -54,8 +54,9 @@ public class GetInspireMePhotosCommand extends CommandWithError<List<Inspiration
 
    @Override
    protected void run(CommandCallback<List<Inspiration>> callback) throws Throwable {
-      if (fromCache && cachedItems != null) callback.onSuccess(cachedItems);
-      else {
+      if (fromCache && cachedItems != null) {
+         callback.onSuccess(cachedItems);
+      } else {
          janet.createPipe(GetInspireMePhotosHttpAction.class)
                .createObservableResult(new GetInspireMePhotosHttpAction(randomSeed, page, PER_PAGE))
                .map(GetInspireMePhotosHttpAction::response)

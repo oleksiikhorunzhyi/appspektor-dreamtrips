@@ -29,26 +29,23 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
          String elementName = parser.getName();
          switch (eventType) {
             case XmlPullParser.START_TAG:
-               switch (elementName) {
-                  case PARTICIPANT_ITEM:
-                     String jid = parser.getAttributeValue("", PARTICIPANT_JID);
-                     if (TextUtils.isEmpty(jid)) break;
-                     String affiliation = parser.getAttributeValue("", PARTICIPANT_AFFILIATION);
-                     String participantId = JidCreatorHelper.obtainId(jid);
-                     conversationParticipantsIQ.addParticipantItem(ImmutableParticipantItem.builder()
-                           .affiliation(affiliation)
-                           .userId(participantId)
-                           .build());
+               if (elementName.equals(PARTICIPANT_ITEM)) {
+                  String jid = parser.getAttributeValue("", PARTICIPANT_JID);
+                  if (TextUtils.isEmpty(jid)) {
                      break;
-                  default:
-                     break;
+                  }
+                  String affiliation = parser.getAttributeValue("", PARTICIPANT_AFFILIATION);
+                  String participantId = JidCreatorHelper.obtainId(jid);
+                  conversationParticipantsIQ.addParticipantItem(ImmutableParticipantItem.builder()
+                        .affiliation(affiliation)
+                        .userId(participantId)
+                        .build());
+
                }
+               break;
             case XmlPullParser.END_TAG:
-               switch (elementName) {
-                  case QUERY:
-                     done = true;
-                  default:
-                     break;
+               if (elementName.equals(QUERY)) {
+                  done = true;
                }
             default:
                break;

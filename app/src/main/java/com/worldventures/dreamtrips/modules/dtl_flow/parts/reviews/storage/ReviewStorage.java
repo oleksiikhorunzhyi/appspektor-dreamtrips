@@ -11,9 +11,12 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class ReviewStorage {
+public final class ReviewStorage {
 
    private static final String PREFS_NAME = "DTL_PREFS";
+
+   private ReviewStorage() {
+   }
 
    public static void saveReviewsPosted(Context context, String idUser, String idMerchant) {
 
@@ -40,7 +43,7 @@ public class ReviewStorage {
    public static boolean exists(Context context, String idUser, String idMerchant) {
       String[] merchants = getReviewsPosted(context, idUser);
       if (merchants != null && merchants.length > 0) {
-         return (Arrays.asList(merchants).contains(idMerchant));
+         return Arrays.asList(merchants).contains(idMerchant);
       } else {
          return false;
       }

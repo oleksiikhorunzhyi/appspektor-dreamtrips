@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 public class PodcastPlayerDelegate {
 
-   private Context context;
+   private final Context context;
    private PodcastService podcastService;
 
    public PodcastPlayerDelegate(Context context) {

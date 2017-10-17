@@ -9,7 +9,7 @@ import io.techery.mappery.MapperyContext;
 public class BucketLocationConverter implements Converter<BucketListLocation, BucketLocation> {
 
    @Override
-   public BucketLocation convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation apiLocation) {
+   public BucketLocation convert(MapperyContext mapperyContext, BucketListLocation apiLocation) {
       BucketLocation location = new BucketLocation();
       location.setName(apiLocation.name());
       location.setDescription(apiLocation.description());
@@ -18,8 +18,8 @@ public class BucketLocationConverter implements Converter<BucketListLocation, Bu
    }
 
    @Override
-   public Class<com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation> sourceClass() {
-      return com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation.class;
+   public Class<BucketListLocation> sourceClass() {
+      return BucketListLocation.class;
    }
 
    @Override

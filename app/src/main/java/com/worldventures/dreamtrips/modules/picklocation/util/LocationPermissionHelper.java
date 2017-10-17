@@ -8,7 +8,7 @@ import timber.log.Timber;
 
 public class LocationPermissionHelper {
 
-   private WeakReference<PickLocationActivity> weakActivity;
+   private final WeakReference<PickLocationActivity> weakActivity;
 
    public LocationPermissionHelper(PickLocationActivity pickLocationActivity) {
       this.weakActivity = new WeakReference<PickLocationActivity>(pickLocationActivity);

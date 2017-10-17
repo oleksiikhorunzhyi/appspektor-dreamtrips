@@ -37,7 +37,9 @@ public class DataLocationAttachment extends BaseProviderModel<DataAttachment> {
    @Column double lat;
    @Column double lng;
 
+   @SuppressWarnings("PMD.UnnecessaryConstructor")
    public DataLocationAttachment() {
+      //do nothing
    }
 
    private DataLocationAttachment(Builder builder) {
@@ -115,9 +117,6 @@ public class DataLocationAttachment extends BaseProviderModel<DataAttachment> {
       String id;
       double lat;
       double lng;
-
-      public Builder() {
-      }
 
       public Builder id(String id) {
          this.id = id;

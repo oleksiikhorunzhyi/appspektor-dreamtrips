@@ -31,7 +31,7 @@ public interface ChatScreen extends MessengerScreen {
 
    void showMessages(Cursor cursor);
 
-   void showAttachmentMenu(AttachmentMenuItem[] items);
+   void showAttachmentMenu(AttachmentMenuItem... items);
 
    void showRetrySendMessageDialog(DataMessage dataMessage);
 

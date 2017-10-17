@@ -31,7 +31,9 @@ public abstract class BaseChatCommand<R> extends Command<R> implements Injectabl
       return conversationsDAO.getConversation(conversationId).take(1).flatMap(dataConversation -> {
          if (ConversationHelper.isAbandoned(dataConversation)) {
             return Observable.error(new AccessConversationDeniedException());
-         } else { return createChatHelper.createChat(conversationId); }
+         } else {
+            return createChatHelper.createChat(conversationId);
+         }
       });
    }
 }

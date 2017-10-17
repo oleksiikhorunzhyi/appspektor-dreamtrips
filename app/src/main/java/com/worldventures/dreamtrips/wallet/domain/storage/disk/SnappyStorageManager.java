@@ -28,10 +28,8 @@ public class SnappyStorageManager {
       }
 
       final int storedVersion = db.exists(versionKey) ? db.getInt(versionKey) : 0;
-      if (storedVersion < storage.getVersion()) {
-         if (storage.migrate(db, storedVersion)) {
-            db.put(versionKey, storage.getVersion());
-         }
+      if (storedVersion < storage.getVersion() && storage.migrate(db, storedVersion)) {
+         db.put(versionKey, storage.getVersion());
       }
    }
 

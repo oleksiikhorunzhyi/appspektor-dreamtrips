@@ -96,7 +96,9 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
 
    @OnClick(R.id.swipeLayout)
    void onItemClicked() {
-      if (!isSwiping()) cellDelegate.onCellClicked(getModelObject());
+      if (!isSwiping()) {
+         cellDelegate.onCellClicked(getModelObject());
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////

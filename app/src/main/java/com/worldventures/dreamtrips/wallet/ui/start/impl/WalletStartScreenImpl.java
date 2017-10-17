@@ -26,9 +26,6 @@ public class WalletStartScreenImpl extends WalletBaseController<WalletStartScree
 
    @Inject WalletStartPresenter presenter;
 
-   public WalletStartScreenImpl() {
-   }
-
    @Override
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);

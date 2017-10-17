@@ -27,9 +27,9 @@ public class CropImageDelegate {
 
    private WeakReference<Activity> activity;
    private Context context;
-   private WeakHandler handler = new WeakHandler();
 
-   private PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
+   private final WeakHandler handler = new WeakHandler();
+   private final PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
 
    public CropImageDelegate(Activity activity) {
       init(activity);
@@ -52,14 +52,20 @@ public class CropImageDelegate {
    }
 
    public void destroy() {
-      if (croppedImagesStream != null && !croppedImagesStream.hasCompleted()) { croppedImagesStream.onCompleted(); }
+      if (croppedImagesStream != null && !croppedImagesStream.hasCompleted()) {
+         croppedImagesStream.onCompleted();
+      }
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (!CroppingUtils.isCroppingResult(requestCode, resultCode)) { return false; }
+      if (!CroppingUtils.isCroppingResult(requestCode, resultCode)) {
+         return false;
+      }
 
       Pair<String, Throwable> resultPair = CroppingUtils.obtainResults(requestCode, resultCode, data);
-      if (resultPair == null) { return true; }
+      if (resultPair == null) {
+         return true;
+      }
 
       onCropFinished(resultPair.first, String.valueOf(resultPair.second));
       return true;

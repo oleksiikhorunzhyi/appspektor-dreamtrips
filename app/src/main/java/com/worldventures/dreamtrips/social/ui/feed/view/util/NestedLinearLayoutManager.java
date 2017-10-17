@@ -12,7 +12,7 @@ import timber.log.Timber;
 public class NestedLinearLayoutManager extends LinearLayoutManager {
 
    private int maxHeight = -1;
-   private int[] mMeasuredDimension = new int[2];
+   private final int[] mMeasuredDimension = new int[2];
 
    public NestedLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
       super(context, orientation, reverseLayout);
@@ -52,6 +52,7 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
       switch (widthMode) {
          case View.MeasureSpec.EXACTLY:
             width = widthSize;
+            break;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
          default:
@@ -61,6 +62,7 @@ public class NestedLinearLayoutManager extends LinearLayoutManager {
       switch (heightMode) {
          case View.MeasureSpec.EXACTLY:
             height = heightSize;
+            break;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
          default:

@@ -161,7 +161,9 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
 
    @Override
    public void changeDoneButtonState(boolean enable) {
-      if (doneButtonMenuItem != null) doneButtonMenuItem.setEnabled(enable);
+      if (doneButtonMenuItem != null) {
+         doneButtonMenuItem.setEnabled(enable);
+      }
    }
 
    @Override

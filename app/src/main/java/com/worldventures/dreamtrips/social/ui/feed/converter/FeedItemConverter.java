@@ -50,7 +50,9 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
       if (entityHolder instanceof com.worldventures.dreamtrips.api.feed.model.FeedItem) {
          com.worldventures.dreamtrips.api.feed.model.FeedItem apiFeedItem = (com.worldventures.dreamtrips.api.feed.model.FeedItem) entityHolder;
          feedItem.setReadAt(apiFeedItem.readAt());
-         if (apiFeedItem.id() != null) feedItem.setId(apiFeedItem.id());
+         if (apiFeedItem.id() != null) {
+            feedItem.setId(apiFeedItem.id());
+         }
          feedItem.setCreatedAt(apiFeedItem.createdAt());
          feedItem.setLinks(mapperyContext.convert(apiFeedItem.links(), Links.class));
          feedItem.setAction(mapAction(apiFeedItem.action()));
@@ -128,8 +130,9 @@ public class FeedItemConverter implements Converter<EntityHolder, FeedEntityHold
    }
 
    private static class TargetClassInfo {
-      private FeedEntityHolder.Type type;
-      private Class<? extends FeedEntity> targetClass;
+
+      private final FeedEntityHolder.Type type;
+      private final Class<? extends FeedEntity> targetClass;
 
       public TargetClassInfo(FeedEntityHolder.Type type, Class<? extends FeedEntity> targetClass) {
          this.type = type;

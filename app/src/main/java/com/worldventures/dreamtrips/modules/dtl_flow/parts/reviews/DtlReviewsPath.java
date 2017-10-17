@@ -30,7 +30,7 @@ public class DtlReviewsPath extends DtlDetailPath {
       return message;
    }
 
-      @Override
+   @Override
    public PathAttrs getAttrs() {
       return PathAttrs.WITHOUT_DRAWER;
    }

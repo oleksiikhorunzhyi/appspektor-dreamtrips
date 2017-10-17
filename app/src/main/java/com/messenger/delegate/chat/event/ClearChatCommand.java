@@ -57,7 +57,9 @@ public class ClearChatCommand extends Command<Void> implements InjectableAction 
       ImagePipeline imagePipeline = Fresco.getImagePipeline();
       for (DataPhotoAttachment photo : photoAttachments) {
          String url = photo.getUrl();
-         if (TextUtils.isEmpty(url)) continue;
+         if (TextUtils.isEmpty(url)) {
+            continue;
+         }
          imagePipeline.evictFromCache(Uri.parse(url));
       }
    }

@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 
 public class ProfileRouteCreator implements RouteCreator<Integer> {
 
-   private SessionHolder appSessionHolder;
+   private final SessionHolder appSessionHolder;
 
    public ProfileRouteCreator(SessionHolder appSessionHolder) {
       this.appSessionHolder = appSessionHolder;

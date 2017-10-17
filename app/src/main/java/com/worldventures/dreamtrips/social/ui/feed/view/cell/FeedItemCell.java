@@ -113,7 +113,9 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
 
    private void hideLikersPanel() {
       View likersPanel = itemView.findViewById(R.id.likers_panel);
-      if (likersPanel != null) likersPanel.setVisibility(View.GONE);
+      if (likersPanel != null) {
+         likersPanel.setVisibility(View.GONE);
+      }
    }
 
    @Optional

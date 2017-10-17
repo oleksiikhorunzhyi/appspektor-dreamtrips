@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error (WMC=53, ATFD=9, TCC=0.035437430786267994)
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BucketItem extends BaseFeedEntity {
 

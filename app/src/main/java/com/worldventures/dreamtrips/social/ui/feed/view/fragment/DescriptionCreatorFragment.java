@@ -152,12 +152,16 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
 
    @Override
    public void showSuggestionProgress() {
-      if (suggestions != null) suggestions.showProgress();
+      if (suggestions != null) {
+         suggestions.showProgress();
+      }
    }
 
    @Override
    public void hideSuggestionProgress() {
-      if (suggestions != null) suggestions.hideProgress();
+      if (suggestions != null) {
+         suggestions.hideProgress();
+      }
    }
 
    private DividerItemDecoration dividerItemDecoration() {

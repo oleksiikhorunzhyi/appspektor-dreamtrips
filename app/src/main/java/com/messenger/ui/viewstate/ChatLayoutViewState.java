@@ -8,6 +8,7 @@ import com.messenger.entities.DataConversation;
 public class ChatLayoutViewState extends LceViewState<DataConversation> {
 
    public ChatLayoutViewState() {
+      //do nothing
    }
 
    ///////////////////////////////////////////////////////////////////////////

@@ -175,7 +175,9 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
 
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      if (!photo.equals(updatedFeedEntity)) return;
+      if (!photo.equals(updatedFeedEntity)) {
+         return;
+      }
       photo = (Photo) updatedFeedEntity;
       view.setPhoto(photo);
       setupTranslationState();

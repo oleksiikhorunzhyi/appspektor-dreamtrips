@@ -194,7 +194,9 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    @Override
    public void hideDialog() {
-      if (photoActionDialog == null) return;
+      if (photoActionDialog == null) {
+         return;
+      }
       photoActionDialog.hide();
       photoActionDialog = null;
    }

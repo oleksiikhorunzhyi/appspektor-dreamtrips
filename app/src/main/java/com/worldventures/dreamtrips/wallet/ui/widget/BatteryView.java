@@ -19,7 +19,7 @@ public class BatteryView extends AppCompatImageView {
    private final float topLevelMargin;
    private final float bottomLevelMargin;
 
-   private Paint levelPaint = new Paint();
+   private final Paint levelPaint = new Paint();
    private int level = 0;
 
    public BatteryView(Context context, AttributeSet attrs) {
@@ -59,7 +59,9 @@ public class BatteryView extends AppCompatImageView {
       super.onDraw(canvas);
       int primaryColor = getColorPaintByLevel(level);
       levelPaint.setColor(primaryColor);
-      if (!isInEditMode()) setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
+      if (!isInEditMode()) {
+         setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
+      }
 
       drawBatteryLevel(canvas);
    }

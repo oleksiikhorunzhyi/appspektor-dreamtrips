@@ -103,7 +103,9 @@ public class HashtagTextView extends AppCompatTextView {
       spannable.setSpan(new HashtagClickableSpan(hashtagTextColor) {
          @Override
          public void onClick(View widget) {
-            if (hashtagClickListener != null) hashtagClickListener.onHashtagClicked(callbackString);
+            if (hashtagClickListener != null) {
+               hashtagClickListener.onHashtagClicked(callbackString);
+            }
          }
       }, start, end, 0);
    }

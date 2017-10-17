@@ -13,7 +13,7 @@ public class CompoundOperationRepositoryImpl implements CompoundOperationReposit
 
    private static final String COMPOUND_OBJECT_POSTS = "COMPOUND_OBJECT_POSTS";
 
-   private SocialSnappyRepository snappyRepository;
+   private final SocialSnappyRepository snappyRepository;
 
    public CompoundOperationRepositoryImpl(SocialSnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;

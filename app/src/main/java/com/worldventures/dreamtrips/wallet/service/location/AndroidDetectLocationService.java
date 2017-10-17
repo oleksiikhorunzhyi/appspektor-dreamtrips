@@ -44,7 +44,7 @@ public class AndroidDetectLocationService implements WalletDetectLocationService
    @Override
    public Observable<Boolean> observeLocationSettingState() {
       final RxLocationAdapter adapter = new RxLocationAdapter(context);
-      return Observable.create(adapter)
+      return create(adapter)
             .map(aVoid -> isEnabled())
             .distinctUntilChanged()
             .doOnUnsubscribe(adapter::release);

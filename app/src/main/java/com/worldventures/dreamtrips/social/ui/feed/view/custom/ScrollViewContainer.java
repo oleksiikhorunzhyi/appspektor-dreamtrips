@@ -18,6 +18,7 @@ import java.util.TimerTask;
  *
  * @author chenjing
  */
+@SuppressWarnings("PMD")
 public class ScrollViewContainer extends RelativeLayout {
 
    /**
@@ -121,8 +122,11 @@ public class ScrollViewContainer extends RelativeLayout {
       switch (ev.getActionMasked()) {
          case MotionEvent.ACTION_DOWN:
             try {
-               if (vt == null) vt = VelocityTracker.obtain();
-               else vt.clear();
+               if (vt == null) {
+                  vt = VelocityTracker.obtain();
+               } else {
+                  vt.clear();
+               }
             } catch (Exception e) {
                e.printStackTrace();
             }
@@ -166,7 +170,9 @@ public class ScrollViewContainer extends RelativeLayout {
                   // 防止事件冲突
                   ev.setAction(MotionEvent.ACTION_CANCEL);
                }
-            } else mEvents++;
+            } else {
+               mEvents++;
+            }
             mLastY = ev.getY();
             requestLayout();
             break;
@@ -176,7 +182,9 @@ public class ScrollViewContainer extends RelativeLayout {
             vt.computeCurrentVelocity(700);
             // 获取Y方向的速度
             float mYV = vt.getYVelocity();
-            if (mMoveLen == 0 || mMoveLen == -mViewHeight) break;
+            if (mMoveLen == 0 || mMoveLen == -mViewHeight) {
+               break;
+            }
             if (Math.abs(mYV) < 500) {
                // 速度小于一定值的时候当作静止释放，这时候两个View往哪移动取决于滑动的距离
                if (mMoveLen <= -mViewHeight / 2) {
@@ -186,8 +194,11 @@ public class ScrollViewContainer extends RelativeLayout {
                }
             } else {
                // 抬起手指时速度方向决定两个View往哪移动
-               if (mYV < 0) state = AUTO_UP;
-               else state = AUTO_DOWN;
+               if (mYV < 0) {
+                  state = AUTO_UP;
+               } else {
+                  state = AUTO_DOWN;
+               }
             }
             mTimer.schedule(2);
             break;
@@ -223,8 +234,11 @@ public class ScrollViewContainer extends RelativeLayout {
       public boolean onTouch(View v, MotionEvent event) {
          ScrollView sv = (ScrollView) v;
          if (sv.getScrollY() == (sv.getChildAt(0)
-               .getMeasuredHeight() - sv.getMeasuredHeight()) && mCurrentViewIndex == 0) canPullUp = true;
-         else canPullUp = false;
+               .getMeasuredHeight() - sv.getMeasuredHeight()) && mCurrentViewIndex == 0) {
+            canPullUp = true;
+         } else {
+            canPullUp = false;
+         }
          return false;
       }
    };
@@ -233,8 +247,11 @@ public class ScrollViewContainer extends RelativeLayout {
       @Override
       public boolean onTouch(View v, MotionEvent event) {
          ScrollView sv = (ScrollView) v;
-         if (sv.getScrollY() == 0 && mCurrentViewIndex == 1) canPullDown = true;
-         else canPullDown = false;
+         if (sv.getScrollY() == 0 && mCurrentViewIndex == 1) {
+            canPullDown = true;
+         } else {
+            canPullDown = false;
+         }
          return false;
       }
    };

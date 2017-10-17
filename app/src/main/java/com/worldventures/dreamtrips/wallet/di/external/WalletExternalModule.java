@@ -16,7 +16,7 @@ public class WalletExternalModule {
 
    @Provides
    WalletVideoHolderDelegate provideVideoHolderDelegate(SessionHolder appSessionHolder, CachedModelHelper cachedModelHelper) {
-      return new WalletVideoHolderDelegateImpl(appSessionHolder, cachedModelHelper);
+      return new WalletVideoHolderDelegateImpl(cachedModelHelper);
    }
 
    @Singleton

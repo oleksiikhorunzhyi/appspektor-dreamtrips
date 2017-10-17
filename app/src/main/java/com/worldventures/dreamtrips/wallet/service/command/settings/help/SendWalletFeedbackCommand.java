@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.wallet.service.command.settings.help;
 import android.os.Build;
 
 import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.core.service.DeviceInfoProvider;
+import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.feedback.model.BaseFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.Feedback;
@@ -10,9 +13,6 @@ import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmartCardMetadata;
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetadata;
-import com.worldventures.core.service.DeviceInfoProvider;
-import com.worldventures.core.utils.AppVersionNameBuilder;
-import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
@@ -63,7 +63,9 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
       SmartCard smartCard = walletStorage.getSmartCard();
       SmartCardDetails details = walletStorage.getSmartCardDetails();
       SmartCardFirmware firmware = walletStorage.getSmartCardFirmware();
-      if (smartCard == null || details == null) return null;
+      if (smartCard == null || details == null) {
+         return null;
+      }
 
       return ImmutableSmartCardMetadata.builder()
             .smartCardId((int) details.smartCardId())

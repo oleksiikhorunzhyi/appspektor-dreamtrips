@@ -92,6 +92,7 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
       return merchantId;
    }
 
+   @SuppressWarnings("PMD.BooleanGetMethodName")
    public boolean getFromRating() {
       return fromRating;
    }

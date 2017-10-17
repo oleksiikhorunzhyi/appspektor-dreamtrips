@@ -7,7 +7,4 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 @AnalyticsEvent(action = "invite_share_send_email",
                 trackers = ApptentiveTracker.TRACKER_KEY)
 public class InviteShareEmailAction extends BaseAnalyticsAction {
-
-   public InviteShareEmailAction() {
-   }
 }

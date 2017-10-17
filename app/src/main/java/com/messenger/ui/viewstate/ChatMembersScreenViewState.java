@@ -12,11 +12,12 @@ import java.util.List;
 
 public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
 
-   public ChatMembersScreenViewState() {
-   }
-
    private List<DataUser> selectedContacts = new ArrayList<>();
    private String searchFilter;
+
+   public ChatMembersScreenViewState() {
+      //do nothing
+   }
 
    public List<DataUser> getSelectedContacts() {
       return selectedContacts;

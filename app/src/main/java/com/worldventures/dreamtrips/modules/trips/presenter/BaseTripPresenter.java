@@ -70,7 +70,9 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
       if (command.getResult().getUid().equals(trip.getUid())) {
          trip.syncLikeState(command.getResult());
          view.setup(trip);
-         if (view.isVisibleOnScreen()) view.tripLiked(trip);
+         if (view.isVisibleOnScreen()) {
+            view.tripLiked(trip);
+         }
       }
    }
 

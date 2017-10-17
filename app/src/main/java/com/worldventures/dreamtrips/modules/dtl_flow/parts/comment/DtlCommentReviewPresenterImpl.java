@@ -237,9 +237,5 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
       return isInternet;
    }
 
-   public String getIpAddress() {
-      return "10.20.20.122";
-   }
-
    private boolean isVerified;
 }

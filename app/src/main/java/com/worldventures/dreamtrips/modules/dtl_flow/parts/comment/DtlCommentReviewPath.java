@@ -14,42 +14,42 @@ import flow.path.Path;
 @Layout(R.layout.activity_merchant_review)
 public class DtlCommentReviewPath extends DtlMasterPath {
 
-    private final Merchant merchant;
-    private final boolean isFromListReview;
-    private final boolean isVerified;
+   private final Merchant merchant;
+   private final boolean isFromListReview;
+   private final boolean isVerified;
 
-    public DtlCommentReviewPath(@NonNull Merchant merchant) {
-        super();
-        this.merchant = merchant;
-        this.isFromListReview = false;
-        this.isVerified = false;
-    }
+   public DtlCommentReviewPath(@NonNull Merchant merchant) {
+      super();
+      this.merchant = merchant;
+      this.isFromListReview = false;
+      this.isVerified = false;
+   }
 
-    public DtlCommentReviewPath(Merchant merchant, boolean isFromAddReview, boolean isVerified) {
-        this.merchant = merchant;
-        this.isFromListReview = isFromAddReview;
-        this.isVerified = isVerified;
-    }
+   public DtlCommentReviewPath(Merchant merchant, boolean isFromAddReview, boolean isVerified) {
+      this.merchant = merchant;
+      this.isFromListReview = isFromAddReview;
+      this.isVerified = isVerified;
+   }
 
-    @Override
-    public PathAttrs getAttrs() {
-        return PathAttrs.WITHOUT_DRAWER;
-    }
+   @Override
+   public PathAttrs getAttrs() {
+      return PathAttrs.WITHOUT_DRAWER;
+   }
 
-    @Override
-    public Path getMasterToolbarPath() {
-        return MasterToolbarPath.INSTANCE;
-    }
+   @Override
+   public Path getMasterToolbarPath() {
+      return MasterToolbarPath.INSTANCE;
+   }
 
-    public Merchant getMerchant() {
-        return merchant;
-    }
+   public Merchant getMerchant() {
+      return merchant;
+   }
 
-    public boolean isFromAddReview() {
-        return isFromListReview;
-    }
+   public boolean isFromAddReview() {
+      return isFromListReview;
+   }
 
-    public boolean isVerified() {
-        return isVerified;
-    }
+   public boolean isVerified() {
+      return isVerified;
+   }
 }

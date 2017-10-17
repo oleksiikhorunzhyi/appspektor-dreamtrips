@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 public class GalleryBundle implements Parcelable {
 
-   private boolean videoPickingEnabled;
-   private int videoMaxLength;
+   private final boolean videoPickingEnabled;
+   private final int videoMaxLength;
 
    public GalleryBundle(boolean videoPickingEnabled, int videoMaxLength) {
       this.videoPickingEnabled = videoPickingEnabled;

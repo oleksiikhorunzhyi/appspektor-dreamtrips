@@ -7,11 +7,12 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 
 public class TripImagesArgs implements Parcelable {
-   private int userId;
-   private boolean showTimestamps;
-   private int pageSize;
-   private Route route;
-   private CreateEntityBundle.Origin origin;
+
+   private final int userId;
+   private final boolean showTimestamps;
+   private final int pageSize;
+   private final Route route;
+   private final CreateEntityBundle.Origin origin;
 
    private TripImagesArgs(int userId, boolean showTimestamps, int pageSize, Route route, CreateEntityBundle.Origin origin) {
       this.userId = userId;
@@ -47,15 +48,27 @@ public class TripImagesArgs implements Parcelable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       TripImagesArgs that = (TripImagesArgs) o;
 
-      if (userId != that.userId) return false;
-      if (showTimestamps != that.showTimestamps) return false;
-      if (pageSize != that.pageSize) return false;
-      if (route != that.route) return false;
+      if (userId != that.userId) {
+         return false;
+      }
+      if (showTimestamps != that.showTimestamps) {
+         return false;
+      }
+      if (pageSize != that.pageSize) {
+         return false;
+      }
+      if (route != that.route) {
+         return false;
+      }
       return origin == that.origin;
 
    }

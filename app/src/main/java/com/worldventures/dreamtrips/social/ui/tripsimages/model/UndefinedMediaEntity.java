@@ -12,7 +12,9 @@ public class UndefinedMediaEntity extends BaseMediaEntity<Photo> {
       dest.writeInt(this.type == null ? -1 : this.type.ordinal());
    }
 
-   public UndefinedMediaEntity() {}
+   public UndefinedMediaEntity() {
+      //do nothing
+   }
 
    protected UndefinedMediaEntity(Parcel in) {
       int tmpType = in.readInt();

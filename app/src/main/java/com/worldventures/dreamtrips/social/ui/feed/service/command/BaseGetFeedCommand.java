@@ -28,6 +28,7 @@ public abstract class BaseGetFeedCommand<A extends GetFeedHttpAction> extends Co
    protected Date before;
 
    public BaseGetFeedCommand() {
+      //do nothing
    }
 
    public BaseGetFeedCommand(Date before) {

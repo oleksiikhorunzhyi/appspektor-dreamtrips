@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 class FragmentCompass {
 
-   private FragmentActivity activity;
+   private final FragmentActivity activity;
 
    @IdRes private int containerId;
    private boolean backStackEnabled = true;

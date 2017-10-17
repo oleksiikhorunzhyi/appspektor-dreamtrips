@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.di.external;
 
-import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.ui.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.social.ui.video.cell.ProgressVideoCellHelper;
@@ -10,20 +9,20 @@ import com.worldventures.dreamtrips.wallet.ui.settings.help.video.model.WalletVi
 
 class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
 
-   private final SessionHolder appSessionHolder;
    private final CachedModelHelper cachedModelHelper;
 
-   WalletVideoHolderDelegateImpl(SessionHolder appSessionHolder, CachedModelHelper cachedModelHelper) {
-      this.appSessionHolder = appSessionHolder;
+   WalletVideoHolderDelegateImpl(CachedModelHelper cachedModelHelper) {
       this.cachedModelHelper = cachedModelHelper;
    }
 
    @Override
    public void sendPlayVideoAction(WalletVideoModel video) {
+      //do nothing
    }
 
    @Override
    public void sendMembershipVideoAction(WalletVideoModel video) {
+      //do nothing
    }
 
    @Override

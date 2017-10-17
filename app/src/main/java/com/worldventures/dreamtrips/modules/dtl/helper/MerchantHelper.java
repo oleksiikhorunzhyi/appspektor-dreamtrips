@@ -14,8 +14,6 @@ import android.text.style.StyleSpan;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.model.ShareType;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
-import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
@@ -53,7 +51,9 @@ public final class MerchantHelper {
       ArrayList<ImageTextItem> items = new ArrayList<>();
       Queryable.from(ImageTextItem.Type.values()).forEachR(type -> {
          ImageTextItem contact = ImageTextItemFactory.create(context, merchant, type);
-         if (contact != null) items.add(contact);
+         if (contact != null) {
+            items.add(contact);
+         }
       });
       return items;
    }
@@ -63,7 +63,9 @@ public final class MerchantHelper {
    }
 
    public static boolean isOfferExpiringSoon(Offer offerData) {
-      if (offerData.endDate() == null) return false;
+      if (offerData.endDate() == null) {
+         return false;
+      }
       DateTime currentDate = DateTime.now();
       DateTime expirationDate = new DateTime(offerData.endDate().getTime());
       return Days.daysBetween(currentDate, expirationDate).isLessThan(Days.SEVEN);
@@ -142,19 +144,15 @@ public final class MerchantHelper {
    }
 
    public static String formatOperationDayHours(Context context, List<OperationHours> hours) {
-      if (hours == null || hours.isEmpty()) return context.getString(R.string.dtl_closed);
+      if (hours == null || hours.isEmpty()) {
+         return context.getString(R.string.dtl_closed);
+      }
       //
       final List<String> workingHours = Queryable.from(hours)
             .map(MerchantHelper::getFormattedHours)
             .filter(format -> !format.isEmpty())
             .toList();
       return TextUtils.join("\n", workingHours);
-   }
-
-   private static String provideDistance(Context context, MerchantAttributes merchantAttributes, DistanceType type) {
-      return merchantAttributes.distance() != null ? context.getString(R.string.distance_caption_format, merchantAttributes
-                  .distance(),
-            context.getString(type == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
    }
 
    /**
@@ -172,7 +170,6 @@ public final class MerchantHelper {
                .withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);
          DateTime end = DateTime.now().withTime(localTimeEnd.getHourOfDay(), localTimeEnd.getMinuteOfHour(), 0, 0);
          //
-         String f = OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(start).toUpperCase();
          return String.format("%s - %s", OPERATION_TIME_FORMATTER.withLocale(Locale.US)
                .print(start)
                .toUpperCase(), OPERATION_TIME_FORMATTER.withLocale(Locale.US).print(end).toUpperCase());
@@ -191,7 +188,9 @@ public final class MerchantHelper {
       // don't attach media if website is attached, this image will go nowhere
       if (TextUtils.isEmpty(merchant.website()) || type.equals(ShareType.TWITTER)) {
          MerchantMedia media = Queryable.from(merchant.images()).firstOrDefault();
-         if (media != null) shareBundle.setImageUrl(media.getImagePath());
+         if (media != null) {
+            shareBundle.setImageUrl(media.getImagePath());
+         }
          // for twitter: sharing image via web (not official app) currently not supported (android sdk v1.9.1)
       }
       return shareBundle;

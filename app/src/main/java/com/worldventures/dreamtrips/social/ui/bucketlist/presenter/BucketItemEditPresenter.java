@@ -38,7 +38,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
    private Date selectedDate;
    private boolean savingItem = false;
-   private Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
+   private final Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
 
    public BucketItemEditPresenter(BucketBundle bundle) {
       super(bundle);

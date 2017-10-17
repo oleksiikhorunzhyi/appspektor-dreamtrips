@@ -46,7 +46,7 @@ public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresente
 
    private PFView pfView;
    private PFAsset pfAsset;
-   private PFNavigationMode currentNavigationMode = PFNavigationMode.MOTION;
+   private final PFNavigationMode currentNavigationMode = PFNavigationMode.MOTION;
 
    private boolean isBarsShown = true;
 
@@ -71,7 +71,9 @@ public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresente
       if (TextUtils.isEmpty(url)) {
          finish();
       } else {
-         if (!Utils.isConnected(this)) informUser(R.string.no_connection);
+         if (!Utils.isConnected(this)) {
+            informUser(R.string.no_connection);
+         }
          loadVideo(url);
       }
 

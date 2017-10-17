@@ -11,7 +11,8 @@ import rx.Observable;
 import rx.functions.Func1;
 
 class SendMessageTransformer implements Observable.Transformer<Message, Message> {
-   private XmppGlobalEventEmitter emitter;
+
+   private final XmppGlobalEventEmitter emitter;
    private final Func1<org.jivesoftware.smack.packet.Message, Observable<Void>> sendAction;
    private final XmppMessageConverter messageConverter;
 
@@ -24,7 +25,9 @@ class SendMessageTransformer implements Observable.Transformer<Message, Message>
    @Override
    public Observable<Message> call(Observable<Message> messageObservable) {
       return messageObservable.doOnNext(message -> message.setStatus(MessageStatus.SENDING)).doOnNext(message -> {
-         if (message.getId() == null) message.setId(UUID.randomUUID().toString());
+         if (message.getId() == null) {
+            message.setId(UUID.randomUUID().toString());
+         }
          emitter.interceptPreOutgoingMessages(message);
       }).flatMap(message -> sendAction.call(messageConverter.convert(message)).doOnError(throwable -> {
          message.setStatus(MessageStatus.ERROR);

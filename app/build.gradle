@@ -160,7 +160,7 @@ android {
    }
    useLibrary 'org.apache.http.legacy'
 
-   dataBinding{
+   dataBinding {
       enabled = true
    }
 
@@ -232,7 +232,7 @@ configurations.all {
 repositories {
    deps.repos.each { it.call(owner) }
    coreDeps.repos.each { it.call(owner) }
-   }
+}
 
 dependencies {
    compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -259,7 +259,7 @@ dependencies {
    })
    applyDependencies(owner, deps.test)
 
-   devCompile                 provideDep(deps.util.leakcanary)
-   devpremarshmallowCompile   provideDep(deps.util.leakcanary)
-   externalCompile            provideDep(deps.util.leakcanaryNoOp)
+   devCompile provideDep(deps.util.leakcanary)
+   devpremarshmallowCompile provideDep(deps.util.leakcanary)
+   externalCompile provideDep(deps.util.leakcanaryNoOp)
 }

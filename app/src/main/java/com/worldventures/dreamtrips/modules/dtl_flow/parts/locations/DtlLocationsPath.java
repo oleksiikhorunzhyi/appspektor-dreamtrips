@@ -63,7 +63,7 @@ public class DtlLocationsPath extends DtlMasterPath {
       }
 
       public DtlLocationsPath build() {
-         return new DtlLocationsPath(Builder.this.showNoMerchantsCaption, Builder.this.allowUserGoBack);
+         return new DtlLocationsPath(showNoMerchantsCaption, allowUserGoBack);
       }
    }
 

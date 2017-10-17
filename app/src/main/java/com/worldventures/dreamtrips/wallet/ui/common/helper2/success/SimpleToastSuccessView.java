@@ -5,8 +5,8 @@ import android.widget.Toast;
 
 public class SimpleToastSuccessView<T> extends ToastSuccessView<T> {
 
-   private Context context;
-   private int resIdMessage;
+   private final Context context;
+   private final int resIdMessage;
 
    public SimpleToastSuccessView(Context context, int resIdMessage) {
       this.context = context;

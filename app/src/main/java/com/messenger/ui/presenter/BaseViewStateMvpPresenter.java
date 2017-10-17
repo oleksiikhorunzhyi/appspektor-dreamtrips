@@ -49,7 +49,9 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
 
    @Override
    public void onVisibilityChanged(int visibility) {
-      if (visibility == View.GONE) { visibilityStopper.onNext(null); }
+      if (visibility == View.GONE) {
+         visibilityStopper.onNext(null);
+      }
    }
 
    @Override

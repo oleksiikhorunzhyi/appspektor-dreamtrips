@@ -60,7 +60,9 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
    @Override
    protected void syncUIStateWithModel() {
       imagesList.setLayoutManager(layout);
-      if (adapter != imagesList.getAdapter()) imagesList.setAdapter(adapter);
+      if (adapter != imagesList.getAdapter()) {
+         imagesList.setAdapter(adapter);
+      }
 
       super.syncUIStateWithModel();
    }

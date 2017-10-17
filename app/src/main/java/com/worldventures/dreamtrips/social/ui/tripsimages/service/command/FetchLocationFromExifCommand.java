@@ -14,7 +14,7 @@ import rx.Observable;
 @CommandAction
 public class FetchLocationFromExifCommand extends Command<Location> {
 
-   private String filePath;
+   private final String filePath;
 
    public FetchLocationFromExifCommand(String filePath) {
       this.filePath = filePath;
@@ -31,8 +31,9 @@ public class FetchLocationFromExifCommand extends Command<Location> {
                   return Observable.error(e);
                }
                float latLng[] = new float[2];
-               if (exifInterface.getLatLong(latLng))
+               if (exifInterface.getLatLong(latLng)) {
                   return Observable.just(new Location(latLng[0], latLng[1]));
+               }
                return Observable.just(new Location());
             })
             .subscribe(callback::onSuccess, callback::onFail);

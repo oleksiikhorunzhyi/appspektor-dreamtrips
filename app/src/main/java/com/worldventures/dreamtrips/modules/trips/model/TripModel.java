@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve PMD error
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TripModel extends BaseFeedEntity {
 

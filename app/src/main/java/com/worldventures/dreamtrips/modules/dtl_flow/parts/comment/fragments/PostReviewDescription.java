@@ -9,6 +9,7 @@ public class PostReviewDescription {
    }
 
    public PostReviewDescription() {
+      //do nothing
    }
 
    public void setDescription(String description) {

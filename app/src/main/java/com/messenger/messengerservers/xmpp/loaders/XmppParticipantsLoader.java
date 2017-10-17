@@ -90,7 +90,9 @@ public class XmppParticipantsLoader {
    }
 
    private void pushParticipantsListToSubscriber(List<Participant> participants, Subscriber<? super List<Participant>> subscriber) {
-      if (subscriber.isUnsubscribed()) return;
+      if (subscriber.isUnsubscribed()) {
+         return;
+      }
 
       subscriber.onNext(participants);
       subscriber.onCompleted();

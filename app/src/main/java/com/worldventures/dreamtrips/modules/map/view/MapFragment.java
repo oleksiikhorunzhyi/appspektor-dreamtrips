@@ -37,7 +37,9 @@ public abstract class MapFragment<T extends Presenter> extends RxBaseFragment<T>
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       Icepick.restoreInstanceState(this, savedInstanceState);
-      if (savedInstanceState != null) mapBundle = savedInstanceState.getBundle(KEY_MAP);
+      if (savedInstanceState != null) {
+         mapBundle = savedInstanceState.getBundle(KEY_MAP);
+      }
    }
 
    @Override
@@ -128,6 +130,7 @@ public abstract class MapFragment<T extends Presenter> extends RxBaseFragment<T>
 
          @Override
          public void onCancel() {
+            //do nothing
          }
       });
    }

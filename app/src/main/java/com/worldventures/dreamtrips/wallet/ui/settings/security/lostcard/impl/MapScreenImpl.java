@@ -79,7 +79,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       objectGraph.inject(this);
       mapView = view.findViewById(R.id.map_view);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
-         noGoogleContainer.setVisibility(View.VISIBLE);
+         noGoogleContainer.setVisibility(VISIBLE);
       } else {
          mapView.onCreate(bundle);
       }
@@ -98,7 +98,9 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       mapView.onResume();
 
       mapView.setMapTouchListener2(motionEvent -> {
-         if (!lastLocationViewModel.hasLastLocation()) return;
+         if (!lastLocationViewModel.hasLastLocation()) {
+            return;
+         }
          switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
                popupInfoViewBinding.setVisible(false);

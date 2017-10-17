@@ -27,12 +27,12 @@ import rx.Observable;
 
 public class ChatContextualMenuProvider {
 
-   private Context context;
-   private UsersDAO usersDAO;
-   private ConversationsDAO conversationsDAO;
-   private AttachmentDAO attachmentDAO;
-   private TranslationsDAO translationsDAO;
-   private DataUser currentUser;
+   private final Context context;
+   private final UsersDAO usersDAO;
+   private final ConversationsDAO conversationsDAO;
+   private final AttachmentDAO attachmentDAO;
+   private final TranslationsDAO translationsDAO;
+   private final DataUser currentUser;
 
    @Inject
    public ChatContextualMenuProvider(@ForApplication Context context,
@@ -115,12 +115,12 @@ public class ChatContextualMenuProvider {
    }
 
    private static class QueryResult {
-      private DataConversation conversation;
-      private DataAttachment attachment;
-      private DataUser messageAuthor;
-      private DataTranslation translation;
+      private final DataConversation conversation;
+      private final DataAttachment attachment;
+      private final DataUser messageAuthor;
+      private final DataTranslation translation;
 
-      public QueryResult(DataConversation conversation, DataAttachment attachment, DataUser messageAuthor, DataTranslation translation) {
+      QueryResult(DataConversation conversation, DataAttachment attachment, DataUser messageAuthor, DataTranslation translation) {
          this.conversation = conversation;
          this.attachment = attachment;
          this.messageAuthor = messageAuthor;

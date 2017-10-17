@@ -5,12 +5,13 @@ import android.os.Parcel;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
 
-public class MasterToolbarState extends ViewState {
+class MasterToolbarState extends ViewState {
 
    private boolean showPopup;
    private DtlLocationChangePresenterImpl.ScreenMode screenMode;
 
-   public MasterToolbarState() {
+   MasterToolbarState() {
+      //do nothing
    }
 
    public void setPopupShowing(boolean show) {

@@ -29,15 +29,21 @@ public class WalletPhotoProposalDialog extends BottomSheetDialog {
    }
 
    private void onChoosePhotoAction() {
-      if (onChoosePhotoAction != null) onChoosePhotoAction.call();
+      if (onChoosePhotoAction != null) {
+         onChoosePhotoAction.call();
+      }
    }
 
    private void onDoNotAddPhotoAction() {
-      if (onDoNotAddPhotoAction != null) onDoNotAddPhotoAction.call();
+      if (onDoNotAddPhotoAction != null) {
+         onDoNotAddPhotoAction.call();
+      }
    }
 
    private void onCancelAction() {
-      if (onCancelAction != null) onCancelAction.call();
+      if (onCancelAction != null) {
+         onCancelAction.call();
+      }
    }
 
    public void setOnChoosePhotoAction(Action0 onChoosePhotoAction) {

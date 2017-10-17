@@ -23,13 +23,12 @@ public class CompoundOperationStorage implements MultipleActionStorage<List<Post
 
    private static final Comparator<PostCompoundOperationModel> CELLS_COMPARATOR = new PostCompoundOperationModelComparator();
 
-   private CompoundOperationRepository compoundOperationRepository;
+   private final CompoundOperationRepository compoundOperationRepository;
+   private final MemoryStorage<List<PostCompoundOperationModel>> memoryStorage = new MemoryStorage<>();
 
    public CompoundOperationStorage(CompoundOperationRepository compoundOperationRepository) {
       this.compoundOperationRepository = compoundOperationRepository;
    }
-
-   private MemoryStorage<List<PostCompoundOperationModel>> memoryStorage = new MemoryStorage<>();
 
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
@@ -49,7 +48,9 @@ public class CompoundOperationStorage implements MultipleActionStorage<List<Post
    @Override
    public List<PostCompoundOperationModel> get(@Nullable CacheBundle action) {
       List<PostCompoundOperationModel> models = getInternal(action);
-      if (models != null) Collections.sort(models, CELLS_COMPARATOR);
+      if (models != null) {
+         Collections.sort(models, CELLS_COMPARATOR);
+      }
       return models;
    }
 

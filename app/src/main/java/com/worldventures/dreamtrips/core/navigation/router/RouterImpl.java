@@ -21,7 +21,7 @@ import timber.log.Timber;
 
 public class RouterImpl implements Router {
 
-   private FragmentActivity activity;
+   private final FragmentActivity activity;
 
    public RouterImpl(FragmentActivity activity) {
       this.activity = activity;
@@ -41,6 +41,7 @@ public class RouterImpl implements Router {
             break;
          case REMOVE:
             remove(route, config);
+            break;
          default:
             break;
       }

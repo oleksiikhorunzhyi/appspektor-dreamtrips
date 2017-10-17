@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.core.janet.api_lib;
 
 import com.worldventures.core.service.analytics.ActionPart;
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.core.service.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
-import com.worldventures.core.service.analytics.AdobeTracker;
 
 @AnalyticsEvent(action = "errors:${viewState}",
                 trackers = AdobeTracker.TRACKER_KEY)

@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
 import com.worldventures.core.converter.Converter;
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.Feature;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.api.session.model.Session;
 
 import org.jetbrains.annotations.NotNull;

@@ -14,9 +14,11 @@ public abstract class BaseUploadImageCommand<T> extends Command<T> implements In
 
    Observable<File> getFileObservable(String filePath) {
       return Observable.fromCallable(() -> {
-        final String path = getUriPathProvider().getPath(Uri.parse(filePath));
-        if (path == null) throw new NullPointerException("Path cannot be null");
-        return new File(path);
+         final String path = getUriPathProvider().getPath(Uri.parse(filePath));
+         if (path == null) {
+            throw new NullPointerException("Path cannot be null");
+         }
+         return new File(path);
       });
    }
 

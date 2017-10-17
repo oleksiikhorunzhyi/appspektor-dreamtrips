@@ -28,25 +28,25 @@ import rx.Observable;
 import rx.functions.Action1;
 
 public abstract class GlobalEventEmitter {
+
    protected static final int EVENT_PRE_OUTGOING = 0x777;
    protected static final int EVENT_OUTGOING = 0x778;
    protected static final int EVENT_INCOMING = 0x779;
    protected static final int EVENT_OUTGOING_ERROR = 0x780;
-   protected List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
-   protected List<PresenceListener> presenceListeners = new CopyOnWriteArrayList<>();
-   protected List<FriendsAddedListener> friendsAddedListeners = new CopyOnWriteArrayList<>();
-   protected List<FriendsRemovedListener> friendsRemovedListeners = new CopyOnWriteArrayList<>();
-   protected List<InvitationListener> invitationListeners = new CopyOnWriteArrayList<>();
-   protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
-   protected List<OnAvatarChangedListener> onAvatarChangedListeners = new CopyOnWriteArrayList<>();
-   protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
-   protected List<OnKickListener> onKickListeners = new CopyOnWriteArrayList<>();
-   protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
-   protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
-   protected List<MessagesDeletedListener> onMessagesDeletedListener = new CopyOnWriteArrayList<>();
-
-   protected List<Action1<ClearChatEvent>> onClearChatEventListeners = new CopyOnWriteArrayList<>();
-   protected List<Action1<RevertClearingEvent>> onRevertClearingEventListeners = new CopyOnWriteArrayList<>();
+   private final List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
+   private final List<PresenceListener> presenceListeners = new CopyOnWriteArrayList<>();
+   private final List<FriendsAddedListener> friendsAddedListeners = new CopyOnWriteArrayList<>();
+   private final List<FriendsRemovedListener> friendsRemovedListeners = new CopyOnWriteArrayList<>();
+   private final List<InvitationListener> invitationListeners = new CopyOnWriteArrayList<>();
+   private final List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
+   private final List<OnAvatarChangedListener> onAvatarChangedListeners = new CopyOnWriteArrayList<>();
+   private final List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
+   private final List<OnKickListener> onKickListeners = new CopyOnWriteArrayList<>();
+   private final List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
+   private final List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
+   private final List<MessagesDeletedListener> onMessagesDeletedListener = new CopyOnWriteArrayList<>();
+   private final List<Action1<ClearChatEvent>> onClearChatEventListeners = new CopyOnWriteArrayList<>();
+   private final List<Action1<RevertClearingEvent>> onRevertClearingEventListeners = new CopyOnWriteArrayList<>();
 
    public void addGlobalMessageListener(GlobalMessageListener listener) {
       globalMessageListeners.add(listener);
@@ -59,26 +59,29 @@ public abstract class GlobalEventEmitter {
    protected void notifyGlobalMessage(Message message, int eventType) {
       switch (eventType) {
          case EVENT_PRE_OUTGOING:
-            for (GlobalMessageListener listener : globalMessageListeners)
+            for (GlobalMessageListener listener : globalMessageListeners) {
                listener.onPreSendMessage(message);
+            }
             break;
          case EVENT_OUTGOING:
-            for (GlobalMessageListener listener : globalMessageListeners)
+            for (GlobalMessageListener listener : globalMessageListeners) {
                listener.onSendMessage(message);
+            }
             break;
          case EVENT_INCOMING:
-            for (GlobalMessageListener listener : globalMessageListeners)
+            for (GlobalMessageListener listener : globalMessageListeners) {
                listener.onReceiveMessage(message);
+            }
             break;
          case EVENT_OUTGOING_ERROR:
-            for (GlobalMessageListener listener : globalMessageListeners)
+            for (GlobalMessageListener listener : globalMessageListeners) {
                listener.onErrorMessage(message);
+            }
             break;
          default:
             break;
       }
    }
-
 
    public void addFriendAddedListener(FriendsAddedListener listener) {
       friendsAddedListeners.add(listener);
@@ -217,8 +220,9 @@ public abstract class GlobalEventEmitter {
    }
 
    protected void notifyMessagesDeleted(List<DeletedMessage> deletedMessages) {
-      for (MessagesDeletedListener listener : onMessagesDeletedListener)
+      for (MessagesDeletedListener listener : onMessagesDeletedListener) {
          listener.onMessagesDeleted(deletedMessages);
+      }
    }
 
 

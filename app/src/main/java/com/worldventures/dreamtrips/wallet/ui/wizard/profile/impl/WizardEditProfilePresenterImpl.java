@@ -75,7 +75,9 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      if (getView().getProvisionMode() != null) getNavigator().goWizardAssignUser(getView().getProvisionMode());
+      if (getView().getProvisionMode() != null) {
+         getNavigator().goWizardAssignUser(getView().getProvisionMode());
+      }
    }
 
    private void attachProfile(WizardEditProfileScreen view) {

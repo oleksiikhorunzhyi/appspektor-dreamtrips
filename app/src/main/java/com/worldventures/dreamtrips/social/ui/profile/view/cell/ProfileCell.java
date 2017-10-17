@@ -88,7 +88,7 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject AnalyticsInteractor analyticsInteractor;
 
-   private Context context;
+   private final Context context;
    private DecimalFormat df = new DecimalFormat("#0.00");
    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", LocaleHelper.getDefaultLocale());
    private boolean isExpandEnabled = true;
@@ -141,7 +141,9 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
       if (!TextUtils.isEmpty(user.getCompany())) {
          companyName.setVisibility(View.VISIBLE);
          companyName.setText(user.getCompany());
-      } else companyName.setVisibility(View.GONE);
+      } else {
+         companyName.setVisibility(View.GONE);
+      }
 
       setUserName(user.getFullName());
       dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));

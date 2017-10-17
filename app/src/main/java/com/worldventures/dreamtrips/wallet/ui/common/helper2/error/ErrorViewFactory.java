@@ -16,13 +16,13 @@ public final class ErrorViewFactory<T> implements ErrorView<T> {
    private final List<ErrorViewProvider<T>> errorViewFactories;
    private final ErrorView<T> defaultErrorView;
 
+   @Nullable
+   private ErrorViewAdapter<T> currentErrorView;
+
    private ErrorViewFactory(Builder<T> builder) {
       errorViewFactories = new ArrayList<>(builder.providers);
       defaultErrorView = builder.defaultErrorView;
    }
-
-   @Nullable
-   private ErrorViewAdapter<T> currentErrorView;
 
    @Override
    public void showError(T t, Throwable throwable) {
@@ -97,11 +97,15 @@ public final class ErrorViewFactory<T> implements ErrorView<T> {
       }
 
       public void show() {
-         if (errorView != null) errorView.showError(t, throwable);
+         if (errorView != null) {
+            errorView.showError(t, throwable);
+         }
       }
 
       public void hide() {
-         if (errorView != null) errorView.hideError();
+         if (errorView != null) {
+            errorView.hideError();
+         }
       }
 
       public boolean isVisible() {

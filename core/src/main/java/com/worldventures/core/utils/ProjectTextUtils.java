@@ -73,14 +73,19 @@ public class ProjectTextUtils {
    }
 
    public static List<String> getListFromString(String temp, String divider) {
-      if (android.text.TextUtils.isEmpty(temp)) {
+      if (isEmpty(temp)) {
          return Collections.emptyList();
       } else {
          return Queryable.from(temp.split(divider))
-               .filter(element -> !android.text.TextUtils.isEmpty(element))
+               .filter(element -> !isEmpty(element))
                .map(String::trim)
                .toList();
       }
+   }
+
+   public static boolean isEmpty(String s) {
+      // do not use Android TextUtils as they fail in unit tests
+      return s == null || s.length() == 0;
    }
 
    public static String convertToBase64(String s) {

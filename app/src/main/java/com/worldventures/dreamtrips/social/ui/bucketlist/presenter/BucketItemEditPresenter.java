@@ -8,9 +8,7 @@ import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.DateTimeUtils;
-import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
@@ -36,7 +34,6 @@ import javax.inject.Inject;
 import io.techery.janet.CancelException;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View, EntityStateHolder<BucketPhoto>> {
@@ -45,11 +42,11 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    @Inject PermissionUtils permissionUtils;
 
    private Date selectedDate;
-   private boolean savingItem = false;
-   private Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
+   boolean savingItem = false;
+   Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
 
-   public BucketItemEditPresenter(BucketBundle bundle) {
-      super(bundle);
+   public BucketItemEditPresenter(BucketItem.BucketType type, BucketItem bucketItem, int ownerId) {
+      super(type, bucketItem, ownerId);
    }
 
    @Override
@@ -61,10 +58,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             () -> view.showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
    }
 
-   @Override
-   public void takeView(View view) {
+   public void onViewTaken() {
       super.takeView(view);
-      bindObservables(view);
+      subscribeToAddingPhotos();
    }
 
    @Override
@@ -75,18 +71,18 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       if (!list.isEmpty()) {
          view.setCategoryItems(list, bucketItem.getCategory());
       }
+      mergeBucketItemPhotosWithStorage();
    }
 
-   @Override
-   protected void syncUI() {
-      super.syncUI();
-      view.bind(bucketInteractor.mergeBucketItemPhotosWithStorageCommandPipe()
+   void mergeBucketItemPhotosWithStorage() {
+      bucketInteractor.mergeBucketItemPhotosWithStorageCommandPipe()
             .createObservableResult(new MergeBucketItemPhotosWithStorageCommand(bucketItem.getUid(), bucketItem.getPhotos()))
             .map(Command::getResult)
-            .observeOn(Schedulers.immediate())).subscribe(entityStateHolders -> {
-         putCoverPhotoAsFirst(bucketItem.getPhotos());
-         view.setImages(entityStateHolders);
-      });
+            .compose(bindView())
+            .observeOn(Schedulers.immediate()).subscribe(entityStateHolders -> {
+               putCoverPhotoAsFirst(bucketItem.getPhotos());
+               view.setImages(entityStateHolders);
+            });
    }
 
    public void openPickerRequired() {
@@ -109,9 +105,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       view.showLoading();
       savingItem = true;
 
-      view.bind(bucketInteractor.updatePipe()
+      bucketInteractor.updatePipe()
             .createObservable(new UpdateBucketItemCommand(createBucketPostBody()))
-            .observeOn(AndroidSchedulers.mainThread()))
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UpdateBucketItemCommand>().onSuccess(result -> {
                if (savingItem) {
                   savingItem = false;
@@ -133,9 +129,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
    public void deletePhotoRequest(BucketPhoto bucketPhoto) {
       if (!bucketItem.getPhotos().isEmpty() && bucketItem.getPhotos().contains(bucketPhoto)) {
-         view.bind(bucketInteractor.deleteItemPhotoPipe()
+         bucketInteractor.deleteItemPhotoPipe()
                .createObservable(new DeleteItemPhotoCommand(bucketItem, bucketPhoto))
-               .observeOn(AndroidSchedulers.mainThread())).subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
+               .compose(bindViewToMainComposer())
+               .subscribe(new ActionStateSubscriber<DeleteItemPhotoCommand>()
                .onSuccess(deleteItemPhotoAction -> view.deleteImage(EntityStateHolder.create(bucketPhoto, EntityStateHolder.State.DONE)))
                .onFail(this::handleError));
       }
@@ -173,13 +170,13 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
       }
    }
 
-   private void startUpload(String path) {
+   void startUpload(String path) {
       analyticsInteractor.analyticsActionPipe().send(new ApptentiveStartUploadBucketPhotoAction());
       analyticsInteractor.analyticsActionPipe().send(new AdobeStartUploadBucketPhotoAction(bucketItem.getUid()));
       bucketInteractor.addBucketItemPhotoPipe().send(new AddBucketItemPhotoCommand(bucketItem, path));
    }
 
-   private void cancelUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
+   void cancelUpload(EntityStateHolder<BucketPhoto> photoStateHolder) {
       AddBucketItemPhotoCommand addBucketItemPhotoCommand = findCommandByStateHolder(photoStateHolder);
       if (addBucketItemPhotoCommand != null) {
          bucketInteractor.addBucketItemPhotoPipe().cancel(addBucketItemPhotoCommand);
@@ -192,7 +189,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             .forEachR(this::startUpload);
    }
 
-   private void bindObservables(View view) {
+   void subscribeToAddingPhotos() {
       bucketInteractor.addBucketItemPhotoPipe().observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<AddBucketItemPhotoCommand>().onStart(command -> {
@@ -225,8 +222,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             .name(view.getTitle())
             .description(view.getDescription())
             .status(view.getStatus() ? BucketItem.COMPLETED : BucketItem.NEW)
-            .tags(ProjectTextUtils.getListFromString(view.getTags()))
-            .friends(ProjectTextUtils.getListFromString(view.getPeople()))
+            .tags(view.getTags())
+            .friends(view.getPeople())
             .categoryId(getCategoryId())
             .date(selectedDate)
             .build();
@@ -246,9 +243,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
       boolean getStatus();
 
-      String getTags();
+      List<String> getTags();
 
-      String getPeople();
+      List<String> getPeople();
 
       String getTitle();
 

@@ -7,20 +7,28 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
-public class BucketItemInfoUtil {
+public class BucketItemInfoHelperImpl implements BucketItemInfoHelper {
 
+   private Context context;
 
-   public static String getMediumResUrl(Context context, BucketItem bucketItem) {
+   public BucketItemInfoHelperImpl(Context context) {
+      this.context = context;
+   }
+
+   @Override
+   public String getMediumResUrl(BucketItem bucketItem) {
       int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_photo_width);
       return bucketItem.getCoverUrl(width, width);
    }
 
-   public static String getHighResUrl(Context context, BucketItem bucketItem) {
+   @Override
+   public String getHighResUrl(BucketItem bucketItem) {
       int width = context.getResources().getDimensionPixelSize(R.dimen.bucket_popular_cover_width);
       return bucketItem.getCoverUrl(width, width);
    }
 
-   public static String getPlace(BucketItem bucketItem) {
+   @Override
+   public String getPlace(BucketItem bucketItem) {
       String place = null;
       if (bucketItem.getLocation() != null) {
          place = bucketItem.getLocation().getName();
@@ -32,8 +40,8 @@ public class BucketItemInfoUtil {
       return place;
    }
 
-
-   public static String getTime(Context context, BucketItem bucketItem) {
+   @Override
+   public String getTime(BucketItem bucketItem) {
       String time = TimeUtils.convertDateToReference(context, bucketItem.getTargetDate());
       if (TextUtils.isEmpty(time)) {
          return context.getString(R.string.someday);

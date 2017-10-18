@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketItemAddedFromPopularAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.analytics.BucketPopularTabViewAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -26,6 +25,8 @@ import static com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
 
 public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
 
+   public static final int SEARCH_THRESHOLD = 2;
+
    @Inject BucketInteractor bucketInteractor;
 
    private BucketItem.BucketType type;
@@ -40,20 +41,24 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
    @Override
    public void onResume() {
       super.onResume();
-      if (view.getAdapter().getCount() == 0) reload();
+      if (view.getItemsCount() == 0) reload();
    }
 
    public void onSearch(String query) {
       this.query = query;
-      if (query.length() > 2) {
-         bucketInteractor.getPopularBucketItemSuggestionsPipe()
-               .createObservable(new GetPopularBucketItemSuggestionsCommand(type, query))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<GetPopularBucketItemSuggestionsCommand>()
-                     .onStart(command -> view.startLoading())
-                     .onFail(this::handleError)
-                     .onSuccess(command -> onSearchSucceed(command.getResult())));
+      if (query.length() > SEARCH_THRESHOLD) {
+         searchPopularItems(query);
       }
+   }
+
+   void searchPopularItems(String query) {
+      bucketInteractor.getPopularBucketItemSuggestionsPipe()
+            .createObservable(new GetPopularBucketItemSuggestionsCommand(type, query))
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetPopularBucketItemSuggestionsCommand>()
+                  .onStart(command -> view.startLoading())
+                  .onFail(this::handleError)
+                  .onSuccess(command -> onSearchSucceed(command.getResult())));
    }
 
    public void onSelected() {
@@ -63,12 +68,12 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
    private void onSearchSucceed(List<PopularBucketItem> items) {
       if (view != null) {
          view.finishLoading();
-         view.getAdapter().setFilteredItems(items);
+         view.setFilteredItems(items);
       }
    }
 
    public void searchClosed() {
-      view.getAdapter().flushFilter();
+      view.flushFilter();
    }
 
    public void onAdd(PopularBucketItem popularBucketItem) {
@@ -79,7 +84,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
       add(popularBucketItem, true);
    }
 
-   private void add(PopularBucketItem popularBucketItem, boolean done) {
+   void add(PopularBucketItem popularBucketItem, boolean done) {
       bucketInteractor.createPipe()
             .createObservable(new CreateBucketItemCommand(ImmutableBucketBodyImpl.builder()
                   .type(type.getName())
@@ -95,11 +100,11 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                      bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
                            .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
                      view.notifyItemWasAddedToBucketList(bucketItem);
-                     view.getAdapter().remove(popularBucketItem);
+                     view.removeItem(popularBucketItem);
                   }).onFail((failedAction, throwable) -> {
                      handleError(failedAction, throwable);
                      popularBucketItem.setLoading(false);
-                     view.getAdapter().notifyDataSetChanged();
+                     view.notifyItemsChanged();
                   }));
    }
 
@@ -112,9 +117,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                   .onFail(this::handleError)
                   .onSuccess(command -> {
                      view.finishLoading();
-                     view.getAdapter().clear();
-                     view.getAdapter().addItems(command.getResult());
-                     view.getAdapter().notifyDataSetChanged();
+                     view.setItems(command.getResult());
                   }));
    }
 
@@ -125,7 +128,17 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
    }
 
    public interface View extends RxView {
-      FilterableArrayListAdapter<PopularBucketItem> getAdapter();
+      int getItemsCount();
+
+      void setItems(List<PopularBucketItem> items);
+
+      void removeItem(PopularBucketItem item);
+
+      void notifyItemsChanged();
+
+      void setFilteredItems(List<PopularBucketItem> items);
+
+      void flushFilter();
 
       void startLoading();
 

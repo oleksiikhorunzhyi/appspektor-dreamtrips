@@ -54,6 +54,8 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundl
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
+import java.util.List;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -366,15 +368,18 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    }
 
    @Override
-   public BaseArrayListAdapter<BucketItem> getAdapter() {
-      return adapter;
+   public void setItems(List<BucketItem> items) {
+      adapter.setItems(items);
    }
 
    @Override
-   public void checkEmpty(int count) {
-      if (count != 0) {
-         emptyView.setVisibility(View.GONE);
-      }
+   public void notifyItemsChanged() {
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void hideEmptyView() {
+      emptyView.setVisibility(View.GONE);
    }
 
    @Override

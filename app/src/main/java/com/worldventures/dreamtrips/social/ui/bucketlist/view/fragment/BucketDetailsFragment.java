@@ -117,7 +117,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
    @Override
    protected T createPresenter(Bundle savedInstanceState) {
-      return (T) new BucketItemDetailsPresenter(getArgs());
+      BucketBundle args = getArgs();
+      return (T) new BucketItemDetailsPresenter(args.getType(), args.getBucketItem(), args.getOwnerId());
    }
 
    @Override

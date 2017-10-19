@@ -378,4 +378,19 @@ public class DateTimeUtils {
       return "";
    }
 
+   public static String getISODateFromStringUTC(String utcString){
+      try {
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
+         utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
+         Date utcDate = utcFormatter.parse(utcString);
+
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(DEFAULT_ISO_FORMAT);
+         dateFormatter.setTimeZone(TimeZone.getDefault());
+         return dateFormatter.format(utcDate);
+      } catch(ParseException parseException) {
+         parseException.printStackTrace();
+      }
+      return "";
+   }
+
 }

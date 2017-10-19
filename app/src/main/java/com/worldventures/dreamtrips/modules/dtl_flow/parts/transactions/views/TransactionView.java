@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.Transaction;
 import com.worldventures.dreamtrips.modules.common.listener.PaginationScrollListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerTouchListener;
@@ -103,7 +104,13 @@ public class TransactionView extends LinearLayout {
             new RecyclerClickListener() {
                @Override
                public void onClick(View view, int position) {
-                  DtlTransactionPath path = new DtlTransactionPath(FlowUtil.currentMaster(getContext()));
+                  TransactionModel transaction;
+                  if(recyclerView.getAdapter() instanceof PageableTransactionAdapter)
+                     transaction = ((PageableTransactionAdapter) recyclerView.getAdapter()).getCurrentItems().get(position);
+                  else
+                     transaction = ((SearchableTransactionsAdapter) recyclerView.getAdapter()).getCurrentItems().get(position);
+
+                  DtlTransactionPath path = new DtlTransactionPath(FlowUtil.currentMaster(getContext()), transaction);
                   Flow.get(getContext()).set(path);
                }
 

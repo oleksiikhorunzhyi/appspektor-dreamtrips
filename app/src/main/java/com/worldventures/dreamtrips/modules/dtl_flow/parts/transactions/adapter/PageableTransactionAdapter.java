@@ -153,10 +153,10 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
 
       public ViewHolder(View itemView) {
          super(itemView);
-         merchantName = (TextView) itemView.findViewById(R.id.merchant_name);
-         earnedPoints = (TextView) itemView.findViewById(R.id.earned_points);
-         earnedPointsIcon = (ImageView) itemView.findViewById(R.id.earned_points_icon);
-         transactionDate = (TextView) itemView.findViewById(R.id.transaction_date);
+         merchantName = itemView.findViewById(R.id.merchant_name);
+         earnedPoints = itemView.findViewById(R.id.earned_points);
+         earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
+         transactionDate = itemView.findViewById(R.id.transaction_date);
       }
 
       public void bind(int position) {
@@ -167,9 +167,7 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
       }
 
-      private String getEarnedPointText(String earnedPoints) {
-         if (earnedPoints == null) return "";
-
+      private String getEarnedPointText(int earnedPoints) {
          return "+" + earnedPoints + "pt";
       }
 

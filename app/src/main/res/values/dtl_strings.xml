@@ -161,6 +161,7 @@
    <string name="dtl_transaction_screen_earned_points_text">You earned</string>
    <string name="dtl_thrst_text_button">Pay in app</string>
    <string name="dtl_all_locations">All locations</string>
+   <string name="dtl_earned_points">You have earned %1$d points</string>
 
    <!-- Pilot -->
    <string name="done_pilot_button">DONE</string>

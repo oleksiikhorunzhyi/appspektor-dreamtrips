@@ -6,8 +6,8 @@
       >
 
    <include
-         android:id="@+id/include_thank_you_screen"
-         layout="@layout/include_thank_you_screen"
+         android:id="@+id/include_detail_transaction"
+         layout="@layout/include_detail_transaction"
          />
 
    <LinearLayout

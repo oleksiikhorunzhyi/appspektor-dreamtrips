@@ -65,21 +65,25 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
 
+
       public ViewHolder(View itemView) {
          super(itemView);
-         merchantName = (TextView) itemView.findViewById(R.id.merchant_name);
-         earnedPoints = (TextView) itemView.findViewById(R.id.earned_points);
-         earnedPointsIcon = (ImageView) itemView.findViewById(R.id.earned_points_icon);
-         transactionDate = (TextView) itemView.findViewById(R.id.transaction_date);
+         merchantName = itemView.findViewById(R.id.merchant_name);
+         earnedPoints = itemView.findViewById(R.id.earned_points);
+         earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
+         transactionDate = itemView.findViewById(R.id.transaction_date);
       }
 
       public void bind(int position) {
          merchantName.setText(transactionsList.get(position).getMerchantName());
-         earnedPoints.setText(transactionsList.get(position).getEarnedPoints());
+         earnedPoints.setText(getEarnedPointText(transactionsList.get(position).getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-         transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position)
-               .getTransactionDate()));
+         transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
+      }
+
+      private String getEarnedPointText(int earnedPoints) {
+         return "+" + earnedPoints + "pt";
       }
 
    }
@@ -121,5 +125,8 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       return results;
    }
 
+   public List<TransactionModel> getCurrentItems() {
+      return  transactionsList;
+   }
 
-}
+   }

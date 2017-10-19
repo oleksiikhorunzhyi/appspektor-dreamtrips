@@ -6,4 +6,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 public interface DtlTransactionPresenter extends DtlPresenter<DtlTransactionScreen, ViewState.EMPTY> {
 
    void onBackPressed();
+
+   void showReceipt();
+
+   void reviewMerchant();
 }

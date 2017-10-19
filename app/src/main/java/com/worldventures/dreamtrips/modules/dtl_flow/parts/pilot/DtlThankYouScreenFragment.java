@@ -21,14 +21,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
-@Layout(R.layout.include_thank_you_screen)
+@Layout(R.layout.include_detail_transaction)
 public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle> implements DtlThrstThankYouScreenPresenter.View {
    @InjectView(R.id.tv_thank_you_pilot) TextView mThankYouView;
    @InjectView(R.id.tv_payment_status_pilot) TextView mPaymentStatusView;
-   @InjectView(R.id.iv_status_payment_pilot) ImageView mPaymentImage;
-   @InjectView(R.id.tv_total_charged_text_pilot) TextView mPaymentCharged;
-   @InjectView(R.id.tv_total_charged_value_pilot) TextView mMoneyCharged;
-   @InjectView(R.id.tv_payment_resume_text_pilot) TextView mPaymentResumeView;
+//   @InjectView(R.id.iv_status_payment_pilot) ImageView mPaymentImage;
+//   @InjectView(R.id.tv_total_charged_text_pilot) TextView mPaymentCharged;
+//   @InjectView(R.id.tv_total_charged_value_pilot) TextView mMoneyCharged;
+//   @InjectView(R.id.tv_payment_resume_text_pilot) TextView mPaymentResumeView;
    @InjectView(R.id.tv_payment_sub_thank_you_message_pilot) TextView mSubThankYouMessage;
 
    private Merchant merchant;
@@ -86,37 +86,37 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
 
    @Override
    public void setSuccessResume() {
-      mPaymentCharged.setText(getTextFromResource(R.string.total_amount_charged_pilot));
+//      mPaymentCharged.setText(getTextFromResource(R.string.total_amount_charged_pilot));
    }
 
    @Override
    public void setFailureResume() {
-      mPaymentCharged.setText(getTextFromResource(R.string.payment_amount_due_pilot));
+//      mPaymentCharged.setText(getTextFromResource(R.string.payment_amount_due_pilot));
    }
 
    @Override
    public void setChargeMoney(String money){
-      mMoneyCharged.setText(String.format(getTextFromResource(R.string.payment_money_charged), money));
+//      mMoneyCharged.setText(String.format(getTextFromResource(R.string.payment_money_charged), money));
    }
 
    @Override
    public void setPaymentSuccessImage() {
-      mPaymentImage.setImageDrawable(getDrawableFromResource(R.drawable.check_succes_pilot));
+//      mPaymentImage.setImageDrawable(getDrawableFromResource(R.drawable.check_succes_pilot));
    }
 
    @Override
    public void setPaymentFailureImage() {
-      mPaymentImage.setImageDrawable(getDrawableFromResource(R.drawable.check_error_pilot));
+//      mPaymentImage.setImageDrawable(getDrawableFromResource(R.drawable.check_error_pilot));
    }
 
    @Override
    public void setShowScreenSuccessMessage() {
-      mPaymentResumeView.setText(getTextFromResource(R.string.payment_resume_success_pilot));
+//      mPaymentResumeView.setText(getTextFromResource(R.string.payment_resume_success_pilot));
    }
 
    @Override
    public void setShowScreenFailureMessage() {
-      mPaymentResumeView.setText(getTextFromResource(R.string.payment_resume_failure_pilot));
+//      mPaymentResumeView.setText(getTextFromResource(R.string.payment_resume_failure_pilot));
    }
 
    @Override

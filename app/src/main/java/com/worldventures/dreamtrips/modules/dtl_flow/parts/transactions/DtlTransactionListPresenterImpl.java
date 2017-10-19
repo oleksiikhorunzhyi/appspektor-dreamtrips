@@ -1,9 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.support.v4.content.ContextCompat;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
+import android.view.View;
 
 import com.google.android.gms.gcm.Task;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -104,8 +112,11 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
       for (int i = 0; i < mockObjectCount; i++) {
          TransactionModel transactionModel = new TransactionModel();
          transactionModel.setMerchantName("Merchant 10" + i);
-         transactionModel.setSubTotalAmount(String.valueOf(500 + new Random().nextInt(500)));
-         transactionModel.setEarnedPoints(String.valueOf(1 + new Random().nextInt(4)));
+         transactionModel.setSubTotalAmount(500 + new Random().nextInt(500));
+         transactionModel.setTax(transactionModel.getSubTotalAmount() * 0.015);
+         transactionModel.setTotalAmount(transactionModel.getSubTotalAmount() + transactionModel.getTax());
+         transactionModel.setEarnedPoints(1 + new Random().nextInt(4));
+         transactionModel.setTip(1 + new Random().nextInt(4));
          transactionModel.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
          transactionModel.setRewardStatus(new Random().nextBoolean());
          mockItems.add(transactionModel);

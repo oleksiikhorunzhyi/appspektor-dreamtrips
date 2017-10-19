@@ -6,7 +6,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
-import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 
 public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, ChatLayoutViewState> {
    boolean sendMessage(String message);

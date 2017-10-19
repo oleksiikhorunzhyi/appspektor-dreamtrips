@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.BaseMediaCommand;

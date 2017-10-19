@@ -4,11 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
 import javax.inject.Inject;

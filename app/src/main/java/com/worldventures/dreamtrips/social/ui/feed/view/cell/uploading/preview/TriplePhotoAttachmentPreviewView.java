@@ -12,7 +12,7 @@ public class TriplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrevie
 
    @Override
    protected int[] getPreviewViewsIds() {
-      return new int[] {R.id.photo_attachment_preview_1, R.id.photo_attachment_preview_2,
+      return new int[]{R.id.photo_attachment_preview_1, R.id.photo_attachment_preview_2,
             R.id.photo_attachment_preview_3};
    }
 

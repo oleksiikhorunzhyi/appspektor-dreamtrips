@@ -34,7 +34,7 @@ public class MultiplePhotoAttachmentPreviewView extends BasePhotoAttachmentsPrev
 
    @Override
    protected int[] getPreviewViewsIds() {
-      return new int[] {R.id.photo_attachment_preview_1, R.id.photo_attachment_preview_2,
+      return new int[]{R.id.photo_attachment_preview_1, R.id.photo_attachment_preview_2,
             R.id.photo_attachment_preview_3, R.id.photo_attachment_preview_4};
    }
 

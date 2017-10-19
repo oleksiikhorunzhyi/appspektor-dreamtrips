@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 
 import io.techery.janet.ActionPipe;

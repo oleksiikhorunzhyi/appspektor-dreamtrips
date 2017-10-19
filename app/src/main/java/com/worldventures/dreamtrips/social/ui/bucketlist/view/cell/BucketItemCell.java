@@ -9,11 +9,11 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-import static com.worldventures.dreamtrips.core.utils.ViewUtils.dpFromPx;
+import static com.worldventures.core.ui.util.ViewUtils.dpFromPx;
 
 @Layout(R.layout.adapter_item_bucket_cell)
 public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<BucketItem, BucketItemCell.Delegate> implements SwipeLayout.SwipeListener {
@@ -35,7 +35,7 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
    @InjectView(R.id.swipeLayout) protected SwipeLayout swipeLayout;
    @InjectView(R.id.imageViewStatusDone) protected ImageView imageViewStatusDone;
    @InjectView(R.id.imageViewStatusClose) protected ImageView imageViewStatusClose;
-   
+
    private int mDragStateFlags;
    private boolean afterSwipe = false;
    private int swipeVelocityTrigger;
@@ -225,6 +225,6 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
    @interface SwipeAction {}
 
    public interface Delegate extends CellDelegate<BucketItem> {
-      abstract void onDoneClicked(BucketItem bucketItem, int position);
+      void onDoneClicked(BucketItem bucketItem, int position);
    }
 }

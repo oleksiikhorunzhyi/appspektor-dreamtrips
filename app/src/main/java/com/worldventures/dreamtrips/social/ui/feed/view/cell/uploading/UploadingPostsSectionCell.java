@@ -5,10 +5,10 @@ import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedViewInjector;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_uploading_items_section_cell)
-public class UploadingPostsSectionCell extends AbstractDelegateCell<UploadingPostsList, UploadingPostsSectionCell.Delegate> {
+public class UploadingPostsSectionCell extends BaseAbstractDelegateCell<UploadingPostsList, UploadingPostsSectionCell.Delegate> {
 
    @Inject Context context;
    @Inject FeedViewInjector feedViewInjector;

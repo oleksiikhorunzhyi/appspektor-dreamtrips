@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.view.ViewGroup;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 public class FeedViewInjector {
 
@@ -17,13 +17,13 @@ public class FeedViewInjector {
 
    public void initCardViewWrapper(CardView cardView) {
       if (ViewUtils.isTablet(context)) {
-         if (((int)cardView.getCardElevation()) != 4) {
+         if (((int) cardView.getCardElevation()) != 4) {
             cardView.setCardElevation(4);
             int m = context.getResources().getDimensionPixelSize(R.dimen.spacing_small);
             ((ViewGroup.MarginLayoutParams) cardView.getLayoutParams()).setMargins(m, m, m, m);
          }
       } else {
-         if (((int)cardView.getCardElevation()) != 0) {
+         if (((int) cardView.getCardElevation()) != 0) {
             cardView.setCardElevation(0);
          }
       }

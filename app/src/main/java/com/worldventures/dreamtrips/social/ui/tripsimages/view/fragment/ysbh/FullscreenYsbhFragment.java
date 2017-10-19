@@ -5,14 +5,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
-import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.FullscreenYsbhPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ImageryView;

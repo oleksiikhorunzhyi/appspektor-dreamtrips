@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.social.ui.membership.service.command;
 
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.cache.storage.PaginatedStorage;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
@@ -27,7 +27,6 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-
 @CommandAction
 public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implements InjectableAction,
       CachedAction<List<Podcast>> {
@@ -36,7 +35,7 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
 
    @Inject Janet janet;
    @Inject PodcastsMapper podcastsMapper;
-   @Inject SnappyRepository db;
+   @Inject MediaModelStorage db;
 
    private boolean refresh;
 

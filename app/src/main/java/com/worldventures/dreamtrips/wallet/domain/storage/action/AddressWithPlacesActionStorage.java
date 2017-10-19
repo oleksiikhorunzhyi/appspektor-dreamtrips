@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.wallet.domain.storage.action;
 
 import android.support.v4.util.Pair;
 
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 

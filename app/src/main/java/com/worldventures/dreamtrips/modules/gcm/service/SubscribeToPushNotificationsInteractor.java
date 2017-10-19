@@ -1,25 +1,29 @@
 package com.worldventures.dreamtrips.modules.gcm.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotificationsCommand;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
 
-@Singleton
 public class SubscribeToPushNotificationsInteractor {
 
    private ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe;
+   private ActionPipe<UnsubscribeFromPushCommand> unsubscribeFromPushCommandActionPipe;
 
-   @Inject
    public SubscribeToPushNotificationsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      subscribeToPushNotificationsActionPipe = sessionActionPipeCreator.createPipe(SubscribeToPushNotificationsCommand.class, Schedulers.io());
+      subscribeToPushNotificationsActionPipe = sessionActionPipeCreator.createPipe(SubscribeToPushNotificationsCommand.class, Schedulers
+            .io());
+      unsubscribeFromPushCommandActionPipe = sessionActionPipeCreator.createPipe(UnsubscribeFromPushCommand.class, Schedulers
+            .io());
    }
 
    public ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe() {
       return subscribeToPushNotificationsActionPipe;
+   }
+
+   public ActionPipe<UnsubscribeFromPushCommand> unsubscribeFromPushCommandActionPipe() {
+      return unsubscribeFromPushCommandActionPipe;
    }
 }

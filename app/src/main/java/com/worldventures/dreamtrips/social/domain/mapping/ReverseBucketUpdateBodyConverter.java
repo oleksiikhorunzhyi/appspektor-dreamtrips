@@ -16,6 +16,6 @@ public class ReverseBucketUpdateBodyConverter extends BaseReverseBucketUpdateBod
    @Override
    public BucketUpdateBody convert(MapperyContext mapperyContext, BucketBodyImpl bucketBody) {
       return ImmutableBucketUpdateBody.builder()
-               .status(mapBucketStatus(bucketBody.status())).build();
+            .status(mapBucketStatus(bucketBody.status())).build();
    }
 }

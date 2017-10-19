@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl.view.util;
 
 import android.support.annotation.StringRes;
 
-import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
+import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter.ApiErrorView;
 
 import rx.functions.Action0;
 

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.chat.ChatMessagesEventDelegate;
-import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.NotificationDataFactory;
 import com.messenger.notification.UnhandledMessageWatcher;
@@ -18,12 +17,11 @@ import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.AppNotificationImpl;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
-import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import javax.inject.Singleton;
@@ -34,9 +32,6 @@ import dagger.Provides;
 @Module(
       includes = {MessengerServerModule.class, MessengerStorageModule.class, MessengerDelegateModule.class, MessengerTypingManagerModule.class},
       injects = {GroupConversationViewHolder.class, OneToOneConversationViewHolder.class, ClosedGroupConversationViewHolder.class,
-
-            ChatFacadeInitializer.class, ChatFacadeManager.class,
-
             // adapters
             SwipeableContactsAdapter.class,
 

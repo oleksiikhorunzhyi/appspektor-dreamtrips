@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.core.janet.api_lib;
 
 import android.os.Build;
 
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.service.ImmutableMonolithConfigData;
 import com.worldventures.dreamtrips.api.api_common.service.MonolithConfigData;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.mobilesdk.config.ConfigDataProvider;
+import com.worldventures.core.utils.AppVersionNameBuilder;
 
 import java.util.Locale;
 

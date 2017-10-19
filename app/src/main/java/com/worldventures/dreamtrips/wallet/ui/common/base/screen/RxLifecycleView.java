@@ -4,5 +4,5 @@ import rx.Observable;
 
 public interface RxLifecycleView {
 
-   <T> Observable.Transformer<T, T> bindToLifecycle();
+   <T> Observable.Transformer<T, T> bindUntilDetach();
 }

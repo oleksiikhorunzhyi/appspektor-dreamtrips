@@ -1,6 +1,6 @@
 package com.messenger.delegate.chat.event;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
+import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.likes.LikeHttpAction;
-import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class LikeEntityCommand extends ApiActionCommand<LikeHttpAction, FeedEntity>  {
+public class LikeEntityCommand extends ApiActionCommand<LikeHttpAction, FeedEntity> {
 
    private FeedEntity feedEntity;
 

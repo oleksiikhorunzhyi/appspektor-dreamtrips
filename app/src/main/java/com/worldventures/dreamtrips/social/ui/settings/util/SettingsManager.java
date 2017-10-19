@@ -4,19 +4,19 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.settings.dialog.SelectDialogModel;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory.DISTANCE_UNITS;
-import static com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory.FRIEND_REQUEST;
-import static com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory.KILOMETERS;
-import static com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory.MILES;
-import static com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory.NEW_MESSAGE;
-import static com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory.PHOTO_TAGGING;
+import static com.worldventures.core.modules.settings.util.SettingsFactory.DISTANCE_UNITS;
+import static com.worldventures.core.modules.settings.util.SettingsFactory.FRIEND_REQUEST;
+import static com.worldventures.core.modules.settings.util.SettingsFactory.KILOMETERS;
+import static com.worldventures.core.modules.settings.util.SettingsFactory.MILES;
+import static com.worldventures.core.modules.settings.util.SettingsFactory.NEW_MESSAGE;
+import static com.worldventures.core.modules.settings.util.SettingsFactory.PHOTO_TAGGING;
 
 public class SettingsManager {
 
@@ -24,7 +24,7 @@ public class SettingsManager {
    }
 
    public static List<Setting> merge(List<Setting> fromServer, List<Setting> local) {
-      return Queryable.from(fromServer).map(setting -> {
+      return Queryable.from(fromServer).filter(local::contains).map(setting -> {
          Setting localSetting = Queryable.from(local).firstOrDefault(setting::equals);
          if (localSetting != null) setting.setType(localSetting.getType());
          return setting;

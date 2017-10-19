@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.reptools.service.command;
 
+import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.success_stories.UnlikeSuccessStoryHttpAction;
-import com.worldventures.dreamtrips.core.api.action.ApiActionCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
-
 
 @CommandAction
 public class UnlikeSuccessStoryCommand extends ApiActionCommand<UnlikeSuccessStoryHttpAction, Void> {

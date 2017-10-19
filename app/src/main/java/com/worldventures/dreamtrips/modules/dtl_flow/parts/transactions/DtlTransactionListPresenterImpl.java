@@ -1,18 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.support.v4.content.ContextCompat;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
-import android.view.View;
-
-import com.google.android.gms.gcm.Task;
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
@@ -20,9 +10,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.Tr
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.StringJoiner;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransactionListScreen, ViewState.EMPTY> implements DtlTransactionListPresenter {
 

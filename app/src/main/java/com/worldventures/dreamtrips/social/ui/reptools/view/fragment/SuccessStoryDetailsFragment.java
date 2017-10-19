@@ -5,19 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryDetailsPresenter;
+import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

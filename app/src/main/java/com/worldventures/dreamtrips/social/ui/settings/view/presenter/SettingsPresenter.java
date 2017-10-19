@@ -1,18 +1,18 @@
 package com.worldventures.dreamtrips.social.ui.settings.view.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.modules.settings.command.SettingsCommand;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.modules.settings.model.SettingsGroup;
+import com.worldventures.core.modules.settings.service.SettingsInteractor;
+import com.worldventures.core.modules.settings.storage.SettingsStorage;
+import com.worldventures.core.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
-import com.worldventures.dreamtrips.social.ui.settings.command.SettingsCommand;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
-import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
-import com.worldventures.dreamtrips.social.ui.settings.service.SettingsInteractor;
 import com.worldventures.dreamtrips.social.ui.settings.service.analytics.TrackGeneralSettingsOpened;
 import com.worldventures.dreamtrips.social.ui.settings.service.analytics.TrackNotificationSettingsOpened;
-import com.worldventures.dreamtrips.social.ui.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.social.ui.settings.util.SettingsManager;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
-   @Inject SnappyRepository db;
+   @Inject SettingsStorage db;
    @Inject FilterDataInteractor dtlFilterDataInteractor;
    @Inject SettingsInteractor settingsInteractor;
 

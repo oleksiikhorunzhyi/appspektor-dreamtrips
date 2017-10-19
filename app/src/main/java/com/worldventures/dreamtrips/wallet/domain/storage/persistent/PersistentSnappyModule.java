@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.domain.storage.persistent;
 
 import android.content.Context;
 
-import com.worldventures.dreamtrips.core.repository.DefaultSnappyOpenHelper;
+import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.dreamtrips.wallet.domain.storage.SnappyCrypter;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.SnappyStorage;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;

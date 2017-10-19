@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.membership.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetInviteTemplatesCommand;

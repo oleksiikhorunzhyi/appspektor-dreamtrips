@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.offline_mode;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 
 import javax.inject.Inject;

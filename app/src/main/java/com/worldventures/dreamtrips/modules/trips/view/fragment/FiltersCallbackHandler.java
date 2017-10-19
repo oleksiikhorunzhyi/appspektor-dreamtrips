@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAddedModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;

@@ -10,8 +10,8 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       }
 
       private String getEarnedPointText(int earnedPoints) {
-         return "+" + earnedPoints + "pt";
+         return String.format(context.getString(R.string.dtl_earned_points_on_item), earnedPoints);
       }
 
    }

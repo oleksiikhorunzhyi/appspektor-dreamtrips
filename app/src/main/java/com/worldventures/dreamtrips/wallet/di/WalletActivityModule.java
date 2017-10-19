@@ -4,15 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.bluelinelabs.conductor.Router;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.CachedEntityInteractor;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
-import com.worldventures.dreamtrips.social.ui.infopages.service.DocumentsInteractor;
-import com.worldventures.dreamtrips.social.ui.infopages.service.FeedbackInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.MemberVideosInteractor;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.infopages.service.DocumentsInteractor;
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.video.service.MemberVideosInteractor;
+import com.worldventures.core.service.CachedEntityDelegate;
+import com.worldventures.core.service.CachedEntityInteractor;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.dreamtrips.wallet.di.external.WalletExternalActivityModule;
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
@@ -432,18 +432,16 @@ public class WalletActivityModule {
    @Provides
    WizardEditProfilePresenter provideWizardEditProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
-         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor,
-         WalletFeatureHelper walletFeatureHelper) {
+         WalletSocialInfoProvider socialInfoProvider, SmartCardUserDataInteractor smartCardUserDataInteractor) {
       return new WizardEditProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
-            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor, walletFeatureHelper);
+            analyticsInteractor, socialInfoProvider, smartCardUserDataInteractor);
    }
 
    @Provides
    WizardUploadProfilePresenter provideWizardUploadProfilePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         WizardInteractor wizardInteractor, WalletFeatureHelper walletFeatureHelper) {
-      return new WizardUploadProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, wizardInteractor,
-            analyticsInteractor, walletFeatureHelper);
+         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+      return new WizardUploadProfilePresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
+            wizardInteractor, analyticsInteractor);
    }
 
    @Provides
@@ -777,18 +775,18 @@ public class WalletActivityModule {
    SendFeedbackPresenter providesSendFeedbackPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaInteractor mediaInteractor) {
+         MediaPickerInteractor mediaPickerInteractor) {
       return new SendFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
    }
 
    @Provides
    PaymentFeedbackPresenter providePaymentFeedbackPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate,
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
-         MediaInteractor mediaInteractor) {
+         MediaPickerInteractor mediaPickerInteractor) {
       return new PaymentFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaInteractor);
+            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
    }
 
    @Provides

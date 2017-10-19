@@ -6,9 +6,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.video.cell.delegate.VideoHeaderDelegate;
 
@@ -16,7 +16,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_media_header)
-public class MediaHeaderCell extends AbstractDelegateCell<MediaHeader, VideoHeaderDelegate> {
+public class MediaHeaderCell extends BaseAbstractDelegateCell<MediaHeader, VideoHeaderDelegate> {
 
    @InjectView(R.id.header) TextView header;
    @InjectView(R.id.wrapper_spinner_language) View language;

@@ -13,19 +13,19 @@ import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
-import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle;
-import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.EditPhotoTagsPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.EditPhotoTagsPresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle;
 
 import java.util.ArrayList;
 

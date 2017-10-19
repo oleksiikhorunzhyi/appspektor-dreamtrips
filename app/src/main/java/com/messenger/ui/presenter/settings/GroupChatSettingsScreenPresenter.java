@@ -1,7 +1,7 @@
 package com.messenger.ui.presenter.settings;
 
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 
 public interface GroupChatSettingsScreenPresenter extends ChatSettingsScreenPresenter<GroupChatSettingsScreen> {
 

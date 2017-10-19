@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.social.di;
 
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.core.modules.infopages.service.storage.DocumentsDiskStorage;
+import com.worldventures.core.modules.infopages.service.storage.DocumentsStorage;
+import com.worldventures.core.modules.infopages.service.storage.FeedbackTypeActionStorage;
+import com.worldventures.core.modules.infopages.service.storage.InfopagesStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -34,9 +38,6 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.storage.UserTimelineS
 import com.worldventures.dreamtrips.social.ui.flags.storage.FlagsStorage;
 import com.worldventures.dreamtrips.social.ui.friends.storage.CirclesStorage;
 import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage;
-import com.worldventures.dreamtrips.social.ui.infopages.service.storage.DocumentsDiskStorage;
-import com.worldventures.dreamtrips.social.ui.infopages.service.storage.DocumentsStorage;
-import com.worldventures.dreamtrips.social.ui.infopages.service.storage.FeedbackTypeStorage;
 import com.worldventures.dreamtrips.social.ui.membership.storage.PodcastsDiskStorage;
 import com.worldventures.dreamtrips.social.ui.membership.storage.PodcastsStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.InspireMeStorage;
@@ -59,7 +60,6 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-
    ActionStorage provideTranslationStorage(SocialSnappyRepository snappyRepository) {
       return new TranslationDiscStorage(snappyRepository);
    }
@@ -162,8 +162,8 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideFeedbackStorage(SocialSnappyRepository db) {
-      return new FeedbackTypeStorage(db);
+   ActionStorage provideFeedbackStorage(InfopagesStorage storage) {
+      return new FeedbackTypeActionStorage(storage);
    }
 
    @Singleton
@@ -180,7 +180,7 @@ public class SocialActionStorageModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   ActionStorage provideDocumentsStorage(SnappyRepository db) {
+   ActionStorage provideDocumentsStorage(InfopagesStorage db) {
       return new DocumentsStorage(new KeyValuePaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
    }
 

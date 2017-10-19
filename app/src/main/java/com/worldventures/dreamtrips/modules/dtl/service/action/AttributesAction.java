@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 
-import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributesSortTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AttributesActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.AttributesActionCreator;
 
 import java.util.List;
+
 import javax.inject.Inject;
-import javax.inject.Named;
+
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;

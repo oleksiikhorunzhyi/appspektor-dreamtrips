@@ -83,7 +83,7 @@ public class TripImagesFullscreenArgs implements Parcelable {
       private int notificationId;
 
       public Builder tripImagesArgs(TripImagesArgs tripImagesArgs) {
-         this.tripImagesArgs =tripImagesArgs;
+         this.tripImagesArgs = tripImagesArgs;
          return this;
       }
 

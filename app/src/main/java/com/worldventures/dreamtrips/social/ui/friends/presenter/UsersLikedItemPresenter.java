@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;

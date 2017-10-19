@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.analytics.oncard;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardPaymentAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardUserAction;

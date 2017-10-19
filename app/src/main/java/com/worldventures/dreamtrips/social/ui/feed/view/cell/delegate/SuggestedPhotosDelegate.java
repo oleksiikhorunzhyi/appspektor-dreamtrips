@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate;
 
 import android.support.annotation.NonNull;
 
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.SuggestedPhotosCell;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
 
 public interface SuggestedPhotosDelegate extends CellDelegate<SuggestedPhotosCell.SuggestedPhotoModel> {
 

@@ -7,17 +7,17 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.model.CachedModel;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.video.model.Video;
+import com.worldventures.core.modules.video.utils.CachedModelHelper;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.video.cell.delegate.VideoCellDelegate;
-import com.worldventures.dreamtrips.social.ui.video.model.CachedModel;
-import com.worldventures.dreamtrips.social.ui.video.model.Video;
-import com.worldventures.dreamtrips.social.util.CachedModelHelper;
 
 import javax.inject.Inject;
 
@@ -25,7 +25,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_video_360)
-public class Video360Cell extends AbstractDelegateCell<Video, Video360Cell.Video360CellDelegate> {
+public class Video360Cell extends BaseAbstractDelegateCell<Video, Video360Cell.Video360CellDelegate> {
 
    @InjectView(R.id.textViewDuration) TextView textViewDuration;
    @InjectView(R.id.tv_title) TextView textViewTitle;
@@ -53,7 +53,7 @@ public class Video360Cell extends AbstractDelegateCell<Video, Video360Cell.Video
       ViewUtils.runTaskAfterMeasure(itemView, () -> {
          PipelineDraweeController controller = GraphicUtils
                .provideFrescoResizingController(Uri.parse(getModelObject().getImageUrl()), imageViewPreview.getController(),
-                     imageViewPreview.getWidth() , imageViewPreview.getHeight());
+                     imageViewPreview.getWidth(), imageViewPreview.getHeight());
          imageViewPreview.setController(controller);
       });
       this.textViewTitle.setText(getModelObject().getVideoName());

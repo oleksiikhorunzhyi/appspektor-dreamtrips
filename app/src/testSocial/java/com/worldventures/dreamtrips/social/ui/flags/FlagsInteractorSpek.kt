@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.flags
 
+import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.flagging.model.FlagReason
 import com.worldventures.dreamtrips.api.flagging.model.ImmutableFlagReason
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
+import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter
 import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor
-import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -27,13 +27,13 @@ class FlagsInteractorSpek : BaseSpec({
    describe("Getting flags command") {
       setup()
 
-      it ("should get proper flags when calling API") {
+      it("should get proper flags when calling API") {
          assertActionSuccess(loadFlags()) {
             checkIfFlagsAreValid(it.result)
          }
       }
 
-      it ("should get proper flags from cache without calling API") {
+      it("should get proper flags from cache without calling API") {
          val testSubscriber = loadFlags()
          assertEquals(apiCallsCount, 1)
          assertActionSuccess(testSubscriber, {
@@ -83,10 +83,10 @@ class FlagsInteractorSpek : BaseSpec({
 
       fun makeStubFlagReason(i: Int): FlagReason {
          return ImmutableFlagReason.builder()
-            .id(i)
-            .name("FlagReason#" + i)
-            .requireDescription(i % 2 == 0)
-            .build()
+               .id(i)
+               .name("FlagReason#" + i)
+               .requireDescription(i % 2 == 0)
+               .build()
       }
 
       fun mockHttpService(flags: List<FlagReason>): MockHttpActionService {

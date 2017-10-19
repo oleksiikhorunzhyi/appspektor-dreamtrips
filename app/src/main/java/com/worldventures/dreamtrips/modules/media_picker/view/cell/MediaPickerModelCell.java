@@ -5,16 +5,16 @@ import android.widget.ImageView;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModelImpl;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 
 import butterknife.InjectView;
 
-public abstract class MediaPickerModelCell<T extends MediaPickerModelImpl> extends AbstractDelegateCell<T, CellDelegate<T>> {
+public abstract class MediaPickerModelCell<T extends MediaPickerModelImpl> extends BaseAbstractDelegateCell<T, CellDelegate<T>> {
 
    @InjectView(R.id.iv_photo) SimpleDraweeView previewImageView;
    @InjectView(R.id.pick) ImageView pick;

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.DownloadingUpdateAction;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.download.WalletDownloadFirmwareScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<WalletDownloadFirmwareScreen> implements WalletDownloadFirmwarePresenter {
 
@@ -41,7 +42,8 @@ public class WalletDownloadFirmwarePresenterImpl extends WalletPresenterImpl<Wal
       firmwareInteractor.downloadFirmwarePipe()
             .observe()
             .compose(new ActionPipeCacheWiper<>(firmwareInteractor.downloadFirmwarePipe()))
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationDownload())
                   .onSuccess(event -> openPreInstallationChecks())
                   .create());

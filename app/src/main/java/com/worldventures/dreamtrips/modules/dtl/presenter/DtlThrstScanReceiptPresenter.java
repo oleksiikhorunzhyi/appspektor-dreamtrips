@@ -3,14 +3,14 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.net.Uri;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableLocation;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.common.service.MediaInteractor;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -35,7 +35,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PickImageDelegate pickImageDelegate;
-   @Inject MediaInteractor mediaInteractor;
+   @Inject MediaPickerInteractor mediaInteractor;
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
    private final Merchant merchant;
@@ -139,7 +139,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    }
 
    private void attachPhoto(String filePath) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant.asMerchantAttributes())));
       view.attachReceipt(Uri.parse(filePath));
 

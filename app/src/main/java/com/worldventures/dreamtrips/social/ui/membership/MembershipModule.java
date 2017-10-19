@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.membership;
 
-import com.worldventures.dreamtrips.social.ui.activity.presenter.PlayerPresenter;
+import com.worldventures.core.modules.infopages.StaticPageProviderConfig;
+import com.worldventures.dreamtrips.modules.dtl.helper.MerchantStaticPageProvider;
 import com.worldventures.dreamtrips.social.ui.activity.PlayerActivity;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.PlayerPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMerchantPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollRepPresenter;
@@ -27,7 +30,6 @@ import com.worldventures.dreamtrips.social.ui.podcast_player.presenter.PodcastPr
 import com.worldventures.dreamtrips.social.ui.podcast_player.view.PodcastPlayerScreenImpl;
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.TrainingVideosPresenter;
 import com.worldventures.dreamtrips.social.ui.reptools.view.fragment.TrainingVideosFragment;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.social.ui.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.social.ui.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.social.ui.video.cell.VideoCell;
@@ -36,7 +38,10 @@ import com.worldventures.dreamtrips.social.ui.video.presenter.ThreeSixtyVideosPr
 import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.social.ui.video.view.ThreeSixtyVideosFragment;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
       injects = {
@@ -79,4 +84,10 @@ import dagger.Module;
       complete = false,
       library = true)
 public class MembershipModule {
+
+   @Provides
+   @Singleton
+   MerchantStaticPageProvider merchantStaticPageProvider(StaticPageProviderConfig config) {
+      return new MerchantStaticPageProvider(config);
+   }
 }

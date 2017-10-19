@@ -3,17 +3,17 @@ package com.worldventures.dreamtrips.social.ui.settings.view.cell;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.settings.model.SettingsGroup;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.settings.model.SettingsGroup;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_settings)
-public class SettingsGroupCell extends AbstractDelegateCell<SettingsGroup, CellDelegate<SettingsGroup>> {
+public class SettingsGroupCell extends BaseAbstractDelegateCell<SettingsGroup, CellDelegate<SettingsGroup>> {
 
    @InjectView(R.id.setting_title) TextView title;
 

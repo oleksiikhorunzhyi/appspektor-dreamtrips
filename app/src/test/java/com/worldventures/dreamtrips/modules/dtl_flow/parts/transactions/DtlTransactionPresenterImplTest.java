@@ -2,13 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewImages;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class DtlTransactionPresenterImplTest {
 
@@ -63,8 +59,11 @@ public class DtlTransactionPresenterImplTest {
       for (int i = 0; i < mockObjectCount; i++) {
          TransactionModel transactionModel = new TransactionModel();
          transactionModel.setMerchantName("Merchant 10" + i);
-         transactionModel.setSubTotalAmount(String.valueOf(500 + new Random().nextInt(500)));
-         transactionModel.setEarnedPoints(String.valueOf(1 + new Random().nextInt(4)));
+         transactionModel.setSubTotalAmount(500 + new Random().nextInt(500));
+         transactionModel.setTax(transactionModel.getSubTotalAmount() * 0.015);
+         transactionModel.setTotalAmount(transactionModel.getSubTotalAmount() + transactionModel.getTax());
+         transactionModel.setEarnedPoints(1 + new Random().nextInt(4));
+         transactionModel.setTip(1 + new Random().nextInt(4));
          transactionModel.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
          transactionModel.setRewardStatus(new Random().nextBoolean());
          mockItems.add(transactionModel);

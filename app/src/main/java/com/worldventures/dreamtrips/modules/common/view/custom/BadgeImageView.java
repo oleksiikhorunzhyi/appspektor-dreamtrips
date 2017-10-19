@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;

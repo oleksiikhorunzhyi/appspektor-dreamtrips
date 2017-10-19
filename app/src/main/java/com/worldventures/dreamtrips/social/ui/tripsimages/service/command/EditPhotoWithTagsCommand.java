@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 
 import java.util.List;
 
@@ -52,8 +52,8 @@ public class EditPhotoWithTagsCommand extends CommandWithError<Photo> implements
                List<Integer> userIds = Queryable.from(removedTags)
                      .concat(photo.getPhotoTags())
                      .map(photoTag -> photoTag
-                     .getUser()
-                     .getId()).toList();
+                           .getUser()
+                           .getId()).toList();
                return tripImagesInteractor.deletePhotoTagsPipe()
                      .createObservableResult(new DeletePhotoTagsCommand(uid, userIds))
                      .map(result -> photo);

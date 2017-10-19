@@ -5,11 +5,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 
 import java.util.Calendar;
@@ -20,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dates)
-public class DateCell extends AbstractDelegateCell<DateFilterItem, DateCell.Delegate> implements DatePickerDialog.OnDateSetListener {
+public class DateCell extends BaseAbstractDelegateCell<DateFilterItem, DateCell.Delegate> implements DatePickerDialog.OnDateSetListener {
    public static final String START = "start";
    public static final String END = "end";
 

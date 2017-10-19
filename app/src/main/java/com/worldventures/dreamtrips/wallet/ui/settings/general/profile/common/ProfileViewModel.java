@@ -20,7 +20,8 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
    private String lastName = "";
    private String phoneCode = DEFAULT_COUNTRY_CODE;
    private String phoneNumber = "";
-   private String suffix = "";
+   //TODO: disable suffix functionality
+   //private String suffix = "";
    @Nullable private String chosenPhotoUri;
    private boolean isPhotoEmpty = true; // because chosenPhotoUri is null by default
 
@@ -53,18 +54,23 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
 
    @Bindable
    public String getLastName() {
-      String[] parts = lastName.split(" ");
-      if (parts.length > 1) {
-         String suffix = parts[parts.length - 1];
-         if (suffix.length() < 4) {
-            StringBuilder name = new StringBuilder();
-            for (int i = 0; i < (parts.length - 1); i++) {
-               name.append(parts[i]).append(" ");
-            }
-            return name.substring(0, name.length() - 1);
-         }
-      }
+      //TODO: disable suffix functionality
+      //      if (getSuffix().isEmpty()) {
       return lastName;
+      //      } else {
+      //         String[] parts = lastName.split(" ");
+      //         if (parts.length > 1) {
+      //            String suffix = parts[parts.length - 1];
+      //            if (suffix.length() < 4) {
+      //               StringBuilder name = new StringBuilder();
+      //               for (int i = 0; i < (parts.length - 1); i++) {
+      //                  name.append(parts[i]).append(" ");
+      //               }
+      //               return name.substring(0, name.length() - 1);
+      //            }
+      //         }
+      //         return lastName;
+      //      }
    }
 
    public String getLastNameWithSuffix() {
@@ -167,22 +173,24 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
 
    @Bindable
    public String getSuffix() {
-      if (suffix.isEmpty()) {
-         String[] parts = lastName.split(" ");
-         if (parts.length > 1) {
-            String suffix = parts[parts.length - 1];
-            if (suffix.length() < 4) {
-               return suffix;
-            }
-         }
-         return "";
-      } else {
-         return suffix;
-      }
+      //      if (suffix.isEmpty()) {
+      //         String[] parts = lastName.split(" ");
+      //         if (parts.length > 1) {
+      //            String suffix = parts[parts.length - 1];
+      //            if (suffix.length() < 4) {
+      //               return suffix;
+      //            }
+      //         }
+      //TODO: disable suffix functionality
+      return "";
+      //      } else {
+      //         return suffix;
+      //      }
    }
 
-   public void setSuffix(String suffix) {
-      this.suffix = suffix;
-      notifyPropertyChanged(BR.suffix);
-   }
+   //TODO: disable suffix functionality
+   //   public void setSuffix(String suffix) {
+   //      this.suffix = suffix;
+   //      notifyPropertyChanged(BR.suffix);
+   //   }
 }

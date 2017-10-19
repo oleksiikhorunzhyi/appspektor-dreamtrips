@@ -111,7 +111,7 @@
 
                </LinearLayout>
 
-               <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+               <com.worldventures.core.ui.view.custom.EmptyRecyclerView
                      android:id="@+id/lv_close_friends"
                      android:layout_width="match_parent"
                      android:layout_height="match_parent"

@@ -7,17 +7,17 @@ import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.RecyclerView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.ui.view.cell.AbstractCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.model.User;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.AbstractCell;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
@@ -42,9 +42,9 @@ import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.ReloadFeedCell;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoBundle;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
 import java.util.List;
 

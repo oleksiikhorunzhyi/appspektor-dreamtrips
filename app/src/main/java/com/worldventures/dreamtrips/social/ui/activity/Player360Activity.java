@@ -26,14 +26,14 @@ import com.panframe.android.lib.PFAssetStatus;
 import com.panframe.android.lib.PFNavigationMode;
 import com.panframe.android.lib.PFObjectFactory;
 import com.panframe.android.lib.PFView;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.AnimationUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.PFViewMediaControls;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.VideoPlayerPresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.PFViewMediaControls;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

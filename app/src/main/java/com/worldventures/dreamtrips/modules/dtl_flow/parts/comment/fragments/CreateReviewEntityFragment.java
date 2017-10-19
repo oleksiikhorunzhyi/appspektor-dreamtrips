@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
-import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -124,7 +124,7 @@ public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragm
       }
    }
 
-   private MediaAttachment getMediaAttachment() {
+   private MediaPickerAttachment getMediaAttachment() {
       return getArgs() != null && getArgs().getMediaAttachment() != null ? getArgs().getMediaAttachment() : null;
    }
 }

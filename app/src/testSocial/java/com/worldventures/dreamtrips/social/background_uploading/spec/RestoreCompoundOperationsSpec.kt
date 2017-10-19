@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.social.ui.background_uploading.service.comma
 import io.techery.janet.ActionState
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class RestoreCompoundOperationsSpec : BaseUploadingInteractorSpec({

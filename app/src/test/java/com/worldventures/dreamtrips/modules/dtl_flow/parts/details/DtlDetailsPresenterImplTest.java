@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.service.DeviceInfoProvider;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview;
 import android.content.Context;
 import android.view.MenuItem;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableSdkFlaggingReviewParams;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;

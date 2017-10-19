@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews;
 
 import android.support.annotation.Nullable;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 

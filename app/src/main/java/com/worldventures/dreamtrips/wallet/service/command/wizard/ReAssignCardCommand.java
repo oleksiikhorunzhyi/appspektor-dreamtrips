@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service.command.wizard;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.UpdateDeviceIdHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.SyncRecordsStatus;
 import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;

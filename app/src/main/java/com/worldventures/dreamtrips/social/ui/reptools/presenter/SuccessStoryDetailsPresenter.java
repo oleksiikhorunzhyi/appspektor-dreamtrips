@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.reptools.presenter;
 
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
+import com.worldventures.core.model.ShareType;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor;

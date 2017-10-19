@@ -8,7 +8,6 @@ import io.techery.janet.ActionState
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xdescribe
 import rx.observers.TestSubscriber
 
 class ResumeCompoundOperationSpec : BaseUploadingInteractorSpec({

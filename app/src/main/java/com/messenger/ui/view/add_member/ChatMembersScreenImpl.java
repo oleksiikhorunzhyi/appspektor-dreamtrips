@@ -26,8 +26,8 @@ import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.AddMemberView;
 import com.messenger.util.ScrollStatePersister;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 

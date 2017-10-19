@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
 import android.webkit.WebViewClient;
 
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.modules.auth.api.command.LoginCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 
 import java.util.concurrent.TimeUnit;
 

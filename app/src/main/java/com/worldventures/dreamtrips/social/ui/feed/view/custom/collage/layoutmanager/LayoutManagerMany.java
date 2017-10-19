@@ -14,7 +14,7 @@ import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.core.utils.Size;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageView;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.blur.BlurPostprocessor;
 

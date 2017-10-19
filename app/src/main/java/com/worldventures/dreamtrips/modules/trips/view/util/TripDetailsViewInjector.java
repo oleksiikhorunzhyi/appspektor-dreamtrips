@@ -17,8 +17,8 @@ import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import java.util.List;
 

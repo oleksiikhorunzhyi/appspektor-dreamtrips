@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableReviews;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSettings;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+
 import io.techery.mappery.MapperyContext;
 
 public class ReviewsConverter implements Converter<com.worldventures.dreamtrips.api.dtl.merchants.model.Reviews, Reviews> {

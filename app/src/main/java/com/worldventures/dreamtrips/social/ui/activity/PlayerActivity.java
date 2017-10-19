@@ -7,10 +7,10 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.activity.presenter.PlayerPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.PlayerPresenter;
 
 import java.util.concurrent.TimeUnit;
 

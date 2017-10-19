@@ -12,7 +12,7 @@ import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.messengerservers.paginations.PaginationResult;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.DecomposeMessagesHelper;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.Collection;

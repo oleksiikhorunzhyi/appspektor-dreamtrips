@@ -5,13 +5,15 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TripsFilterDataAnalyticsWrapper {
 
@@ -26,6 +28,10 @@ public class TripsFilterDataAnalyticsWrapper {
 
    public static final String DEFAULT_FIELDS_DELIMITER = ",";
    public static final String BOOLEAN_FIELDS_DELIMITER = ",";
+
+   public static final String ATTRIBUTE_TRIP_FILTERS = "tripfilters";
+   public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
+   public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
 
    private int minNights;
    private int maxNights;
@@ -94,5 +100,13 @@ public class TripsFilterDataAnalyticsWrapper {
       if (isShowRecentlyAdded) booleanFields.add(SHOW_RECENTLY_ADDED_ABBREVIATION);
       if (isShowSoldOut) booleanFields.add(SHOW_SOLD_OUT_ABBREVIATION);
       return booleanFields.size() > 0 ? TextUtils.join(BOOLEAN_FIELDS_DELIMITER, booleanFields) : null;
+   }
+
+   public Map getTrackingFilterData() {
+      final Map filterData = new HashMap();
+      filterData.put(ATTRIBUTE_TRIP_FILTERS, getFilterAnalyticString());
+      filterData.put(ATTRIBUTE_TRIP_REGION_FILTERS, getAcceptedRegionsAnalyticString());
+      filterData.put(ATTRIBUTE_TRIP_THEME_FILTERS, getAcceptedActivitiesAnalyticString());
+      return filterData;
    }
 }

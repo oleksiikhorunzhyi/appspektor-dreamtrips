@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.view.cell.adapter;
 
 import android.content.Context;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.ui.view.cell.AbstractCell;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.settings.storage.SettingsStorage;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 public class ThinMerchantsAdapter extends BaseDelegateAdapter {
 
-   @Inject SnappyRepository db;
+   @Inject SettingsStorage db;
    private final DistanceType distanceType;
 
    private List<String> expandedMerchantIds = new ArrayList<>();

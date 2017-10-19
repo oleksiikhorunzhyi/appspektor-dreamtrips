@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 public class BucketItemInfoUtil {
@@ -34,7 +34,7 @@ public class BucketItemInfoUtil {
 
 
    public static String getTime(Context context, BucketItem bucketItem) {
-      String time = DateTimeUtils.convertDateToReference(context, bucketItem.getTargetDate());
+      String time = TimeUtils.convertDateToReference(context, bucketItem.getTargetDate());
       if (TextUtils.isEmpty(time)) {
          return context.getString(R.string.someday);
       } else {

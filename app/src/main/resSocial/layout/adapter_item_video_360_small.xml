@@ -47,7 +47,7 @@
             />
 
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
+      <com.worldventures.core.ui.view.custom.PinProgressButton
             android:id="@+id/download_progress"
             android:layout_width="@dimen/pin_progress_button_size"
             android:layout_height="@dimen/pin_progress_button_size"

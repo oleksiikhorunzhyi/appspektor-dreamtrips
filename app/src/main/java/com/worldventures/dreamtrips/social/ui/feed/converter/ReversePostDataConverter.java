@@ -1,13 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.feed.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.post.model.request.Attachment;
 import com.worldventures.dreamtrips.api.post.model.request.ImmutablePostData;
 import com.worldventures.dreamtrips.api.post.model.request.PostData;
 import com.worldventures.dreamtrips.api.post.model.response.Location;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.CreatePhotoPostEntity;
-import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

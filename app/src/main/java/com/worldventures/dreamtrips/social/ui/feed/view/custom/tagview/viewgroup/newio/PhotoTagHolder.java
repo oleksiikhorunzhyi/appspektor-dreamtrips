@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.utils.Size;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.CreationTagView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.ExistsTagView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.SuggestionTagView;
@@ -22,7 +23,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.SuggestionHelpView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.TagPosition;
-import com.worldventures.dreamtrips.modules.common.view.util.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +31,9 @@ import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer.convertToAbsolute;
-import static com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer.convertToProportional;
+import static com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.CoordinatesTransformer.convertToAbsolute;
+import static com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.CoordinatesTransformer.convertToProportional;
+
 
 public class PhotoTagHolder extends RelativeLayout {
 

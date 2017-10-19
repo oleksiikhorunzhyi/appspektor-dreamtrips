@@ -14,14 +14,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
 
@@ -132,4 +128,3 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    }
 
 }
-

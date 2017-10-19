@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSettingsScreen> implements WalletSettingsPresenter {
 
@@ -86,7 +87,8 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
             smartCardInteractor.deviceStatePipe().observeSuccessWithReplay(),
             Pair::new)
             .throttleLast(200, TimeUnit.MILLISECONDS)
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(pair -> bindSmartCard(pair.first.getResult(), pair.second.getResult()));
    }
 
@@ -97,7 +99,8 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
    private void observeFirmwareUpdates() {
       firmwareInteractor.firmwareInfoCachedPipe()
             .observeSuccessWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> bindFirmwareUpdateData(command.getResult()));
    }
 

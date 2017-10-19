@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh;
 
-import com.worldventures.dreamtrips.social.ui.share.ShareType;
+import com.worldventures.core.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;

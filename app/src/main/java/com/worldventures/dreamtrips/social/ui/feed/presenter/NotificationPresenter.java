@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;

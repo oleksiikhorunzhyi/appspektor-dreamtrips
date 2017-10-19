@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
 import android.location.Location;
 
+import com.worldventures.core.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.social.ui.infopages.StaticPageProvider;
 
 import java.util.concurrent.TimeUnit;
 

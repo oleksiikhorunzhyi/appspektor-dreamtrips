@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
+
+import com.worldventures.core.utils.AppVersionNameBuilder;
+import com.worldventures.dreamtrips.BuildConfig;
 
 import javax.inject.Singleton;
 
@@ -15,6 +17,8 @@ public class AppVersionNameModule {
    @Provides
    @Singleton
    AppVersionNameBuilder provideAppVersionNameBuilder() {
-      return new AppVersionNameBuilder();
+      return new AppVersionNameBuilder(BuildConfig.versionMajor, BuildConfig.versionMinor,
+            BuildConfig.versionPatch, BuildConfig.versionBuild,
+            BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
    }
 }

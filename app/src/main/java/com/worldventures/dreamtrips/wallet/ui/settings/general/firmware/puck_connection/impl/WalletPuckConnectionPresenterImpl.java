@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_con
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_connection.WalletPuckConnectionScreen;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletPuckConnectionPresenterImpl extends WalletPresenterImpl<WalletPuckConnectionScreen> implements WalletPuckConnectionPresenter {
 
@@ -30,9 +31,14 @@ public class WalletPuckConnectionPresenterImpl extends WalletPresenterImpl<Walle
    private void fetchUserPhoto() {
       smartCardInteractor.smartCardUserPipe()
             .createObservable(SmartCardUserCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto()))
+                  .onSuccess(command -> {
+                     if (command.getResult() != null) {
+                        getView().userPhoto(command.getResult().userPhoto());
+                     }
+                  })
             );
    }
 

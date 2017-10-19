@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.model.Circle;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.profile.model.PublicUserProfile;
 import com.worldventures.dreamtrips.api.session.model.Subscription;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
-import com.worldventures.dreamtrips.social.ui.friends.model.Circle;
 
 import java.util.ArrayList;
 import java.util.List;

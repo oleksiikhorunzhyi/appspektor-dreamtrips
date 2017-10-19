@@ -8,13 +8,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.worldventures.core.modules.settings.model.FlagSetting;
+import com.worldventures.core.modules.settings.model.SelectSetting;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.settings.bundle.SettingsBundle;
-import com.worldventures.dreamtrips.social.ui.settings.model.FlagSetting;
-import com.worldventures.dreamtrips.social.ui.settings.model.SelectSetting;
-import com.worldventures.dreamtrips.social.ui.settings.model.Setting;
 import com.worldventures.dreamtrips.social.ui.settings.view.cell.SettingsFlagCell;
 import com.worldventures.dreamtrips.social.ui.settings.view.cell.SettingsSelectCell;
 import com.worldventures.dreamtrips.social.ui.settings.view.presenter.SettingsPresenter;

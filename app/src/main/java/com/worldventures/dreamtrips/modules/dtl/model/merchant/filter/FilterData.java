@@ -59,7 +59,7 @@ public abstract class FilterData {
       return true;
    }
 
-   @Value @Nullable
+   @Nullable
    public abstract DistanceType distanceType();
 
    @Value.Default

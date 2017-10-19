@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CancelCompoundOperationCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.PauseCompoundOperationCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.PostProcessingCommand;

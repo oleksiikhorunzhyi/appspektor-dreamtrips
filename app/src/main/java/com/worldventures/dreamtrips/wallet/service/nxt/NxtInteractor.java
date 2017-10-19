@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.nxt;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;

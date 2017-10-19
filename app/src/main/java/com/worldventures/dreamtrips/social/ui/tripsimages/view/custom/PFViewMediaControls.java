@@ -16,8 +16,8 @@ import android.widget.ToggleButton;
 import com.panframe.android.lib.PFAsset;
 import com.panframe.android.lib.PFAssetStatus;
 import com.panframe.android.lib.PFView;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.HoldableButton;
 import com.worldventures.dreamtrips.modules.common.view.custom.ViewOnTouchHighlighter;
 

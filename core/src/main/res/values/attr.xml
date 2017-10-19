@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <declare-styleable name="BadgeView">
+      <attr name="background_color" format="color" />
+   </declare-styleable>
+
+   <declare-styleable name="PinProgressButton">
+      <attr name="pinned" format="boolean" />
+      <attr name="progress" format="integer" />
+      <attr name="max" format="integer" />
+      <attr name="circleColor" format="color" />
+      <attr name="progressColor" format="color" />
+   </declare-styleable>
+
+   <declare-styleable name="SquareLayout">
+      <attr name="side_priority" format="enum">
+         <enum name="height" value="0" />
+         <enum name="width" value="1" />
+      </attr>
+   </declare-styleable>
+</resources>

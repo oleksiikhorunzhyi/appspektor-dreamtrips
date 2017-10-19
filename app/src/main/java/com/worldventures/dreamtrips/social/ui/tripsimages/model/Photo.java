@@ -6,11 +6,11 @@ import android.support.annotation.Nullable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
+import com.worldventures.core.model.ImagePathHolder;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import org.jetbrains.annotations.NotNull;
 

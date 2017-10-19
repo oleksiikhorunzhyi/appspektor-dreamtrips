@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 import java.util.HashMap;

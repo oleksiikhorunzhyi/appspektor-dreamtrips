@@ -23,10 +23,9 @@ import android.view.View;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.module.Injector;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 public abstract class DraggableArrayListAdapter<V> extends BaseDelegateAdapter<V> implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
@@ -107,7 +106,7 @@ public abstract class DraggableArrayListAdapter<V> extends BaseDelegateAdapter<V
       void onItemMoved(int from, int to);
    }
 
-   public static abstract class DraggableCell<T, V extends CellDelegate<T>> extends AbstractDelegateCell<T, V> implements DraggableItemViewHolder {
+   public static abstract class DraggableCell<T, V extends CellDelegate<T>> extends BaseAbstractDelegateCell<T, V> implements DraggableItemViewHolder {
       public DraggableCell(View view) {
          super(view);
       }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
    <string name="dtl_locations_title">Select location</string>
@@ -28,9 +28,6 @@
    <string name="dtl_description">Description</string>
    <string name="ok">OK</string>
    <string name="continue_option">CONTINUE</string>
-   <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
-   <string name="permission_location_rationale">Access to the location is needed for detection</string>
-   <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
    <string name="no_location_permission">This application cannot run because it does not have the location permission. The application will now exit.</string>
    <string name="dtl_checkin_location_error">Location services should be enabled to check in</string>
    <string name="dtl_barcode_title">Scan QR Code</string>
@@ -162,6 +159,7 @@
    <string name="dtl_thrst_text_button">Pay in app</string>
    <string name="dtl_all_locations">All locations</string>
    <string name="dtl_earned_points">You have earned %1$d points</string>
+   <string name="dtl_earned_points_on_item">+%1$dpt</string>
 
    <!-- Pilot -->
    <string name="done_pilot_button">DONE</string>
@@ -175,5 +173,10 @@
    <string name="payment_resume_failure_pilot">Please pay your server.</string>
    <string name="total_amount_charged_pilot">Total Amount Paid</string>
    <string name="payment_amount_due_pilot">Total Amount Due</string>
+   <string name="payment_money_charged">$ %1$s </string>
+
+   <string name="dtl_thrst_flow_title">Thrst</string>
+   <string name="order_from_menu">Order From Menu</string>
+   <string name="open_order_from_menu_msg">This is a pilot feature outside of DTL &amp; will not earn you points. You will be taken to an external site that opens in a separate browser outside the app</string>
 
 </resources>

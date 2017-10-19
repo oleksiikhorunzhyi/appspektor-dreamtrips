@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.model.converter;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketLocation;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 
-public class BucketLocationConverter implements Converter<com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation, BucketLocation> {
+public class BucketLocationConverter implements Converter<BucketListLocation, BucketLocation> {
 
    @Override
    public BucketLocation convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.bucketlist.model.BucketListLocation apiLocation) {

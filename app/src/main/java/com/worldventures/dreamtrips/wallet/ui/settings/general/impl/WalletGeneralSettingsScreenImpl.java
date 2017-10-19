@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
@@ -140,7 +140,7 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
          confirmRestartSmartCardDialog = new MaterialDialog.Builder(getContext())
                .title(R.string.wallet_card_settings_turn_off_your_sc)
                .content(R.string.wallet_card_settings_are_you_sure)
-               .positiveText(R.string.wallet_card_settings_power_off)
+               .positiveText(R.string.wallet_card_settings_power_off_dialog_ok)
                .negativeText(R.string.cancel)
                .onPositive(((dialog, which) -> getPresenter().onConfirmedRestartSmartCard()))
                .build();

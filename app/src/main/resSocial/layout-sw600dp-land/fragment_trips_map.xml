@@ -6,7 +6,7 @@
       android:id="@id/content_layout"
       >
 
-   <com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView
+   <com.worldventures.core.ui.view.custom.ToucheableMapView
          android:id="@+id/map"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

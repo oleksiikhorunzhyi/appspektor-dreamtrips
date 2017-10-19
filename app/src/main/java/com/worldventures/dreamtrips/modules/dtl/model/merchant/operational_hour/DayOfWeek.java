@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.DateTimeUtils;
 
 import java.util.Calendar;
 

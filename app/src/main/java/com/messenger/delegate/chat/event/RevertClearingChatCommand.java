@@ -2,7 +2,7 @@ package com.messenger.delegate.chat.event;
 
 import com.messenger.messengerservers.event.RevertClearingEvent;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

@@ -8,12 +8,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
@@ -23,7 +24,6 @@ import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.HashtagSug
 import com.worldventures.dreamtrips.social.ui.feed.presenter.DescriptionCreatorPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.HashtagSuggestionUtil;
-import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

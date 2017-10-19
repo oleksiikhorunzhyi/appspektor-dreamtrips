@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
+import com.worldventures.core.model.BaseEntity;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DiningItem extends BaseEntity {

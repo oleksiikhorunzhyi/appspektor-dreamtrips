@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="app_name">DreamTrips</string>
-   <string name="action_done">Ολοκληρώθηκε</string>
-   <string name="action_cancel">Ακύρωση</string>
    <string name="action_filter">Φίλτρο</string>
    <string name="action_like">Μου Αρέσει</string>
    <string name="trips">DreamTrips</string>
@@ -19,9 +17,6 @@
    <string name="flag_description_title">Σημαία</string>
    <string name="flag_description_positive">Αποδοχή</string>
    <string name="flag_description_negative">Ακύρωση</string>
-   <string name="facebook_error_loading_albums">Η φόρτωση άλμπουμ απέτυχε</string>
-   <string name="facebook_error_loading_photos">Η φόρτωση φωτογραφιών απέτυχε</string>
-   <string name="facebook_login_error">Η είσοδος στο Facebook απέτυχε</string>
    <string name="fab_posted">Δημοσιεύτηκε με επιτυχία στο Facebook</string>
    <string name="facebook_posting_error">Η δημοσίευση στο Facebook απέτυχε</string>
    <string-array name="share_dialog_items">
@@ -100,19 +95,11 @@
 
    <string name="feed_share_post_button">Μοιραστείτε φωτό, βίντεο ή σκέψεις</string>
 
-   <string name="camera">Κάμερα</string>
    <string name="library">Βιβλιοθήκη</string>
-   <string name="camera_take_a_picture">Τραβήξτε μια φωτογραφία</string>
-   <string name="camera_record_a_video">Τραβήξτε ένα βίντεο</string>
-   <string name="add_from_facebook">Προσθήκη από το Facebook</string>
 
-   <string name="photos_selected">Επιλέχθηκαν %1$d</string>
 
-   <string name="media_picker_error_contents">Φόρτωση %1$s απέτυχε.</string>
-   <string name="media_picker_gallery_action">Γκαλερί πολυμέσων</string>
-   <string name="media_picker_fb_albums_actions">άλμπουμ facebook</string>
-   <string name="media_picker_fb_photos_actions">φωτογραφίες facebook</string>
-   <string name="media_picker_limit_reached">Μπορείτε να επιλέξετε μόνο μέχρι %1$s φωτογραφίες</string>
+
+   <string name="nav_back">Πίσω</string>
 
    <string name="logout_component">Αποσύνδεση</string>
 
@@ -161,12 +148,6 @@
 
    <string name="beta_label">Beta</string>
 
-   <string name="picker_two_media_type_error">Επιλέξτε ένα βίντεο ή φωτογραφίες</string>
-   <string name="picker_photo_limit">Μπορείτε να επιλέξετε έως %1$d φωτογραφία</string>
-   <string name="picker_photo_limit_plural">Μπορείτε να επιλέξετε έως %1$d φωτογραφίες</string>
-   <string name="picker_video_limit">Μπορείτε να επιλέξετε έως %1$d βίντεο</string>
-   <string name="picker_video_limit_plural">Μπορείτε να επιλέξετε έως %1$d βίντεο</string>
-   <string name="picker_video_length_limit">Δεν επιτρέπεται να επιλέξετε βίντεο με διάρκεια περισσότερη από %1$d δευτερόλεπτα</string>
 
    <string name="photo_strip_read_storage_permission_explanation">Χρειάζεται άδεια για ανάγνωση χώρου αποθήκευσης για να σας προτείνουμε περιεχόμενο πολυμέσων</string>
 </resources>

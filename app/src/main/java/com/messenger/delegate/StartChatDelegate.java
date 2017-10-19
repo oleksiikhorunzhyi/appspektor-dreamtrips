@@ -13,7 +13,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.model.User;
 
 import org.jetbrains.annotations.NotNull;
 

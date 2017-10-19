@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_ca
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.default_card.WalletDisableDefaultCardScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<WalletDisableDefaultCardScreen> implements WalletDisableDefaultCardPresenter {
 
@@ -56,7 +57,8 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
    private void fetchSmartCard() {
       smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> {
                bindToView(command.getResult().disableCardDelay());
                trackScreen();
@@ -66,7 +68,8 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
    private void observeDelayChange() {
       smartCardInteractor.disableDefaultCardDelayPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<SetDisableDefaultCardDelayCommand>provideOperationView())
                   .onSuccess(command -> {
                      bindToView(command.getResult());

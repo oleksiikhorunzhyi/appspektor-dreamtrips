@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.*
-import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.*
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment
-import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle
-import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableSelectedPhoto
-import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePhotosCommand
-import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePostCommand
-import com.worldventures.dreamtrips.social.ui.feed.service.command.CreateVideoCommand
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.listOfMockPhotos
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.mockCreatedPost
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.*
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.*
+import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle
+import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableSelectedPhoto
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePhotosCommand
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreatePostCommand
+import com.worldventures.dreamtrips.social.ui.feed.service.command.CreateVideoCommand
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.Contract
 import java.util.*
@@ -80,7 +80,7 @@ internal fun createPostBodyWithScheduledVideo() =
             .build()
 
 internal fun createPostBodyWithUploadedVideo(uploadId: String = "fsdafsdfsfdsadf", videoUid: String? = null,
-                                             futurePostId: String? = null) : PostWithVideoAttachmentBody {
+                                             futurePostId: String? = null): PostWithVideoAttachmentBody {
    val post = TextualPost()
    post.uid = futurePostId
 
@@ -111,7 +111,7 @@ internal fun createSelectedPhoto() =
       ImmutableSelectedPhoto.builder()
             .path("testPath")
             .width(100)
-            .source(MediaAttachment.Source.GALLERY)
+            .source(MediaPickerAttachment.Source.GALLERY)
             .height(100)
             .size(1000000)
             .build()

@@ -3,23 +3,20 @@ package com.worldventures.dreamtrips.social.ui.background_uploading.service;
 import android.os.Build;
 import android.support.annotation.Nullable;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.Session;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.service.AuthRetryPolicy;
+import com.worldventures.core.utils.AppVersionNameBuilder;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.http.BaseVideoHttpAction;
-import com.worldventures.dreamtrips.modules.common.model.Session;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionServiceWrapper;
@@ -34,19 +31,25 @@ import timber.log.Timber;
 
 public class VideoHttpService extends ActionServiceWrapper {
 
-   @Inject SessionHolder appSessionHolder;
-   @Inject MapperyContext mapperyContext;
-   @Inject AppVersionNameBuilder appVersionNameBuilder;
-   @Inject ReLoginInteractor reLoginInteractor;
-   @Inject Observable<Device> deviceSource;
+   private final SessionHolder appSessionHolder;
+   private final MapperyContext mapperyContext;
+   private final AppVersionNameBuilder appVersionNameBuilder;
+   private final ReLoginInteractor reLoginInteractor;
+   private final Observable<Device> deviceSource;
 
    private final AuthRetryPolicy retryPolicy;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
 
-   public VideoHttpService(Injector injector, String baseUrl, HttpClient client, Converter converter) {
+   public VideoHttpService(String baseUrl, HttpClient client, Converter converter, SessionHolder appSessionHolder,
+         MapperyContext mapperyContext, AppVersionNameBuilder appVersionNameBuilder,
+         ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
       super(new HttpActionService(baseUrl, client, converter));
-      injector.inject(this);
-      retryPolicy = new AuthRetryPolicy(appSessionHolder);
+      this.appSessionHolder = appSessionHolder;
+      this.mapperyContext = mapperyContext;
+      this.appVersionNameBuilder = appVersionNameBuilder;
+      this.reLoginInteractor = reLoginInteractor;
+      this.deviceSource = deviceSource;
+      retryPolicy = new AuthRetryPolicy(this.appSessionHolder);
    }
 
    @Override

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.provisioning;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 

@@ -10,17 +10,17 @@ import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
-import com.worldventures.dreamtrips.social.util.ImageUtils;
 
 import java.io.IOException;
 
 import rx.functions.Action0;
 import rx.functions.Action1;
 
-import static com.worldventures.dreamtrips.core.utils.GraphicUtils.createResizeImageRequest;
-import static com.worldventures.dreamtrips.core.utils.GraphicUtils.parseUri;
+import static com.worldventures.core.ui.util.GraphicUtils.createResizeImageRequest;
+import static com.worldventures.core.ui.util.GraphicUtils.parseUri;
 
 public class ImageryView extends ScaleImageView {
 

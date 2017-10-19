@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand;
-import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
-import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -30,8 +30,6 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedItemsS
 import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.EditPhotoWithTagsCommand;
@@ -40,28 +38,32 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.techery.janet.ActionState;
 import rx.Observable;
 
 public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBaseCommand> {
 
-   protected FeedItemsStorageBaseInteractor feedStorageInteractor;
+   private final FeedItemsStorageBaseInteractor feedStorageInteractor;
+   protected final FeedInteractor feedInteractor;
+   private final PostsInteractor postsInteractor;
+   private final TripsInteractor tripsInteractor;
+   private final TripImagesInteractor tripImagesInteractor;
+   private final BucketInteractor bucketInteractor;
+   private final FriendsInteractor friendsInteractor;
+   private final CommentsInteractor commentsInteractor;
 
-   @Inject FeedInteractor feedInteractor;
-   @Inject PostsInteractor postsInteractor;
-   @Inject TripsInteractor tripsInteractor;
-   @Inject TripImagesInteractor tripImagesInteractor;
-   @Inject BucketInteractor bucketInteractor;
-   @Inject FriendsInteractor friendsInteractor;
-   @Inject CommentsInteractor commentsInteractor;
-
-   @Inject SessionHolder sessionHolder;
-
-   public BaseFeedStorageDelegate(FeedItemsStorageBaseInteractor<? extends COMMAND> feedStorageInteractor, Injector injector) {
+   public BaseFeedStorageDelegate(FeedItemsStorageBaseInteractor<? extends COMMAND> feedStorageInteractor, FeedInteractor feedInteractor,
+         PostsInteractor postsInteractor, TripsInteractor tripsInteractor, TripImagesInteractor tripImagesInteractor,
+         BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
       this.feedStorageInteractor = feedStorageInteractor;
-      injector.inject(this);
+
+      this.feedInteractor = feedInteractor;
+      this.postsInteractor = postsInteractor;
+      this.tripsInteractor = tripsInteractor;
+      this.tripImagesInteractor = tripImagesInteractor;
+      this.bucketInteractor = bucketInteractor;
+      this.friendsInteractor = friendsInteractor;
+      this.commentsInteractor = commentsInteractor;
    }
 
    protected Observable<ListStorageOperation> getListStorageOperationObservable() {

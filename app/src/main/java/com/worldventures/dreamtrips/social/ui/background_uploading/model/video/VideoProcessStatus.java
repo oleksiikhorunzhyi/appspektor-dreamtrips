@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class VideoProcessStatus {
 
-   public static final String STATUS_RECEIVED   = "received";
-   public static final String STATUS_UPLOADED   = "uploaded";
+   public static final String STATUS_RECEIVED = "received";
+   public static final String STATUS_UPLOADED = "uploaded";
    public static final String STATUS_TRANSCODED = "transcoded";
-   public static final String STATUS_ERROR      = "error";
-   public static final String STATUS_COMPLETED  = "completed";
+   public static final String STATUS_ERROR = "error";
+   public static final String STATUS_COMPLETED = "completed";
 
    @SerializedName("assetId")
    private String assetId;

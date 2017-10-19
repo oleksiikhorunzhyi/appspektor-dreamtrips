@@ -16,14 +16,14 @@ import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.GalleryBundle;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 
 import java.util.List;
 

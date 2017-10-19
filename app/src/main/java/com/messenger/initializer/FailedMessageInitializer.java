@@ -2,8 +2,8 @@ package com.messenger.initializer;
 
 
 import com.messenger.delegate.MarkMessageDelegate;
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
 
 import javax.inject.Inject;
 

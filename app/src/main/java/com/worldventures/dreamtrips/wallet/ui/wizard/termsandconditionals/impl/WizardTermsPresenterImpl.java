@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.termsandconditionals.Wizard
 
 import io.techery.janet.Janet;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WizardTermsPresenterImpl extends WalletPresenterImpl<WizardTermsScreen> implements WizardTermsPresenter {
 
@@ -44,7 +45,8 @@ public class WizardTermsPresenterImpl extends WalletPresenterImpl<WizardTermsScr
    public void loadTerms() {
       janet.createPipe(FetchTermsAndConditionsCommand.class)
             .createObservable(new FetchTermsAndConditionsCommand())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().termsOperationView())
                   .onSuccess(command -> getView().showTerms(command.getResult().url()))
                   .create());

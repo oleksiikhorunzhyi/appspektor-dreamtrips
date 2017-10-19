@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.friends.view.util;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.worldventures.core.model.User;
+import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.QuantityHelper;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 public class MutualFriendsUtil {
 

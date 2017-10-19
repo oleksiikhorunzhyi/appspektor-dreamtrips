@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.analytics;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 
 public abstract class BaseCardDetailsWithDefaultAction extends BaseCardDetailsAction {

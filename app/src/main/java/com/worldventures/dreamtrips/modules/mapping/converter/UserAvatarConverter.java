@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
+import com.worldventures.core.converter.Converter;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.session.model.Avatar;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import io.techery.mappery.MapperyContext;
 

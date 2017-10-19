@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetUrlToken
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ImmutableGetUrlTokenResponse;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.ThrstInfo;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.TransactionDetails;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 
 import io.techery.mappery.MapperyContext;
 

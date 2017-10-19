@@ -4,20 +4,20 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.social.ui.feed.model.PickerIrregularPhotoModel;
-import com.worldventures.dreamtrips.social.ui.feed.view.cell.PickerIrregularPhotoCell;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.GalleryBundle;
-import com.worldventures.dreamtrips.modules.media_picker.model.MediaPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.PhotoPickerModel;
-import com.worldventures.dreamtrips.modules.media_picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.media_picker.view.cell.PhotoPickerModelCell;
 import com.worldventures.dreamtrips.modules.media_picker.view.cell.VideoPickerModelCell;
+import com.worldventures.dreamtrips.social.ui.feed.model.PickerIrregularPhotoModel;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.PickerIrregularPhotoCell;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,9 +103,9 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter, Gall
    public void addItems(List<MediaPickerModel> items) {
       List staticItems = new ArrayList<>();
       staticItems.add(new PickerIrregularPhotoModel(PickerIrregularPhotoModel.CAMERA,
-            R.drawable.ic_picker_camera, R.string.camera, R.color.share_camera_color));
+            R.drawable.ic_picker_camera, R.string.picker_static_take_from_camera, R.color.share_camera_color));
       staticItems.add(new PickerIrregularPhotoModel(PickerIrregularPhotoModel.FACEBOOK,
-            R.drawable.fb_logo, R.string.add_from_facebook, R.color.facebook_color));
+            R.drawable.fb_logo, R.string.picker_static_add_from_fb, R.color.facebook_color));
       adapter.addItems(staticItems);
       super.addItems(items);
    }

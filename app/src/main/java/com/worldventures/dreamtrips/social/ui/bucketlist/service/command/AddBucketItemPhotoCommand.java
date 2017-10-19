@@ -2,16 +2,16 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
 import android.support.v4.util.Pair;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.dreamtrips.api.bucketlist.AddPhotoToBucketItemHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketPhotoBody;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.common.command.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 
 import javax.inject.Inject;
 
@@ -21,8 +21,8 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 import rx.subjects.PublishSubject;
 
-import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State.DONE;
-import static com.worldventures.dreamtrips.modules.common.model.EntityStateHolder.State.FAIL;
+import static com.worldventures.core.model.EntityStateHolder.State.DONE;
+import static com.worldventures.core.model.EntityStateHolder.State.FAIL;
 
 @CommandAction
 public class AddBucketItemPhotoCommand extends Command<Pair<BucketItem, BucketPhoto>> implements InjectableAction {

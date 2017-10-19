@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.feed.view.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.LoadMore;
 

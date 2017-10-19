@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.membership.presenter;
 import android.support.annotation.NonNull;
 
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
+import com.worldventures.core.model.session.Feature;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 

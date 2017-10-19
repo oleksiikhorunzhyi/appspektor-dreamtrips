@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.impl;
 
 
-import com.worldventures.dreamtrips.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CardConnectedAction;
 import com.worldventures.dreamtrips.wallet.analytics.wizard.CheckFrontAction;
@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> implements PairKeyPresenter {
 
@@ -48,7 +49,8 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
       //noinspection ConstantConditions
       wizardInteractor.createAndConnectActionPipe()
             .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationCreateAndConnect())
                   .onSuccess(command -> smartCardConnected())

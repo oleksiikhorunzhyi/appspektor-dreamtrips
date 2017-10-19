@@ -16,8 +16,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -28,7 +29,6 @@ import com.worldventures.dreamtrips.social.ui.membership.presenter.InvitePresent
 import com.worldventures.dreamtrips.social.ui.membership.view.adapter.SimpleImageArrayAdapter;
 import com.worldventures.dreamtrips.social.ui.membership.view.cell.MemberCell;
 import com.worldventures.dreamtrips.social.ui.membership.view.dialog.AddContactDialog;
-import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 
 import java.util.Comparator;
 import java.util.List;

@@ -1,18 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
-import android.view.View;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
@@ -25,21 +17,16 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import flow.Flow;
 
 public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransactionScreen, ViewState.EMPTY> implements DtlTransactionPresenter {
    private TransactionModel transaction;
-
-   private final String RECEIPT_URL = "https://expressexpense.com/images/itemized-receipt.jpg";
 
    public DtlTransactionPresenterImpl(Context context, Injector injector, TransactionModel transaction) {
       super(context);
@@ -73,6 +60,7 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
    }
 
    //Mock
+   private final String RECEIPT_URL = "https://expressexpense.com/images/itemized-receipt.jpg";
    Merchant merchant = new Merchant() {
       @Override
       public String id() {

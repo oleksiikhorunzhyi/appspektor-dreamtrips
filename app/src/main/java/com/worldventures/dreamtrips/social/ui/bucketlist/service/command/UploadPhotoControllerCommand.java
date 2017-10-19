@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.common.model.EntityStateHolder;
 
 import java.util.List;
 

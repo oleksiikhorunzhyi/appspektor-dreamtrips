@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.photos.CreatePhotosHttpAction;
 import com.worldventures.dreamtrips.api.photos.model.ImmutableCoordinate;
@@ -9,10 +10,9 @@ import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotoCreationParam
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotosCreationParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotosCreationParams;
-import com.worldventures.dreamtrips.core.api.action.MappableApiActionCommand;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithPhotoAttachmentBody;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.Calendar;

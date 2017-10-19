@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.Wa
 import com.worldventures.dreamtrips.wallet.ui.settings.security.clear.records.WalletAutoClearCardsScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<WalletAutoClearCardsScreen> implements WalletAutoClearCardsPresenter {
 
@@ -57,7 +58,8 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
    private void observeSmartCard() {
       smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(deviceStateCommand -> {
                bindToView(deviceStateCommand.getResult().clearFlyeDelay());
                trackScreen();
@@ -67,7 +69,8 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
    private void observeDelayChange() {
       smartCardInteractor.autoClearDelayPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<SetAutoClearSmartCardDelayCommand>provideOperationView())
                   .onSuccess(command -> {
                      bindToView(command.getResult());

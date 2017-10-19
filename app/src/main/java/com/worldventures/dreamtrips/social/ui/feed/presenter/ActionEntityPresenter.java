@@ -5,22 +5,22 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableVideoCreationModel;
-import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.social.ui.feed.model.VideoCreationModel;
-import com.worldventures.dreamtrips.social.ui.feed.service.CreatePostBodyInteractor;
-import com.worldventures.dreamtrips.social.ui.feed.service.command.PostDescriptionCreatedCommand;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableVideoCreationModel;
+import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.social.ui.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.social.ui.feed.service.CreatePostBodyInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.PostDescriptionCreatedCommand;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +101,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
             .map(this::getVideoCreationModel);
    }
 
-   protected ImmutableVideoCreationModel getVideoCreationModel(VideoMetadata videoMetadata) {
+   protected VideoCreationModel getVideoCreationModel(VideoMetadata videoMetadata) {
       return ImmutableVideoCreationModel.builder()
             .state(VideoCreationModel.State.LOCAL)
             .videoMetadata(videoMetadata)

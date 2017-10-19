@@ -2,9 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableReview;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Review;

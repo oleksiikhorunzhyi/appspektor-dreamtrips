@@ -156,4 +156,13 @@
    <dimen name="dtl_transaction_screen_item_earned_points_checker_margin_left">4dp</dimen>
    <dimen name="dtl_transaction_screen_item_transaction_status_icon_margin">4dp</dimen>
 
+   <dimen name="dtl_transaction_screen_margin">8dp</dimen>
+   <dimen name="dtl_transaction_screen_margin_big">10dp</dimen>
+   <dimen name="dtl_transaction_screen_margin_extra_big">20dp</dimen>
+   <dimen name="dtl_transaction_screen_padding">33dp</dimen>
+   <dimen name="dtl_transaction_screen_icon">50dp</dimen>
+   <dimen name="dtl_transaction_screen_margin_points_icon_margin">5dp</dimen>
+   <dimen name="dtl_transaction_screen_card_radius">4dp</dimen>
+   <dimen name="dtl_transaction_screen_content_width">250dp</dimen>
+
 </resources>

@@ -3,25 +3,21 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginBottom="33dp"
-      android:layout_marginTop="33dp"
+      android:layout_marginBottom="@dimen/dtl_transaction_screen_padding"
+      android:layout_marginTop="@dimen/dtl_transaction_screen_padding"
       android:gravity="center_horizontal"
       android:orientation="vertical"
       >
 
    <TextView
          android:id="@+id/tv_thank_you_pilot"
-         android:layout_width="300dp"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_marginEnd="8dp"
-         android:layout_marginLeft="8dp"
-         android:layout_marginRight="8dp"
-         android:layout_marginStart="8dp"
          android:fontFamily="sans-serif"
          android:gravity="center_horizontal"
          android:text="@string/thank_you_thrst_pilot"
-         android:textColor="#4a4a4a"
-         android:textSize="26sp"
+         android:textColor="@color/transaction_text_color"
+         android:textSize="@dimen/font_extra_large"
          android:textStyle="bold"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
@@ -35,8 +31,8 @@
          android:fontFamily="sans-serif"
          android:gravity="center_horizontal"
          android:text="@string/second_failure_text_thrst_pilot"
-         android:textColor="#4a4a4a"
-         android:textSize="16sp"
+         android:textColor="@color/transaction_text_color"
+         android:textSize="@dimen/font_normal"
          android:textStyle="bold"
          android:visibility="gone"
          app:layout_constraintLeft_toLeftOf="parent"
@@ -46,14 +42,14 @@
 
    <TextView
          android:id="@+id/tv_payment_status_pilot"
-         android:layout_width="274dp"
+         android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_marginTop="8dp"
+         android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
          android:fontFamily="sans-serif"
          android:gravity="center_horizontal"
          android:text="@string/payment_success_status_pilot"
-         android:textColor="#4a4a4a"
-         android:textSize="16sp"
+         android:textColor="@color/transaction_text_color"
+         android:textSize="@dimen/font_normal"
          android:textStyle="normal"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
@@ -64,14 +60,12 @@
          android:id="@+id/tv_payment_sub_thank_you_message_pilot"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_marginLeft="8dp"
-         android:layout_marginRight="8dp"
-         android:layout_marginTop="8dp"
+         android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
          android:fontFamily="sans-serif"
          android:gravity="center_horizontal"
          android:text="@string/payment_resume_success_pilot"
-         android:textColor="#4a4a4a"
-         android:textSize="16sp"
+         android:textColor="@color/transaction_text_color"
+         android:textSize="@dimen/font_normal"
          android:textStyle="bold"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
@@ -79,7 +73,7 @@
          />
 
    <LinearLayout
-         android:layout_width="250dp"
+         android:layout_width="@dimen/dtl_transaction_screen_content_width"
          android:layout_height="match_parent"
          android:gravity="center_horizontal"
          android:orientation="vertical"
@@ -88,12 +82,10 @@
       <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/dtl_transaction_screen_margin_big"
+            android:layout_marginTop="@dimen/dtl_transaction_screen_margin_big"
             android:visibility="visible"
-            app:cardCornerRadius="4dp"
+            app:cardCornerRadius="@dimen/dtl_transaction_screen_card_radius"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_payment_status_pilot"
@@ -104,7 +96,7 @@
                android:layout_height="wrap_content"
                android:gravity="center_horizontal"
                android:orientation="vertical"
-               android:padding="20dp"
+               android:padding="@dimen/dtl_transaction_screen_margin_extra_big"
                >
 
             <LinearLayout
@@ -116,8 +108,8 @@
 
                <ImageView
                      android:id="@+id/iv_status_payment_pilot"
-                     android:layout_width="50dp"
-                     android:layout_height="50dp"
+                     android:layout_width="@dimen/dtl_transaction_screen_icon"
+                     android:layout_height="@dimen/dtl_transaction_screen_icon"
                      app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
                      />
 
@@ -125,7 +117,7 @@
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:orientation="vertical"
-                     android:paddingLeft="10dp"
+                     android:paddingLeft="@dimen/dtl_transaction_screen_margin_big"
                      >
 
                   <TextView
@@ -135,8 +127,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:text="$14.75"
-                        android:textColor="#4a4a4a"
-                        android:textSize="26sp"
+                        android:textColor="@color/transaction_text_color"
+                        android:textSize="@dimen/font_extra_large"
                         />
 
                   <TextView
@@ -146,7 +138,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:text="Total Amount Paid"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/font_medium"
                         />
 
                </LinearLayout>
@@ -156,7 +148,7 @@
             <RelativeLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginTop="10dp"
+                  android:layout_marginTop="@dimen/dtl_transaction_screen_margin_big"
                   >
 
                <TextView
@@ -166,7 +158,7 @@
                      android:layout_alignParentStart="true"
                      android:layout_alignParentTop="true"
                      android:text="Tip Amount:"
-                     android:textSize="16sp"
+                     android:textSize="@dimen/font_normal"
                      />
 
                <TextView
@@ -175,7 +167,7 @@
                      android:layout_height="wrap_content"
                      android:layout_alignParentEnd="true"
                      android:text="$3.00"
-                     android:textSize="16sp"
+                     android:textSize="@dimen/font_normal"
                      />
             </RelativeLayout>
 
@@ -194,7 +186,7 @@
                android:layout_height="wrap_content"
                android:layout_alignParentEnd="true"
                android:text="$9.75"
-               android:textSize="16sp"
+               android:textSize="@dimen/font_normal"
                />
 
          <TextView
@@ -203,9 +195,9 @@
                android:layout_height="wrap_content"
                android:layout_alignParentStart="true"
                android:layout_below="@+id/textView244"
-               android:layout_marginTop="10dp"
+               android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
                android:text="Tax Amount:"
-               android:textSize="16sp"
+               android:textSize="@dimen/font_normal"
                />
 
          <TextView
@@ -215,7 +207,7 @@
                android:layout_alignParentStart="true"
                android:layout_alignParentTop="true"
                android:text="Sub Total Amount:"
-               android:textSize="16sp"
+               android:textSize="@dimen/font_normal"
                />
 
          <TextView
@@ -224,9 +216,9 @@
                android:layout_height="wrap_content"
                android:layout_alignParentEnd="true"
                android:layout_below="@+id/tv_subtotal"
-               android:layout_marginTop="10dp"
+               android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
                android:text="$2.00"
-               android:textSize="16sp"
+               android:textSize="@dimen/font_normal"
                />
       </RelativeLayout>
 
@@ -234,10 +226,11 @@
             android:id="@+id/tv_earned_points"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
             android:drawableLeft="@drawable/dt_points_icon"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/dtl_transaction_screen_margin_points_icon_margin"
             android:text="@string/dtl_earned_points"
+            android:textSize="@dimen/font_small"
             android:textStyle="bold"
             />
 
@@ -245,7 +238,7 @@
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/dtl_transaction_screen_margin_extra_big"
             android:gravity="center"
             android:text="2017-Oct-10 13:21:26"
             />
@@ -263,7 +256,7 @@
                android:layout_above="@+id/linearLayout2"
                android:layout_centerHorizontal="true"
                android:gravity="center_vertical|center_horizontal"
-               android:paddingBottom="20dp"
+               android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
                android:text="View your receipt"
                />
 
@@ -287,13 +280,13 @@
 
             <Button
                   android:id="@+id/payment_done_button"
-                  android:layout_width="250dp"
+                  android:layout_width="@dimen/dtl_transaction_screen_content_width"
                   android:layout_height="wrap_content"
                   android:layout_centerHorizontal="true"
                   android:layout_weight="1"
                   android:text="@string/btn_payment_done_pilot"
                   android:textColor="@android:color/white"
-                  android:textSize="16sp"
+                  android:textSize="@dimen/font_normal"
                   android:visibility="gone"
                   />
 

@@ -3,10 +3,10 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_marginBottom="33dp"
+      android:layout_marginTop="33dp"
       android:gravity="center_horizontal"
       android:orientation="vertical"
-      android:layout_marginTop="33dp"
-      android:layout_marginBottom="33dp"
       >
 
    <TextView
@@ -19,13 +19,29 @@
          android:layout_marginStart="8dp"
          android:fontFamily="sans-serif"
          android:gravity="center_horizontal"
-         android:text="@string/first_failure_text_thrst_pilot"
+         android:text="@string/thank_you_thrst_pilot"
          android:textColor="#4a4a4a"
          android:textSize="26sp"
          android:textStyle="bold"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
          app:layout_constraintTop_toTopOf="parent"
+         />
+
+   <TextView
+         android:id="@+id/tv_thank_you_pilot2"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:fontFamily="sans-serif"
+         android:gravity="center_horizontal"
+         android:text="@string/second_failure_text_thrst_pilot"
+         android:textColor="#4a4a4a"
+         android:textSize="16sp"
+         android:textStyle="bold"
+         android:visibility="gone"
+         app:layout_constraintLeft_toLeftOf="parent"
+         app:layout_constraintRight_toRightOf="parent"
+         app:layout_constraintTop_toBottomOf="@+id/tv_payment_sub_thank_you_message_pilot"
          />
 
    <TextView
@@ -99,7 +115,7 @@
                   >
 
                <ImageView
-                     android:id="@+id/imageView3"
+                     android:id="@+id/iv_status_payment_pilot"
                      android:layout_width="50dp"
                      android:layout_height="50dp"
                      app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
@@ -124,7 +140,7 @@
                         />
 
                   <TextView
-                        android:id="@+id/textView25"
+                        android:id="@+id/tv_total_charged_text_pilot"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -167,6 +183,7 @@
       </android.support.v7.widget.CardView>
 
       <RelativeLayout
+            android:id="@+id/layout_subtotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             >
@@ -260,6 +277,14 @@
                android:orientation="vertical"
                >
 
+            <TextView
+                  android:id="@+id/tv_review_merchant"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_centerHorizontal="true"
+                  android:text="Review Merchant"
+                  />
+
             <Button
                   android:id="@+id/payment_done_button"
                   android:layout_width="250dp"
@@ -272,13 +297,6 @@
                   android:visibility="gone"
                   />
 
-            <TextView
-                  android:id="@+id/tv_review_merchant"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_centerHorizontal="true"
-                  android:text="Review Merchant"
-                  />
          </LinearLayout>
 
       </RelativeLayout>

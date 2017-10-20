@@ -32,8 +32,8 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
          view.setFailureResume();
          view.setShowScreenFailureMessage();
          view.showSubThankYouMessage();
-         view.hideViewsOnError();
       }
+      view.hideReviewMerchant();
       view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()), 0, 0, 0);
       view.setEarnedPoints(Integer.valueOf(thrstPaymentBundle.getEarnedPoints()));
       view.setReceiptURL(thrstPaymentBundle.getReceiptURL());
@@ -72,7 +72,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
       void showDoneButton();
 
-      void hideViewsOnError();
+      void hideReviewMerchant();
 
       void setEarnedPoints(int earnedPoints);
 

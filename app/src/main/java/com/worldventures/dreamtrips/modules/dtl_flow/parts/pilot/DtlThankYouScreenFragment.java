@@ -149,7 +149,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    }
 
    @Override
-   public void hideViewsOnError() {
+   public void hideReviewMerchant() {
       tvReviewMerchant.setVisibility(View.GONE);
    }
 

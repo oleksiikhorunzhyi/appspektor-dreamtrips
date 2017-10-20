@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.pairkey.PairKeyScreen;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> implements PairKeyPresenter {
 
@@ -54,6 +55,10 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
             .compose(new ActionPipeCacheWiper<>(wizardInteractor.createAndConnectActionPipe()))
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationCreateAndConnect())
                   .onSuccess(command -> smartCardConnected())
+                  .onFail((command, throwable) -> {
+                     Timber.e(throwable, "");
+                     getView().nextButtonEnable(true);
+                  })
                   .create());
    }
 
@@ -64,6 +69,7 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
 
    @Override
    public void tryToPairAndConnectSmartCard() {
+      getView().nextButtonEnable(false);
       wizardInteractor.createAndConnectActionPipe().send(new CreateAndConnectToCardCommand(getView().getBarcode()));
    }
 

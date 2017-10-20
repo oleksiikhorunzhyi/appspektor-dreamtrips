@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.wallet.ui.common
 
-import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
 import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
+import com.worldventures.dreamtrips.wallet.service.TestSchedulerProvider
+import com.worldventures.dreamtrips.wallet.service.WalletSchedulerProvider
 import io.techery.janet.ActionService
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -18,10 +20,19 @@ class InteractorBuilder private constructor(val janet: Janet) {
 
    fun <Interactor : Any> createInteractor(clazz: KClass<Interactor>): Interactor {
       val pipeCreator = SessionActionPipeCreator(janet)
-      val constructor = clazz.constructors.find { it.parameters.size == 1
-            && it.parameters[0].type.javaType == SessionActionPipeCreator::class.java }
+      val constructor = clazz.constructors.find {
+         it.parameters.size == 1
+               && it.parameters[0].type.javaType == SessionActionPipeCreator::class.java
+      }
+      val constructorWithScheduler = clazz.constructors.find {
+         it.parameters.size == 2
+               && it.parameters[0].type.javaType == SessionActionPipeCreator::class.java
+               && it.parameters[1].type.javaType == WalletSchedulerProvider::class.java
+      }
       if (constructor != null) {
          return constructor.call(pipeCreator)
+      } else if (constructorWithScheduler != null) {
+         return constructorWithScheduler.call(pipeCreator, TestSchedulerProvider())
       } else {
          throw UnsupportedOperationException("Interactor should have constructor with SessionActionPipeCreator argument")
       }

@@ -13,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.Result;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -86,7 +87,7 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    @Override
    protected void onActivityStarted(Activity activity) {
       super.onActivityStarted(activity);
-      if(isAttached()) getPresenter().requestCamera();
+      if (isAttached()) getPresenter().requestCamera();
    }
 
    @Override
@@ -139,6 +140,16 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
                         command -> getPresenter().retry(command.barcode),
                         command -> presenter.retryScan()))
                   .build()
+      );
+   }
+
+   @Override
+   public OperationView<SmartCardUserCommand> provideOperationFetchSmartCardUser() {
+      return new ComposableOperationView<>(
+            ErrorViewFactory.<SmartCardUserCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
+                        command -> getPresenter().retryAssignedToCurrentDevice(), c -> { /*nothing*/ })
+                  ).build()
       );
    }
 

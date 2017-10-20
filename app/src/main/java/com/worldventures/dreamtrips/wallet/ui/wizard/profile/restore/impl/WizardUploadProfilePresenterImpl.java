@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.restore.WizardUploadProfileScreen;
 
@@ -27,10 +28,10 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    private final WizardInteractor wizardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
 
-   public WizardUploadProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,SmartCardInteractor smartCardInteractor,
+   public WizardUploadProfilePresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, deviceConnectionDelegate);
-      this.smartCardInteractor= smartCardInteractor;
+      this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -80,6 +81,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-      getNavigator().goWizardAssignUser(getView().getProvisionMode());
+
+      getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
    }
 }

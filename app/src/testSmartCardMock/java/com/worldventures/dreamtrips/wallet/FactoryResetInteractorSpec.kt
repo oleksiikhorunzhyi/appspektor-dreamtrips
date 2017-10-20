@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.wallet.model.TestSmartCardUser
 import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor
+import com.worldventures.dreamtrips.wallet.service.TestSchedulerProvider
 import com.worldventures.dreamtrips.wallet.service.command.FactoryResetCommand
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand
@@ -205,7 +206,7 @@ class FactoryResetInteractorSpec : BaseSpec({
 
       fun createFactoryResetInteractor(janet: Janet) = FactoryResetInteractor(SessionActionPipeCreator(janet))
 
-      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), TestSchedulerProvider())
 
       fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
 

@@ -13,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
@@ -90,6 +91,16 @@ public class WizardManualInputScreenImpl extends WalletBaseController<WizardManu
             ErrorViewFactory.<GetSmartCardStatusCommand>builder()
                   .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
                         command -> getPresenter().retry(command.barcode), c -> { /*nothing*/ })
+                  ).build()
+      );
+   }
+
+   @Override
+   public OperationView<SmartCardUserCommand> provideOperationFetchSmartCardUser() {
+      return new ComposableOperationView<>(
+            ErrorViewFactory.<SmartCardUserCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
+                        c -> getPresenter().retryAssignedToCurrentDevice(), c -> { /*nothing*/ })
                   ).build()
       );
    }

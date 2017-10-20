@@ -17,7 +17,6 @@ public final class FlipAnim {
    private boolean isBackVisible = false;
    private final View cardFrontLayout;
    private final View cardBackLayout;
-   
    private final WeakHandler handler = new WeakHandler();
 
    private FlipAnim(View cardFrontLayout, View cardBackLayout) {

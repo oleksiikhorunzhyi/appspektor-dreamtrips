@@ -136,7 +136,8 @@ public final class ParseUtils {
                String namespace = parser.getNamespace();
                if ("error".equals(elementName)) {
                   stanza.setError(PacketParserUtils.parseError(parser));
-               } else {// Otherwise, it must be a packet extension.
+               } else {
+                  // Otherwise, it must be a packet extension.
                   // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
                   // failing completely here. See SMACK-390 for more information.
                   try {

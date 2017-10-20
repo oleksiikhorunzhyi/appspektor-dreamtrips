@@ -225,7 +225,7 @@ public class PodcastService extends Service {
          }
          boolean shouldAbandonAudioFocusCompletely = !wasPausedByTemporaryAudioFocusLoss;
          pausePlayerInternal(shouldAbandonAudioFocusCompletely);
-      } else if (audioFocusState == AudioFocusDelegate.AudioFocusState.GAINED && wasPausedByTemporaryAudioFocusLoss {
+      } else if (audioFocusState == AudioFocusDelegate.AudioFocusState.GAINED && wasPausedByTemporaryAudioFocusLoss) {
          startPlayer();
       }
    }

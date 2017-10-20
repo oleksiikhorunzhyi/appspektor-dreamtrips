@@ -20,8 +20,8 @@ import static com.jakewharton.rxbinding.internal.Preconditions.checkNotNull;
  */
 public final class RxDtlToolbar {
 
-   private final static String DTL_TOOLBAR_NULL_MESSAGE= "dtlToolbar == null";
-   private final static String VIEW_NULL_MESSAGE= "view == null";
+   private final static String DTL_TOOLBAR_NULL_MESSAGE = "dtlToolbar == null";
+   private final static String VIEW_NULL_MESSAGE = "view == null";
 
    private RxDtlToolbar() {
    }

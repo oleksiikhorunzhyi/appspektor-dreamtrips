@@ -89,7 +89,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
       connection.addAsyncStanzaListener(this::interceptRevertClearingChatIncomingStanza, new StanzaTypeFilter(RevertClearChatIQ.class));
 
       MultiUserChatManager.getInstanceFor(connection).addInvitationListener(
-            (__, room, inviter, reason, password, message) -> onChatInvited(room)
+            (listener, room, inviter, reason, password, message) -> onChatInvited(room)
       );
 
       Roster.getInstanceFor(connection).addRosterListener(rosterListener);

@@ -6,11 +6,14 @@ import android.os.Parcelable;
 public class TransactionModel implements Parcelable {
 
    private String merchantName;
-   private String subTotalAmount;
-   private String earnedPoints;
    private String transactionDate;
    private boolean rewardStatus;
    private String receiptUrl;
+   private double subTotalAmount;
+   private double totalAmount;
+   private double tax;
+   private double tip;
+   private int earnedPoints;
 
    public TransactionModel() {
 
@@ -24,22 +27,6 @@ public class TransactionModel implements Parcelable {
       this.merchantName = merchantName;
    }
 
-   public String getSubTotalAmount() {
-      return subTotalAmount;
-   }
-
-   public void setSubTotalAmount(String subTotalAmount) {
-      this.subTotalAmount = subTotalAmount;
-   }
-
-   public String getEarnedPoints() {
-      return earnedPoints;
-   }
-
-   public void setEarnedPoints(String earnedPoints) {
-      this.earnedPoints = earnedPoints;
-   }
-
    public String getTransactionDate() {
       return transactionDate;
    }
@@ -48,7 +35,7 @@ public class TransactionModel implements Parcelable {
       this.transactionDate = transactionDate;
    }
 
-   public boolean getRewardStatus() {
+   public boolean isRewardStatus() {
       return rewardStatus;
    }
 
@@ -64,23 +51,69 @@ public class TransactionModel implements Parcelable {
       this.receiptUrl = receiptUrl;
    }
 
+   public double getSubTotalAmount() {
+      return subTotalAmount;
+   }
+
+   public void setSubTotalAmount(double subTotalAmount) {
+      this.subTotalAmount = subTotalAmount;
+   }
+
+   public double getTotalAmount() {
+      return totalAmount;
+   }
+
+   public void setTotalAmount(double totalAmount) {
+      this.totalAmount = totalAmount;
+   }
+
+   public double getTax() {
+      return tax;
+   }
+
+   public void setTax(double tax) {
+      this.tax = tax;
+   }
+
+   public double getTip() {
+      return tip;
+   }
+
+   public void setTip(double tip) {
+      this.tip = tip;
+   }
+
+   public int getEarnedPoints() {
+      return earnedPoints;
+   }
+
+   public void setEarnedPoints(int earnedPoints) {
+      this.earnedPoints = earnedPoints;
+   }
+
    protected TransactionModel(Parcel in) {
       merchantName = in.readString();
-      subTotalAmount = in.readString();
-      earnedPoints = in.readString();
       transactionDate = in.readString();
       rewardStatus = in.readByte() != 0;
       receiptUrl = in.readString();
+      subTotalAmount = in.readDouble();
+      totalAmount = in.readDouble();
+      tax = in.readDouble();
+      tip = in.readDouble();
+      earnedPoints = in.readInt();
    }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
       dest.writeString(merchantName);
-      dest.writeString(subTotalAmount);
-      dest.writeString(earnedPoints);
       dest.writeString(transactionDate);
       dest.writeByte((byte) (rewardStatus ? 1 : 0));
       dest.writeString(receiptUrl);
+      dest.writeDouble(subTotalAmount);
+      dest.writeDouble(totalAmount);
+      dest.writeDouble(tax);
+      dest.writeDouble(tip);
+      dest.writeInt(earnedPoints);
    }
 
    @Override

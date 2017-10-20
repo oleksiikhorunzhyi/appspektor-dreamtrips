@@ -53,19 +53,19 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
    private void onMerchantsLoaded(TransactionPilotAction action) {
       String transactionResponse = action.getResult().transactionStatus();
       if (transactionResponse.contains(TRANSACTION_SUCCESSFUL)) {
-         view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
+         view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
       } else {
-         view.openPaymentFailedScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
+         view.openPaymentFailedScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
       }
    }
 
    private void onMerchantsLoadingError(TransactionPilotAction action, Throwable throwable) {
-      view.openPaymentFailedScreen(action.getErrorMessage(), action.getResult().pointsAmount(), action.getResult().pointsAmount());
+      view.openPaymentFailedScreen(action.getErrorMessage(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
    }
 
    public interface View extends RxView {
-      void openThankYouScreen(String totalAmount, String earnedPoints, String totalPoints);
+      void openThankYouScreen(String totalAmount, String earnedPoints, String totalPoints, String receiptURL);
 
-      void openPaymentFailedScreen(String totalAmount, String earnedPoints, String totalPoints);
+      void openPaymentFailedScreen(String totalAmount, String earnedPoints, String totalPoints, String receiptURL);
    }
 }

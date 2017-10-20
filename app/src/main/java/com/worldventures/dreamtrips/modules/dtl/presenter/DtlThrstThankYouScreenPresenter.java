@@ -23,19 +23,21 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
          view.thankYouSuccessfulText();
          view.setSuccessPaymentText();
          view.setPaymentSuccessImage();
-         view.setChargeMoney(thrstPaymentBundle.getTotalAmount());
          view.setSuccessResume();
          view.setShowScreenSuccessMessage();
-         view.hideSubThankYouMessage();
       } else {
          view.thankYouFailureText();
          view.setFailurePaymentText();
          view.setPaymentFailureImage();
-         view.setChargeMoney(thrstPaymentBundle.getTotalAmount());
          view.setFailureResume();
          view.setShowScreenFailureMessage();
          view.showSubThankYouMessage();
       }
+      view.hideReviewMerchant();
+      view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()), 0, 0, 0);
+      view.setEarnedPoints(Integer.valueOf(thrstPaymentBundle.getEarnedPoints()));
+      view.setReceiptURL(thrstPaymentBundle.getReceiptURL());
+      view.showDoneButton();
    }
 
    public void onDoneClick() {
@@ -44,7 +46,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
    public interface View extends RxView {
 
-      void setChargeMoney(String money);
+      void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount);
 
       void thankYouSuccessfulText();
 
@@ -68,7 +70,13 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
       void showSubThankYouMessage();
 
-      void hideSubThankYouMessage();
+      void showDoneButton();
+
+      void hideReviewMerchant();
+
+      void setEarnedPoints(int earnedPoints);
+
+      void setReceiptURL(String url);
 
       void goBack(boolean isPaid, String earnedPoints, String totalPoints);
    }

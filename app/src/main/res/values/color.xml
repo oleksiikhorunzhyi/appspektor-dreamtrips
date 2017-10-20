@@ -100,4 +100,9 @@
 
    <color name="thrst_merchant_button_unpressed">#6C008D</color>
    <color name="thrst_merchant_button_pressed">#5C006D</color>
+   <color name="earned_point_transaction">#90B1BE</color>
+
+   <!--Transactions -->
+   <color name="transaction_text_color">#4a4a4a</color>
+
 </resources>

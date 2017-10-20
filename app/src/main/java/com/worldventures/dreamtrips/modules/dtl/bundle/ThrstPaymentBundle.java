@@ -12,13 +12,15 @@ public class ThrstPaymentBundle implements Parcelable {
    private final String totalAmount;
    private final String earnedPoints;
    private final String totalPoints;
+   private final String receiptURL;
 
-   public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount, String earnedPoints, String totalPoints) {
+   public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount, String earnedPoints, String totalPoints, String receiptURL) {
       this.merchant = merchant;
       this.isPaid = isPaid;
       this.totalAmount = totalAmount;
       this.earnedPoints = earnedPoints;
       this.totalPoints = totalPoints;
+      this.receiptURL = receiptURL;
    }
 
    public Merchant getMerchant() {
@@ -41,6 +43,9 @@ public class ThrstPaymentBundle implements Parcelable {
       return totalPoints;
    }
 
+   public String getReceiptURL() {
+      return receiptURL;
+   }
    ///////////////////////////////////////////////////////////////////////////
    // Parcelable part
    ///////////////////////////////////////////////////////////////////////////
@@ -51,6 +56,7 @@ public class ThrstPaymentBundle implements Parcelable {
       totalAmount = in.readString();
       earnedPoints = in.readString();
       totalPoints = in.readString();
+      receiptURL = in.readString();
    }
 
    @Override
@@ -60,6 +66,7 @@ public class ThrstPaymentBundle implements Parcelable {
       dest.writeString(totalAmount);
       dest.writeString(earnedPoints);
       dest.writeString(totalPoints);
+      dest.writeString(receiptURL);
    }
 
    public static final Creator<ThrstPaymentBundle> CREATOR = new Creator<ThrstPaymentBundle>() {

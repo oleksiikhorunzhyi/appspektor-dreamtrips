@@ -144,6 +144,10 @@
    <dimen name="photo_strip_error_message_text_size">14sp</dimen>
 
    <dimen name="photo_cell_title_height">40dp</dimen>
+
+   <dimen name="left_transaction_space">8dp</dimen>
+   <dimen name="dtl_transaction_search_margin">12sp</dimen>
+
    <!-- DTL Transaction Screen dimens-->
    <dimen name="dtl_transaction_screen_item_title_text_size">15sp</dimen>
    <dimen name="dtl_transaction_screen_item_items_text_size">13sp</dimen>
@@ -152,5 +156,14 @@
    <dimen name="dtl_transaction_screen_item_line_separator_height">1dp</dimen>
    <dimen name="dtl_transaction_screen_item_earned_points_checker_margin_left">4dp</dimen>
    <dimen name="dtl_transaction_screen_item_transaction_status_icon_margin">4dp</dimen>
-   <dimen name="left_transaction_space">8dp</dimen>
+
+   <dimen name="dtl_transaction_screen_margin">8dp</dimen>
+   <dimen name="dtl_transaction_screen_margin_big">10dp</dimen>
+   <dimen name="dtl_transaction_screen_margin_extra_big">20dp</dimen>
+   <dimen name="dtl_transaction_screen_padding">33dp</dimen>
+   <dimen name="dtl_transaction_screen_icon">50dp</dimen>
+   <dimen name="dtl_transaction_screen_margin_points_icon_margin">5dp</dimen>
+   <dimen name="dtl_transaction_screen_card_radius">4dp</dimen>
+   <dimen name="dtl_transaction_screen_content_width">250dp</dimen>
+
 </resources>

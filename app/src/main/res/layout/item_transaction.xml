@@ -15,65 +15,73 @@
    <LinearLayout
          android:layout_width="match_parent"
          android:layout_height="match_parent"
+         android:layout_margin="@dimen/dtl_transaction_screen_item_margin"
          android:orientation="vertical"
-         android:layout_margin="@dimen/dtl_transaction_screen_item_margin">
+         >
 
       <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
          <TextView
                android:id="@+id/merchant_name"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:textSize="@dimen/dtl_transaction_screen_item_title_text_size"
                android:text="Merchant name"
+               android:textColor="@color/black"
+               android:textSize="@dimen/dtl_transaction_screen_item_title_text_size"
                android:textStyle="bold"
-               android:textColor="@color/black"/>
+               />
 
          <TextView
                android:id="@+id/transaction_date"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:text="10-11-1990"
                android:gravity="end"
+               android:text="10-11-1990"
+               android:textColor="@color/gray_btn_bg_color"
                android:textSize="@dimen/dtl_transaction_screen_item_title_text_size"
-               android:textColor="@color/gray_btn_bg_color"/>
+               />
 
          <LinearLayout
                android:id="@+id/earned_points_layout"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:layout_below="@+id/merchant_name"
                android:orientation="horizontal"
-               android:layout_below="@+id/merchant_name">
+               >
 
             <TextView
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="@string/dtl_transaction_screen_earned_points_text"
-                  android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
                   android:layout_gravity="center_vertical"
+                  android:text="@string/dtl_transaction_screen_earned_points_text"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
                   android:textStyle="bold"
-                  android:textColor="@color/black"/>
+                  />
 
             <TextView
                   android:id="@+id/earned_points"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="20"
-                  android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
                   android:layout_gravity="center_vertical"
-                  android:textColor="@color/transaction_color_points"
                   android:layout_marginLeft="@dimen/left_transaction_space"
-                  android:textStyle="bold"/>
+                  android:text="20"
+                  android:textColor="@color/earned_point_transaction"
+                  android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
+                  android:textStyle="bold"
+                  />
 
             <ImageView
                   android:id="@+id/earned_points_icon"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_marginStart="@dimen/dtl_transaction_screen_item_earned_points_checker_margin_left"
                   android:layout_gravity="center_vertical"
-                  android:background="@drawable/dt_points_big_icon"/>
+                  android:layout_marginStart="@dimen/dtl_transaction_screen_item_earned_points_checker_margin_left"
+                  android:background="@drawable/dt_points_big_icon"
+                  />
 
          </LinearLayout>
 

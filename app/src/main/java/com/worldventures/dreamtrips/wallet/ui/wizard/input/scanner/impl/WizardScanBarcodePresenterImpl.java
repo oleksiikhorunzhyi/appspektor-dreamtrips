@@ -59,6 +59,11 @@ public class WizardScanBarcodePresenterImpl extends WalletPresenterImpl<WizardSc
    }
 
    @Override
+   public void retryAssignedToCurrentDevice() {
+      inputBarcodeDelegate.retryAssignedToCurrentDevice();
+   }
+
+   @Override
    public void retryScan() {
       getView().reset();
    }

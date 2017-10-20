@@ -5,14 +5,14 @@ import android.location.Address
 import android.location.Location
 import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoordinates
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocation
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType
-import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.wallet.domain.converter.*
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.*
@@ -225,7 +225,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          return mockConverter
       }
 
-      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), TestSchedulerProvider())
 
       fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(SessionActionPipeCreator(janet))
 
@@ -254,8 +254,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                      .body(placesResponse)) { request ->
                   request.url.startsWith("https://maps.googleapis.com/maps/api/place/nearbysearch/json")
                }
-               .bind(MockHttpActionService.Response(200).body(addressResponse)) {
-                  request ->
+               .bind(MockHttpActionService.Response(200).body(addressResponse)) { request ->
                   request.url.startsWith("http://maps.googleapis.com/maps/api/geocode/json")
                }
                .bind(MockHttpActionService.Response(204)) { request ->

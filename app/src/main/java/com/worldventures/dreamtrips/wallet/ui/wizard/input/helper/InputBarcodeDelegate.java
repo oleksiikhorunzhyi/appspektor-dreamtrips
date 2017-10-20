@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.helper;
 
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.service.command.http.GetSmartCardStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
 
@@ -14,14 +18,17 @@ public class InputBarcodeDelegate {
    private final Navigator navigator;
    private final InputAnalyticsDelegate analyticsDelegate;
    private final WizardInteractor wizardInteractor;
+   private final SmartCardInteractor smartCardInteractor;
 
    public InputBarcodeDelegate(
          Navigator navigator,
          WizardInteractor wizardInteractor,
-         InputAnalyticsDelegate analyticsDelegate) {
+         InputAnalyticsDelegate analyticsDelegate,
+         SmartCardInteractor smartCardInteractor) {
       this.navigator = navigator;
       this.analyticsDelegate = analyticsDelegate;
       this.wizardInteractor = wizardInteractor;
+      this.smartCardInteractor = smartCardInteractor;
    }
 
    public void barcodeEntered(String barcode) {
@@ -45,10 +52,39 @@ public class InputBarcodeDelegate {
                   .onSuccess(command -> SmartCardStatusHandler.handleSmartCardStatus(command.getResult(),
                         statusUnassigned -> cardIsUnassigned(command.getSmartCardId()),
                         statusAssignToAnotherDevice -> cardAssignToAnotherDevice(command.getSmartCardId()),
-                        statusAssignedToAnotherUser -> inputDelegateView.showErrorCardIsAssignedDialog()
+                        statusAssignedToAnotherUser -> inputDelegateView.showErrorCardIsAssignedDialog(),
+                        statusAssignedToCurrentDevice -> fetchAssociatedSmartCard()
                   ))
                   .onFail((command, throwable) -> Timber.e(throwable, ""))
                   .create());
+
+      smartCardInteractor.fetchAssociatedSmartCard()
+            .observeSuccess()
+            .flatMap(cmd -> {
+               smartCardInteractor.fetchAssociatedSmartCard().clearReplays();
+               return smartCardInteractor.smartCardUserPipe().createObservable(SmartCardUserCommand.fetch());
+            })
+            .compose(inputDelegateView.bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(OperationActionSubscriber.forView(inputDelegateView.provideOperationFetchSmartCardUser())
+                  .onSuccess(command -> handleSmartCardUserExisting(command.getResult()))
+                  .create());
+   }
+
+   private void fetchAssociatedSmartCard() {
+      smartCardInteractor.fetchAssociatedSmartCard().send(new FetchAssociatedSmartCardCommand());
+   }
+
+   public void retryAssignedToCurrentDevice() {
+      fetchAssociatedSmartCard();
+   }
+
+   private void handleSmartCardUserExisting(SmartCardUser smartCardUser) {
+      if (smartCardUser != null) {
+         navigator.goWizardUploadProfile(ProvisioningMode.STANDARD);
+      } else {
+         navigator.goWizardEditProfile(ProvisioningMode.STANDARD);
+      }
    }
 
    private void cardAssignToAnotherDevice(String smartCardId) {

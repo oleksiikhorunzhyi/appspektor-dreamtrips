@@ -8,7 +8,7 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.social.ui.membership.model.InviteTemplate;
+import com.worldventures.dreamtrips.social.domain.entity.InviteTemplate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;

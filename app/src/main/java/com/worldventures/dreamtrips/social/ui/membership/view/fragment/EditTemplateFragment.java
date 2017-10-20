@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.social.ui.membership.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
-import icepick.State;
 
 @Layout(R.layout.fragment_edit_template)
 @MenuResource(R.menu.menu_edit_template)
@@ -35,15 +34,12 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
 
    @Inject @ForActivity Provider<Injector> injector;
 
-   @InjectView(R.id.tv_from) TextView tvFrom;
-   @InjectView(R.id.tv_to) TextView tvTo;
-   @InjectView(R.id.tv_subj) TextView tvSubj;
-   @InjectView(R.id.wv_preview) WebView wvPreview;
-   @InjectView(R.id.et_personal_message) MaterialEditText etMessage;
+   @InjectView(R.id.tv_from) TextView fromContact;
+   @InjectView(R.id.tv_to) TextView toContact;
+   @InjectView(R.id.tv_subj) TextView subject;
+   @InjectView(R.id.wv_preview) WebView preview;
+   @InjectView(R.id.et_personal_message) MaterialEditText message;
    @InjectView(R.id.ll_progress) View progressView;
-   @InjectView(R.id.photoContainer) ViewGroup photoContainer;
-
-   @State String savedMessage;
 
    @Override
    protected EditTemplatePresenter createPresenter(Bundle savedInstanceState) {
@@ -53,10 +49,9 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      etMessage.setText(savedMessage);
-      wvPreview.getSettings().setJavaScriptEnabled(true);
-      wvPreview.getSettings().setLoadWithOverviewMode(true);
-      wvPreview.getSettings().setUseWideViewPort(true);
+      preview.getSettings().setLoadWithOverviewMode(true);
+      preview.getSettings().setUseWideViewPort(true);
+      preview.getSettings().setJavaScriptEnabled(true);
       progressView.setVisibility(View.GONE);
    }
 
@@ -67,7 +62,7 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
             getPresenter().previewAction();
             break;
          case R.id.action_send:
-            getPresenter().shareRequest();
+            getPresenter().shareRequest(message.getText().toString());
             break;
       }
       return super.onOptionsItemSelected(item);
@@ -81,28 +76,23 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
    }
 
    @Override
-   public void setFrom(String from) {
-      tvFrom.setText(from);
+   public void setFrom(@NonNull String from) {
+      fromContact.setText(from);
    }
 
    @Override
-   public void setSubject(String title) {
-      tvSubj.setText(title);
+   public void setSubject(@NonNull String title) {
+      subject.setText(title);
    }
 
    @Override
-   public void setTo(String s) {
-      tvTo.setText(s);
+   public void setTo(@NonNull String to) {
+      toContact.setText(to);
    }
 
    @Override
    public void setWebViewContent(String content) {
-      wvPreview.loadData(content, "text/html; charset=UTF-8", null);
-   }
-
-   @Override
-   public String getMessage() {
-      return etMessage.getText().toString();
+      preview.loadData(content, "text/html; charset=UTF-8", null);
    }
 
    @Override
@@ -116,49 +106,34 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
    }
 
    @Override
-   public void hidePhotoUpload() {
-      photoContainer.setVisibility(View.GONE);
-   }
-
-   @Override
-   public void openPreviewTemplate(UrlBundle bundle) {
+   public void openPreviewTemplate(@NonNull UrlBundle bundle) {
       router.moveTo(Route.PREVIEW_TEMPLATE, NavigationConfigBuilder.forActivity().data(bundle).build());
    }
 
    @Override
-   public void openShare(Intent intent) {
+   public void openShare(@NonNull Intent intent) {
       startActivityForResult(Intent.createChooser(intent, getActivity().getString(R.string.action_share)), REQUEST_CODE);
    }
 
    @Override
    public void onResume() {
-      wvPreview.onResume();
+      preview.onResume();
       super.onResume();
    }
 
    @Override
    public void onPause() {
       super.onPause();
-      wvPreview.onPause();
-      cacheMessage();
+      preview.onPause();
    }
 
-   @Override
-   public void onSaveInstanceState(Bundle outState) {
-      cacheMessage();
-      super.onSaveInstanceState(outState);
-   }
-
-   @Override
+@Override
    public void onDestroy() {
       super.onDestroy();
-      if (wvPreview != null) {
-         wvPreview.destroy();
-         wvPreview = null;
+      if (preview != null) {
+         preview.destroy();
+         preview = null;
       }
    }
 
-   private void cacheMessage() {
-      if (etMessage != null) savedMessage = getMessage();
-   }
 }

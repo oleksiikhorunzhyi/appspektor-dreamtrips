@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
+import com.worldventures.dreamtrips.social.domain.storage.action.ContactsStorage;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationRepository;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationRepositoryImpl;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationStorage;
@@ -225,4 +226,11 @@ public class SocialActionStorageModule {
    ActiveFeedRouteStorage provideActiveFeedRouteStorage() {
       return new ActiveFeedRouteStorage();
    }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideContactStorage() {
+      return new ContactsStorage();
+   }
+
 }

@@ -32,6 +32,7 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
    private static final String KEY_BARCODE = "key_barcode";
 
    private Toolbar toolbar;
+   private Button btnNext;
 
    @Inject PairKeyPresenter presenter;
 
@@ -54,7 +55,7 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
    protected void onFinishInflate(View view) {
       super.onFinishInflate(view);
       toolbar = view.findViewById(R.id.toolbar);
-      final Button btnNext = view.findViewById(R.id.button_next);
+      btnNext = view.findViewById(R.id.button_next);
       btnNext.setOnClickListener(next -> getPresenter().tryToPairAndConnectSmartCard());
    }
 
@@ -83,6 +84,11 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
       return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_BARCODE))
             ? getArgs().getString(KEY_BARCODE)
             : null;
+   }
+
+   @Override
+   public void nextButtonEnable(boolean enable) {
+      btnNext.setEnabled(enable);
    }
 
    @Override

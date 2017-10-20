@@ -401,10 +401,10 @@ public class WalletActivityModule {
 
    @Provides
    WizardScanBarcodePresenter provideWizardScanBarcodePresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         WizardInteractor wizardInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, PermissionDispatcher permissionDispatcher) {
+         WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         PermissionDispatcher permissionDispatcher, SmartCardInteractor smartCardInteractor) {
       return new WizardScanBarcodePresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
-            new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor)));
+            new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor), smartCardInteractor));
    }
 
    @Provides
@@ -416,10 +416,11 @@ public class WalletActivityModule {
 
    @Provides
    WizardManualInputPresenter provideWizardManualInputPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
+         SmartCardInteractor smartCardInteractor) {
       return new WizardManualInputPresenterImpl(navigator, deviceConnectionDelegate,
             analyticsInteractor, new InputBarcodeDelegate(navigator, wizardInteractor,
-            InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor)));
+            InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor), smartCardInteractor));
    }
 
    @Provides

@@ -148,7 +148,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    public void attachImages(MediaPickerAttachment mediaAttachment) {
-      if (view == null || !mediaAttachment.hasImages() || !mediaAttachment.hasVideo()) return;
+      if (view == null || !mediaAttachment.hasImages()) return;
 
       view.disableImagePicker();
       imageSelected(mediaAttachment);

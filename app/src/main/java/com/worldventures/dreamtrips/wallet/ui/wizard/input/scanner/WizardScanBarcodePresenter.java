@@ -14,5 +14,7 @@ public interface WizardScanBarcodePresenter extends WalletPresenter<WizardScanBa
 
    void retry(String barcode);
 
+   void retryAssignedToCurrentDevice();
+
    void retryScan();
 }

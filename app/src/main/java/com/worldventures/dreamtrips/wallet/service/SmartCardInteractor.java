@@ -30,8 +30,6 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.general.disp
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
-import java.util.concurrent.Executors;
-
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
@@ -51,8 +49,6 @@ import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import io.techery.janet.smartcard.event.PinStatusEvent;
-import rx.Scheduler;
-import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 public final class SmartCardInteractor {
@@ -109,20 +105,17 @@ public final class SmartCardInteractor {
    private final ActionPipe<ValidateDisplayTypeDataCommand> validateDisplayTypeDataPipe;
    private final ActionPipe<AboutSmartCardDataCommand> aboutSmartCardDataCommandPipe;
 
-   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
-   }
-
-   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
+   //change to Scheduler Factory
+   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator, WalletSchedulerProvider schedulerProvider) {
       //synchronized pipes
-      smartCardSyncPipe = sessionActionPipeCreator.createPipe(SyncSmartCardCommand.class, cacheSchedulerFactory.call());
-      activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, cacheSchedulerFactory
-            .call());
-      deviceStatePipe = sessionActionPipeCreator.createPipe(DeviceStateCommand.class, cacheSchedulerFactory.call());
-      smartCardFirmwarePipe = sessionActionPipeCreator.createPipe(SmartCardFirmwareCommand.class, cacheSchedulerFactory.call());
-      smartCardUserPipe = sessionActionPipeCreator.createPipe(SmartCardUserCommand.class, cacheSchedulerFactory.call());
-      fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, cacheSchedulerFactory
-            .call());
+      smartCardSyncPipe = sessionActionPipeCreator.createPipe(SyncSmartCardCommand.class, schedulerProvider.storageScheduler());
+      activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, schedulerProvider.storageScheduler());
+      deviceStatePipe = sessionActionPipeCreator.createPipe(DeviceStateCommand.class, schedulerProvider.storageScheduler());
+      smartCardFirmwarePipe = sessionActionPipeCreator.createPipe(SmartCardFirmwareCommand.class, schedulerProvider.storageScheduler());
+      smartCardUserPipe = sessionActionPipeCreator.createPipe(SmartCardUserCommand.class, schedulerProvider.storageScheduler());
+      fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, schedulerProvider.storageScheduler());
+      aboutSmartCardDataCommandPipe = sessionActionPipeCreator.createPipe(AboutSmartCardDataCommand.class, schedulerProvider
+            .storageScheduler());
 
       fetchFirmwareVersionPipe = sessionActionPipeCreator.createPipe(FetchFirmwareVersionCommand.class, Schedulers.io());
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
@@ -179,12 +172,6 @@ public final class SmartCardInteractor {
             .io());
       validateDisplayTypeDataPipe = sessionActionPipeCreator.createPipe(ValidateDisplayTypeDataCommand.class, Schedulers
             .io());
-      aboutSmartCardDataCommandPipe = sessionActionPipeCreator.createPipe(AboutSmartCardDataCommand.class, cacheSchedulerFactory
-            .call());
-   }
-
-   private static Scheduler singleThreadScheduler() {
-      return Schedulers.from(Executors.newSingleThreadExecutor());
    }
 
    public ActionPipe<ActiveSmartCardCommand> activeSmartCardPipe() {

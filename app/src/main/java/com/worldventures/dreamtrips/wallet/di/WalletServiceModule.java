@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsServiceWrapper;
 import com.worldventures.dreamtrips.wallet.service.WalletBluetoothService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.WalletSchedulerProvider;
+import com.worldventures.dreamtrips.wallet.service.WalletSchedulerProviderImpl;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.dreamtrips.wallet.service.firmware.FirmwareModule;
@@ -91,8 +93,15 @@ public class WalletServiceModule {
 
    @Singleton
    @Provides
-   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator) {
-      return new SmartCardInteractor(sessionActionPipeCreator);
+   WalletSchedulerProvider provideWalletSchedulerProvider() {
+      return new WalletSchedulerProviderImpl();
+   }
+
+   @Singleton
+   @Provides
+   SmartCardInteractor provideSmartCardInteractor(@Named(JANET_WALLET) SessionActionPipeCreator sessionActionPipeCreator,
+         WalletSchedulerProvider schedulerProvider) {
+      return new SmartCardInteractor(sessionActionPipeCreator, schedulerProvider);
    }
 
    @Singleton

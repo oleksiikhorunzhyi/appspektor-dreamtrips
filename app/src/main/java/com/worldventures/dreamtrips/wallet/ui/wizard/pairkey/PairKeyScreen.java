@@ -12,4 +12,6 @@ public interface PairKeyScreen extends WalletScreen, PairView {
    ProvisioningMode getProvisionMode();
 
    String getBarcode();
+
+   void nextButtonEnable(boolean enable);
 }

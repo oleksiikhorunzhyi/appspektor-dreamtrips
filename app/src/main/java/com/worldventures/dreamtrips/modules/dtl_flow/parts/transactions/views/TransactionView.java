@@ -89,8 +89,8 @@ public class TransactionView extends LinearLayout {
 
    public void clearSearch(){
       if(searchableTransactionsAdapter!=null && !searchableTransactionsAdapter.getAllItems().isEmpty()){
-            //add all results on pageable adapter
-            pageableTransactionAdapter.setTransactionsList(searchableTransactionsAdapter.getAllItems());
+         //add all results on pageable adapter
+         pageableTransactionAdapter.setTransactionsList(searchableTransactionsAdapter.getAllItems());
       }
       setPageableAdapter();
    }

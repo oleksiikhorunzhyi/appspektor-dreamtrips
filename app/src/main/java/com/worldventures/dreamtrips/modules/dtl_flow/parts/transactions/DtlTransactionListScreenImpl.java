@@ -150,5 +150,4 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    public void setTransactionsView(TransactionView transactionsView) {
       this.transactionsView = transactionsView;
    }
-
 }

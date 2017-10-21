@@ -42,7 +42,7 @@ public class DateTimeUtils {
    public static final String PODCAST_DATE_FORMAT = "MMM d, yyyy";
    public static final String TRIP_FILTER_ANALYTIC_DATE_FORMAT = "MM-dd-yyyy";
    public static final String REVIEWS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-   private static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
+   public static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
    public static final String UTC = "UTC";
 
    private DateTimeUtils() {

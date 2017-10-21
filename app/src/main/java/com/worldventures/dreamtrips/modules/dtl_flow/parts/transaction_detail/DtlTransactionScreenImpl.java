@@ -79,7 +79,7 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       tvSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount()));
       tvTax.setText(CurrencyUtils.toCurrency(transaction.getTax()));
       tvTip.setText(CurrencyUtils.toCurrency(transaction.getTip()));
-      tvDate.setText(DateTimeUtils.getISODateFromStringUTC(transaction.getTransactionDate()));
+      tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
       tvEarnedPoints.setText(String.format(getContext().getString(R.string.dtl_earned_points), transaction.getEarnedPoints()));
       setupSpannableAction(tvReceipt, new OpenURLSpannable());
       setupSpannableAction(tvReview, new ReviewMerchantSpannable());

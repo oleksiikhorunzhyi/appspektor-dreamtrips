@@ -1,15 +1,21 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import android.content.Context;
-import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
+
 import com.worldventures.core.janet.Injector;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
+import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import javax.inject.Inject;
 
 public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransactionListScreen, ViewState.EMPTY> implements DtlTransactionListPresenter {
 
@@ -20,6 +26,8 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
       }
    };
 
+   @Inject MerchantsInteractor merchantsInteractor;
+
    public DtlTransactionListPresenterImpl(Context context, Injector injector) {
       super(context);
       injector.inject(this);
@@ -29,8 +37,14 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       getView().setEventListener(listener);
-      generateMockObjects(28);
-      loadFirstPage();
+      merchantsInteractor.getTransactionsPipe()
+            .observeSuccess()
+            .map(GetTransactionsCommand::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(detailTransactionThrsts -> {
+               //TODO handle transactions here
+            });
+      merchantsInteractor.getTransactionsPipe().send(GetTransactionsCommand.readCurrentTransactionsCommand());
    }
 
    @Override
@@ -75,7 +89,6 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
 
       } else
          getView().searchQuery(query);
-
    }
 
    public void searchQuery(String query) {
@@ -104,7 +117,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
          transactionModel.setTotalAmount(transactionModel.getSubTotalAmount() + transactionModel.getTax());
          transactionModel.setEarnedPoints(1 + new Random().nextInt(4));
          transactionModel.setTip(1 + new Random().nextInt(4));
-         transactionModel.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
+         transactionModel.setTransactionDate(new Date());
          transactionModel.setRewardStatus(new Random().nextBoolean());
          mockItems.add(transactionModel);
       }
@@ -121,6 +134,4 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
       }
       return items;
    }
-   //Mock
-
 }

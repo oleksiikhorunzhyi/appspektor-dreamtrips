@@ -79,7 +79,8 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
          earnedPoints.setText(getEarnedPointText(transactionsList.get(position).getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-         transactionDate.setText(DateTimeUtils.getStringDateFromStringUTC(transactionsList.get(position).getTransactionDate()));
+         transactionDate.setText(DateTimeUtils.convertDateToString(transactionsList.get(position).getTransactionDate(),
+               DateTimeUtils.TRANSACTION_DATE_FORMAT));
       }
 
       private String getEarnedPointText(int earnedPoints) {

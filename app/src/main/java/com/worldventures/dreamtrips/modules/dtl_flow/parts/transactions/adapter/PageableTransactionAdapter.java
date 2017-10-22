@@ -8,16 +8,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
    private Context context;
-   private List<TransactionModel> transactionsList = new ArrayList<>();
+   private AdapterItem loader = AdapterItem.forLoader();
+   private List<AdapterItem> items = new ArrayList<>();
+   private boolean loaderIsShowing;
 
    // View Types
    private static final int ITEM = 0;
@@ -27,13 +31,9 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       this.context = context;
    }
 
-   public PageableTransactionAdapter(Context context, List<TransactionModel> transactionsList) {
-      this.context = context;
-      this.transactionsList = transactionsList;
-   }
-
    public List<TransactionModel> getCurrentItems() {
-      return transactionsList;
+      return Queryable.from(items).filter(adapterItem -> adapterItem.transactionModel != null)
+            .map(adapterItem -> adapterItem.transactionModel).toList();
    }
 
    @Override
@@ -59,58 +59,35 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       switch (getItemViewType(position)) {
          case ITEM:
             final PageableTransactionAdapter.ViewHolder recyclerViewHolder = (PageableTransactionAdapter.ViewHolder) holder;
-            recyclerViewHolder.bind(position);
+            recyclerViewHolder.bind(items.get(position).transactionModel);
             break;
       }
    }
 
    @Override
    public int getItemCount() {
-      return transactionsList.size();
+      return items.size();
    }
 
    @Override
    public int getItemViewType(int position) {
-      String merchantName = getItem(position).getMerchantName();
-      return merchantName == null || merchantName.length() == 0 ? LOADING : ITEM;
+      return items.get(position).type;
    }
 
-   public List<TransactionModel> getTransactionsList() {
-      return transactionsList;
-   }
-
-   public void setTransactionsList(List<TransactionModel> transactionsList) {
-      this.transactionsList = transactionsList;
-   }
-
-    /*
-        Helpers - Pagination
-   _________________________________________________________________________________________________
-    */
-
-   public void add(TransactionModel r) {
-      transactionsList.add(r);
-      notifyItemInserted(transactionsList.size() - 1);
-   }
-
-   public void addItems(List<TransactionModel> transactionModels) {
-      for (TransactionModel object : transactionModels) {
-         add(object);
+   public void setTransactions(List<TransactionModel> transactionsList) {
+      items.clear();
+      for (TransactionModel model : transactionsList) {
+         this.items.add(AdapterItem.forTransaction(model));
       }
+      if (loaderIsShowing) items.add(loader);
+      notifyDataSetChanged();
    }
 
-   public void remove(TransactionModel r) {
-      int position = transactionsList.indexOf(r);
-      if (position > -1) {
-         transactionsList.remove(position);
-         notifyItemRemoved(position);
+   public void addTransactions(List<TransactionModel> transactionModels) {
+      for (TransactionModel model : transactionModels) {
+         items.add(AdapterItem.forTransaction(model));
       }
-   }
-
-   public void clear() {
-      while (getItemCount() > 0) {
-         remove(getItem(0));
-      }
+      notifyDataSetChanged();
    }
 
    public boolean isEmpty() {
@@ -118,34 +95,40 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    }
 
    public void addLoadingFooter() {
-      add(new TransactionModel());
+      if (!items.contains(loader)) items.add(loader);
+      loaderIsShowing = true;
+      notifyDataSetChanged();
    }
 
    public void removeLoadingFooter() {
-      if (transactionsList == null || transactionsList.isEmpty()) return;
+      if (items.contains(loader)) items.remove(loader);
+      loaderIsShowing = false;
+      notifyDataSetChanged();
+   }
 
-      int position = transactionsList.size() - 1;
+   public static class AdapterItem {
+      int type;
+      TransactionModel transactionModel;
 
-      if (getItemViewType(position) == ITEM) return;
+      public AdapterItem(int type, TransactionModel transactionModel) {
+         this.type = type;
+         this.transactionModel = transactionModel;
+      }
 
-      TransactionModel object = getItem(position);
+      static AdapterItem forTransaction(TransactionModel transactionModel) {
+         return new AdapterItem(ITEM, transactionModel);
+      }
 
-      if (object != null) {
-         transactionsList.remove(position);
-         notifyItemRemoved(position);
+      static AdapterItem forLoader() {
+         return new AdapterItem(LOADING, null);
       }
    }
 
-   public TransactionModel getItem(int position) {
-      return transactionsList.get(position);
-   }
-
-   public class ViewHolder extends RecyclerView.ViewHolder {
+   private static class ViewHolder extends RecyclerView.ViewHolder {
       public TextView merchantName;
       public TextView earnedPoints;
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
-
 
       public ViewHolder(View itemView) {
          super(itemView);
@@ -155,17 +138,17 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          transactionDate = itemView.findViewById(R.id.transaction_date);
       }
 
-      public void bind(int position) {
-         merchantName.setText(transactionsList.get(position).getMerchantName());
-         earnedPoints.setText(getEarnedPointText(transactionsList.get(position).getEarnedPoints()));
+      public void bind(TransactionModel transactionModel) {
+         merchantName.setText(transactionModel.getMerchantName());
+         earnedPoints.setText(getEarnedPointText(transactionModel.getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-         transactionDate.setText(DateTimeUtils.convertDateToString(transactionsList.get(position).getTransactionDate(),
+         transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
       }
 
       private String getEarnedPointText(int earnedPoints) {
-         return String.format(context.getString(R.string.dtl_earned_points_on_item), earnedPoints);
+         return String.format(itemView.getContext().getString(R.string.dtl_earned_points_on_item), earnedPoints);
       }
 
    }

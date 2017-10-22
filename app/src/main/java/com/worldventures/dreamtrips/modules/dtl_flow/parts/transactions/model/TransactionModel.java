@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class TransactionModel implements Parcelable {
+   private String id;
    private String merchantName;
    private boolean rewardStatus;
    private String receiptUrl;
@@ -17,6 +18,14 @@ public class TransactionModel implements Parcelable {
    private Date transactionDate;
 
    public TransactionModel() { }
+
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public String getId() {
+      return id;
+   }
 
    public String getMerchantName() {
       return merchantName;
@@ -90,7 +99,23 @@ public class TransactionModel implements Parcelable {
       this.transactionDate = transactionDate;
    }
 
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TransactionModel that = (TransactionModel) o;
+
+      return id != null ? id.equals(that.id) : that.id == null;
+   }
+
+   @Override
+   public int hashCode() {
+      return id != null ? id.hashCode() : 0;
+   }
+
    protected TransactionModel(Parcel in) {
+      id = in.readString();
       merchantName = in.readString();
       transactionDate = (Date) in.readSerializable();
       rewardStatus = in.readByte() != 0;
@@ -104,6 +129,7 @@ public class TransactionModel implements Parcelable {
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(id);
       dest.writeString(merchantName);
       dest.writeSerializable(transactionDate);
       dest.writeByte((byte) (rewardStatus ? 1 : 0));

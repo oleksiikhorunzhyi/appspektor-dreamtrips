@@ -13,7 +13,7 @@ import io.techery.janet.http.annotations.Url;
 @HttpAction
 public class GetTransactionsHttpAction extends BaseThirdPartyHttpAction {
 
-   @Url final String url = "https://dev-merchantsservice.wvhtest.com/merchants/transactions";
+   @Url final String url = "http://dev-merchantsservice.wvhtest.com/merchants/transactions";
 
    @RequestHeader("Authorization") String header;
 
@@ -26,6 +26,7 @@ public class GetTransactionsHttpAction extends BaseThirdPartyHttpAction {
 
    public GetTransactionsHttpAction(int take, int skip, String localeId, String userId, String ssoToken) {
       this.header = "Basic " + ProjectTextUtils.convertToBase64NoWrap(userId + ":" + ssoToken);
+      this.skip = String.valueOf(skip);
       this.take = String.valueOf(take);
       this.localeId = localeId;
    }

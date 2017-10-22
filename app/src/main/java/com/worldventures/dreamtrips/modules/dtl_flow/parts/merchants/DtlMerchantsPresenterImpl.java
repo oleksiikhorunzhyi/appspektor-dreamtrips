@@ -192,7 +192,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       getUserTransactions();
    }
 
-   private void getUserTransactions() {
+   void getUserTransactions() {
       merchantInteractor.getTransactionsPipe().send(GetTransactionsCommand.loadFromNetworkCommand(
             ImmutableTransactionDetailActionParams.builder()
                   .localeId(LocaleHelper.getDefaultLocale().getLanguage())

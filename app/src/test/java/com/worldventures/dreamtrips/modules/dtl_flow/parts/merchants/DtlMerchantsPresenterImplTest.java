@@ -23,6 +23,8 @@ import java.util.List;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -48,7 +50,7 @@ public class DtlMerchantsPresenterImplTest {
    @Before
    public void setUp() throws Exception {
       MockitoAnnotations.initMocks(this);
-      presenter = new DtlMerchantsPresenterImpl(context, injector);
+      presenter = spy(new DtlMerchantsPresenterImpl(context, injector));
       presenter.attachView(screen);
       presenter.filterDataInteractor = filterDataInteractor;
       presenter.merchantInteractor = merchantInteractor;
@@ -84,6 +86,7 @@ public class DtlMerchantsPresenterImplTest {
    public void itShouldRefreshSuccess() {
       when(action.isRefresh()).thenReturn(true);
       when(action.merchants()).thenReturn(Collections.singletonList(merchant));
+      doNothing().when(presenter).getUserTransactions();
       presenter.onMerchantsLoaded(action);
       verify(screen).onRefreshSuccess();
    }
@@ -92,6 +95,7 @@ public class DtlMerchantsPresenterImplTest {
    public void itShouldLoadNextSuccess() {
       when(action.isRefresh()).thenReturn(false);
       when(action.merchants()).thenReturn(Collections.singletonList(merchant));
+      doNothing().when(presenter).getUserTransactions();
       presenter.onMerchantsLoaded(action);
       verify(screen).onLoadNextSuccess();
    }

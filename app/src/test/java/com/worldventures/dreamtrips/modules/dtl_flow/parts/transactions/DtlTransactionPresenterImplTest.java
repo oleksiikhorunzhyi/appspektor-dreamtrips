@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -37,18 +38,6 @@ public class DtlTransactionPresenterImplTest {
    }
 
    @Test
-   public void itShouldCleanScreenForFirstLoad() {
-      presenter.loadFirstPage();
-      verify(screen).resetViewData();
-   }
-
-   @Test
-   public void itShouldShowPageLoader() {
-      presenter.loadFirstPage();
-      verify(screen).onRefreshProgress();
-   }
-
-   @Test
    public void itShouldSearchData() {
       screen.setAllTransactions(getListTransaction());
       presenter.searchQuery("abc");
@@ -64,7 +53,7 @@ public class DtlTransactionPresenterImplTest {
          transactionModel.setTotalAmount(transactionModel.getSubTotalAmount() + transactionModel.getTax());
          transactionModel.setEarnedPoints(1 + new Random().nextInt(4));
          transactionModel.setTip(1 + new Random().nextInt(4));
-         transactionModel.setTransactionDate("2017-09-12T14:22:14.000Z UTC");
+         transactionModel.setTransactionDate(new Date());
          transactionModel.setRewardStatus(new Random().nextBoolean());
          mockItems.add(transactionModel);
       }

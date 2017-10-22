@@ -36,6 +36,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
    public void setTransactionsList(List<TransactionModel> transactionsList) {
       this.originalList = transactionsList;
       this.transactionsList = transactionsList;
+      notifyDataSetChanged();
    }
 
    public List<TransactionModel> getAllItems() {

@@ -18,17 +18,15 @@ public interface DtlTransactionListScreen extends DtlScreen {
 
    void onRefreshError(String error);
 
+   void showLoadingFooter(boolean show);
+
    void showEmpty(boolean isShow);
 
    void searchQuery(String query);
 
-   TransactionView getRunnableView();
-
    void setEventListener(ScrollEventListener listener);
 
    void setAllTransactions(List<TransactionModel> transactions);
-
-   void resetViewData();
 
    void setTransactionsView(TransactionView transactionsView);
 }

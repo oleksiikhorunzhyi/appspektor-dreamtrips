@@ -7,10 +7,8 @@ public interface DtlTransactionListPresenter extends DtlPresenter<DtlTransaction
 
    void onBackPressed();
 
-   void loadFirstPage();
-
    void getAllTransactionsToQuery(String query);
 
-   void addMoreTransactions(int indexOf);
+   void loadMoreTransactions(int indexOf);
 
 }

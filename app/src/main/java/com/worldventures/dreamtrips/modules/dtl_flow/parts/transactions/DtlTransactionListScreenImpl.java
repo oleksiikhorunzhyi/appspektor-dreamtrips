@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 import flow.Flow;
+import icepick.State;
 
 public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListScreen, DtlTransactionListPresenter, DtlTransactionListPath>
       implements DtlTransactionListScreen {
@@ -31,6 +33,8 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    @InjectView(R.id.errorView) View errorView;
    @InjectView(R.id.container_transaction_list) TransactionView transactionsView;
    @InjectView(R.id.dtlToolbarMerchantSearchInput) SearchView searchView;
+
+   @State String searchQuery;
 
    public DtlTransactionListScreenImpl(Context context) {
       super(context);
@@ -62,6 +66,12 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
       setupSearch();
    }
 
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      searchQuery = null;
+   }
+
    private void setupSearch() {
       searchView.setVisibility(View.GONE);
       searchView.setIconifiedByDefault(false);
@@ -78,24 +88,28 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
             return true;
          }
       });
+      searchView.setOnCloseListener(() -> {
+         transactionsView.setPageableAdapter();
+         searchQuery = null;
+         return true;
+      });
    }
 
    private void getAllTransactionsFromAPI(String query) {
+      searchQuery = query;
       if (query.length() > 2) {
-            getPresenter().getAllTransactionsToQuery(query);
-      } else
-         transactionsView.clearSearch();
+         transactionsView.setSearchableAdapter();
+         getPresenter().getAllTransactionsToQuery(query);
+      } else {
+         transactionsView.setPageableAdapter();
+         transactionsView.setNotLoading();
+      }
    }
 
    @Override
    public void searchQuery(String query) {
       transactionsView.setSearchableAdapter();
       transactionsView.filterByMerchantName(query);
-   }
-
-   @Override
-   public TransactionView getRunnableView() {
-      return transactionsView;
    }
 
    @Override
@@ -106,20 +120,24 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    @Override
    public void setAllTransactions(List<TransactionModel> transactions) {
       transactionsView.setAllTransactionsList(transactions);
+      showSearchIfNeeded();
+   }
+
+   private void showSearchIfNeeded() {
+      if (!TextUtils.isEmpty(searchQuery) && searchQuery.length() > 2) {
+         transactionsView.setSearchableAdapter();
+         searchView.setQuery(searchQuery, true);
+      }
    }
 
    @Override
    public void addTransactions(List<TransactionModel> transactions) {
-      transactionsView.loadData(transactions);
+      transactionsView.addItems(transactions);
+      showSearchIfNeeded();
    }
 
    @Override
    public void onRefreshSuccess(boolean searchMode) {
-      if(!searchMode && transactionsView.hasTransactions()) {
-         transactionsView.showLoadingFooter(false);
-         return;
-      }
-
       loader.setVisibility(View.GONE);
       transactionsView.setVisibility(View.VISIBLE);
       searchView.setVisibility(View.VISIBLE);
@@ -132,17 +150,17 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    }
 
    @Override
+   public void showLoadingFooter(boolean show) {
+      post(() -> transactionsView.showLoadingFooter(show));
+   }
+
+   @Override
    public void onRefreshError(String error) {
 
    }
 
    @Override
    public void showEmpty(boolean isShow) {
-
-   }
-
-   @Override
-   public void resetViewData() {
 
    }
 

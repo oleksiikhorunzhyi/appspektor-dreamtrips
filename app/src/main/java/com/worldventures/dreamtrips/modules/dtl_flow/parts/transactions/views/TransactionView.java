@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchants.requrest.Transaction;
 import com.worldventures.dreamtrips.modules.common.listener.PaginationScrollListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerTouchListener;
@@ -53,46 +52,36 @@ public class TransactionView extends LinearLayout {
       final View v = LayoutInflater.from(getContext()).inflate(R.layout.activity_transaction_list, this, true);
       recyclerView = (RecyclerView) v.findViewById(R.id.recycler_adapter);
       initRecycler();
-      resetViewData();
+      initAdapters();
    }
 
-   public void loadData(List<TransactionModel> transactions) {
-      loadPage(transactions);
-   }
-
-   private void loadPage(List<TransactionModel> transactions) {
-      pageableTransactionAdapter.addItems(transactions);
+   public void addItems(List<TransactionModel> transactions) {
+      pageableTransactionAdapter.addTransactions(transactions);
       isLoading = false;
    }
 
-   public void resetViewData() {
-      pageableTransactionAdapter = new PageableTransactionAdapter(getContext());
-      recyclerView.setAdapter(pageableTransactionAdapter);
+   public void setNotLoading() {
+      isLoading = false;
    }
 
    public void setAllTransactionsList(List<TransactionModel> transactions){
-      searchableTransactionsAdapter = new SearchableTransactionsAdapter(context, transactions);
-      setSearchableAdapter();
+      setPageableAdapter();
+      pageableTransactionAdapter.setTransactions(transactions);
    }
 
    public void setSearchableAdapter(){
-      if(recyclerView.getAdapter()!=searchableTransactionsAdapter) recyclerView.setAdapter(searchableTransactionsAdapter);
+      if(recyclerView.getAdapter()!=searchableTransactionsAdapter) {
+         recyclerView.setAdapter(searchableTransactionsAdapter);
+         searchableTransactionsAdapter.setTransactionsList(pageableTransactionAdapter.getCurrentItems());
+      }
    }
 
    public void setPageableAdapter(){
-      if(recyclerView.getAdapter()!=pageableTransactionAdapter) recyclerView.setAdapter(pageableTransactionAdapter);
+      if(recyclerView.getAdapter() != pageableTransactionAdapter) recyclerView.setAdapter(pageableTransactionAdapter);
    }
 
    public void filterByMerchantName(String searchString){
       searchableTransactionsAdapter.getFilter().filter(searchString);
-   }
-
-   public void clearSearch(){
-      if(searchableTransactionsAdapter!=null && !searchableTransactionsAdapter.getAllItems().isEmpty()){
-            //add all results on pageable adapter
-            pageableTransactionAdapter.setTransactionsList(searchableTransactionsAdapter.getAllItems());
-      }
-      setPageableAdapter();
    }
 
    private void initRecycler() {
@@ -123,7 +112,6 @@ public class TransactionView extends LinearLayout {
       scrollingListener = new PaginationScrollListener(linearLayoutManager) {
          @Override
          protected void loadMoreItems() {
-            showLoadingFooter(true);
             isLoading = true;
             getMoreTransactions();
          }
@@ -135,15 +123,12 @@ public class TransactionView extends LinearLayout {
       };
 
       recyclerView.addOnScrollListener(scrollingListener);
-
    }
 
-   public boolean hasAllItems(){
-      return searchableTransactionsAdapter==null? false : !searchableTransactionsAdapter.getAllItems().isEmpty();
-   }
-
-   public boolean hasTransactions(){
-      return !pageableTransactionAdapter.getCurrentItems().isEmpty();
+   private void initAdapters() {
+      searchableTransactionsAdapter = new SearchableTransactionsAdapter(context);
+      pageableTransactionAdapter = new PageableTransactionAdapter(getContext());
+      recyclerView.setAdapter(pageableTransactionAdapter);
    }
 
    public void showLoadingFooter(boolean show) {
@@ -154,16 +139,10 @@ public class TransactionView extends LinearLayout {
    }
 
    private void getMoreTransactions() {
-      int lastIndex = getNextItemValue();
-      recyclerView.postDelayed(new Runnable() {
-         @Override
-         public void run() {
-            if (scrollEventListener != null) scrollEventListener.onScrollBottomReached(lastIndex);
-         }
-      }, 1000);
+      if (scrollEventListener != null && recyclerView.getAdapter() != searchableTransactionsAdapter) {
+         scrollEventListener.onScrollBottomReached(0);
+      }
    }
-
-   private int getNextItemValue() { return pageableTransactionAdapter.isEmpty() ? 0 : pageableTransactionAdapter.getItemCount() - 1;}
 
    public void setScrollEventListener(ScrollEventListener scrollEventListener) {
       this.scrollEventListener = scrollEventListener;

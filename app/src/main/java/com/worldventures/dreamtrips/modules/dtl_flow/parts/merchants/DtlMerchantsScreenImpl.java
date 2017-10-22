@@ -78,8 +78,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    private int idResource = R.string.dtlt_search_hint;
 
-   public static int transactionCounter = 0;
-
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
@@ -475,15 +473,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    private void setCurrentSearchFilter(int stringResource) {
       currentSelectedFilter = getContext().getString(stringResource);
-   }
-
-   @Override
-   public int getTransactionNumber() {
-      if (transactionCounter == 0) {
-         transactionCounter++;
-         return 0;
-      }
-      return transactionCounter;
    }
 
    @Override

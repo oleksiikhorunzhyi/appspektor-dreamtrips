@@ -51,7 +51,7 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
 
    @Override
    public void showReceipt() {
-      getView().showReceipt(RECEIPT_URL);
+      if (transaction.getReceiptUrl() != null) getView().showReceipt(transaction.getReceiptUrl());
    }
 
    @Override
@@ -60,7 +60,6 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
    }
 
    //Mock
-   private final String RECEIPT_URL = "https://expressexpense.com/images/itemized-receipt.jpg";
    Merchant merchant = new Merchant() {
       @Override
       public String id() {

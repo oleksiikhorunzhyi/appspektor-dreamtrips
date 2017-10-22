@@ -3,10 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TransactionModel implements Parcelable {
+import java.util.Date;
 
+public class TransactionModel implements Parcelable {
+   private String id;
    private String merchantName;
-   private String transactionDate;
    private boolean rewardStatus;
    private String receiptUrl;
    private double subTotalAmount;
@@ -14,9 +15,16 @@ public class TransactionModel implements Parcelable {
    private double tax;
    private double tip;
    private int earnedPoints;
+   private Date transactionDate;
 
-   public TransactionModel() {
+   public TransactionModel() { }
 
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public String getId() {
+      return id;
    }
 
    public String getMerchantName() {
@@ -25,14 +33,6 @@ public class TransactionModel implements Parcelable {
 
    public void setMerchantName(String merchantName) {
       this.merchantName = merchantName;
-   }
-
-   public String getTransactionDate() {
-      return transactionDate;
-   }
-
-   public void setTransactionDate(String transactionDate) {
-      this.transactionDate = transactionDate;
    }
 
    public boolean isRewardStatus() {
@@ -91,9 +91,33 @@ public class TransactionModel implements Parcelable {
       this.earnedPoints = earnedPoints;
    }
 
+   public Date getTransactionDate() {
+      return transactionDate;
+   }
+
+   public void setTransactionDate(Date transactionDate) {
+      this.transactionDate = transactionDate;
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TransactionModel that = (TransactionModel) o;
+
+      return id != null ? id.equals(that.id) : that.id == null;
+   }
+
+   @Override
+   public int hashCode() {
+      return id != null ? id.hashCode() : 0;
+   }
+
    protected TransactionModel(Parcel in) {
+      id = in.readString();
       merchantName = in.readString();
-      transactionDate = in.readString();
+      transactionDate = (Date) in.readSerializable();
       rewardStatus = in.readByte() != 0;
       receiptUrl = in.readString();
       subTotalAmount = in.readDouble();
@@ -105,8 +129,9 @@ public class TransactionModel implements Parcelable {
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(id);
       dest.writeString(merchantName);
-      dest.writeString(transactionDate);
+      dest.writeSerializable(transactionDate);
       dest.writeByte((byte) (rewardStatus ? 1 : 0));
       dest.writeString(receiptUrl);
       dest.writeDouble(subTotalAmount);
@@ -132,5 +157,5 @@ public class TransactionModel implements Parcelable {
          return new TransactionModel[size];
       }
    };
-   
+
 }

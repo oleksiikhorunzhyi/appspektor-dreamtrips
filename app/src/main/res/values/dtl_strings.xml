@@ -172,7 +172,7 @@
    <string name="payment_resume_success_pilot">Please show this screen to your server.</string>
    <string name="payment_resume_failure_pilot">Please pay your server.</string>
    <string name="total_amount_charged_pilot">Total Amount Paid</string>
-   <string name="payment_amount_due_pilot">Total Amount Due</string>
+   <string name="payment_amount_due_pilot">Total Amount Declined</string>
    <string name="payment_money_charged">$ %1$s </string>
 
    <string name="dtl_thrst_flow_title">Thrst</string>

@@ -97,6 +97,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       connectFullMerchantLoading();
       connectSelections();
       connectTransactions();
+      getUserTransactions();
    }
 
    private void connectAnalytics() {
@@ -189,7 +190,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
       else getView().onLoadNextSuccess();
 
       setItemsOrRedirect(action.merchants());
-      getUserTransactions();
    }
 
    void getUserTransactions() {

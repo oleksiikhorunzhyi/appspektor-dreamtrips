@@ -116,8 +116,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       refreshLayout.setEnabled(true);
 
       if (dtlToolbar == null) return;
-      ExpandableDtlToolbar.TestInteface interfaces = () -> onClickTransaction();
-      dtlToolbar.setTestInterface(interfaces);
+      dtlToolbar.setTransactionsButtonListener(() -> onClickTransaction());
 
    }
 

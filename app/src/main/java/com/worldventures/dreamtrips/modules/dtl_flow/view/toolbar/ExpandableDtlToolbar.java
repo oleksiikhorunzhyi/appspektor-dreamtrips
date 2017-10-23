@@ -30,8 +30,6 @@ import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 
-import junit.framework.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +71,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    private boolean showNavigation;
    private boolean showFilterBar;
 
-   private TestInteface mInterface;
+   private TransactionsButtonListener transactionsButtonListener;
 
    public ExpandableDtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
@@ -354,15 +352,15 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    }
 
    @OnClick(R.id.transaction_container)
-   public void onClick() {
-      mInterface.onClickTransactions();
+   public void onTransactionsButtonClick() {
+      transactionsButtonListener.onClickTransactions();
    }
 
-   public void setTestInterface(TestInteface interfaces){
-      mInterface = interfaces;
+   public void setTransactionsButtonListener(TransactionsButtonListener transactionsButtonListener){
+      this.transactionsButtonListener = transactionsButtonListener;
    }
 
-   public interface TestInteface {
+   public interface TransactionsButtonListener {
       void onClickTransactions();
    }
 }

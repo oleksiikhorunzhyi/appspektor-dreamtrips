@@ -5,8 +5,14 @@ import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableSdkFlagg
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.FlaggingReviewActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
+import javax.inject.Inject;
 
 public class FlaggingActionCreator implements HttpActionCreator<AddFlaggingReviewAction, FlaggingReviewActionParams> {
+
+   @Inject
+   public FlaggingActionCreator() {
+      //do nothing
+   }
 
    @Override
    public AddFlaggingReviewAction createAction(FlaggingReviewActionParams params) {

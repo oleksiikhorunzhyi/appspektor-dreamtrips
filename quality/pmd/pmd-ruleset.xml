@@ -84,6 +84,15 @@
          </property>
       </properties>
    </rule>
+   <rule ref="rulesets/java/controversial.xml/UnnecessaryConstructor">
+      <properties>
+         <property name="violationSuppressXPath">
+            <value>
+               <![CDATA[//ClassOrInterfaceBodyDeclaration [contains(Annotation//Name/@Image,'Inject')]]]]>
+            </value>
+         </property>
+      </properties>
+   </rule>
    <!--Design-->
    <rule ref="rulesets/java/design.xml">
       <exclude name="ConfusingTernary" />

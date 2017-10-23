@@ -18,8 +18,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 
 public class MerchantsActionCreator implements HttpActionCreator<CategoryMerchantsHttpAction, MerchantsActionParams> {
+
+   @Inject
+   public MerchantsActionCreator() {
+      //do nothing
+   }
 
    @Override
    public CategoryMerchantsHttpAction createAction(MerchantsActionParams params) {

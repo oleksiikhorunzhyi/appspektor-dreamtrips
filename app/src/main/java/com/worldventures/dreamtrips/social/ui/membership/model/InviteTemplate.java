@@ -15,7 +15,7 @@ public class InviteTemplate implements Parcelable, HeaderItem {
    private final String coverUrl;
    private final String video;
    private final String locale;
-   private final String content;
+   private String content;
    private Type type;
    private String category;
 

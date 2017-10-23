@@ -11,8 +11,8 @@ import java.util.List;
 public class FacebookPhotoPickerViewModel extends FacebookMediaPickerViewModel<List<FacebookPhoto.ImageSource>> {
 
    private final List<FacebookPhoto.ImageSource> images;
-   private final boolean checked;
-   private final long pickedTime;
+   private long pickedTime;
+   private boolean checked;
 
    public FacebookPhotoPickerViewModel(List<FacebookPhoto.ImageSource> images, boolean checked, long pickedTime) {
       super(images);

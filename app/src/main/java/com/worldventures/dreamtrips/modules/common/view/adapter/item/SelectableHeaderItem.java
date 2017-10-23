@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class SelectableHeaderItem implements Parcelable {
 
    private String headerCaption;
-   private final boolean selected;
+   private boolean selected;
 
    public SelectableHeaderItem(String headerCaption, boolean isSelected) {
       this.headerCaption = headerCaption;

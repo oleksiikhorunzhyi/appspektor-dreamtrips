@@ -137,7 +137,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       loading = false;
    }
 
-   protected void acceptRequest(User user) {
+   public void acceptRequest(User user) {
       getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
             .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(user, circlesCommand.getResult()))
             .onFail(this::onCirclesError));

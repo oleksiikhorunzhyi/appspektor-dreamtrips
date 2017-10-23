@@ -6,7 +6,14 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.LocationsA
 
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class LocationsActionCreator implements HttpActionCreator<LocationsHttpAction, LocationsActionParams> {
+
+   @Inject
+   public LocationsActionCreator() {
+      //do nothing
+   }
 
    @Override
    public LocationsHttpAction createAction(LocationsActionParams params) {

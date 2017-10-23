@@ -6,7 +6,14 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.Attributes
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class AttributesActionCreator implements CategoryHttpActionCreator<CategoryAttributesHttpAction, AttributesActionParams> {
+
+   @Inject
+   public AttributesActionCreator() {
+      //do nothing
+   }
 
    @Override
    public CategoryAttributesHttpAction createAction(AttributesActionParams params, List<String> merchantTypes) {

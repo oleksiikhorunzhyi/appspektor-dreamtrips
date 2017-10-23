@@ -32,7 +32,7 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter, Gall
    public static final int PICK_PICTURE_PHOTOS_TYPE = 291;
 
    @Inject PermissionDispatcher permissionDispatcher;
-   private final Subscription permissionSubscription;
+   private Subscription permissionSubscription;
 
    @Override
    protected void registerCells() {

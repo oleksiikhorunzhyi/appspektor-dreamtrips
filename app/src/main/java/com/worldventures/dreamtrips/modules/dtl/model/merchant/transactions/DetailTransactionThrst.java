@@ -20,10 +20,10 @@ public interface DetailTransactionThrst extends Serializable {
    @SerializedName("MerchantName") @Nullable String merchantName();
    @SerializedName("Date") @Nullable Date date();
    @SerializedName("PointsEarned")  @Nullable Double pointsEarned();
-   @SerializedName("ReceiptUrl")  @Nullable String receiptUrl();
+   @SerializedName("ReceiptURL")  @Nullable String receiptUrl();
    @SerializedName("RewardPointStatus")  @Nullable String rewardStatus();
    @SerializedName("SubTotal")  @Nullable Double subTotalAmount();
-   @SerializedName("TotalAmount")  @Nullable Double totalAmount();
+   @SerializedName("Total")  @Nullable Double totalAmount();
    @SerializedName("Tax")  @Nullable Double tax();
    @SerializedName("Tip")  @Nullable Double tip();
 

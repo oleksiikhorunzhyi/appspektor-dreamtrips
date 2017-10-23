@@ -80,7 +80,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
             .send(new WalletAnalyticsCommand(
                   user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
             );
-
-      getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
+//      getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
+      getNavigator().goWizardAssignUser(getView().getProvisionMode());
    }
 }

@@ -3,17 +3,16 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.LocationUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.modules.feed.presenter.delegate.PostLocationPickerCallback;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,9 +36,15 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
       view.checkPermissions();
    }
 
+   @Override
+   public void dropView() {
+      super.dropView();
+      gpsLocationDelegate.dropPermissionView();
+   }
+
    public Observable<Location> getLocation() {
-      return view.bind(gpsLocationDelegate.getLastKnownLocation())
-            .compose(new IoToMainComposer<>())
+      return gpsLocationDelegate.getLastKnownLocation()
+            .compose(bindViewToMainComposer())
             .map(this::getLocationFromAndroidLocation);
    }
 
@@ -52,10 +57,11 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
       view.hideProgress();
    }
 
-   @NonNull
+   @Nullable
    private Location getLocationFromAndroidLocation(android.location.Location location) {
       view.hideProgress();
       if (isCanceled) return null;
+
       Geocoder coder = new Geocoder(view.getContext(), Locale.ENGLISH);
       Location newLocation = new Location();
       try {
@@ -73,7 +79,8 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
    }
 
    public void onPermissionGranted() {
-      view.bind(gpsLocationDelegate.requestLocationUpdate().compose(new IoToMainComposer<>()))
+      gpsLocationDelegate.requestLocationUpdate()
+            .compose(bindViewToMainComposer())
             .subscribe(this::onLocationObtained, this::onLocationError);
    }
 

@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
+import com.worldventures.dreamtrips.modules.config.VersionCheckActivityModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
@@ -33,12 +34,12 @@ import com.worldventures.dreamtrips.modules.player.PodcastModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
+import com.worldventures.dreamtrips.modules.tripsimages.TripImageModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
-import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
-import com.worldventures.dreamtrips.modules.config.VersionCheckActivityModule;
+import com.worldventures.dreamtrips.modules.common.delegate.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.modules.picker.service.MediaPickerFacebookService;
 
 import java.util.List;
 
@@ -59,6 +60,7 @@ public abstract class BaseActivity extends InjectingActivity {
    @Inject protected PermissionDispatcher permissionDispatcher;
    @Inject protected Router router;
    @Inject protected ActivityRouter activityRouter;
+   @Inject MediaPickerFacebookService walletPickerFacebookService;
 
    // TODO Move here RX lifecycle composers from ActivityWithPresenter
    private Subscription logoutSubscription;
@@ -177,7 +179,7 @@ public abstract class BaseActivity extends InjectingActivity {
       modules.add(new ProfileModule());
       modules.add(new ReptoolsModule());
       modules.add(new TripsModule());
-      modules.add(new TripsImagesModule());
+      modules.add(new TripImageModule());
       modules.add(new VideoModule());
       modules.add(new MembershipModule());
       modules.add(new FriendsModule());
@@ -195,6 +197,7 @@ public abstract class BaseActivity extends InjectingActivity {
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
       super.onActivityResult(requestCode, resultCode, data);
+      if (walletPickerFacebookService.onActivityResult(requestCode, resultCode, data)) return;
       activityResultDelegate.onActivityResult(requestCode, resultCode, data);
       pickImageDelegate.onActivityResult(requestCode, resultCode, data);
    }

@@ -9,11 +9,14 @@ ext {
          { o -> o.maven { url 'https://maven.fabric.io/public' } }
    ]
    pluginDependencies << [
-         androidDefault: '2.2.3',
+         androidDefault: '2.3.3',
+         // gradle 2.3.3 uses proguard v5.3.2 (https://sourceforge.net/p/proguard/bugs/638/)
+         proguard      : 'net.sf.proguard:proguard-gradle:5.2',
          kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$pluginDependencies.languages.kotlin",
 
          apt           : 'com.neenbedankt.gradle.plugins:android-apt:1.8',
          retrolambda   : 'me.tatarka:gradle-retrolambda:3.6.1',
+         retrolambdaAst: 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2',
 
          newrelic      : 'com.newrelic.agent.android:agent-gradle-plugin:5.8.4',
          fabric        : 'io.fabric.tools:gradle:1.21.6',

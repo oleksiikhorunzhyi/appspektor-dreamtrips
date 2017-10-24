@@ -1,14 +1,14 @@
 package com.messenger.entities;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
 import java.util.Date;
 
-public class PhotoAttachment implements IFullScreenObject {
+public class PhotoAttachment implements Parcelable {
 
    private final String photoAttachmentId;
    private final String messageId;
@@ -49,66 +49,6 @@ public class PhotoAttachment implements IFullScreenObject {
    }
 
    @Override
-   public Image getFSImage() {
-      return image;
-   }
-
-   @Override
-   public String getFSTitle() {
-      return null;
-   }
-
-   @Override
-   public String getFSDescription() {
-      return null;
-   }
-
-   @Override
-   public String getFSShareText() {
-      return null;
-   }
-
-   @Override
-   public String getFSId() {
-      return image.getUrl();
-   }
-
-   @Override
-   public int getFSCommentCount() {
-      return 0;
-   }
-
-   @Override
-   public int getFSLikeCount() {
-      return 0;
-   }
-
-   @Override
-   public String getFSLocation() {
-      return null;
-   }
-
-   @Override
-   public String getFSDate() {
-      return null;
-   }
-
-   @Override
-   public String getFSUserPhoto() {
-      return user.getAvatar().getOriginal();
-   }
-
-   @Override
-   public User getUser() {
-      return user;
-   }
-
-   @Override
-   public String getImagePath() {
-      return image.getUrl();
-   }
-
-   @Override
    public int describeContents() {
       return 0;
    }
@@ -119,6 +59,10 @@ public class PhotoAttachment implements IFullScreenObject {
 
    public Date getDate() {
       return date;
+   }
+
+   public String getUrl() {
+      return image.getUrl();
    }
 
    public boolean isFlaggingEnabled() {

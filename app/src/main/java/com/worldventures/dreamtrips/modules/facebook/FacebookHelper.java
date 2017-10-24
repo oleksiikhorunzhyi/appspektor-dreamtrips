@@ -2,9 +2,12 @@ package com.worldventures.dreamtrips.modules.facebook;
 
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookRequestError;
 import com.facebook.GraphResponse;
+import com.facebook.internal.FacebookRequestErrorClassification;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.worldventures.dreamtrips.modules.facebook.exception.FacebookAccessTokenException;
 
 import org.json.JSONArray;
 
@@ -43,6 +46,16 @@ public class FacebookHelper {
       } catch (Exception e) {
          Timber.w(e, "Could not parse Facebook response");
          return new ArrayList<>();
+      }
+   }
+
+   public Throwable getThrowableFromGraphError(FacebookRequestError error) {
+      FacebookRequestErrorClassification errorClassification
+            = FacebookRequestErrorClassification.getDefaultErrorClassification();
+      if(errorClassification.classify(error.getErrorCode(), error.getSubErrorCode(), false) == FacebookRequestError.Category.LOGIN_RECOVERABLE) {
+         return new FacebookAccessTokenException("Access token is invalid", error.getException());
+      } else {
+         return error.getException();
       }
    }
 }

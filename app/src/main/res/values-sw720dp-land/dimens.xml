@@ -2,9 +2,6 @@
 <resources>
 
    <dimen name="tripImageHeightDetailed">400dp</dimen>
-   <dimen name="bucket_detail_cover_size">300dp</dimen>
-
-   <dimen name="tablet_details_spacing">300dp</dimen>
 
    ///////Post sizes
    <dimen name="post_spacing_horizontal">256dp</dimen>
@@ -18,7 +15,5 @@
    <dimen name="additional_info_description_size">18sp</dimen>
 
    <!-- Dtl module dimens -->
-   <dimen name="dtl_details_header_height">300dp</dimen>
-   <dimen name="dtl_details_photo_height">210dp</dimen>
 
 </resources>

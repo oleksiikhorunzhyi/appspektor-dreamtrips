@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.delegate.system;
 
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,6 +21,7 @@ public class UriPathProviderImpl implements UriPathProvider {
    }
 
    @Override
+   @SuppressLint("NewApi")
    public String getPath(Uri uri) throws URISyntaxException {
       final boolean needToCheckUri = Build.VERSION.SDK_INT >= 19;
       String selection = null;

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.content.res.Configuration;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
+import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -38,6 +41,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    private int loadMoreOffset;
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
+   @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
+
+   private FeedItem feedItem;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -59,12 +65,19 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
             updateStickyInputContainerState();
          }
       });
-      if (!isShowAdditionalInfo() && additionalContainer != null) {
-         additionalContainer.setVisibility(View.GONE);
-      }
+
+      showAdditionalContainerIfNeeded();
+
       recyclerView.post(() -> {
          if (recyclerView != null) recyclerView.scrollBy(0, 1);
       });
+   }
+
+   @Override
+   public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      showAdditionalInfoIfNeeded();
+      updateStickyInputContainerState();
    }
 
    private void updateStickyInputContainerState() {
@@ -85,7 +98,11 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       return location[1] + view.getHeight() <= ViewUtils.getScreenHeight(getActivity()) + INPUT_PANEL_SHOW_OFFSET;
    }
 
-   protected abstract void registerCells();
+   @Override
+   public void onResume() {
+      super.onResume();
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(getRoute()));
+   }
 
    @Override
    public void onDestroyView() {
@@ -139,9 +156,10 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       if (container != null) container.setVisibility(View.VISIBLE);
    }
 
-   @Override
-   public void showAdditionalInfo(User user) {
-      if (isAdditionalContainerEmpty() && isShowAdditionalInfo()) {
+   private void showAdditionalInfoIfNeeded() {
+      User user = feedItem.getItem().getOwner();
+      showAdditionalContainerIfNeeded();
+      if (!isAdditionalInfoFragmentAttached() && isShowAdditionalInfo()) {
          router.moveTo(Route.FEED_ITEM_ADDITIONAL_INFO, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())
@@ -151,19 +169,30 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       }
    }
 
-   private boolean isShowAdditionalInfo() {
+   private void showAdditionalContainerIfNeeded() {
+      if (additionalContainer == null) return;
+      if (isShowAdditionalInfo()) {
+         additionalContainer.setVisibility(View.VISIBLE);
+      } else {
+         additionalContainer.setVisibility(View.GONE);
+      }
+   }
+
+   protected boolean isShowAdditionalInfo() {
       return getArgs().shouldShowAdditionalInfo() && !getPresenter().isTrip() && isTabletLandscape();
    }
 
-   private boolean isAdditionalContainerEmpty() {
+   private boolean isAdditionalInfoFragmentAttached() {
       return getActivity().getSupportFragmentManager()
-            .findFragmentById(R.id.comments_additional_info_container) == null;
+            .findFragmentById(R.id.comments_additional_info_container) != null;
    }
 
    @Override
    public void updateFeedItem(FeedItem feedItem) {
+      this.feedItem = feedItem;
       if (feedItem != null) {
          adapter.updateItem(feedItem);
+         showAdditionalInfoIfNeeded();
       } else {
          adapter.notifyDataSetChanged(); //there has been error. Cells need to be resynced
       }
@@ -178,4 +207,8 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    protected int getLoadMorePosition() {
       return super.getLoadMorePosition() + loadMoreOffset;
    }
+
+   protected abstract void registerCells();
+
+   protected abstract Route getRoute();
 }

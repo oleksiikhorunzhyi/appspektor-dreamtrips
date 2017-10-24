@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.modules.infopages.model;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 
 import java.util.UUID;
 
-public class FeedbackImageAttachment implements FeedbackAttachment, IFullScreenObject {
+public class FeedbackImageAttachment implements FeedbackAttachment, Parcelable, ImagePathHolder {
 
    private String id;
    /*
@@ -51,65 +50,8 @@ public class FeedbackImageAttachment implements FeedbackAttachment, IFullScreenO
    }
 
    @Override
-   public Image getFSImage() {
-      Image image = new Image();
-      image.setUrl(url);
-      return image;
-   }
-
-   @Override
-   public String getFSTitle() {
-      return "";
-   }
-
-   @Override
-   public String getFSDescription() {
-      return "";
-   }
-
-   @Override
-   public String getFSShareText() {
-      return "";
-   }
-
-   @Override
-   public String getFSId() {
-      return "";
-   }
-
-   @Override
-   public int getFSCommentCount() {
-      return 0;
-   }
-
-   @Override
-   public int getFSLikeCount() {
-      return 0;
-   }
-
-   @Override
-   public String getFSLocation() {
-      return null;
-   }
-
-   @Override
-   public String getFSDate() {
-      return null;
-   }
-
-   @Override
-   public String getFSUserPhoto() {
-      return null;
-   }
-
-   @Override
-   public User getUser() {
-      return null;
-   }
-
-   @Override
    public String getImagePath() {
-      return originalFilePath;
+      return url;
    }
 
    @Override

@@ -44,13 +44,12 @@ public class StaticPageProvider {
    private String backofficeUrl;
    private String uploaderyUrl;
 
-   public StaticPageProvider(SessionHolder<UserSession> appSessionHolder, DeviceInfoProvider deviceInfoProvider, String apiUrl,
-         String backofficeUrl, String uploaderyUrl) {
-      this.appSessionHolder = appSessionHolder;
-      this.deviceInfoProvider = deviceInfoProvider;
-      this.apiUrl = apiUrl;
-      this.backofficeUrl = backofficeUrl;
-      this.uploaderyUrl = uploaderyUrl;
+   public StaticPageProvider(StaticPageProviderConfig config) {
+      this.appSessionHolder = config.appSessionHolder();
+      this.deviceInfoProvider = config.deviceInfoProvider();
+      this.apiUrl = config.apiUrl();
+      this.backofficeUrl = config.backofficeUrl();
+      this.uploaderyUrl = config.uploaderyUrl();
    }
 
    public String getEnrollMemberUrl() {

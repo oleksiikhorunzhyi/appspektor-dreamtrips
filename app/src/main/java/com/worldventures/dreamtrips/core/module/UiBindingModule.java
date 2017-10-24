@@ -6,7 +6,6 @@ import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.AppNotificationImpl;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.App;
@@ -19,7 +18,9 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {BaseArrayListAdapter.class, BaseDelegateAdapter.class, LoaderRecycleAdapter.class,},
+      injects = {
+            BaseArrayListAdapter.class,
+            BaseDelegateAdapter.class},
       library = true, complete = false)
 public class UiBindingModule {
 

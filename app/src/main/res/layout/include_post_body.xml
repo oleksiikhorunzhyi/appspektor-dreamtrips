@@ -33,12 +33,19 @@
          style="@style/TranslateButton"
          />
 
-   <com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoAttachmentView
-         android:id="@+id/videoAttachment"
+   <FrameLayout
+         android:id="@+id/video_windowed_container"
          android:layout_width="match_parent"
-         android:layout_height="@dimen/video_creation_cell_height"
-         android:visibility="gone"
-         />
+         android:layout_height="match_parent">
+
+      <com.worldventures.dreamtrips.modules.video.view.custom.VideoView
+            android:id="@+id/videoAttachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+
+   </FrameLayout>
 
    <FrameLayout
          android:layout_width="wrap_content"

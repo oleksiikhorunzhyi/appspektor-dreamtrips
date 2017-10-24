@@ -22,7 +22,7 @@ public abstract class CachedValueCommand<T> extends Command<T> implements Cached
    }
 
    @Override
-   protected final void run(CommandCallback<T> callback) throws Throwable {
+   protected void run(CommandCallback<T> callback) throws Throwable {
       if (operationFunc != null) {
          result = operationFunc.call(result);
       }

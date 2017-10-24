@@ -1,51 +1,53 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.databinding.ScreenWalletWizardPersonalInfoBinding;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
 import com.worldventures.dreamtrips.wallet.util.FirstNameException;
 import com.worldventures.dreamtrips.wallet.util.LastNameException;
 import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
-import com.worldventures.dreamtrips.wallet.util.MissedAvatarException;
 
 import java.io.File;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
 
+import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.fromHtml;
+import static com.worldventures.dreamtrips.wallet.util.SCUserUtils.userFullName;
+
 public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.first_name) EditText firstName;
-   @InjectView(R.id.middle_name) EditText middleName;
-   @InjectView(R.id.last_name) EditText lastName;
-   @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
-   @InjectView(R.id.et_phone_number) EditText etPhoneNumber;
-   @InjectView(R.id.et_country_code) EditText etCountryCode;
+   private static final String PROFILE_STATE_KEY = "WizardEditProfileScreen#PROFILE_STATE_KEY";
 
-   private MediaPickerService mediaPickerService;
+   private ScreenWalletWizardPersonalInfoBinding binding;
+   private ProfileViewModel viewModel = new ProfileViewModel();
+   private WalletCropImageService cropImageService;
+   private WalletPhotoProposalDialog photoActionDialog;
 
    public WizardEditProfileScreen(Context context) {
       super(context);
@@ -66,37 +68,97 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
       super.onFinishInflate();
       supportConnectionStatusLabel(false);
       if (isInEditMode()) return;
+      binding = DataBindingUtil.bind(this);
+      binding.setOnAvatarClick(v -> showDialog());
+      binding.setOnNextClick(v -> presenter.setupUserData());
+      binding.setOnEditTextFocusChange((view, hasFocus) -> {
+         if (hasFocus) {
+            EditText editText = (EditText) view;
+            editText.setSelection(editText.length());
+         }
+      });
       //noinspection all
-      mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
-      toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
-      mediaPickerService.setPhotoPickerListener(photoPickerListener);
-      ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
+      cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
+      binding.toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+      ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
+      binding.photoPreview.getHierarchy()
+            .setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.photoPreview.getHierarchy()
+            .setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.setProfile(viewModel);
    }
 
-   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
-      @Override
-      public void onClosed() {
-         presenter.setupInputMode();
-      }
+   @Override
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      if (isInEditMode()) return;
+      observeNewAvatar();
+   }
 
-      @Override
-      public void onOpened() {
+   @Override
+   protected Parcelable onSaveInstanceState() {
+      Bundle bundle = (Bundle) super.onSaveInstanceState();
+      bundle.putParcelable(PROFILE_STATE_KEY, viewModel);
+      return bundle;
+   }
 
-      }
-   };
+   @Override
+   protected void onRestoreInstanceState(Parcelable state) {
+      super.onRestoreInstanceState(state);
+      Bundle bundle = (Bundle) state;
+      setProfile(bundle.getParcelable(PROFILE_STATE_KEY));
+   }
 
    protected void navigateButtonClick() {
-      presenter.goToBack();
+      presenter.back();
    }
 
-   @OnClick(R.id.next_button)
-   public void nextClick() {
-      presenter.setupUserData();
+   void onChoosePhotoClick(String initialPhotoUrl) {
+      hideDialog();
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(attachment -> {
+         if (!attachment.isEmpty()) {
+            presenter.handlePickedPhoto(attachment.getChosenImages().get(0));
+         }
+      });
+      if (initialPhotoUrl != null) {
+         mediaPickerDialog.show(initialPhotoUrl);
+      } else {
+         mediaPickerDialog.show();
+      }
    }
 
-   @OnClick(R.id.imageContainer)
-   public void choosePhotoClick() {
-      presenter.choosePhoto();
+   void onDontAddClick() {
+      hideDialog();
+      presenter.doNotAdd();
+   }
+
+   private void observeNewAvatar() {
+      observeCropper()
+            .compose(lifecycle())
+            .subscribe(file -> viewModel.setChosenPhotoUri(Uri.fromFile(file).toString()));
+   }
+
+   @Override
+   public void dropPhoto() {
+      viewModel.setChosenPhotoUri(null);
+   }
+
+   @Override
+   public void showDialog() {
+      SoftInputUtil.hideSoftInputMethod(this);
+      photoActionDialog = new WalletPhotoProposalDialog(getContext());
+      photoActionDialog.setOnChoosePhotoAction(() -> getPresenter().choosePhoto());
+      photoActionDialog.setOnDoNotAddPhotoAction(this::onDontAddClick);
+      photoActionDialog.setOnCancelAction(this::hideDialog);
+      photoActionDialog.show();
+   }
+
+   @Override
+   public void hideDialog() {
+      if (photoActionDialog == null) return;
+      photoActionDialog.hide();
+      photoActionDialog = null;
    }
 
    @Override
@@ -112,76 +174,41 @@ public class WizardEditProfileScreen extends WalletLinearLayout<WizardEditProfil
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MissedAvatarException.class, R.string.wallet_edit_profile_avatar_not_chosen))
                   .build()
       );
    }
 
    @Override
-   public void pickPhoto() {
-      mediaPickerService.pickPhoto();
+   public void pickPhoto(String initialPhotoUrl) {
+      onChoosePhotoClick(initialPhotoUrl);
    }
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      mediaPickerService.crop(photoPath);
+      cropImageService.cropImage(photoPath);
    }
 
    @Override
-   public Observable<Uri> observePickPhoto() {
-      return mediaPickerService.observePicker();
+   public Observable<File> observeCropper() {
+      return cropImageService.observeCropper();
    }
 
    @Override
-   public Observable<String> observeCropper() {
-      return mediaPickerService.observeCropper().map(File::getAbsolutePath);
+   public void setProfile(ProfileViewModel model) {
+      viewModel = model;
+      binding.setProfile(model);
    }
 
    @Override
-   public void hidePhotoPicker() {
-      mediaPickerService.hidePicker();
+   public ProfileViewModel getProfile() {
+      return viewModel;
    }
 
    @Override
-   public void setPreviewPhoto(String photoUrl) {
-      previewPhotoView.setImageURI(photoUrl);
-   }
-
-   @Override
-   public void setUserFullName(@NonNull String firstName, @NonNull String lastName) {
-      this.firstName.setText(firstName);
-      this.lastName.setText(lastName);
-      this.firstName.setSelection(firstName.length());
-      this.lastName.setSelection(lastName.length());
-   }
-
-   @Override
-   public void setPhone(String countryCode, String number) {
-      etCountryCode.setText(countryCode);
-      etPhoneNumber.setText(number);
-   }
-
-   @NonNull
-   @Override
-   public String[] getUserName() {
-      return new String[]{firstName.getText().toString().trim(), middleName.getText().toString().trim(),
-            lastName.getText().toString().trim()};
-   }
-
-   @Override
-   public String getCountryCode() {
-      return etCountryCode.getText().toString();
-   }
-
-   @Override
-   public String getPhoneNumber() {
-      return etPhoneNumber.getText().toString();
-   }
-
-   @Override
-   public void showConfirmationDialog(String fullName) {
+   public void showConfirmationDialog(ProfileViewModel profileViewModel) {
       new MaterialDialog.Builder(getContext())
-            .content(Html.fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message, fullName)))
+            .content(fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message,
+                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastName()))))
             .contentGravity(GravityEnum.CENTER)
             .positiveText(R.string.wallet_edit_profile_confirmation_dialog_button_positive)
             .onPositive((dialog, which) -> presenter.onUserDataConfirmed())

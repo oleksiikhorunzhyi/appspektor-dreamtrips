@@ -8,6 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,9 +124,9 @@ public class BucketItem extends BaseFeedEntity {
 
    public String getCoverUrl(int w, int h) {
       if (coverPhoto != null) {
-         return coverPhoto.getFSImage().getUrl(w, h);
+         return ImageUtils.getParametrizedUrl(coverPhoto.getImagePath(), w, h);
       } else if (getPhotos() != null && !getPhotos().isEmpty()) {
-         return getPhotos().get(0).getFSImage().getUrl(w, h);
+         return ImageUtils.getParametrizedUrl(getPhotos().get(0).getImagePath(), w, h);
       } else {
          return "";
       }

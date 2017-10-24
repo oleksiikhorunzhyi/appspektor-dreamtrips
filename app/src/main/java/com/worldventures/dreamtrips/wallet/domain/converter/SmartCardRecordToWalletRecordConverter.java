@@ -5,12 +5,11 @@ import com.worldventures.dreamtrips.wallet.domain.entity.record.FinancialService
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.RecordType;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.util.Map;
 
 import io.techery.mappery.MapperyContext;
-
-import static com.worldventures.dreamtrips.wallet.domain.converter.RecordFields.BANK_NAME_FIELD;
 
 public class SmartCardRecordToWalletRecordConverter implements Converter<io.techery.janet.smartcard.model.Record, Record> {
 
@@ -28,12 +27,13 @@ public class SmartCardRecordToWalletRecordConverter implements Converter<io.tech
    public Record convert(MapperyContext mapperyContext, io.techery.janet.smartcard.model.Record record) {
       final Map<String, String> metadata = record.metadata();
       //no use getOrDefault, for support < Java 8
-      final String bankName = metadata.get(BANK_NAME_FIELD);
+      final String bankName = metadata.get(WalletRecordToSmartCardRecordConverter.BANK_NAME_FIELD);
 
       final Integer recordId = record.id();
       return ImmutableRecord.builder()
             .id(recordId != null ? String.valueOf(recordId) : null)
             .number(record.cardNumber())
+            .numberLastFourDigits(WalletRecordUtil.obtainLastCardDigits(record.cardNumber()))
             .expDate(record.expDate())
             .cvv(record.cvv())
             .track1(record.t1())

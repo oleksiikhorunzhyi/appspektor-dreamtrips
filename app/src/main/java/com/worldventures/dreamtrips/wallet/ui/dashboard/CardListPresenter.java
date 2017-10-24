@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.ui.dashboard;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.v4.util.Pair;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletHomeAction;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.action.RetryInstallUpdateAction;
+import com.worldventures.dreamtrips.wallet.domain.WalletConstants;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardStatus;
@@ -38,6 +40,7 @@ import com.worldventures.dreamtrips.wallet.service.command.offline_mode.OfflineM
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.dreamtrips.wallet.service.firmware.command.FirmwareInfoCachedCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -50,13 +53,16 @@ import com.worldventures.dreamtrips.wallet.ui.records.swiping.WizardChargingPath
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.install.WalletInstallFirmwarePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.start.StartFirmwareInstallPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.WalletSettingsProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.CheckPinDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetView;
 import com.worldventures.dreamtrips.wallet.util.CardListStackConverter;
 import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletRecordUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -69,13 +75,12 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+import rx.functions.Action0;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
 public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen, Parcelable> {
-
-   public static final int MAX_CARD_LIMIT = 10;
 
    @Inject Navigator navigator;
    @Inject SmartCardInteractor smartCardInteractor;
@@ -94,7 +99,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
 
    public CardListPresenter(Context context, Injector injector) {
       super(context, injector);
-      cardListStackConverter = new CardListStackConverter(context);
+      cardListStackConverter = new CardListStackConverter(new WalletRecordUtil(context), featureHelper);
       checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
             navigator, FactoryResetAction.GENERAL);
    }
@@ -106,8 +111,10 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       getView().setDefaultSmartCard();
       checkPinDelegate.observePinStatus(getView());
       observeSmartCard();
+      observeDisplayType();
       observeConnectionStatus();
-      observeChanges();
+      observeSmartCardSync();
+      observeRecordsChanges();
       observeFirmwareInfo();
 
       observeSyncRecordsStatus();
@@ -122,33 +129,31 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       recordInteractor.syncRecordStatusPipe().send(SyncRecordStatusCommand.fetch());
    }
 
+   @SuppressWarnings("ConstantConditions")
    private void observeSyncRecordsStatus() {
       recordInteractor.syncRecordStatusPipe()
             .observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(command -> handleSyncRecordStatus(command.getResult()));
 
-      //noinspection ConstantConditions
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SyncRecordOnNewDeviceCommand>()
                   .onFail((command, throwable) -> getView().showSyncFailedOptionsDialog())
             );
-      //noinspection ConstantConditions
       recordInteractor.syncRecordOnNewDevicePipe()
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(OperationActionSubscriber.forView(getView().provideReSyncOperationView()).create());
    }
 
+   @SuppressWarnings("ConstantConditions")
    private void handleSyncRecordStatus(SyncRecordsStatus status) {
       if (featureHelper.addingCardIsNotSupported()) return;
       if (status.isFailAfterProvision()) {
-         //noinspection ConstantConditions
          getView().modeSyncPaymentsFab();
       } else {
-         //noinspection ConstantConditions
          getView().modeAddCard();
       }
    }
@@ -158,16 +163,24 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
             .map(Command::getResult)
             .throttleLast(300, TimeUnit.MILLISECONDS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::handleSmartCardStatus, throwable -> Timber.e("", throwable));
+            .subscribe(this::handleSmartCardStatus, throwable -> Timber.e(throwable, ""));
 
       smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(bindViewIoToMainComposer())
-            .subscribe(this::handleSmartCardUser, throwable -> Timber.e("", throwable));
+            .subscribe(this::handleSmartCardUser, throwable -> Timber.e(throwable, ""));
 
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
       smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+   }
+
+   private void observeDisplayType() {
+      smartCardInteractor.getDisplayTypePipe().observeSuccessWithReplay()
+            .map(Command::getResult)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getView()::setDisplayType, throwable -> Timber.e(throwable, ""));
+      smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(false));
    }
 
    private void handleSmartCardStatus(SmartCardStatus cardStatus) {
@@ -177,10 +190,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
    }
 
    private void handleSmartCardUser(SmartCardUser smartCardUser) {
-      final String photoFileUrl = smartCardUser.userPhoto() != null
-            ? smartCardUser.userPhoto().photoUrl()
-            : "";
-      getView().setSmartCardUserAttrs(smartCardUser.fullName(), photoFileUrl);
+      getView().setSmartCardUser(smartCardUser);
    }
 
    private void observeConnectionStatus() {
@@ -244,15 +254,18 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
     * Create transition animation model which contains coordinates of\
     * transition view, its overlap rate and background
     *
-    * @param view           transition view itself
-    * @param overlap        overlap rate (used in ItemDecorator {@see OverlapDecoration}
-    * @param cardBackGround true for blue background, false for dark blue
+    * @param view                transition view itself
+    * @param overlap             overlap rate (used in ItemDecorator {@see OverlapDecoration}
+    * @param cardBackGroundResId
+    * @param defaultCard         true if card is default
     * @return {@see TransitionModel}
     */
-   public TransitionModel getCardPosition(View view, int overlap, boolean cardBackGround) {
+   TransitionModel getCardPosition(View view, int overlap, @DrawableRes int cardBackGroundResId,
+         boolean defaultCard) {
       int[] position = new int[2];
       view.getLocationOnScreen(position);
-      return new TransitionModel(position[0], position[1], view.getWidth(), view.getHeight(), overlap, cardBackGround);
+      return new TransitionModel(defaultCard, position[0], position[1], view.getWidth(), view.getHeight(), overlap,
+            cardBackGroundResId);
    }
 
    void cardClicked(String recId, TransitionModel transitionModel) {
@@ -262,8 +275,8 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       }
    }
 
-   public boolean isCardDetailSupported() {
-      return featureHelper.isCardDetailSupported();
+   boolean isCardDetailSupported() {
+      return !featureHelper.isSampleCardMode();
    }
 
    void navigationClick() {
@@ -274,12 +287,19 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigator.go(new WalletSettingsPath());
    }
 
+   @SuppressWarnings("ConstantConditions")
+   void onProfileChosen() {
+      featureHelper.openEditProfile(getContext(),
+            () -> assertSmartCardConnected(() -> navigator.go(new WalletSettingsProfilePath())));
+   }
+
    void navigateBack() {
       navigator.goBack();
    }
 
+   @SuppressWarnings("ConstantConditions")
    void addCardRequired(int cardLoadedCount) {
-      if (cardLoadedCount >= MAX_CARD_LIMIT) {
+      if (cardLoadedCount >= WalletConstants.MAX_CARD_LIMIT) {
          getView().showAddCardErrorDialog(Screen.ERROR_DIALOG_FULL_SMARTCARD);
          return;
       }
@@ -309,7 +329,7 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       analyticsInteractor.walletAnalyticsCommandPipe().send(new WalletAnalyticsCommand(new AddPaymentCardAction()));
    }
 
-   private void observeChanges() {
+   private void observeRecordsChanges() {
       Observable.combineLatest(
             recordInteractor.cardsListPipe()
                   .observeWithReplay()
@@ -320,23 +340,32 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
                   .compose(new ActionPipeCacheWiper<>(recordInteractor.defaultRecordIdPipe()))
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
+            .map(loadedRecords -> {
+               records = loadedRecords.first;
+               return cardListStackConverter.mapToViewModel(loadedRecords.first, loadedRecords.second);
+            })
+            .distinctUntilChanged()
             .compose(bindViewIoToMainComposer())
-            .subscribe(pair -> cardsLoaded(pair.first, pair.second), throwable -> Timber.d(throwable, ""));
+            .subscribe(this::cardsLoaded, throwable -> Timber.e(throwable, ""));
+   }
 
-      //noinspection ConstantConditions
+   @SuppressWarnings("ConstantConditions")
+   private void cardsLoaded(ArrayList<BaseViewModel> cardModels) {
+      getView().setCardsCount(null != this.records ? this.records.size() : 0);
+      getView().showRecordsInfo(cardModels);
+   }
+
+   @SuppressWarnings("ConstantConditions")
+   private void observeSmartCardSync() {
+      final OperationView<SyncSmartCardCommand> operationView = getView().provideOperationSyncSmartCard();
       smartCardInteractor.smartCardSyncPipe()
             .observeWithReplay()
             .compose(new ActionPipeCacheWiper<>(smartCardInteractor.smartCardSyncPipe()))
             .compose(bindViewIoToMainComposer())
-            .subscribe(OperationActionSubscriber.forView(getView().provideOperationSyncSmartCard()).create());
-   }
-
-   private void cardsLoaded(List<Record> loadedRecords, String defaultRecordId) {
-      this.records = loadedRecords;
-      getView().setCardsCount(null != loadedRecords ? loadedRecords.size() : 0);
-      List<BaseViewModel> cardModels = cardListStackConverter.mapToViewModel(loadedRecords, defaultRecordId);
-
-      getView().showRecordsInfo(cardModels);
+            .doOnCompleted(() -> {
+               if (operationView.isProgressVisible()) operationView.hideProgress();
+            })
+            .subscribe(OperationActionSubscriber.forView(operationView).create());
    }
 
    void retryFWU() {
@@ -349,13 +378,26 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       navigateBack();
    }
 
+   void navigateToFirmwareUpdate() {
+      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
+   }
+
+   @SuppressWarnings("ConstantConditions")
+   private void assertSmartCardConnected(Action0 onConnected) {
+      smartCardInteractor.deviceStatePipe()
+            .createObservable(DeviceStateCommand.fetch())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
+                  .onSuccess(command -> {
+                     if (command.getResult().connectionStatus().isConnected()) onConnected.call();
+                     else getView().showSCNonConnectionDialog();
+                  })
+            );
+   }
+
    private void sendRetryAnalyticAction(boolean retry) {
       analyticsInteractor.walletFirmwareAnalyticsPipe()
             .send(new WalletFirmwareAnalyticsCommand(new RetryInstallUpdateAction(retry)));
-   }
-
-   public void navigateToFirmwareUpdate() {
-      navigator.single(new StartFirmwareInstallPath(), Flow.Direction.REPLACE);
    }
 
    void confirmForceFirmwareUpdate() {
@@ -388,17 +430,19 @@ public class CardListPresenter extends WalletPresenter<CardListPresenter.Screen,
       int ERROR_DIALOG_NO_INTERNET_CONNECTION = 2;
       int ERROR_DIALOG_NO_SMARTCARD_CONNECTION = 3;
 
-      void showRecordsInfo(List<BaseViewModel> result);
+      void showRecordsInfo(ArrayList<BaseViewModel> result);
 
       void setDefaultSmartCard();
 
       void setSmartCardStatusAttrs(int batteryLevel, boolean connected, boolean lock, boolean stealthMode);
 
-      void setSmartCardUserAttrs(String fullname, String photoFileUrl);
+      void setSmartCardUser(SmartCardUser smartCardUser);
 
       void setFirmwareUpdateAvailable(boolean firmwareUpdateAvailable);
 
       void setCardsCount(int count);
+
+      void setDisplayType(int displayType);
 
       void showAddCardErrorDialog(@ErrorDialogType int errorDialogType);
 

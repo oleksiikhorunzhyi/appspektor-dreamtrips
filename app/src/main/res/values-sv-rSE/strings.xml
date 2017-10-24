@@ -5,9 +5,6 @@
    <string name="trip_images">Resebilder</string>
    <string name="bucket_list">Drömresmål</string>
    <string name="my_profile">Min profil</string>
-   <string name="terms_of_service">Användarvillkor</string>
-   <string name="privacy">Sekretesspolicy</string>
-   <string name="cookie">POLICY FÖR COOKIEFILER</string>
    <string name="action_quick_input">Lägg till snabbt</string>
    <string name="action_popular_string">Lägg till från populära</string>
    <string name="action_done">Klar</string>
@@ -189,12 +186,12 @@
    <string name="selected">Valt: %1$d</string>
    <string name="email_is_not_valid">Ogiltig e-postadress</string>
    <string name="invitation_deselect_all">Avmarkera alla</string>
-   <string name="invitation_text_template" formatted="false"><![CDATA[ Hej%1$s! %2$s <br/>Kolla här. <br/>%3$s]]></string>
+   <string name="invitation_text_template"><![CDATA[ Hej%1$s! %2$s <br/>Kolla här. <br/>%3$s]]></string>
    <string name="invite_add_photo">Lägg till foto</string>
    <string name="invite_select_first">Välj kontakter först</string>
    <string name="filters_show_favorite">VISA FAVORITRESOR</string>
    <string name="filter_recently_added">NYLIGEN TILLAGDA</string>
-   <string name="bucketlist_share" formatted="false">Bland mina drömresmål: %1$s</string>
+   <string name="bucketlist_share">Bland mina drömresmål: %1$s</string>
    <string name="last_sent">Senast skickade</string>
    <string name="search_trips">Sök efter resor</string>
    <string name="search">Sök</string>
@@ -211,7 +208,7 @@
 
    <string name="action_add_to_bucket">Lägg till bland drömresmål</string>
    <string name="profile_add_friend">Lägg till vän</string>
-   <string name="profile_friend_request" formatted="false">%1$s har skickat en vänförfrågan</string>
+   <string name="profile_friend_request">%1$s har skickat en vänförfrågan</string>
    <string name="profile_respond">Svara</string>
    <string name="profile_waiting">Väntar</string>
    <string name="social_my_friends">Mina vänner</string>
@@ -232,7 +229,7 @@
    <string name="bucket_current_cover">Aktuellt omslagsfoto</string>
    <string name="bucket_item_edit_completed">Markera som färdig!</string>
    <string name="reload_feed">Uppdatera flödet</string>
-   <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
+   <string name="feed_header">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
    <string name="added">har lagt till en</string>
    <string name="booked">har bokat en</string>
    <string name="shared">har delat en</string>
@@ -281,8 +278,8 @@
    <string name="post_cancel_message">Är du säker på att du vill kasta bort ändringarna?</string>
    <string name="bucket_list_foreign_message">Den här användaren har inga drömresmål för närvarande</string>
 
-   <string name="user_name" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;</string>
-   <string name="user_name_with_company" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
+   <string name="user_name">&lt;b&gt;%1$s&lt;/b&gt;</string>
+   <string name="user_name_with_company">&lt;b&gt;%1$s&lt;/b&gt;, %2$s</string>
    <string name="email_app_choose_dialog_title">Välj program</string>
 
    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt; gillar detta</string>
@@ -308,13 +305,14 @@
    <string name="bucket_delete">Ta bort drömresmål</string>
    <string name="bucket_delete_caption">Är du säker på att du vill ta bort drömresmålet?</string>
 
-   <string name="feed_header_two" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
-   <string name="feed_header_many" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s av dina vänner&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
+   <string name="feed_header_two">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s%4$s&lt;/b&gt; %5$s &lt;b&gt;%6$s&lt;/b&gt;</string>
+   <string name="feed_header_many">&lt;b&gt;%1$s%2$s&lt;/b&gt; och &lt;b&gt;%3$s av dina vänner&lt;/b&gt; %4$s &lt;b&gt;%5$s&lt;/b&gt;</string>
 
    <string name="player_error_header">Fel vid uppspelning</string>
    <string name="player_error">Tyvärr. Vi kunde inte spela upp videon just nu. Kontrollera din anslutning och försök igen.</string>
 
    <string name="retry">Försök igen</string>
+   <string name="cancel">Avbryt</string>
 
    <string name="no_notifications">Du har inga aviseringar än</string>
    <string name="notification_message_friend_accepted">%1$s har accepterat din vänförfrågan</string>
@@ -345,7 +343,7 @@
    <string name="no_feed">Du kommer att se din väns aktivitet här.\n Klicka på länken nedan för att hitta dina vänner</string>
    <string name="search_friends">Sök efter vänner</string>
 
-   <string name="feed_share_photo_or_idea">Dela ett foto eller en idé</string>
+   <string name="feed_share_post_button">Dela ett foto, en video eller en idé</string>
    <string name="feed_view_profile_btn">Visa profil</string>
    <string name="start_searching">Skriv för att börja söka</string>
 
@@ -359,6 +357,7 @@
    <string name="terms_and_conditions_reject">Inte nu</string>
 
    <string name="camera">Kamera</string>
+   <string name="library">Bibliotek</string>
    <string name="camera_take_a_picture">Ta en bild</string>
    <string name="camera_record_a_video">Spela in en video</string>
    <string name="add_from_facebook">Lägg till från Facebook</string>
@@ -374,10 +373,12 @@
    <string name="user_mutual_friends">Gemensamma vänner</string>
    <string name="no_mutual_friends">Ni har inga gemensamma vänner</string>
 
-   <string name="photo_limitation_message">Välj upp till %1$d foton</string>
-   <string name="picker_erros_photos_and_videos">Du kan inte välja bilder och videor</string>
-   <string name="picker_video_duration_limit">Du kan inte ladda upp en video som är mer än %1$d sekunder</string>
    <string name="pending">Väntar …</string>
+   <string name="media_picker_error_contents">Inläsning av %1$s misslyckades.</string>
+   <string name="media_picker_gallery_action">Media-galleri</string>
+   <string name="media_picker_fb_albums_actions">Facebook-album</string>
+   <string name="media_picker_fb_photos_actions">Facebook-bilder</string>
+   <string name="media_picker_limit_reached">Du kan bara välja upp till %1$s bilder</string>
 
    <string name="back">Tillbaka</string>
    <string name="logout_component">Logga ut</string>
@@ -490,6 +491,8 @@
    <string name="uploading_post_status_paused">Överföring pausad</string>
    <string name="uploading_post_status_waiting">Väntar</string>
    <string name="uploading_post_status_failed_connection"> Anslutning bruten </string>
+   <string name="uploading_post_status_upload_video_failed">Denna video laddades inte upp</string>
+   <string name="uploading_post_status_transcoding_failed">Denna video kan inte behandlas</string>
    <string name="uploading_post_status_uploaded">Inlägget har publicerats!</string>
    <string name="uploading_post_time_left_posting">Publicerar…</string>
    <string name="uploading_post_time_time_left">har lämnat chatten</string>
@@ -577,7 +580,7 @@
    <string name="offline_warning_dialog_message">Din tillgång kommer att vara begränsad </string>
    <string name="offline_indicator_description">Ingen internetanslutning</string>
 
-   <string name="merchant_message_text" formatted="false">Grattis! Du har tjänat %1$s DreamTrips Points @%2$s, %3$s</string>
+   <string name="merchant_message_text">Grattis! Du har tjänat %1$s DreamTrips Points @%2$s, %3$s</string>
 
    <string name="beta_label">Beta</string>
 
@@ -590,9 +593,24 @@
    <string name="n_friends_accepted">%1$d vänner accepterade.</string>
    <string name="friends_will_appear_momentarily">De kommer tillfälligt synas under Mina vänner.</string>
 
-   <string name="uploading_post_status_processing">Bearbetar</string>
    <string name="uploading_post_status_progress_video"><b><i>Steg 1 av 2.</i></b> Laddar upp …</string>
    <string name="uploading_post_status_progress_video_processing"><b><i>Steg 2 av 2.</i></b> Bearbetar …</string>
    <string name="uploading_post_status_progress_video_processing_failed">Bearbetningen misslyckades. Något är fel med videon</string>
 
+   <string name="photo_strip_read_storage_permission_explanation">Behöver tillåtelse att läsa av lagret för att föreslå mediainnehåll</string>
+
+   <string name="picker_two_media_type_error">Välj antingen foton eller en video</string>
+   <string name="picker_photo_limit">Du kan välja upp till %1$d foto</string>
+   <string name="picker_photo_limit_plural">Du kan välja upp till %1$d foton</string>
+   <string name="picker_video_limit">Du kan välja upp till %1$d videoklipp</string>
+   <string name="picker_video_limit_plural">Du kan välja upp till %1$d videoklipp</string>
+   <string name="picker_video_length_limit">Du har inte tillåtelse att välja videor och foton som är mer än %1$d sekunder långa</string>
+
+   <string name="wv_advantage">WVA</string>
+   <string name="video_delete">Ta bort video</string>
+   <string name="video_deleted">Videon har blivit borttagen</string>
+   <string name="video_delete_caption">Är du säker på att du vill ta bort denna video?</string>
+   <string name="error_failed_to_delete_video">Borttagningen av videon misslyckades.</string>
+   <string name="type_video">Video</string>
+   <string name="type_post">Publicera</string>
 </resources>

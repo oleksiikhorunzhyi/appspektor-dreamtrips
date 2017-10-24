@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.ColorInt;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -14,7 +15,6 @@ import android.text.style.ReplacementSpan;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
-import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 
@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HashtagTextView extends TextView {
+import static android.support.v4.content.ContextCompat.getColor;
+
+public class HashtagTextView extends AppCompatTextView {
 
    private static final int MAX_HASHTAG_LENGTH = 250;
 
@@ -43,9 +45,9 @@ public class HashtagTextView extends TextView {
 
    public HashtagTextView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
-      hashtagTextColor = context.getResources().getColor(R.color.hashtag_text_color);
-      selectedHashtagTextColor = context.getResources().getColor(R.color.hashtag_text_color);
-      selectedHashtagBackgroundColor = context.getResources().getColor(R.color.highlight_hashtag_bg);
+      hashtagTextColor = getColor(context, R.color.hashtag_text_color);
+      selectedHashtagTextColor = getColor(context, R.color.hashtag_text_color);
+      selectedHashtagBackgroundColor = getColor(context, R.color.highlight_hashtag_bg);
    }
 
    public void setHashtagTextColor(@ColorInt int hashtagTextColor) {

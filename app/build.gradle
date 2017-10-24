@@ -60,6 +60,10 @@ android {
          dimension "stream"
          applicationIdSuffix = 'smartcard'
       }
+      smartcardemulmode {
+         dimension "stream"
+         applicationIdSuffix = 'smartcard'
+      }
       smartcardnxtid {
          dimension "stream"
          applicationIdSuffix = 'smartcard'
@@ -145,10 +149,7 @@ android {
       preDexLibraries = project.ext.androidConfig.preDex
    }
    lintOptions {
-      disable 'MissingTranslation' // otherwise generated strings fucks you up
-      abortOnError false
-      checkReleaseBuilds false
-      // lint doesn't like retrolambda https://github.com/evant/gradle-retrolambda/issues/96
+      disable 'MissingTranslation', 'RestrictedApi', 'GradleCompatible'
    }
    packagingOptions {
       exclude 'LICENSE.txt'
@@ -218,6 +219,7 @@ configurations.all {
    }
    exclude group: 'xpp3', module: 'xpp3'
    exclude group: 'org.jetbrains', module: 'annotations-java5'
+   exclude group: 'org.jetbrains', module: 'annotations'
 }
 
 repositories {
@@ -249,7 +251,6 @@ dependencies {
    })
    deps.applyAll(owner, deps.test)
 
-   // customized dependencies
    devCompile deps.provide(deps.util.leakcanary)
    devpremarshmallowCompile deps.provide(deps.util.leakcanary)
    externalCompile deps.provide(deps.util.leakcanaryNoOp)

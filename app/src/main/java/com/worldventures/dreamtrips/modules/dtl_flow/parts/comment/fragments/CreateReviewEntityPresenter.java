@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.State;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
@@ -29,6 +28,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
 import io.techery.janet.Command;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -136,12 +136,15 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    public boolean removeImage(PhotoReviewCreationItem item) {
-      boolean removed = cachedCreationItems.remove(item);
-      if (removed) {
-         invalidateDynamicViews();
-         updatePickerState();
+      try {
+         cachedCreationItems.remove(item);
+      } catch (Exception e){
+         e.printStackTrace();
+         return false;
       }
-      return removed;
+      return true;
+
+
    }
 
    public void attachImages(MediaAttachment mediaAttachment) {

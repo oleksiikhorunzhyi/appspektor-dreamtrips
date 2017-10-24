@@ -170,7 +170,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
                   .onProgress((action, progress) -> actionSucceed(action))
                   .onSuccess(this::actionSucceed)
                   .onFail((action, e) -> {
-                     Timber.e(action.getErrorMessage(), e);
+                     Timber.e(e, action.getErrorMessage());
                      handleError(action, e);
                   }));
    }
@@ -207,7 +207,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
                   .onProgress((action, progress) -> onTripsLoaded(action.getItems()))
                   .onSuccess(action -> onTripsLoaded(action.getItems()))
                   .onFail((action, e) -> {
-                     Timber.e(action.getErrorMessage(), e);
+                     Timber.e(e, action.getErrorMessage());
                      if (!action.hasValidCachedItems()) view.removeTripsPopupInfo();
                      handleError(action, e);
                   }));

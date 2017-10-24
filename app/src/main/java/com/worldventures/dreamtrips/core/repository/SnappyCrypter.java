@@ -9,11 +9,13 @@ import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.Crypte
 import com.worldventures.dreamtrips.wallet.domain.storage.security.crypto.HybridAndroidCrypter;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Collections;
 import java.util.List;
 
 public class SnappyCrypter {
+
+   private static final int INITIAL_BUFFER_SIZE = 4096;
+   private static final int MAX_BUFFER_SIZE = -1;
 
    private final Kryo kryo;
    private final HybridAndroidCrypter crypter;
@@ -24,13 +26,13 @@ public class SnappyCrypter {
    }
 
    public void put(DB db, String key, Object obj) throws SnappydbException {
-      Output output = new Output(new ByteArrayOutputStream());
+      Output output = new Output(INITIAL_BUFFER_SIZE, MAX_BUFFER_SIZE);
       kryo.writeClassAndObject(output, obj);
       db.put(key, output.toBytes());
    }
 
    public void putEncrypted(DB db, String key, Object obj) throws SnappydbException {
-      Output output = new Output(new ByteArrayOutputStream());
+      Output output = new Output(INITIAL_BUFFER_SIZE, MAX_BUFFER_SIZE);
       kryo.writeClassAndObject(output, obj);
       byte[] bytes = crypter.encrypt(new Crypter.CryptoData(new ByteArrayInputStream(output.getBuffer())))
             .toByteArray();

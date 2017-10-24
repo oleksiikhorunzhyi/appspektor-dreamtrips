@@ -2,54 +2,69 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.jakewharton.rxbinding.widget.RxTextView;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
-import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
+import com.worldventures.dreamtrips.databinding.ScreenWalletSettingsProfileBinding;
+import com.worldventures.dreamtrips.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils;
+import com.worldventures.dreamtrips.wallet.service.WalletCropImageService;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.UploadProfileDataException;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
+import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
-import com.worldventures.dreamtrips.wallet.util.FormatException;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.ProfileViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common.WalletPhotoProposalDialog;
+import com.worldventures.dreamtrips.wallet.util.FirstNameException;
+import com.worldventures.dreamtrips.wallet.util.LastNameException;
+import com.worldventures.dreamtrips.wallet.util.MiddleNameException;
+import com.worldventures.dreamtrips.wallet.util.NetworkUnavailableException;
 
 import java.io.File;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.ComposableOperationView;
+import io.techery.janet.operationsubscriber.view.OperationView;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettingsProfilePresenter.Screen, WalletSettingsProfilePresenter, WalletSettingsProfilePath> implements WalletSettingsProfilePresenter.Screen {
-
-   @InjectView(R.id.toolbar) Toolbar toolbar;
-   @InjectView(R.id.photo_preview) SimpleDraweeView previewPhotoView;
-   @InjectView(R.id.first_name) EditText etFirstName;
-   @InjectView(R.id.middle_name) EditText etMiddleName;
-   @InjectView(R.id.last_name) EditText etLastName;
-   @InjectView(R.id.et_phone_number) EditText etPhoneNumber;
-   @InjectView(R.id.et_country_code) EditText etCountryCode;
-
-   private Observable<String> firstNameObservable;
-   private Observable<String> middleNameObservable;
-   private Observable<String> codeObservable;
-   private Observable<String> phoneObservable;
-
    /**
     * TODO
     * Send to backend blocked
     * Add ability to change 1 item independently
     * notify other streams that it's ok
     */
+   private static final String PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY";
 
-   private MediaPickerService mediaPickerService;
-   private Dialog progressDialog;
+   private WalletCropImageService cropImageService;
+   private ScreenWalletSettingsProfileBinding binding;
+   private ProfileViewModel profileViewModel = new ProfileViewModel();
+   private WalletPhotoProposalDialog photoActionDialog;
+   private Dialog scNonConnectionDialog;
+
+   private PublishSubject<ProfileViewModel> observeProfileViewModel = PublishSubject.create();
+
+   private MenuItem actionDoneMenuItem;
 
    public WalletSettingsProfileScreen(Context context) {
       super(context);
@@ -62,9 +77,21 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      toolbar.setNavigationOnClickListener(v -> onNavigationClick());
-      toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
-      toolbar.setOnMenuItemClickListener(item -> {
+      if (isInEditMode()) return;
+      binding = DataBindingUtil.bind(this);
+      binding.setOnAvatarClick(v -> showDialog());
+      binding.setProfile(profileViewModel);
+      binding.setOnEditTextFocusChange((view, hasFocus) -> {
+         if (hasFocus) {
+            EditText editText = (EditText) view;
+            editText.setSelection(editText.length());
+         }
+      });
+      binding.toolbar.setNavigationOnClickListener(v -> onNavigationClick());
+      binding.toolbar.inflateMenu(R.menu.menu_wallet_settings_profile);
+      binding.setOnDisplaySettingsClick(v -> presenter.openDisplaySettings());
+      actionDoneMenuItem = binding.toolbar.getMenu().findItem(R.id.done);
+      binding.toolbar.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.done:
                getPresenter().handleDoneAction();
@@ -75,33 +102,15 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
 
       if (isInEditMode()) return;
 
-      etLastName.setKeyListener(null);
+      binding.lastName.setKeyListener(null);
 
       //noinspection all
-      mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
-      mediaPickerService.setPhotoPickerListener(photoPickerListener);
-      firstNameObservable = RxTextView.afterTextChangeEvents(etFirstName).map(event -> event.editable().toString());
-      middleNameObservable = RxTextView.afterTextChangeEvents(etMiddleName).map(event -> event.editable().toString());
-      codeObservable = RxTextView.afterTextChangeEvents(etCountryCode).map(event -> event.editable().toString());
-      phoneObservable = RxTextView.afterTextChangeEvents(etPhoneNumber).map(event -> event.editable().toString());
-      ImageUtils.applyGrayScaleColorFilter(previewPhotoView);
-   }
-
-   private PhotoPickerLayout.PhotoPickerListener photoPickerListener = new PhotoPickerLayout.PhotoPickerListener() {
-      @Override
-      public void onClosed() {
-         presenter.setupInputMode();
-      }
-
-      @Override
-      public void onOpened() {
-
-      }
-   };
-
-   @OnClick(R.id.imageContainer)
-   public void choosePhotoClick() {
-      presenter.choosePhoto();
+      cropImageService = (WalletCropImageService) getContext().getSystemService(WalletCropImageService.SERVICE_NAME);
+      ImageUtils.applyGrayScaleColorFilter(binding.photoPreview);
+      binding.photoPreview.getHierarchy()
+            .setPlaceholderImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
+      binding.photoPreview.getHierarchy()
+            .setFailureImage(R.drawable.ic_edit_profile_silhouette, ScalingUtils.ScaleType.CENTER_CROP);
    }
 
    @NonNull
@@ -114,26 +123,46 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
       presenter.handleBackAction();
    }
 
-   @Override
-   public void setPreviewPhoto(String photoUrl) {
-      previewPhotoView.setImageURI(photoUrl);
+   void onChoosePhotoClick(String initialPhotoUrl) {
+      hideDialog();
+      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnDoneListener(result -> {
+         if (!result.isEmpty()) {
+            presenter.handlePickedPhoto(result.getChosenImages().get(0));
+         }
+      });
+      if (initialPhotoUrl != null) {
+         mediaPickerDialog.show(initialPhotoUrl);
+      } else {
+         mediaPickerDialog.show();
+      }
    }
 
    @Override
-   public void setUserName(String firstName, String middleName, String lastName) {
-      etFirstName.setText(firstName);
-      etFirstName.setSelection(etFirstName.length());
-
-      etMiddleName.setText(middleName);
-      etMiddleName.setSelection(etMiddleName.length());
-
-      etLastName.setText(lastName);
+   public void dropPhoto() {
+      profileViewModel.setChosenPhotoUri(null);
    }
 
    @Override
-   public void setPhone(String countryCode, String number) {
-      etCountryCode.setText(countryCode);
-      etPhoneNumber.setText(number);
+   public void showDialog() {
+      SoftInputUtil.hideSoftInputMethod(this);
+      photoActionDialog = new WalletPhotoProposalDialog(getContext());
+      photoActionDialog.setOnChoosePhotoAction(() -> getPresenter().choosePhoto());
+      photoActionDialog.setOnDoNotAddPhotoAction(this::onDoNotAddClick);
+      photoActionDialog.setOnCancelAction(this::hideDialog);
+      photoActionDialog.show();
+   }
+
+   void onDoNotAddClick() {
+      hideDialog();
+      presenter.doNotAdd();
+   }
+
+   @Override
+   public void hideDialog() {
+      if (photoActionDialog == null) return;
+      photoActionDialog.hide();
+      photoActionDialog = null;
    }
 
    @Override
@@ -148,143 +177,146 @@ public class WalletSettingsProfileScreen extends WalletLinearLayout<WalletSettin
    }
 
    @Override
-   public String getFirstName() {
-      return etFirstName.getText().toString();
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      if (isInEditMode()) return;
+      observeNewAvatar();
    }
 
    @Override
-   public String getMiddleName() {
-      return etMiddleName.getText().toString();
+   protected Parcelable onSaveInstanceState() {
+      Bundle bundle = (Bundle) super.onSaveInstanceState();
+      bundle.putParcelable(PROFILE_STATE_KEY, profileViewModel);
+      return bundle;
    }
 
    @Override
-   public String getLastName() {
-      return etLastName.getText().toString();
+   protected void onRestoreInstanceState(Parcelable state) {
+      super.onRestoreInstanceState(state);
+      Bundle bundle = (Bundle) state;
+      setUser(bundle.getParcelable(PROFILE_STATE_KEY));
+   }
+
+   private void observeNewAvatar() {
+      observeCropper()
+            .compose(lifecycle())
+            .subscribe(file -> profileViewModel.setChosenPhotoUri(Uri.fromFile(file).toString()));
    }
 
    @Override
-   public String getCountryCode() {
-      return etCountryCode.getText().toString();
+   public void setUser(ProfileViewModel model) {
+      profileViewModel.removeOnPropertyChangedCallback(profileViewModelCallback);
+      profileViewModel = model;
+      binding.setProfile(model);
+      profileViewModel.addOnPropertyChangedCallback(profileViewModelCallback);
    }
 
-   @Override
-   public String getPhoneNumber() {
-      return etPhoneNumber.getText().toString();
-   }
+   private android.databinding.Observable.OnPropertyChangedCallback profileViewModelCallback = new android.databinding.Observable.OnPropertyChangedCallback() {
+      @Override
+      public void onPropertyChanged(android.databinding.Observable observable, int i) {
+         observeProfileViewModel.onNext(profileViewModel);
+      }
+   };
 
    @Override
-   public Observable<String> firstNameObservable() {
-      return firstNameObservable;
-   }
-
-   @Override
-   public Observable<String> middleNameObservable() {
-      return middleNameObservable;
-   }
-
-   @Override
-   public Observable<String> codeObservable() {
-      return codeObservable;
-   }
-
-   @Override
-   public Observable<String> phoneObservable() {
-      return phoneObservable;
+   public ProfileViewModel getUser() {
+      return profileViewModel;
    }
 
    @Override
    public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
+      return null;
    }
 
    @Override
-   public void showProgress() {
-      hideProgress();
-
-      progressDialog = new MaterialDialog.Builder(getContext())
-            .content(R.string.loading)
-            .progress(true, 0)
-            .cancelable(false)
-            .build();
-
-      progressDialog.show();
+   public OperationView<UpdateSmartCardUserCommand> provideUpdateSmartCardOperation() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_long_operation_hint, false),
+            ErrorViewFactory.<UpdateSmartCardUserCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NetworkUnavailableException.class, R.string.wallet_card_settings_profile_dialog_error_network_unavailable))
+                  .addProvider(provideDisplayTypeExceptionHandler(MissingUserPhotoException.class, R.string.wallet_card_settings_profile_display_settings_exception_photo))
+                  .addProvider(provideDisplayTypeExceptionHandler(MissingUserPhoneException.class, R.string.wallet_card_settings_profile_display_settings_exception_phone))
+                  .addProvider(provideUploadDataExceptionHandler())
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .build()
+      );
    }
 
    @Override
-   public void hideProgress() {
-      if (progressDialog != null && progressDialog.isShowing()) {
-         progressDialog.dismiss();
+   public void showSCNonConnectionDialog() {
+      if (scNonConnectionDialog == null) {
+         scNonConnectionDialog = new MaterialDialog.Builder(getContext())
+               .title(R.string.wallet_card_settings_cant_connected)
+               .content(R.string.wallet_card_settings_message_cant_connected)
+               .positiveText(R.string.ok)
+               .build();
       }
+      if (!scNonConnectionDialog.isShowing()) scNonConnectionDialog.show();
    }
 
    @Override
-   public void showError(Throwable throwable) {
-      String text = getContext().getString(throwable instanceof FormatException ?
-            R.string.wallet_add_card_details_error_message :
-            R.string.wallet_card_settings_profile_dialog_error_smartcard_content);
+   public OperationView<RetryHttpUploadUpdatingCommand> provideHttpUploadOperation() {
+      return new ComposableOperationView<>(
+            new SimpleDialogProgressView<>(getContext(), R.string.loading, false),
+            ErrorViewFactory.<RetryHttpUploadUpdatingCommand>builder()
+                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), NetworkUnavailableException.class, R.string.wallet_card_settings_profile_dialog_error_network_unavailable))
+                  .addProvider(provideUploadDataExceptionHandler())
+                  .build()
+      );
+   }
 
-      new MaterialDialog.Builder(getContext())
-            .content(text)
-            .cancelable(false)
-            .title(R.string.wallet_card_settings_profile_dialog_error_smartcard_header)
-            .positiveText(R.string.ok)
-            .onPositive((dialog, which) -> {
-               if (throwable instanceof FormatException) getPresenter().cancelUpdating();
-               else getPresenter().handleDoneAction();
-            })
-            .onNegative((dialog, which) -> getPresenter().cancelUpdating())
-            .negativeText(R.string.cancel)
-            .build()
-            .show();
+   private <T> ErrorViewProvider<T> provideUploadDataExceptionHandler() {
+      final SimpleDialogErrorViewProvider<T> errorProvider = new SimpleDialogErrorViewProvider<>(getContext(),
+            UploadProfileDataException.class,
+            R.string.wallet_card_settings_profile_dialog_error_server_content,
+            command -> getPresenter().retryUploadToServer(),
+            command -> getPresenter().cancelUploadServerUserData());
+      errorProvider.setPositiveText(R.string.retry);
+      return errorProvider;
+   }
+
+   private <T> ErrorViewProvider<T>
+   provideDisplayTypeExceptionHandler(Class<? extends Throwable> throwable, @StringRes int message) {
+      final SimpleDialogErrorViewProvider<T> errorProvider = new SimpleDialogErrorViewProvider<>(
+            getContext(), throwable, message,
+            command -> getPresenter().confirmDisplayTypeChange(), t -> {
+      });
+      errorProvider.setPositiveText(R.string.wallet_continue_label);
+      return errorProvider;
    }
 
    @Override
-   public void showUploadServerError() {
-      new MaterialDialog.Builder(getContext())
-            .content(R.string.wallet_card_settings_profile_dialog_error_server_content)
-            .cancelable(false)
-            .positiveText(R.string.retry)
-            .negativeText(R.string.cancel)
-            .onPositive((dialog, which) -> getPresenter().retryUploadToServer())
-            .onNegative((dialog, which) -> getPresenter().cancelUploadServerUserData())
-            .build()
-            .show();
-   }
-
-   @Override
-   public void showNetworkUnavailableError() {
-      new MaterialDialog.Builder(getContext())
-            .content(R.string.wallet_card_settings_profile_dialog_error_network_unavailable)
-            .cancelable(false)
-            .positiveText(R.string.ok)
-            .onPositive((dialog, which) -> dialog.dismiss())
-            .build()
-            .show();
-   }
-
-   @Override
-   public void pickPhoto() {
-      mediaPickerService.pickPhoto();
+   public void pickPhoto(String initialPhotoUrl) {
+      onChoosePhotoClick(initialPhotoUrl);
    }
 
    @Override
    public void cropPhoto(Uri photoPath) {
-      mediaPickerService.crop(photoPath);
+      cropImageService.cropImage(photoPath);
    }
 
    @Override
-   public Observable<Uri> observePickPhoto() {
-      return mediaPickerService.observePicker();
+   public Observable<File> observeCropper() {
+      return cropImageService.observeCropper();
    }
 
    @Override
-   public Observable<String> observeCropper() {
-      return mediaPickerService.observeCropper().map(File::getAbsolutePath);
+   public void setDoneButtonEnabled(boolean enable) {
+      if (actionDoneMenuItem != null) actionDoneMenuItem.setEnabled(enable);
    }
 
    @Override
-   public void hidePhotoPicker() {
-      mediaPickerService.hidePicker();
+   public PublishSubject<ProfileViewModel> observeChangesProfileFields() {
+      return observeProfileViewModel;
    }
 
+   @Override
+   protected void onDetachedFromWindow() {
+      if (scNonConnectionDialog != null) scNonConnectionDialog.dismiss();
+      super.onDetachedFromWindow();
+   }
 }

@@ -9,7 +9,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import timber.log.Timber;
 
@@ -35,8 +34,7 @@ public class AdapterHelper {
          Constructor<? extends RecyclerView.ViewHolder> constructor = cellClass.getConstructor(View.class);
          cellObject = constructor.newInstance(cellView);
 
-      } catch (InstantiationException | IllegalAccessException |
-            NoSuchMethodException | InvocationTargetException e) {
+      } catch (Exception e) {
          Timber.e(e, "Can't create cell");
       }
       return cellObject;

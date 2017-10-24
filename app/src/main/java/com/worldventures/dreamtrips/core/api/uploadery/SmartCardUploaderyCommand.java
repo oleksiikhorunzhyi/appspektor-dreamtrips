@@ -6,35 +6,38 @@ import com.worldventures.dreamtrips.api.uploadery.UploadSmartCardImageHttpAction
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.HttpUploaderyException;
-
-import java.io.File;
+import com.worldventures.dreamtrips.wallet.util.MaltyPartImageBodyCreator;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.schedulers.Schedulers;
 
 @CommandAction
 public class SmartCardUploaderyCommand extends BaseUploadImageCommand<UploadSmartCardImageHttpAction> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject MaltyPartImageBodyCreator creator;
 
-   private final File file;
+   private final String photoUri;
    private final String smartCardId;
 
-   public SmartCardUploaderyCommand(String smartCardId, File file) {
+   public SmartCardUploaderyCommand(String smartCardId, String photoUri) {
       this.smartCardId = smartCardId;
-      this.file = file;
+      this.photoUri = photoUri;
    }
 
    @Override
-   protected void run(CommandCallback<UploadSmartCardImageHttpAction> callback) throws Exception{
+   protected void run(CommandCallback<UploadSmartCardImageHttpAction> callback) throws Exception {
       final String username = userSessionHolder.get().get().getUsername();
-      janet.createPipe(UploadSmartCardImageHttpAction.class, Schedulers.io())
-            .createObservableResult(new UploadSmartCardImageHttpAction(BuildConfig.UPLOADERY_API_URL, username, smartCardId, file))
-            .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
+      creator.createBody(photoUri)
+            .flatMap(body -> janet.createPipe(UploadSmartCardImageHttpAction.class)
+                  .createObservableResult(new UploadSmartCardImageHttpAction(
+                        BuildConfig.UPLOADERY_API_URL,
+                        username,
+                        smartCardId,
+                        body))
+            ).subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));
    }
-
 }

@@ -200,7 +200,8 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
          more.setVisibility(View.GONE);
       }
 
-      if (feedItem.getType() == FeedEntityHolder.Type.POST || feedItem.getType() == FeedEntityHolder.Type.TRIP) {
+      if (feedItem.getType() == FeedEntityHolder.Type.POST || feedItem.getType() == FeedEntityHolder.Type.TRIP
+            || feedItem.getType() == FeedEntityHolder.Type.VIDEO) {
          share.setVisibility(View.GONE);
       } else {
          share.setVisibility(View.VISIBLE);

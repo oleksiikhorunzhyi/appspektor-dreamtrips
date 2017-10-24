@@ -5,8 +5,11 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.video.Video;
 import com.worldventures.dreamtrips.modules.media_picker.model.ImmutableVideoMetadata;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
+
 
 import javax.inject.Inject;
 
@@ -19,12 +22,34 @@ public class GetVideoMetadataCommand extends Command<VideoMetadata> implements I
    @Inject Context context;
    private Uri uri;
 
+   private Video video;
+
    public GetVideoMetadataCommand(Uri uri) {
       this.uri = uri;
    }
 
+   public GetVideoMetadataCommand(Video video) {
+      this.video = video;
+   }
+
    @Override
    protected void run(CommandCallback<VideoMetadata> commandCallback) throws Throwable {
+      if (video == null) {
+         createFromUri(commandCallback);
+      } else {
+         createFromPost(commandCallback);
+      }
+   }
+
+   private void createFromPost(CommandCallback<VideoMetadata> commandCallback) {ImmutableVideoMetadata.Builder builder = ImmutableVideoMetadata.builder();
+      builder.aspectRatio(video.getAspectRatio());
+      builder.duration(video.getDuration());
+      builder.width(0);
+      builder.height(0);
+      commandCallback.onSuccess(builder.build());
+   }
+
+   private void createFromUri(CommandCallback<VideoMetadata> commandCallback) {
       MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
       metaRetriever.setDataSource(context, uri);
 
@@ -37,12 +62,13 @@ public class GetVideoMetadataCommand extends Command<VideoMetadata> implements I
       int width = Integer.parseInt(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
       int height = Integer.parseInt(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
       if (rotation == 90 || rotation == 270) {
-         builder.width(height);
-         builder.height(width);
+         builder.aspectRatio((double) height / width);
+         builder.width(height).height(width);
       } else {
-         builder.width(width);
-         builder.height(height);
+         builder.aspectRatio((double) width / height);
+         builder.width(width).height(height);
       }
+
       commandCallback.onSuccess(builder.build());
    }
 }

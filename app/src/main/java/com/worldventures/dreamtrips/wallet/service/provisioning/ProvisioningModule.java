@@ -10,7 +10,7 @@ import dagger.Provides;
 
 @Module(injects = {
       ProvisioningModeCommand.class,
-      PinOptionalCommand.class
+      PinOptionalCommand.class,
 },
         library = true,
         complete = false)

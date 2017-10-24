@@ -56,7 +56,7 @@
    <EditText
          android:id="@+id/photo_title"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
+         android:layout_height="@dimen/photo_cell_title_height"
          android:layout_below="@+id/photo_container"
          android:background="@null"
          android:hint="@string/add_title"

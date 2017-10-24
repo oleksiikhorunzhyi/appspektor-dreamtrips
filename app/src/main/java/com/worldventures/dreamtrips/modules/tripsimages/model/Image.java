@@ -1,13 +1,10 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
-import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.io.Serializable;
 
@@ -24,7 +21,6 @@ public class Image implements Parcelable, Serializable {
       }
    };
 
-   private boolean fromFile;
    private String url;
 
    public Image() {
@@ -38,26 +34,8 @@ public class Image implements Parcelable, Serializable {
       return url;
    }
 
-   public String getUrl(int width, int height) {
-      int size = Math.max(width, height);
-      return ImageUtils.getParametrizedUrl(url, size, size);
-   }
-
-   public String getThumbUrl(Resources resources) {
-      int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.photo_thumb_size);
-      return ImageUtils.getParametrizedUrl(url, dimensionPixelSize, dimensionPixelSize);
-   }
-
    public void setUrl(String url) {
       this.url = url;
-   }
-
-   public void setFromFile(boolean fromFile) {
-      this.fromFile = fromFile;
-   }
-
-   public boolean isFromFile() {
-      return fromFile;
    }
 
    @Override

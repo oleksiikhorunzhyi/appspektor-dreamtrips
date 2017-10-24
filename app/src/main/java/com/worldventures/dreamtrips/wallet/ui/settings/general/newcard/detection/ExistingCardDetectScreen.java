@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
+import com.worldventures.dreamtrips.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.dreamtrips.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetDelegate;
 import com.worldventures.dreamtrips.wallet.ui.settings.general.reset.FactoryResetOperationView;
@@ -71,7 +72,9 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
    public OperationView<ActiveSmartCardCommand> provideActiveSmartCardOperationView() {
       return new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.loading, true),
-            ErrorViewFactory.<ActiveSmartCardCommand>builder().build()
+            ErrorViewFactory.<ActiveSmartCardCommand>builder()
+                  .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .build()
       );
    }
 
@@ -86,6 +89,8 @@ public class ExistingCardDetectScreen extends WalletLinearLayout<ExistingCardDet
             new SimpleDialogProgressView<>(getContext(), R.string.loading, true),
             ErrorViewFactory.<WipeSmartCardDataCommand>builder()
                   .addProvider(new SmartCardErrorViewProvider<>(getContext()))
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), presenter.httpErrorHandlingUtil(),
+                        command -> unassignButton.performClick(), command -> { /*nothing*/}))
                   .build()
       );
    }

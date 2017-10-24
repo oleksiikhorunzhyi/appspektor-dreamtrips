@@ -5,7 +5,6 @@
    <string name="wallet_done_label">Done</string>
    <string name="wallet_cancel_label">Cancel</string>
    <string name="wallet_continue_label">Continue</string>
-   <string name="wallet_got_it_label">Got it!</string>
    <string name="wallet_error_label">Error</string>
    <string name="wallet_retry_label">Retry</string>
    <string name="wallet_label_yes">Yes</string>
@@ -16,42 +15,36 @@
    <string name="wallet">flye\u2122 smart card</string>
    <string name="wallet_dashboard_title">flye\u2122 smart card</string>
    <string name="wallet_wizard_title">flye\u2122 smart card</string>
-   <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
    <string name="wallet_smart_card_is_disconnected">Smart Card is disconnected</string>
    <string name="wallet_no_internet_connection">No internet connection</string>
+   <string name="wallet_connection_timed_out">Connection timed out</string>
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
-   <string name="wallet_sc_operation_could_not_be_completed" formatted="false">This operation could not be completed\n(%s)</string>
+   <string name="wallet_sc_operation_could_not_be_completed">This operation could not be completed\n(%1$s)</string>
 
    <!--card alias-->
-   <string name="wallet_wizard_card_alias_subtitle">Name your Smart Card</string>
-   <string name="wallet_wizard_card_alias_hint">Example: Shirley\'s Smart Card</string>
-   <string name="wallet_wizard_card_alias_format_error">Card name can contain only letters and has length more then 2 chars</string>
-   <string name="wallet_wizard_card_alias_was_setup">Card name was added</string>
-   <string name="wallet_wizard_card_alias_setup">Setup card name</string>
 
    <!--edit profile-->
-   <string name="wallet_wizard__welcom_screen_title">Set Up Smart Card</string>
+   <string name="wallet_wizard__welcom_screen_title">Personalize Smart Card</string>
    <string name="wallet_edit_profile_subtitle">Set the display photo and name you would like on your card.</string>
-   <string name="wallet_edit_profile_name_hint">Enter your name</string>
-   <string name="wallet_edit_profile_progress_dialog">Upload information to Smart Card</string>
-   <string name="wallet_edit_profile_success_dialog">Information was uploaded</string>
-   <string name="wallet_edit_profile_name_format_title">Wrong name format!</string>
    <string name="wallet_edit_profile_first_name_format_detail">First name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_last_name_format_detail">Last name should be from 2 to 21 letters</string>
    <string name="wallet_edit_profile_middle_name_format_detail">Middle name should be from 0 to 21 letters</string>
    <string name="wallet_edit_profile_avatar_not_chosen">Please, choose your photo for the Smart Card</string>
-   <string name="wallet_edit_profile_confirmation_dialog_message">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%s</b><br/>]]></string>
+   <string name="wallet_edit_profile_confirmation_dialog_message">Is this how your name is displayed on your payment cards?<![CDATA[<br/><br/><b>%1$s</b><br/>]]></string>
    <string name="wallet_edit_profile_confirmation_dialog_button_positive">Yes, Continue</string>
    <string name="wallet_edit_profile_confirmation_dialog_button_negative">No, Edit</string>
+   <string name="wallet_edit_profile_photo_choose">Choose Photo</string>
+   <string name="wallet_edit_profile_photo_not_add">Do not add photo</string>
+   <string name="wallet_edit_profile_photo_cancel">Cancel</string>
+   <string name="wallet_edit_profile_photo_edit">Edit</string>
+   <string name="wallet_edit_profile_photo_empty">No photo</string>
 
    <!--pin setup-->
    <string name="wallet_wizard_setup_pin_title">Set PIN</string>
    <string name="wallet_wizard_setup_pin_header">Create your 4-gesture PIN using any\nof the following gestures on the 2\n outer buttons:</string>
-   <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the Smart Card with 4 swipe and tap motions</string>
-   <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the Smart Card…</string>
    <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
    <string name="wallet_wizard_setup_new_pin_success">New PIN is set!</string>
    <string name="wallet_wizard_setup_pin_proposal_toolbar">PIN</string>
@@ -69,42 +62,31 @@
    <string name="wallet_wizard_finish_label">When finished you will be able to add credit and debit cards.</string>
 
    <!--splash-->
-   <string name="wallet_wizard_splash_title1">Get ready to soar</string>
    <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
-   <string name="wallet_wizard_splash_review_btn">User Agreement</string>
    <string name="wallet_wizard_splash_accept_user_agreement">Please accept the user agreement.</string>
 
    <string name="wallet_wizard_scan_proposal">Scan the barcode on the back of your Smart Card.</string>
    <string name="wallet_wizard_scan_start_btn">Scan Barcode</string>
    <string name="wallet_wizard_scan_title">Scan Smart Card</string>
-   <string name="wallet_wizard_scan_help_if_power_off">Make sure the card is powered on by swiping twice on the chip from the bottom to the top.</string>
 
-   <string name="wallet_wizard_scan_barcode_header">Position the Smart Card barcode in the viewfinder box.</string>
+   <string name="wallet_wizard_scan_barcode_header">Align the Smart Card barcode within the frame.</string>
    <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
    <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
-   <string name="waller_wizard_scan_barcode_progress_label">Connecting to Smart Card…</string>
+   <string name="wallet_wizard_scan_barcode_invalid_format">Invalid barcode</string>
+   <string name="wallet_wizard_scan_barcode_card_is_assigned">Smart Card is already assigned</string>
 
-   <string name="wallet_wizard_scan_barcode_card_is_assigned">Smart card is already assigned</string>
-
-   <string name="wallet_add_credit_card">Add credit card</string>
-   <string name="wallet_add_debit_card">Add debit card</string>
    <string name="wallet_payment_cards_title">Payment cards</string>
    <string name="wallet_loyalty_cards_title">Loyalty cards</string>
 
    <!--bar code manual-->
    <string name="wallet_wizard_manual_input_header">Enter the 10-digit number\nlocated below the barcode.</string>
    <string name="wallet_wizard_manual_input_title">Enter Smart Card ID</string>
-   <string name="wallet_wizard_bar_code_validation_error">Wrong barcode Number</string>
-   <string name="wallet_bank_name_text_holder">Bank Name</string>
-   <string name="wallet_wizard_manual_input_card_is_assigned">Smart card is already assigned</string>
+   <string name="wallet_wizard_manual_input_card_is_assigned">Smart Card is already assigned</string>
 
    <!--details-->
    <string name="wallet_card_details_title">Card Details</string>
-   <string name="wallet_card_details_label_billing_address">Billing Address</string>
    <string name="wallet_card_details_label_card_nickname">Card Nickname</string>
-   <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
    <string name="wallet_card_details_button_delete_card">Delete card</string>
-   <string name="wallet_card_details_progress_delete">Deleting %s…</string>
    <string name="wallet_card_details_delete_card_dialog_title">Delete payment card</string>
    <string name="wallet_card_details_delete_card_dialog_content">Are you sure?</string>
    <string name="wallet_card_details_button_pay_with_this">Pay with this card</string>
@@ -115,21 +97,18 @@
    <!--settings-->
    <string name="wallet_card_settings_title">Settings</string>
    <string name="wallet_card_settings_flye_sc">Smart Card</string>
-   <string name="wallet_card_settings_version">Version %s</string>
+   <string name="wallet_card_settings_version">Version %1$s</string>
    <string name="wallet_card_settings_battery_level">Battery level: %d%%</string>
-   <string name="wallet_card_settings_last_sync">Last synced %s</string>
-   <string name="wallet_card_settings_sc_profile">Smart Card Profile</string>
    <string name="wallet_card_settings_general">General</string>
    <string name="wallet_card_settings_security">Security</string>
    <string name="wallet_card_settings_help">Help</string>
    <string name="wallet_card_settings_about">About</string>
    <string name="wallet_card_settings_about_information_about_your_sc">Information about your Smart Card\'s software</string>
    <string name="wallet_card_settings_offline_mode">Offline Mode</string>
-   <string name="wallet_card_settings_low_battery_alert">Low battery alert</string>
    <string name="wallet_card_settings_find_my_sc">Find My Smart Card</string>
    <string name="wallet_card_settings_view_location_connected">View your Smart Card\'s last connected location</string>
-   <string name="wallet_card_settings_lock_card">Lock and Unlock card</string>
-   <string name="wallet_card_settings_requires_pin_entry_to_unlock">Requires PIN entry to unlock</string>
+   <string name="wallet_card_settings_lock_card">Lock Card</string>
+   <string name="wallet_card_settings_lock_card_description">Available when PIN is added</string>
    <string name="wallet_card_settings_disable_default_card">Disable Default Card</string>
    <string name="wallet_card_settings_disable_default_card_after_time">Disable default card after a certain timeframe</string>
    <string name="wallet_card_settings_add_pin">Add PIN</string>
@@ -141,21 +120,17 @@
    <string name="wallet_card_settings_auto_clear_sc_after">Automatically clear cards from your Smart Card</string>
    <string name="wallet_card_settings_keep_my_identity_private">Keep My Identity Private</string>
    <string name="wallet_card_settings_do_not_notify_merchants">Don\'t alert merchants of my arrival</string>
-   <string name="wallet_card_settings_alert">Alert</string>
-   <string name="wallet_card_settings_notifies_connectivity_lost">Notifies you when connectivity is lost</string>
-   <string name="wallet_card_settings_updates">Updates</string>
    <string name="wallet_card_settings_flye_sc_update">Smart Card Update</string>
    <string name="wallet_card_settings_updates_to_sc_software">Updates to your Smart Card\'s software</string>
-   <string name="wallet_card_settings_setup">Setup</string>
    <string name="wallet_card_settings_set_up_new_sc">Set up new Smart Card</string>
    <string name="wallet_card_settings_factory_reset_sc">Reset</string>
    <string name="wallet_card_settings_return_sc_factory_settings">Return your Smart Card to it\'s factory settings</string>
-   <string name="wallet_card_settings_restart">Restart</string>
-   <string name="wallet_card_settings_restart_your_sc">Restart your Smart Card</string>
-   <string name="wallet_card_settings_unlock_error">Unlock is not supported</string>
+   <string name="wallet_card_settings_power_off">Power Off</string>
+   <string name="wallet_card_settings_turn_off_your_sc">Turn off your Smart Card</string>
    <string name="wallet_card_settings_are_you_sure">Are you sure?</string>
-   <string name="wallet_card_settings_unpair_sc">Unpair Smart Card</string>
    <string name="wallet_card_settings_loads_cards_without_inet">Manage payment cards without internet connection</string>
+   <string name="wallet_card_settings_display_options">Display Options</string>
+   <string name="wallet_card_settings_customize_sc_display">Customize your Smart Card\'s display</string>
    <string name="wallet_settings_prepare_remove_pin">A PIN helps protect your payment cards from theft. Are you sure you want to disable PIN?</string>
 
    <string name="wallet_card_settings_documents">Documents</string>
@@ -166,12 +141,15 @@
    <string name="wallet_card_settings_help_us_make_sc_better">Help us make Smart Card better</string>
    <string name="wallet_card_settings_customer_support">Customer Support</string>
    <string name="wallet_card_settings_contact_our_customer_support_team">Contact our customer support team</string>
+   <string name="wallet_card_settings_help_payment_feedback">Payment Feedback</string>
+   <string name="wallet_card_settings_help_other_feedback">Suggestions, Comments or Bugs</string>
 
    <!--profile settings-->
    <string name="wallet_card_settings_profile_title">Smart Card Profile</string>
    <string name="wallet_card_settings_profile_firstname_hint">First name</string>
    <string name="wallet_card_settings_profile_middle_hint">Middle name (optional)</string>
    <string name="wallet_card_settings_profile_lastname_hint">Last name</string>
+   <string name="wallet_card_settings_profile_phone_number">Phone Number</string>
    <string name="wallet_card_settings_profile_phone_hint">Phone (optional)</string>
    <string name="wallet_card_settings_profile_country_code_hint">Code</string>
    <string name="wallet_card_settings_profile_warning">Make sure your name is similar to what\'s on your payment cards.</string>
@@ -182,22 +160,21 @@
    <string name="wallet_card_settings_profile_dialog_error_server_content">We\'re sorry there was an error communicating with the server. Please try again later.</string>
    <string name="wallet_card_settings_profile_dialog_error_network_unavailable">You don\'t have internet connection. Check it and try again.</string>
    <string name="wallet_card_settings_profile_dialog_error_smartcard_content">Please make sure your Smart Card is on and Bluetooth is enabled on your phone.</string>
-
+   <string name="wallet_card_settings_profile_display_settings_label">Display Options</string>
+   <string name="wallet_card_settings_profile_display_settings_exception_photo">Removing your photo will reset your Smart Card\'s display setting. Would you like to continue?</string>
+   <string name="wallet_card_settings_profile_display_settings_exception_phone">Removing your phone number will reset your Smart Card\'s display setting. Would you like to continue?</string>
 
    <!--card list-->
-   <string name="dashboard_default_card_stack_title">Default</string>
    <string name="wallet_wizard_default_card_label">DEFAULT</string>
    <string name="wallet_wizard_empty_card_list_label">Add credit and debit cards\nto your Smart Card</string>
-   <string name="wallet_wizard_full_card_list_error_message">You\'ve reached the 10 card maximum. Please delete one or more cards to proceed.</string>
+   <string name="wallet_wizard_full_card_list_error_message">You\'ve reached the %d card maximum. Please delete one or more cards to proceed.</string>
    <string name="wallet_wizard_empty_card_list_add_card_coming_soon">Add payment cards</string>
    <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
    <string name="wallet_wizard_no_connection_to_card_title">Smart Card not linked</string>
    <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
-   <string name="wallet_wizard_card_list_add_card_coming_soon_title">Coming Soon</string>
    <string name="wallet_wizard_card_list_add_card_coming_soon_text">Ability to add cards is coming soon.</string>
    <string name="wallet_wizard_card_list_card_is_ready_text">%1$s is ready for payment on your Smart Card</string>
    <string name="wallet_wizard_card_list_card_synchronization_dialog_text">Payment cards synchronization</string>
-   <string name="wallet_wizard_card_list_remove_payment_cards">Remove Payment Cards</string>
    <string name="wallet_wizard_card_list_remove_payment_cards_message">Your flye\u2122 smart card has\npayment cards waiting to\nbe synced.</string>
    <string name="wallet_wizard_card_list_sync_fail_dialog_title">Unable to Sync Cards</string>
    <string name="wallet_wizard_card_list_sync_fail_dialog_message">Your payment cards could not be synced at this time. Please try again or factory reset your Smart Card.</string>
@@ -210,14 +187,12 @@
    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
    <string name="wallet_add_card_details_hint_nickname_card">Card Nickname</string> <!--todo: remove after detail screen was updated-->
    <string name="wallet_add_card_details_hint_card_name_length">(11 characters)</string>
-   <string name="wallet_add_card_details_hint_optional">(optional)</string>
    <string name="wallet_add_card_details_button_confirm">Confirm</string>
    <string name="wallet_add_card_details_cvv_label">CVV Number</string>
    <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
    <string name="wallet_add_card_details_default_card_exist_dialog_text">Your default card %s will be replaced with this card. Do you want to proceed?</string>
    <string name="wallet_view_card_details_hint_nickname_card">i.e. \"BOA Credit\"</string>
-   <string name="wallet_tap_confirm_try_again">Did not save to Smart Card.\nTap Confirm to try again.</string>
    <string name="wallet_card_details_nickname_error">Please use letters, numbers, spaces or dashes</string>
    <string name="wallet_add_card_details_error_default">Failed to add Payment Card.</string>
    <string name="wallet_add_card_details_pin_proposal_toolbar">Card Added</string>
@@ -236,7 +211,6 @@
 
    <string name="wallet_card_list_records_connected">%d cards loaded</string>
    <string name="wallet_card_list_record_connected">%d card loaded</string>
-   <string name="wallet_dashboard_unlock_error">Unlock is not supported</string>
    <string name="wallet_dashboard_flye_firmware_update">Smart Card Update</string>
    <string name="wallet_dashboard_update_dialog_title">Smart Card Update Available</string>
    <string name="wallet_dashboard_update_dialog_content">In order to get the best Smart Card experience please update your Smart Card with the latest software</string>
@@ -253,9 +227,7 @@
    <string name="wallet_wizard_charging_swipe_error">Incorrect card reading. Try again</string>
    <string name="wallet_terms_and_conditions_header">User Agreement</string>
    <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
-   <string name="wallet_terms_and_conditions_try_again">Try Again</string>
    <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve user agreement</string>
-   <string name="wallet_terms_and_conditions_accept_failed">Failed to accept user agreement</string>
    <string name="wallet_add_card_swipe_success">Successfully swipe. Loading&#8230;</string>
 
    <!--set up smart card-->
@@ -329,7 +301,6 @@
    <string name="wallet_firmware_download_cancel_action">Cancel</string>
 
    <!-- firmware install-->
-   <string name="wallet_firmware_install_header">Smart Card Update</string>
    <string name="wallet_firmware_install_text">Installing Update</string>
    <string name="wallet_firmware_install_sub_text" formatted="false">Step %d of %d</string>
    <string name="wallet_firmware_install_error_alert_title">Installation Error</string>
@@ -340,7 +311,6 @@
    <string name="wallet_firmware_install_error_cancel_action">Cancel</string>
 
    <!-- firmware success install-->
-   <string name="wallet_firmware_install_success_header">Smart Card Update</string>
    <string name="wallet_firmware_install_success_sub_title">Smart Card successfully updated to version %s</string>
    <string name="wallet_firmware_install_success_title">Update Successful</string>
    <string name="wallet_firmware_install_success_action_button">Done</string>
@@ -348,28 +318,23 @@
    <!--wizard checks-->
    <string name="wallet_wizard_checks_header">Welcome to Smart Card set up!</string>
    <string name="wallet_wizard_checks_header2">Before we begin, check if the following conditions are met:</string>
-   <string name="wallet_wizard_checks_title">Smart Card</string>
    <string name="wallet_wizard_checks_bluetooth_is_not_supported">Bluetooth Low Energy is not supported on this device</string>
    <string name="wallet_wizard_checks_bluetooth_not_enable">Bluetooth is not enabled</string>
    <string name="wallet_wizard_checks_bluetooth_enable">Bluetooth is enabled</string>
    <string name="wallet_wizard_checks_network_not_available">You are not connected to the Internet</string>
    <string name="wallet_wizard_checks_network_available">You are connected to the Internet</string>
-   <string name="wallet_card_not_paired">Card is not paired with device</string>
 
    <!--pre installation check-->
    <string name="wallet_firmware_pre_installation_title">Smart Card Update</string>
    <string name="wallet_firmware_pre_installation_header">To install the update\nPlease do the following:</string>
    <string name="wallet_firmware_pre_installation_bluetooth">Enable Bluetooth and connect to the Smart Card</string>
    <string name="wallet_firmware_pre_installation_connection">Turn on the Smart Card</string>
-   <string name="wallet_firmware_pre_installation_charging">Make sure your Smart Card is 10% charged</string>
+   <string name="wallet_firmware_pre_installation_charging" formatted="false">Make sure your Smart Card is 10% charged</string>
    <string name="wallet_firmware_pre_installation_insert_smart_card_to_charger">Insert Smart Card into the charger</string>
    <string name="wallet_firmware_pre_installation_button">Install</string>
    <string name="wallet_firmware_pre_installation_install_later">Install Later</string>
 
    <!--smart card connection-->
-   <string name="wallet_smartcard_connected_label">Smart Card is connected</string>
-   <string name="wallet_smartcard_disconnected_label">Smart Card is disconnected</string>
-   <string name="wallet_smartcard_connection_try_description">Connect Smart Card and try again.</string>
    <string name="wallet_smartcard_connection_error">Could not connect to the Smart Card.\nPlease ensure that the Smart Card is turned on and unlocked.</string>
 
    <!-- Power On -->
@@ -491,7 +456,6 @@
    <string name="wallet_lock_label_click_right_btn">Tap Right</string>
    <string name="wallet_lock_label_tap_left_btn">Tap Left</string>
    <string name="wallet_close">Close</string>
-   <string name="wallet_set_pin_info_gesture">Press and hold</string>
    <string name="wallet_confirm_factory_reset_msg">Are you sure you would like to factory reset your Smart Card?</string>
 
    <!-- Upload User Card Data screen -->
@@ -506,7 +470,6 @@
    <string name="wallet_settings_help_feedback_title_screen">Send Feedback</string>
    <string name="wallet_settings_help_feedback_user_approve_info">We\'re working hard to make the Smart Card better.\nPlease help us to improve.</string>
    <string name="wallet_settings_help_feedback_enter_comment_hint">Please, type your message here.</string>
-   <string name="wallet_settings_help_feedback_action_add_photos_title">Add Photos</string>
    <string name="wallet_settings_help_feedback_action_send_title">Send</string>
    <string name="wallet_settings_help_feedback_attachment_failed_item_retry">Retry</string>
    <string name="wallet_settings_help_feedback_attachment_failed_item_remove">Remove</string>
@@ -534,5 +497,63 @@
    <string name="wallet_settings_help_customer_support_email_us">Email Us</string>
    <string name="wallet_settings_help_customer_support_email_us_description">Have a question or concern?\nWe\'re here to help.</string>
    <string name="wallet_settings_help_customer_support_email_us_hint">How can we assist you?</string>
+
+   <!--Display Options-->
+   <string name="wallet_settings_general_display_customize_sleep_screen">Customize Your Sleep Screen</string>
+   <string name="wallet_settings_general_display_how_screen_appear_on_sc">This is how your screen will appear when your\nSmart Card is off.</string>
+   <string name="wallet_settings_general_display_photo_only">Photo Only</string>
+   <string name="wallet_settings_general_display_photo_first_name">Photo &amp; First Name</string>
+   <string name="wallet_settings_general_display_full_name_phone">Full Name &amp; Phone</string>
+   <string name="wallet_settings_general_display_full_name_only">Full Name Only</string>
+   <string name="wallet_settings_general_display_add_phone_number">Add Phone Number</string>
+   <string name="wallet_settings_general_display_add_photo">Add Photo</string>
+   <string name="wallet_settings_general_display_photo_required">Photo Required</string>
+   <string name="wallet_settings_general_display_phone_required">Phone Required</string>
+   <string name="wallet_settings_general_display_updating">Updating…</string>
+   <string name="wallet_settings_general_display_loading">Loading…</string>
+   <string name="wallet_settings_general_display_changes_saved">The changes have been saved</string>
+   <string name="wallet_settings_general_display_phone_required_title">Phone number required</string>
+   <string name="wallet_settings_general_display_phone_required_message">A phone number is required for this display option.</string>
+   <string name="wallet_settings_general_display_photo_required_title">Photo required</string>
+   <string name="wallet_settings_general_display_photo_required_message">A photo is required for this display option.</string>
+
+   <!-- Payment Feedback screen -->
+   <string name="wallet_settings_help_payment_feedback_title_screen">Payment Feedback</string>
+   <string name="wallet_payment_feedback_payment_experience_label">Tell us about your payment experience</string>
+   <string name="wallet_payment_feedback_was_success_label">Was your payment successful?</string>
+   <string name="wallet_payment_feedback_number_attempts_label"><![CDATA[<font color=#dc0013>*</font> Number of payment attempts]]></string>
+   <string name="wallet_payment_feedback_merchant_label">Merchant</string>
+   <string name="wallet_payment_feedback_merchant_type_label"><![CDATA[<font color=#dc0013>*</font> Merchant Type]]></string>
+   <string name="wallet_payment_feedback_merchant_name_label"><![CDATA[<font color=#dc0013>*</font> Merchant Name]]></string>
+   <string name="wallet_payment_feedback_merchant_name_hint">Enter merchant name</string>
+   <string name="wallet_payment_feedback_merchant_location_label">Merchant Location</string>
+   <string name="wallet_payment_feedback_merchant_address_1_label">Address line 1</string>
+   <string name="wallet_payment_feedback_merchant_address_2_label">Address line 2 (optional)</string>
+   <string name="wallet_payment_feedback_merchant_address_city_label">City</string>
+   <string name="wallet_payment_feedback_merchant_address_tx_label">TX</string>
+   <string name="wallet_payment_feedback_merchant_address_zip_label">Zip</string>
+   <string name="wallet_payment_feedback_payment_terminal_label">Payment Terminal</string>
+   <string name="wallet_payment_feedback_payment_terminal_name_model">Terminal Name &amp; Model Number</string>
+   <string name="wallet_payment_feedback_enter_name_model_hint">Enter name and model</string>
+   <string name="wallet_payment_feedback_how_pay_label">How did you pay?</string>
+   <string name="wallet_payment_feedback_magnetic_swipe_label">Magnetic Swipe</string>
+   <string name="wallet_payment_feedback_magnetic_swipe_description">Swiped card through reader</string>
+   <string name="wallet_payment_feedback_wireless_magnetic_label">Wireless Magnetic</string>
+   <string name="wallet_payment_feedback_wireless_magnetic_description">Held card near reader</string>
+   <string name="wallet_payment_feedback_additional_info_title">Additional info</string>
+   <string name="wallet_payment_feedback_notes_label">Notes</string>
+   <string name="wallet_payment_feedback_notes_hint">Enter Notes (Optional)</string>
+   <string-array name="wallet_payment_feedback_merchant">
+      <item>Retail</item>
+      <item>Gas Station</item>
+      <item>Convenience Store</item>
+      <item>Restaurant</item>
+      <item>Grocery Store</item>
+      <item>Vending Machine</item>
+      <item>Entertainment</item>
+      <item>Other</item>
+   </string-array>
+   <string name="wallet_settings_help_payment_feedback_dialog_discard_changes">Discard changes?</string>
+   <string name="wallet_settings_help_payment_feedback_dialog_changes_positive">Discard</string>
 
 </resources>

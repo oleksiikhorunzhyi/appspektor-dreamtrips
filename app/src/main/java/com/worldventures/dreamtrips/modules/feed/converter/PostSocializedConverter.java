@@ -21,7 +21,10 @@ public class PostSocializedConverter extends PostConverter<PostSocialized> {
       post.setLikesCount(apiPost.likes());
 
       post.setCommentsCount(apiPost.commentsCount());
-      post.setComments(mapperyContext.convert(apiPost.comments(), Comment.class));
+
+      if (apiPost.comments() != null) {
+         post.setComments(mapperyContext.convert(apiPost.comments(), Comment.class));
+      }
 
       return post;
    }

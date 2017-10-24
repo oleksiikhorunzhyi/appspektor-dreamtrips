@@ -2,9 +2,10 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.puck_co
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
@@ -36,15 +37,8 @@ public class WalletPuckConnectionPresenter extends WalletPresenter<WalletPuckCon
             .createObservable(SmartCardUserCommand.fetch())
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess(this::bindSmartCardUser)
+                  .onSuccess(command -> getView().userPhoto(command.getResult().userPhoto()))
             );
-   }
-
-   private void bindSmartCardUser(SmartCardUserCommand command) {
-      final SmartCardUser smartCardUser = command.getResult();
-      if (smartCardUser != null && smartCardUser.userPhoto() != null) {
-         getView().userPhoto(command.getResult().userPhoto().photoUrl());
-      }
    }
 
    void goNext() {
@@ -56,7 +50,7 @@ public class WalletPuckConnectionPresenter extends WalletPresenter<WalletPuckCon
    }
 
    public interface Screen extends WalletScreen {
-      void userPhoto(String photoUrl);
+      void userPhoto(@Nullable SmartCardUserPhoto photo);
    }
 
 }

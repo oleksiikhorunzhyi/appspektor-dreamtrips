@@ -67,17 +67,16 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user) {
-      navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
+   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user, boolean withoutLast) {
+      if (withoutLast) {
+         navigator.withoutLast(new PinProposalPath(PinProposalAction.WIZARD));
+      } else {
+         navigator.go(new PinProposalPath(PinProposalAction.WIZARD));
+      }
    }
 
    @Override
-   public boolean isCardDetailSupported() {
-      return true;
-   }
-
-   @Override
-   public boolean isCardSyncSupported() {
-      return true;
+   public boolean isSampleCardMode() {
+      return false;
    }
 }

@@ -12,7 +12,6 @@ import com.messenger.ui.adapter.holder.conversation.ClosedGroupConversationViewH
 import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
 import com.messenger.util.ChatFacadeManager;
-import com.messenger.util.EventBusWrapper;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -41,7 +40,7 @@ public class MessengerModule {
    @Singleton
    MessengerConnector messengerConnector(@ForApplication Context context, ActivityWatcher activityWatcher,
          SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-         EventBusWrapper eventBusWrapper, MessengerSyncDelegate messengerSyncDelegate) {
-      return new MessengerConnector(context, activityWatcher, appSessionHolder, messengerServerFacade, eventBusWrapper, messengerSyncDelegate);
+         MessengerSyncDelegate messengerSyncDelegate) {
+      return new MessengerConnector(context, activityWatcher, appSessionHolder, messengerServerFacade, messengerSyncDelegate);
    }
 }

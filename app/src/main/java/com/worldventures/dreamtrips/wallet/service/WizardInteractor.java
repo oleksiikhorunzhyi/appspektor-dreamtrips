@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningMode
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
+import io.techery.janet.smartcard.action.settings.CancelPinSetupAction;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 import rx.schedulers.Schedulers;
@@ -24,6 +25,7 @@ public final class WizardInteractor {
 
    private final ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe;
    private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
+   private final ActionPipe<CancelPinSetupAction> cancelPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
    private final ActionPipe<WizardCheckCommand> checksPipe;
    private final ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe;
@@ -41,6 +43,7 @@ public final class WizardInteractor {
 
       pinSetupFinishedPipe = sessionActionPipeCreator.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
       startPinSetupPipe = sessionActionPipeCreator.createPipe(StartPinSetupAction.class, Schedulers.io());
+      cancelPinSetupPipe = sessionActionPipeCreator.createPipe(CancelPinSetupAction.class, Schedulers.io());
       checksPipe = sessionActionPipeCreator.createPipe(WizardCheckCommand.class, Schedulers.io());
 
       reAssignCardPipe = sessionActionPipeCreator.createPipe(ReAssignCardCommand.class, Schedulers.io());
@@ -62,6 +65,10 @@ public final class WizardInteractor {
 
    public ActionPipe<StartPinSetupAction> startPinSetupPipe() {
       return startPinSetupPipe;
+   }
+
+   public ActionPipe<CancelPinSetupAction> cancelPinSetupPipe() {
+      return cancelPinSetupPipe;
    }
 
    public ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe() {

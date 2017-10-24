@@ -17,8 +17,18 @@ public class GetVideosFromGalleryCommand extends Command<List<VideoPickerModel>>
 
    @Inject VideosProvider videosProvider;
 
+   private final int count;
+
+   public GetVideosFromGalleryCommand() {
+      this(Integer.MAX_VALUE);
+   }
+
+   public GetVideosFromGalleryCommand(int count) {
+      this.count = count;
+   }
+
    @Override
    protected void run(CommandCallback<List<VideoPickerModel>> callback) throws Throwable {
-      callback.onSuccess(videosProvider.provide());
+      callback.onSuccess(videosProvider.provide(count));
    }
 }

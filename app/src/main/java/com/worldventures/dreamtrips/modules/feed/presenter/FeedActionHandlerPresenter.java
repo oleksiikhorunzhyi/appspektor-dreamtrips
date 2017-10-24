@@ -14,7 +14,7 @@ public interface FeedActionHandlerPresenter {
 
    void onLoadFlags(Flaggable flaggableView);
 
-   void onFlagItem(FeedItem feedItem, int flagReasonId, String reason);
+   void onFlagItem(String uid, int flagReasonId, String reason);
 
    void onTranslateFeedEntity(FeedEntity translatableItem);
 

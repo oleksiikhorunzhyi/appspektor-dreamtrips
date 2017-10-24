@@ -3,9 +3,12 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.service.LikesInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.storage.PendingLikesStorage;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.service.analytics.TripImageLikedAnalyticsEvent;
 
 import javax.inject.Inject;
 
@@ -16,6 +19,7 @@ import io.techery.janet.command.annotations.CommandAction;
 public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEntity> implements InjectableAction {
 
    @Inject LikesInteractor likesInteractor;
+   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject PendingLikesStorage pendingLikesStorage;
 
    private FeedEntity feedEntity;
@@ -42,6 +46,9 @@ public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEnt
    private void like(CommandCallback<FeedEntity> callback) {
       likesInteractor.likePipe().createObservableResult(new LikeEntityCommand(feedEntity))
             .subscribe(likeEntityCommand -> {
+               if (likeEntityCommand.getResult() instanceof Photo) {
+                  analyticsInteractor.analyticsActionPipe().send(new TripImageLikedAnalyticsEvent(likeEntityCommand.getResult().getUid()));
+               }
                pendingLikesStorage.remove(likeEntityCommand.getResult().getUid());
                callback.onSuccess(likeEntityCommand.getResult());
             }, throwable -> {

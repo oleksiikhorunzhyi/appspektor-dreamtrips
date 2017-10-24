@@ -9,6 +9,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -31,7 +32,7 @@ import com.worldventures.dreamtrips.R;
  *
  * @author Jeff Gilfelt
  */
-public class BadgeView extends TextView {
+public class BadgeView extends AppCompatTextView {
 
    private static final int DEFAULT_MARGIN_DIP = 5;
    private static final int DEFAULT_LR_PADDING_DIP = 5;

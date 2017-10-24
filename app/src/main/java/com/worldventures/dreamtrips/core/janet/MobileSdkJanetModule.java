@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.mobilesdk.authentication.AuthData;
 import com.worldventures.dreamtrips.mobilesdk.util.HttpErrorReasonParser;
 import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
 import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersAddressRestResponse;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.model.GsonAdaptersNearbyResponse;
 
 import java.net.CookieManager;
@@ -62,7 +63,7 @@ public class MobileSdkJanetModule {
 
    private static final String API_QUALIFIER = "MobileSdkJanetModule";
    private static final String NON_API_QUALIFIER = "NonApiMobileSdkJanetModule";
-   private static final String LOGGING_TAG = "DreamTrips MobileSDK API";
+   private static final String LOGGING_TAG = "DT MobileSDK API";
 
    @Provides(type = Provides.Type.SET)
    ActionService provideApiService(DreamtripsApiProvider dreamtripsApiProvider) {
@@ -95,6 +96,7 @@ public class MobileSdkJanetModule {
                   .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                   //
                   .registerTypeAdapterFactory(new GsonAdaptersNearbyResponse())
+                  .registerTypeAdapterFactory(new GsonAdaptersAddressRestResponse())
                   .create())
       );
    }

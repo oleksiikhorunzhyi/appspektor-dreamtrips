@@ -3,12 +3,16 @@ package com.worldventures.dreamtrips.modules.media_picker.model;
 import android.net.Uri;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.Serializable;
 
 public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelable, Serializable {
 
+   private static final String PATH_DEVIDER = "/";
+
+   protected MediaAttachment.Source source;
    protected String absolutePath;
    protected Uri uri;
    protected long dateTaken;
@@ -30,8 +34,21 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
       return ValidationUtils.isUrl(absolutePath);
    }
 
+   @Override
+   public MediaAttachment.Source getSource() {
+      return source;
+   }
+
+   public void setSource(MediaAttachment.Source source) {
+      this.source = source;
+   }
+
    public String getAbsolutePath() {
       return absolutePath;
+   }
+
+   public void setAbsolutePath(String absolutePath) {
+      this.absolutePath = absolutePath;
    }
 
    @Override
@@ -54,6 +71,10 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
       return dateTaken;
    }
 
+   public void setDateTaken(long dateTaken) {
+      this.dateTaken = dateTaken;
+   }
+
    @Override
    public long getPickedTime() {
       return pickedTime;
@@ -61,6 +82,11 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
 
    public void setPickedTime(long pickedTime) {
       this.pickedTime = pickedTime;
+   }
+
+   public String getFileName() {
+      return absolutePath != null && absolutePath.contains(PATH_DEVIDER) ?
+            absolutePath.substring(absolutePath.lastIndexOf(PATH_DEVIDER)) : "";
    }
 
    @Override

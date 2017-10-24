@@ -8,4 +8,8 @@ public interface ReviewsMerchantsActionParams extends HttpActionParams {
    String brandId();
 
    String productId();
+
+   Integer indexOf();
+
+   Integer limit();
 }

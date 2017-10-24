@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.HashtagFeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.service.ActiveFeedRouteInteractor;
@@ -110,6 +111,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(VideoFeedItem.class, delegate);
 
       suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);
       suggestionAdapter.registerCell(HashtagSuggestion.class, HashtagSuggestionCell.class);
@@ -128,6 +130,16 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       //make root focusable for shifting focus ToolBar.SearchView -> rootView
       rootView.setFocusable(true);
       rootView.setFocusableInTouchMode(true);
+   }
+
+   @Override
+   public void onPause() {
+      super.onPause();
+      statePaginatedRecyclerViewManager.stopAutoplayVideos();
+   }
+
+   private void startAutoplayVideos() {
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
    }
 
    private void onSuggestionClicked(String suggestion) {
@@ -165,6 +177,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void onResume() {
       super.onResume();
+      startAutoplayVideos();
       releaseSearchFocus(searchView);
 
       HashtagFeedBundle args = getArgs();
@@ -247,11 +260,12 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void refreshFeedItems(List feedItems) {
       fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+      startAutoplayVideos();
    }
 
    @Override
    public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.notifyDataSetChanged(statePaginatedRecyclerViewManager.findFocusedPosition());
    }
 
    @Override

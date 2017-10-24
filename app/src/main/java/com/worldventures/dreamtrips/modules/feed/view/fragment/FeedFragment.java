@@ -24,8 +24,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -37,6 +38,7 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.cell.EmptyFeedModel;
 import com.worldventures.dreamtrips.modules.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
@@ -59,6 +61,7 @@ import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -67,14 +70,12 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import rx.Observable;
 import rx.subjects.PublishSubject;
 
 @Layout(R.layout.fragment_feed)
 @MenuResource(R.menu.menu_activity_feed)
 public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBundle> implements FeedPresenter.View,
-      SwipeRefreshLayout.OnRefreshListener, SuggestedPhotosDelegate, SuggestedPhotoCellPresenterHelper.OutViewBinder,
-      FeedEntityEditingView {
+      SwipeRefreshLayout.OnRefreshListener, SuggestedPhotosDelegate, FeedEntityEditingView {
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
@@ -169,6 +170,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(Route.FEED));
    }
 
+   @Override
+   public void onPause() {
+      super.onPause();
+      recyclerViewManager.stopAutoplayVideos();
+   }
+
    private void startAutoplayVideos() {
       recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
    }
@@ -178,7 +185,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       super.onMenuInflated(menu);
       MenuItem friendsItem = menu.findItem(R.id.action_friend_requests);
       friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(friendsItem);
-      setRequestsCount(getPresenter().getFriendsRequestsCount());
       friendsBadge.setOnClickListener(v -> {
          fragmentWithFeedDelegate.openFriends(new FriendMainBundle(FriendMainBundle.REQUESTS));
          TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
@@ -188,9 +194,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       if (conversationItem != null) {
          unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
          unreadConversationBadge.setImage(R.drawable.messenger_icon_white);
-         unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
          unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
       }
+      getPresenter().menuInflated();
    }
 
    @Override
@@ -222,10 +228,14 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void onAttachClicked() {
-      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), new CreateEntityBundle(false,
-            CreateEntityBundle.Origin.FEED));
-      getPresenter().attachSelectedSuggestionPhotos();
-      getPresenter().removeSuggestedPhotos();
+      getPresenter().attachSuggestionsClicked();
+   }
+
+   @Override
+   public void openCreatePostScreen(MediaPickerAttachment mediaPickerAttachment) {
+      CreateEntityBundle bundle = new CreateEntityBundle(mediaPickerAttachment, CreateEntityBundle.Origin.FEED);
+      bundle.setShowPickerImmediately(false);
+      fragmentWithFeedDelegate.openSharePhoto(getActivity().getSupportFragmentManager(), bundle);
    }
 
    @Override
@@ -241,7 +251,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    @Override
    public void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view) {
       createSuggestionObserver();
-      getPresenter().takeSuggestionView(view, this, savedInstanceState, contentObserverSubject.asObservable()
+      getPresenter().takeSuggestionView(view, savedInstanceState, contentObserverSubject.asObservable()
             .throttleLast(1, TimeUnit.SECONDS));
    }
 
@@ -266,14 +276,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void onCellClicked(MediaAttachment model) {
-      // nothing to do
-   }
-
-   @Override
-   public <T> Observable<T> bindOutLifecycle(Observable<T> observable) {
-      return bind(observable);
-   }
+   public void onCellClicked(SuggestedPhotosCell.SuggestedPhotoModel model) { }
 
    @Override
    public void updateItem(FeedItem feedItem) {
@@ -295,11 +298,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void refreshFeedItems(List<FeedItem> feedItems, UploadingPostsList uploadingPostsList,
-         List<PhotoPickerModel> suggestedPhotos) {
+   public void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList,
+         boolean shouldShowSuggestions) {
       List feedModels = new ArrayList();
-      processSuggestedPhotosItems(suggestedPhotos, feedModels);
-      processUploadsInProgressItems(uploadingPostsList, feedModels);
+      processSuggestedPhotosItems(shouldShowSuggestions, feedModels);
+      processUploadsInProgressItems(new UploadingPostsList(uploadingPostsList), feedModels);
       processFeedItems(feedItems, feedModels);
       fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.stateRecyclerView);
       startAutoplayVideos();
@@ -307,13 +310,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged();
+      fragmentWithFeedDelegate.notifyDataSetChanged(recyclerViewManager.findFocusedPosition());
    }
 
-   private void processSuggestedPhotosItems(List<PhotoPickerModel> suggestedPhotos, List feedModels) {
-      int suggestedPhotosSize = suggestedPhotos == null ? 0 : suggestedPhotos.size();
-      if (suggestedPhotosSize > 0) {
-         feedModels.add(new MediaAttachment(suggestedPhotos, MediaAttachment.Source.GALLERY));
+   private void processSuggestedPhotosItems(boolean shouldShowSuggestions, List feedModels) {
+      if (shouldShowSuggestions) {
+         feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
       }
    }
 
@@ -377,8 +379,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
-      recyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+   public void updateLoadingStatus(boolean noMoreElements) {
+      recyclerViewManager.updateLoadingStatus(false, noMoreElements);
    }
 
    @Override
@@ -410,6 +412,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void showFilter(List<Circle> circles, Circle selectedCircle) {
+      Collections.sort(circles);
+
       View menuItemView = getActivity().findViewById(R.id.action_filter);
       if (menuItemView == null) {
          menuItemView = getCollapseView();
@@ -458,12 +462,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private void registerAdditionalCells() {
-      fragmentWithFeedDelegate.registerAdditionalCell(MediaAttachment.class, SuggestedPhotosCell.class);
+      fragmentWithFeedDelegate.registerAdditionalCell(SuggestedPhotosCell.SuggestedPhotoModel.class, SuggestedPhotosCell.class);
       fragmentWithFeedDelegate.registerAdditionalCell(EmptyFeedModel.class, EmptyFeedCell.class);
    }
 
    private void registerCellDelegates() {
-      fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
+      fragmentWithFeedDelegate.registerDelegate(SuggestedPhotosCell.SuggestedPhotoModel.class, this);
       fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().refreshFeed());
       fragmentWithFeedDelegate.registerDelegate(UploadingPostsList.class, new UploadingCellDelegate(getPresenter(),
             getContext()));
@@ -472,8 +476,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.registerDelegate(TripFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(BucketFeedItem.class, delegate);
       fragmentWithFeedDelegate.registerDelegate(PostFeedItem.class, delegate);
-
-      fragmentWithFeedDelegate.registerDelegate(EmptyFeedModel.class,
-            model -> fragmentWithFeedDelegate.openFriendsSearch());
+      fragmentWithFeedDelegate.registerDelegate(VideoFeedItem.class, delegate);
+      fragmentWithFeedDelegate.registerDelegate(EmptyFeedModel.class, model -> fragmentWithFeedDelegate.openFriendsSearch());
    }
 }

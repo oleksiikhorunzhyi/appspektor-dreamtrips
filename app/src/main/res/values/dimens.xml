@@ -18,6 +18,7 @@
    <!-- typical spacing between views -->
    <dimen name="spacing_huger">78dp</dimen>
    <dimen name="spacing_huge">40dp</dimen>
+   <dimen name="spacing_extra_large">32dp</dimen>
    <dimen name="spacing_large">24dp</dimen>
    <dimen name="spacing_normal">16dp</dimen>
    <dimen name="spacing_medium">12dp</dimen>
@@ -63,7 +64,6 @@
    <dimen name="profile_cover_height">250dp</dimen>
 
    <dimen name="feed_item_height">250dp</dimen>
-   <dimen name="feed_video_attachment">100dp</dimen>
    <integer name="feed_landscape_tablet_weight">2</integer>
    <integer name="feed_landscape_tablet_additional_info_weight">1</integer>
    <integer name="feed_landscape_horizontal_margin">16</integer>
@@ -107,15 +107,8 @@
    <dimen name="additional_info_description_size">18sp</dimen>
 
    <!-- dimen for dtl place list -->
-   <dimen name="dtlPlaceListEmptyViewTextSize">22sp</dimen>
-   <dimen name="dtlPlaceListEmptyViewMargin">15dp</dimen>
-
-   <dimen name="toolbar_spinner_styled_title_text_size">20sp</dimen>
-   <dimen name="toolbar_spinner_styled_icon_margin">10dp</dimen>
 
    <!-- dimen for dtl place items -->
-   <dimen name="dtlPlaceItemMargin">8dp</dimen>
-   <dimen name="dtlPlaceItemRoundRadius">5dp</dimen>
    <dimen name="dtlMerchantCoverImageWidth">118dp</dimen>
    <dimen name="dtlMerchantCoverImageHeight">87dp</dimen>
    <dimen name="dtlOfferCoverDetailImageWidth">95dp</dimen>
@@ -126,18 +119,7 @@
    <dimen name="dtlOfferExpirationHeight">19dp</dimen>
    <dimen name="dtlOfferExpirationTopMargin">10dp</dimen>
    <dimen name="dtlOfferExpirationTextSize">9sp</dimen>
-   <dimen name="dtlPlaceBadgeSize">65dp</dimen>
-   <dimen name="dtlPlaceBadgeMargin">16dp</dimen>
-   <dimen name="dtlPlaceNameTextSize">20sp</dimen>
-   <dimen name="dtlPlaceNameMarginLeft">16dp</dimen>
-   <dimen name="dtlPlaceNameMarginBottom">12dp</dimen>
-   <dimen name="dtlPlaceRatingWidth">80dp</dimen>
-   <dimen name="dtlPlaceRatingMargin">16dp</dimen>
-   <dimen name="dtlPlaceInfoLayoutPadding">16dp</dimen>
-   <dimen name="dtlPlaceCategoryNameTextSize">18sp</dimen>
-   <dimen name="dtlPlacePriceWidth">38dp</dimen>
    <dimen name="dtlReceiptHeight">326dp</dimen>
-   <dimen name="dtlReceiptHeightSmall">300dp</dimen>
    <dimen name="dtlScanReceiptPadding">16dp</dimen>
    <dimen name="dtlScanReceiptVerifyInputWidth">154dp</dimen>
    <dimen name="dtlScanQrMerchantCoverSize">72dp</dimen>
@@ -153,15 +135,10 @@
 
    <!-- dimen for dtl points calculation dialog -->
    <dimen name="dtlCalculationCalculateButtonTextSize">14sp</dimen>
-   <dimen name="dtlCalculationInputTextSize">18sp</dimen>
-   <dimen name="dtlCalculationResultTextSize">24sp</dimen>
 
    <!-- dimen for dtl suggest merchant screen -->
    <dimen name="suggest_merchant_input_text_size">16sp</dimen>
    <dimen name="suggest_merchant_default_vertical_margin">8dp</dimen>
-   <dimen name="suggest_merchant_pickers_left_margin">50dp</dimen>
-
-   <dimen name="perks_margin">-12dp</dimen>
 
    <!-- dimen for photo tagging-->
    <dimen name="tag_common_photo_size">30dp</dimen>
@@ -330,13 +307,10 @@
    <dimen name="dtlt_input_vertical_margin">10dp</dimen>
    <dimen name="dtlt_input_round_radius">2dp</dimen>
    <dimen name="dtlt_input_elevation">2dp</dimen>
-   <dimen name="dtlt_input_vertical_padding">7dp</dimen>
    <dimen name="dtlt_input_side_padding">9dp</dimen>
    <dimen name="dtlt_input_text_size">13sp</dimen>
-   <dimen name="dtlt_input_text_size_near">12sp</dimen>
    <dimen name="dtlt_input_drawable_padding">6dp</dimen>
    <dimen name="dtlt_second_row_side_padding">54dp</dimen>
-   <dimen name="filter_layout_margin_left">25dp</dimen>
    <!-- </DTL Toolbar dimens> -->
    <dimen name="dtl_all_reviews_margin">16dp</dimen>
    <dimen name="dtl_all_reviews_margin_ft">14dp</dimen>
@@ -356,7 +330,6 @@
    <dimen name="dtl_item_reviews_margin_tw">20dp</dimen>
    <dimen name="dtl_item_reviews_margin_nine">9dp</dimen>
    <dimen name="dtl_item_reviews_margin_eight">8dp</dimen>
-   <dimen name="dtl_item_reviews_margin_seven">7dp</dimen>
    <dimen name="dtl_item_reviews_number_pics_text_size">11sp</dimen>
    <dimen name="dtl_item_map_width">100dp</dimen>
    <dimen name="limit_chars_style">9sp</dimen>
@@ -366,6 +339,12 @@
    <dimen name="dtl_item_review_images_height">250dp</dimen>
    <dimen name="dtl_item_review_images_margin">10dp</dimen>
    <dimen name="dtl_item_review_images_separation">6dp</dimen>
-   <dimen name="dtl_item_review_images_recycler_view_margin_top">20dp</dimen>
+
+   <dimen name="photo_strip_item_size">72dp</dimen>
+   <dimen name="photo_strip_space_between_items">2dp</dimen>
+   <dimen name="photo_strip_error_message_height">55dp</dimen>
+   <dimen name="photo_strip_error_message_text_size">14sp</dimen>
+
+   <dimen name="photo_cell_title_height">40dp</dimen>
 
 </resources>

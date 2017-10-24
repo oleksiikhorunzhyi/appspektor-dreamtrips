@@ -130,13 +130,6 @@
       <item name="android:padding">@dimen/spacing_tiny</item>
    </style>
 
-   <style name="DtlOfferDetailsImageView">
-      <item name="android:layout_gravity">center_vertical</item>
-      <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
-      <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
-      <item name="android:layout_margin">@dimen/spacing_tiny</item>
-   </style>
-
    <style name="UserStatusTextAppearance" parent="TextAppearance.AppCompat.Subhead">
       <item name="android:shadowColor">@color/user_status_text_shadow</item>
       <item name="android:shadowDx">2</item>
@@ -179,7 +172,7 @@
       <item name="android:textColorPrimary">@android:color/black</item>
    </style>
 
-   <style name="DtlToolbarInput">
+   <style name="BaseDtlToolbarInput">
       <item name="android:inputType">textCapWords</item>
       <item name="android:selectAllOnFocus">true</item>
       <item name="android:singleLine">true</item>
@@ -193,10 +186,10 @@
       <item name="android:paddingBottom">@dimen/dtlt_input_vertical_margin</item>
       <item name="android:background">@drawable/bg_edittext_white</item>
       <item name="android:clipToPadding">false</item>
-      <item name="android:elevation">@dimen/dtlt_input_elevation</item>
-      <item name="android:outlineProvider">background</item>
       <item name="android:drawablePadding">@dimen/dtlt_input_drawable_padding</item>
    </style>
+
+   <style name="DtlToolbarInput" parent="BaseDtlToolbarInput" />
 
    <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
       <item name="colorButtonNormal">@color/white</item>
@@ -566,4 +559,14 @@
       <item name="android:layout_marginTop">@dimen/dtl_all_reviews_margin</item>
       <item name="android:elevation" tools:targetApi="lollipop">@dimen/dtl_all_reviews_elevation</item>
    </style>
+
+   <style name="TransparentActivity" parent="Theme.AppCompat">
+      <item name="windowNoTitle">true</item>
+      <item name="android:windowBackground">@android:color/transparent</item>
+      <item name="android:colorBackgroundCacheHint">@null</item>
+      <item name="android:windowIsTranslucent">true</item>
+      <item name="windowActionBar">true</item>
+      <item name="android:textColorPrimary">@color/black</item>
+   </style>
+
 </resources>

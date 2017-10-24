@@ -118,7 +118,7 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user) {
+   public void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user, boolean withoutLast) {
       wizardInteractor.provisioningStatePipe()
             .createObservable(ProvisioningModeCommand.fetchState())
             .observeOn(AndroidSchedulers.mainThread())
@@ -128,13 +128,8 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public boolean isCardDetailSupported() {
-      return false;
-   }
-
-   @Override
-   public boolean isCardSyncSupported() {
-      return false;
+   public boolean isSampleCardMode() {
+      return true;
    }
 
    private void invalidateDivider(LinearLayout container) {

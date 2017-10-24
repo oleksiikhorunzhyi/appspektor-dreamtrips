@@ -27,7 +27,6 @@ public interface WalletFeatureHelper {
    boolean offlineModeState(boolean isOfflineMode);
    Observable<Void> onUserAssigned(SmartCardUser user);
    void onUserFetchedFromServer(SmartCardUser user);
-   void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user);
-   boolean isCardDetailSupported();
-   boolean isCardSyncSupported();
+   void navigateFromSetupUserScreen(Navigator navigator, SmartCardUser user, boolean withoutLast);
+   boolean isSampleCardMode();
 }

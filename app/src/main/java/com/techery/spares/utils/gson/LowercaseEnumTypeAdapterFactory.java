@@ -55,7 +55,7 @@ public class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
                enumToLower.put(constant, name.toLowerCase());
             }
          } catch (NoSuchFieldException e) {
-            throw new AssertionError("Missing field in " + classOfT.getName(), e);
+            throw new IllegalStateException("Missing field in " + classOfT.getName(), e);
          }
       }
 

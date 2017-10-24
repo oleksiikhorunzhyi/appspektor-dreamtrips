@@ -47,7 +47,7 @@ public class UploadVideoFileCommand extends Command<PostCompoundOperationModel<P
    protected void run(CommandCallback<PostCompoundOperationModel<PostWithVideoAttachmentBody>> callback) throws Throwable {
       janet.createPipe(UploadVideoHttpAction.class)
             .createObservable(new UploadVideoHttpAction(postCompoundOperationModel.body().videoPath()))
-            .throttleLast(10, TimeUnit.MILLISECONDS)
+            .throttleLast(100, TimeUnit.MILLISECONDS)
             .map(actionState -> {
                ImmutablePostWithVideoAttachmentBody.Builder builder = ImmutablePostWithVideoAttachmentBody.builder()
                      .from(postCompoundOperationModel.body());

@@ -77,13 +77,19 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
       LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
       switch (item.getType()) {
          case POST:
-            return new PostFeedItemCell(inflater.inflate(R.layout.adapter_item_feed_post_event, null));
+            PostFeedItemCell postFeedItemCell = new PostFeedItemCell(inflater.inflate(R.layout.adapter_item_feed_post_event, null));
+            postFeedItemCell.setMute(true);
+            return postFeedItemCell;
          case PHOTO:
             return new PhotoFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_photo_event, null));
          case TRIP:
             return new TripFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_trip_event, null));
          case BUCKET_LIST_ITEM:
             return new BucketFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_bucket_event, null));
+         case VIDEO:
+            VideoFeedItemDetailsCell videoFeedItemDetailsCell = new VideoFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_video_event, null));
+            videoFeedItemDetailsCell.setMute(true);
+            return videoFeedItemDetailsCell;
          default:
             return new UndefinedFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_undefined_event, null));
       }

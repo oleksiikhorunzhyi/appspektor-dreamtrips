@@ -33,6 +33,7 @@ import com.worldventures.dreamtrips.modules.common.command.DeleteCachedModelComm
 import com.worldventures.dreamtrips.modules.common.command.DownloadCachedModelCommand;
 import com.worldventures.dreamtrips.modules.common.command.GetVideoDurationCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
+import com.worldventures.dreamtrips.modules.common.command.MediaCaptureCanceledCommand;
 import com.worldventures.dreamtrips.modules.common.command.ResetCachedModelsInProgressCommand;
 import com.worldventures.dreamtrips.modules.common.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.dreamtrips.modules.common.service.CleanTempDirectoryCommand;
@@ -60,6 +61,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.LikeEntityComma
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.MarkNotificationsAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostCreatedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.ProcessAttachmentsAndPost;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
@@ -82,6 +84,7 @@ import com.worldventures.dreamtrips.modules.media_picker.service.command.GetMedi
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetPhotosFromGalleryCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideosFromGalleryCommand;
+import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.CreateFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetFilledInviteTemplateCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetInviteTemplatesCommand;
@@ -89,6 +92,7 @@ import com.worldventures.dreamtrips.modules.membership.service.command.GetPhoneC
 import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.GetSentInvitesCommand;
 import com.worldventures.dreamtrips.modules.membership.service.command.SendInvitesCommand;
+import com.worldventures.dreamtrips.modules.picker.command.MediaAttachmentPrepareCommand;
 import com.worldventures.dreamtrips.modules.player.service.SendPodcastAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.profile.service.command.AddFriendToCircleCommand;
 import com.worldventures.dreamtrips.modules.profile.service.command.GetPrivateProfileCommand;
@@ -108,20 +112,21 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.AddPhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.CreatePhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.DeleteVideoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.EditPhotoWithTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetInspireMePhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMembersPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUserPhotosCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetYSBHPhotosCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.service.command.PaginatedTripImagesCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetMemberMediaCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.modules.tripsimages.service.command.TranslatePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.service.command.GetUsersMediaCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.GetVideoLocalesCommand;
 import com.worldventures.dreamtrips.modules.video.service.command.MigrateFromCachedEntity;
@@ -208,10 +213,7 @@ import dagger.Module;
       GetMemberVideosCommand.class,
       GetVideoLocalesCommand.class,
       GetInspireMePhotosCommand.class,
-      GetMembersPhotosCommand.class,
-      GetUserPhotosCommand.class,
       GetYSBHPhotosCommand.class,
-      PaginatedTripImagesCommand.class,
       DeletePhotoCommand.class,
       DeletePhotoTagsCommand.class,
       SocialJanetCommandModule.class,
@@ -237,6 +239,7 @@ import dagger.Module;
       GetPopularBucketItemsCommand.class,
       GetFeedEntityCommand.class,
       CreatePhotosCommand.class,
+      ProcessAttachmentsAndPost.class,
       CreateBucketItemCommand.class,
       UpdateBucketItemCommand.class,
       ChangeBucketListOrderCommand.class,
@@ -256,14 +259,21 @@ import dagger.Module;
       GetAlbumsCommand.class,
       GetPhotosFromGalleryCommand.class,
       GetVideosFromGalleryCommand.class,
+      MediaCaptureCanceledCommand.class,
       GetVideoDurationCommand.class,
       GetMediaFromGalleryCommand.class,
+      RecognizeFacesCommand.class,
       UploadVideoFileCommand.class,
       MigrateFromCachedEntity.class,
       CreateVideoCommand.class,
       MigrateFromCachedEntity.class,
       FeedItemsVideoProcessingStatusCommand.class,
       GetVideoMetadataCommand.class,
-      LoadConfigurationCommand.class
+      LoadConfigurationCommand.class,
+      MediaAttachmentPrepareCommand.class,
+      GetMemberMediaCommand.class,
+      GetUsersMediaCommand.class,
+      DeleteVideoCommand.class,
+      CheckVideoProcessingStatusCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {}

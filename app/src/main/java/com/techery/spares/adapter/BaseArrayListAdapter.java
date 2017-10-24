@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
@@ -16,10 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
-import de.greenrobot.event.EventBus;
-
 public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<AbstractCell> implements ListAdapter<BaseItemClass> {
 
    private final Map<Class, Class<? extends AbstractCell>> itemCellMapping = new HashMap<>();
@@ -27,8 +22,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
    private final AdapterHelper adapterHelper;
    private final Injector injector;
    protected List<BaseItemClass> items = new ArrayList<>();
-
-   @Inject @Global protected EventBus eventBus;
 
    protected List<Class> viewTypes = new ArrayList<>();
 
@@ -65,7 +58,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
       Class itemClass = this.viewTypes.get(viewType);
       Class<? extends AbstractCell> cellClass = this.itemCellMapping.get(itemClass);
       AbstractCell cell = this.adapterHelper.buildCell(cellClass, parent);
-      cell.setEventBus(eventBus);
       if (cell.shouldInject()) {
          this.injector.inject(cell);
          cell.afterInject();

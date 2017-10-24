@@ -77,7 +77,7 @@ public class UpdateVideoProcessStatusCommand extends Command<Void> implements In
                               .doOnNext(this::notifyCompoundOperationChanged);
                      } else return Observable.empty();
                   }
-            ).subscribe(Actions.empty(), e -> Timber.e("Failed to perform update", e));
+            ).subscribe(Actions.empty(), e -> Timber.e(e, "Failed to perform update"));
    }
 
    private VideoProcessStatus getProcessStatusForModel(List<VideoProcessStatus> processStatuses, PostCompoundOperationModel operationModel) {

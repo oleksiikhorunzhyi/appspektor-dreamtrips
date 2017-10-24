@@ -66,6 +66,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
    public static final String BLANK_PAGE = "about:blank";
+   private static final String JS_STOP_PLAYBACK = "javascript:var x = document.getElementsByTagName(\"audio\"); var i; for (i = 0; i < x.length; i++) {x[i].pause();}";
 
    @Inject protected StaticPageProvider provider;
    @Inject protected HeaderProvider headerProvider;
@@ -416,6 +417,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
    @Override
    public void onDestroyView() {
+      webView.loadUrl(JS_STOP_PLAYBACK);
       lockHandler.removeCallbacksAndMessages(null);
       unlockOrientationIfNeeded();
       super.onDestroyView();
@@ -543,12 +545,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, String url) {
-         return shouldOverride(view, url);
-      }
-
-      @Override
-      public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-         String url = request.getUrl().toString();
          return shouldOverride(view, url);
       }
 

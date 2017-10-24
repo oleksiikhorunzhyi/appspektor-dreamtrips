@@ -13,15 +13,13 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.BaseMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoMediaEntity;
+import com.worldventures.dreamtrips.modules.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,24 +66,20 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
    }
 
    private void openFullsreenPhoto(Photo model) {
-      List<IFullScreenObject> items = Queryable.from(getModelObject().getItem().getAttachments())
-            .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
-            .map(element -> (IFullScreenObject) element.getItem())
-            .toList();
-      FullScreenImagesBundle data = new FullScreenImagesBundle.Builder().position(getPositionOfPhoto(model))
-            .userId(getModelObject().getItem().getOwner().getId())
-            .type(TripImagesType.FIXED)
-            .route(Route.SOCIAL_IMAGE_FULLSCREEN)
-            .fixedList(new ArrayList<>(items))
-            .showTags(true)
-            .build();
-
-      NavigationConfig config = NavigationConfigBuilder.forActivity()
-            .data(data)
+       router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+            .data(TripImagesFullscreenArgs.builder()
+                  .currentItemPosition(getPositionOfPhoto(model))
+                  .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())
+                        .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
+                        .map(element -> {
+                           Photo photo = (Photo) element.getItem();
+                           photo.setOwner(getModelObject().getItem().getOwner());
+                           return (BaseMediaEntity) new PhotoMediaEntity(photo);
+                        })
+                        .toList())
+                  .build())
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-            .build();
-
-      router.moveTo(Route.FULLSCREEN_PHOTO_LIST, config);
+            .build());
    }
 
    protected int getPositionOfPhoto(Photo model) {

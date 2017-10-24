@@ -160,6 +160,7 @@ public class SmartCardSyncManager {
       interactor.fetchFirmwareVersionPipe()
             .observeSuccess()
             .map(Command::getResult)
+            .distinctUntilChanged()
             .subscribe(firmware -> {
                      saveFirmwareDataForAboutScreen(firmware);
                      interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(firmware));

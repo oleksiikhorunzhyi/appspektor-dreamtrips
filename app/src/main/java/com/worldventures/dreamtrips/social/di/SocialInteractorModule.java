@@ -5,6 +5,7 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
+import com.worldventures.dreamtrips.social.service.InviteShareInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -146,4 +147,9 @@ public class SocialInteractorModule {
       return new FlagsInteractor(sessionActionPipeCreator);
    }
 
+   @Provides
+   @Singleton
+   InviteShareInteractor provideInviteShareInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new InviteShareInteractor(sessionActionPipeCreator);
+   }
 }

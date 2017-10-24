@@ -1,16 +1,15 @@
 package com.worldventures.dreamtrips.social.di;
 
-import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
-import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
-import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
-import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate;
-import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate;
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
-import com.worldventures.dreamtrips.social.ui.membership.delegate.MembersSelectedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate;
 
 import javax.inject.Singleton;
 
@@ -66,12 +65,6 @@ public class EventDelegateModule {
    @Singleton
    ReplayEventDelegatesWiper provideReplayEventDelegatesWiper() {
       return new ReplayEventDelegatesWiper();
-   }
-
-   @Provides
-   @Singleton
-   MembersSelectedEventDelegate provideMembersSelectedEventDelegate(ReplayEventDelegatesWiper wiper) {
-      return new MembersSelectedEventDelegate(wiper);
    }
 
    @Provides(type = Provides.Type.SET)

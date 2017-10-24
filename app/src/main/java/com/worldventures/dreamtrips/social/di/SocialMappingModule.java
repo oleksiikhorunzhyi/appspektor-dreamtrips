@@ -72,9 +72,9 @@ import com.worldventures.dreamtrips.social.ui.friends.model.converter.ApiUserToU
 import com.worldventures.dreamtrips.social.ui.friends.model.converter.FriendCandidateToUserConverter;
 import com.worldventures.dreamtrips.social.ui.friends.model.converter.FriendProfileToUserConverter;
 import com.worldventures.dreamtrips.social.ui.friends.model.converter.MutualsConverter;
-import com.worldventures.dreamtrips.social.ui.membership.model.converter.InviteTemplateConverter;
-import com.worldventures.dreamtrips.social.ui.membership.model.converter.InviteTemplateFromInvitationPreviewConverter;
-import com.worldventures.dreamtrips.social.ui.membership.model.converter.SentInviteConverter;
+import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateConverter;
+import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateFromInvitationPreviewConverter;
+import com.worldventures.dreamtrips.social.domain.converter.SentInviteConverter;
 import com.worldventures.dreamtrips.social.ui.reptools.model.converter.SuccessStoryConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.MediaEntityConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.VideoSocializedConverter;

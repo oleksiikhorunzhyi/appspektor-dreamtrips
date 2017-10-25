@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
@@ -66,21 +67,22 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
    }
 
    @Override
-   public void openThankYouScreen(String totalAmount, String earnedPoints, String totalPoints, String receiptURL) {
-      goToDtlPaymentPath(true, totalAmount, earnedPoints, totalPoints, receiptURL);
+   public void openThankYouScreen(GetTransactionResponse response) {
+      goToDtlPaymentPath(true, response);
    }
 
    @Override
-   public void openPaymentFailedScreen(String totalAmount, String earnedPoints, String totalPoints, String receiptURL) {
-      goToDtlPaymentPath(false, totalAmount, earnedPoints, totalPoints, receiptURL);
+   public void openPaymentFailedScreen(GetTransactionResponse response) {
+      goToDtlPaymentPath(false, response);
    }
 
-   private void goToDtlPaymentPath(boolean isPaid, String totalAmount, String earnedPoints, String totalPoints, String receiptURL) {
+   private void goToDtlPaymentPath(boolean isPaid, GetTransactionResponse response) {
       router.back();
       router.moveTo(
             Route.DTL_THRST_THANK_YOU_SCREEN,
             NavigationConfigBuilder.forActivity()
-                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, totalAmount, earnedPoints, totalPoints, receiptURL))
+                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, response.billTotal(), response.pointsAmount(), response.pointsAmount(),
+                        response.billImagePath(), Double.parseDouble(response.subTotal()),  Double.parseDouble(response.tax()),  Double.parseDouble(response.tip())))
                   .build()
       );
    }

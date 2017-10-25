@@ -49,7 +49,7 @@ public class GetLocationCommand extends Command<List<WalletLocation>> implements
 
    private Observable<GetSmartCardLocationsHttpAction> observeGetSmartCardLocations(String smartCardId) {
       return janet.createPipe(GetSmartCardLocationsHttpAction.class)
-            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(smartCardId), PAGE_SIZE));
+            .createObservableResult(new GetSmartCardLocationsHttpAction(Long.parseLong(smartCardId)));
    }
 
    private Observable<List<WalletLocation>> getStoredLocation() {

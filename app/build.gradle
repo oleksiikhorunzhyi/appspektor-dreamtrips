@@ -230,6 +230,7 @@ configurations.all {
 repositories {
    deps.repos.each { it.call(owner) }
    coreDeps.repos.each { it.call(owner) }
+   mavenLocal()
 }
 
 dependencies {

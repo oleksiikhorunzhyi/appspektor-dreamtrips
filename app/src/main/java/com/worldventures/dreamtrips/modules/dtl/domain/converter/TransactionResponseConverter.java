@@ -31,6 +31,9 @@ public class TransactionResponseConverter implements Converter<GetTransactionRes
             .pointsAmount(pilot.pointsAmount())
             .billTotal(pilot.billTotal())
             .transactionStatus(pilot.transactionStatus())
+            .subTotal(pilot.subTotal())
+            .tax(pilot.tax())
+            .tip(pilot.tip())
             .build();
    }
 }

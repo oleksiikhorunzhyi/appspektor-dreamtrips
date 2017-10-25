@@ -4,6 +4,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst;
 
       import com.esotericsoftware.kryo.DefaultSerializer;
       import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+      import com.google.gson.annotations.SerializedName;
 
       import org.immutables.value.Value;
 
@@ -22,5 +23,8 @@ public interface GetTransactionResponse extends Serializable {
    @Nullable String pointsAmount();
    @Nullable String billTotal();
    @Nullable String transactionStatus();
+   @Nullable String tax();
+   @Nullable String tip();
+   @Nullable String subTotal();
 
 }

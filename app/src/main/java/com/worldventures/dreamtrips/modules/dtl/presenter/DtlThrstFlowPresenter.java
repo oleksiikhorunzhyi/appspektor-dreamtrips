@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.esotericsoftware.minlog.Log;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableTransactionThrstActionParams;
@@ -52,20 +54,28 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
 
    private void onMerchantsLoaded(TransactionPilotAction action) {
       String transactionResponse = action.getResult().transactionStatus();
+
+      GetTransactionResponse response = action.getResult();
+
+      Log.debug("XYZ", response.subTotal());
+      Log.debug("XYZ", response.tip());
+      Log.debug("XYZ", response.tax());
+
       if (transactionResponse.contains(TRANSACTION_SUCCESSFUL)) {
-         view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
+//         view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
+         view.openThankYouScreen(response);
       } else {
-         view.openPaymentFailedScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
+         view.openPaymentFailedScreen(response);
       }
    }
 
    private void onMerchantsLoadingError(TransactionPilotAction action, Throwable throwable) {
-      view.openPaymentFailedScreen(action.getErrorMessage(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
+      view.openPaymentFailedScreen(action.getResult());
    }
 
    public interface View extends RxView {
-      void openThankYouScreen(String totalAmount, String earnedPoints, String totalPoints, String receiptURL);
+      void openThankYouScreen(GetTransactionResponse transactionResponse);
 
-      void openPaymentFailedScreen(String totalAmount, String earnedPoints, String totalPoints, String receiptURL);
+      void openPaymentFailedScreen(GetTransactionResponse transactionResponse);
    }
 }

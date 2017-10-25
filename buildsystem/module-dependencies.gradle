@@ -2,22 +2,22 @@ ext {
    coreDependencies = [:]
    moduleDependencies = [:]
    coreDependencies.repos = [
-         { o -> o.jcenter() },
-         { o -> o.maven { url 'https://maven.google.com' } },
-         { o -> o.maven { url 'https://jitpack.io' } },
-         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },
-         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/libs-snapshot' } },
-         { o -> o.maven { url 'https://maven.fabric.io/public' } },
-         { o -> o.maven { url 'https://clojars.org/repo/' } }, // icepick
+         { it.jcenter() },
+         { it.maven { url 'https://maven.google.com' } },
+         { it.maven { url 'https://jitpack.io' } },
+         { it.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },
+         { it.maven { url 'http://artifactory.techery.io:8081/artifactory/libs-snapshot' } },
+         { it.maven { url 'https://maven.fabric.io/public' } },
+         { it.maven { url 'https://clojars.org/repo/' } } // icepick
    ]
    moduleDependencies.repos = [
-         { o -> o.maven { url 'http://dl.bintray.com/techery/android' } },
-         { o -> o.maven { url 'http://dl.bintray.com/populov/maven' } },
-         { o -> o.maven { url 'http://dl.bintray.com/amulyakhare/maven' } },
-         { o -> o.maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' } },
-         { o -> o.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
-         { o -> o.maven { url 'http://repository.jetbrains.com/all' } },
-         { o -> o.flatDir { dirs 'libs' } }
+         { it.maven { url 'http://dl.bintray.com/techery/android' } },
+         { it.maven { url 'http://dl.bintray.com/populov/maven' } },
+         { it.maven { url 'http://dl.bintray.com/amulyakhare/maven' } },
+         { it.maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' } },
+         { it.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
+         { it.maven { url 'http://repository.jetbrains.com/all' } },
+         { it.flatDir { dirs 'libs' } }
    ]
    //modules
    moduleDependencies.modules = [

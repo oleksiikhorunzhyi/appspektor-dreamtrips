@@ -68,7 +68,7 @@ abstract class BaseSpec(spekBody: SpecBody.() -> Unit) : Spek(spekBody) {
          val sessionHolder: SessionHolder = mock()
          val userSession: UserSession = mock()
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
-         return sessionHolder;
+         return sessionHolder
       }
 
       //hard code because mockito_kotlin doesn't work with String correctly

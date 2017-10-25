@@ -18,6 +18,9 @@ buildscript {
       classpath project.ext.pluginDependencies.newrelic
       //
       classpath project.ext.pluginDependencies.versionChecker
+      //
+      classpath project.ext.pluginDependencies.detekt
+      classpath project.ext.pluginDependencies.ktlint
    }
 
    configurations.classpath.exclude group: 'com.android.tools.external.lombok'

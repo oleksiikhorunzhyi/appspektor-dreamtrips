@@ -5,7 +5,6 @@ apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
 apply plugin: 'me.tatarka.retrolambda'
 //
-//
 apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 android {

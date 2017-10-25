@@ -1,12 +1,12 @@
-apply plugin: 'checkstyle'
-apply plugin: 'pmd'
-//apply plugin: 'findbugs'
-//apply plugin: 'jacoco'
+apply plugin: "checkstyle"
+apply plugin: "pmd"
+apply plugin: "io.gitlab.arturbosch.detekt"
+apply plugin: "org.jmailen.kotlinter"
 
 check.dependsOn 'analizeCode'
 
 task analizeCode() {
-   dependsOn 'checkstyle', 'pmd'//, 'findbugs'
+   dependsOn 'checkstyle', 'pmd', 'lintKotlin', 'detektCheck'
 }
 
 checkstyle {
@@ -72,4 +72,23 @@ task findbugs(type: FindBugs) {
    }
 
    classpath = files()
+}
+
+detekt {
+   version = '1.0.0.RC5'
+   profile("main") {
+      config = "$project.rootDir/quality/detekt/detekt.yml"
+      baseline = "$project.rootDir/quality/detekt/baseline.xml"
+      input = "$projectDir/src"
+      output = "$projectDir/build/reports/detekt"
+      outputName = "detekt"
+      filters = ".*/resources/.*,.*/tmp/.*"
+      parallel = true
+   }
+}
+
+kotlinter {
+   ignoreFailures = false
+   indentSize = 3
+   reporter = 'checkstyle'
 }

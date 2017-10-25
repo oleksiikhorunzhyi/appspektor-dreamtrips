@@ -13,6 +13,8 @@ public class WalletProgressWidget extends AppCompatImageView {
 
    private static final int ANIM_DURATION_MILLIS = 1000;
 
+   private boolean isStarted = false;
+
    public WalletProgressWidget(Context context) {
       super(context);
    }
@@ -29,9 +31,15 @@ public class WalletProgressWidget extends AppCompatImageView {
       Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.wallet_progress_anim);
       anim.setDuration(ANIM_DURATION_MILLIS);
       this.startAnimation(anim);
+      isStarted = true;
    }
 
    public void stop() {
       this.clearAnimation();
+      isStarted = false;
+   }
+
+   public boolean isStarted() {
+      return isStarted;
    }
 }

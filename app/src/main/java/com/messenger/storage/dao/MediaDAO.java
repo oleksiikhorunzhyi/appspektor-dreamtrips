@@ -17,8 +17,8 @@ import com.messenger.entities.PhotoAttachment;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
+import com.worldventures.core.model.User;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Image;
 
 import java.util.ArrayList;
 import java.util.Date;

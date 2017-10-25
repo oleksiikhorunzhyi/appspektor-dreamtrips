@@ -3,14 +3,16 @@ package com.worldventures.dreamtrips.social.infopages.service
 import com.nhaarman.mockito_kotlin.mock
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider
-import com.worldventures.dreamtrips.modules.infopages.service.FeedbackInteractor
-import com.worldventures.dreamtrips.modules.infopages.service.command.SendFeedbackCommand
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.utils.AppVersionNameBuilder
+import com.worldventures.core.service.DeviceInfoProvider
+import com.worldventures.core.modules.infopages.service.FeedbackInteractor
+import com.worldventures.core.modules.infopages.service.command.SendFeedbackCommand
+import com.worldventures.dreamtrips.BuildConfig
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
+import com.worldventures.dreamtrips.wallet.service.TestSchedulerProvider
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
@@ -23,7 +25,6 @@ import io.techery.mappery.MapperyContext
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
-import rx.schedulers.Schedulers
 
 class SendFeedbackInteractorSpec : BaseSpec({
    describe("Send feedback command") {
@@ -47,7 +48,7 @@ class SendFeedbackInteractorSpec : BaseSpec({
                   .addContract(BaseContract.of(ActiveSmartCardCommand::class.java).result(smartCard))
                   .build())
             .build()
-      val smartCardInteractor = SmartCardInteractor(SessionActionPipeCreator(smartcardJanet))
+      val smartCardInteractor = SmartCardInteractor(SessionActionPipeCreator(smartcardJanet), TestSchedulerProvider())
 
       lateinit var feedbackInteractor: FeedbackInteractor
 
@@ -61,7 +62,10 @@ class SendFeedbackInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { FeedbackInteractorSpec.getMappery() }
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-         daggerCommandActionService.registerProvider(AppVersionNameBuilder::class.java) { AppVersionNameBuilder() }
+         daggerCommandActionService.registerProvider(AppVersionNameBuilder::class.java) {
+            AppVersionNameBuilder(BuildConfig.versionMajor, BuildConfig.versionMinor,
+               BuildConfig.versionPatch, BuildConfig.versionBuild,
+               BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE) }
          daggerCommandActionService.registerProvider(DeviceInfoProvider::class.java) { deviceInfoProvider }
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java) { smartCardInteractor }
 

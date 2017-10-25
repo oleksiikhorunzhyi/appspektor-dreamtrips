@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
 
@@ -22,6 +22,11 @@ public class SoldOutCell extends BoolCell<FilterSoldOutModel, SoldOutCell.Delega
    @Override
    public void sendEvent(boolean b) {
       cellDelegate.onFilterShowSoldOutEvent(b);
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 
    public interface Delegate extends CellDelegate<FilterSoldOutModel> {

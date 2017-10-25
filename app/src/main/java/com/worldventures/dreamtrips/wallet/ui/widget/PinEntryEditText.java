@@ -28,8 +28,8 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,9 +186,11 @@ public class PinEntryEditText extends AppCompatEditText {
       });
 
       //If input type is password and no mask is set, use a default mask
-      if ((getInputType() & InputType.TYPE_TEXT_VARIATION_PASSWORD) == InputType.TYPE_TEXT_VARIATION_PASSWORD && TextUtils.isEmpty(mMask)) {
+      if ((getInputType() & InputType.TYPE_TEXT_VARIATION_PASSWORD) == InputType.TYPE_TEXT_VARIATION_PASSWORD && TextUtils
+            .isEmpty(mMask)) {
          mMask = "\u25CF";
-      } else if ((getInputType() & InputType.TYPE_NUMBER_VARIATION_PASSWORD) == InputType.TYPE_NUMBER_VARIATION_PASSWORD && TextUtils.isEmpty(mMask)) {
+      } else if ((getInputType() & InputType.TYPE_NUMBER_VARIATION_PASSWORD) == InputType.TYPE_NUMBER_VARIATION_PASSWORD && TextUtils
+            .isEmpty(mMask)) {
          mMask = "\u25CF";
       }
 

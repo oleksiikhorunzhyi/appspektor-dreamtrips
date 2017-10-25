@@ -4,19 +4,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import com.messenger.util.UnreadConversationObservable;
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
@@ -27,22 +23,25 @@ import rx.subjects.PublishSubject;
 
 public class NavigationDrawerPresenter {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
-   @Inject SnappyRepository db;
-   @Inject UnreadConversationObservable unreadObservable;
-   @Inject AuthInteractor authInteractor;
-   @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+   private final SessionHolder appSessionHolder;
+   private final SnappyRepository db;
+   private final UnreadConversationObservable unreadObservable;
+   private final AuthInteractor authInteractor;
+   private final NotificationCountEventDelegate notificationCountEventDelegate;
 
    private NavigationDrawerView navigationDrawerView;
    private DrawerLayout drawerLayout;
 
    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
 
-   public NavigationDrawerPresenter() {
-   }
-
-   public NavigationDrawerPresenter(Injector injector) {
-      injector.inject(this);
+   public NavigationDrawerPresenter(SessionHolder appSessionHolder, SnappyRepository db,
+         UnreadConversationObservable unreadObservable, AuthInteractor authInteractor,
+         NotificationCountEventDelegate notificationCountEventDelegate) {
+      this.appSessionHolder = appSessionHolder;
+      this.db = db;
+      this.unreadObservable = unreadObservable;
+      this.authInteractor = authInteractor;
+      this.notificationCountEventDelegate = notificationCountEventDelegate;
    }
 
    public void attachView(NavigationDrawerView navigationDrawerView, List<ComponentDescription> components) {

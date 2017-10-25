@@ -11,7 +11,7 @@ import java.util.Locale;
 import rx.functions.Action0;
 import rx.functions.Action1;
 
-import static com.worldventures.dreamtrips.core.utils.ProjectTextUtils.isEmpty;
+import static com.worldventures.core.utils.ProjectTextUtils.isEmpty;
 
 public class WalletProfileUtils {
    private static final String DEFAULT_AVATAR_URL = "/avatars/thumb/missing.png";

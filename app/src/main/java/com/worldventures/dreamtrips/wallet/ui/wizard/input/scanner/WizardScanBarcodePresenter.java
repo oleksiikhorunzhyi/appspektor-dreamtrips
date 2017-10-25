@@ -1,83 +1,20 @@
 package com.worldventures.dreamtrips.wallet.ui.wizard.input.scanner;
 
-import android.content.Context;
-import android.os.Parcelable;
-
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.helper.InputDelegateView;
-import com.worldventures.dreamtrips.wallet.ui.wizard.input.manual.WizardManualInputPath;
 
-import javax.inject.Inject;
+public interface WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodeScreen> {
 
-public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.Screen, Parcelable> {
+   void goBack();
 
-   @Inject Navigator navigator;
-   @Inject WizardInteractor wizardInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject PermissionDispatcher permissionDispatcher;
-   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
+   void requestCamera();
 
-   private InputBarcodeDelegate inputBarcodeDelegate;
+   void barcodeScanned(String barcode);
 
-   public WizardScanBarcodePresenter(Context context, Injector injector) {
-      super(context, injector);
-   }
+   void startManualInput();
 
-   @Override
-   public void onAttachedToWindow() {
-      super.onAttachedToWindow();
-      // analytics from this screen is sent from WizardSplashPresenter
+   void retry(String barcode);
 
-      inputBarcodeDelegate = new InputBarcodeDelegate(navigator, wizardInteractor,
-            getView(), InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor));
-   }
+   void retryAssignedToCurrentDevice();
 
-   void requestCamera() {
-      //noinspection ConstantConditions
-      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
-            .compose(bindView())
-            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().startCamera())
-                  .onPermissionRationaleAction(() -> getView().showRationaleForCamera())
-                  .onPermissionDeniedAction(() -> getView().showDeniedForCamera()));
-   }
-
-   void barcodeScanned(String barcode) {
-      inputBarcodeDelegate.barcodeEntered(barcode);
-   }
-
-   void startManualInput() {
-      navigator.go(new WizardManualInputPath());
-   }
-
-   void goBack() {
-      navigator.goBack();
-   }
-
-   void retry(String barcode) {
-      inputBarcodeDelegate.retry(barcode);
-   }
-
-   HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
-   }
-
-   public interface Screen extends WalletScreen, InputDelegateView {
-
-      void startCamera();
-
-      void showRationaleForCamera();
-
-      void showDeniedForCamera();
-   }
+   void retryScan();
 }

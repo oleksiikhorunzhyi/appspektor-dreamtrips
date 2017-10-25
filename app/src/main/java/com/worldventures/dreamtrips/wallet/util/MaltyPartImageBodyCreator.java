@@ -17,7 +17,7 @@ import io.techery.janet.body.FileBody;
 import io.techery.janet.http.model.MultipartRequestBody.PartBody;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.modules.tripsimages.view.ImageUtils.getBitmap;
+import static com.worldventures.core.utils.ImageUtils.getBitmap;
 import static rx.Observable.fromCallable;
 
 public class MaltyPartImageBodyCreator {
@@ -39,9 +39,9 @@ public class MaltyPartImageBodyCreator {
       source.compress(Bitmap.CompressFormat.JPEG, 100, output);
 
       return new PartBody.Builder()
-                  .setBody(new BytesArrayBody(PHOTO_MIME_TYPE, output.toByteArray()))
-                  .addHeader("filename", createFakeFileName())
-                  .build();
+            .setBody(new BytesArrayBody(PHOTO_MIME_TYPE, output.toByteArray()))
+            .addHeader("filename", createFakeFileName())
+            .build();
    }
 
    private boolean isFile(Uri uri) {

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
@@ -77,7 +77,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
 
    @Override
    public void onLocationSelected(DtlLocation location) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
       locationInteractor.changeSourceLocation(location);
 

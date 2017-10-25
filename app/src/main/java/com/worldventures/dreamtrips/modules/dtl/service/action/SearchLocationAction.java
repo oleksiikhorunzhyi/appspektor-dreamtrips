@@ -3,17 +3,15 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.locations.LocationsHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.modules.dtl.helper.comparator.LocationComparator;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableLocationsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.LocationsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.LocationsActionCreator;
 
@@ -21,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Janet;

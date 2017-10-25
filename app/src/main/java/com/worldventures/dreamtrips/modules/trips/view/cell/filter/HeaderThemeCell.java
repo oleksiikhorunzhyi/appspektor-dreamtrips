@@ -3,17 +3,17 @@ package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_activity_header)
-public class HeaderThemeCell extends AbstractDelegateCell<ThemeHeaderModel, HeaderThemeCell.Delegate> {
+public class HeaderThemeCell extends BaseAbstractDelegateCell<ThemeHeaderModel, HeaderThemeCell.Delegate> {
 
    @InjectView(R.id.checkBoxSelectAllTheme) CheckBox checkBoxSelectAll;
 
@@ -42,6 +42,11 @@ public class HeaderThemeCell extends AbstractDelegateCell<ThemeHeaderModel, Head
    @OnClick(R.id.listHeader)
    void toggleVisibility() {
       cellDelegate.toggleVisibility();
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 
    public interface Delegate extends CellDelegate<ThemeHeaderModel> {

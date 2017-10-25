@@ -8,8 +8,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.MessageHelper;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import javax.inject.Inject;
 
@@ -20,13 +19,13 @@ public class UnreadMessagesDelegate {
 
    private final MessageDAO messageDAO;
    private final ConversationsDAO conversationsDAO;
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final CreateChatHelper createChatHelper;
    private Observable<DataConversation> conversationObservable;
    private Observable<Chat> chatObservable;
 
    @Inject
-   UnreadMessagesDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder) {
+   UnreadMessagesDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder sessionHolder) {
       this.createChatHelper = createChatHelper;
       this.messageDAO = messageDAO;
       this.conversationsDAO = conversationsDAO;

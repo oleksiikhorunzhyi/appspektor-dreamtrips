@@ -27,9 +27,7 @@
    <string name="dtl_perks_description">Προνόμια</string>
    <string name="dtl_description">Περιγραφή</string>
    <string name="ok">OK</string>
-   <string name="permission_camera_rationale">Χρειάζεται πρόσβαση στην κάμερα για ανίχνευση</string>
-   <string name="permission_location_rationale">Χρειάζεται πρόσβαση στην τοποθεσία για ανίχνευση</string>
-   <string name="no_camera_permission">Αυτή η εφαρμογή δεν μπορεί να τρέξει γιατί δεν έχει την άδεια της κάμερας. Θα γίνει έξοδος τώρα από την εφαρμογή.</string>
+   <string name="continue_option">Συνέχεια</string>
    <string name="no_location_permission">Αυτή η εφαρμογή δεν μπορεί να τρέξει γιατί δεν έχει την άδεια της τοποθεσίας. Θα γίνει έξοδος τώρα από την εφαρμογή.</string>
    <string name="dtl_checkin_location_error">Η εξυπηρέτηση τοποθεσίας πρέπει να είναι ενεργοποιημένη προκειμένου να κάνετε check-in</string>
    <string name="dtl_barcode_title">Σάρωση κωδικού QR</string>
@@ -48,7 +46,7 @@
    <string name="dtl_earn">Κερδίστε</string>
    <string name="dtl_dt_points">%1$d DreamTrips Πόντοι</string>
    <string name="suggest_merchant">Προτείνετε Εμπορικό Κατάστημα</string>
-   <string name="suggest_merchant_title">Εργαλεία DT Local</string>
+   <string name="dt_local_tools">Εργαλεία DT Local</string>
    <string name="dtl_details_share_title">Θα κερδίσω πόντους Dreamtrips σε %1$s</string>
    <string name="dtl_wait_for_receipt">Περιμένετε… Γίνεται αποστολή της απόδειξης</string>
    <string name="dtl_wait_for_earn">Περιμένετε … Κερδίζετε πόντους</string>
@@ -79,7 +77,7 @@
    <string name="merchant_working_hours_caption">ώρες</string>
    <string name="filter_amenities_error_caption">Οι υπηρεσίες δεν μπόρεσαν να φορτωθούν αυτή τη στιγμή</string>
    <string name="merchants_no_results">Δεν βρέθηκαν αποτελέσματα \n Προσπαθήστε να προσαρμόστε τα φίλτρα σας ή εισάγετε μια νέα τοποθεσία.</string>
-   <string name="merchants_no_results_offers_only">Λυπούμαστε, δεν υπάρχουν ακόμη διαθέσιμες προσφορές στην περιοχή σας.\n Κλείστε τις προσφορές για να δείτε τα κοντινά σας εστιατόρια.</string>
+   <string name="merchants_no_results_offers_only">Λυπούμαστε, δεν υπάρχουν ακόμη διαθέσιμες προσφορές στην περιοχή σας.</string>
    <string name="dtl_try_again">Προσπαθήστε ξανά</string>
    <string name="dtl_load_more">Φόρτωση Περισσότερων</string>
 
@@ -88,7 +86,64 @@
    <string name="dtl_load_merchant_error_caption">Τα αποτελέσματα δεν μπόρεσαν να φορτωθούν αυτή τη στιγμή.</string>
 
    <!-- DtlToolbar strings -->
-   <string name="dtlt_search_hint">Φαγητό &amp; Ποτά</string>
+   <string name="dtlt_search_hint">Γεύματα</string>
    <!-- DtlFilterButton strings -->
    <string name="dtlfb_caption">Φίλτρα</string>
+   <!-- DtlFilterButton Options Merchants Type strings -->
+   <string name="filter_merchant_dining">Γεύματα</string>
+   <string name="filter_merchant_entertainment">Διασκέδαση</string>
+   <string name="filter_merchant_spas">Κέντρα αισθητικής/χαλάρωσης</string>
+   <!-- Reviews Merchants -->
+   <string name="rate_and_reviews_text">Βαθμολόγηση &amp; Κριτική</string>
+   <string name="first_reviews_text">Αφήστε πρώτοι μια κριτική για αυτή την τοποθεσία</string>
+   <string name="format_review_text">%1$dΚριτική</string>
+   <string name="format_reviews_text">%1$d Κριτικές</string>
+   <string name="reviews_text">Κριτικές</string>
+   <string name="without_reviews_text">0 Κριτικές</string>
+   <string name="year_ago_text">%1$d χρόνο πριν</string>
+   <string name="years_ago_text">πριν από %1$d έτη</string>
+   <string name="month_ago_text">%1$d μήνα πριν</string>
+   <string name="months_ago_text">πριν από %1$d μήνες</string>
+   <string name="week_ago_text">%1$d εβδομάδα πριν</string>
+   <string name="weeks_ago_text">πριν από %1$d εβδομάδες</string>
+   <string name="day_ago_text">%1$d ημέρα πριν</string>
+   <string name="days_ago_text">πριν από %1$d ημέρες</string>
+   <string name="hour_ago_text">%1$d ώρα πριν</string>
+   <string name="hours_ago_text">πριν από %1$d ώρες</string>
+   <string name="min_ago_text">%1$d λεπτό πριν</string>
+   <string name="sec_ago_text">%1$d δευτ/το πριν</string>
+   <string name="total_reviews_text"> Διαβάστε όλες τις κριτικές ( %1$d )</string>
+   <string name="to_be_first_reviews">Γίνε ο πρώτος που θα αξιολογήσει</string>
+   <string name="tvVerifiedReview">Πιστοποιημένος αγοραστής</string>
+   <string name="review_comment_minor_letter">Η κριτική σας πρέπει να έχει μέγεθος τουλάχιστον%1$d χαρακτήρες.</string>
+   <string name="review_comment_major_letter">Η κριτική σας δεν πρέπει να ξεπερνά τους %1$dχαρακτήρες.</string>
+   <string name="review_comment_discard_changes">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την κριτική;</string>
+   <string name="titleReview">Κριτική</string>
+   <string name="hint_comment_review">Πώς ήταν η εξυπηρέτηση, το περιβάλλον, το φαγητό κλπ;</string>
+   <string name="snack_review_success">Η κριτική σας έχει υποβληθεί και θα αναρτηθεί μόλις εγκριθεί.</string>
+   <string name="menu_post">Δημοσίευση</string>
+   <string name="tv_read_more">ΔΙΑΒΑΣΤΕ ΠΕΡΙΣΣΟΤΕΡΑ</string>
+   <string name="action_add_review">Κριτική</string>
+   <string name="text_awaiting_approval_review">Έχετε μια παλιότερη αξιολόγηση για αυτή την τοποθεσία σε αναμονή έγκρισης. Αφού εγκριθεί μπορείτε να αξιολογήσετε αυτή την τοποθεσία ξανά.</string>
+   <string name="comment_review_title_sorry">Λυπούμαστε</string>
+   <string name="comment_review_profanity_text">«Η κριτική σας περιέχει βωμολοχίες και δεν μπορεί να υποβληθεί. Παρακαλούμε επεξεργαστείτε την κριτική σας, και δοκιμάστε ξανά.»</string>
+   <string name="comment_review_no_internet_message">Υπήρξε ένα πρόβλημα στην επικοινωνία με τους διακομιστές DreamTrips. Παρακαλούμε δοκιμάστε ξανά.</string>
+   <string name="comment_review_no_internet_confirm_text">Προσπαθήστε ξανά</string>
+   <string name="comment_review_no_internet_cancel_text">Ακύρωση</string>
+   <string name="comment_review_error_unknown_title">Λυπούμαστε</string>
+   <string name="comment_review_error_unknown_text">Υπήρξε ένα πρόβλημα στην επικοινωνία με τους διακομιστές DreamTrips. Παρακαλούμε δοκιμάστε ξανά.</string>
+   <string name="comment_review_error_unknown_confirm">Προσπαθήστε ξανά</string>
+   <string name="comment_review_error_unknown_cancel">Ακύρωση</string>
+   <string name="comment_review_error_limited_reached_content">Όλοι οι διακομιστές μας είναι απασχολημένοι αυτή τη στιγμή. Παρακαλούμε δοκιμάστε ξανά σε ένα λεπτό</string>
+   <string name="comment_review_unrecognized_error_content">Ωχ, χάλασε κάτι Εργαζόμαστε για να το επιδιορθώσουμε. Παρακαλούμε δοκιμάστε ξανά αύριο.</string>
+   <string name="comment_review_confirm_text">OK</string>
+   <string name="comment_review_error_limited_reached_confirm">OK</string>
+   <string name="comment_review_unrecognized_error_confirm">OK</string>
+
+   <string name="flag_text_menu">Σημαία</string>
+   <string name="review_min_char">λεπτά %1$d </string>
+   <string name="review_max_char">μέγιστο %1$d</string>
+   <string name="input_major_limit">Η κριτική σας έχει φτάσει το όριο μας. Έχει μειωθεί για να χωρέσει.</string>
+
+   <string name="text_add_photos_and_videos">Προσθήκη Φωτογραφιών</string>
 </resources>

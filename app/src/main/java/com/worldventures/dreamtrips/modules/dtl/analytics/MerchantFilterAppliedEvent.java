@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
@@ -18,11 +18,11 @@ import static com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper.MILES
 @AnalyticsEvent(action = "local:Refine Search", trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantFilterAppliedEvent extends DtlAnalyticsAction {
 
-   @com.worldventures.dreamtrips.core.utils.tracksystem.Attribute("dtlprice") final String price;
+   @com.worldventures.core.service.analytics.Attribute("dtlprice") final String price;
 
-   @com.worldventures.dreamtrips.core.utils.tracksystem.Attribute("dtldistance") final String distance;
+   @com.worldventures.core.service.analytics.Attribute("dtldistance") final String distance;
 
-   @com.worldventures.dreamtrips.core.utils.tracksystem.Attribute("amenities") final String amenities;
+   @com.worldventures.core.service.analytics.Attribute("amenities") final String amenities;
 
    public MerchantFilterAppliedEvent(FilterData filterData) {
       price = String.format(Locale.US, "%d-%d", filterData.budgetMin(), filterData.budgetMax());

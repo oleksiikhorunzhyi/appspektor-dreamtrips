@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -10,7 +10,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.support.RestartDeviceAction;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class RestartSmartCardCommand extends Command<Void> implements InjectableAction {

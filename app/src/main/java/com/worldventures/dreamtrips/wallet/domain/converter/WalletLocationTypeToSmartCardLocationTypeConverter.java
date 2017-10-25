@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardLocationType;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocationType;
 
 import io.techery.mappery.MapperyContext;
@@ -27,6 +27,7 @@ public class WalletLocationTypeToSmartCardLocationTypeConverter implements Conve
             break;
          case DISCONNECT:
             smartCardLocationType = SmartCardLocationType.DISCONNECT;
+            break;
       }
       return smartCardLocationType;
    }

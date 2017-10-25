@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.modules.gcm.service;
 
+import android.app.IntentService;
 import android.content.Intent;
 
-import com.techery.spares.service.InjectingIntentService;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
-import com.worldventures.dreamtrips.modules.common.service.SubscribeToPushNotificationsInteractor;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotificationsCommand;
 
 import javax.inject.Inject;
 
-public class RegistrationIntentService extends InjectingIntentService {
+public class RegistrationIntentService extends IntentService {
 
    public static final String TOKEN_CHANGED = "token_changed";
 
@@ -16,6 +16,12 @@ public class RegistrationIntentService extends InjectingIntentService {
 
    public RegistrationIntentService() {
       super("RegistrationIntentService");
+   }
+
+   @Override
+   public void onCreate() {
+      super.onCreate();
+      ((Injector) getApplication()).inject(this);
    }
 
    @Override

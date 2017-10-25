@@ -19,18 +19,16 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -65,7 +63,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    @InjectView(R.id.photos) RecyclerView mRecycler;
 
    @Inject MerchantsInteractor merchantInteractor;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    private static final String BRAND_ID = "1";
    private User user;

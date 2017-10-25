@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.core.initializer;
 import android.content.Context;
 
 import com.facebook.FacebookSdk;
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
 
 import javax.inject.Inject;
 

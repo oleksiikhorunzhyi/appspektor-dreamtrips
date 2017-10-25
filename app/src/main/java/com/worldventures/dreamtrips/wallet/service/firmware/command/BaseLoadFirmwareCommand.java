@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
@@ -14,7 +14,7 @@ import io.techery.janet.Janet;
 import rx.Observable;
 import rx.Subscription;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 public abstract class BaseLoadFirmwareCommand extends Command<Void> implements InjectableAction {
 
@@ -23,8 +23,6 @@ public abstract class BaseLoadFirmwareCommand extends Command<Void> implements I
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      callback.onProgress(0);
-
       Subscription subscription = provideProgress().subscribe(callback::onProgress);
 
       loadFile()

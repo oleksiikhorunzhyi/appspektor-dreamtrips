@@ -6,20 +6,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAddedModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
@@ -31,6 +30,7 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCe
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 
 import java.util.List;
 
@@ -78,13 +78,13 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
 
    @OnClick(R.id.textViewApplyFilter)
    void applyFilter() {
-      ((MainActivity) getActivity()).closeRightDrawer();
+      ((SocialMainActivity) getActivity()).closeRightDrawer();
       getPresenter().acceptFilters();
    }
 
    @OnClick(R.id.textViewResetFilter)
    void resetFilter() {
-      ((MainActivity) getActivity()).closeRightDrawer();
+      ((SocialMainActivity) getActivity()).closeRightDrawer();
       getPresenter().resetFilters();
    }
 

@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlDetailPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+
 import flow.path.Path;
 
 @Layout(R.layout.activity_detail_review)

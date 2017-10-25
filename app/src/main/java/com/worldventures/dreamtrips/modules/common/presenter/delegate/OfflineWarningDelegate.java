@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.utils.NetworkUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.flow.util.Utils;
 
 /**
  * Display an offline warning once a session.
@@ -16,7 +16,7 @@ public class OfflineWarningDelegate {
 
    public boolean needToShowOfflineAlert(Context context) {
       if (offlineHintShown) return false;
-      return !Utils.isConnected(context);
+      return !NetworkUtils.isConnected(context);
    }
 
    public void showOfflineWarning(Activity activity) {

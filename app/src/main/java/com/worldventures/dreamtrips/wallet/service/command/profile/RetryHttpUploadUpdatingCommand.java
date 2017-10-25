@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.profile;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 
 import javax.inject.Inject;

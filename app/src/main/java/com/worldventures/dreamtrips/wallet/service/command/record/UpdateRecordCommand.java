@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.wallet.service.command.record;
 
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.ImmutableRecord;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
@@ -20,14 +20,14 @@ import io.techery.janet.smartcard.action.records.EditRecordAction;
 import io.techery.mappery.MapperyContext;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 import static com.worldventures.dreamtrips.wallet.util.WalletValidateHelper.validateCardNameOrThrow;
 
 @CommandAction
 public class UpdateRecordCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject MapperyContext mapperyContext;
    @Inject RecordInteractor recordInteractor;
 

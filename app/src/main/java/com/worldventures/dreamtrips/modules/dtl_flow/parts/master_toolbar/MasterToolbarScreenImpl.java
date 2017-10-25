@@ -18,13 +18,13 @@ import android.widget.PopupWindow;
 import com.google.android.gms.common.api.Status;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.jakewharton.rxbinding.view.RxView;
-import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.utils.ui.SoftInputUtil;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchCell;
@@ -81,20 +81,20 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
 
    protected void initDtlToolbar() {
       RxDtlToolbar.merchantSearchApplied(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(getPresenter()::applySearch);
       RxDtlToolbar.filterButtonClicks(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
       RxDtlToolbar.offersOnlyToggleChanges(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(getPresenter()::offersOnlySwitched);
    }
 
    @Override
    public void connectToggleUpdate() {
       RxDtlToolbar.offersOnlyToggleChanges(toolbar)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aBoolean -> getPresenter().offersOnlySwitched(aBoolean));
    }
 
@@ -137,7 +137,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
 
       RxView.clicks(autoDetectNearMe)
-            .compose(RxLifecycle.bindView(this))
+            .compose(RxLifecycleAndroid.bindView(this))
             .throttleFirst(3L, TimeUnit.SECONDS)
             .subscribe(aVoid -> onNearMeClicked());
    }
@@ -147,7 +147,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       Observable<Boolean> clicks = RxView.clicks(toolbar.getLocationSearchInput())
             .flatMap(aVoid -> Observable.just(Boolean.TRUE));
 
-      Observable.merge(clicks, focus).compose(RxLifecycle.bindView(this)).subscribe(this::onPopupVisibilityChange);
+      Observable.merge(clicks, focus).compose(RxLifecycleAndroid.bindView(this)).subscribe(this::onPopupVisibilityChange);
    }
 
    protected void onPopupVisibilityChange(boolean visible) {

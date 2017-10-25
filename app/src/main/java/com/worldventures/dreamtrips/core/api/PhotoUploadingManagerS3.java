@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
@@ -29,8 +28,9 @@ public class PhotoUploadingManagerS3 {
    @Inject Context context;
    @Inject TransferUtility transferUtility;
 
-   public PhotoUploadingManagerS3(Injector injector) {
-      injector.inject(this);
+   public PhotoUploadingManagerS3(Context context, TransferUtility transferUtility) {
+      this.context = context;
+      this.transferUtility = transferUtility;
    }
 
    public void cancelUploading(UploadTask uploadTask) {

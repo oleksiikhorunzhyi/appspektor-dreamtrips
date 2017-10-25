@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
@@ -9,7 +10,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Discla
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 
 import io.techery.mappery.MapperyContext;

@@ -5,11 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
@@ -61,7 +60,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Inject DtlLocationInteractor locationInteractor;
    @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject PresentationInteractor presentationInteractor;
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject AttributesInteractor attributesInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;
 
@@ -370,7 +369,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    protected void sendAnalyticsAction(DtlAnalyticsAction action) {
-      analyticsInteractor.dtlAnalyticsCommandPipe().send(DtlAnalyticsCommand.create(action));
+      analyticsInteractor.analyticsCommandPipe().send(DtlAnalyticsCommand.create(action));
    }
 
    protected void navigateToPath(Path path) {

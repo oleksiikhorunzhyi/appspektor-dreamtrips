@@ -18,22 +18,20 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.view.ViewLayoutChangeEvent;
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
 
 import java.lang.ref.WeakReference;
@@ -59,7 +57,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    @InjectView(R.id.perk_divider) View perkDivider;
    @InjectView(R.id.rating_header) LinearLayout ratingHeader;
 
-   @Inject protected SessionHolder<UserSession> sessionHolder;
+   @Inject protected SessionHolder sessionHolder;
 
    private List<OfferClickListener> offerClickListeners = new ArrayList<>();
    private Map<String, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
@@ -120,7 +118,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       if (media == null) return;
       //
       RxView.layoutChangeEvents(cover)
-            .compose(RxLifecycle.bindView(rootView))
+            .compose(RxLifecycleAndroid.bindView(rootView))
             .subscribe(event -> onLayoutImage(event, media));
    }
 
@@ -205,7 +203,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       if (media == null) return;
       //
       image.setImageURI(Uri.parse(media.getImagePath()));
-      RxView.clicks(image).compose(RxLifecycle.bindView(image)).subscribe(aVoid -> notifyOfferClickListeners(perk));
+      RxView.clicks(image).compose(RxLifecycleAndroid.bindView(image)).subscribe(aVoid -> notifyOfferClickListeners(perk));
    }
 
    private static void bindInfo(TextView view, String description) {
@@ -216,7 +214,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       List<OperationDay> operDays = perk.operationDays();
       if (operationDays == null) return;
       //
-      String concatDays = DateTimeUtils.concatOperationDays(resources, operDays);
+      String concatDays = OperationalHoursUtils.concatOperationDays(operDays, resources.getString(R.string.everyday));
       operationDays.setText(concatDays);
    }
 }

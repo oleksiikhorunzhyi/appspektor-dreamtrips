@@ -29,8 +29,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,9 +50,9 @@ public class ConversationsDAO extends BaseDAO {
    public static final String RECIPIENT_FIRST_NAME_COLUMN = "recipientFirstName";
    public static final String RECIPIENT_LAST_NAME_COLUMN = "recipientLastName";
 
-   private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder appSessionHolder;
 
-   public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder<UserSession> appSessionHolder) {
+   public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder appSessionHolder) {
       super(context, rxContentResolver);
       this.appSessionHolder = appSessionHolder;
    }

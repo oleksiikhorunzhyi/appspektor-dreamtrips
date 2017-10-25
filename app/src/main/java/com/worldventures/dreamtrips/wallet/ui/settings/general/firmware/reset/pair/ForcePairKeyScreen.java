@@ -1,61 +1,15 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.general.firmware.reset.pair;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletLinearLayout;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
+import com.worldventures.dreamtrips.wallet.service.firmware.command.ConnectForFirmwareUpdate;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
+import io.techery.janet.operationsubscriber.view.OperationView;
 
-public class ForcePairKeyScreen extends WalletLinearLayout<ForcePairKeyPresenter.Screen, ForcePairKeyPresenter, ForcePairKeyPath> implements ForcePairKeyPresenter.Screen{
+public interface ForcePairKeyScreen extends WalletScreen {
 
-   @InjectView(R.id.toolbar) Toolbar toolbar;
+   void showError(@StringRes int messageId);
 
-   public ForcePairKeyScreen(Context context) {
-      super(context);
-   }
-
-   public ForcePairKeyScreen(Context context, AttributeSet attrs) {
-      super(context, attrs);
-   }
-
-   @Override
-   protected void onFinishInflate() {
-      supportConnectionStatusLabel(false);
-      super.onFinishInflate();
-      toolbar.setNavigationOnClickListener(v -> presenter.goBack());
-   }
-
-   @NonNull
-   @Override
-   public ForcePairKeyPresenter createPresenter() {
-      return new ForcePairKeyPresenter(getContext(), getInjector());
-   }
-
-   @Override
-   public OperationScreen provideOperationDelegate() {
-      return new DialogOperationScreen(this);
-   }
-
-
-   @Override
-   public void showError(@StringRes int messageId) {
-      new MaterialDialog.Builder(getContext())
-            .content(messageId)
-            .positiveText(R.string.ok)
-            .show();
-   }
-
-   @OnClick(R.id.button_next)
-   public void onConnectToSmartCard() {
-      presenter.tryToPairAndConnectSmartCard();
-   }
+   OperationView<ConnectForFirmwareUpdate> provideOperationConnect();
 }

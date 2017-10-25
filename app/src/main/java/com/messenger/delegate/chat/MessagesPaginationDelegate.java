@@ -9,8 +9,7 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PaginationResult;
 import com.messenger.synchmechanism.SyncStatus;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import org.immutables.value.Value;
 
@@ -37,11 +36,11 @@ public class MessagesPaginationDelegate {
    private boolean hasMoreElements = true;
    private final PublishSubject<PaginationStatus> paginationStateObservable = PublishSubject.create();
 
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final ActionPipe<LoadChatMessagesCommand> loadMessagesPipe;
 
    @Inject
-   public MessagesPaginationDelegate(SessionHolder<UserSession> sessionHolder, ChatExtensionInteractor chatExtensionInteractor) {
+   public MessagesPaginationDelegate(SessionHolder sessionHolder, ChatExtensionInteractor chatExtensionInteractor) {
       this.sessionHolder = sessionHolder;
       this.loadMessagesPipe = chatExtensionInteractor.getLoadChatMessagesCommandActionPipe();
    }

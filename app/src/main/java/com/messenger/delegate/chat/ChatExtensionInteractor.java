@@ -3,7 +3,7 @@ package com.messenger.delegate.chat;
 import com.messenger.delegate.chat.command.ClearChatServerCommand;
 import com.messenger.delegate.chat.command.LoadChatMessagesCommand;
 import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

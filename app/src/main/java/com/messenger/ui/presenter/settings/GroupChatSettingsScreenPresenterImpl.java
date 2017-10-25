@@ -7,20 +7,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.messenger.delegate.ConversationAvatarInteractor;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SetChatAvatarCommand;
+import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.chat.GroupChat;
-import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.io.File;
@@ -35,7 +34,6 @@ import timber.log.Timber;
 
 public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsScreenPresenterImpl {
 
-   @Inject CropImageDelegate cropImageDelegate;
    @Inject PermissionDispatcher permissionDispatcher;
    @Inject ConversationAvatarInteractor conversationAvatarInteractor;
 
@@ -46,8 +44,6 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      getView().getAvatarImagePathsStream().subscribe(this::tryCropImage);
-
       cropImageDelegate.getCroppedImagesStream().compose(bindView()).subscribe(notification -> {
          if (notification.isOnNext()) {
             onAvatarCropped(conversationId, notification.getValue());
@@ -64,14 +60,6 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<SendChatAvatarCommand>().onFail((command, throwable) -> onChangeAvatarFailed(throwable))
                   .onSuccess(command -> onChangeAvatarSuccess()));
-   }
-
-   private void tryCropImage(String filePath) {
-      connectionStatusStream.subscribe(syncStatus -> {
-         if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
-            getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-         } else cropImageDelegate.cropImage(filePath);
-      });
    }
 
    @Override
@@ -98,7 +86,6 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
             openPicker();
             return true;
          case R.id.action_remove_chat_avatar:
-            getView().hideAvatarPhotoPicker();
             onRemoveAvatar();
             return true;
          case R.id.action_edit_chat_name:
@@ -130,14 +117,14 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
    }
 
    private void onEditChatName() {
-      conversationObservable.map(conversation -> conversation.getSubject())
+      conversationObservable.map(DataConversation::getSubject)
             .subscribe(subject -> getView().showSubjectDialog(subject));
    }
 
    public void openPicker() {
       permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
             .compose(bindView())
-            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().showAvatarPhotoPicker()));
+            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().openPicker()));
    }
 
    @Override

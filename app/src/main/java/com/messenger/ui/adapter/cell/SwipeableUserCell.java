@@ -6,8 +6,8 @@ import com.daimajia.swipe.SwipeLayout;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.model.SwipeDataUser;
 import com.messenger.util.SwipeClickListener;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;

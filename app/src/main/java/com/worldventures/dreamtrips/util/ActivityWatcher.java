@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.storage.complex_objects.Optional;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,11 +20,11 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
 
    private final Handler handler = new Handler();
    private final List<OnStartStopAppListener> listeners = new CopyOnWriteArrayList<>();
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
    private int visibleActivityCount;
 
-   public ActivityWatcher(Context context, SessionHolder<UserSession> sessionHolder) {
+   public ActivityWatcher(Context context, SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
       ((Application) context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
    }

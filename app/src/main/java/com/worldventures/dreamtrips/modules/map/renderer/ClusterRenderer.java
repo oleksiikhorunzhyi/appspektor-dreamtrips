@@ -3,10 +3,6 @@ package com.worldventures.dreamtrips.modules.map.renderer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +15,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.map.model.ClusterType;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 
@@ -57,7 +52,7 @@ public class ClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
    protected void onBeforeClusterRendered(Cluster<DtlClusterItem> cluster, MarkerOptions markerOptions) {
       Observable.from(cluster.getItems())
             .distinct(item -> item.getMerchant().asMerchantAttributes().hasOffers())
-            .compose(RxLifecycle.bindView(pin))
+            .compose(RxLifecycleAndroid.bindView(pin))
             .toList()
             .subscribe(merchants -> setupClusterRendering(cluster, markerOptions, merchants));
    }

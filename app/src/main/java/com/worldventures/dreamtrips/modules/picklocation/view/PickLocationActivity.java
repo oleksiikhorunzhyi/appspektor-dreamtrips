@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.common.view.activity.LegacyBaseActivity;
 import com.worldventures.dreamtrips.modules.picklocation.util.LocationPermissionHelper;
 import com.worldventures.dreamtrips.modules.picklocation.util.LocationSettingsDelegate;
 
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 
-public class PickLocationActivity extends BaseActivity {
+public class PickLocationActivity extends LegacyBaseActivity {
 
    @Inject LocationSettingsDelegate locationSettingsDelegate;
 

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.RecordListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetPaymentCardAction;
@@ -31,7 +31,7 @@ public final class RecordInteractor {
    private final ActionPipe<AddRecordCommand> addRecordPipe;
    private final ActionPipe<DefaultRecordIdCommand> defaultRecordIdPipe;
    private final ActionPipe<SetDefaultCardOnDeviceCommand> setDefaultCardOnDeviceCommandPipe;
-   private final ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe;
+   private final ActionPipe<SetPaymentCardAction> setPaymentCardPipe;
    private final ActionPipe<DeleteRecordCommand> deleteRecordPipe;
    private final ActionPipe<CreateRecordCommand> recordIssuerInfoPipe;
    private final ActionPipe<SyncRecordOnNewDeviceCommand> syncRecordOnNewDevicePipe;
@@ -51,7 +51,7 @@ public final class RecordInteractor {
       addRecordPipe = sessionActionPipeCreator.createPipe(AddRecordCommand.class, Schedulers.io());
       setDefaultCardOnDeviceCommandPipe = sessionActionPipeCreator.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers
             .io());
-      setPaymentCardActionActionPipe = sessionActionPipeCreator.createPipe(SetPaymentCardAction.class, Schedulers.io());
+      setPaymentCardPipe = sessionActionPipeCreator.createPipe(SetPaymentCardAction.class, Schedulers.io());
       deleteRecordPipe = sessionActionPipeCreator.createPipe(DeleteRecordCommand.class, Schedulers.io());
       recordIssuerInfoPipe = sessionActionPipeCreator.createPipe(CreateRecordCommand.class, Schedulers.io());
       syncRecordOnNewDevicePipe = sessionActionPipeCreator.createPipe(SyncRecordOnNewDeviceCommand.class, Schedulers.io());
@@ -99,8 +99,8 @@ public final class RecordInteractor {
       return setDefaultCardOnDeviceCommandPipe;
    }
 
-   public ActionPipe<SetPaymentCardAction> setPaymentCardActionActionPipe() {
-      return setPaymentCardActionActionPipe;
+   public ActionPipe<SetPaymentCardAction> setPaymentCardPipe() {
+      return setPaymentCardPipe;
    }
 
    public ActionPipe<CreateRecordCommand> bankCardPipe() {

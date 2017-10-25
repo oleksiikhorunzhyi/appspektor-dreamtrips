@@ -10,8 +10,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.techery.spares.module.Injector;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -141,6 +141,6 @@ public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView
    private Observable<Location> getLastKnownLocationObservable() {
       return locationDelegate.getLastKnownLocation()
             .compose(new IoToMainComposer<>())
-            .compose(RxLifecycle.bindView((View) getView()));
+            .compose(RxLifecycleAndroid.bindView((View) getView()));
    }
 }

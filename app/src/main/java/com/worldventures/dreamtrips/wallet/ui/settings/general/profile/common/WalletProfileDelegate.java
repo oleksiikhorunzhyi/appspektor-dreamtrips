@@ -2,33 +2,82 @@ package com.worldventures.dreamtrips.wallet.ui.settings.general.profile.common;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.analytics.settings.ProfileChangesSavedAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUser;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.dreamtrips.wallet.service.SmartCardUserDataInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
 
 import java.util.Locale;
 
+import io.techery.janet.operationsubscriber.OperationActionSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
 public class WalletProfileDelegate {
 
-   private AnalyticsInteractor analyticsInteractor;
+   private SmartCardUserDataInteractor smartCardUserDataInteractor;
+   private WalletAnalyticsInteractor analyticsInteractor;
 
-   public WalletProfileDelegate(
-         AnalyticsInteractor analyticsInteractor) {
+   public WalletProfileDelegate(SmartCardUserDataInteractor smartCardUserDataInteractor,
+         WalletAnalyticsInteractor analyticsInteractor) {
+      this.smartCardUserDataInteractor = smartCardUserDataInteractor;
       this.analyticsInteractor = analyticsInteractor;
+   }
+
+   public void observeProfileUploading(UpdateSmartCardUserView view) {
+      observeProfileUploading(view, null, null);
+   }
+
+   public void observeProfileUploading(UpdateSmartCardUserView view,
+         @Nullable Action1<SmartCardUser> onSuccess, @Nullable Action1<Throwable> onFailure) {
+
+      smartCardUserDataInteractor.updateSmartCardUserPipe()
+            .observeWithReplay()
+            .compose(view.bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.updateSmartCardUserPipe()))
+            .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation(this))
+                  .onSuccess(setupUserDataCommand -> {
+                     sendAnalytics(new ProfileChangesSavedAction());
+                     if (onSuccess != null) onSuccess.call(setupUserDataCommand.getResult());
+                  })
+                  .onFail((command, throwable) -> {
+                     if (onFailure != null) onFailure.call(throwable);
+                  })
+                  .create());
+
+      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
+            .observeWithReplay()
+            .compose(view.bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(new ActionPipeCacheWiper<>(smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()))
+            .subscribe(OperationActionSubscriber.forView(view.provideHttpUploadOperation(this)).create());
+   }
+
+   void cancelUploadServerUserData() {
+      smartCardUserDataInteractor.revertSmartCardUserUpdatingPipe().send(new RevertSmartCardUserUpdatingCommand());
+   }
+
+   void retryUploadToServer() {
+      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe().send(new RetryHttpUploadUpdatingCommand());
    }
 
    public void sendAnalytics(WalletAnalyticsAction action) {
       final WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(action);
-      analyticsInteractor.walletAnalyticsCommandPipe().send(analyticsCommand);
+      analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand);
    }
 
    public void observePickerAndCropper(WalletProfilePhotoView view) {
-      view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
+      //      view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
    }
 
    @Nullable
@@ -79,7 +128,7 @@ public class WalletProfileDelegate {
       return ImmutableSmartCardUser.builder()
             .firstName(profile.getFirstName())
             .middleName(profile.getMiddleName())
-            .lastName(profile.getLastName())
+            .lastName(profile.getLastNameWithSuffix())
             .phoneNumber(createPhone(profile))
             .userPhoto(createPhoto(profile))
             .build();

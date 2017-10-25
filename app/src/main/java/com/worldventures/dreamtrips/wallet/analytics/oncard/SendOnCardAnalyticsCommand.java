@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.wallet.analytics.oncard;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardAnalyticsAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardPaymentAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.action.SmartCardUserAction;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import rx.Observable;
 @CommandAction
 public class SendOnCardAnalyticsCommand extends Command<Void> implements InjectableAction {
 
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject RecordsStorage recordsStorage;
    @Inject WalletSocialInfoProvider socialInfoProvider;
 

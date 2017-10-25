@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 
 import java.net.HttpURLConnection;
 
@@ -20,13 +22,14 @@ import io.techery.janet.smartcard.action.user.UnAssignUserAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class WipeSmartCardDataCommand extends Command<Void> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject Janet apiLibJanet;
+   @Inject SmartCardLocationInteractor smartCardLocationInteractor;
 
    private final ResetOptions factoryResetOptions;
 
@@ -49,6 +52,7 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    private Observable<Void> reset() {
       return fetchSmartCard()
             .flatMap(this::disassociateCardUserServer)
+            .flatMap(action -> clearSmartCardSettings())
             .flatMap(action -> disassociateCardUser())
             .flatMap(action -> removeSmartCardData())
             .map(action -> null);
@@ -83,6 +87,12 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
             .map(command -> command.getResult().connectionStatus().isConnected())
             .flatMap(connected -> connected ? walletJanet.createPipe(UnAssignUserAction.class)
                   .createObservableResult(new UnAssignUserAction()) : Observable.just(null));
+   }
+
+   private Observable<Void> clearSmartCardSettings() {
+      return smartCardLocationInteractor.updateTrackingStatusPipe()
+            .createObservableResult(new UpdateTrackingStatusCommand(false))
+            .map(disassociateCardUserHttpAction -> (Void) null);
    }
 
    private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {

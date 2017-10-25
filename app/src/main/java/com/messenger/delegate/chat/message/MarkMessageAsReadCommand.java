@@ -3,8 +3,7 @@ package com.messenger.delegate.chat.message;
 import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.entities.DataMessage;
 import com.messenger.storage.dao.MessageDAO;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import javax.inject.Inject;
 
@@ -16,7 +15,7 @@ import timber.log.Timber;
 public class MarkMessageAsReadCommand extends BaseChatCommand<Boolean> {
 
    @Inject MessageDAO messageDAO;
-   @Inject SessionHolder<UserSession> sessionHolder;
+   @Inject SessionHolder sessionHolder;
 
    private DataMessage lastSeenMessage;
 

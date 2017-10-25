@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import org.immutables.value.Value;

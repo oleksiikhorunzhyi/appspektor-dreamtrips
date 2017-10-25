@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -69,7 +69,9 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideHttpAddressToWalletAddressConverter() {return new HttpAddressToWalletAddressConverter();}
+   Converter provideHttpAddressToWalletAddressConverter() {
+      return new HttpAddressToWalletAddressConverter();
+   }
 
    @Provides(type = Provides.Type.SET)
    Converter provideWalletCoordinatesToSmartCardCoordinatesConverter() {

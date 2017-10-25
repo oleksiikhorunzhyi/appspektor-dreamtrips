@@ -18,8 +18,6 @@ import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationView
 import com.messenger.util.OpenedConversationTracker;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
-import javax.inject.Inject;
-
 import rx.Notification;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
@@ -43,8 +41,8 @@ public class UnhandledMessageWatcher {
    private final NotificationDataFactory notificationDataFactory;
    private final AppNotification appNotification;
 
-   @Inject
-   UnhandledMessageWatcher(AppNotification appNotification, ChatMessagesEventDelegate chatMessagesEventDelegate, OpenedConversationTracker openedConversationTracker, NotificationDataFactory notificationDataFactory) {
+   public UnhandledMessageWatcher(AppNotification appNotification, ChatMessagesEventDelegate chatMessagesEventDelegate,
+         OpenedConversationTracker openedConversationTracker, NotificationDataFactory notificationDataFactory) {
       this.appNotification = appNotification;
       this.chatMessagesEventDelegate = chatMessagesEventDelegate;
       this.openedConversationTracker = openedConversationTracker;

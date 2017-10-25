@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 
-import com.techery.spares.ui.view.cell.CellDelegate;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.core.ui.view.cell.CellDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 public interface PhotoReviewPostCreationDelegate extends CellDelegate<PhotoReviewCreationItem> {
 

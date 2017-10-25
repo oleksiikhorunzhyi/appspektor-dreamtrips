@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.analytics;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.device.DeviceStateCommand;
 
 import javax.inject.Inject;
@@ -15,8 +15,8 @@ import io.techery.janet.command.annotations.CommandAction;
 public class WalletAnalyticsCommand extends Command<Void> implements InjectableAction {
 
    @Inject SmartCardInteractor smartCardInteractor;
-   @Inject SnappyRepository snappyRepository;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletStorage walletStorage;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
 
    private final WalletAnalyticsAction walletAnalyticsAction;
 
@@ -29,8 +29,8 @@ public class WalletAnalyticsCommand extends Command<Void> implements InjectableA
       smartCardInteractor.deviceStatePipe()
             .createObservableResult(DeviceStateCommand.fetch())
             .subscribe(deviceStateCommand -> {
-               walletAnalyticsAction.setSmartCardAction(snappyRepository.getSmartCard(),
-                     deviceStateCommand.getResult(), snappyRepository.getSmartCardFirmware());
+               walletAnalyticsAction.setSmartCardAction(walletStorage.getSmartCard(),
+                     deviceStateCommand.getResult(), walletStorage.getSmartCardFirmware());
                analyticsInteractor.analyticsActionPipe().send(walletAnalyticsAction);
                callback.onSuccess(null);
             }, callback::onFail);

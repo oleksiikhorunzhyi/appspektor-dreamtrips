@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.gcm.delegate;
 
 import com.messenger.notification.MessengerNotificationFactory;
-import com.worldventures.dreamtrips.modules.friends.notification.FriendNotificationFactory;
+import com.worldventures.dreamtrips.social.ui.friends.notification.FriendNotificationFactory;
 
 public class NotificationFactoryHolder {
 

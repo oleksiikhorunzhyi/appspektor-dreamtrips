@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.wallet.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
+import com.worldventures.dreamtrips.wallet.service.command.AboutSmartCardDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchBatteryLevelCommand;
@@ -29,8 +30,6 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.general.disp
 import com.worldventures.dreamtrips.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
-import java.util.concurrent.Executors;
-
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
@@ -50,8 +49,6 @@ import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import io.techery.janet.smartcard.event.PinStatusEvent;
-import rx.Scheduler;
-import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 public final class SmartCardInteractor {
@@ -71,10 +68,10 @@ public final class SmartCardInteractor {
    private final ActionPipe<SmartCardFirmwareCommand> smartCardFirmwarePipe;
    private final ActionPipe<SmartCardUserCommand> smartCardUserPipe;
    private final ActionPipe<DisconnectAction> disconnectPipe;
-   private final ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe;
+   private final ActionPipe<RestartSmartCardCommand> restartSmartCardPipe;
    private final ActionPipe<FetchCardPropertiesCommand> fetchCardPropertiesPipe;
    private final ActionPipe<FetchFirmwareVersionCommand> fetchFirmwareVersionPipe;
-   private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataOnBackedCommandActionPipe;
+   private final ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataPipe;
 
    private final ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe;
    private final ActionPipe<OfflineModeStatusCommand> offlineModeStatusPipe;
@@ -96,7 +93,7 @@ public final class SmartCardInteractor {
    private final ActionPipe<CheckPinStatusAction> checkPinStatusActionPipe;
    private final ActionPipe<SetPinEnabledAction> setPinEnabledActionPipe;
    private final ActionPipe<SetPinEnabledCommand> setPinEnabledCommandActionPipe;
-   private final ReadActionPipe<PinStatusEvent> pinStatusEventPipe;
+   private final ActionPipe<PinStatusEvent> pinStatusEventPipe;
    private final ActionPipe<RequestPinAuthAction> requestPinAuthActionPipe;
    private final ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe;
 
@@ -106,21 +103,19 @@ public final class SmartCardInteractor {
    private final ActionPipe<GetDisplayTypeCommand> getDisplayTypePipe;
    private final ActionPipe<RestoreDefaultDisplayTypeCommand> restoreDefaultDisplayTypePipe;
    private final ActionPipe<ValidateDisplayTypeDataCommand> validateDisplayTypeDataPipe;
+   private final ActionPipe<AboutSmartCardDataCommand> aboutSmartCardDataCommandPipe;
 
-   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      this(sessionActionPipeCreator, SmartCardInteractor::singleThreadScheduler);
-   }
-
-   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator, Func0<Scheduler> cacheSchedulerFactory) {
+   //change to Scheduler Factory
+   public SmartCardInteractor(SessionActionPipeCreator sessionActionPipeCreator, WalletSchedulerProvider schedulerProvider) {
       //synchronized pipes
-      smartCardSyncPipe = sessionActionPipeCreator.createPipe(SyncSmartCardCommand.class, cacheSchedulerFactory.call());
-      activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, cacheSchedulerFactory
-            .call());
-      deviceStatePipe = sessionActionPipeCreator.createPipe(DeviceStateCommand.class, cacheSchedulerFactory.call());
-      smartCardFirmwarePipe = sessionActionPipeCreator.createPipe(SmartCardFirmwareCommand.class, cacheSchedulerFactory.call());
-      smartCardUserPipe = sessionActionPipeCreator.createPipe(SmartCardUserCommand.class, cacheSchedulerFactory.call());
-      fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, cacheSchedulerFactory
-            .call());
+      smartCardSyncPipe = sessionActionPipeCreator.createPipe(SyncSmartCardCommand.class, schedulerProvider.storageScheduler());
+      activeSmartCardActionPipe = sessionActionPipeCreator.createPipe(ActiveSmartCardCommand.class, schedulerProvider.storageScheduler());
+      deviceStatePipe = sessionActionPipeCreator.createPipe(DeviceStateCommand.class, schedulerProvider.storageScheduler());
+      smartCardFirmwarePipe = sessionActionPipeCreator.createPipe(SmartCardFirmwareCommand.class, schedulerProvider.storageScheduler());
+      smartCardUserPipe = sessionActionPipeCreator.createPipe(SmartCardUserCommand.class, schedulerProvider.storageScheduler());
+      fetchCardPropertiesPipe = sessionActionPipeCreator.createPipe(FetchCardPropertiesCommand.class, schedulerProvider.storageScheduler());
+      aboutSmartCardDataCommandPipe = sessionActionPipeCreator.createPipe(AboutSmartCardDataCommand.class, schedulerProvider
+            .storageScheduler());
 
       fetchFirmwareVersionPipe = sessionActionPipeCreator.createPipe(FetchFirmwareVersionCommand.class, Schedulers.io());
       connectionPipe = sessionActionPipeCreator.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
@@ -139,8 +134,8 @@ public final class SmartCardInteractor {
       fetchBatteryLevelPipe = sessionActionPipeCreator.createPipe(FetchBatteryLevelCommand.class, Schedulers.io());
 
       disconnectPipe = sessionActionPipeCreator.createPipe(DisconnectAction.class, Schedulers.io());
-      restartSmartCardCommandActionPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
-      wipeSmartCardDataOnBackedCommandActionPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
+      restartSmartCardPipe = sessionActionPipeCreator.createPipe(RestartSmartCardCommand.class, Schedulers.io());
+      wipeSmartCardDataPipe = sessionActionPipeCreator.createPipe(WipeSmartCardDataCommand.class, Schedulers
             .io());
 
       switchOfflineModePipe = sessionActionPipeCreator.createPipe(SwitchOfflineModeCommand.class, Schedulers.io());
@@ -177,10 +172,6 @@ public final class SmartCardInteractor {
             .io());
       validateDisplayTypeDataPipe = sessionActionPipeCreator.createPipe(ValidateDisplayTypeDataCommand.class, Schedulers
             .io());
-   }
-
-   private static Scheduler singleThreadScheduler() {
-      return Schedulers.from(Executors.newSingleThreadExecutor());
    }
 
    public ActionPipe<ActiveSmartCardCommand> activeSmartCardPipe() {
@@ -267,12 +258,12 @@ public final class SmartCardInteractor {
       return disconnectPipe;
    }
 
-   public ActionPipe<RestartSmartCardCommand> restartSmartCardCommandActionPipe() {
-      return restartSmartCardCommandActionPipe;
+   public ActionPipe<RestartSmartCardCommand> restartSmartCardPipe() {
+      return restartSmartCardPipe;
    }
 
-   public ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataCommandActionPipe() {
-      return wipeSmartCardDataOnBackedCommandActionPipe;
+   public ActionPipe<WipeSmartCardDataCommand> wipeSmartCardDataPipe() {
+      return wipeSmartCardDataPipe;
    }
 
    public ActionPipe<SwitchOfflineModeCommand> switchOfflineModePipe() {
@@ -331,7 +322,7 @@ public final class SmartCardInteractor {
       return getOnCardAnalyticsPipe;
    }
 
-   public ReadActionPipe<PinStatusEvent> pinStatusEventPipe() {
+   public ActionPipe<PinStatusEvent> pinStatusEventPipe() {
       return pinStatusEventPipe;
    }
 
@@ -357,5 +348,9 @@ public final class SmartCardInteractor {
 
    public ActionPipe<RemoveUserPhotoAction> removeUserPhotoActionPipe() {
       return removeUserPhotoActionPipe;
+   }
+
+   public ActionPipe<AboutSmartCardDataCommand> aboutSmartCardDataCommandPipe() {
+      return aboutSmartCardDataCommandPipe;
    }
 }

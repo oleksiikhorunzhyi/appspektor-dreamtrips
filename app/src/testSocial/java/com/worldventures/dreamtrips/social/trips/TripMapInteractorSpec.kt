@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.trip.model.Trip
 import com.worldventures.dreamtrips.api.trip.model.TripPinWrapper
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand
 import com.worldventures.dreamtrips.modules.trips.model.Pin

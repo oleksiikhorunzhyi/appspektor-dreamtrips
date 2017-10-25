@@ -6,15 +6,15 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.core.modules.facebook.model.FacebookAlbum;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.facebook.model.FacebookAlbum;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_facebook_album)
-public class FacebookAlbumCell extends AbstractCell<FacebookAlbum> {
+public class FacebookAlbumCell extends BaseAbstractCell<FacebookAlbum> {
 
    @InjectView(R.id.iv_bg) SimpleDraweeView ivBg;
    @InjectView(R.id.tv_album_title) TextView tvTitle;
@@ -30,5 +30,10 @@ public class FacebookAlbumCell extends AbstractCell<FacebookAlbum> {
       tvCount.setText(getModelObject().getCount() + "");
       String accessToken = AccessToken.getCurrentAccessToken().getToken();
       ivBg.setImageURI(Uri.parse(getModelObject().getCoverUrl(accessToken)));
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 }

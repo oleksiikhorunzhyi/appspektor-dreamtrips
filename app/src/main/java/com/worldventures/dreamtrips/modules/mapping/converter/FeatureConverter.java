@@ -1,47 +1,48 @@
 package com.worldventures.dreamtrips.modules.mapping.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.session.model.Feature;
 
 import org.jetbrains.annotations.NotNull;
 
 import io.techery.mappery.MapperyContext;
 
-public class FeatureConverter implements Converter<Feature, com.worldventures.dreamtrips.core.session.acl.Feature> {
+public class FeatureConverter implements Converter<Feature, com.worldventures.core.model.session.Feature> {
    @Override
    public Class<Feature> sourceClass() {
       return Feature.class;
    }
 
    @Override
-   public Class<com.worldventures.dreamtrips.core.session.acl.Feature> targetClass() {
-      return com.worldventures.dreamtrips.core.session.acl.Feature.class;
+   public Class<com.worldventures.core.model.session.Feature> targetClass() {
+      return com.worldventures.core.model.session.Feature.class;
    }
 
    @Override
-   public com.worldventures.dreamtrips.core.session.acl.Feature convert(@NotNull MapperyContext mapperyContext, Feature apiFeature) {
+   public com.worldventures.core.model.session.Feature convert(@NotNull MapperyContext mapperyContext, Feature apiFeature) {
       switch (apiFeature.name()) {
          case TRIPS:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.TRIPS);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.TRIPS);
          case REP_TOOLS:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.REP_TOOLS);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.REP_TOOLS);
          case SOCIAL:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.SOCIAL);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.SOCIAL);
          case DTL:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.DTL);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.DTL);
          case REP_SUGGEST_MERCHANT:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.REP_SUGGEST_MERCHANT);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.REP_SUGGEST_MERCHANT);
          case BOOK_TRIP:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.BOOK_TRIP);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.BOOK_TRIP);
          case BOOK_TRAVEL:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.BOOK_TRAVEL);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.BOOK_TRAVEL);
          case MEMBERSHIP:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.MEMBERSHIP);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.MEMBERSHIP);
          case WALLET:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.WALLET);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.WALLET);
          case WALLET_PROVISIONING:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.WALLET_PROVISIONING);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.WALLET_PROVISIONING);
          default:
-            return new com.worldventures.dreamtrips.core.session.acl.Feature(com.worldventures.dreamtrips.core.session.acl.Feature.UNKNOWN);
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.UNKNOWN);
       }
    }
 }

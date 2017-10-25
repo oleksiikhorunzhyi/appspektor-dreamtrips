@@ -16,28 +16,27 @@ import android.view.ViewGroup;
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
-import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
+import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCellDelegate;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -121,13 +120,6 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
             .build());
    }
 
-
-   @Override
-   public void onResume() {
-      super.onResume();
-      TrackingHelper.viewDreamTripsScreen();
-   }
-
    @Override
    protected void restoreState(Bundle savedInstanceState) {
       super.restoreState(savedInstanceState);
@@ -150,7 +142,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @Override
    public void showErrorMessage() {
-      ((MainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
+      ((SocialMainActivity) getActivity()).informUser(getString(R.string.smth_went_wrong));
    }
 
    @Override
@@ -195,11 +187,10 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.action_filter:
-            ((MainActivity) getActivity()).openRightDrawer();
+            ((SocialMainActivity) getActivity()).openRightDrawer();
             break;
          case R.id.action_map:
-            actionMap();
-            TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_MAP);
+            getPresenter().openMap();
             break;
       }
       return super.onOptionsItemSelected(item);
@@ -278,7 +269,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
       }
    }
 
-   private void actionMap() {
+   @Override
+   public void openMap() {
       router.moveTo(Route.MAP, NavigationConfigBuilder.forFragment()
             .fragmentManager(getFragmentManager())
             .containerId(R.id.container_main)

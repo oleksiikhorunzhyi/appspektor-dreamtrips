@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
 import com.worldventures.dreamtrips.wallet.service.command.profile.UpdateSmartCardUserCommand;
@@ -17,8 +17,10 @@ public class SmartCardUserDataInteractor {
 
    public SmartCardUserDataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       updateSmartCardUserPipe = sessionActionPipeCreator.createPipe(UpdateSmartCardUserCommand.class, Schedulers.io());
-      revertSmartCardUserUpdatingPipe = sessionActionPipeCreator.createPipe(RevertSmartCardUserUpdatingCommand.class, Schedulers.io());
-      retryHttpUploadUpdatingPipe = sessionActionPipeCreator.createPipe(RetryHttpUploadUpdatingCommand.class, Schedulers.io());
+      revertSmartCardUserUpdatingPipe = sessionActionPipeCreator.createPipe(RevertSmartCardUserUpdatingCommand.class, Schedulers
+            .io());
+      retryHttpUploadUpdatingPipe = sessionActionPipeCreator.createPipe(RetryHttpUploadUpdatingCommand.class, Schedulers
+            .io());
    }
 
    public ActionPipe<UpdateSmartCardUserCommand> updateSmartCardUserPipe() {

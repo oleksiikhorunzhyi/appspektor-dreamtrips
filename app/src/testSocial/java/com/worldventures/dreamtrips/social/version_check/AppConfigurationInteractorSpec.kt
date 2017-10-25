@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.social.version_check
 
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.core.model.session.SessionHolder
+import com.worldventures.core.model.session.UserSession
+import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.config.model.Category
@@ -63,6 +66,7 @@ class AppConfigurationInteractorSpec : BaseSpec({
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { getMappery() }
+         daggerCommandActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder() }
 
          configurationInteractor = AppConfigurationInteractor(janet)
       }
@@ -72,6 +76,14 @@ class AppConfigurationInteractorSpec : BaseSpec({
          val converter = ConfigurationConverter()
          mappery.map(converter.sourceClass()).to(converter.targetClass(), converter)
          return mappery.build()
+      }
+
+      fun mockSessionHolder(): SessionHolder {
+         val sessionHolder: SessionHolder = mock()
+         val userSession: UserSession = mock()
+         whenever(userSession.locale).thenReturn("en-US")
+         whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
+         return sessionHolder;
       }
 
       fun makeCorrectConfigHttpService(): MockHttpActionService {

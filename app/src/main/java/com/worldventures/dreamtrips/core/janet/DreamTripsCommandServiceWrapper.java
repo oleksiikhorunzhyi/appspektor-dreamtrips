@@ -3,20 +3,20 @@ package com.worldventures.dreamtrips.core.janet;
 import android.content.Context;
 import android.util.Pair;
 
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
+import com.worldventures.core.janet.CommandWithError;
 
 import org.jetbrains.annotations.Nullable;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.JanetException;
 
-import static com.worldventures.dreamtrips.util.HttpErrorHandlingUtil.isNoInternetConnectionError;
-import static com.worldventures.dreamtrips.util.HttpErrorHandlingUtil.obtainHttpErrorMessage;
-import static com.worldventures.dreamtrips.util.HttpErrorHandlingUtil.obtainHttpErrorPath;
-import static com.worldventures.dreamtrips.util.HttpErrorHandlingUtil.obtainHttpException;
+import static com.worldventures.core.utils.HttpErrorHandlingUtil.isNoInternetConnectionError;
+import static com.worldventures.core.utils.HttpErrorHandlingUtil.obtainHttpErrorMessage;
+import static com.worldventures.core.utils.HttpErrorHandlingUtil.obtainHttpErrorPath;
+import static com.worldventures.core.utils.HttpErrorHandlingUtil.obtainHttpException;
 
 public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
 

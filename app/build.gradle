@@ -145,7 +145,6 @@ android {
    }
    dexOptions {
       javaMaxHeapSize "4g"
-      keepRuntimeAnnotatedClasses false
       preDexLibraries = project.ext.androidConfig.preDex
    }
    lintOptions {
@@ -173,6 +172,10 @@ android {
       social {
          test.java.srcDirs += 'src/testSocial/java'
       }
+      main.res.srcDirs += 'src/main/resSocial'
+      main.res.srcDirs += 'src/main/resMessenger'
+      main.res.srcDirs += 'src/main/resSession'
+      main.res.srcDirs += 'src/main/resWallet'
    }
 
 }
@@ -210,53 +213,51 @@ tasks.withType(JavaCompile) {
 // configuration & dependencies
 
 def deps = project.ext.moduleDependencies
+def coreDeps = project.ext.coreDependencies
 
 configurations.all {
    resolutionStrategy {
       cacheChangingModulesFor 0, 'seconds'
-      force deps.provide(deps.rx.rxjava)
-      force deps.provide(deps.util.mappery)
+      force provideDep(coreDeps.rx.rxjava)
+      force provideDep(coreDeps.domain.mappery)
+      force provideDep(coreDeps.util.jetbrainsAnnotations)
    }
    exclude group: 'xpp3', module: 'xpp3'
    exclude group: 'org.jetbrains', module: 'annotations-java5'
-   exclude group: 'org.jetbrains', module: 'annotations'
+   exclude group: 'com.intellij', module: 'annotations'
 }
 
 repositories {
-   project.ext.moduleDependencies.repos.each { it.call(owner) }
-}
+   deps.repos.each { it.call(owner) }
+   coreDeps.repos.each { it.call(owner) }
+   }
 
 dependencies {
    compile fileTree(dir: 'libs', include: ['*.jar'])
 
-   deps.applyAll(owner, deps.lang)
-   deps.applyAll(owner, deps.domain)
-   deps.applyAll(owner, deps.rx)
-   deps.applyAll(owner, deps.di.findAll {
-      it.value != deps.di.daggerProguard
-   })
-   deps.applyAll(owner, deps.data)
-   deps.applyAll(owner, deps.networking)
-   deps.applyAll(owner, deps.smartcard)
-   deps.applyAll(owner, deps.services)
-   deps.applyAll(owner, deps.media)
-   deps.applyAll(owner, deps.presentation)
-   deps.applyAll(owner, deps.ui)
-   deps.applyAll(owner, deps.util.findAll {
+   applyDependencies(owner, deps.modules)
+   applyDependencies(owner, deps.lang)
+   applyDependencies(owner, deps.domain)
+   applyDependencies(owner, coreDeps.di)
+   applyDependencies(owner, coreDeps.ui)
+   applyDependencies(owner, deps.data)
+   applyDependencies(owner, coreDeps.immutables)
+   applyDependencies(owner, deps.networking)
+   applyDependencies(owner, deps.smartcard)
+   applyDependencies(owner, deps.services)
+   applyDependencies(owner, deps.media)
+   applyDependencies(owner, deps.presentation)
+   applyDependencies(owner, deps.ui)
+   applyDependencies(owner, coreDeps.util)
+   applyDependencies(owner, deps.util.findAll {
       ![
             deps.util.leakcanary,
             deps.util.leakcanaryNoOp,
-            deps.util.jodaTimeAndroid,
       ].contains(it.value)
    })
-   deps.applyAll(owner, deps.test)
+   applyDependencies(owner, deps.test)
 
-   devCompile deps.provide(deps.util.leakcanary)
-   devpremarshmallowCompile deps.provide(deps.util.leakcanary)
-   externalCompile deps.provide(deps.util.leakcanaryNoOp)
-
-   debugCompile(deps.provide(deps.util.jodaTimeAndroid))
-   releaseCompile(deps.provide(deps.util.jodaTimeAndroid))
-
-   releaseAnnotationProcessor deps.provide(deps.di.daggerProguard)
+   devCompile                 provideDep(deps.util.leakcanary)
+   devpremarshmallowCompile   provideDep(deps.util.leakcanary)
+   externalCompile            provideDep(deps.util.leakcanaryNoOp)
 }

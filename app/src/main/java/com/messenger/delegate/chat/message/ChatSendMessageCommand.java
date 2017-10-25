@@ -4,8 +4,7 @@ import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import javax.inject.Inject;
 
@@ -14,7 +13,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class ChatSendMessageCommand extends BaseChatCommand<Message> {
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
    @Inject MessageBodyCreator messageBodyCreator;
 
    private String messageText;

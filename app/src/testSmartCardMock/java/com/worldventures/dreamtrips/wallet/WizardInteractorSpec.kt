@@ -3,27 +3,26 @@ package com.worldventures.dreamtrips.wallet
 import android.content.Context
 import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.cache.CacheResultWrapper
+import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record
-import com.worldventures.dreamtrips.wallet.domain.storage.DefaultRecordIdStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.SmartCardActionStorage
-import com.worldventures.dreamtrips.wallet.domain.storage.WalletRecordsDiskStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.DefaultRecordIdStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.SmartCardActionStorage
+import com.worldventures.dreamtrips.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.dreamtrips.wallet.model.*
-import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
-import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor
+import com.worldventures.dreamtrips.wallet.service.*
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.dreamtrips.wallet.service.command.http.FetchTermsAndConditionsCommand
@@ -60,6 +59,8 @@ class WizardInteractorSpec : BaseSpec({
          wizardInteractor = createWizardInteractor(janet)
          smartCardInteractor = createSmartCardInteractor(janet)
          propertiesProvider = createPropertiesProvider()
+         smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
+         settingsInteractor = createSettingsInteractor(janet)
 
          janet.connectToSmartCardSdk()
          mockedDebitCard = mock()
@@ -80,7 +81,7 @@ class WizardInteractorSpec : BaseSpec({
             verify(propertiesProvider, times(1)).deviceId()
          }
 
-         it("should be associate SmartCard and save SmartCardDetails to db") {
+         it("should be associate SmartCard and save SmartCardDetails to mediaModelStorage") {
             val cardUserData: UpdateCardUserData = TestUpdateCardUserData()
             val testSubscriber: TestSubscriber<ActionState<AssociateCardUserCommand>> = TestSubscriber()
             janet.createPipe(AssociateCardUserCommand::class.java)
@@ -94,7 +95,7 @@ class WizardInteractorSpec : BaseSpec({
             verify(propertiesProvider, times(1)).osVersion()
          }
 
-         it("should be save TermsAndConditions to db") {
+         it("should be save TermsAndConditions to mediaModelStorage") {
             val testSubscriber: TestSubscriber<ActionState<FetchTermsAndConditionsCommand>> = TestSubscriber()
             janet.createPipe(FetchTermsAndConditionsCommand::class.java)
                   .createObservable(FetchTermsAndConditionsCommand())
@@ -121,7 +122,7 @@ class WizardInteractorSpec : BaseSpec({
       const val MOCK_SMART_CARD_ID: Long = 13371340
       const val MOCK_BARCODE = MOCK_SMART_CARD_ID.toString()
 
-      lateinit var mockDb: SnappyRepository
+      lateinit var mockDb: WalletStorage
       lateinit var recordsStorage: RecordsStorage
 
       lateinit var janet: Janet
@@ -132,14 +133,16 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var propertiesProvider: SystemPropertiesProvider
       lateinit var lostCardStorage: LostCardRepository
       lateinit var mockedDebitCard: Record
+      lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
+      lateinit var settingsInteractor: SettingsInteractor
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsDiskStorage(recordsStorage))
+         setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsActionStorage(recordsStorage))
       }
 
       fun createWizardInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
 
-      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
+      fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), TestSchedulerProvider())
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()
@@ -154,7 +157,7 @@ class WizardInteractorSpec : BaseSpec({
                .build()
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(WalletStorage::class.java) { mockDb }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(RecordsStorage::class.java) { recordsStorage }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
@@ -163,12 +166,14 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(SystemPropertiesProvider::class.java, { propertiesProvider })
          daggerCommandActionService.registerProvider(LostCardRepository::class.java, { lostCardStorage })
          daggerCommandActionService.registerProvider(CachedPhotoUtil::class.java, { mock() })
+         daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
+         daggerCommandActionService.registerProvider(SettingsInteractor::class.java, { settingsInteractor })
 
          return janet
       }
 
-      fun createMockDb(): SnappyRepository {
-         val repository: SnappyRepository = spy()
+      fun createMockDb(): WalletStorage {
+         val repository: WalletStorage = spy()
          whenever(repository.walletTermsAndConditions).thenReturn(TestTermsAndConditions())
          return repository
       }
@@ -182,14 +187,17 @@ class WizardInteractorSpec : BaseSpec({
       fun mockHttpService(): MockHttpActionService {
          val termsAndConditionsResponse = mockTermsAndConditionsResponse()
          return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(204), { request ->
+               .bind(MockHttpActionService.Response(204)) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("delete", true)
-               })
-               .bind(MockHttpActionService.Response(204).body(TestSmartCardDetails(MOCK_SMART_CARD_ID)), { request ->
+               }
+               .bind(MockHttpActionService.Response(204).body(TestSmartCardDetails(MOCK_SMART_CARD_ID))) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("post", true)
-               })
+               }
                .bind(MockHttpActionService.Response(200).body(termsAndConditionsResponse)) { request ->
                   request.url.contains("api/smartcard/provisioning/terms_and_conditions")
+               }
+               .bind(MockHttpActionService.Response(204)) { request ->
+                  request.url.endsWith("api/user/settings")
                }
                .build()
       }
@@ -209,6 +217,12 @@ class WizardInteractorSpec : BaseSpec({
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1))).subscribe()
       }
+
+
+      fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
+
+      fun createSettingsInteractor(janet: Janet) = SettingsInteractor(SessionActionPipeCreator(janet))
+
 
       fun createPropertiesProvider(): SystemPropertiesProvider {
          val propertiesProvider: SystemPropertiesProvider = mock()

@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.GetTermsAndConditionsHttpAction;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableTermsAndConditions;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
 

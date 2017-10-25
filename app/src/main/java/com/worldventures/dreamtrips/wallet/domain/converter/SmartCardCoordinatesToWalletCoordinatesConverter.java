@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.domain.converter;
 
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoordinates;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 

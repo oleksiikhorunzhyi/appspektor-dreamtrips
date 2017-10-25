@@ -1,20 +1,19 @@
 package com.worldventures.dreamtrips.modules.facebook.view.cell;
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.modules.facebook.model.FacebookPhoto;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_photo_facebook)
-public class FacebookPhotoCell extends AbstractDelegateCell<FacebookPhoto, CellDelegate<FacebookPhoto>> {
+public class FacebookPhotoCell extends BaseAbstractDelegateCell<FacebookPhoto, CellDelegate<FacebookPhoto>> {
 
    @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivBg;
    @InjectView(R.id.pick) ImageView pick;
@@ -42,5 +41,10 @@ public class FacebookPhotoCell extends AbstractDelegateCell<FacebookPhoto, CellD
       } else {
          pick.setImageResource(R.drawable.add_photo_icon);
       }
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 }

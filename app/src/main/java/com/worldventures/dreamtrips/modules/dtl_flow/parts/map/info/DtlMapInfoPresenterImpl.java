@@ -5,9 +5,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
@@ -24,8 +23,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 import javax.inject.Inject;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
@@ -69,7 +66,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
             .map(FilterDataAction::getResult)
             .map(FilterData::searchQuery)
             .filter(query -> !TextUtils.isEmpty(query))
-            .subscribe(query -> analyticsInteractor.dtlAnalyticsCommandPipe()
+            .subscribe(query -> analyticsInteractor.analyticsCommandPipe()
                   .send(DtlAnalyticsCommand.create(new MerchantFromSearchEvent(query))));
    }
 

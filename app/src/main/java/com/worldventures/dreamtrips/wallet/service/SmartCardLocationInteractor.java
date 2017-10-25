@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import io.techery.janet.ActionPipe;
@@ -24,8 +25,8 @@ public final class SmartCardLocationInteractor {
    private final ActionPipe<GetLocationCommand> getLocationPipe;
    private final ActionPipe<DetectGeoLocationCommand> detectGeoLocationPipe;
    private final ActionPipe<FetchAddressWithPlacesCommand> fetchAddressPipe;
-
-   private final ActionPipe<CardTrackingStatusCommand> enabledTrackingPipe;
+   private final ActionPipe<FetchTrackingStatusCommand> fetchTrackingStatusPipe;
+   private final ActionPipe<UpdateTrackingStatusCommand> updateTrackingStatusPipe;
 
    public SmartCardLocationInteractor(SessionActionPipeCreator pipeCreator) {
       connectionPipe = pipeCreator.createPipe(ConnectAction.class);
@@ -39,7 +40,8 @@ public final class SmartCardLocationInteractor {
       detectGeoLocationPipe = pipeCreator.createPipe(DetectGeoLocationCommand.class, Schedulers.io());
       fetchAddressPipe = pipeCreator.createPipe(FetchAddressWithPlacesCommand.class, Schedulers.io());
 
-      enabledTrackingPipe = pipeCreator.createPipe(CardTrackingStatusCommand.class, Schedulers.io());
+      fetchTrackingStatusPipe = pipeCreator.createPipe(FetchTrackingStatusCommand.class, Schedulers.io());
+      updateTrackingStatusPipe = pipeCreator.createPipe(UpdateTrackingStatusCommand.class, Schedulers.io());
    }
 
    public ReadActionPipe<ConnectAction> connectActionPipe() {
@@ -70,7 +72,11 @@ public final class SmartCardLocationInteractor {
       return fetchAddressPipe;
    }
 
-   public ActionPipe<CardTrackingStatusCommand> enabledTrackingPipe() {
-      return enabledTrackingPipe;
+   public ActionPipe<FetchTrackingStatusCommand> fetchTrackingStatusPipe() {
+      return fetchTrackingStatusPipe;
+   }
+
+   public ActionPipe<UpdateTrackingStatusCommand> updateTrackingStatusPipe() {
+      return updateTrackingStatusPipe;
    }
 }

@@ -4,7 +4,7 @@ package com.messenger.ui.module.flagging;
 import android.support.annotation.StringRes;
 
 import com.messenger.ui.module.ModuleStatefulView;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 
 import java.util.List;
 

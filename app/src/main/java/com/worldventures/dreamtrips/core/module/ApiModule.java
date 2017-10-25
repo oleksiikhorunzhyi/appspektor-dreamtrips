@@ -5,31 +5,27 @@ import android.content.Context;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
-import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
-import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
+import com.worldventures.core.modules.settings.model.Setting;
+import com.worldventures.core.modules.settings.model.serializer.SettingsDeserializer;
+import com.worldventures.core.modules.settings.model.serializer.SettingsSerializer;
+import com.worldventures.core.utils.AppVersionNameBuilder;
+import com.worldventures.core.utils.DateTimeDeserializer;
+import com.worldventures.core.utils.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.PersistentCookieStore;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketBodyImpl;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketCoverBody;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketPostBody;
-import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketStatusBody;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
-import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
-import com.worldventures.dreamtrips.modules.settings.model.Setting;
-import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
-import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
-import com.worldventures.dreamtrips.wallet.domain.entity.record.GsonAdaptersRecord;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.GsonAdaptersBucketBodyImpl;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.GsonAdaptersBucketCoverBody;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.GsonAdaptersBucketPostBody;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.GsonAdaptersBucketStatusBody;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.model.serializer.FeedEntityDeserializer;
+import com.worldventures.dreamtrips.social.ui.feed.model.serializer.FeedItemDeserializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,25 +49,12 @@ public class ApiModule {
             .registerTypeAdapterFactory(new GsonAdaptersBucketCoverBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketStatusBody())
             .registerTypeAdapterFactory(new GsonAdaptersBucketBodyImpl())
-            //smartcard flow
-            .registerTypeAdapterFactory(new GsonAdaptersRecord())
             .create();
    }
 
    @Provides
    CookieManager provideCookieManager(Context context) {
       return new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
-   }
-
-   @Provides
-   OkHttpClient provideOkHttpClient(CookieManager cookieManager) {
-      OkHttpClient okHttpClient = new OkHttpClient();
-      okHttpClient.setCookieHandler(cookieManager);
-      //Currently `api/{uid}/likes` (10k+ms)
-      okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setReadTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      okHttpClient.setWriteTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);
-      return okHttpClient;
    }
 
    @Provides

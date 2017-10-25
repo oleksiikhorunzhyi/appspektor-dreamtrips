@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.entity.model.EntityHolder
 import com.worldventures.dreamtrips.api.trip.model.Trip
 import com.worldventures.dreamtrips.api.trip.model.TripWithDetails
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
+import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand
@@ -26,7 +26,6 @@ import io.techery.mappery.MapperyContext
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
 import rx.observers.TestSubscriber
 import kotlin.test.assertTrue
 

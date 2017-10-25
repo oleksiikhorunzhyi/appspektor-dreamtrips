@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.record.DefaultRecordIdCommand;
 
@@ -18,10 +18,10 @@ import io.techery.janet.smartcard.action.records.UnsetDefaultRecordAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetDefaultCardOnDeviceCommand extends Command<Void> implements InjectableAction {
+public class SetDefaultCardOnDeviceCommand extends Command<String> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject RecordInteractor recordInteractor;
@@ -43,7 +43,7 @@ public class SetDefaultCardOnDeviceCommand extends Command<Void> implements Inje
    }
 
    @Override
-   protected void run(CommandCallback<Void> callback) throws Throwable {
+   protected void run(CommandCallback<String> callback) throws Throwable {
 
       Observable<String> defaultRecordIdObservable;
 
@@ -63,8 +63,8 @@ public class SetDefaultCardOnDeviceCommand extends Command<Void> implements Inje
    }
 
    @NonNull
-   private Observable<Void> saveDefaultRecordIdLocally(@Nullable String recordId) {
+   private Observable<String> saveDefaultRecordIdLocally(@Nullable String recordId) {
       return recordInteractor.defaultRecordIdPipe().createObservableResult(DefaultRecordIdCommand.set(recordId))
-            .map(command -> (Void) null);
+            .map(Command::getResult);
    }
 }

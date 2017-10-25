@@ -3,11 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews;
 import android.content.Context;
 import android.view.MenuItem;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
@@ -32,7 +31,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Inject MerchantsInteractor merchantInteractor;
 
    @Inject
-   SessionHolder<UserSession> appSessionHolder;
+   SessionHolder appSessionHolder;
 
    private final Merchant merchant;
    private static final String BRAND_ID = "1";

@@ -63,10 +63,11 @@ ext {
          "$flavors.codes.perf"                                                  : [
                appParams: [
                      api : [
-                           DreamTripsApi          : [String: '"http://dtapp-perf.worldventures.biz"'],
-                           BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
-                           UPLOADERY_API_URL      : [String: '"dtappupload-perf.wvholdings.com"'],
-                           VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader-perf.dreamtrips.com"'],
+                           DreamTripsApi         : [String: '"http://dtapp-perf.worldventures.biz"'],
+                           BACKOFFICE_URL        : [String: '"https://backoffice.worldventures.biz"'],
+                           FORGOT_PASSWORD_URL   : [String: '"https://forgotlogin.wvhservices.com/"'],
+                           UPLOADERY_API_URL     : [String: '"dtappupload-perf.wvholdings.com"'],
+                           VIDEO_MICROSERVICE_URL: [String: '"http://assetuploader-perf.dreamtrips.com"'],
                      ],
                      util: [
                            NEWRELIC_API_KEY: [String: '"AA8998d2de5c99adddd3668515e76b5d501271a04b"'],
@@ -90,6 +91,7 @@ ext {
                      api      : [
                            DreamTripsApi          : [String: '"https://dtapp.worldventures.biz"'],
                            BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
+                           FORGOT_PASSWORD_URL    : [String: '"https://forgotlogin.wvhservices.com/"'],
                            UPLOADERY_API_URL      : [String: '"http://dtappuploads.wvholdings.com"'],
                            VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.wvhservices.com"'],
                            API_TIMEOUT_SEC        : [long: '15'],

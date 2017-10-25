@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="user_password_hint">WV-tag jelszava</string>
+   <string name="log_in">Bejelentkezés</string>
+   <string name="user_id_hint">WV-tag azonosítója</string>
+   <string name="logout_dialog_title">Kijelentkezés</string>
+   <string name="logout_dialog_message">Biztos, hogy kijelentkezik?</string>
+   <string name="logout_dialog_positive_btn">Kijelentkezés</string>
+   <string name="logout_dialog_negative_btn">Mégse</string>
+   <string name="terms_and_conditions_title">Használati feltételek</string>
+   <string name="terms_and_conditions_subtitle">A folytatáshoz olvassa el és fogadja el az alábbi feltételeket</string>
+   <string name="terms_and_conditions_checkbox">Kattintson ide a feltételek elfogadásához</string>
+   <string name="terms_and_conditions_accept">Feliratkozás</string>
+   <string name="terms_and_conditions_reject">Most nem</string>
+   <string name="error_failed_to_accept_terms_and_conditions">Szerződési feltételek elfogadása sikertelen</string>
+</resources>

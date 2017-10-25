@@ -1,0 +1,51 @@
+package com.worldventures.dreamtrips.social.ui.podcast_player.service;
+
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendProgressAnalyticsIfNeed;
+
+import javax.inject.Inject;
+
+import io.techery.janet.command.annotations.CommandAction;
+
+@CommandAction
+public class SendPodcastAnalyticsIfNeedAction extends SendProgressAnalyticsIfNeed<PodcastAnalyticsAction> implements InjectableAction {
+
+   @Inject AnalyticsInteractor analyticsInteractor;
+
+   private String podcastName;
+
+   public SendPodcastAnalyticsIfNeedAction(String podcastName, int expectedAnalyticStep, long currentProgress, long totalLength) {
+      super(expectedAnalyticStep, currentProgress, totalLength);
+      this.podcastName = podcastName;
+   }
+
+   @Override
+   protected PodcastAnalyticsAction chooseAnalyticAction(int currentStep, int expectedAnalyticStep) {
+      if (expectedAnalyticStep == 0)
+         return PodcastAnalyticsAction.startPodcast(podcastName);
+
+      if (currentStep < expectedAnalyticStep) return null;
+
+      PodcastAnalyticsAction action = null;
+      switch (currentStep) {
+         case 1:
+            action = PodcastAnalyticsAction.progress25(podcastName);
+            break;
+         case 2:
+            action = PodcastAnalyticsAction.progress50(podcastName);
+            break;
+         case 3:
+            action = PodcastAnalyticsAction.progress75(podcastName);
+            break;
+         case 4:
+            action = PodcastAnalyticsAction.progress100(podcastName);
+      }
+      return action;
+   }
+
+   @Override
+   protected void sendAnalyticAction(PodcastAnalyticsAction action) {
+      analyticsInteractor.analyticsActionPipe().send(action);
+   }
+}

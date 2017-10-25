@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.wallet.service.provisioning;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
+
+import javax.inject.Inject;
+
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
-
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-
-import javax.inject.Inject;
 
 @CommandAction
 public class PinOptionalCommand extends Command<Boolean> implements InjectableAction {

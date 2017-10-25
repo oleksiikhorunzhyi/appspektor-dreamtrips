@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLanguage;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class VideoLanguagesAdapter extends ArrayAdapter<VideoLanguage> {
    private final List<VideoLanguage> data;
 
    public VideoLanguagesAdapter(@NonNull Context context, List<VideoLanguage> data) {
-      super(context, R.layout.adapter_item_video_locale_wallet, data);
+      super(context, R.layout.item_wallet_video_locale, data);
       this.layoutInflater = LayoutInflater.from(context);
       this.data = data;
    }
@@ -30,7 +30,7 @@ public class VideoLanguagesAdapter extends ArrayAdapter<VideoLanguage> {
    public View getView(int position, @Nullable View view, @NonNull ViewGroup parent) {
       ViewHolder holder;
       if (view == null) {
-         view = layoutInflater.inflate(R.layout.adapter_item_video_locale_wallet, null);
+         view = layoutInflater.inflate(R.layout.item_wallet_video_locale, parent, false);
 
          holder = new ViewHolder();
          holder.tvName = (TextView) view.findViewById(R.id.tv_name);

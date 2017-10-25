@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.common.janet.storage
 
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl
+import com.worldventures.core.janet.cache.CacheBundle
+import com.worldventures.core.janet.cache.CacheBundleImpl
 import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValueStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.Storage
+import com.worldventures.core.janet.cache.storage.KeyValueStorage
+import com.worldventures.core.janet.cache.storage.PaginatedStorage
+import com.worldventures.core.janet.cache.storage.Storage
 import org.assertj.core.api.Assertions
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe

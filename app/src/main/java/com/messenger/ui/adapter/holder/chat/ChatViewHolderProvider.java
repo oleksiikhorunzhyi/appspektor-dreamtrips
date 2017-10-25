@@ -10,8 +10,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.MessageDAO;
-import com.techery.spares.adapter.AdapterHelper;
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.adapter.AdapterHelper;
 
 import java.util.Set;
 
@@ -57,7 +57,7 @@ public class ChatViewHolderProvider {
    private MessageViewHolder buildCell(Class<? extends MessageViewHolder> holderClass, ViewGroup parent) {
       Layout layoutAnnotation = holderClass.getAnnotation(Layout.class);
       View holderView = inflateRow(parent, layoutAnnotation.value());
-      return (MessageViewHolder) AdapterHelper.buildHolder(holderClass, holderView);
+      return (MessageViewHolder) AdapterHelper.createMessengerViewHolder(holderClass, holderView);
    }
 
    private View inflateRow(ViewGroup parent, int layoutId) {

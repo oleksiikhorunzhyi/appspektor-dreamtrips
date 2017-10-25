@@ -11,8 +11,8 @@ import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.doReturn;
 @PrepareForTest(MessengerDatabase.class)
 public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
 
-   @Mock SessionHolder<UserSession> sessionHolder;
+   @Mock SessionHolder sessionHolder;
    @Mock Optional<UserSession> userSessionOptional;
    @Mock ConversationsDAO conversationsDAO;
 

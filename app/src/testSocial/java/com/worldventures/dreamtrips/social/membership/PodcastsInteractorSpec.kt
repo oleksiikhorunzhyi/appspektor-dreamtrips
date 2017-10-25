@@ -1,16 +1,16 @@
 package com.worldventures.dreamtrips.social.membership
 
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.CachedModel
+import com.worldventures.core.modules.video.service.storage.MediaModelStorage
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.podcasts.model.ImmutablePodcast
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.mapping.mapper.PodcastsMapper
-import com.worldventures.dreamtrips.modules.membership.model.Podcast
-import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor
-import com.worldventures.dreamtrips.modules.membership.service.command.GetPodcastsCommand
-import com.worldventures.dreamtrips.modules.video.model.CachedModel
+import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper
+import com.worldventures.dreamtrips.social.ui.membership.model.Podcast
+import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor
+import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPodcastsCommand
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -42,7 +42,7 @@ class PodcastsInteractorSpec : BaseSpec({
    }
 }) {
    companion object BaseCompanion {
-      lateinit var mockDb: SnappyRepository
+      lateinit var mockDb: MediaModelStorage
 
       lateinit var stubPodcasts: List<ApiPodcast>
 
@@ -63,7 +63,7 @@ class PodcastsInteractorSpec : BaseSpec({
                .build()
 
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
-         daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
+         daggerCommandActionService.registerProvider(MediaModelStorage::class.java) { mockDb }
          daggerCommandActionService.registerProvider(PodcastsMapper::class.java) { PodcastsMapper() }
 
          podcastsInteractor = PodcastsInteractor(SessionActionPipeCreator(janet))

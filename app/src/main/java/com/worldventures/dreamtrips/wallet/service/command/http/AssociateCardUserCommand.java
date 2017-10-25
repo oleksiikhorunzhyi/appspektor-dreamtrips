@@ -1,18 +1,18 @@
 package com.worldventures.dreamtrips.wallet.service.command.http;
 
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.AssociateCardUserHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.AssociationCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.AssociationUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableAssociationCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableAssociationUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.dreamtrips.wallet.domain.entity.TermsAndConditions;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 import com.worldventures.dreamtrips.wallet.service.SystemPropertiesProvider;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
@@ -28,7 +28,7 @@ import io.techery.mappery.MapperyContext;
 public class AssociateCardUserCommand extends Command<SmartCardDetails> implements InjectableAction, CachedAction<SmartCardDetails> {
 
    @Inject Janet janet;
-   @Inject SnappyRepository repository;
+   @Inject WalletStorage sto;
    @Inject MapperyContext mapperyContext;
    @Inject SystemPropertiesProvider propertiesProvider;
 
@@ -67,7 +67,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
    }
 
    private int obtainTACVersion() {
-      TermsAndConditions termsAndConditions = repository.getWalletTermsAndConditions();
+      TermsAndConditions termsAndConditions = sto.getWalletTermsAndConditions();
       if (termsAndConditions == null) {
          throw new IllegalArgumentException("You don't have Terms and Conditions data in DB");
       }

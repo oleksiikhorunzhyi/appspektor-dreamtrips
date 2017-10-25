@@ -1,19 +1,17 @@
 package com.worldventures.dreamtrips.wallet.service.nxt;
 
-import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.session.NxtSessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.core.storage.complex_objects.Optional;
+import com.worldventures.core.utils.AppVersionNameBuilder;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.nxt.CreateNxtSessionHttpAction;
-import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.dreamtrips.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.ImmutableMultiRequestBody;
 import com.worldventures.dreamtrips.wallet.service.nxt.model.NxtSession;
@@ -21,8 +19,6 @@ import com.worldventures.dreamtrips.wallet.service.nxt.model.NxtSession;
 import java.net.HttpURLConnection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionPipe;
@@ -38,22 +34,25 @@ import timber.log.Timber;
 
 public class NxtHttpService extends ActionServiceWrapper {
 
-   @Inject NxtSessionHolder nxtSessionHolder;
-   @Inject AppVersionNameBuilder appVersionNameBuilder;
-   @Inject WalletSocialInfoProvider socialInfoProvider;
-   @Inject MapperyContext mapperyContext;
-
-   private NxtAuthRetryPolicy nxtAuthRetryPolicy;
-   private ActionPipe<CreateNxtSessionHttpAction> createNxtSessionHttpActionPipe;
+   private final NxtSessionHolder nxtSessionHolder;
+   private final AppVersionNameBuilder appVersionNameBuilder;
+   private final WalletSocialInfoProvider socialInfoProvider;
+   private final MapperyContext mapperyContext;
+   private final NxtAuthRetryPolicy nxtAuthRetryPolicy;
+   private final ActionPipe<CreateNxtSessionHttpAction> createNxtSessionHttpActionPipe;
    private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
 
-   public NxtHttpService(Context appContext, String baseUrl, HttpClient client, Converter converter) {
+   public NxtHttpService(NxtSessionHolder nxtSessionHolder, AppVersionNameBuilder appVersionNameBuilder,
+         WalletSocialInfoProvider socialInfoProvider, MapperyContext mapperyContext, String baseUrl, HttpClient client, Converter converter) {
       super(new HttpActionService(baseUrl, client, converter));
-      ((Injector) appContext).inject(this);
-      createNxtSessionHttpActionPipe = new Janet.Builder().addService(new HttpActionService(BuildConfig.DreamTripsApi, client, converter))
+      this.nxtSessionHolder = nxtSessionHolder;
+      this.appVersionNameBuilder = appVersionNameBuilder;
+      this.socialInfoProvider = socialInfoProvider;
+      this.mapperyContext = mapperyContext;
+      this.createNxtSessionHttpActionPipe = new Janet.Builder().addService(new HttpActionService(BuildConfig.DreamTripsApi, client, converter))
             .build()
             .createPipe(CreateNxtSessionHttpAction.class);
-      nxtAuthRetryPolicy = new NxtAuthRetryPolicy(nxtSessionHolder);
+      this.nxtAuthRetryPolicy = new NxtAuthRetryPolicy(nxtSessionHolder);
    }
 
    @Override

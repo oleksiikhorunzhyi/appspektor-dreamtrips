@@ -1,29 +1,24 @@
 package com.worldventures.dreamtrips.modules.common.service;
 
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
-
-import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
 
-@Singleton
 public class InitializerInteractor {
 
-   private LoginInteractor loginInteractor;
+   private AuthInteractor authInteractor;
    private ActionPipe<InitializeCommand> initializeCommandActionPipe;
 
-   public InitializerInteractor(SessionActionPipeCreator sessionActionPipeCreator, LoginInteractor loginInteractor) {
-      this.loginInteractor = loginInteractor;
-
+   public InitializerInteractor(SessionActionPipeCreator sessionActionPipeCreator, AuthInteractor authInteractor) {
+      this.authInteractor = authInteractor;
       initializeCommandActionPipe = sessionActionPipeCreator.createPipe(InitializeCommand.class);
-
       connectLoginPipe();
    }
 
    private void connectLoginPipe() {
-      loginInteractor.loginActionPipe().observeSuccess()
+      authInteractor.loginActionPipe().observeSuccess()
             .map(loginCommand -> new InitializeCommand())
             .subscribe(this::send);
    }

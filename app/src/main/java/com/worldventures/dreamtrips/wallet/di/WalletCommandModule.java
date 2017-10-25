@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.di;
 
-import com.worldventures.dreamtrips.modules.infopages.service.command.GetDocumentsCommand;
+import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.firmware.WalletFirmwareAnalyticsCommand;
@@ -61,6 +61,7 @@ import com.worldventures.dreamtrips.wallet.service.command.settings.help.Custome
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.GetCustomerSupportContactCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.PaymentFeedbackCommand;
 import com.worldventures.dreamtrips.wallet.service.command.settings.help.SmartCardFeedbackCommand;
+import com.worldventures.dreamtrips.wallet.service.command.uploadery.SmartCardUploaderyCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.wizard.ReAssignCardCommand;
@@ -74,6 +75,7 @@ import dagger.Module;
             UpdateProfileModule.class
       },
       injects = {
+            SmartCardUploaderyCommand.class,
             GetCompatibleDevicesCommand.class,
             RecordListCommand.class,
             SecureRecordCommand.class,

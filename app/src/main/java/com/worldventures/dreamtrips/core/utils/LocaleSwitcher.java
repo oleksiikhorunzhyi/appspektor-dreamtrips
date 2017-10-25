@@ -5,20 +5,20 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.utils.LocaleHelper;
 
 import java.util.Locale;
 
 public class LocaleSwitcher {
 
    private final Context context;
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
 
    private Locale defaultSystemLocale;
    private Locale currentLocale;
 
-   public LocaleSwitcher(Context context, SessionHolder<UserSession> sessionHolder) {
+   public LocaleSwitcher(Context context, SessionHolder sessionHolder) {
       this.context = context;
       this.sessionHolder = sessionHolder;
       this.defaultSystemLocale = Locale.getDefault();

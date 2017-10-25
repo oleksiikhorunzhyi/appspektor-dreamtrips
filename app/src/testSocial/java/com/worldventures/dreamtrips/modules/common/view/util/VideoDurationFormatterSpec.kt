@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.util
 
+import com.worldventures.core.utils.VideoDurationFormatter
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it

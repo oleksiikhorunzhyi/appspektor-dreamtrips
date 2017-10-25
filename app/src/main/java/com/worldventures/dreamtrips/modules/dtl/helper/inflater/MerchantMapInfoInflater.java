@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.widget.TextView;
 
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import butterknife.InjectView;
 

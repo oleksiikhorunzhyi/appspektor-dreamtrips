@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.command.reset;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -11,7 +11,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.support.DisconnectAction;
 import rx.Observable;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class ResetSmartCardCommand extends Command<Void> implements InjectableAction {

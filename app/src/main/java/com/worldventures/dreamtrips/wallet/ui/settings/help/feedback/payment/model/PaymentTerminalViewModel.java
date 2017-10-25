@@ -2,21 +2,26 @@ package com.worldventures.dreamtrips.wallet.ui.settings.help.feedback.payment.mo
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.BR;
 import com.worldventures.dreamtrips.wallet.domain.entity.settings.payment_feedback.PaymentType;
 
+import static com.worldventures.core.utils.ProjectTextUtils.isNotEmpty;
+
 public class PaymentTerminalViewModel extends BaseObservable {
 
+   @Nullable
    private String terminalNameModel;
    private boolean isMagneticSwipe = true;
 
    @Bindable
+   @Nullable
    public String getTerminalNameModel() {
       return terminalNameModel;
    }
 
-   public void setTerminalNameModel(String terminalNameModel) {
+   public void setTerminalNameModel(@Nullable String terminalNameModel) {
       this.terminalNameModel = terminalNameModel;
       notifyPropertyChanged(BR.terminalNameModel);
    }
@@ -52,5 +57,9 @@ public class PaymentTerminalViewModel extends BaseObservable {
 
    public String getPaymentType() {
       return isMagneticSwipe ? PaymentType.MAG_STRIPE_SWIPE.type() : PaymentType.WIRELESS_MAGNETIC_SWIPE.type();
+   }
+
+   public boolean isDataChanged() {
+      return isNotEmpty(terminalNameModel) || !isMagneticSwipe;
    }
 }

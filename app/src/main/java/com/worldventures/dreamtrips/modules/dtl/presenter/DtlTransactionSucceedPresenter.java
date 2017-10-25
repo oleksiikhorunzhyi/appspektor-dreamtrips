@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
 
+import com.worldventures.core.model.ShareType;
+import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.dtl.merchants.AddRatingHttpAction;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.model.ShareType;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -59,7 +59,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
       if (!ReviewStorage.exists(context, String.valueOf(user.getId()), merchant.id())) {
          view.sendToReview(merchant);
       }
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes(), stars)));
    }
 
@@ -77,7 +77,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
                      .compose(bindViewIoToMainComposer())
                      .onErrorReturn(throwable -> new Location(""))
                      .subscribe(location -> {
-                        analyticsInteractor.dtlAnalyticsCommandPipe()
+                        analyticsInteractor.analyticsCommandPipe()
                               .send(DtlAnalyticsCommand.create(new TransactionSuccessEvent(
                                     merchant.asMerchantAttributes(), transaction, location)));
                      }, e -> {});
@@ -92,7 +92,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    }
 
    public void trackSharing(@ShareType String type) {
-      analyticsInteractor.dtlAnalyticsCommandPipe()
+      analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(
                   ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
    }

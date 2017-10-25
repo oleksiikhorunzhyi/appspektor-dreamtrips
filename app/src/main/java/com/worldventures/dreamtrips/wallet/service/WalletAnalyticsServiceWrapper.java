@@ -1,13 +1,14 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.AnalyticsService;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AnalyticsService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.ActionHolder;
+import io.techery.janet.ActionService;
 import io.techery.janet.ActionServiceWrapper;
 import io.techery.janet.JanetException;
 import timber.log.Timber;
@@ -16,7 +17,7 @@ public class WalletAnalyticsServiceWrapper extends ActionServiceWrapper {
 
    private final List<NavigationStateListener> listeners = new ArrayList<>();
 
-   public WalletAnalyticsServiceWrapper(AnalyticsService analyticsService) {
+   public WalletAnalyticsServiceWrapper(ActionService analyticsService) {
       super(analyticsService);
    }
 

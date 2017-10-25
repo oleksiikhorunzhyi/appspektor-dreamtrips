@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.wallet.service.lostcard.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.ImmutableWalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.dreamtrips.wallet.domain.entity.lostcard.WalletLocationType;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.dreamtrips.wallet.service.beacon.WalletBeaconClient;
 import com.worldventures.dreamtrips.wallet.service.lostcard.LostCardRepository;
 
 import java.util.Calendar;
@@ -36,6 +37,7 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
       observeLocationDetection()
             .flatMap(geoLocationCommand -> appendCoordinates(locationBuilder, geoLocationCommand.getResult()))
             .flatMap(this::saveLocation)
+            .doOnError(throwable -> WalletBeaconClient.logBeacon("WalletLocationCommand error - %s", throwable.getMessage()))
             .subscribe(callback::onSuccess, callback::onFail);
    }
 
@@ -51,10 +53,11 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
    }
 
    private Observable<WalletLocation> saveLocation(WalletLocation location) {
+      WalletBeaconClient.logBeacon("Save location - %s", location);
       final List<WalletLocation> walletLocations = locationRepository.getWalletLocations();
       walletLocations.add(location);
       locationRepository.saveWalletLocations(walletLocations);
       return Observable.just(location);
    }
-   
+
 }

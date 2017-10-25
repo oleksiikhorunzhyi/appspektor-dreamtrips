@@ -5,19 +5,10 @@ import android.content.Context;
 import android.view.View;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.navigation.Navigator;
-import com.worldventures.dreamtrips.wallet.ui.wizard.assign.WizardAssignUserPath;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.Action;
-import com.worldventures.dreamtrips.wallet.ui.wizard.pin.enter.EnterPinPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.PinProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.RecordsPinProposalDialog;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.proposal.dialog.WizardPinProposalDialog;
-
-import flow.path.Path;
-import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class PinProposalDelegate<T extends PinProposalDialog> {
    private final Navigator navigator;
@@ -26,65 +17,46 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       this.navigator = navigator;
    }
 
-   public static PinProposalDelegate create(Navigator navigator, PinProposalPath proposalPath, WizardInteractor wizardInteractor) {
-      if (proposalPath.getProposalAction() == PinProposalAction.WIZARD) {
-         return new WizardPinProposalDelegate(navigator, wizardInteractor);
+   public static PinProposalDelegate create(Navigator navigator, PinProposalAction pinProposalAction, String cardNickName) {
+      if (pinProposalAction == PinProposalAction.WIZARD) {
+         return new WizardPinProposalDelegate(navigator);
       } else {
-         return new RecordsPinProposalDelegate(navigator, proposalPath.getCardNickName());
+         return new RecordsPinProposalDelegate(navigator, cardNickName);
       }
    }
 
-   protected void setupView(PinProposalPresenter.Screen pinProposalScreen) {
+   public void setupView(PinProposalScreen pinProposalScreen) {
       pinProposalScreen.setToolbarTitle(getToolbarResId());
       pinProposalScreen.setSkipButtonLabel(getSkipButtonResId());
       setTextLabel(pinProposalScreen);
    }
 
-   protected void navigateCreatePin() {
-      determineCreatePinBehavior(navigator, provideCreatePinPath());
-   }
-
-   protected void navigateSkipPin() {
-      determineSkipBehavior(navigator);
+   public Navigator getNavigator() {
+      return navigator;
    }
 
    public abstract T createPinDialog(PinProposalPresenter presenter, View bottomSheetView, Context context);
 
-   protected abstract void setTextLabel(PinProposalPresenter.Screen pinProposalScreen);
+   protected abstract void setTextLabel(PinProposalScreen pinProposalScreen);
 
    public abstract int getToolbarResId();
 
    public abstract int getSkipButtonResId();
 
-   public abstract Path provideCreatePinPath();
+   public abstract void navigateCreatePin();
 
-   public abstract void determineSkipBehavior(Navigator navigator);
-
-   public abstract void determineCreatePinBehavior(Navigator navigator, Path path);
+   public abstract void navigateSkipPin();
 
    private static class WizardPinProposalDelegate extends PinProposalDelegate<WizardPinProposalDialog> {
-      private final WizardInteractor wizardInteractor;
-      private Path skipPinPath;
 
-      private WizardPinProposalDelegate(Navigator navigator, WizardInteractor wizardInteractor) {
+      private WizardPinProposalDelegate(Navigator navigator) {
          super(navigator);
-         this.wizardInteractor = wizardInteractor;
       }
 
       @Override
-      protected void setupView(PinProposalPresenter.Screen pinProposalScreen) {
+      public void setupView(PinProposalScreen pinProposalScreen) {
          super.setupView(pinProposalScreen);
-         pinProposalScreen.setupToolbarNavigation();
-         checkProvisionMode(pinProposalScreen);
-      }
-
-      private void checkProvisionMode(PinProposalPresenter.Screen pinProposalScreen) {
-         wizardInteractor.provisioningStatePipe()
-               .createObservable(ProvisioningModeCommand.fetchState())
-               .compose(pinProposalScreen.lifecycle())
-               .observeOn(AndroidSchedulers.mainThread())
-               .subscribe(new ActionStateSubscriber<ProvisioningModeCommand>()
-                     .onSuccess(command -> this.skipPinPath = new WizardAssignUserPath(command.getResult())));
+         pinProposalScreen.disableToolbarNavigation();
       }
 
       @Override
@@ -93,7 +65,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       }
 
       @Override
-      protected void setTextLabel(PinProposalPresenter.Screen pinProposalScreen) {
+      protected void setTextLabel(PinProposalScreen pinProposalScreen) {
          pinProposalScreen.setLabel();
       }
 
@@ -108,18 +80,13 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       }
 
       @Override
-      public Path provideCreatePinPath() {
-         return new EnterPinPath(Action.SETUP);
+      public void navigateSkipPin() {
+         getNavigator().goPaymentSyncFinished();
       }
 
       @Override
-      public void determineSkipBehavior(Navigator navigator) {
-         navigator.withoutLast(skipPinPath);
-      }
-
-      @Override
-      public void determineCreatePinBehavior(Navigator navigator, Path path) {
-         navigator.go(path);
+      public void navigateCreatePin() {
+         getNavigator().goEnterPinProposalWizard();
       }
    }
 
@@ -132,7 +99,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       }
 
       @Override
-      protected void setupView(PinProposalPresenter.Screen pinProposalScreen) {
+      public void setupView(PinProposalScreen pinProposalScreen) {
          super.setupView(pinProposalScreen);
          pinProposalScreen.disableToolbarNavigation();
       }
@@ -143,7 +110,7 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       }
 
       @Override
-      protected void setTextLabel(PinProposalPresenter.Screen pinProposalScreen) {
+      protected void setTextLabel(PinProposalScreen pinProposalScreen) {
          pinProposalScreen.setLabelWithCardName(cardNickname);
       }
 
@@ -158,18 +125,13 @@ public abstract class PinProposalDelegate<T extends PinProposalDialog> {
       }
 
       @Override
-      public Path provideCreatePinPath() {
-         return new EnterPinPath(Action.ADD);
+      public void navigateSkipPin() {
+         getNavigator().goBack();
       }
 
       @Override
-      public void determineSkipBehavior(Navigator navigator) {
-         navigator.goBack();
-      }
-
-      @Override
-      public void determineCreatePinBehavior(Navigator navigator, Path path) {
-         navigator.withoutLast(path);
+      public void navigateCreatePin() {
+         getNavigator().goEnterPinProposalRecords();
       }
    }
 }

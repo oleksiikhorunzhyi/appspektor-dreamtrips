@@ -5,7 +5,7 @@ import android.location.Location;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;

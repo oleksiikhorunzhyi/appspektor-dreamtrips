@@ -2,10 +2,23 @@
 
 string=""
 
-stringsPathSocial="../app/src/main/res/values/strings.xml"
+stringsPathCommon="../app/src/main/res/values/strings.xml"
+stringsPathCore="../core/src/main/res/values/core_strings.xml"
+stringsPathSocial="../app/src/main/resSocial/values/social_strings.xml"
 stringsPathDtl="../app/src/main/res/values/dtl_strings.xml"
-stringsPathMessenger="../app/src/main/res/values/messenger_strings.xml"
+stringsPathMessenger="../app/src/main/resMessenger/values/messenger_strings.xml"
+stringsPathSession="../app/src/main/resSession/values/session_strings.xml"
 stringsPathWallet="../app/src/main/res/values/wallet_strings.xml"
+
+if [[ $* == *"core"* ]];
+then
+    string+=" "$stringsPathCore
+fi
+
+if [[ $* == *"common"* ]];
+then
+    string+=" "$stringsPathCommon
+fi
 
 if [[ $* == *"social"* ]];
 then
@@ -22,6 +35,11 @@ then
     string+=" "$stringsPathMessenger
 fi
 
+if [[ $* == *"session"* ]]
+then
+    string+=" "$stringsPathSession
+fi
+
 if [[ $* == *"wallet"* ]]
 then
     string+=" "$stringsPathWallet
@@ -29,7 +47,7 @@ fi
 
 if [[ -z "$string" ]];
 then
-    printf $*"\nThere are no suitable inputted params. Available params are: social, dtl, messenger"
+    printf $*"\nThere are no suitable inputted params. Available params are: common, social, dtl, messenger, session, wallet"
 else
     echo $string
     ./core/upload.sh -t android $string

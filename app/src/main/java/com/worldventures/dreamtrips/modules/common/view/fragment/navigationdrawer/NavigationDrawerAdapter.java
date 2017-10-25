@@ -14,13 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.di.MessengerActivityModule;
+import com.messenger.di.MessengerModule;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.modules.feed.FeedModule;
+import com.worldventures.dreamtrips.social.di.SocialAppModule;
 
 import java.util.List;
 
@@ -105,11 +105,11 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
          navigationDrawerListener.onNavigationDrawerItemSelected(item);
       });
 
-      if (item.getKey().equals(MessengerActivityModule.MESSENGER) && unreadMessageCount > 0) {
+      if (item.getKey().equals(MessengerModule.MESSENGER) && unreadMessageCount > 0) {
          holder.badgeView.setVisibility(View.VISIBLE);
          holder.badgeView.setBadgeBackgroundColor(holder.itemView.getResources().getColor(R.color.bucket_red));
          holder.badgeView.setText(String.valueOf(unreadMessageCount));
-      } else if (item.getKey().equals(FeedModule.NOTIFICATIONS) && notificationCount > 0) {
+      } else if (item.getKey().equals(SocialAppModule.NOTIFICATIONS) && notificationCount > 0) {
          holder.badgeView.setVisibility(View.VISIBLE);
          holder.badgeView.setBadgeBackgroundColor(holder.itemView.getResources().getColor(R.color.bucket_red));
          holder.badgeView.setText(String.valueOf(notificationCount));

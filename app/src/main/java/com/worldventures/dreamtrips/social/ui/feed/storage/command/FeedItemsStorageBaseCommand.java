@@ -1,0 +1,15 @@
+package com.worldventures.dreamtrips.social.ui.feed.storage.command;
+
+import com.worldventures.dreamtrips.modules.common.list_storage.command.ListStorageCommand;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+
+import io.techery.janet.command.annotations.CommandAction;
+
+@CommandAction
+public abstract class FeedItemsStorageBaseCommand extends ListStorageCommand<FeedItem> {
+
+   FeedItemsStorageBaseCommand(ListStorageOperation<FeedItem> operation) {
+      super(operation);
+   }
+}

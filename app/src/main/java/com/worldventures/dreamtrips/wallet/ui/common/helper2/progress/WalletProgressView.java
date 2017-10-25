@@ -22,7 +22,7 @@ public class WalletProgressView<T> implements ProgressView<T> {
 
    @Override
    public boolean isProgressVisible() {
-      return progressWidget.getVisibility() != View.GONE;
+      return progressWidget.getVisibility() != View.GONE && progressWidget.isStarted();
    }
 
    @Override
@@ -30,4 +30,7 @@ public class WalletProgressView<T> implements ProgressView<T> {
       progressWidget.stop();
       progressWidget.setVisibility(View.GONE);
    }
+
+   @Override
+   public void onProgressChanged(int progress) { /* nothing */ }
 }

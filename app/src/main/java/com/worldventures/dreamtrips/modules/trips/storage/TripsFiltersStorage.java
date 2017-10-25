@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.trips.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 
 public class TripsFiltersStorage implements ActionStorage<CachedTripFilters> {

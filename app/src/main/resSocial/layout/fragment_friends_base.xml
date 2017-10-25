@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:context=".social.ui.friends.view.activity.FriendsActivity"
+      >
+
+   <android.support.design.widget.AppBarLayout
+         android:id="@+id/appbar"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+         >
+
+      <com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout
+            android:id="@+id/tabs"
+            style="@style/DreamFixedTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tab_background_color"
+            />
+
+   </android.support.design.widget.AppBarLayout>
+
+   <FrameLayout
+         android:id="@id/content_layout"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:layout_below="@+id/appbar"
+         >
+
+      <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+   </FrameLayout>
+
+</RelativeLayout>

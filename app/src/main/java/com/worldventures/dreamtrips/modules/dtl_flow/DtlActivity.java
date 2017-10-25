@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterViewImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPath;
 
@@ -37,7 +37,7 @@ public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresente
 
    @Override
    protected ComponentDescription getCurrentComponent() {
-      return rootComponentsProvider.getComponentByKey(DtlActivityModule.DTL);
+      return rootComponentsProvider.getComponentByKey(DtlModule.DTL);
    }
 
    @Override

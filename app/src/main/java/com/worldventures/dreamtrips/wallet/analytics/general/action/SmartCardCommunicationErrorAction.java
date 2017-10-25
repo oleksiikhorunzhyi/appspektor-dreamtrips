@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.wallet.analytics.general.action;
 
-import com.worldventures.dreamtrips.core.utils.tracksystem.ActionPart;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
+import com.worldventures.core.service.analytics.ActionPart;
+import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.wallet.analytics.WalletAnalyticsAction;
 
 import java.util.Locale;

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Coordinates;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableCoordinates;
 

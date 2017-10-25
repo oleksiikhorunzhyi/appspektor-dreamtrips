@@ -8,22 +8,21 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewCreationItem;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewPostCreationDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,10 +35,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_photo_post)
-public class PhotoReviewPostCreationCell extends AbstractDelegateCell<PhotoReviewCreationItem, PhotoReviewPostCreationDelegate> {
+public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoReviewCreationItem, PhotoReviewPostCreationDelegate> {
 
    @Inject @ForActivity Injector injector;
-   @Inject SessionHolder<UserSession> userSessionHolder;
+   @Inject SessionHolder userSessionHolder;
 
    @InjectView(R.id.photo_container) View photoContainer;
    @InjectView(R.id.attached_photo) SimpleDraweeView attachedPhoto;

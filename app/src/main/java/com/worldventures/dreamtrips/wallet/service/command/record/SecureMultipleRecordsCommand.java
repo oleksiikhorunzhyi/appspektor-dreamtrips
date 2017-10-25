@@ -4,13 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.ActionType;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationAnalyticsLocationCommand;
 import com.worldventures.dreamtrips.wallet.analytics.tokenization.TokenizationCardAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.record.Record;
 import com.worldventures.dreamtrips.wallet.domain.storage.disk.RecordsStorage;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.nxt.BaseMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.DetokenizeMultipleRecordsCommand;
 import com.worldventures.dreamtrips.wallet.service.nxt.NxtInteractor;
@@ -33,7 +33,7 @@ import rx.functions.Action1;
 public class SecureMultipleRecordsCommand extends Command<List<Record>> implements InjectableAction {
 
    @Inject NxtInteractor nxtInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
    @Inject RecordsStorage recordsStorage;
    @Inject WalletFeatureHelper featureHelper;
 
@@ -99,7 +99,7 @@ public class SecureMultipleRecordsCommand extends Command<List<Record>> implemen
    private void sendTokenizationAnalytics(List<Record> records, boolean success) {
       if (actionType == null || records.isEmpty()) return;
 
-      Queryable.from(records).forEachR(recordWithError -> analyticsInteractor.walletAnalyticsCommandPipe()
+      Queryable.from(records).forEachR(recordWithError -> analyticsInteractor.walletAnalyticsPipe()
             .send(new TokenizationAnalyticsLocationCommand(
                   TokenizationCardAction.from(recordWithError, success, actionType, secureForLocalStorage)
             )));

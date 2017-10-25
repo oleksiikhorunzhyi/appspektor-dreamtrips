@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.wallet.service.provisioning;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,7 +22,7 @@ public class ProvisioningModule {
    }
 
    @Provides
-   PinOptionalStorage providePinOptionalStorage(SnappyRepository snappyRepository) {
-      return new PinOptionalStorageImpl(snappyRepository);
+   PinOptionalStorage providePinOptionalStorage(WalletStorage walletStorage) {
+      return new PinOptionalStorageImpl(walletStorage);
    }
 }

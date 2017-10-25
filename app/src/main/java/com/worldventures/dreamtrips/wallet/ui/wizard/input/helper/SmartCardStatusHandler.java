@@ -15,10 +15,13 @@ public class SmartCardStatusHandler {
    public static void handleSmartCardStatus(@NonNull SmartCardStatus smartCardStatus,
          @NonNull Action1<SmartCardStatus> cardIsUnassign,
          @NonNull Action1<SmartCardStatus> cardIsAssignToAnotherDevice,
-         @NonNull Action1<SmartCardStatus> cardIsAssignToAnotherUser) {
+         @NonNull Action1<SmartCardStatus> cardIsAssignToAnotherUser,
+         @NonNull Action1<SmartCardStatus> cardIsAssignToCurrentDevice) {
 
       switch (smartCardStatus) {
          case ASSIGNED_TO_CURRENT_DEVICE:
+            cardIsAssignToCurrentDevice.call(smartCardStatus);
+            break;
          case UNASSIGNED:
             cardIsUnassign.call(smartCardStatus);
             break;

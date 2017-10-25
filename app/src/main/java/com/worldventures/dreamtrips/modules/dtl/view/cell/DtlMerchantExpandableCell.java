@@ -12,21 +12,19 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.service.DeviceInfoProvider;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.core.selectable.SelectableCell;
 import com.worldventures.dreamtrips.core.selectable.SelectableDelegate;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.system.DeviceInfoProvider;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
@@ -34,6 +32,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.ImmutableThinMerc
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.ValidateReviewUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
@@ -49,7 +48,7 @@ import io.techery.properratingbar.ProperRatingBar;
 import rx.Observable;
 
 @Layout(R.layout.adapter_item_dtl_merchant_expandable)
-public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThinMerchant, MerchantCellDelegate> implements SelectableCell {
+public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<ImmutableThinMerchant, MerchantCellDelegate> implements SelectableCell {
 
    @InjectView(R.id.merchantCoverImage) ImageryDraweeView merchantCoverImage;
    @InjectView(R.id.merchantPricing) ProperRatingBar pricing;
@@ -73,7 +72,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
    private DistanceType distanceType;
    private boolean expanded;
 
-   @Inject SessionHolder<UserSession> appSessionHolder;
+   @Inject SessionHolder appSessionHolder;
 
    public DtlMerchantExpandableCell(View view) {
       super(view);
@@ -136,7 +135,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
          ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
          Observable.fromCallable(() -> getModelObject().asMerchantAttributes()
                .provideFormattedOperationalTime(itemView.getContext(), false))
-               .compose(RxLifecycle.bindView(itemView))
+               .compose(RxLifecycleAndroid.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
    }
@@ -226,7 +225,7 @@ public class DtlMerchantExpandableCell extends AbstractDelegateCell<ImmutableThi
       //
       List<OperationDay> operationDays = offer.operationDays(); // operation days
       if (operationDays == null) return;
-      String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays);
+      String concatDays = OperationalHoursUtils.concatOperationDays(operationDays, itemView.getResources().getString(R.string.everyday));
       operationDaysCaption.setText(concatDays);
       //
       setSelection(cellView);

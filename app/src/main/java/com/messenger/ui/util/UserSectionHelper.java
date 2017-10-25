@@ -14,9 +14,8 @@ import com.messenger.ui.model.Group;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.model.SwipeDataUser;
 import com.messenger.ui.util.recyclerview.Header;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,9 +32,9 @@ public class UserSectionHelper {
    public static final String HOST_TYPE = "Host";
 
    private final Context context;
-   private final SessionHolder<UserSession> userSessionHolder;
+   private final SessionHolder userSessionHolder;
 
-   public UserSectionHelper(Context context, SessionHolder<UserSession> userSessionHolder) {
+   public UserSectionHelper(Context context, SessionHolder userSessionHolder) {
       this.context = context;
       this.userSessionHolder = userSessionHolder;
    }

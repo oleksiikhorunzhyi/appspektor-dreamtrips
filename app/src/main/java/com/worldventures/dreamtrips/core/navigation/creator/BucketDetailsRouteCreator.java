@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.core.navigation.creator;
 
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 public class BucketDetailsRouteCreator implements RouteCreator<Integer> {
 
-   private SessionHolder<UserSession> appSessionHolder;
+   private SessionHolder appSessionHolder;
 
-   public BucketDetailsRouteCreator(SessionHolder<UserSession> appSessionHolder) {
+   public BucketDetailsRouteCreator(SessionHolder appSessionHolder) {
       this.appSessionHolder = appSessionHolder;
    }
 

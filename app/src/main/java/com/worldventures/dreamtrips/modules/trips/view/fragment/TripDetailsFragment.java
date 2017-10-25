@@ -10,27 +10,27 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.linearlistview.LinearListView;
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.TextViewLinkHandler;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundle;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 import java.util.List;
 

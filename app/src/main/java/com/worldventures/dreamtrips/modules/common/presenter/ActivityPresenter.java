@@ -3,17 +3,16 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.app.Activity;
 import android.content.res.Configuration;
 
-import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.modules.auth.api.command.LogoutCommand;
+import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
-import com.worldventures.dreamtrips.modules.auth.api.command.LogoutCommand;
-import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.auth.service.ReLoginInteractor;
-import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.service.LogoutInteractor;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
 import com.worldventures.dreamtrips.modules.config.model.UpdateRequirement;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
@@ -33,7 +32,6 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    @Inject protected LocaleSwitcher localeSwitcher;
 
    @Inject ReLoginInteractor reLoginInteractor;
-   @Inject LogoutInteractor logoutInteractor;
    @Inject protected AuthInteractor authInteractor;
    @Inject VersionUpdateDelegate versionUpdateDelegate;
    @Inject AppConfigurationInteractor appConfigurationInteractor;
@@ -103,7 +101,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    public void logout() {
-      logoutInteractor.logoutPipe().send(new LogoutCommand());
+      authInteractor.logoutPipe().send(new LogoutCommand());
    }
 
    @Override

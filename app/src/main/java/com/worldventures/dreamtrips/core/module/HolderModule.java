@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.core.module;
 
-import com.techery.spares.session.NxtSessionHolder;
-import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.core.model.session.FeatureManager;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 
 import javax.inject.Singleton;
 
@@ -16,19 +14,13 @@ public class HolderModule {
 
    @Provides
    @Singleton
-   public SessionHolder<UserSession> provideSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
-      return new SessionHolder<UserSession>(simpleKeyValueStorage);
+   public SessionHolder provideSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
+      return new SessionHolder(simpleKeyValueStorage);
    }
 
    @Provides
    @Singleton
-   public NxtSessionHolder provideNxtSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
-      return new NxtSessionHolder(simpleKeyValueStorage);
-   }
-
-   @Provides
-   @Singleton
-   public FeatureManager provideFeatureManager(SessionHolder<UserSession> sessionHolder) {
+   public FeatureManager provideFeatureManager(SessionHolder sessionHolder) {
       return new FeatureManager(sessionHolder);
    }
 }

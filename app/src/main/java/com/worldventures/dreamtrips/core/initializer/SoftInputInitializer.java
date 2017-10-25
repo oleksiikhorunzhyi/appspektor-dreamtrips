@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.core.initializer;
 import android.app.Activity;
 import android.app.Application;
 
-import com.techery.spares.application.AppInitializer;
-import com.techery.spares.module.Injector;
 import com.techery.spares.utils.SimpleActivityLifecycleCallbacks;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.di.AppInitializer;
+import com.worldventures.core.janet.Injector;
 
 import javax.inject.Inject;
 

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:theme="@style/WalletTheme"
+      android:orientation="vertical"
+      >
+
+   <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:title="@string/wallet_card_settings_title"
+         />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:divider="@drawable/wallet_divider_horizontal_settings"
+         android:orientation="vertical"
+         android:showDividers="middle|end"
+         >
+
+      <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            >
+
+         <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:contentDescription="@string/wallet_card_settings_flye_sc"
+               android:src="@drawable/wallet_flye_angle_common_settings"
+               />
+
+         <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="@dimen/spacing_large"
+               android:orientation="vertical"
+               >
+
+            <TextView
+                  style="@style/SettingsText.Primary"
+                  android:text="@string/wallet_card_settings_flye_sc"
+                  />
+
+            <TextView
+                  android:id="@+id/status"
+                  style="@style/SettingsText.Secondary"
+                  android:layout_marginTop="@dimen/spacing_tiny"
+                  tools:text="Version 1.13.2\nBattery Level: 20%\nLast synced 9/18, 2:53pm"
+                  />
+
+         </LinearLayout>
+
+      </LinearLayout>
+
+      <RelativeLayout
+            android:id="@+id/item_general"
+            style="@style/SettingsMenuItem"
+            >
+
+         <TextView
+               style="@style/SettingsText.Primary"
+               android:text="@string/wallet_card_settings_general"
+               />
+
+         <com.worldventures.core.ui.view.custom.BadgeView
+               android:id="@+id/badgeFirmwareUpdates"
+               android:layout_width="28dp"
+               android:layout_height="wrap_content"
+               android:layout_alignParentEnd="true"
+               android:layout_centerVertical="true"
+               android:gravity="center"
+               android:paddingTop="6dp"
+               android:textAppearance="?android:attr/textAppearanceSmall"
+               android:textColor="@color/white"
+               app:background_color="?attr/colorPrimaryDark"
+               tools:text="1"
+               />
+
+      </RelativeLayout>
+
+      <TextView
+            android:id="@+id/item_security"
+            style="@style/SettingsMenuItem.Text"
+            android:text="@string/wallet_card_settings_security"
+            />
+
+      <TextView
+            android:id="@+id/item_help"
+            style="@style/SettingsMenuItem.Text"
+            android:text="@string/wallet_card_settings_help"
+            />
+
+   </LinearLayout>
+
+</LinearLayout>

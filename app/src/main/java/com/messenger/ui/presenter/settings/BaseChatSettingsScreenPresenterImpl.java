@@ -15,7 +15,7 @@ import com.messenger.ui.presenter.MessengerPresenterImpl;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
-import com.techery.spares.module.Injector;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 

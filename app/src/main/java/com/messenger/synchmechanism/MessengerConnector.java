@@ -7,8 +7,8 @@ import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.util.SessionHolderHelper;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import rx.Observable;
@@ -19,10 +19,10 @@ public class MessengerConnector {
 
    private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
    private final MessengerServerFacade messengerServerFacade;
-   private final SessionHolder<UserSession> appSessionHolder;
+   private final SessionHolder appSessionHolder;
    private final MessengerSyncDelegate messengerSyncDelegate;
 
-   public MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder<UserSession> appSessionHolder,
+   public MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher, SessionHolder appSessionHolder,
          MessengerServerFacade messengerServerFacade, MessengerSyncDelegate messengerSyncDelegate) {
       this.appSessionHolder = appSessionHolder;
       this.messengerServerFacade = messengerServerFacade;

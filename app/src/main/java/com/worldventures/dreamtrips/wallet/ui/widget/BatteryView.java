@@ -8,8 +8,8 @@ import android.graphics.PorterDuff;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 public class BatteryView extends AppCompatImageView {
 
@@ -43,7 +43,7 @@ public class BatteryView extends AppCompatImageView {
    @Override
    protected void onFinishInflate() {
       super.onFinishInflate();
-      setImageResource(R.drawable.ic_wallet_battery);
+      setImageResource(R.drawable.ic_wallet_vector_battery);
    }
 
    private int getColorPaintByLevel(int level) {
@@ -59,7 +59,7 @@ public class BatteryView extends AppCompatImageView {
       super.onDraw(canvas);
       int primaryColor = getColorPaintByLevel(level);
       levelPaint.setColor(primaryColor);
-      if(!isInEditMode()) setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
+      if (!isInEditMode()) setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
 
       drawBatteryLevel(canvas);
    }

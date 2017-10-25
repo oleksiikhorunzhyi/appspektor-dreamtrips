@@ -5,12 +5,12 @@ import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.techery.spares.module.Injector;
-import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.settings.storage.SettingsStorage;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.ValidateReviewUtil;
 
@@ -31,7 +31,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
    @InjectView(R.id.text_view_rating) TextView textViewRating;
 
-   @Inject SnappyRepository db;
+   @Inject SettingsStorage db;
 
    protected Resources resources;
 
@@ -66,7 +66,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
 
       if (merchantAttributes.hasOperationDays()) {
          Observable.fromCallable(() -> merchantAttributes.provideFormattedOperationalTime(rootView.getContext(), true))
-               .compose(RxLifecycle.bindView(rootView))
+               .compose(RxLifecycleAndroid.bindView(rootView))
                .subscribe(operationalTime::setText, ex -> operationalTime.setVisibility(View.GONE));
       } else ViewUtils.setViewVisibility(operationalTime, View.GONE);
 

@@ -9,8 +9,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.storage.dao.PhotoDAO;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.core.model.session.SessionHolder;
 
 import java.util.List;
 
@@ -27,11 +26,11 @@ public class PhotoAttachmentDelegate {
    private final ActionPipe<SendImageAttachmentCommand> sendImagePipe;
 
    private final PhotoDAO photoDAO;
-   private final SessionHolder<UserSession> sessionHolder;
+   private final SessionHolder sessionHolder;
    private final AttachmentDelegateHelper attachmentDelegateHelper;
 
    @Inject
-   public PhotoAttachmentDelegate(PhotoDAO photoDAO, SessionHolder<UserSession> sessionHolder, Janet janet) {
+   public PhotoAttachmentDelegate(PhotoDAO photoDAO, SessionHolder sessionHolder, Janet janet) {
       this.sessionHolder = sessionHolder;
       this.photoDAO = photoDAO;
       this.sendImagePipe = janet.createPipe(SendImageAttachmentCommand.class, Schedulers.io());

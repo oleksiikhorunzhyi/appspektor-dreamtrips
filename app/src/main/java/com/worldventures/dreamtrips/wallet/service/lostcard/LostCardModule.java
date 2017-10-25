@@ -2,17 +2,24 @@ package com.worldventures.dreamtrips.wallet.service.lostcard;
 
 import android.content.Context;
 
-import com.techery.spares.module.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.wallet.di.external.WalletTrackingStatusStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletStorage;
+import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.WalletNetworkService;
+import com.worldventures.dreamtrips.wallet.service.beacon.BeaconClient;
+import com.worldventures.dreamtrips.wallet.service.beacon.WalletBeaconClient;
 import com.worldventures.dreamtrips.wallet.service.location.AndroidDetectLocationService;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.CardTrackingStatusCommand;
+import com.worldventures.dreamtrips.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.PostLocationCommand;
+import com.worldventures.dreamtrips.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.WalletLocationCommand;
 
 import javax.inject.Singleton;
@@ -26,16 +33,17 @@ import dagger.Provides;
             GetLocationCommand.class,
             DetectGeoLocationCommand.class,
             FetchAddressWithPlacesCommand.class,
-            CardTrackingStatusCommand.class,
-            WalletLocationCommand.class
+            FetchTrackingStatusCommand.class,
+            WalletLocationCommand.class,
+            UpdateTrackingStatusCommand.class
       },
       library = true, complete = false)
 public class LostCardModule {
 
    @Singleton
    @Provides
-   LostCardRepository locationRepository(SnappyRepository snappyRepository) {
-      return new DiskLostCardRepository(snappyRepository);
+   LostCardRepository locationRepository(WalletStorage walletStorage, WalletTrackingStatusStorage trackingStatusStorage) {
+      return new DiskLostCardRepository(walletStorage, trackingStatusStorage);
    }
 
    @Singleton
@@ -52,16 +60,22 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   LostCardManager locationManager(SmartCardLocationInteractor locationInteractor, LocationSyncManager jobScheduler,
-         WalletNetworkService networkService) {
-      return new LostCardManager(locationInteractor, jobScheduler, networkService);
+   BeaconClient walletBeaconClient(@ForApplication Context appContext) {
+      return new WalletBeaconClient(appContext);
    }
 
    @Singleton
    @Provides
-   LocationTrackingManager trackingManager(SmartCardLocationInteractor locationInteractor,
-         WalletDetectLocationService locationService,
-         LostCardManager lostCardManager) {
-      return new LocationTrackingManager(locationInteractor, locationService, lostCardManager);
+   LostCardManager locationManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
+         LocationSyncManager jobScheduler, WalletNetworkService networkService, BeaconClient beaconClient) {
+      return new LostCardManager(smartCardInteractor, locationInteractor, jobScheduler, networkService, beaconClient);
+   }
+
+   @Singleton
+   @Provides
+   LocationTrackingManager trackingManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
+         WalletDetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager, SessionHolder sessionHolder) {
+      return new LocationTrackingManager(smartCardInteractor, locationInteractor, locationService, authInteractor,
+            lostCardManager, sessionHolder);
    }
 }

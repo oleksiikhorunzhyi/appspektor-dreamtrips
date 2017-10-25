@@ -1,30 +1,25 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Delegate> {
+public class RegionCell extends BaseAbstractDelegateCell<RegionModel, RegionCell.Delegate> {
 
    @InjectView(R.id.textViewAttributeCaption) TextView textViewName;
    @InjectView(R.id.checkBox) CheckBox checkBox;
    @InjectView(R.id.cell) LinearLayout cell;
-
-   @Inject Context context;
 
    public RegionCell(View view) {
       super(view);
@@ -33,8 +28,8 @@ public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Del
    @Override
    protected void syncUIStateWithModel() {
       textViewName.setText(getModelObject().getName());
-      textViewName.setTextColor(getModelObject().isChecked() ? context.getResources()
-            .getColor(R.color.black) : context.getResources().getColor(R.color.grey));
+      textViewName.setTextColor(getModelObject().isChecked() ? getResources()
+            .getColor(R.color.black) : getResources().getColor(R.color.grey));
       checkBox.setChecked(getModelObject().isChecked());
    }
 
@@ -54,6 +49,11 @@ public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Del
    @Override
    public void prepareForReuse() {
       textViewName.setText("");
+   }
+
+   @Override
+   public boolean shouldInject() {
+      return false;
    }
 
    public interface Delegate extends CellDelegate<RegionModel> {

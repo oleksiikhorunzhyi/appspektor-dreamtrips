@@ -5,22 +5,21 @@ import android.os.Bundle;
 
 import com.github.pwittchen.reactivenetwork.library.Connectivity;
 import com.github.pwittchen.reactivenetwork.library.ReactiveNetwork;
-import com.techery.spares.session.SessionHolder;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.FeatureManager;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.api.action.CommandWithError;
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.system.ConnectionInfoProvider;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.core.service.ConnectionInfoProvider;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.util.HttpErrorHandlingUtil;
 
 import java.io.IOException;
 
@@ -33,7 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
+import static com.worldventures.core.utils.ThrowableUtils.getCauseByType;
 
 public class Presenter<VT extends Presenter.View> {
 
@@ -41,7 +40,7 @@ public class Presenter<VT extends Presenter.View> {
 
    @Inject protected Context context;
    @Inject protected ActivityRouter activityRouter;
-   @Inject protected SessionHolder<UserSession> appSessionHolder;
+   @Inject protected SessionHolder appSessionHolder;
    @Inject protected AnalyticsInteractor analyticsInteractor;
    @Inject protected FeatureManager featureManager;
    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
@@ -164,7 +163,7 @@ public class Presenter<VT extends Presenter.View> {
          return;
       }
       String message = httpErrorHandlingUtil.handleJanetHttpError(
-            action, error, context.getString(R.string.smth_went_wrong));
+            action, error, context.getString(R.string.smth_went_wrong), context.getString(R.string.no_connection));
       view.informUser(message);
    }
 

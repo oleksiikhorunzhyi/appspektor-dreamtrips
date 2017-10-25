@@ -11,14 +11,14 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.service.analytics.MonitoringHelper;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.view.fragment.InjectingFragment;
+import com.worldventures.core.utils.NetworkUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
@@ -94,7 +94,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
       if (layout == null) {
          throw new IllegalArgumentException("ConfigurableFragment should have Layout annotation");
       }
-      return inflater.inflate(layout.value(), container, false);
+      final View rootView = inflater.inflate(layout.value(), container, false);
+      ButterKnife.inject(this, rootView);
+      return rootView;
    }
 
    @Override
@@ -252,7 +254,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    }
 
    public boolean isConnected() {
-      return Utils.isConnected(getContext());
+      return NetworkUtils.isConnected(getContext());
    }
 
    /**

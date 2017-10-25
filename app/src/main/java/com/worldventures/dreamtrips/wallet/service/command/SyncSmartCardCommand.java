@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.GetOnCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.analytics.oncard.SendOnCardAnalyticsCommand;
 import com.worldventures.dreamtrips.wallet.service.RecordInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.device.SmartCardFirmwareCommand;
 import com.worldventures.dreamtrips.wallet.service.command.record.SyncRecordsCommand;
 import com.worldventures.dreamtrips.wallet.util.SCFirmwareUtils;
@@ -26,7 +26,7 @@ public class SyncSmartCardCommand extends Command<Void> implements InjectableAct
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject RecordInteractor recordInteractor;
-   @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject WalletAnalyticsInteractor analyticsInteractor;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {

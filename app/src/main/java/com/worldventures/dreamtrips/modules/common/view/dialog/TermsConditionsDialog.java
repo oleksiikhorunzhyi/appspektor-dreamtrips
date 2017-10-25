@@ -17,14 +17,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 
-import com.techery.spares.annotations.Layout;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 

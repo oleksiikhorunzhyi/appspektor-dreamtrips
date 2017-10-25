@@ -2,15 +2,15 @@ package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
 import android.view.View;
 
-import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractDelegateCell;
-import com.techery.spares.ui.view.cell.CellDelegate;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_load_error)
-public class MerchantsErrorCell extends AbstractDelegateCell<MerchantsErrorCell.Model, CellDelegate<MerchantsErrorCell.Model>> {
+public class MerchantsErrorCell extends BaseAbstractDelegateCell<MerchantsErrorCell.Model, CellDelegate<MerchantsErrorCell.Model>> {
 
    public MerchantsErrorCell(View view) {
       super(view);

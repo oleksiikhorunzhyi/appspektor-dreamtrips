@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.view.View;
 
-import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
@@ -35,12 +35,12 @@ public abstract class RxBaseFragment<PM extends Presenter> extends BaseFragment<
 
    @Override
    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.STOP));
    }
 
    @Override
    public <T> Observable<T> bindUntilDropView(Observable<T> observable) {
-      return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
+      return observable.compose(RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
    }
 
    @Override

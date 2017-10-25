@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service.firmware.command;
 
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.dreamtrips.wallet.service.FirmwareInteractor;
@@ -22,7 +22,7 @@ import io.techery.janet.smartcard.model.ImmutableConnectionParams;
 import rx.Observable;
 import rx.Subscription;
 
-import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static com.worldventures.dreamtrips.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
 public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implements InjectableAction {
@@ -39,6 +39,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
 
    @Override
    protected void run(CommandCallback<FirmwareUpdateData> callback) throws Throwable {
+      callback.onProgress(0);
       loadFirmwareFilesCommandActionPipe = janet.createPipe(LoadFirmwareFilesCommand.class);
       if (firmwareRepository.getFirmwareUpdateData() == null) {
          throw new IllegalStateException("FirmwareUpdateData does not exist");

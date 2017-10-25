@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.dtl.locations.model.Location;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 
 import io.techery.mappery.MapperyContext;
-
-import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
-import com.worldventures.dreamtrips.modules.mapping.converter.Converter;
 
 public class LocationsConverter implements Converter<Location, DtlLocation> {
 

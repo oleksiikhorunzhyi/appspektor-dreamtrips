@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string name="action_cancel">Anulați</string>
+   <string name="action_done">Terminat</string>
+   <string name="action_retry">Reîncercați</string>
+   <string name="camera_record_a_video">Înregistrați un videoclip</string>
+   <string name="camera_take_a_picture">Faceți o fotografie</string>
+   <string name="error_fail_to_load_documents">Încărcarea documentelor a eșuat</string>
+   <string name="error_fail_to_load_feedback_reasons">Nu s-au putut încărca motivele pentru feedback</string>
+   <string name="error_fail_to_load_videos">Nu s-au putut încărca videoclipurile</string>
+   <string name="error_fail_to_locales">Nu s-au putut obține parametrii locali</string>
+   <string name="error_fail_to_login">Nu s-a reușit autentificarea</string>
+   <string name="error_fail_to_send_feedback">Nu s-a putut trimite feedback</string>
+   <string name="error_fail_to_update_settings">Nu s-au putut actualiza setările</string>
+   <string name="facebook_error_loading_albums">Albumele nu au putut fi încărcate </string>
+   <string name="facebook_error_loading_photos">Fotografiile nu au putut fi încărcate</string>
+   <string name="facebook_login_error"> Autentificarea pe Facebook nu a reușit </string>
+   <string name="fail">Eroare</string>
+   <string name="feedback_could_not_load_attachment">Fișierul atașat nu s-a putut încărca</string>
+   <string name="media_picker_error_contents">Încărcarea a %1$s eșuat.</string>
+   <string name="media_picker_fb_albums_actions">albume facebook</string>
+   <string name="media_picker_fb_photos_actions">fotografii facebook</string>
+   <string name="media_picker_gallery_action">galerie media</string>
+   <string name="media_picker_limit_reached">Puteți alege până la %1$s fotografii</string>
+   <string name="no_camera_permission">Această aplicație nu poate funcționa deoarece nu are acces la camera foto. Aplicația se va închide.</string>
+   <string name="permission_camera_rationale"> Este nevoie de acces la camera foto pentru a putea detecta </string>
+   <string name="permission_location_rationale">Este nevoie de acces la locație pentru a putea detecta </string>
+   <string name="photos_selected">%1$d selectate</string>
+   <string name="picker_photo_limit">Puteți alege până la %1$d fotografie</string>
+   <string name="picker_photo_limit_plural">Puteți alege până la %1$d fotografii</string>
+   <string name="picker_static_add_from_fb">Adăugați de pe Facebook</string>
+   <string name="picker_static_take_from_camera">Aparat foto</string>
+   <string name="picker_two_media_type_error">Alegeți fie fotografii, fie un videoclip</string>
+   <string name="picker_video_length_limit">Nu aveți permisiunea să selectați videoclipuri mai lungi de %1$d secunde</string>
+   <string name="picker_video_limit">Puteți alege până la %1$d videoclip</string>
+   <string name="picker_video_limit_plural">Puteți alege până la %1$d videoclipuri</string>
+</resources>

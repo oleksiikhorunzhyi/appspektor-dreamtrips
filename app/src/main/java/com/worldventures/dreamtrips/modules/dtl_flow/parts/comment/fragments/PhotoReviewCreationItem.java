@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class PhotoReviewCreationItem implements Parcelable {
    private int height;
 
    //analytics related
-   private MediaAttachment.Source source;
+   private MediaPickerAttachment.Source source;
    private Location locationFromExif;
 
    public PhotoReviewCreationItem() {
@@ -145,11 +145,11 @@ public class PhotoReviewCreationItem implements Parcelable {
       this.locationFromExif = locationFromExif;
    }
 
-   public MediaAttachment.Source getSource() {
+   public MediaPickerAttachment.Source getSource() {
       return source;
    }
 
-   public void setSource(MediaAttachment.Source source) {
+   public void setSource(MediaPickerAttachment.Source source) {
       this.source = source;
    }
 
@@ -172,7 +172,7 @@ public class PhotoReviewCreationItem implements Parcelable {
       dest.writeTypedList(suggestions);
       dest.writeString(title);
       dest.writeParcelable(locationFromExif, flags);
-      dest.writeInt(source != null ? source.ordinal() : MediaAttachment.Source.UNKNOWN.ordinal());
+      dest.writeInt(source != null ? source.ordinal() : MediaPickerAttachment.Source.UNKNOWN.ordinal());
    }
 
    protected PhotoReviewCreationItem(Parcel in) {
@@ -189,7 +189,7 @@ public class PhotoReviewCreationItem implements Parcelable {
       this.suggestions = in.createTypedArrayList(PhotoTag.CREATOR);
       this.title = in.readString();
       this.location = in.readParcelable(Location.class.getClassLoader());
-      this.source = MediaAttachment.Source.values()[in.readInt()];
+      this.source = MediaPickerAttachment.Source.values()[in.readInt()];
    }
 
    public static final Creator<PhotoReviewCreationItem> CREATOR = new Creator<PhotoReviewCreationItem>() {

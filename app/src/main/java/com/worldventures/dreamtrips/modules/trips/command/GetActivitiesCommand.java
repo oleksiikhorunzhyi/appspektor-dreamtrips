@@ -1,17 +1,15 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
+import com.worldventures.core.janet.cache.CacheOptions;
+import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.api.trip.GetTripActivitiesHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
-import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
-import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;

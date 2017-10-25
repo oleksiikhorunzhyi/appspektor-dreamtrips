@@ -183,7 +183,7 @@ style:
     enumEntryPattern: '^[A-Z$][a-zA-Z_$]*$'
 
 comments:
-  active: true
+  active: false #TODO: Enable when we'll ready to do it
   CommentOverPrivateMethod:
     active: true
   CommentOverPrivateProperty:

@@ -75,14 +75,14 @@ task findbugs(type: FindBugs) {
 }
 
 detekt {
-   version = '1.0.0.RC5'
+   version = pluginDependencies.versions.detekt
    profile("main") {
       config = "$project.rootDir/quality/detekt/detekt.yml"
       baseline = "$project.rootDir/quality/detekt/baseline.xml"
       input = "$projectDir/src"
       output = "$projectDir/build/reports/detekt"
       outputName = "detekt"
-      filters = ".*/resources/.*,.*/tmp/.*"
+      filters = ".*/test.*/.*,.*/resources/.*,.*/tmp/.*"
       parallel = true
    }
 }

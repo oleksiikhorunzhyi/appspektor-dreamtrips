@@ -1,11 +1,3 @@
-apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
-apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
-apply from: "$rootProject.projectDir/buildsystem/env-default-config.gradle"
-apply from: "$rootProject.projectDir/buildsystem/env-flavor-config.gradle"
-apply from: "$rootProject.projectDir/buildsystem/env-flavor-utils.gradle"
-apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
-apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
-//
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'me.tatarka.retrolambda'
@@ -13,6 +5,13 @@ apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
 apply plugin: 'com.github.ben-manes.versions'
 //
+apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/env-default-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/env-flavor-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/env-flavor-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 android {
@@ -139,8 +138,8 @@ android {
    }
 
    compileOptions {
-      sourceCompatibility project.ext.pluginDependencies.languages.java
-      targetCompatibility project.ext.pluginDependencies.languages.java
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
    }
    testOptions {
       unitTests.returnDefaultValues = true

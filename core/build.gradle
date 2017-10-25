@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
+//
 apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
-apply plugin: 'me.tatarka.retrolambda'
-//
 apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 android {
@@ -37,8 +37,8 @@ android {
    }
 
    compileOptions {
-      sourceCompatibility project.ext.pluginDependencies.languages.java
-      targetCompatibility project.ext.pluginDependencies.languages.java
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
    }
 
 }

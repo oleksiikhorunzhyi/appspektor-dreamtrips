@@ -26,7 +26,7 @@ ext {
 
    // domain
    moduleDependencies.lang = [
-         kotlin: [c: "org.jetbrains.kotlin:kotlin-stdlib:$project.ext.pluginDependencies.languages.kotlin"],
+         kotlin: [c: "org.jetbrains.kotlin:kotlin-stdlib:$project.ext.pluginDependencies.versions.kotlin"],
    ]
    moduleDependencies.domain = [
          jobExecutor: [c: 'com.github.techery:job-executor:0.1.1'],
@@ -180,8 +180,8 @@ ext {
 
          leakcanaryNoOp       : [tc: "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"],
 
-         kotlinReflect        : [tc: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.languages.kotlin"],
-         kotlinTest           : [tc: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.languages.kotlin"],
+         kotlinReflect        : [tc: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.versions.kotlin"],
+         kotlinTest           : [tc: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.versions.kotlin"],
          kotlinMockito        : [tc: 'com.nhaarman:mockito-kotlin:1.5.0'],
          kotlinRx             : [tc: 'io.reactivex:rxkotlin:0.55.0'],
 

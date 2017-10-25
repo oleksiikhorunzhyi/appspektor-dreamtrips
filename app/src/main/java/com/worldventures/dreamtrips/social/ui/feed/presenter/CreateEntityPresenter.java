@@ -9,6 +9,7 @@ import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
@@ -215,6 +216,11 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    public void attachMedia(MediaPickerAttachment mediaPickerAttachment) {
       if (!mediaPickerAttachment.hasImages() && !mediaPickerAttachment.hasVideo()) return;
 
+      if (!cachedCreationItems.isEmpty() && mediaPickerAttachment.hasVideo() ||
+            (selectedVideoPathUri != null && mediaPickerAttachment.hasImages())) {
+         view.informUser(R.string.picker_two_media_type_error);
+         return;
+      }
       view.setEnabledImagePicker(false);
       if (mediaPickerAttachment.hasImages()) {
          attachImages(mediaPickerAttachment.getChosenImages());

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.common.BucketUtility;
+import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoHelper;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.util.BucketItemViewInjector;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
@@ -26,6 +27,7 @@ import butterknife.OnClick;
 public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem, BaseFeedCell.FeedCellDelegate<BucketFeedItem>> {
 
    @Inject SessionHolder appSessionHolder;
+   @Inject BucketItemInfoHelper bucketItemInfoHelper;
    @ForActivity @Inject Context context;
 
    private BucketItemViewInjector bucketItemViewInjector;
@@ -37,7 +39,7 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
    @Override
    public void afterInject() {
       super.afterInject();
-      bucketItemViewInjector = new BucketItemViewInjector(itemView, context, appSessionHolder);
+      bucketItemViewInjector = new BucketItemViewInjector(itemView, context, appSessionHolder, bucketItemInfoHelper);
    }
 
    @Override

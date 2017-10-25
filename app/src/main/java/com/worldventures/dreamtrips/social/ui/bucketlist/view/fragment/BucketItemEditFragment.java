@@ -25,6 +25,7 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -138,7 +139,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
-      return new BucketItemEditPresenter(getArgs());
+      BucketBundle args = getArgs();
+      return new BucketItemEditPresenter(args.getType(), args.getBucketItem(), args.getOwnerId());
    }
 
    @Override
@@ -245,8 +247,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public String getTags() {
-      return editTextTags.getText().toString();
+   public List<String> getTags() {
+      return ProjectTextUtils.getListFromString(editTextTags.getText().toString());
    }
 
    @Override
@@ -257,8 +259,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public String getPeople() {
-      return editTextPeople.getText().toString();
+   public List<String> getPeople() {
+      return ProjectTextUtils.getListFromString(editTextPeople.getText().toString());
    }
 
    @Override

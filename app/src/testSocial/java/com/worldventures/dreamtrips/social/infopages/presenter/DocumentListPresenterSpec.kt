@@ -41,8 +41,8 @@ abstract class DocumentListPresenterSpec<T: DocumentListPresenterSpec.TestBody<P
                   setup(Contract.of(GetDocumentsCommand::class.java).result(emptyList<Document>()))
 
                   it("should correctly initialize") {
-                     verify(presenter, VerificationModeFactory.times(1)).observeDocumentsChanges()
-                     verify(presenter, VerificationModeFactory.times(1)).refreshDocuments()
+                     verify(presenter).observeDocumentsChanges()
+                     verify(presenter).refreshDocuments()
                      assertEquals(presenter.documentType, getExpectedDocumentType())
                   }
                }
@@ -53,8 +53,8 @@ abstract class DocumentListPresenterSpec<T: DocumentListPresenterSpec.TestBody<P
 
                   it("should set items and hide progress on view") {
 
-                     verify(view, VerificationModeFactory.times(1)).hideProgress()
-                     verify(view, VerificationModeFactory.times(1)).setDocumentList(resultList)
+                     verify(view).hideProgress()
+                     verify(view).setDocumentList(resultList)
                   }
                }
 
@@ -62,7 +62,7 @@ abstract class DocumentListPresenterSpec<T: DocumentListPresenterSpec.TestBody<P
                   setup(Contract.of(GetDocumentsCommand::class.java).exception(RuntimeException()))
 
                   it("should still set items and hide progress on view") {
-                     verify(view, VerificationModeFactory.times(1)).hideProgress()
+                     verify(view).hideProgress()
                   }
                }
             }

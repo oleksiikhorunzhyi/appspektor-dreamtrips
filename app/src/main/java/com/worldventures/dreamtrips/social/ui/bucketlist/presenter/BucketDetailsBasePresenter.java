@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
@@ -11,7 +10,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteracto
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.ViewPhotoEvent;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketCoverBody;
-import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoHelper;
 
 import java.util.List;
 
@@ -25,15 +24,16 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
    @Inject protected SocialSnappyRepository db;
    @Inject protected BucketInteractor bucketInteractor;
+   @Inject BucketItemInfoHelper bucketItemInfoHelper;
 
    @State BucketItem.BucketType type;
    @State int ownerId;
    @State BucketItem bucketItem;
 
-   public BucketDetailsBasePresenter(BucketBundle bundle) {
-      type = bundle.getType();
-      bucketItem = bundle.getBucketItem();
-      ownerId = bundle.getOwnerId();
+   public BucketDetailsBasePresenter(BucketItem.BucketType type, BucketItem bucketItem, int ownerId) {
+      this.type = type;
+      this.bucketItem = bucketItem;
+      this.ownerId = ownerId;
    }
 
    @Override
@@ -48,7 +48,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
          view.setStatus(bucketItem.isDone());
          view.setPeople(bucketItem.getFriends());
          view.setTags(bucketItem.getBucketTags());
-         view.setTime(BucketItemInfoUtil.getTime(context, bucketItem));
+         view.setTime(bucketItemInfoHelper.getTime(bucketItem));
       }
    }
 

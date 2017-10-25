@@ -31,8 +31,8 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
    @Inject BucketInteractor bucketInteractor;
 
    @Override
-   public void takeView(View view) {
-      super.takeView(view);
+   public void onViewTaken() {
+      super.onViewTaken();
       setTabs();
       loadCategories();
       loadBucketList();
@@ -59,14 +59,14 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     * We show single common connection overlay over the tabs content.
     * Subscribe to offline errors to be able to handle those happened in tabs and show it.
     */
-   private void subscribeToErrorUpdates() {
+   void subscribeToErrorUpdates() {
       offlineErrorInteractor.offlineErrorCommandPipe()
             .observeSuccess()
             .compose(bindViewToMainComposer())
             .subscribe(command -> reportNoConnection());
    }
 
-   private void loadCategories() {
+   void loadCategories() {
       bucketInteractor.getCategoriesPipe()
             .createObservable(new GetCategoriesCommand())
             .compose(bindView())
@@ -76,7 +76,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
             );
    }
 
-   private void loadBucketList() {
+   void loadBucketList() {
       bucketInteractor.bucketListActionPipe()
             .createObservable(BucketListCommand.fetch(getUser(), false))
             .compose(bindViewToMainComposer())
@@ -86,7 +86,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
                   .onFail(this::handleError));
    }
 
-   public void setTabs() {
+   void setTabs() {
       view.setTypes(Arrays.asList(LOCATION, ACTIVITY, DINING));
       view.updateSelection();
    }

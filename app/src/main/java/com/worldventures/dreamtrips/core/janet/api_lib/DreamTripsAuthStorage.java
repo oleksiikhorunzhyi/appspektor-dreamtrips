@@ -2,11 +2,8 @@ package com.worldventures.dreamtrips.core.janet.api_lib;
 
 import com.worldventures.core.model.Session;
 import com.worldventures.core.model.User;
-import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
-
-import java.util.List;
 
 public class DreamTripsAuthStorage extends AuthStorage<Session> {
 
@@ -31,8 +28,7 @@ public class DreamTripsAuthStorage extends AuthStorage<Session> {
 
       userSession.setLastUpdate(System.currentTimeMillis());
 
-      List<Feature> features = session.getPermissions();
-      userSession.setFeatures(features);
+      userSession.setFeatures(session.getPermissions());
 
       sessionHolder.put(userSession);
    }

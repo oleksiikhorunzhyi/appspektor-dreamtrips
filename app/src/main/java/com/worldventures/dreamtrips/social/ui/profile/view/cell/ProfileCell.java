@@ -19,6 +19,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
+import com.worldventures.core.utils.BadgeHelper;
 import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.model.session.FeatureManager;
 import com.worldventures.core.model.session.SessionHolder;
@@ -81,12 +82,15 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    @InjectView(R.id.badge) BadgeView badge;
    @InjectView(R.id.fl_friends_container) View friendsContainer;
    @InjectView(R.id.divider1) View divider1;
+   @InjectView(R.id.divider2) View divider2;
+   @InjectView(R.id.divider3) View divider3;
 
    @Inject SessionHolder appSessionHolder;
    @Inject SnappyRepository snapper;
    @Inject FeatureManager featureManager;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject AnalyticsInteractor analyticsInteractor;
+   @Inject BadgeHelper badgeHelper;
 
    private Context context;
    private DecimalFormat df = new DecimalFormat("#0.00");
@@ -128,15 +132,29 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
          info.show();
       }
 
+      friends.setEnabled(isAccount());
+
       if (isAccount() && featureManager.available(Feature.SOCIAL)) {
          post.setVisibility(View.VISIBLE);
          friendsContainer.setVisibility(View.VISIBLE);
       } else {
          post.setVisibility(View.GONE);
       }
-      friends.setEnabled(isAccount());
-
       divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL) ? View.GONE : View.VISIBLE);
+
+      if (featureManager.available(Feature.TRIP_IMAGES)) {
+         setTripImagesCount(user.getTripImagesCount());
+      } else {
+         tripImages.setVisibility(View.GONE);
+         divider2.setVisibility(View.GONE);
+      }
+
+      if (featureManager.available(Feature.BUCKET_LIST)) {
+         setBucketItemsCount(user.getBucketListItemsCount());
+      } else {
+         buckets.setVisibility(View.GONE);
+         divider3.setVisibility(View.GONE);
+      }
 
       if (!TextUtils.isEmpty(user.getCompany())) {
          companyName.setVisibility(View.VISIBLE);
@@ -156,8 +174,6 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
       setUserPresence(user);
       setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
 
-      setTripImagesCount(user.getTripImagesCount());
-      setBucketItemsCount(user.getBucketListItemsCount());
       setFriendsCount(user.getFriendsCount());
       if (isAccount()) {
          setRoviaBucks(df.format(user.getRoviaBucks()));

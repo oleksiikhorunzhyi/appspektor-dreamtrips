@@ -82,7 +82,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
             Route.DTL_THRST_THANK_YOU_SCREEN,
             NavigationConfigBuilder.forActivity()
                   .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, response.billTotal(), response.pointsAmount(), response.pointsAmount(),
-                        response.billImagePath(), Double.parseDouble(response.subTotal()),  Double.parseDouble(response.tax()),  Double.parseDouble(response.tip())))
+                        response.billImagePath(), response.subTotal(),  response.tax(),  response.tip()))
                   .build()
       );
    }

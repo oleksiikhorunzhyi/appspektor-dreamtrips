@@ -57,12 +57,7 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
 
       GetTransactionResponse response = action.getResult();
 
-      Log.debug("XYZ", response.subTotal());
-      Log.debug("XYZ", response.tip());
-      Log.debug("XYZ", response.tax());
-
       if (transactionResponse.contains(TRANSACTION_SUCCESSFUL)) {
-//         view.openThankYouScreen(action.getResult().billTotal(), action.getResult().pointsAmount(), action.getResult().pointsAmount(), action.getResult().billImagePath());
          view.openThankYouScreen(response);
       } else {
          view.openPaymentFailedScreen(response);

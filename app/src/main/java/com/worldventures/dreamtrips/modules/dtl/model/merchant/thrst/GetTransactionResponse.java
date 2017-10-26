@@ -2,13 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst;
 
       import android.support.annotation.Nullable;
 
-      import com.esotericsoftware.kryo.DefaultSerializer;
-      import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-      import com.google.gson.annotations.SerializedName;
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 
-      import org.immutables.value.Value;
+import org.immutables.value.Value;
 
-      import java.io.Serializable;
+import java.io.Serializable;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
@@ -23,8 +22,8 @@ public interface GetTransactionResponse extends Serializable {
    @Nullable String pointsAmount();
    @Nullable String billTotal();
    @Nullable String transactionStatus();
-   @Nullable String tax();
-   @Nullable String tip();
-   @Nullable String subTotal();
+   @Nullable Double tax();
+   @Nullable Double tip();
+   @Nullable Double subTotal();
 
 }

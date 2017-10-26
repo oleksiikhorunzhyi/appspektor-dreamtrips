@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
@@ -27,6 +30,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
+import com.worldventures.dreamtrips.social.ui.activity.ShowableComponent;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -58,6 +62,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyc
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.util.ActivityLifecycleHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,6 +83,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
+   @Inject @ForApplication Context applicationContext;
 
    @InjectView(R.id.posting_header) View postingHeader;
    @InjectView(R.id.additional_info_container) View additionalInfoContainer;
@@ -104,7 +110,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    @Override
    public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
-      setupUi();
+
+      if ((getActivity() instanceof ShowableComponent)) {
+         ActivityLifecycleHelper.runTaskAfterShown((Application) applicationContext, (ShowableComponent) getActivity(), this::setupUi);
+      } else {
+         throw new RuntimeException("You should use this fragment only with ShowableComponent");
+      }
    }
 
    @Override

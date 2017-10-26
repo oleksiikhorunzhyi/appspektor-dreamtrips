@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.command;
 import com.worldventures.core.janet.cache.storage.ActionStorage;
 import com.worldventures.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.core.janet.cache.storage.Storage;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 
 import java.util.Set;

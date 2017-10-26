@@ -6,7 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.locations.LocationsHttpAction;
 import com.worldventures.core.janet.CommandWithError;

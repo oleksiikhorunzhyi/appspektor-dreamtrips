@@ -2,7 +2,7 @@ package com.worldventures.core.modules.picker.command;
 
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.service.delegate.PhotosProvider;
 import com.worldventures.core.utils.ImageUtils;

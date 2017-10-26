@@ -1,7 +1,7 @@
 package com.worldventures.core.service.command.api_action;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 

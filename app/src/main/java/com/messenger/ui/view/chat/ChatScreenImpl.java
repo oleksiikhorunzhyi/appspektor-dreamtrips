@@ -43,7 +43,7 @@ import com.messenger.ui.util.chat.anim.TimestampItemAnimator;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.R;
 

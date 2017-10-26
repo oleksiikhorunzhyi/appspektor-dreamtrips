@@ -6,7 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.storage.dao.PhotoDAO;
 import com.worldventures.core.di.qualifier.ForApplication;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.core.utils.FileUtils;

@@ -7,7 +7,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
 import com.worldventures.dreamtrips.social.ui.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.social.ui.membership.model.Member;

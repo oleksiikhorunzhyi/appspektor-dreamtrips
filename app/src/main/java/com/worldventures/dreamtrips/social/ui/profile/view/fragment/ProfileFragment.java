@@ -32,8 +32,8 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditingView;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.profile.presenter.ProfilePresenter;
@@ -65,7 +65,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
    private Bundle savedInstanceState;
 
-   protected StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   protected FocusableStatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       BaseDelegateAdapter adapter = new BaseDelegateAdapter(getContext(), this);
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager = new FocusableStatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
@@ -178,7 +179,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       List feedModels = new ArrayList();
       feedModels.add(user);
       feedModels.addAll(items);
-      fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.stateRecyclerView);
+      fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
       ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
       profileToolbarTitle.setText(user.getFullName());
@@ -227,7 +228,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    protected abstract void initToolbar();
 
    private float calculateOffset() {
-      return Math.min(statePaginatedRecyclerViewManager.stateRecyclerView.getScrollOffset() / (float) scrollArea, 1);
+      return Math.min(statePaginatedRecyclerViewManager.getStateRecyclerView().getScrollOffset() / (float) scrollArea, 1);
    }
 
    private void setToolbarAlpha(float percentage) {

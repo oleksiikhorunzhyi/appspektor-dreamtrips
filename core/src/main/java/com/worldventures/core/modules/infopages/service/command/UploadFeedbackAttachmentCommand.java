@@ -3,7 +3,7 @@ package com.worldventures.core.modules.infopages.service.command;
 import android.net.Uri;
 
 import com.worldventures.core.R;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.core.service.UriPathProvider;
 import com.worldventures.dreamtrips.api.uploadery.UploadFeedbackImageHttpAction;

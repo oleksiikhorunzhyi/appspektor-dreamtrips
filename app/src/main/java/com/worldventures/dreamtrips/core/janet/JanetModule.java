@@ -3,13 +3,17 @@ package com.worldventures.dreamtrips.core.janet;
 import android.content.Context;
 
 import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.janet.ActionServiceLoggerImpl;
+import com.worldventures.core.janet.CommandInjectorImpl;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.janet.TimberServiceWrapper;
 import com.worldventures.core.janet.cache.CacheResultWrapper;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.core.service.analytics.AnalyticsService;
+import com.worldventures.janet.injection.CommandInjector;
+import com.worldventures.janet.injection.DaggerActionServiceWrapper;
 import com.worldventures.core.service.analytics.Tracker;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -80,6 +84,8 @@ public class JanetModule {
          Set<ActionStorage> cacheStorageSet,
          Set<MultipleActionStorage> multipleActionStorageSet) {
       Janet.Builder builder = new Janet.Builder();
+      final CommandInjector injector = new CommandInjectorImpl(((Injector) context)
+            .getObjectGraph());
 
       for (ActionService service : services) {
          service = new TimberServiceWrapper(service);
@@ -95,7 +101,7 @@ public class JanetModule {
                }
             }
          }};
-         service = new DaggerActionServiceWrapper(service, context);
+         service = new DaggerActionServiceWrapper(service, injector, new ActionServiceLoggerImpl());
          builder.addService(service);
       }
       return builder.build();

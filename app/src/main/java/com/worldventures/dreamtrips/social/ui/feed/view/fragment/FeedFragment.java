@@ -53,8 +53,8 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDe
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.CirclesFilterPopupWindow;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
@@ -90,7 +90,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    private ContentObserver contentObserver;
    private PublishSubject<Void> contentObserverSubject = PublishSubject.create();
 
-   private StatePaginatedRecyclerViewManager recyclerViewManager;
+   private FocusableStatePaginatedRecyclerViewManager recyclerViewManager;
    private Bundle savedInstanceState;
 
    private MaterialDialog blockingProgressDialog;
@@ -133,7 +133,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
       // TODO: 2/23/17 put pagination logic into common set of presenter interfaces and view delegates
       // when feed storage refactoring is merged
-      recyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      recyclerViewManager = new FocusableStatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
       recyclerViewManager.init(adapter, savedInstanceState);
       recyclerViewManager.setOnRefreshListener(this);
       recyclerViewManager.setPaginationListener(() -> {
@@ -303,7 +304,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       processSuggestedPhotosItems(shouldShowSuggestions, feedModels);
       processUploadsInProgressItems(new UploadingPostsList(uploadingPostsList), feedModels);
       processFeedItems(feedItems, feedModels);
-      fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.stateRecyclerView);
+      fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
    }
 

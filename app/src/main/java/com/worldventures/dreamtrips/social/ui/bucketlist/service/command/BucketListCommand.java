@@ -10,7 +10,7 @@ import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketItemsForUserHttpAction;

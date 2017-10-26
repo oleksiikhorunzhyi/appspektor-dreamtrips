@@ -12,7 +12,7 @@ import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
-import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;

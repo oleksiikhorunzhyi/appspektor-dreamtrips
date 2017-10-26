@@ -12,7 +12,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.component.RootComponentsProvider;
 import com.worldventures.core.ui.util.ViewUtils;

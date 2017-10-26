@@ -1,0 +1,33 @@
+ext {
+   provideDep = { bundle ->
+      return bundle.entrySet().first().value
+   }
+
+   eachDependency = { deps, Closure c ->
+      deps.each {
+         def entry = it.value.entrySet().first()
+         c(entry.value)
+      }
+   }
+
+   applyDependencies = { o, deps ->
+      deps.each {
+         def entry = it.value.entrySet().first()
+         if (entry.key == 'impl') o.implementation entry.value
+         if (entry.key == 'api') o.api entry.value
+         if (entry.key == 'moduleImpl') o.implementation o.project(entry.value)
+         if (entry.key == 'moduleApi') o.api o.project(entry.value)
+         if (entry.key == 'testModule') o.testImplementation o.project(entry.value)
+         if (entry.key == 'ct') o.api(entry.value) { transitive = true }
+         if (entry.key == 'a') o.annotationProcessor entry.value
+         if (entry.key == 'p') o.compileOnly entry.value
+         if (entry.key == 'testImpl') o.testImplementation entry.value
+         if (entry.key == 'releaseImpl') o.releaseImplementation entry.value
+         if (entry.key == 'debugImpl') o.debugImplementation entry.value
+         if (entry.key == 'releaseApi') o.releaseApi entry.value
+         if (entry.key == 'debugApi') o.debugApi entry.value
+         if (entry.key == 'rap') o.releaseAnnotationProcessor entry.value
+         if (entry.key == 'tap') o.testAnnotationProcessor entry.value
+      }
+   }
+}

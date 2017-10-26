@@ -4,7 +4,7 @@ import com.worldventures.core.R;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.feedback.GetFeedbackReasonsHttpAction;
 import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.modules.infopages.model.FeedbackType;

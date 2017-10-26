@@ -2,7 +2,7 @@ package com.worldventures.core.modules.settings.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.R;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.api.settings.UpdateSettingsHttpAction;
 import com.worldventures.dreamtrips.api.settings.model.ImmutableFlagSetting;

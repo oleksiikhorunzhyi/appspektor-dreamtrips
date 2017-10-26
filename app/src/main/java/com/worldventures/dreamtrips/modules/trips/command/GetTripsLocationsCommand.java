@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.command;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripsLocationsHttpAction;
 import com.worldventures.dreamtrips.api.trip.ImmutableGetTripsLocationsHttpAction;

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.techery.spares.utils.SimpleActivityLifecycleCallbacks;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.di.AppInitializer;
 import com.worldventures.core.janet.Injector;
 

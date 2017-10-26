@@ -1,0 +1,1 @@
+-dontwarn com.worldventures.wallet.ui.dashboard.CardListScreen$ErrorDialogType

@@ -5,7 +5,7 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.ui.helper.ConversationHelper;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 

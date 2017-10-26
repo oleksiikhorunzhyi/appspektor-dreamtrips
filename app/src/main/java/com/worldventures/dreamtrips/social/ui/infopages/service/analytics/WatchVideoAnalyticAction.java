@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.core.service.analytics.ActionPart;
 import com.worldventures.core.service.analytics.AdobeTracker;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.flags.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.flagging.FlagItemHttpAction;
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;

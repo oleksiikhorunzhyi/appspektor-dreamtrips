@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.gms.common.api.Status;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.permission.PermissionConstants;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;

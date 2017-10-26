@@ -20,7 +20,7 @@ import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.wallet.util.WalletFilesUtils;
 
 import java.util.List;
 

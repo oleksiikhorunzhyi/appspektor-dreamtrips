@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.membership.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.core.ui.annotations.Layout;
-import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -81,7 +81,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
       stateDelegate.setRecyclerView(lvUsers);
       setUpView();
       lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
-      lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+      lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
       adapter = new FilterableArrayListAdapter<>(getActivity(), this);
       adapter.registerCell(Member.class, MemberCell.class);
       adapter.registerDelegate(Member.class, getPresenter()::onMemberCellSelected);

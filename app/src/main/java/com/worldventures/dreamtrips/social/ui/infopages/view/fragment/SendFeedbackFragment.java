@@ -12,7 +12,7 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;

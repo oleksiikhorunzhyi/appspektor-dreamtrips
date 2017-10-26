@@ -6,12 +6,12 @@ import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
+import com.worldventures.core.test.janet.MockAnalyticsService
 import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.post.model.response.ImmutablePostStatus
 import com.worldventures.dreamtrips.api.post.model.response.PostStatus
 import com.worldventures.dreamtrips.api.post.model.response.PostStatuses
-import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
 import com.worldventures.dreamtrips.social.background_uploading.spec.createPostBodyWithUploadedVideo
 import com.worldventures.dreamtrips.social.background_uploading.spec.createPostCompoundOperationModel
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
@@ -42,7 +42,7 @@ import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
-class PingAssetStatusIndicatorSpec : BaseSpec ({
+class PingAssetStatusIndicatorSpec : BaseSpec({
 
    describe("PingAssetStatusIndicator") {
       it("should delete compound completed operation on success") {

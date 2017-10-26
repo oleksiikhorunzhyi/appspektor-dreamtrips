@@ -1,1 +1,3 @@
-include ':app', ':core'
+include ':app', ':janet-extensions'
+include ':wallet'
+include ':core', ':core-test'

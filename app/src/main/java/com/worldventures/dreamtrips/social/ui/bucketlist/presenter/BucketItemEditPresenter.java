@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteI
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketPostBody;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.wallet.util.WalletFilesUtils;
 
 import java.util.Calendar;
 import java.util.Date;

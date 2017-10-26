@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.worldventures.janet.analytics.AnalyticsEvent;
+
 import java.lang.ref.WeakReference;
 
 @AnalyticsEvent(

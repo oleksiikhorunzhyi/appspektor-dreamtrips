@@ -13,9 +13,9 @@ import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.janet.MockDaggerActionService;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.test.janet.MockDaggerActionService;
 
 import org.junit.Before;
 import org.junit.Test;

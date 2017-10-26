@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;

@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.service.analytics.MonitoringHelper;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.ViewUtils;

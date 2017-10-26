@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      >
+
+   <data>
+
+      <variable
+            name="profile"
+            type="com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel"
+            />
+
+      <variable
+            name="onEditTextFocusChange"
+            type="android.view.View.OnFocusChangeListener"
+            />
+   </data>
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/spacing_normal"
+         android:layout_marginTop="@dimen/spacing_normal"
+         android:orientation="horizontal"
+         android:theme="@style/WalletTheme"
+         >
+
+      <TextView
+            style="@style/WalletTheme.ProfileField.PhoneNumber"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:background="@drawable/wallet_edit_text_background_selector"
+            android:gravity="center"
+            android:hint="@string/wallet_card_settings_profile_country_code_hint"
+            android:text="+"
+            tools:ignore="HardcodedText"
+            />
+
+      <EditText
+            android:id="@+id/et_country_code"
+            style="@style/WalletTheme.ProfileField.PhoneNumber"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/spacing_small"
+            android:layout_weight="0.2"
+            android:hint="@string/wallet_card_settings_profile_country_code_hint"
+            android:maxLength="5"
+            android:text="@={profile.phoneCode}"
+            app:onFocusChangeListener="@{onEditTextFocusChange}"
+            tools:text="1"
+            />
+
+      <EditText
+            android:id="@+id/et_phone_number"
+            style="@style/WalletTheme.ProfileField.PhoneNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:layout_weight="0.7"
+            android:drawableEnd="@drawable/ic_wallet_vector_pencil"
+            android:hint="@string/wallet_card_settings_profile_phone_hint"
+            android:imeOptions="actionDone"
+            android:maxLength="12"
+            android:text="@={profile.phoneNumber}"
+            app:onFocusChangeListener="@{onEditTextFocusChange}"
+            tools:ignore="TextFields"
+            />
+
+   </LinearLayout>
+</layout>

@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.settings.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.worldventures.core.modules.settings.model.SettingsGroup;
 import com.worldventures.core.ui.annotations.Layout;
-import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
@@ -34,7 +34,7 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-      recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
+      recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
       adapter = new BaseDelegateAdapter(getContext(), this);
       adapter.registerCell(SettingsGroup.class, SettingsGroupCell.class);
       adapter.registerDelegate(SettingsGroup.class, this);

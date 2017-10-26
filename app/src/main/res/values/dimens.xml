@@ -166,4 +166,6 @@
    <dimen name="dtl_transaction_screen_card_radius">4dp</dimen>
    <dimen name="dtl_transaction_screen_content_width">250dp</dimen>
 
+   <dimen name="radio_pay_in_app">12dp</dimen>
+
 </resources>

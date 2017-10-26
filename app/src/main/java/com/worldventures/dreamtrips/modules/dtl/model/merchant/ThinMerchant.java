@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
@@ -37,6 +38,8 @@ public abstract class ThinMerchant implements Serializable {
    @Nullable public abstract List<MerchantMedia> images();
    @Nullable public abstract List<OperationDay> operationDays();
    @Nullable public abstract ReviewSummary reviewSummary();
+   @Nullable public abstract Boolean useThrstFlow();
+   @Nullable public abstract String thrstFullCapabilityUrl();
 
    @Value.Derived public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);

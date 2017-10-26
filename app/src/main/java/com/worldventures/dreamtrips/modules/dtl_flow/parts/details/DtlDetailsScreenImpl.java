@@ -92,6 +92,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.text_view_rating) TextView textViewRating;
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
+   @InjectView(R.id.view_pay_in_app) TextView payInApp;
    @InjectView(R.id.container_comments) OfferWithReviewView mContainerComments;
    @InjectView(R.id.btn_rate_and_review) TextView rateAndReviewBtn;
    @InjectView(R.id.order_from_menu_divider) View orderFromMenuDivider;
@@ -120,7 +121,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
       merchantHoursInflater = new MerchantWorkingHoursInflater(injector);
       merchantDataInflater = new MerchantOffersInflater(injector);
-      merchantInfoInflater = new MerchantInfoInflater(injector);
+      merchantInfoInflater = new MerchantInfoInflater(injector, true);
 
       merchantDataInflater.registerOfferClickListener(offer -> getPresenter().onOfferClick(offer));
       merchantDataInflater.setView(this);
@@ -129,6 +130,12 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       showMessage();
 
       mContainerComments.loadFirstPage();
+      hidePayInAppButton();
+   }
+
+   private void hidePayInAppButton() {
+      if (payInApp == null) return;
+      ViewUtils.setViewVisibility(payInApp, View.GONE);
    }
 
    @Override

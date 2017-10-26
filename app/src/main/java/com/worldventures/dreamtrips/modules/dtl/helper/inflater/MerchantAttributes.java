@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.text.Spannable;
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
@@ -58,6 +59,8 @@ public abstract class MerchantAttributes implements Serializable {
    @Nullable public abstract List<OperationDay> operationDays();
    @Nullable public abstract List<Disclaimer> disclaimers();
    @Nullable public abstract ReviewSummary reviewSummary();
+   @Nullable public abstract  Boolean useThrstFlow();
+   @Nullable public abstract  String thrstFullCapabilityUrl();
 
    @Value.Derived public boolean hasPoints() {
       return offersCount(OfferType.POINTS) > 0;

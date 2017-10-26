@@ -27,6 +27,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    @InjectView(R.id.categories) TextView categories;
    @InjectView(R.id.distance) TextView distance;
    @InjectView(R.id.view_points) TextView points;
+   @InjectView(R.id.view_pay_in_app) TextView payInApp;
    @InjectView(R.id.view_perks) TextView perks;
    @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
    @InjectView(R.id.text_view_rating) TextView textViewRating;
@@ -36,9 +37,15 @@ public class MerchantInfoInflater extends MerchantDataInflater {
    protected Resources resources;
 
    private static final float DEFAULT_RATING_VALUE = 0;
+   private boolean isFromMerchantDetail = false;
 
    public MerchantInfoInflater(Injector injector) {
       injector.inject(this);
+   }
+
+   public MerchantInfoInflater(Injector injector, boolean isFromMerchantDetail) {
+      injector.inject(this);
+      this.isFromMerchantDetail = isFromMerchantDetail;
    }
 
    @Override
@@ -93,5 +100,17 @@ public class MerchantInfoInflater extends MerchantDataInflater {
 
       if (perkVisibility == View.VISIBLE) this.perks.setText(rootView.getContext()
             .getString(R.string.perks_formatted, perks));
+
+      if (merchantAttributes == null) return;
+
+      if (merchantAttributes.useThrstFlow()) {
+         ViewUtils.setViewVisibility(this.payInApp, View.VISIBLE);
+         ViewUtils.setViewVisibility(this.points, View.GONE);
+      } else {
+         ViewUtils.setViewVisibility(this.payInApp, View.GONE);
+         ViewUtils.setViewVisibility(this.points, View.VISIBLE);
+      }
+
+      if (isFromMerchantDetail) ViewUtils.setViewVisibility(this.payInApp, View.GONE);
    }
 }

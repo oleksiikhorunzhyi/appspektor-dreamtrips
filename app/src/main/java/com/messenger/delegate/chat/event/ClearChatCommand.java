@@ -10,7 +10,7 @@ import com.messenger.messengerservers.event.ClearChatEvent;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.PhotoDAO;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 

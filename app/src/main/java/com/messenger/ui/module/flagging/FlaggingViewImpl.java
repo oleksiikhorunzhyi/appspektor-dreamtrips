@@ -15,7 +15,7 @@ import android.widget.EditText;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.messenger.ui.module.ModuleStatefulViewImpl;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;

@@ -3,7 +3,7 @@ package com.worldventures.core.modules.infopages.service.command;
 import android.os.Build;
 
 import com.worldventures.core.R;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.infopages.service.storage.InfopagesStorage;
 import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.api.feedback.SendFeedbackHttpAction;

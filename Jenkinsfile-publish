@@ -38,11 +38,12 @@ utils.runBuild('android', getNotifier(utils)) {
    }
    stage('publish') {
       if (isInternalOnly()) {
-         archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', caseSensitive: false, onlyIfSuccessful: true
+         archiveArtifacts artifacts: "app/build/outputs/apk/external${buildParams.streamFlavor}${buildParams.serverFlavor}/*.apk", caseSensitive: false, onlyIfSuccessful: true
       } else {
          def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
          echo releaseNotes
-         def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+         def buildTypeSubDir = buildParams.apkBuildType == 'Debug' ? 'debug' : 'release'
+         def apkPath = "app/build/outputs/apk/external${buildParams.streamFlavor}${buildParams.serverFlavor}/${buildTypeSubDir}/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
          step([$class   : 'HockeyappRecorder', applications:
                [[apiToken          : params.hockeyApiToken,
                  filePath          : apkPath,
@@ -140,7 +141,7 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
          break
       case ~/^smart-card\/.+/:
          params << [
-               streamFlavor  : params.comment.contains("-smartcard mocked") ? "SmartCardMock" : "SmartCardNxtid",
+               streamFlavor  : params.comment.contains("-smartcard mocked") ? "Smartcardmock" : "Smartcardnxtid",
                hockeyAppId   : "427d6a383bcf44e698227ea31c778d3b",
                hockeyAppTeams: [qaTeam, "77191"]
          ]

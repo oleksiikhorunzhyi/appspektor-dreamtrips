@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.AnalyticsServiceException;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

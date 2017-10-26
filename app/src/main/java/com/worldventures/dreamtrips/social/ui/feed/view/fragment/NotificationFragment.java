@@ -15,6 +15,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -33,7 +34,6 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.NotificationPresent
 import com.worldventures.dreamtrips.social.ui.feed.view.adapter.NotificationHeaderAdapter;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.notification.NotificationCell;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 
 import java.util.List;
@@ -69,11 +69,12 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
       super.afterCreateView(rootView);
       adapter = new NotificationAdapter(getActivity(), this);
       adapter.setHasStableIds(true);
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(this::loadNext);
-      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      statePaginatedRecyclerViewManager.getStateRecyclerView().setEmptyView(emptyView);
       //
       NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(),
             R.layout.adapter_item_notification_divider, item -> () -> createHeaderString(item));
@@ -81,10 +82,10 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
             .setStickyHeadersAdapter(headerAdapter, false)
             .setOnHeaderClickListener((header, headerId) -> {
             })// make sticky header clickable to make items below it not clickable
-            .setRecyclerView(statePaginatedRecyclerViewManager.stateRecyclerView)
+            .setRecyclerView(statePaginatedRecyclerViewManager.getStateRecyclerView())
             .build();
       statePaginatedRecyclerViewManager.addItemDecoration(decoration);
-      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      statePaginatedRecyclerViewManager.getStateRecyclerView().setEmptyView(emptyView);
       //
       registerCells();
    }

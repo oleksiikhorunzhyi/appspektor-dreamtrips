@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.VideoMicroserviceModule;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody;

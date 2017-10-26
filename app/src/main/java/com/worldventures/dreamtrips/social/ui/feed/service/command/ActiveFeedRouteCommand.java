@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.wallet.service.command.CachedValueCommand;
+import com.worldventures.wallet.service.command.CachedValueCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 

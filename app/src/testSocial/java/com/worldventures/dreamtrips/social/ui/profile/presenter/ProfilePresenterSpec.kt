@@ -6,6 +6,7 @@ import com.worldventures.core.model.User
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem
@@ -232,7 +233,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
          return sessionHolder
       }
 
-      open fun onSetupInjector(injector: com.worldventures.dreamtrips.common.Injector,
+      open fun onSetupInjector(injector: Injector,
                                pipeCreator: SessionActionPipeCreator) {
       }
    }

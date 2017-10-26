@@ -79,7 +79,7 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
 
    @Override
    public void showFriendDialog(User user) {
-      ImageView userPhoto = ButterKnife.findById(statePaginatedRecyclerViewManager.stateRecyclerView, R.id.user_photo);
+      ImageView userPhoto = ButterKnife.findById(statePaginatedRecyclerViewManager.getStateRecyclerView(), R.id.user_photo);
       if (userPhoto != null) {
          userPhoto.setDrawingCacheEnabled(true);
          new FriendActionDialogDelegate(getActivity())

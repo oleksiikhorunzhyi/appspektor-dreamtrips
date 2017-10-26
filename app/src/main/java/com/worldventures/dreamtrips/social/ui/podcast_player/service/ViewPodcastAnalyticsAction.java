@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.podcast_player.service;
 
 import com.worldventures.core.service.analytics.AdobeTracker;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.ApptentiveTracker;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;

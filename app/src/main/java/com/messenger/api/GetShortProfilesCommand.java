@@ -2,7 +2,7 @@ package com.messenger.api;
 
 
 import com.worldventures.dreamtrips.api.messenger.GetShortProfileHttpAction;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.User;
 
 import java.util.List;

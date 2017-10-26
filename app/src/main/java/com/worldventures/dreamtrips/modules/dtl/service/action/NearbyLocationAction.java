@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.locations.LocationsHttpAction;
 import com.worldventures.core.janet.CommandWithError;

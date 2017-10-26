@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      >
+
+   <data>
+
+      <variable
+            name="attempts"
+            type="com.worldventures.wallet.ui.settings.help.feedback.payment.model.AttemptsViewModel"
+            />
+   </data>
+
+   <android.support.constraint.ConstraintLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/white"
+         android:orientation="vertical"
+         android:theme="@style/WalletTheme"
+         >
+
+      <TextView
+            android:id="@+id/textView11"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@string/wallet_payment_feedback_payment_experience_label"
+            android:textSize="@dimen/font_extra_normal"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+      <TextView
+            android:id="@+id/textView12"
+            style="@style/WalletTheme.PaymentFeedbackSecondaryText"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/wallet_payment_feedback_was_success_label"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11"
+            />
+
+      <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView12"
+            >
+
+         <RadioButton
+               android:id="@+id/rb_payment_success"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:checked="@={attempts.successPayment}"
+               android:text="@string/wallet_label_yes"
+               android:textSize="@dimen/font_normal"
+               app:buttonTint="?attr/colorPrimary"
+               />
+
+         <RadioButton
+               android:id="@+id/rb_payment_failed"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:checked="@{!attempts.successPayment}"
+               android:text="@string/wallet_label_no"
+               android:textSize="@dimen/font_normal"
+               app:buttonTint="?attr/colorPrimary"
+               />
+      </RadioGroup>
+
+      <TextView
+            android:id="@+id/tv_counter_title"
+            style="@style/WalletTheme.PaymentFeedbackSecondaryText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/wallet_payment_feedback_number_attempts_label"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            />
+
+      <com.worldventures.wallet.ui.custom.CounterView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            app:counter_max_value="6"
+            app:counter_min_value="1"
+            app:counter_value="@={attempts.countOfAttempts}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_counter_title"
+            />
+
+   </android.support.constraint.ConstraintLayout>
+</layout>

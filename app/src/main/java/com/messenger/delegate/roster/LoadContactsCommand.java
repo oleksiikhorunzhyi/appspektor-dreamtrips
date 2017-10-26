@@ -4,7 +4,7 @@ import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.storage.dao.UsersDAO;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.worldventures.core.modules.video.service.command;
 
 
 import com.worldventures.core.R;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.member_videos.GetMemberVideosHttpAction;
 import com.worldventures.dreamtrips.api.member_videos.model.ImmutableVideoLanguage;
 import com.worldventures.dreamtrips.api.member_videos.model.VideoLanguage;

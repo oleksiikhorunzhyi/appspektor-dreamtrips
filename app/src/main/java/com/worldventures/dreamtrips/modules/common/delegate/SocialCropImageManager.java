@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.messenger.util.CroppingUtils;
+import com.worldventures.core.ui.util.CroppingUtils;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;

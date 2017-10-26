@@ -199,7 +199,7 @@
 
       <!-- Wallet activities -->
       <activity
-            android:name=".wallet.ui.WalletActivity"
+            android:name="com.worldventures.dreamtrips.wallet.DTWalletActivity"
             android:launchMode="singleTop"
             android:theme="@style/WalletTheme"
             android:screenOrientation="portrait"

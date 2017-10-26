@@ -15,11 +15,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
-import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
@@ -45,9 +45,9 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.HashtagSuggestionCe
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDecorator;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.HashtagSuggestionUtil;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.List;
@@ -71,7 +71,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
    RecyclerViewStateDelegate stateDelegate;
 
-   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private FocusableStatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
    private Bundle savedInstanceState;
    private SearchView searchView;
    private EditText searchText;
@@ -90,8 +90,9 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       BaseDelegateAdapter feedAdapter = new BaseDelegateAdapter<>(getContext(), this);
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
-      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      statePaginatedRecyclerViewManager = new FocusableStatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
+      statePaginatedRecyclerViewManager.getStateRecyclerView().setEmptyView(emptyView);
       statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
@@ -260,7 +261,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void refreshFeedItems(List feedItems) {
-      fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+      fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
    }
 

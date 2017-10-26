@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.wallet.util.WalletFilesUtils;
 
 import java.util.List;
 

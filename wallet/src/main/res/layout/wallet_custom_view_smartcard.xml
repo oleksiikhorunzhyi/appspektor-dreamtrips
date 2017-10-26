@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:animateLayoutChanges="true"
+      android:background="@drawable/wallet_flye_front_with_emv"
+      tools:layout_height="210dp"
+      >
+
+   <ImageView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/spacing_normal"
+         android:src="@drawable/ic_wallet_vector_green_dot"
+         app:layout_constraintBottom_toTopOf="@+id/photo_container"
+         app:layout_constraintEnd_toEndOf="@+id/photo_container"
+         app:layout_constraintStart_toStartOf="@+id/photo_container"
+         tools:ignore="ContentDescription"
+         />
+
+   <android.support.constraint.ConstraintLayout
+         android:id="@+id/photo_container"
+         android:layout_width="90dp"
+         android:layout_height="90dp"
+         android:layout_marginEnd="16dp"
+         android:background="#dddddd"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         >
+
+      <TextView
+            android:id="@+id/tv_photo_full_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@string/wallet_fontFamily_medium"
+            android:gravity="center"
+            android:maxLines="8"
+            android:paddingEnd="@dimen/spacing_small"
+            android:paddingStart="@dimen/spacing_small"
+            android:textSize="9sp"
+            tools:ignore="SmallSp"
+            tools:text="Samantha\nLouise\nSaltalamacchia\n\n+14155552671"
+            />
+
+      <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/cardListSCAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:actualImageScaleType="centerCrop"
+            />
+
+      <TextView
+            android:id="@+id/tv_photo_first_name"
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:background="@color/black_semi_transparent_darker"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingEnd="@dimen/spacing_small"
+            android:paddingStart="@dimen/spacing_small"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="SmallSp"
+            tools:text="Samantha"
+            />
+
+      <ImageView
+            android:layout_width="16dp"
+            android:layout_height="14dp"
+            android:layout_margin="2dp"
+            android:src="@drawable/ic_wallet_edit_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            />
+
+   </android.support.constraint.ConstraintLayout>
+
+   <LinearLayout
+         android:id="@+id/indicators_container"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="16dp"
+         android:layout_marginEnd="16dp"
+         android:gravity="bottom"
+         android:orientation="horizontal"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         >
+
+      <ImageView
+            android:id="@+id/link_indicator"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="6dp"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_wallet_vector_link_indicator"
+            />
+
+      <ImageView
+            android:id="@+id/stealth_indicator"
+            android:layout_width="17dp"
+            android:layout_height="11dp"
+            android:layout_marginEnd="9dp"
+            android:src="@drawable/ic_wallet_vector_stealth_indicator"
+            android:visibility="gone"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible"
+            />
+
+      <ImageView
+            android:id="@+id/lock_indicator"
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_marginEnd="10dp"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_wallet_vector_lock_indicator"
+            />
+
+      <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+
+         <TextView
+               android:id="@+id/battery_indicator_text"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@android:color/white"
+               android:textSize="10sp"
+               tools:ignore="SmallSp"
+               tools:text="100%"
+               />
+
+         <com.worldventures.wallet.ui.widget.BatteryView
+               android:id="@+id/battery_indicator"
+               android:layout_width="21dp"
+               android:layout_height="11dp"
+               tools:src="@drawable/ic_wallet_vector_battery"
+               />
+      </LinearLayout>
+
+   </LinearLayout>
+
+   <TextView
+         android:id="@+id/tv_cards_loaded"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="8dp"
+         android:layout_marginEnd="12dp"
+         android:layout_marginStart="20dp"
+         android:textColor="@color/wallet_card_list_header_text"
+         android:textSize="@dimen/font_medium"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toStartOf="@id/indicators_container"
+         app:layout_constraintStart_toStartOf="parent"
+         tools:text="@string/wallet_card_list_records_connected"
+         />
+
+   <TextView
+         android:id="@+id/tv_full_name"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/tv_cards_loaded"
+         android:layout_alignParentStart="true"
+         android:layout_marginEnd="12dp"
+         android:layout_marginStart="20dp"
+         android:ellipsize="end"
+         android:maxLines="3"
+         android:textAllCaps="true"
+         android:textColor="@android:color/white"
+         android:textSize="@dimen/font_medium"
+         app:layout_constraintBottom_toTopOf="@id/tv_cards_loaded"
+         app:layout_constraintEnd_toStartOf="@id/photo_container"
+         app:layout_constraintStart_toStartOf="parent"
+         tools:text="SHIRLEYEXAMPLE TEMPLE WITH SUPER VERY LONG NAME NEXT LINE"
+         />
+
+</android.support.constraint.ConstraintLayout>

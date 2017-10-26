@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.post.UpdatePostHttpAction;

@@ -5,7 +5,7 @@ import android.support.v7.view.CollapsibleActionView;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 
 public class CollapsibleAutoCompleteTextView extends AppCompatAutoCompleteTextView implements CollapsibleActionView {
 

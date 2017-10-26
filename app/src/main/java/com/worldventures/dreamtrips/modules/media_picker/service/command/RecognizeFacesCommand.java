@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.worldventures.core.di.qualifier.ForApplication;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.FaceRecognitionUtils;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;

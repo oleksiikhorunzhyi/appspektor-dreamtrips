@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.messenger.util.CroppingUtils;
+import com.worldventures.core.ui.util.CroppingUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;

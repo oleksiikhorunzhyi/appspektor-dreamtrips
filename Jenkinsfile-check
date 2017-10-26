@@ -31,32 +31,28 @@ utils.runBuild('android', notifier) {
       utils.scripts.bash("bundle exec danger --danger_id=pr_linter --fail-on-errors=true")
    }
    stage('lint') {
-      def error
-      def message
-      try {
-         def outputs = utils.scripts.bash("./gradlew ${buildParams.LINT_TASK}")
-         def matcher = (outputs =~ /(Lint found .+\R)/)
-         message = matcher.find() ? "${matcher.group(0).trim()}." : "Lint checks successfully passed."
-      } catch (e) {
-         error = e
-         message = "Lint checks failed."
-         println "${buildParams.LINT_TASK} was failed"
+      def errors = []
+      def results = []
+      for (def params : buildParams.LINT_REPORT_PARAMS) {
+         try {
+            def outputs = utils.scripts.bash("./gradlew ${params.task}")
+            def matcher = (outputs =~ /(Lint found .+\R)/)
+            def message = matcher.find() ? "${matcher.group(0).trim()}." : 'Lint checks successfully passed.'
+            results << "${params.name} ${message} ${createReportLink(params.name)}."
+         } catch (e) {
+            errors << e
+            results << "${params.name} Lint checks failed."
+            println "${params.task} was failed"
+         }
+         def reportPath = "${params.folder}/${params.fileName}"
+         if (fileExists(reportPath)) {
+            publishLintResult(params.folder, params.fileName, params.name)
+         } else {
+            println "Cannot publish lint result! $reportPath doesn't exist"
+         }
       }
-      def reportPath = buildParams.LINT_REPORT_FOLDER + '/' + buildParams.LINT_REPORT_FILE_HTML;
-      if (fileExists(reportPath)) {
-         println "Try to publishHTML"
-         publishHTML(target: [
-               allowMissing         : false,
-               alwaysLinkToLastBuild: false,
-               keepAll              : true,
-               reportDir            : buildParams.LINT_REPORT_FOLDER,
-               reportFiles          : buildParams.LINT_REPORT_FILE_HTML,
-               reportName           : "Lint Result"
-         ])
-         androidLint pattern: "${buildParams.LINT_REPORT_FOLDER}/${buildParams.LINT_REPORT_FILE_XML}"
-      }
-      notifier.comment(createLintComment(message))
-      if (error != null) throw error
+      notifier.comment(createLintComment(results))
+      if (!errors.isEmpty()) throw errors[0]
    }
    stage('tests') {
       for (String task : buildParams.TEST_TASKS)
@@ -110,22 +106,41 @@ def Map generateParams() {
    }
 
    def lintReportName = "external${buildParams.FLAVOR}StageDebug"
-   buildParams.LINT_TASK = "lintExternal${buildParams.FLAVOR}StageDebug"
    buildParams.ASSEMBLE_TASK = "assembleExternal${buildParams.FLAVOR}StageDebug"
 
    buildParams.TEST_REPORT_FOLDER = 'app/build/test-results'
    buildParams.TEST_REPORT_PATTERN = '**/*.xml'
 
-   buildParams.LINT_REPORT_FOLDER = 'app/build/reports'
-   buildParams.LINT_REPORT_FILE_HTML = "lint-results-${lintReportName}.html"
-   buildParams.LINT_REPORT_FILE_XML = "lint-results-${lintReportName}.xml"
+   buildParams.LINT_REPORT_PARAMS = [
+      [task: "core:lintDebug", folder: 'core/build/reports', fileName: 'lint-results-debug.html', name: 'Core Module'],
+      [task: "wallet:lintDebug", folder: 'wallet/build/reports', fileName: 'lint-results-debug.html', name: 'Wallet Module'],
+      [task: "app:lintExternal${buildParams.FLAVOR}StageDebug", folder: 'app/build/reports', fileName: "lint-results-${lintReportName}.html", name : 'App Module'],
+   ]
 
    return buildParams
 }
 
 @NonCPS
-def String createLintComment(String message) {
-   return "${message} [You can see Lint Report](${BUILD_URL}Lint_Result/)."
+def String createReportLink(String moduleName) {
+   return "[You can see Lint Report](${BUILD_URL}${moduleName.replace(' ' as char, '_' as char)}_Lint_Result/)"
+}
+
+@NonCPS
+def String createLintComment(List<String> messages) {
+   return messages.collect { it -> "- $it \n" }.join('')
+}
+
+@NonCPS
+def void publishLintResult(String folder, String fileName, String moduleName) {
+   println "Try to publishHTML"
+   publishHTML(target: [
+         allowMissing         : false,
+         alwaysLinkToLastBuild: false,
+         keepAll              : true,
+         reportDir            : folder,
+         reportFiles          : fileName,
+         reportName           : "$moduleName Lint Result"
+   ])
 }
 
 @NonCPS

@@ -6,8 +6,8 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.service.analytics.AnalyticsInteractor
+import com.worldventures.core.test.janet.MockAnalyticsService
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationMutator
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor

@@ -53,6 +53,7 @@ public class RoundDrawableWrapper extends ShapeDrawable {
    }
 
    @Override
+   @TargetApi(Build.VERSION_CODES.LOLLIPOP)
    public void setTintMode(PorterDuff.Mode tintMode) {
       super.setTintMode(tintMode);
       baseDrawable.setTintMode(tintMode);

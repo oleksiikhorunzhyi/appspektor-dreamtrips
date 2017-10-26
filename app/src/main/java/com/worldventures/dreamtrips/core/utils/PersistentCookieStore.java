@@ -14,6 +14,7 @@ import java.net.HttpCookie;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -82,7 +83,8 @@ public class PersistentCookieStore implements CookieStore {
 
       // Save cookie into persistent store
       SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
-      prefsWriter.putString(uri.getHost(), TextUtils.join(",", cookies.get(uri.getHost()).keySet()));
+
+      prefsWriter.putString(uri.getHost(), getHosts(uri));
       prefsWriter.putString(COOKIE_NAME_PREFIX + name, encodeCookie(new SerializableHttpCookie(cookie)));
       prefsWriter.commit();
    }
@@ -93,7 +95,7 @@ public class PersistentCookieStore implements CookieStore {
 
    @Override
    public List<HttpCookie> get(URI uri) {
-      ArrayList<HttpCookie> ret = new ArrayList<HttpCookie>();
+      ArrayList<HttpCookie> ret = new ArrayList<>();
       if (cookies.containsKey(uri.getHost())) ret.addAll(cookies.get(uri.getHost()).values());
       return ret;
    }
@@ -119,7 +121,7 @@ public class PersistentCookieStore implements CookieStore {
          if (cookiePrefs.contains(COOKIE_NAME_PREFIX + name)) {
             prefsWriter.remove(COOKIE_NAME_PREFIX + name);
          }
-         prefsWriter.putString(uri.getHost(), TextUtils.join(",", cookies.get(uri.getHost()).keySet()));
+         prefsWriter.putString(uri.getHost(), getHosts(uri));
          prefsWriter.commit();
 
          return true;
@@ -128,9 +130,15 @@ public class PersistentCookieStore implements CookieStore {
       }
    }
 
+   private String getHosts(URI uri) {
+      // NoSuchMethodError: No virtual method keySet()Ljava/util/concurrent/ConcurrentHashMap$KeySetView;
+      // --> http://valery-frolov.blogspot.com/2015/04/javalangnosuchmethoderror.html
+      return TextUtils.join(",", Collections.list(cookies.get(uri.getHost()).keys()));
+   }
+
    @Override
    public List<HttpCookie> getCookies() {
-      ArrayList<HttpCookie> ret = new ArrayList<HttpCookie>();
+      ArrayList<HttpCookie> ret = new ArrayList<>();
       for (String key : cookies.keySet())
          ret.addAll(cookies.get(key).values());
 
@@ -139,7 +147,7 @@ public class PersistentCookieStore implements CookieStore {
 
    @Override
    public List<URI> getURIs() {
-      ArrayList<URI> ret = new ArrayList<URI>();
+      ArrayList<URI> ret = new ArrayList<>();
       for (String key : cookies.keySet())
          try {
             ret.add(new URI(key));

@@ -10,10 +10,10 @@ import com.messenger.storage.dao.TranslationsDAO;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
-import com.worldventures.dreamtrips.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.utils.LocaleHelper;
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 
 import org.junit.Before;

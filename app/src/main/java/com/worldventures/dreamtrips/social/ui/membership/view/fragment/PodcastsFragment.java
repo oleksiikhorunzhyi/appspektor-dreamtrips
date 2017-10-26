@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.membership.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
@@ -13,7 +14,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.ui.annotations.Layout;
-import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
@@ -56,7 +56,7 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
 
       LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
       recyclerView.setLayoutManager(layoutManager);
-      recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+      recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
       adapter = new BaseDelegateAdapter<>(getContext(), this);
 
       adapter.registerCell(Podcast.class, PodcastCell.class);

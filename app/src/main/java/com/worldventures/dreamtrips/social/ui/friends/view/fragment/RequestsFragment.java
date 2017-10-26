@@ -15,6 +15,7 @@ import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
@@ -25,7 +26,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.friends.model.AcceptanceHeaderModel;
 import com.worldventures.dreamtrips.social.ui.friends.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.RequestsPresenter;
@@ -88,7 +88,8 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
          public void onCellClicked(RequestHeaderModel model) { }
       });
 
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState, getLayoutManager());
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());

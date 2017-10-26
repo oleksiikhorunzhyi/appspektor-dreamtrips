@@ -60,8 +60,8 @@ class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InviteP
       }
    }
 
-   private fun loadContacts() {
-      checkPermissions(READ_PHONE_CONTACTS, true) {
+   private fun loadContacts(withExplanation: Boolean = true) {
+      checkPermissions(READ_PHONE_CONTACTS, withExplanation) {
          inviteShareInteractor.updateContactsPipe.send(UpdateContactsCommand(type))
       }
    }
@@ -92,8 +92,8 @@ class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InviteP
       inviteShareInteractor.membersPipe.send(ReadMembersCommand())
    }
 
-   fun onReadContactsExplanationShown() {
-      loadContacts()
+   fun onExplanationShown(permissions: Array<String>) {
+      if (permissionUtils.equals(permissions, READ_PHONE_CONTACTS)) loadContacts() else addContactRequired()
    }
 
    fun addMember(name: String, email: String, phone: String) {

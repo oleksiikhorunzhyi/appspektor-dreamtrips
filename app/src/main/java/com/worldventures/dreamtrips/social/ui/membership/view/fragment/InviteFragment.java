@@ -206,7 +206,7 @@ public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, ShareB
             .content(contentRes)
             .positiveText(R.string.dialog_ok)
             .negativeText(R.string.dialog_cancel)
-            .onPositive((materialDialog, dialogAction) -> getPresenter().onReadContactsExplanationShown())
+            .onPositive((materialDialog, dialogAction) -> getPresenter().onExplanationShown(permissions))
             .onNegative((materialDialog, dialogAction) -> getPresenter().onPermissionDenied(permissions))
             .cancelable(false)
             .show();

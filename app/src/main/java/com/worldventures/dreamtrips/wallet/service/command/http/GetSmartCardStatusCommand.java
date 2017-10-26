@@ -33,7 +33,7 @@ public class GetSmartCardStatusCommand extends Command<SmartCardStatus> implemen
       smartCardId = Long.toString(Long.parseLong(barcode));
 
       apiJanet.createPipe(SmartCardStatusHttpAction.class)
-            .createObservableResult(new SmartCardStatusHttpAction(barcode))
+            .createObservableResult(new SmartCardStatusHttpAction(barcode, propertiesProvider.deviceId()))
             .map(action -> action.status().status())
             .subscribe(callback::onSuccess, callback::onFail);
    }

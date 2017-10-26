@@ -128,7 +128,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
       analyticsInteractor.setUserIdsPipe().send(new SetUserIdsHeadersCommand(getAccount().getUsername(),
             Integer.toString(getAccount().getId())));
       messengerConnector.connect();
-      view.openMain();
+      view.openMainOrWallet();
    }
 
    @Override
@@ -142,7 +142,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
       void openSplash();
 
-      void openMain();
+      void openMainOrWallet();
 
       void dismissLoginProgress();
 

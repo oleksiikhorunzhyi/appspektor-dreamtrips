@@ -1,6 +1,7 @@
 package com.worldventures.core.di;
 
 import com.worldventures.core.modules.ServiceModule;
+import com.worldventures.core.modules.UtilModule;
 import com.worldventures.core.modules.auth.AuthModule;
 import com.worldventures.core.modules.facebook.FacebookAppModule;
 import com.worldventures.core.modules.infopages.SupportModule;
@@ -24,6 +25,7 @@ import dagger.Module;
             MediaModule.class,
             SettingsModule.class,
             MediaPickerAppModule.class,
+            UtilModule.class
       }
 )
 public class CoreModule {

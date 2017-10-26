@@ -165,7 +165,6 @@
    <dimen name="dtl_transaction_screen_margin_points_icon_margin">5dp</dimen>
    <dimen name="dtl_transaction_screen_card_radius">4dp</dimen>
    <dimen name="dtl_transaction_screen_content_width">250dp</dimen>
-   <dimen name="left_transaction_space">8dp</dimen>
 
    <dimen name="radio_pay_in_app">12dp</dimen>
 

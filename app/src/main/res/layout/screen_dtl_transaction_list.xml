@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListScreenImpl android:id="@+id/root_reviews_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_actionbar"
+            style="@style/ToolBarStyle"
+            ></android.support.v7.widget.Toolbar>
+
+      <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textColor="@color/merchant_landscape_title_color"
+            android:textSize="@dimen/font_large"
+            android:textStyle="normal"
+            android:visibility="gone"
+            />
+   </RelativeLayout>
+
+   <android.support.v7.widget.SearchView
+         android:id="@+id/dtlToolbarMerchantSearchInput"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_margin="@dimen/dtl_transaction_search_margin"
+         android:background="@drawable/bg_edittext_white"
+         android:hint="@string/dtl_all_locations"
+         android:searchIcon="@drawable/ic_dtlt_search_input"
+         android:textColorHint="@color/dtlt_input_hint_color"
+         />
+
+   <LinearLayout
+         android:id="@+id/listViewLayout"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         >
+
+      <ProgressBar
+            android:id="@+id/progress_loader"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            />
+
+      <com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView
+            android:id="@+id/container_transaction_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+   </LinearLayout>
+
+   <LinearLayout
+         android:id="@+id/emptyView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:gravity="center"
+         android:orientation="vertical"
+         android:padding="@dimen/spacing_large"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:id="@+id/captionNoMerchants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/merchants_no_results"
+            android:textSize="@dimen/font_medium"
+            android:visibility="visible"
+            />
+   </LinearLayout>
+
+   <LinearLayout
+         android:id="@+id/errorView"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:padding="@dimen/spacing_large"
+         android:visibility="gone"
+         >
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="160dp"
+            android:gravity="center"
+            android:text="@string/dtl_load_error"
+            android:textSize="@dimen/font_normal"
+            />
+
+      <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_medium"
+            android:text="@string/dtl_load_merchant_error_caption"
+            android:textSize="@dimen/font_normal"
+            />
+
+   </LinearLayout>
+
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListScreenImpl>

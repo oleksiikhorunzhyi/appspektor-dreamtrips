@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
@@ -24,7 +25,9 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void showSucceed(Merchant merchant, DtlTransaction dtlTransaction);
 
-   void setTransaction(DtlTransaction dtlTransaction);
+   void showThrstSucceed(Merchant merchant, String earnedPoints, String totalPoints);
+
+   void setTransaction(DtlTransaction dtlTransaction, boolean isThrstTransaction);
 
    void setSuggestMerchantButtonAvailable(boolean available);
 
@@ -52,6 +55,8 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void showAllReviews();
 
+   void hideReviewViewsOnTablets();
+
    void addNoCommentsAndReviews();
 
    void addCommentsAndReviews(float ratingMerchant, int countReview, ArrayList<ReviewObject> listReviews);
@@ -60,7 +65,17 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void userHasPendingReview();
 
-   boolean isTablet();
+   void showThrstFlowButton();
 
-   void hideReviewViewsOnTablets();
+   void showEarnFlowButton();
+
+   Activity getActivity();
+
+   void showOrderFromMenu();
+
+   void hideOrderFromMenu();
+
+   void hideEarnFlowButton();
+
+   boolean isTablet();
 }

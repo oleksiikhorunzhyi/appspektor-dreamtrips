@@ -128,7 +128,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @Override
    public void showCurrency(Currency currency) {
       final int padding = amountInput.getPaddingForCurrency(currency.prefix());
-      currencyHint.setPadding(0, padding, 0, 0);
+      currencyHint.setPadding(8, padding, 0, 0);
       currencyHint.setText(currency.getCurrencyHint());
       amountInput.setCurrencySymbol(currency.prefix());
    }

@@ -7,6 +7,7 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
@@ -19,6 +20,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentRev
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import flow.Flow;
@@ -29,6 +33,13 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
+
+   ScrollEventListener listener = new ScrollEventListener() {
+      @Override
+      public void onScrollBottomReached(int indexOf) {
+         addMoreReviews(indexOf);
+      }
+   };
 
    @Inject
    SessionHolder appSessionHolder;
@@ -46,6 +57,14 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      getView().setEventListener(listener);
+      loadFirstReviews();
+      getFirstPage();
+   }
+
+   @Override
+   public void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
    }
 
    @Override
@@ -70,13 +89,29 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
       if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
          getView().userHasPendingReview();
       } else {
-         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true, false));
+         addNewComment();
       }
+   }
+
+   @Override
+   public void addNewComment() {
+      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true, false));
    }
 
    @Override
    public void addMoreReviews(int indexOf) {
       connectReviewMerchants(indexOf);
+   }
+
+   @Override
+   public void loadFirstReviews() {
+      getView().resetViewData();
+      getView().onRefreshProgress();
+   }
+
+   @Override
+   public void getFirstPage() {
+      connectReviewMerchants(0);
    }
 
    private void connectReviewMerchants(int indexOf) {
@@ -97,11 +132,17 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
             .build()));
    }
 
-   private void onMerchantsLoaded(ReviewMerchantsAction action) {
+   public void onMerchantsLoaded(ReviewMerchantsAction action) {
       getView().onRefreshSuccess();
-         getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
-                     .ratingAverage()), Integer.parseInt(action.getResult().total()),
-               ReviewObject.getReviewList(action.getResult().reviews()));
+
+      ArrayList<ReviewObject> reviewObjects = ReviewObject.getReviewList(action.getResult().reviews());
+      List<ReviewObject> currentReviews = getView().getCurrentReviews();
+      boolean validReceivedData = isValidReceivedData(currentReviews, reviewObjects);
+      if(!validReceivedData) return;
+
+      getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
+                  .ratingAverage()), Integer.parseInt(action.getResult().total()),
+            reviewObjects);
    }
 
    private void onMerchantsLoading(ReviewMerchantsAction action, Integer progress) {
@@ -110,5 +151,16 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    private void onMerchantsLoadingError(ReviewMerchantsAction action, Throwable throwable) {
       getView().onRefreshError(action.getErrorMessage());
+   }
+
+   public boolean isValidReceivedData(List<ReviewObject> currentItems, List<ReviewObject> reviewObjects) {
+      if (reviewObjects.isEmpty()) return false;
+
+      if (!currentItems.isEmpty() && !reviewObjects.isEmpty()) {
+         ReviewObject lastItem = currentItems.get(currentItems.size() - 1);
+         ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size() - 1);
+         if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) return false;
+      }
+      return true;
    }
 }

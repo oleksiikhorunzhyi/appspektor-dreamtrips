@@ -10,7 +10,7 @@ import javax.inject.Inject
 @CommandAction
 class LocateCardAnalyticsCommand(private val baseLocateSmartCardAction: BaseLocateSmartCardAction) : WalletAnalyticsCommand(baseLocateSmartCardAction) {
 
-   @Inject internal lateinit var lostCardRepository: LostCardRepository
+   @Inject lateinit var lostCardRepository: LostCardRepository
 
    @Throws(Throwable::class)
    override fun run(callback: CommandCallback<Void>) {

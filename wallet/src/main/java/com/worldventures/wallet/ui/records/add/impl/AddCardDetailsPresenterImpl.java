@@ -224,18 +224,17 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             .map(Command::getResult)
             .map(SmartCardStatus::getConnectionStatus)
             .subscribe(connectionStatus -> analyticsInteractor.walletAnalyticsPipe()
-                  .send(new WalletAnalyticsCommand(AddCardDetailsAction
-                        .forBankCard(record, connectionStatus.isConnected()))));
+                  .send(new WalletAnalyticsCommand(new AddCardDetailsAction(record, connectionStatus.isConnected()))));
    }
 
    private void trackSetAsDefault(Record record) {
       analyticsInteractor.walletAnalyticsPipe()
-            .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(record)));
+            .send(new WalletAnalyticsCommand(new SetDefaultCardAction(record)));
    }
 
    private void trackAddedCard(Record record, boolean setAsDefault) {
       analyticsInteractor.walletAnalyticsPipe()
-            .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(record, setAsDefault)));
+            .send(new WalletAnalyticsCommand(new CardDetailsOptionsAction(record, setAsDefault)));
    }
 
    public HttpErrorHandlingUtil httpErrorHandlingUtil() {

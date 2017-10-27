@@ -12,9 +12,9 @@ import javax.inject.Inject
 @CommandAction
 open class WalletAnalyticsCommand(private val walletAnalyticsAction: WalletAnalyticsAction) : Command<Void>(), InjectableAction {
 
-   @Inject internal lateinit var smartCardInteractor: SmartCardInteractor
-   @Inject internal lateinit var walletStorage: WalletStorage
-   @Inject internal lateinit var analyticsInteractor: WalletAnalyticsInteractor
+   @Inject lateinit var smartCardInteractor: SmartCardInteractor
+   @Inject lateinit var walletStorage: WalletStorage
+   @Inject lateinit var analyticsInteractor: WalletAnalyticsInteractor
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Void>) {

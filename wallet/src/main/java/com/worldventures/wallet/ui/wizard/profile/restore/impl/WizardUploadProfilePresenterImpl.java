@@ -78,7 +78,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(
-                  user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
+                  user.userPhoto() != null ? PhotoWasSetAction.Companion.methodDefault() : PhotoWasSetAction.Companion.noPhoto())
             );
 //      getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
       getNavigator().goWizardAssignUser(getView().getProvisionMode());

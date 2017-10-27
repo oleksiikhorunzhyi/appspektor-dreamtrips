@@ -103,7 +103,7 @@ public final class SecureMultipleRecordsCommand extends Command<List<Record>> im
 
       Queryable.from(records).forEachR(recordWithError -> analyticsInteractor.walletAnalyticsPipe()
             .send(new TokenizationAnalyticsLocationCommand(
-                  TokenizationCardAction.from(recordWithError, success, actionType, secureForLocalStorage)
+                  TokenizationCardAction.Companion.from(recordWithError, success, actionType, secureForLocalStorage)
             )));
    }
 

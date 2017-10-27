@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.wallet.analytics.CardDetailsAction;
+import com.worldventures.wallet.analytics.ChangeDefaultCardAction;
 import com.worldventures.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.domain.entity.ConnectionStatus;
@@ -38,7 +39,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-import static com.worldventures.wallet.analytics.ChangeDefaultCardAction.forBankCard;
 import static com.worldventures.wallet.util.WalletRecordUtil.equalsRecordId;
 import static com.worldventures.wallet.util.WalletRecordUtil.findRecord;
 
@@ -241,7 +241,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private void trackSetAsDefault() {
       fetchRecord(recordDetailViewModel.getRecordId(),
             record -> analyticsInteractor.walletAnalyticsPipe()
-                  .send(new WalletAnalyticsCommand(forBankCard(record))));
+                  .send(new WalletAnalyticsCommand(new ChangeDefaultCardAction(record))));
    }
 
    public void goBack() {

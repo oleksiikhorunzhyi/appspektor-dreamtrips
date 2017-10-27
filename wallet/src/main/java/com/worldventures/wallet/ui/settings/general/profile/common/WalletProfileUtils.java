@@ -34,11 +34,11 @@ public final class WalletProfileUtils {
          countryCode = String.format(Locale.getDefault(), "+%s", countryCode);
       }
       return (phone == null && isStrPhoneEmpty)
-            || (phone != null && phone.code().equals(countryCode) && phone.number().equals(number));
+            || (phone != null && phone.getCode().equals(countryCode) && phone.getNumber().equals(number));
    }
 
    public static boolean equalsPhoto(@Nullable SmartCardUserPhoto photo, @Nullable String photoUri) {
-      return (photo == null && photoUri == null) || (photo != null && photo.uri().equals(photoUri));
+      return (photo == null && photoUri == null) || (photo != null && photo.getUri().equals(photoUri));
    }
 
    public static void checkUserNameValidation(String firstName, String middleName, String lastName,

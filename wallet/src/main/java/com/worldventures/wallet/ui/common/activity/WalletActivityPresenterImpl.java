@@ -73,9 +73,9 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    }
 
    private void auxiliaryDisconnectSmartCard() {
-      interactor.deviceStatePipe().createObservableResult(DeviceStateCommand.fetch())
+      interactor.deviceStatePipe().createObservableResult(DeviceStateCommand.Companion.fetch())
             .map(DeviceStateCommand::getResult)
-            .filter(smartCardStatus -> smartCardStatus.connectionStatus().isConnected())
+            .filter(smartCardStatus -> smartCardStatus.getConnectionStatus().isConnected())
             .subscribe(smartCardStatus -> interactor.disconnectPipe().send(new DisconnectAction()),
                   throwable -> Timber.e(throwable, "Disconnect on Wallet exit"));
    }

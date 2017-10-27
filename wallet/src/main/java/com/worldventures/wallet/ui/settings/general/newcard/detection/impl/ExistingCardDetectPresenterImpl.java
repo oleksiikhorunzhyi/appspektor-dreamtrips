@@ -73,11 +73,11 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
 
    private void observerSmartCardConnectedStatus() {
       smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.fetch())
+            .createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideDeviceStateOperationView())
-                  .onSuccess(command -> handleConnectedResult(command.getResult().connectionStatus()))
+                  .onSuccess(command -> handleConnectedResult(command.getResult().getConnectionStatus()))
                   .create());
    }
 

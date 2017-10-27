@@ -48,7 +48,7 @@ public class WizardTermsPresenterImpl extends WalletPresenterImpl<WizardTermsScr
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().termsOperationView())
-                  .onSuccess(command -> getView().showTerms(command.getResult().url()))
+                  .onSuccess(command -> getView().showTerms(command.getResult().getUrl()))
                   .create());
    }
 

@@ -51,7 +51,7 @@ class ProcessSmartCardInfoDelegate {
       if (user.displayPhoto() != null) {
          final String photoUrl = user.displayPhoto();
          return Observable.just(photoUrl)
-               .map(s -> changeUserPhoto(scUser, SmartCardUserPhoto.of(s)));
+               .map(s -> changeUserPhoto(scUser, new SmartCardUserPhoto(s)));
       } else {
          return Observable.just(scUser);
       }
@@ -66,7 +66,7 @@ class ProcessSmartCardInfoDelegate {
    }
 
    private SmartCardUser changeUserPhoto(SmartCardUser user, SmartCardUserPhoto smartCardUserPhoto) {
-      final String uri = smartCardUserPhoto.uri();
+      final String uri = smartCardUserPhoto.getUri();
       if (uri != null) {
          return ImmutableSmartCardUser.builder()
                .from(user)

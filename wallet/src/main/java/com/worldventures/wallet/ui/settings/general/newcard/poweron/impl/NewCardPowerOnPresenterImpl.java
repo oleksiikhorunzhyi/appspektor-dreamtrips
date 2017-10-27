@@ -86,12 +86,12 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
    @Override
    public void navigateNext() {
       smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.fetch())
+            .createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> handleConnectionSmartCard(bluetoothService.isEnable(), command.getResult()
-                        .connectionStatus()
+                        .getConnectionStatus()
                         .isConnected()))
                   .onFail((command, throwable) -> getNavigator().goPreCheckNewCard()));
    }

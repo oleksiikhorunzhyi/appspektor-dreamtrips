@@ -28,13 +28,13 @@ public class SetStealthModeCommand extends Command<Boolean> implements Injectabl
 
    @Override
    protected void run(CommandCallback<Boolean> callback) throws Throwable {
-      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.stealthMode(stealthModeEnabled));
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.stealthMode(stealthModeEnabled));
 
       janet.createPipe(SetStealthModeAction.class)
             .createObservableResult(new SetStealthModeAction(stealthModeEnabled))
             .map(smartCard -> stealthModeEnabled)
             .subscribe(callback::onSuccess, throwable -> {
-               smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.stealthMode(!stealthModeEnabled));
+               smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.stealthMode(!stealthModeEnabled));
                callback.onFail(throwable);
             });
    }

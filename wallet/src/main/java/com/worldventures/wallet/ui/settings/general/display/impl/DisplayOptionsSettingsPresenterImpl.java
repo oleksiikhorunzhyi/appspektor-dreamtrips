@@ -151,7 +151,7 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    public void saveAvatar(String imageUri) {
       user = ImmutableSmartCardUser.builder()
             .from(user)
-            .userPhoto(SmartCardUserPhoto.of(imageUri))
+            .userPhoto(new SmartCardUserPhoto(imageUri))
             .build();
 
       mustSaveUserProfile = true;

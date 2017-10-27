@@ -64,7 +64,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
             (smartCardCommand, bluetoothIsEnabled) -> new Pair<>(bluetoothIsEnabled, smartCardCommand.getResult()))
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(pair -> bind(pair.first, pair.second.connectionStatus()
+            .subscribe(pair -> bind(pair.first, pair.second.getConnectionStatus()
                   .isConnected()), throwable -> Timber.e(throwable, ""));
 
       bluetoothService.observeEnablesState()
@@ -74,7 +74,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
                   ? new BluetoothEnabledAction()
                   : new BluetoothDisabledAction()));
 
-      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.fetch());
    }
 
    private void bind(boolean bluetoothIsEnabled, boolean smartCardConnected) {

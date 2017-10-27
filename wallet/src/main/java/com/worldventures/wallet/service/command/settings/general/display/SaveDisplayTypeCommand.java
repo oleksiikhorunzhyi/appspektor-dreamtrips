@@ -54,7 +54,7 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
                switch (displayType) {
                   case DISPLAY_PHONE_AND_NAME:
                      final SmartCardUserPhone userPhone = smartCardUser.phoneNumber();
-                     if (userPhone == null || ProjectTextUtils.isEmpty(userPhone.number())) {
+                     if (userPhone == null || ProjectTextUtils.isEmpty(userPhone.getNumber())) {
                         throw new MissingUserPhoneException();
                      }
                      break;

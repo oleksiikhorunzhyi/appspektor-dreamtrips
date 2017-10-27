@@ -80,12 +80,12 @@ public class DisplayOptionsViewHolder {
       switch (type) {
          case DISPLAY_PICTURE_ONLY:
             if (userPhoto != null) {
-               photo.setImageURI(userPhoto.uri());
+               photo.setImageURI(userPhoto.getUri());
             }
             break;
          case DISPLAY_PICTURE_AND_NAME:
             if (userPhoto != null) {
-               photo.setImageURI(userPhoto.uri());
+               photo.setImageURI(userPhoto.getUri());
             }
             firstName.setText(user.firstName());
             break;

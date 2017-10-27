@@ -89,7 +89,7 @@ public class WalletProfileDelegate {
       if (ProjectTextUtils.isEmpty(model.getPhoneCode()) || ProjectTextUtils.isEmpty(model.getPhoneNumber())) {
          return null;
       } else {
-         return SmartCardUserPhone.of(
+         return new SmartCardUserPhone(
                String.format(Locale.getDefault(), "+%s", model.getPhoneCode()),
                model.getPhoneNumber());
       }
@@ -98,7 +98,7 @@ public class WalletProfileDelegate {
    @Nullable
    public SmartCardUserPhoto createPhoto(ProfileViewModel model) {
       //noinspection all
-      return !model.isPhotoEmpty() ? SmartCardUserPhoto.of(model.getChosenPhotoUri()) : null;
+      return !model.isPhotoEmpty() ? new SmartCardUserPhoto(model.getChosenPhotoUri()) : null;
    }
 
    public ProfileViewModel toViewModel(SmartCardUser user) {
@@ -111,10 +111,10 @@ public class WalletProfileDelegate {
       model.setLastName(user.lastName());
 
       if (phone != null) {
-         model.setPhoneCode(phone.code().replace("+", ""));
-         model.setPhoneNumber(phone.number());
+         model.setPhoneCode(phone.getCode().replace("+", ""));
+         model.setPhoneNumber(phone.getNumber());
       }
-      model.setChosenPhotoUri(photo != null ? photo.uri() : null);
+      model.setChosenPhotoUri(photo != null ? photo.getUri() : null);
       return model;
    }
 

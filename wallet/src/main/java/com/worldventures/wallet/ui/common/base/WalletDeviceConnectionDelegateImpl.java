@@ -22,11 +22,11 @@ public class WalletDeviceConnectionDelegateImpl implements WalletDeviceConnectio
       smartCardInteractor.deviceStatePipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(command -> command.getResult().connectionStatus())
+            .map(command -> command.getResult().getConnectionStatus())
             .distinctUntilChanged()
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(view::showConnectionStatus);
-      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.fetch());
    }
 }

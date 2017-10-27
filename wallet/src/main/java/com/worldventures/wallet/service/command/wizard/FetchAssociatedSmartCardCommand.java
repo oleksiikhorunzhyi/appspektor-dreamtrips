@@ -42,7 +42,7 @@ public class FetchAssociatedSmartCardCommand extends Command<FetchAssociatedSmar
       SmartCardUser user = getSmartCardUserFromCache();
       if (smartCard != null && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE && user != null
             // TODO: this check for backward compatibility 1.21 -> 1.23
-            && (user.userPhoto() != null && user.userPhoto().uri() != null)) {
+            && (user.userPhoto() != null && user.userPhoto().getUri() != null)) {
          callback.onSuccess(createAssociatedCard(smartCard, walletStorage.getSmartCardDetails()));
          return;
       }

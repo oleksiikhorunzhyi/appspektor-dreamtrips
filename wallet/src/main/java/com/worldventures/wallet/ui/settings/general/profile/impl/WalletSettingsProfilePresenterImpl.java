@@ -193,12 +193,12 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    @SuppressWarnings("ConstantConditions")
    private void assertSmartCardConnected(Action0 onConnected) {
       smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.fetch())
+            .createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> {
-                     if (command.getResult().connectionStatus().isConnected()) {
+                     if (command.getResult().getConnectionStatus().isConnected()) {
                         onConnected.call();
                      } else {
                         getView().showSCNonConnectionDialog();

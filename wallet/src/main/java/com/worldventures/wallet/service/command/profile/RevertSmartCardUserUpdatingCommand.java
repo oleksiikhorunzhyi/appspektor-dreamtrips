@@ -67,7 +67,7 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
          return Observable.just(null);
       }
       return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
-            .createObservableResult(new UpdateSmartCardUserPhotoCommand(userPhoto.uri()))
+            .createObservableResult(new UpdateSmartCardUserPhotoCommand(userPhoto.getUri()))
             .map(action -> null);
    }
 

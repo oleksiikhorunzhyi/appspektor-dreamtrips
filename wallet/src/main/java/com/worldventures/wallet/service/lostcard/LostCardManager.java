@@ -63,8 +63,8 @@ class LostCardManager {
 
    private void observeConnection() {
       subscriptions.add(smartCardInteractor.deviceStatePipe()
-            .createObservableResult(DeviceStateCommand.fetch())
-            .filter(command -> command.getResult().connectionStatus() == ConnectionStatus.CONNECTED)
+            .createObservableResult(DeviceStateCommand.Companion.fetch())
+            .filter(command -> command.getResult().getConnectionStatus() == ConnectionStatus.CONNECTED)
             .subscribe(command -> triggerLocation(WalletLocationType.CONNECT), throwable -> { /* ignore */ }));
 
       subscriptions.add(locationInteractor.connectActionPipe()

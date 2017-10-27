@@ -101,7 +101,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
    private Observable<UpdateCardUserData> updateNameOnSmartCard(String scId, SmartCardUser user) {
       final ImmutableUpdateCardUserData.Builder dataBuilder = ImmutableUpdateCardUserData.builder();
 
-      dataBuilder.photoUrl(changedFields.photo() != null ? changedFields.photo().uri() : null);
+      dataBuilder.photoUrl(changedFields.photo() != null ? changedFields.photo().getUri() : null);
       dataBuilder.firstName(changedFields.firstName());
       dataBuilder.middleName(changedFields.middleName());
       dataBuilder.lastName(changedFields.lastName());
@@ -149,9 +149,9 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
          clearUserImageCache(user.userPhoto());
 
          return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
-               .createObservableResult(new UpdateSmartCardUserPhotoCommand(newPhoto.uri()))
+               .createObservableResult(new UpdateSmartCardUserPhotoCommand(newPhoto.getUri()))
                .flatMap(aVoid -> janet.createPipe(SmartCardUploaderyCommand.class, Schedulers.io())
-                     .createObservableResult(new SmartCardUploaderyCommand(smartCardId, newPhoto.uri())))
+                     .createObservableResult(new SmartCardUploaderyCommand(smartCardId, newPhoto.getUri())))
                .map(command -> ImmutableUpdateCardUserData.builder()
                      .from(updateUserData)
                      //uri saved in UpdateProfileManager
@@ -166,7 +166,7 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
 
    private void clearUserImageCache(@Nullable SmartCardUserPhoto photo) {
       if (photo != null) {
-         cachedPhotoUtil.removeCachedPhoto(photo.uri());
+         cachedPhotoUtil.removeCachedPhoto(photo.getUri());
       }
    }
 }

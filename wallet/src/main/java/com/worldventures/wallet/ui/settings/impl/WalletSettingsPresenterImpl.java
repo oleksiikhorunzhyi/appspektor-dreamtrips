@@ -93,7 +93,7 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
    }
 
    private void bindSmartCard(SmartCardFirmware smartCardFirmware, SmartCardStatus status) {
-      getView().smartCardGeneralStatus(smartCardFirmware, status.batteryLevel(), null);
+      getView().smartCardGeneralStatus(smartCardFirmware, status.getBatteryLevel(), null);
    }
 
    private void observeFirmwareUpdates() {

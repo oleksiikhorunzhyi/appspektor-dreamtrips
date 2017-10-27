@@ -222,7 +222,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             .observeSuccessWithReplay()
             .take(1)
             .map(Command::getResult)
-            .map(SmartCardStatus::connectionStatus)
+            .map(SmartCardStatus::getConnectionStatus)
             .subscribe(connectionStatus -> analyticsInteractor.walletAnalyticsPipe()
                   .send(new WalletAnalyticsCommand(AddCardDetailsAction
                         .forBankCard(record, connectionStatus.isConnected()))));

@@ -95,7 +95,7 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
          return Observable.just(null);
       }
       return janetWallet.createPipe(UpdateSmartCardUserPhotoCommand.class)
-            .createObservableResult(new UpdateSmartCardUserPhotoCommand(photo.uri()))
+            .createObservableResult(new UpdateSmartCardUserPhotoCommand(photo.getUri()))
             .map(a -> null);
    }
 

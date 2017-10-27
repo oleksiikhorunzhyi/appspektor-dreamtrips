@@ -188,11 +188,11 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
 
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
       smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.fetch())
+            .createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
-                  .onSuccess(command -> action.call(command.getResult().connectionStatus()))
+                  .onSuccess(command -> action.call(command.getResult().getConnectionStatus()))
             );
    }
 

@@ -182,7 +182,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
             .firstName(smartCardUser.firstName())
             .middleName(smartCardUser.middleName())
             .lastName(smartCardUser.lastName())
-            .photoUrl(photo != null ? photo.uri() : "")
+            .photoUrl(photo != null ? photo.getUri() : "")
             .phoneNumber(phone != null ? phone.fullPhoneNumber() : "")
             .build());
    }

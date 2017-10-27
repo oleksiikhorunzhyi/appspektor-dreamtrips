@@ -263,11 +263,11 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void fetchConnectionStats(Action1<ConnectionStatus> action) {
       smartCardInteractor.deviceStatePipe()
-            .createObservableResult(DeviceStateCommand.fetch())
+            .createObservableResult(DeviceStateCommand.Companion.fetch())
             .map(Command::getResult)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .map(SmartCardStatus::connectionStatus)
+            .map(SmartCardStatus::getConnectionStatus)
             .subscribe(action, throwable -> Timber.e(throwable, ""));
    }
 

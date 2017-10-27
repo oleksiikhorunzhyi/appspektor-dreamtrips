@@ -70,14 +70,14 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
 
    private Observable<String> uploadPhotoOnServer(String smartCardId, SmartCardUserPhoto photo) {
       return walletJanet.createPipe(SmartCardUploaderyCommand.class, Schedulers.io())
-            .createObservableResult(new SmartCardUploaderyCommand(smartCardId, photo.uri()))
+            .createObservableResult(new SmartCardUploaderyCommand(smartCardId, photo.getUri()))
             .map(c -> c.getResult().response().uploaderyPhoto().location());
    }
 
    private SmartCardUser attachPhotoUrlToUser(SmartCardUser smartCardUser, String photoUrl) {
       return ImmutableSmartCardUser.builder()
             .from(smartCardUser)
-            .userPhoto(SmartCardUserPhoto.of(photoUrl))
+            .userPhoto(new SmartCardUserPhoto(photoUrl))
             .build();
    }
 
@@ -88,7 +88,7 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
             .firstName(smartCardUser.firstName())
             .lastName(smartCardUser.lastName())
             .middleName(smartCardUser.middleName())
-            .photoUrl(photo != null ? photo.uri() : "");
+            .photoUrl(photo != null ? photo.getUri() : "");
       if (smartCardUserPhone != null) {
          userBuilder.phone(mapperyContext.convert(smartCardUserPhone, CardUserPhone.class));
       }

@@ -15,7 +15,6 @@ import com.worldventures.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.wallet.domain.entity.ImmutableSmartCardDetails;
 import com.worldventures.wallet.domain.entity.ImmutableSmartCardFirmware;
 import com.worldventures.wallet.domain.entity.ImmutableSmartCardUser;
-import com.worldventures.wallet.domain.entity.ImmutableTermsAndConditions;
 import com.worldventures.wallet.domain.entity.SmartCard;
 import com.worldventures.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
@@ -127,7 +126,7 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
 
    @Override
    public TermsAndConditions getWalletTermsAndConditions() {
-      return getEncrypted(WALLET_TERMS_AND_CONDITIONS, ImmutableTermsAndConditions.class);
+      return getEncrypted(WALLET_TERMS_AND_CONDITIONS, TermsAndConditions.class);
    }
 
    @Override

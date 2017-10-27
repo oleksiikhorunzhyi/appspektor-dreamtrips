@@ -5,7 +5,6 @@ import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.GetTermsAndConditionsHttpAction;
 import com.worldventures.janet.injection.InjectableAction;
-import com.worldventures.wallet.domain.entity.ImmutableTermsAndConditions;
 import com.worldventures.wallet.domain.entity.TermsAndConditions;
 
 import javax.inject.Inject;
@@ -30,10 +29,7 @@ public class FetchTermsAndConditionsCommand extends Command<TermsAndConditions> 
    }
 
    private TermsAndConditions convertResponse(com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions response) {
-      return ImmutableTermsAndConditions.builder()
-            .tacVersion(String.valueOf(response.version()))
-            .url(response.url())
-            .build();
+      return new TermsAndConditions(String.valueOf(response.version()), response.url());
    }
 
    @Override

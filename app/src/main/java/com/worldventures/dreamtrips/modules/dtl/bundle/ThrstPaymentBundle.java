@@ -13,14 +13,20 @@ public class ThrstPaymentBundle implements Parcelable {
    private final String earnedPoints;
    private final String totalPoints;
    private final String receiptURL;
+   private final double subTotalAmount;
+   private final double taxAmount;
+   private final double tipAmount;
 
-   public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount, String earnedPoints, String totalPoints, String receiptURL) {
+   public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount, String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount, double taxAmount, double tipAmount) {
       this.merchant = merchant;
       this.isPaid = isPaid;
       this.totalAmount = totalAmount;
       this.earnedPoints = earnedPoints;
       this.totalPoints = totalPoints;
       this.receiptURL = receiptURL;
+      this.subTotalAmount = subTotalAmount;
+      this.taxAmount = taxAmount;
+      this.tipAmount = tipAmount;
    }
 
    public Merchant getMerchant() {
@@ -46,6 +52,19 @@ public class ThrstPaymentBundle implements Parcelable {
    public String getReceiptURL() {
       return receiptURL;
    }
+
+   public double getSubTotalAmount() {
+      return subTotalAmount;
+   }
+
+   public double getTaxAmount() {
+      return taxAmount;
+   }
+
+   public double getTipAmount() {
+      return tipAmount;
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Parcelable part
    ///////////////////////////////////////////////////////////////////////////
@@ -57,6 +76,9 @@ public class ThrstPaymentBundle implements Parcelable {
       earnedPoints = in.readString();
       totalPoints = in.readString();
       receiptURL = in.readString();
+      subTotalAmount = in.readDouble();
+      taxAmount = in.readDouble();;
+      tipAmount = in.readDouble();;
    }
 
    @Override
@@ -67,6 +89,9 @@ public class ThrstPaymentBundle implements Parcelable {
       dest.writeString(earnedPoints);
       dest.writeString(totalPoints);
       dest.writeString(receiptURL);
+      dest.writeDouble(subTotalAmount);
+      dest.writeDouble(taxAmount);
+      dest.writeDouble(tipAmount);
    }
 
    public static final Creator<ThrstPaymentBundle> CREATOR = new Creator<ThrstPaymentBundle>() {

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action.http;
 
 import com.worldventures.core.utils.ProjectTextUtils;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.transactions.ThrstTransactionResponse;
 import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.BaseThirdPartyHttpAction;
 
@@ -13,7 +14,7 @@ import io.techery.janet.http.annotations.Url;
 @HttpAction
 public class GetTransactionsHttpAction extends BaseThirdPartyHttpAction {
 
-   @Url final String url = "https://dtlapi-dev.worldventures.com/v2/merchants/transactions";
+   @Url final String url = BuildConfig.TRANSACCTIONS_API_URL.concat("merchants/transactions");
 
    @RequestHeader("Authorization") String header;
 

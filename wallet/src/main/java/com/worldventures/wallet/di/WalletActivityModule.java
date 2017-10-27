@@ -400,7 +400,7 @@ public class WalletActivityModule {
          WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor,
          PermissionDispatcher permissionDispatcher, SmartCardInteractor smartCardInteractor) {
       return new WizardScanBarcodePresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
-            new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.createForScannerScreen(analyticsInteractor), smartCardInteractor));
+            new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.Companion.createForScannerScreen(analyticsInteractor), smartCardInteractor));
    }
 
    @Provides
@@ -416,7 +416,7 @@ public class WalletActivityModule {
          SmartCardInteractor smartCardInteractor) {
       return new WizardManualInputPresenterImpl(navigator, deviceConnectionDelegate,
             analyticsInteractor, new InputBarcodeDelegate(navigator, wizardInteractor,
-            InputAnalyticsDelegate.createForManualInputScreen(analyticsInteractor), smartCardInteractor));
+            InputAnalyticsDelegate.Companion.createForManualInputScreen(analyticsInteractor), smartCardInteractor));
    }
 
    @Provides

@@ -66,7 +66,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public void onAddClick() {
-      user = appSessionHolder.get().get().getUser();
+      user = appSessionHolder.get().get().user();
       if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
          getView().userHasPendingReview();
       } else {

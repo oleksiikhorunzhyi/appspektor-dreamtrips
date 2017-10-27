@@ -62,8 +62,8 @@ public class VideoHttpService extends ActionServiceWrapper {
    private void prepareNewHttpAction(BaseVideoHttpAction action) {
       if (appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         action.setMemberId(userSession.getUsername());
-         action.setSsoToken(userSession.getLegacyApiToken());
+         action.setMemberId(userSession.username());
+         action.setSsoToken(userSession.legacyApiToken());
          action.setIdentifier("DTApp-Android-" + appVersionNameBuilder.getReleaseSemanticVersionName());
       }
    }
@@ -92,7 +92,7 @@ public class VideoHttpService extends ActionServiceWrapper {
          BaseVideoHttpAction action = (BaseVideoHttpAction) holder.action();
          synchronized (this) {
             boolean shouldRetry = retryPolicy.handle(e, this::createSession);
-            if (!action.getSsoToken().endsWith(appSessionHolder.get().get().getLegacyApiToken())) {
+            if (!action.getSsoToken().endsWith(appSessionHolder.get().get().legacyApiToken())) {
                prepareNewHttpAction(action);
                Timber.d("Action %s will be sent again because of invalid token", action);
                return true;
@@ -111,8 +111,8 @@ public class VideoHttpService extends ActionServiceWrapper {
    @Nullable
    private Session createSession() {
       UserSession userSession = appSessionHolder.get().get();
-      String username = userSession.getUsername();
-      String userPassword = userSession.getUserPassword();
+      String username = userSession.username();
+      String userPassword = userSession.userPassword();
       Device device = deviceSource.toBlocking().first();
       LoginHttpAction loginAction = new LoginHttpAction(username, userPassword, device);
 

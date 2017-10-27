@@ -72,7 +72,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private Observable clearSession() {
-      String apiToken = appSessionHolder.get().get().getApiToken();
+      String apiToken = appSessionHolder.get().get().apiToken();
       //
       return Observable.create(subscriber -> {
          appSessionHolder.destroy();

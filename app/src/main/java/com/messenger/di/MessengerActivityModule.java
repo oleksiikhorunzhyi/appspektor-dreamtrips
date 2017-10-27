@@ -72,7 +72,7 @@ public class MessengerActivityModule {
 
    @Provides
    DataUser provideUser(SessionHolder appSessionHolder) {
-      return new DataUser(appSessionHolder.get().get().getUser().getUsername());
+      return new DataUser(appSessionHolder.get().get().user().getUsername());
    }
 
    @Provides

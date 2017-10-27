@@ -33,7 +33,7 @@ public class CreateConversationHelper {
    }
 
    private String getUsername() {
-      return appSessionHolder.get().get().getUsername();
+      return appSessionHolder.get().get().username();
    }
 
    public Observable<DataConversation> createNewConversation(List<DataUser> participants, @Nullable String subject) {

@@ -45,7 +45,7 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
    private boolean isSessionExist() {
       Optional<UserSession> optionalSession = sessionHolder.get();
       UserSession session = optionalSession != null && optionalSession.isPresent() ? optionalSession.get() : null;
-      return session != null && !TextUtils.isEmpty(session.getApiToken());
+      return session != null && !TextUtils.isEmpty(session.apiToken());
    }
 
    @Override

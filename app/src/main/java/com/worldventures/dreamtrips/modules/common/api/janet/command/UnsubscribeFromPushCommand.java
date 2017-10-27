@@ -31,7 +31,7 @@ public class UnsubscribeFromPushCommand extends Command<Void> implements Injecta
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       final String pushToken = snappyRepository.getGcmRegToken();
-      final String sessionToken = appSessionHolder.get().get().getApiToken();
+      final String sessionToken = appSessionHolder.get().get().apiToken();
       if (TextUtils.isEmpty(pushToken)) callback.onSuccess(null);
       else {
          UnsubscribeFromPushNotificationsHttpAction unsubscribeFromPushAction = new UnsubscribeFromPushNotificationsHttpAction(pushToken);

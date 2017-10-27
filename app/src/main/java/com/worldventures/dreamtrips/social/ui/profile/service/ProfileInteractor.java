@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.profile.service;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.ImmutableUserSession;
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
@@ -64,11 +64,10 @@ public class ProfileInteractor {
       Observable.merge(privateProfilePipe.observeSuccess(),
             uploadAvatarPipe.observeSuccess(),
             uploadBackgroundPipe.observeSuccess())
-            .subscribe(command -> {
-               UserSession userSession = sessionHolder.get().get();
-               userSession.setUser(command.getResult());
-               sessionHolder.put(userSession);
-            });
+            .subscribe(command -> sessionHolder.put(ImmutableUserSession.builder()
+                  .from(sessionHolder.get().get())
+                  .user(command.getResult())
+                  .build()));
 
    }
 }

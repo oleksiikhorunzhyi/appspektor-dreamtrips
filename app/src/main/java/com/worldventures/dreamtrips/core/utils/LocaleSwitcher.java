@@ -31,8 +31,8 @@ public class LocaleSwitcher {
    public void applyLocaleFromSession() {
       Locale localeToApply;
 
-      if (sessionHolder.get().isPresent() && !TextUtils.isEmpty(sessionHolder.get().get().getLocale())) {
-         localeToApply = LocaleHelper.buildFromLanguageCode(sessionHolder.get().get().getLocale());
+      if (sessionHolder.get().isPresent() && !TextUtils.isEmpty(sessionHolder.get().get().locale())) {
+         localeToApply = LocaleHelper.buildFromLanguageCode(sessionHolder.get().get().locale());
       } else {
          localeToApply = defaultSystemLocale;
       }

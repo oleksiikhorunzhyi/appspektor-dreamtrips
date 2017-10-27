@@ -208,7 +208,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    void onAvatarUploadSuccess() {
       analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
       UserSession userSession = appSessionHolder.get().get();
-      User currentUser = userSession.getUser();
+      User currentUser = userSession.user();
 
       this.user.setAvatar(currentUser.getAvatar());
       this.user.setAvatarUploadInProgress(false);
@@ -220,7 +220,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    void onCoverUploadSuccess() {
       analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
       UserSession userSession = appSessionHolder.get().get();
-      User currentUser = userSession.getUser();
+      User currentUser = userSession.user();
 
       this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
       this.user.setCoverUploadInProgress(false);

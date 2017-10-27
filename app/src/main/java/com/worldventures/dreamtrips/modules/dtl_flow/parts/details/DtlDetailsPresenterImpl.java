@@ -340,7 +340,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
 
    private User getUser() {
-      return appSessionHolder.get().get().getUser();
+      return appSessionHolder.get().get().user();
    }
 
    protected boolean isReviewCached() {
@@ -360,7 +360,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickRateView() {
-      User user = appSessionHolder.get().get().getUser();
+      User user = appSessionHolder.get().get().user();
       if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
          getView().userHasPendingReview();
       } else {

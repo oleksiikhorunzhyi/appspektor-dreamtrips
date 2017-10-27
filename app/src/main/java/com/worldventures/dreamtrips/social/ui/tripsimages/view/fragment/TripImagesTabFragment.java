@@ -45,7 +45,7 @@ public class TripImagesTabFragment extends BaseFragment<TripImagesTabPresenter> 
                .origin(CreateEntityBundle.Origin.MEMBER_TRIP_IMAGES)
                .build()));
          adapter.add(new FragmentItem(Route.ACCOUNT_IMAGES, getString(R.string.my_images), TripImagesArgs.builder()
-               .userId(sessionHolder.get().get().getUser().getId())
+               .userId(sessionHolder.get().get().user().getId())
                .route(Route.ACCOUNT_IMAGES)
                .origin(CreateEntityBundle.Origin.MY_TRIP_IMAGES)
                .build()));

@@ -38,7 +38,7 @@ public class UserCell extends BaseUserCell<UserCellDelegate> {
 
       if (!appSessionHolder.get()
             .get()
-            .getUser()
+            .user()
             .equals(getModelObject()) && getModelObject().getRelationship() != null) {
          ivStatus.setVisibility(View.VISIBLE);
          switch (getModelObject().getRelationship()) {

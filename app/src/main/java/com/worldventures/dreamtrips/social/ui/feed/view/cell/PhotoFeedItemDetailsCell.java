@@ -85,7 +85,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
          hideTranslations();
          return;
       }
-      boolean own = photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean own = photo.getOwner().getId() == appSessionHolder.get().get().user().getId();
       boolean emptyText = TextUtils.isEmpty(photo.getTitle());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, photo.getLanguage());
       boolean emptyLanguage = TextUtils.isEmpty(photo.getLanguage());

@@ -13,7 +13,7 @@ public class FeatureManager {
 
    public boolean available(@Feature.FeatureName String name) {
       UserSession userSession = sessionHolder.get().orNull();
-      return !(userSession == null || userSession.getFeatures() == null) && Queryable.from(userSession.getFeatures())
+      return !(userSession == null || userSession.permissions() == null) && Queryable.from(userSession.permissions())
             .any(f -> f.name.equals(name));
    }
 
@@ -38,7 +38,7 @@ public class FeatureManager {
    }
 
    public boolean isUserInfoAvailable(User user) {
-      return available(Feature.SOCIAL) || user.getId() == sessionHolder.get().get().getUser().getId();
+      return available(Feature.SOCIAL) || user.getId() == sessionHolder.get().get().user().getId();
    }
 
    public interface OnFeatureChecked {

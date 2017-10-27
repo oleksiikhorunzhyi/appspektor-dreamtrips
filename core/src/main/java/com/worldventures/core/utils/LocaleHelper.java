@@ -28,7 +28,7 @@ public class LocaleHelper {
    public static boolean isOwnLanguage(SessionHolder sessionHolder, @Nullable String languageCode) {
       if (!sessionHolder.get().isPresent()) return false;
 
-      String locale = sessionHolder.get().get().getLocale();
+      String locale = sessionHolder.get().get().locale();
       String userLanguageCode = TextUtils.isEmpty(locale) ? getDefaultLocaleFormatted() : locale;
       return userLanguageCode.split("-")[0].equalsIgnoreCase(languageCode);
    }

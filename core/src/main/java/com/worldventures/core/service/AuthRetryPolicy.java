@@ -1,13 +1,10 @@
 package com.worldventures.core.service;
 
 import com.worldventures.core.model.Session;
-import com.worldventures.core.model.User;
-import com.worldventures.core.model.session.Feature;
+import com.worldventures.core.model.session.ImmutableUserSession;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.storage.complex_objects.Optional;
-
-import java.util.List;
 
 import io.techery.janet.http.exception.HttpException;
 import io.techery.janet.http.exception.HttpServiceException;
@@ -43,23 +40,15 @@ public class AuthRetryPolicy {
 
    private void handleSession(Session session) {
       Timber.d("Handling user session");
-
-      User sessionUser = session.getUser();
-      UserSession userSession = new UserSession();
-      if (appSessionHolder.get().isPresent()) {
-         userSession = appSessionHolder.get().get();
-      }
-      userSession.setLocale(session.getLocale());
-      userSession.setUser(sessionUser);
-      userSession.setApiToken(session.getToken());
-      userSession.setLegacyApiToken(session.getSsoToken());
-
-      userSession.setLastUpdate(System.currentTimeMillis());
-
-      List<Feature> features = session.getPermissions();
-      userSession.setFeatures(features);
-
-      appSessionHolder.put(userSession);
+      UserSession oldUserSession = appSessionHolder.get().get();
+      appSessionHolder.put(ImmutableUserSession.builder()
+            .from(oldUserSession)
+            .locale(session.getLocale())
+            .user(session.getUser())
+            .apiToken(session.getToken())
+            .legacyApiToken(session.getSsoToken())
+            .lastUpdate(System.currentTimeMillis())
+            .permissions(session.getPermissions()).build());
    }
 
 
@@ -79,7 +68,7 @@ public class AuthRetryPolicy {
       Optional<UserSession> userSessionOptional = appSessionHolder.get();
       if (userSessionOptional.isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         return userSession.getUsername() != null && userSession.getUserPassword() != null;
+         return userSession.username() != null && userSession.userPassword() != null;
       } else {
          return false;
 

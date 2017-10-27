@@ -33,7 +33,7 @@ public class UnreadMessagesDelegate {
    }
 
    private String getUsername() {
-      return sessionHolder.get().get().getUsername();
+      return sessionHolder.get().get().username();
    }
 
    public void bind(String conversationId) {

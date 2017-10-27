@@ -117,7 +117,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    private void checkTermsAndConditionFromHolder() {
       Optional<UserSession> userSession = appSessionHolder.get();
       if (userSession.isPresent()) {
-         checkTermsAndConditions(userSession.get().getUser());
+         checkTermsAndConditions(userSession.get().user());
       }
    }
 

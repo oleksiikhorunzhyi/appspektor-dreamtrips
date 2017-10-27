@@ -251,6 +251,6 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
    }
 
    private int userId() {
-      return user == null ? sessionHolder.get().get().getUser().getId() : user.getId();
+      return user == null ? sessionHolder.get().get().user().getId() : user.getId();
    }
 }

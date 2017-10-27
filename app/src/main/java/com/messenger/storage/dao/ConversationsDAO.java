@@ -137,7 +137,7 @@ public class ConversationsDAO extends BaseDAO {
    }
 
    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type, String searchQuery) {
-      String currentUserId = appSessionHolder.get().get().getUser().getUsername(); // username is id for messenger
+      String currentUserId = appSessionHolder.get().get().user().getUsername(); // username is id for messenger
 
       StringBuilder query = new StringBuilder("SELECT c.*, " +
             "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +

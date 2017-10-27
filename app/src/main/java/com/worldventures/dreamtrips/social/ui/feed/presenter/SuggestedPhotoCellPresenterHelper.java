@@ -100,7 +100,7 @@ public class SuggestedPhotoCellPresenterHelper {
    public void sync() {
       Optional<UserSession> userSessionOptional = appSessionHolder.get();
       if (userSessionOptional.isPresent()) {
-         view.setUser(userSessionOptional.get().getUser());
+         view.setUser(userSessionOptional.get().user());
       }
       setSuggestionTitle();
    }

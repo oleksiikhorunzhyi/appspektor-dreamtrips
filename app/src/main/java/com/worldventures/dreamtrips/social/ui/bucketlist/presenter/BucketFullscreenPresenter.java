@@ -27,7 +27,7 @@ public class BucketFullscreenPresenter extends Presenter<BucketFullscreenPresent
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      if (appSessionHolder.get().get().getUser().equals(bucketItem.getOwner())) {
+      if (appSessionHolder.get().get().user().equals(bucketItem.getOwner())) {
          BucketPhoto coverPhoto = bucketItem.getCoverPhoto();
          view.showCheckbox(coverPhoto != null && coverPhoto.equals(bucketPhoto));
          view.showDeleteBtn();

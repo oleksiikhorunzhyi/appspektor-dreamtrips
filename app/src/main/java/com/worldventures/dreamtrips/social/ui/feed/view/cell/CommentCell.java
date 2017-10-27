@@ -74,7 +74,7 @@ public class CommentCell extends BaseAbstractDelegateCell<Comment, CommentCell.C
       commentCellHelper.set(getModelObject(), injectorProvider.get());
       User owner = getModelObject().getOwner();
 
-      boolean ownComment = owner.getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownComment = owner.getId() == appSessionHolder.get().get().user().getId();
       boolean emptyCommentLanguage = TextUtils.isEmpty(getModelObject().getLanguage());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, getModelObject().getLanguage());
       boolean alreadyTranslated = getModelObject().isTranslated();

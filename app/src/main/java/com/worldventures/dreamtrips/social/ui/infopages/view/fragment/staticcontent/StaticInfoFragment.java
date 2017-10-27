@@ -391,7 +391,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    abstract protected String getURL();
 
    protected String getUserId() {
-      return sessionHolder.get().get().getUser().getUsername();
+      return sessionHolder.get().get().user().getUsername();
    }
 
    @Override

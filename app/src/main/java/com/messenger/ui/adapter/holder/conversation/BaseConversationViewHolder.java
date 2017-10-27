@@ -54,7 +54,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
       context = itemView.getContext();
       itemView.setOnClickListener(this);
       ((Injector) context.getApplicationContext()).inject(this);
-      currentUser = new DataUser(sessionHolder.get().get().getUsername());
+      currentUser = new DataUser(sessionHolder.get().get().username());
       lastMessageTextProvider = new LastMessageTextProvider(context, currentUser);
       lastMessageDateInflater.setView(itemView);
       conversationSwipeLayoutInflater.setView(itemView, this);

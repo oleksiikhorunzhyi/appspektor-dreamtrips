@@ -194,7 +194,7 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    private boolean isAccount() {
       return appSessionHolder.get().isPresent() && appSessionHolder.get()
             .get()
-            .getUser()
+            .user()
             .getId() == getModelObject().getId();
    }
 

@@ -233,7 +233,7 @@ public class SocialAppModule {
 
    @DrawableRes
    private int getLogo(SessionHolder sessionHolder) {
-      String countryCode = sessionHolder.get().get().getUser().getCountryCode();
+      String countryCode = sessionHolder.get().get().user().getCountryCode();
       if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
          return R.drawable.dt_action_bar_logo_skyzone;
       }

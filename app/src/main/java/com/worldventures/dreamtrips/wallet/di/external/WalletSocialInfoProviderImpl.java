@@ -21,51 +21,51 @@ class WalletSocialInfoProviderImpl implements WalletSocialInfoProvider {
 
    @Override
    public Integer userId() {
-      return hasUser() ? sessionHolder.get().get().getUser().getId() : 0;
+      return hasUser() ? sessionHolder.get().get().user().getId() : 0;
    }
 
    @Nullable
    @Override
    public String firstName() {
-      return hasUser() ? sessionHolder.get().get().getUser().getFirstName() : null;
+      return hasUser() ? sessionHolder.get().get().user().getFirstName() : null;
    }
 
    @Nullable
    @Override
    public String lastName() {
-      return hasUser() ? sessionHolder.get().get().getUser().getLastName() : null;
+      return hasUser() ? sessionHolder.get().get().user().getLastName() : null;
    }
 
    @Nullable
    @Override
    public String fullName() {
-      return hasUser() ? sessionHolder.get().get().getUser().getFullName() : null;
+      return hasUser() ? sessionHolder.get().get().user().getFullName() : null;
    }
 
    @Nullable
    @Override
    public String username() {
-      return hasUser() ? sessionHolder.get().get().getUser().getUsername() : null;
+      return hasUser() ? sessionHolder.get().get().user().getUsername() : null;
    }
 
    @Nullable
    @Override
    public String apiToken() {
-      return hasUser() ? sessionHolder.get().get().getApiToken() : null;
+      return hasUser() ? sessionHolder.get().get().apiToken() : null;
    }
 
    @Nullable
    @Override
    public String photoThumb() {
       if (!hasUser()) return null;
-      final User.Avatar avatar = sessionHolder.get().get().getUser().getAvatar();
+      final User.Avatar avatar = sessionHolder.get().get().user().getAvatar();
       return avatar != null ? avatar.getThumb() : null;
    }
 
    @Nullable
    @Override
    public io.techery.janet.smartcard.model.User.MemberStatus memberStatus() {
-      final User user = sessionHolder.get().get().getUser();
+      final User user = sessionHolder.get().get().user();
       if (!hasUser()) return null;
       if (user.isGold()) return io.techery.janet.smartcard.model.User.MemberStatus.GOLD;
       if (user.isGeneral() || user.isPlatinum()) return io.techery.janet.smartcard.model.User.MemberStatus.ACTIVE;

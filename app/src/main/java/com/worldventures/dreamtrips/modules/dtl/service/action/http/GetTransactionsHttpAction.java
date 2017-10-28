@@ -13,7 +13,7 @@ import io.techery.janet.http.annotations.Url;
 @HttpAction
 public class GetTransactionsHttpAction extends BaseThirdPartyHttpAction {
 
-   @Url final String url = "http://dev-merchantsservice.wvhtest.com/merchants/transactions";
+   @Url final String url = "https://dtlapi-dev.worldventures.com/v2/merchants/transactions";
 
    @RequestHeader("Authorization") String header;
 

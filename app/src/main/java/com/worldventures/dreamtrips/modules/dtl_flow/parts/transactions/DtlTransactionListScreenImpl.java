@@ -63,7 +63,8 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
             Flow.get(getContext()).goBack();
          });
       }
-      setupSearch();
+      //      setupSearch(); //Disabled in current RC
+      searchView.setVisibility(View.GONE);
    }
 
    @Override
@@ -140,7 +141,7 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
    public void onRefreshSuccess(boolean searchMode) {
       loader.setVisibility(View.GONE);
       transactionsView.setVisibility(View.VISIBLE);
-      searchView.setVisibility(View.VISIBLE);
+      //      searchView.setVisibility(View.VISIBLE); //Disabled in current RC
    }
 
    @Override

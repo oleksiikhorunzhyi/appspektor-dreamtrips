@@ -111,13 +111,12 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
 
    @Override
    public void openThrstFlow(Merchant merchant, String receiptUrl, String token, String transactionId) {
-      router.back();
-      router.moveTo(
-            Route.DTL_THRST_FLOW,
-            NavigationConfigBuilder
-                  .forActivity()
-                  .data(new ThrstFlowBundle(merchant, receiptUrl, token, transactionId))
-                  .build()
-      );
+      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forFragment()
+            .containerId(R.id.container_main)
+            .backStackEnabled(false)
+            .clearBackStack(true)
+            .data(new ThrstFlowBundle(merchant, receiptUrl, token, transactionId))
+            .fragmentManager(getFragmentManager())
+            .build());
    }
 }

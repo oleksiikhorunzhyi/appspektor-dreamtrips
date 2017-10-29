@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter
 
 import javax.inject.Inject;
 
-import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.schedulers.Schedulers;
@@ -78,24 +77,19 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    }
 
    public void openThrstFlow() {
-      ActionPipe<UrlTokenAction> reviewActionPipe = merchantInteractor.urlTokenThrstHttpPipe();
-
-      reviewActionPipe
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<UrlTokenAction>()
-                  .onSuccess(this::onThrstSuccess)
-                  .onProgress(this::onThrstProgress)
-                  .onFail(this::onThrstError));
-
-      reviewActionPipe.send(UrlTokenAction.create(merchant.id(),
+      merchantInteractor.urlTokenThrstHttpPipe().createObservable(UrlTokenAction.create(merchant.id(),
             ImmutableUrlTokenActionParams.builder()
                   .checkinTime(DateTimeUtils.currentUtcString())
                   .merchantId(merchant.id())
                   .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
                   .receiptPhotoUrl(photoUploadingManagerS3.getResultUrl(uploadTask))
                   .location(ImmutableLocation.builder().coordinates("33.0638987,-96.8020342").build())
-                  .build()));
+                  .build()))
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<UrlTokenAction>()
+                  .onSuccess(this::onThrstSuccess)
+                  .onProgress(this::onThrstProgress)
+                  .onFail(this::onThrstError));
    }
 
    private void onThrstError(UrlTokenAction urlTokenAction, Throwable throwable) {
@@ -108,8 +102,8 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
 
    private void onThrstSuccess(UrlTokenAction urlTokenAction) {
       view.openThrstFlow(merchant, urlTokenAction.getResult().thrstInfo().redirectUrl(),
-                         urlTokenAction.getResult().thrstInfo().token(),
-                         urlTokenAction.getResult().transaction().transactionId());
+            urlTokenAction.getResult().thrstInfo().token(),
+            urlTokenAction.getResult().transaction().transactionId());
    }
 
    ///////////////////////////////////////////////////////////////////////////

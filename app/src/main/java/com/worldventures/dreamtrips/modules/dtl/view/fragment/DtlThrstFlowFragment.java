@@ -77,12 +77,15 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
    }
 
    private void goToDtlPaymentPath(boolean isPaid, GetTransactionResponse response) {
-      router.back();
       router.moveTo(
             Route.DTL_THRST_THANK_YOU_SCREEN,
-            NavigationConfigBuilder.forActivity()
-                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, response.billTotal(), response.pointsAmount(), response.pointsAmount(),
-                        response.billImagePath(), response.subTotal(),  response.tax(),  response.tip()))
+            NavigationConfigBuilder.forFragment()
+                  .containerId(R.id.container_main)
+                  .backStackEnabled(false)
+                  .clearBackStack(true)
+                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, response.billTotal(),
+                        response.pointsAmount(), response.pointsAmount(), response.billImagePath(), response.subTotal(),
+                        response.tax(), response.tip()))
                   .build()
       );
    }

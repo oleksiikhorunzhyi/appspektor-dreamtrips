@@ -16,18 +16,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
+import com.worldventures.dreamtrips.modules.dtl.util.DtlDateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
+
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 @Layout(R.layout.include_detail_transaction)
 public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle> implements DtlThrstThankYouScreenPresenter.View {
@@ -45,20 +53,25 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    @InjectView(R.id.tv_tax) TextView tvTax;
    @InjectView(R.id.tv_receipt) TextView tvReceipt;
    @InjectView(R.id.tv_review_merchant) TextView tvReviewMerchant;
+   @InjectView(R.id.currentTime) TextView currentTime;
 
    private Merchant merchant;
 
    @Override
-   public void onActivityCreated(Bundle savedInstanceState) {
-      super.onActivityCreated(savedInstanceState);
+   public void afterCreateView(View rootView) {
+      super.afterCreateView(rootView);
       ThrstPaymentBundle thrstPaymentBundle = getArgs();
       merchant = thrstPaymentBundle.getMerchant();
       ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(merchant.displayName());
    }
 
    @Override
-   public void afterCreateView(View rootView) {
-      super.afterCreateView(rootView);
+   public void onStart() {
+      super.onStart();
+      Observable.interval(1, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindUntilStopViewComposer())
+            .subscribe(delay -> setCurrentTime());
    }
 
    @Override
@@ -181,6 +194,11 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
       textView.setTag(url);
    }
 
+   private void setCurrentTime() {
+      Timber.d("Setting current time");
+      currentTime.setText(DateTimeUtils.convertDateToString(new Date(), DtlDateTimeUtils.THANK_YOU_SCREEN_FORMAT));
+   }
+
    private class OpenURLSpannable extends ClickableSpan {
       @Override
       public void onClick(View view) {
@@ -192,7 +210,6 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
          ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
          ds.setUnderlineText(false);
       }
-
    }
 
 }

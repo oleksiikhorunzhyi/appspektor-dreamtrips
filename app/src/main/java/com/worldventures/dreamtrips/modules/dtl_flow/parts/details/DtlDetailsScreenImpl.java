@@ -130,12 +130,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       showMessage();
 
       mContainerComments.loadFirstPage();
-      hidePayInAppButton();
-   }
-
-   private void hidePayInAppButton() {
-      if (payInApp == null) return;
-      ViewUtils.setViewVisibility(payInApp, View.GONE);
    }
 
    @Override
@@ -539,7 +533,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
       if (perkVisibility == View.VISIBLE) this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
 
-      if (merchant.asMerchantAttributes() != null) return;
+      if (merchant.asMerchantAttributes() == null) return;
 
       if (merchant.asMerchantAttributes().useThrstFlow()) {
          ViewUtils.setViewVisibility(this.payInApp, View.VISIBLE);

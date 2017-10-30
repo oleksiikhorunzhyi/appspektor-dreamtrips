@@ -35,7 +35,6 @@ import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 @Layout(R.layout.include_detail_transaction)
 public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle> implements DtlThrstThankYouScreenPresenter.View {
@@ -53,7 +52,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    @InjectView(R.id.tv_tax) TextView tvTax;
    @InjectView(R.id.tv_receipt) TextView tvReceipt;
    @InjectView(R.id.tv_review_merchant) TextView tvReviewMerchant;
-   @InjectView(R.id.currentTime) TextView currentTime;
+   @InjectView(R.id.currentTime) TextView tvDate;
 
    private Merchant merchant;
 
@@ -195,8 +194,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    }
 
    private void setCurrentTime() {
-      Timber.d("Setting current time");
-      currentTime.setText(DateTimeUtils.convertDateToString(new Date(), DtlDateTimeUtils.THANK_YOU_SCREEN_FORMAT));
+      tvDate.setText(DateTimeUtils.convertDateToString(new Date(), DtlDateTimeUtils.THANK_YOU_SCREEN_FORMAT));
    }
 
    private class OpenURLSpannable extends ClickableSpan {

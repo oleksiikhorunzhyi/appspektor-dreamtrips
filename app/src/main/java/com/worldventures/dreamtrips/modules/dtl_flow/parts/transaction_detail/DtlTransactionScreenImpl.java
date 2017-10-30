@@ -37,7 +37,7 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    @InjectView(R.id.tv_tip) TextView tvTip;
    @InjectView(R.id.tv_tax) TextView tvTax;
    @InjectView(R.id.tv_earned_points) TextView tvEarnedPoints;
-   @InjectView(R.id.tv_date) TextView tvDate;
+   @InjectView(R.id.currentTime) TextView tvDate;
    @InjectView(R.id.tv_review_merchant) TextView tvReview;
    @InjectView(R.id.tv_receipt) TextView tvReceipt;
 

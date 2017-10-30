@@ -29,11 +29,15 @@ public class FriendProfileToUserConverter implements Converter<FriendProfile, Us
       user.setBadges(apiUser.badges());
       user.setLocation(apiUser.location());
       user.setCompany(apiUser.company());
-      if (apiUser.mutuals() != null)
+      if (apiUser.mutuals() != null) {
          user.setMutualFriends(mapperyContext.convert(apiUser.mutuals(), User.MutualFriends.class));
-      if (apiUser.relationship() != null)
+      }
+      if (apiUser.relationship() != null) {
          user.setRelationship(mapperyContext.convert(apiUser.relationship(), User.Relationship.class));
-      if (apiUser.circles() != null) user.setCircles(mapperyContext.convert(apiUser.circles(), Circle.class));
+      }
+      if (apiUser.circles() != null) {
+         user.setCircles(mapperyContext.convert(apiUser.circles(), Circle.class));
+      }
       return user;
    }
 }

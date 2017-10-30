@@ -42,15 +42,19 @@ public class SendAnalyticsIfNeedAction extends Command<Integer> implements Injec
       if (action != null) {
          analyticsInteractor.analyticsActionPipe().send(action);
          callback.onSuccess(expectedAnalyticStep + 1);
-      } else
+      } else {
          callback.onSuccess(expectedAnalyticStep);
+      }
    }
 
    private WatchVideoAnalyticAction chooseAnalyticAction(int analyticStep, int currentAnalyticStep) {
-      if (currentAnalyticStep == 0)
+      if (currentAnalyticStep == 0) {
          return WatchVideoAnalyticAction.startVideo(language, videoName, chooseAnalyticNamespace());
+      }
 
-      if (analyticStep < currentAnalyticStep) return null;
+      if (analyticStep < currentAnalyticStep) {
+         return null;
+      }
 
       WatchVideoAnalyticAction action = null;
       switch (analyticStep) {
@@ -65,16 +69,22 @@ public class SendAnalyticsIfNeedAction extends Command<Integer> implements Injec
             break;
          case 4:
             action = WatchVideoAnalyticAction.progress100(language, videoName, chooseAnalyticNamespace());
+         default:
+            break;
       }
       return action;
    }
 
    private String chooseAnalyticNamespace() {
-      if (launchComponent.equals(HelpVideosPresenter.class)) return WatchVideoAnalyticAction.HELP_VIDEO_NAMESPASE;
-      if (launchComponent.equals(PresentationVideosPresenter.class))
+      if (launchComponent.equals(HelpVideosPresenter.class)) {
+         return WatchVideoAnalyticAction.HELP_VIDEO_NAMESPASE;
+      }
+      if (launchComponent.equals(PresentationVideosPresenter.class)) {
          return WatchVideoAnalyticAction.MEMBERSHIP_VIDEOS_NAMESPASE;
-      if (launchComponent.equals(TrainingVideosPresenter.class))
+      }
+      if (launchComponent.equals(TrainingVideosPresenter.class)) {
          return WatchVideoAnalyticAction.REPTOOLS_TRAINING_VIDEOS_NAMESPASE;
+      }
       return null;
    }
 

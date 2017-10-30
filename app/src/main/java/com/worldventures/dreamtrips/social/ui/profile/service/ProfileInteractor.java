@@ -16,14 +16,13 @@ import rx.schedulers.Schedulers;
 
 public class ProfileInteractor {
 
-   private ActionPipe<GetPrivateProfileCommand> privateProfilePipe;
-   private ActionPipe<UploadAvatarCommand> uploadAvatarPipe;
-   private ActionPipe<UploadBackgroundCommand> uploadBackgroundPipe;
-   private ActionPipe<GetPublicProfileCommand> publicProfilePipe;
-   private ActionPipe<AddFriendToCircleCommand> addFriendToCirclePipe;
-   private ActionPipe<RemoveFriendFromCircleCommand> removeFriendFromCirclePipe;
-
-   private SessionHolder sessionHolder;
+   private final ActionPipe<GetPrivateProfileCommand> privateProfilePipe;
+   private final ActionPipe<UploadAvatarCommand> uploadAvatarPipe;
+   private final ActionPipe<UploadBackgroundCommand> uploadBackgroundPipe;
+   private final ActionPipe<GetPublicProfileCommand> publicProfilePipe;
+   private final ActionPipe<AddFriendToCircleCommand> addFriendToCirclePipe;
+   private final ActionPipe<RemoveFriendFromCircleCommand> removeFriendFromCirclePipe;
+   private final SessionHolder sessionHolder;
 
    public ProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator, SessionHolder sessionHolder) {
       privateProfilePipe = sessionActionPipeCreator.createPipe(GetPrivateProfileCommand.class, Schedulers.io());

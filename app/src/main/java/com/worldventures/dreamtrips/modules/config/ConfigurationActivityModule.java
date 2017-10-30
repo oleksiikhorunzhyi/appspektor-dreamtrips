@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.config;
 
 import android.app.Activity;
 
+import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider;
-import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegate;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegateImpl;
@@ -15,7 +15,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module (complete = false, library = true)
+@Module(complete = false, library = true)
 public class ConfigurationActivityModule {
 
    @Provides

@@ -88,6 +88,8 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
          reasonBuilder.append("clearBackStack is null\n");
          corrupted = true;
       }
-      if (corrupted) throw new IllegalStateException(reasonBuilder.toString());
+      if (corrupted) {
+         throw new IllegalStateException(reasonBuilder.toString());
+      }
    }
 }

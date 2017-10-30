@@ -60,7 +60,9 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
    @Nullable
    private Location getLocationFromAndroidLocation(android.location.Location location) {
       view.hideProgress();
-      if (isCanceled) return null;
+      if (isCanceled) {
+         return null;
+      }
 
       Geocoder coder = new Geocoder(view.getContext(), Locale.ENGLISH);
       Location newLocation = new Location();
@@ -89,9 +91,11 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
    }
 
    private void onLocationError(Throwable e) {
-      if (e instanceof LocationDelegate.LocationException)
+      if (e instanceof LocationDelegate.LocationException) {
          onStatusError(((LocationDelegate.LocationException) e).getStatus());
-      else locationNotGranted();
+      } else {
+         locationNotGranted();
+      }
    }
 
    private void onLocationObtained(android.location.Location location) {

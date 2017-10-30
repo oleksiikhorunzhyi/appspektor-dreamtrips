@@ -22,7 +22,9 @@ public final class ConversationUIHelper {
    }
 
    public static void setTitle(final TextView textView, DataConversation conversation, List<DataUser> members, boolean withGroupSize) {
-      if (isEmptyMembers(members)) return;
+      if (isEmptyMembers(members)) {
+         return;
+      }
 
       String initialTitle = ConversationHelper.obtainConversationSubject(conversation, members);
 
@@ -40,7 +42,9 @@ public final class ConversationUIHelper {
    }
 
    public static void setSubtitle(TextView target, DataConversation conversation, List<DataUser> members) {
-      if (isEmptyMembers(members)) return;
+      if (isEmptyMembers(members)) {
+         return;
+      }
 
       CharSequence subtitle;
       Resources res = target.getResources();
@@ -64,7 +68,9 @@ public final class ConversationUIHelper {
    }
 
    public static void setGroupChatTitle(TextView textView, String subject, int userCount) {
-      if (TextUtils.isEmpty(subject)) return;
+      if (TextUtils.isEmpty(subject)) {
+         return;
+      }
 
       Runnable runnable = () -> {
          String counterLabel = String.format(" (%s)", userCount);

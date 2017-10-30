@@ -5,7 +5,7 @@ import android.content.pm.PackageManager;
 
 public class AppInfoProviderImpl implements AppInfoProvider {
 
-   private Context context;
+   private final Context context;
 
    public AppInfoProviderImpl(Context context) {
       this.context = context;

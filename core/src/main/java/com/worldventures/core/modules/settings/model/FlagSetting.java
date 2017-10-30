@@ -5,7 +5,7 @@ import android.os.Parcel;
 public class FlagSetting extends Setting<Boolean> {
 
    public FlagSetting() {
-
+      //do nothing
    }
 
    protected FlagSetting(Parcel in) {
@@ -20,7 +20,7 @@ public class FlagSetting extends Setting<Boolean> {
 
    @Override
    public Boolean getValue() {
-      return value == null ? false : value;
+      return value != null && value;
    }
 
    public static final Creator<FlagSetting> CREATOR = new Creator<FlagSetting>() {

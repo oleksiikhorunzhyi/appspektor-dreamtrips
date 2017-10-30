@@ -8,11 +8,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class FriendMainBundle implements Parcelable {
-   private int defaultPosition;
 
    public static final int SEARCH = 0;
    public static final int REQUESTS = 1;
 
+   private final int defaultPosition;
 
    public FriendMainBundle() {
       this.defaultPosition = SEARCH;
@@ -29,7 +29,6 @@ public class FriendMainBundle implements Parcelable {
    @IntDef({SEARCH, REQUESTS})
    @Retention(RetentionPolicy.SOURCE)
    public @interface DefaultPosition {}
-
 
    @Override
    public int describeContents() {

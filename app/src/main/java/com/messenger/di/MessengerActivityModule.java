@@ -40,7 +40,7 @@ import dagger.Provides;
 import timber.log.Timber;
 
 @Module(
-      includes = {ChatHolderModule.class,},
+      includes = {ChatHolderModule.class},
       injects = {
             MessengerActivity.class,
 

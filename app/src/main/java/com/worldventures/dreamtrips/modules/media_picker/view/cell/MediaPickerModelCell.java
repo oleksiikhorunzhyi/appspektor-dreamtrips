@@ -50,7 +50,7 @@ public abstract class MediaPickerModelCell<T extends MediaPickerModelImpl> exten
          // Loading them twice smaller provides some balance between quality of the pictures and performance
          PipelineDraweeController controller = GraphicUtils
                .provideFrescoResizingController(getModelObject().getUri(), previewImageView.getController(),
-                     previewImageView.getWidth() / 2 , previewImageView.getHeight() / 2);
+                     previewImageView.getWidth() / 2, previewImageView.getHeight() / 2);
          previewImageView.setController(controller);
       });
    }

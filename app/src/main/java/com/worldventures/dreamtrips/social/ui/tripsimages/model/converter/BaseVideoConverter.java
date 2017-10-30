@@ -18,12 +18,18 @@ public abstract class BaseVideoConverter<T extends com.worldventures.dreamtrips.
    @Override
    public Video convert(MapperyContext mapperyContext, T videoAttachment) {
       Video video = new Video();
-      if (videoAttachment.ratio() != null) video.setAspectRatio(videoAttachment.ratio());
+      if (videoAttachment.ratio() != null) {
+         video.setAspectRatio(videoAttachment.ratio());
+      }
       if (videoAttachment.qualities() != null) {
          VideoQuality hdVideoQuality = getVideoQuality("hd", videoAttachment.qualities());
          VideoQuality sdVideoQuality = getVideoQuality("sd", videoAttachment.qualities());
-         if (hdVideoQuality != null) video.setHdUrl(hdVideoQuality.uri());
-         if (sdVideoQuality != null) video.setSdUrl(sdVideoQuality.uri());
+         if (hdVideoQuality != null) {
+            video.setHdUrl(hdVideoQuality.uri());
+         }
+         if (sdVideoQuality != null) {
+            video.setSdUrl(sdVideoQuality.uri());
+         }
       }
       video.setThumbnail(videoAttachment.thumbnail());
       video.setUid(videoAttachment.uid());

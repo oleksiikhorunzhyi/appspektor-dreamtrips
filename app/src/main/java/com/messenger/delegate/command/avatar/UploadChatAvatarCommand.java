@@ -1,9 +1,9 @@
 package com.messenger.delegate.command.avatar;
 
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyInteractor;
-import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
@@ -41,6 +41,8 @@ public class UploadChatAvatarCommand extends Command<String> implements Injectab
             break;
          case PROGRESS:
             callback.onProgress(actionState.progress);
+            break;
+         default:
             break;
       }
    }

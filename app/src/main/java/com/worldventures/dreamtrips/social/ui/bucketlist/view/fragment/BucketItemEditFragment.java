@@ -65,7 +65,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-      if (isTabletLandscape()) return;
+      if (isTabletLandscape()) {
+         return;
+      }
       //
       if (menu != null) {
          menu.clear();
@@ -79,7 +81,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
       if (getArgs().isLock()) {
          OrientationUtil.lockOrientation(getActivity());
       }
-      if (bucketHeader != null) bucketHeader.getBackground().mutate().setAlpha(255);
+      if (bucketHeader != null) {
+         bucketHeader.getBackground().mutate().setAlpha(255);
+      }
       initAutoCompleteDate();
    }
 

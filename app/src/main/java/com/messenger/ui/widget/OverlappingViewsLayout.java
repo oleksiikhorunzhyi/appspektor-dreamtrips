@@ -16,15 +16,15 @@ public class OverlappingViewsLayout extends ViewGroup {
 
    public OverlappingViewsLayout(Context context) {
       super(context);
-      init(context, null);
+      init(null);
    }
 
    public OverlappingViewsLayout(Context context, AttributeSet attrs) {
       super(context, attrs);
-      init(context, attrs);
+      init(attrs);
    }
 
-   private void init(Context context, AttributeSet attrs) {
+   private void init(AttributeSet attrs) {
       TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.OverlappingViewsLayout, 0, 0);
       try {
          overlappingPart = a.getFloat(R.styleable.OverlappingViewsLayout_ovl_overlap_part, OVERLAPPING_WIDTH_PART);

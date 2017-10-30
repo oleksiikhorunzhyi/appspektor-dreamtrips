@@ -105,7 +105,9 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
 
    @Override
    public void onClick(View view) {
-      if (conversationClickListener != null) conversationClickListener.onConversationClick(conversation);
+      if (conversationClickListener != null) {
+         conversationClickListener.onConversationClick(conversation);
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////

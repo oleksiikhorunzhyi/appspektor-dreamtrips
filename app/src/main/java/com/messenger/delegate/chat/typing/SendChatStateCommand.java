@@ -8,7 +8,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class SendChatStateCommand extends BaseChatCommand<String> {
 
-   @ChatState.State private String chatState;
+   @ChatState.State private final String chatState;
 
    public SendChatStateCommand(String conversationId, @ChatState.State String chatState) {
       super(conversationId);

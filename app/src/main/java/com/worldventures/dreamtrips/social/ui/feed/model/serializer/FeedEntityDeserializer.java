@@ -23,14 +23,14 @@ import static com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder
 
 public class FeedEntityDeserializer<T extends FeedEntityHolder> implements JsonDeserializer<T> {
 
-   private Map<FeedEntityHolder.Type, Class<? extends FeedEntityHolder>> modelByType = new HashMap<>();
+   private static final Map<FeedEntityHolder.Type, Class<? extends FeedEntityHolder>> MODEL_BY_TYPE = new HashMap<>();
 
-   {
-      modelByType.put(TRIP, TripFeedItem.class);
-      modelByType.put(POST, PostFeedItem.class);
-      modelByType.put(PHOTO, PhotoFeedItem.class);
-      modelByType.put(BUCKET_LIST_ITEM, BucketFeedItem.class);
-      modelByType.put(UNDEFINED, UndefinedFeedItem.class);
+   static {
+      MODEL_BY_TYPE.put(TRIP, TripFeedItem.class);
+      MODEL_BY_TYPE.put(POST, PostFeedItem.class);
+      MODEL_BY_TYPE.put(PHOTO, PhotoFeedItem.class);
+      MODEL_BY_TYPE.put(BUCKET_LIST_ITEM, BucketFeedItem.class);
+      MODEL_BY_TYPE.put(UNDEFINED, UndefinedFeedItem.class);
    }
 
    @Override
@@ -40,8 +40,9 @@ public class FeedEntityDeserializer<T extends FeedEntityHolder> implements JsonD
       if (!typeElement.isJsonNull()) {
          type = context.deserialize(typeElement.getAsJsonPrimitive(), FeedEntityHolder.Type.class);
       }
-      if (type == null) type = UNDEFINED;
-      FeedEntityHolder model = context.deserialize(json, modelByType.get(type));
-      return (T) model;
+      if (type == null) {
+         type = UNDEFINED;
+      }
+      return (T) context.deserialize(json, MODEL_BY_TYPE.get(type));
    }
 }

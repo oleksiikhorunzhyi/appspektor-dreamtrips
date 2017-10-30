@@ -72,7 +72,9 @@ class LayoutManagerMany extends LayoutManager {
       moreViewRootParams.gravity = params.gravity;
       moreViewRoot.setLayoutParams(moreViewRootParams);
       moreViewRoot.setOnClickListener(v -> {
-         if (itemClickListener != null) itemClickListener.moreClicked();
+         if (itemClickListener != null) {
+            itemClickListener.moreClicked();
+         }
       });
 
       //blur view

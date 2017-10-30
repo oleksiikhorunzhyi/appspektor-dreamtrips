@@ -16,7 +16,7 @@ import rx.functions.Func0;
 
 public class FeedCellListWidthProvider {
 
-   private Context context;
+   private final Context context;
    private Resources res;
 
    private Map<Config, Func0<Integer>> configWidthMap = new HashMap();
@@ -72,8 +72,9 @@ public class FeedCellListWidthProvider {
    public int getFeedCellWidth(Route route) {
       Config config = makeConfig(route);
       Func0<Integer> widthFunc = configWidthMap.get(config);
-      if (widthFunc == null)
+      if (widthFunc == null) {
          throw new IllegalStateException("No width func found for route. Supply corresponding config.");
+      }
       return widthFunc.call();
    }
 
@@ -117,13 +118,21 @@ public class FeedCellListWidthProvider {
 
       @Override
       public boolean equals(Object o) {
-         if (this == o) return true;
-         if (o == null || getClass() != o.getClass()) return false;
+         if (this == o) {
+            return true;
+         }
+         if (o == null || getClass() != o.getClass()) {
+            return false;
+         }
 
          Config config = (Config) o;
 
-         if (feedType != config.feedType) return false;
-         if (device != config.device) return false;
+         if (feedType != config.feedType) {
+            return false;
+         }
+         if (device != config.device) {
+            return false;
+         }
          return orientation == config.orientation;
 
       }
@@ -138,11 +147,11 @@ public class FeedCellListWidthProvider {
 
       @Override
       public String toString() {
-         return "Config{" +
-               "feedType=" + feedType +
-               ", device=" + device +
-               ", orientation=" + orientation +
-               '}';
+         return "Config{"
+               + "feedType=" + feedType
+               + ", device=" + device
+               + ", orientation=" + orientation
+               + '}';
       }
    }
 

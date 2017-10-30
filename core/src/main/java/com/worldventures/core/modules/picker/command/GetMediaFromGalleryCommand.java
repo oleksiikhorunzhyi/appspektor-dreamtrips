@@ -1,9 +1,9 @@
 package com.worldventures.core.modules.picker.command;
 
-import com.worldventures.janet.injection.InjectableAction;
-import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,13 +39,17 @@ public class GetMediaFromGalleryCommand extends Command<List<MediaPickerModel>> 
    }
 
    private Observable<List<MediaPickerModelImpl>> getPhotosObservable() {
-      return mediaPickerInteractor.getPhotosFromGalleryPipe().createObservableResult(new GetPhotosFromGalleryCommand(count))
+      return mediaPickerInteractor.getPhotosFromGalleryPipe()
+            .createObservableResult(new GetPhotosFromGalleryCommand(count))
             .map(getPhotosFromGalleryCommand -> new ArrayList<MediaPickerModelImpl>(getPhotosFromGalleryCommand.getResult()));
    }
 
    private Observable<List<MediaPickerModelImpl>> getVideosObservable() {
-      if (!queryVideos) return Observable.just(new ArrayList<>());
-      return mediaPickerInteractor.getVideosFromGalleryPipe().createObservableResult(new GetVideosFromGalleryCommand(count))
+      if (!queryVideos) {
+         return Observable.just(new ArrayList<>());
+      }
+      return mediaPickerInteractor.getVideosFromGalleryPipe()
+            .createObservableResult(new GetVideosFromGalleryCommand(count))
             .map(getVideosFromGalleryCommand -> new ArrayList<MediaPickerModelImpl>(getVideosFromGalleryCommand.getResult()));
    }
 
@@ -55,11 +59,13 @@ public class GetMediaFromGalleryCommand extends Command<List<MediaPickerModel>> 
       mediaItemsList.addAll(videos);
       Collections.sort(mediaItemsList, (mediaItem1, mediaItem2)
             -> compareDatesDescending(mediaItem1.getDateTaken(), mediaItem2.getDateTaken()));
-      return mediaItemsList.size() > count? mediaItemsList.subList(0, count) : mediaItemsList;
+      return mediaItemsList.size() > count ? mediaItemsList.subList(0, count) : mediaItemsList;
    }
 
    private int compareDatesDescending(long date1, long date2) {
-      if (date1 == date2) return 0;
+      if (date1 == date2) {
+         return 0;
+      }
       return date1 < date2 ? 1 : -1;
    }
 }

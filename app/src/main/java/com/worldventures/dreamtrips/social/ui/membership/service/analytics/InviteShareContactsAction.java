@@ -8,7 +8,4 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction;
                 category = "nav_menu",
                 trackers = ApptentiveTracker.TRACKER_KEY)
 public class InviteShareContactsAction extends BaseAnalyticsAction {
-
-   public InviteShareContactsAction() {
-   }
 }

@@ -1,18 +1,18 @@
 package com.worldventures.core.modules.auth.api.command;
 
 import com.worldventures.core.R;
-import com.worldventures.janet.injection.InjectableAction;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.model.Session;
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.auth.util.SessionUtil;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.storage.SettingsStorage;
 import com.worldventures.core.service.AuthRetryPolicy;
 import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.modules.auth.service.AuthInteractor;
-import com.worldventures.core.modules.auth.util.SessionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,9 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
 
    private void saveSettings(Session session) {
       List<Setting> settings = session.getSettings();
-      if (settings == null) settings = new ArrayList<>();
+      if (settings == null) {
+         settings = new ArrayList<>();
+      }
       settingsStorage.saveSettings(settings, true);
    }
 

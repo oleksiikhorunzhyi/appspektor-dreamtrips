@@ -10,7 +10,7 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 @AnalyticsEvent(action = "${nameSpace}:Video ${progressStatus}",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class WatchVideoAnalyticAction extends BaseAnalyticsAction {
+public final class WatchVideoAnalyticAction extends BaseAnalyticsAction {
 
    public static final String REPTOOLS_TRAINING_VIDEOS_NAMESPASE = "rep_tools:training_videos";
    public static final String MEMBERSHIP_VIDEOS_NAMESPASE = "membership:videos";

@@ -22,7 +22,7 @@ import timber.log.Timber;
 
 public class FeedItemCommonDataHelper {
 
-   private Context context;
+   private final Context context;
 
    @InjectView(R.id.feed_header_avatar) SmartAvatarView avatar;
    @InjectView(R.id.feed_header_text) TextView text;

@@ -8,7 +8,7 @@ import com.messenger.messengerservers.xmpp.extensions.SystemMessageExtension;
 
 public final class XmppMessageConverter {
 
-   private Gson gson;
+   private final Gson gson;
    private MessageBodyParser messageBodyParser;
 
    public XmppMessageConverter() {
@@ -65,6 +65,8 @@ public final class XmppMessageConverter {
             return JidCreatorHelper.obtainId(message.getFrom());
          case groupchat:
             return JidCreatorHelper.obtainUserIdFromGroupJid(message.getFrom());
+         default:
+            break;
       }
       return null;
    }

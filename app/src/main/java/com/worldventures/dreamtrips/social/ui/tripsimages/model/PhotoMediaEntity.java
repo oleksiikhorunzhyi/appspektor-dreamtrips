@@ -30,9 +30,13 @@ public class PhotoMediaEntity extends BaseMediaEntity<Photo> {
 
    public static final Creator<PhotoMediaEntity> CREATOR = new Creator<PhotoMediaEntity>() {
       @Override
-      public PhotoMediaEntity createFromParcel(Parcel source) {return new PhotoMediaEntity(source);}
+      public PhotoMediaEntity createFromParcel(Parcel source) {
+         return new PhotoMediaEntity(source);
+      }
 
       @Override
-      public PhotoMediaEntity[] newArray(int size) {return new PhotoMediaEntity[size];}
+      public PhotoMediaEntity[] newArray(int size) {
+         return new PhotoMediaEntity[size];
+      }
    };
 }

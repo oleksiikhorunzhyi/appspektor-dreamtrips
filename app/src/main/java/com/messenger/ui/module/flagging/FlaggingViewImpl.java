@@ -30,7 +30,7 @@ public class FlaggingViewImpl extends ModuleStatefulViewImpl<FlaggingPresenter> 
 
    private Dialog activeDialog;
 
-   private PublishSubject<Void> canceledDialogsStream = PublishSubject.create();
+   private final PublishSubject<Void> canceledDialogsStream = PublishSubject.create();
 
    public FlaggingViewImpl(View view, Injector injector) {
       super(view);
@@ -150,10 +150,12 @@ public class FlaggingViewImpl extends ModuleStatefulViewImpl<FlaggingPresenter> 
       Snackbar.make(getParentView(), message, Snackbar.LENGTH_SHORT).show();
    }
 
+   @SuppressWarnings("PMD.UnusedFormalParameter")
    private void onDialogCanceled(DialogInterface dialog, int which) {
       canceledDialogsStream.onNext(null);
    }
 
+   @SuppressWarnings("PMD.UnusedFormalParameter")
    private void onDialogCanceled(DialogInterface dialog) {
       canceledDialogsStream.onNext(null);
    }

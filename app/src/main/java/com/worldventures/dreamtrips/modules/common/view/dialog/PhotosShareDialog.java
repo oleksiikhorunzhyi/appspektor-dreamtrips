@@ -24,6 +24,7 @@ public class PhotosShareDialog extends ShareDialog {
                break;
             default:
                type = ShareType.TWITTER;
+               break;
          }
          callback.onShareType(type);
       });

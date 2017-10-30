@@ -35,7 +35,9 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
 
    @Override
    protected void back() {
-      if (!isSlave) view.back();
+      if (!isSlave) {
+         view.back();
+      }
    }
 
    public interface View extends FeedDetailsPresenter.View {

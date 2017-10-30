@@ -76,7 +76,9 @@ public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPrefere
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
 }

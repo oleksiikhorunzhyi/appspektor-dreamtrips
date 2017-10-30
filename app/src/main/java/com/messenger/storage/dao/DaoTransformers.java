@@ -11,19 +11,22 @@ import java.util.List;
 
 import rx.Observable;
 
-public class DaoTransformers {
+public final class DaoTransformers {
 
-   public static <ModelClass extends Model> Observable.Transformer<Cursor, ModelClass> toEntity(Class<ModelClass> table) {
+   private DaoTransformers() {
+   }
+
+   public static <T extends Model> Observable.Transformer<Cursor, T> toEntity(Class<T> table) {
       return cursorObservable -> cursorObservable.map(cursor -> {
-         ModelClass models = SqlUtils.convertToModel(false, table, cursor);
+         T models = SqlUtils.convertToModel(false, table, cursor);
          cursor.close();
          return models;
       });
    }
 
-   public static <ModelClass extends Model> Observable.Transformer<Cursor, List<ModelClass>> toEntityList(Class<ModelClass> table) {
+   public static <T extends Model> Observable.Transformer<Cursor, List<T>> toEntityList(Class<T> table) {
       return cursorObservable -> cursorObservable.map(cursor -> {
-         List<ModelClass> models = SqlUtils.convertToList(table, cursor);
+         List<T> models = SqlUtils.convertToList(table, cursor);
          cursor.close();
          return models;
       });

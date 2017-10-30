@@ -32,7 +32,9 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import rx.Observable;
 
-public class DtlLocationsSearchScreenImpl extends DtlLayout<DtlLocationsSearchScreen, DtlLocationsSearchPresenter, DtlLocationsSearchPath> implements DtlLocationsSearchScreen, CellDelegate<DtlLocation> {
+public class DtlLocationsSearchScreenImpl
+      extends DtlLayout<DtlLocationsSearchScreen, DtlLocationsSearchPresenter, DtlLocationsSearchPath>
+      implements DtlLocationsSearchScreen, CellDelegate<DtlLocation> {
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    //

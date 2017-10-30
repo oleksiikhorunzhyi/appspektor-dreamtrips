@@ -25,13 +25,15 @@ public class ConversationLastMessageInflater extends ViewInflater {
    @InjectView(R.id.conversation_last_message_textview) TextView lastMessageTextView;
    private SystemMessageTextProvider systemMessageTextProvider;
 
-   public void setLastMessage(DataConversation dataConversation, DataMessage message, DataUser messageAuthor, DataUser recipient, DataUser currentUser, String attachmentType, DataTranslation dataTranslation) {
+   public void setLastMessage(DataConversation dataConversation, DataMessage message, DataUser messageAuthor,
+         DataUser recipient, DataUser currentUser, String attachmentType, DataTranslation dataTranslation) {
       systemMessageTextProvider = new SystemMessageTextProvider(context, currentUser.getId());
       CharSequence text = getLastMessageText(dataConversation, message, messageAuthor, recipient, currentUser, attachmentType, dataTranslation);
       lastMessageTextView.setText(text);
    }
 
-   private String getLastMessageText(DataConversation dataConversation, DataMessage message, DataUser messageAuthor, DataUser recipient, DataUser currentUser, String attachmentType, DataTranslation dataTranslation) {
+   private String getLastMessageText(DataConversation dataConversation, DataMessage message, DataUser messageAuthor,
+         DataUser recipient, DataUser currentUser, String attachmentType, DataTranslation dataTranslation) {
       if (attachmentType == null) {
          return createMessageText(dataConversation, message, messageAuthor, recipient, currentUser, attachmentType, dataTranslation);
       }
@@ -45,15 +47,18 @@ public class ConversationLastMessageInflater extends ViewInflater {
       }
    }
 
-   private String createMessageText(DataConversation dataConversation, DataMessage message, DataUser messageAuthor, DataUser recipient, DataUser currentUser, String attachmentType, DataTranslation dataTranslation) {
+   private String createMessageText(DataConversation dataConversation, DataMessage message, DataUser messageAuthor,
+         DataUser recipient, DataUser currentUser, String attachmentType, DataTranslation dataTranslation) {
       String messageText = "";
       if (message.getType() != null) {
          if (MessageHelper.isUserMessage(message)) {
-            if (MessageVersionHelper.isUnsupported(attachmentType))
+            if (MessageVersionHelper.isUnsupported(attachmentType)) {
                messageText = Html.fromHtml(context.getString(R.string.chat_update_proposition)).toString();
-            else if (dataTranslation.getTranslateStatus() == TranslationStatus.TRANSLATED)
+            } else if (dataTranslation.getTranslateStatus() == TranslationStatus.TRANSLATED) {
                messageText = dataTranslation.getTranslation();
-            else messageText = message.getText();
+            } else {
+               messageText = message.getText();
+            }
 
             String messageAuthorName = messageAuthor.getDisplayedName();
             if (TextUtils.equals(message.getFromId(), currentUser.getId())) {

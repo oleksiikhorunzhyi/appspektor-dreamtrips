@@ -8,8 +8,9 @@ import android.view.View;
 
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
-   private GestureDetector gestureDetector;
-   private OnItemClickListener listener;
+
+   private final GestureDetector gestureDetector;
+   private final OnItemClickListener listener;
 
    public RecyclerItemClickListener(Context context, OnItemClickListener listener) {
       this.listener = listener;
@@ -33,7 +34,7 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
 
    @Override
    public void onRequestDisallowInterceptTouchEvent(boolean b) {
-
+      //do nothing
    }
 
    @Override

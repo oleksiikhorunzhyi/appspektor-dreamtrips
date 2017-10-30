@@ -30,13 +30,16 @@ public class HeadphonesPlugReceiver extends BroadcastReceiver {
                break;
             default:
                Timber.d("Headset state is undefined");
+               break;
          }
       }
    }
 
    protected void onHeadphonesPluggedIn() {
+      //do nothing
    }
 
    protected void onHeadphonesUnPlugged() {
+      //do nothing
    }
 }

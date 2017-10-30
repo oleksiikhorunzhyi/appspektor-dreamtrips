@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.ResizeableCell;
 
 public class ResizeCellScrollListener extends RecyclerView.OnScrollListener {
 
-   private LinearLayoutManager layoutManager;
+   private final LinearLayoutManager layoutManager;
    private Pair<Integer, Integer> checkedRange = new Pair<>(-1, -1);
 
    public void onConfigChanged() {

@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 class FragmentCompass {
 
-   private FragmentActivity activity;
+   private final FragmentActivity activity;
 
    @IdRes private int containerId;
    private boolean backStackEnabled = true;
@@ -104,6 +104,8 @@ class FragmentCompass {
                break;
             case ADD:
                fragmentTransaction.add(containerId, fragment, clazzName);
+               break;
+            default:
                break;
          }
          if (backStackEnabled) {

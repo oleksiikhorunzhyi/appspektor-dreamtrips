@@ -91,7 +91,8 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
          case R.id.action_edit_chat_name:
             onEditChatName();
             return true;
-
+         default:
+            break;
       }
       return super.onToolbarMenuItemClick(item);
    }
@@ -101,7 +102,9 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
       super.applyViewState();
       ChatSettingsViewState viewState = getViewState();
       ChatSettingsViewState.UploadingState uploadingState = getViewState().getUploadAvatar();
-      if (uploadingState == null) return;
+      if (uploadingState == null) {
+         return;
+      }
       if (uploadingState == ChatSettingsViewState.UploadingState.UPLOADING) {
          getView().showChangingAvatarProgressBar();
       } else {

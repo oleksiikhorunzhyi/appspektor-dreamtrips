@@ -11,7 +11,4 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 public class ViewPodcastAnalyticsAction extends BaseAnalyticsAction {
 
    @Attribute("view") String view = "1";
-
-   public ViewPodcastAnalyticsAction() {
-   }
 }

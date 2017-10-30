@@ -117,8 +117,8 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    private void trackUploadAnalyticEvent() {
-      UploadTripImageAnalyticAction action = tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES ?
-            UploadTripImageAnalyticAction.fromMyImages() : UploadTripImageAnalyticAction.fromMemberImages();
+      UploadTripImageAnalyticAction action = tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES
+            ? UploadTripImageAnalyticAction.fromMyImages() : UploadTripImageAnalyticAction.fromMemberImages();
 
       analyticsInteractor.analyticsActionPipe().send(action);
    }
@@ -128,7 +128,9 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    void initItems() {
-      if (currentItems == null) currentItems = new ArrayList<>();
+      if (currentItems == null) {
+         currentItems = new ArrayList<>();
+      }
    }
 
    void initCreateMediaFlow() {
@@ -173,7 +175,9 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
       loading = false;
       lastPageReached = baseMediaCommand.lastPageReached();
       view.finishLoading();
-      if (baseMediaCommand.isReload()) currentItems.clear();
+      if (baseMediaCommand.isReload()) {
+         currentItems.clear();
+      }
       currentItems.addAll(baseMediaCommand.getItems());
       updateItemsInView();
       tripImagesInteractor.checkVideoProcessingStatusPipe().send(new CheckVideoProcessingStatusCommand(currentItems));

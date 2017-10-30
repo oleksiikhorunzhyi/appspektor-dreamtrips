@@ -132,14 +132,22 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    private boolean validateForm(FeedbackType feedbackType, CharSequence message,
          boolean photoPickerVisible, EntityStateHolder<FeedbackImageAttachment> stateHolder) {
       boolean feedbackTypeSelected = feedbackType.getId() > 0;
-      if (!feedbackTypeSelected) return false;
+      if (!feedbackTypeSelected) {
+         return false;
+      }
 
       boolean messageIsEmpty = message.toString().trim().isEmpty();
-      if (messageIsEmpty) return false;
+      if (messageIsEmpty) {
+         return false;
+      }
 
-      if (photoPickerVisible) return false;
+      if (photoPickerVisible) {
+         return false;
+      }
 
-      if (attachmentsManager.getFailedOrPendingAttachmentsCount() > 0) return false;
+      if (attachmentsManager.getFailedOrPendingAttachmentsCount() > 0) {
+         return false;
+      }
 
       return true;
    }
@@ -176,6 +184,8 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
             break;
          case FAIL:
             view.showRetryUploadingUiForAttachment(holder);
+            break;
+         default:
             break;
       }
    }

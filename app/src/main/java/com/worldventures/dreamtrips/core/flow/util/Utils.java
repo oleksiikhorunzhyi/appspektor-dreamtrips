@@ -55,7 +55,9 @@ public final class Utils {
             } else if (failCallback != null) {
                failCallback.onMeasureFailed(view);
             }
-            if (viewTreeObserver.isAlive()) viewTreeObserver.removeOnPreDrawListener(this);
+            if (viewTreeObserver.isAlive()) {
+               viewTreeObserver.removeOnPreDrawListener(this);
+            }
             return true;
          }
       });

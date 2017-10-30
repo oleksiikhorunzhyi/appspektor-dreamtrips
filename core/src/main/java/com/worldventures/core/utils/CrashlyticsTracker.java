@@ -8,6 +8,9 @@ import java.util.Set;
 
 public final class CrashlyticsTracker {
 
+   private CrashlyticsTracker() {
+   }
+
    public static void trackError(Throwable throwable) {
       Crashlytics.logException(throwable);
    }

@@ -10,11 +10,11 @@ public class UploadingTimeLeftFormatter {
    private static final String DURATION_FORMAT = "%d%s %d%s %s";
    private static final String SHORTENED_DURATION_FORMAT = "%d%s %s";
 
-   private Context context;
-   private String hoursString;
-   private String minutesString;
-   private String secondsString;
-   private String leftString;
+   private final Context context;
+   private final String hoursString;
+   private final String minutesString;
+   private final String secondsString;
+   private final String leftString;
 
    public UploadingTimeLeftFormatter(Context context) {
       this.context = context;
@@ -25,8 +25,12 @@ public class UploadingTimeLeftFormatter {
    }
 
    public String format(long durationMillis) {
-      if (durationMillis == PostCompoundOperationModel.TIME_LEFT_INITIAL_VALUE) return "";
-      if (durationMillis == 0) return context.getString(R.string.uploading_post_time_left_posting);
+      if (durationMillis == PostCompoundOperationModel.TIME_LEFT_INITIAL_VALUE) {
+         return "";
+      }
+      if (durationMillis == 0) {
+         return context.getString(R.string.uploading_post_time_left_posting);
+      }
 
       long totalSecondsCount = durationMillis / 1000;
       long totalMinutesCount = totalSecondsCount / 60;
@@ -40,7 +44,9 @@ public class UploadingTimeLeftFormatter {
 
       if (totalHoursCount > 0) {
          long roundedMinutesRemainder = minutesRemainder;
-         if (secondsRemainder > 30) roundedMinutesRemainder++;
+         if (secondsRemainder > 30) {
+            roundedMinutesRemainder++;
+         }
          return String.format(DURATION_FORMAT, totalHoursCount, hoursString, roundedMinutesRemainder, minutesString, leftString);
       } else if (totalMinutesCount > 0) {
          return String.format(DURATION_FORMAT, minutesRemainder, minutesString, secondsRemainder, secondsString, leftString);

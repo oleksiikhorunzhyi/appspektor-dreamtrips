@@ -39,7 +39,9 @@ public class DtlApiErrorViewAdapter {
    }
 
    public void handleError(Throwable exception) {
-      if (unhandled(exception)) return;
+      if (unhandled(exception)) {
+         return;
+      }
       if (exception instanceof JanetActionException) {
          JanetActionException janetActionException = (JanetActionException) exception;
          handleError(janetActionException.getAction(), janetActionException.getCause());
@@ -51,7 +53,9 @@ public class DtlApiErrorViewAdapter {
    }
 
    public void handleError(Object action, Throwable exception) {
-      if (unhandled(exception)) return;
+      if (unhandled(exception)) {
+         return;
+      }
       //
       view.informUser(errorHandlingUtils.handleJanetHttpError(action, exception, context.getString(R.string.smth_went_wrong),
             context.getString(R.string.no_connection)));
@@ -59,9 +63,13 @@ public class DtlApiErrorViewAdapter {
    }
 
    private boolean unhandled(Throwable exception) {
-      if (exception instanceof CancelException) return true;
+      if (exception instanceof CancelException) {
+         return true;
+      }
       Timber.e(exception, this.getClass().getName() + " handled caught exception");
-      if (hasView()) return false;
+      if (hasView()) {
+         return false;
+      }
       //
       Crashlytics.logException(exception);
       Timber.e(exception, "DtlApiErrorViewAdapter expects view to be set, which is null.");

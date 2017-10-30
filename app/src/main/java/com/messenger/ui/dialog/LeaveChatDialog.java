@@ -17,9 +17,13 @@ public class LeaveChatDialog {
 
    public LeaveChatDialog(Context context, String message) {
       dialog = new AlertDialog.Builder(context).setNegativeButton(R.string.action_cancel, (dialog, which1) -> {
-         if (negativeListener != null) negativeListener.call();
+         if (negativeListener != null) {
+            negativeListener.call();
+         }
       }).setPositiveButton(R.string.ok, (dialog, which) -> {
-         if (positiveListener != null) positiveListener.call();
+         if (positiveListener != null) {
+            positiveListener.call();
+         }
       }).setMessage(message).create();
    }
 

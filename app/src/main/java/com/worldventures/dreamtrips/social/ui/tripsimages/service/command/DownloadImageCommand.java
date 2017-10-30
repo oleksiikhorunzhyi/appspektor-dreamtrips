@@ -92,7 +92,9 @@ public class DownloadImageCommand extends Command<String> implements InjectableA
          }
       }
       //
-      if (url != null) stringUrl = url.toString();
+      if (url != null) {
+         stringUrl = url.toString();
+      }
 
       return stringUrl;
    }

@@ -72,7 +72,9 @@ public class VideoPostProcessingCommand extends PostProcessingCommand<PostWithVi
    @Override
    protected void cancel() {
       super.cancel();
-      if (uploadVideoFileCommandActionPipe != null) uploadVideoFileCommandActionPipe.cancelLatest();
+      if (uploadVideoFileCommandActionPipe != null) {
+         uploadVideoFileCommandActionPipe.cancelLatest();
+      }
    }
 
    @Override

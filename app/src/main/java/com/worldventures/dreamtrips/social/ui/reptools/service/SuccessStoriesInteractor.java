@@ -10,9 +10,9 @@ import rx.schedulers.Schedulers;
 
 public class SuccessStoriesInteractor {
 
-   private ActionPipe<GetSuccessStoriesCommand> getSuccessStoriesPipe;
-   private ActionPipe<LikeSuccessStoryCommand> likeSuccessStoryPipe;
-   private ActionPipe<UnlikeSuccessStoryCommand> unlikeSuccessStoryPipe;
+   private final ActionPipe<GetSuccessStoriesCommand> getSuccessStoriesPipe;
+   private final ActionPipe<LikeSuccessStoryCommand> likeSuccessStoryPipe;
+   private final ActionPipe<UnlikeSuccessStoryCommand> unlikeSuccessStoryPipe;
 
    public SuccessStoriesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       getSuccessStoriesPipe = sessionActionPipeCreator.createPipe(GetSuccessStoriesCommand.class, Schedulers.io());

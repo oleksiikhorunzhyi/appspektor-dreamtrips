@@ -12,7 +12,7 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class FetchUsersDataCommand extends Command<List<DataUser>> implements InjectableAction {
+public final class FetchUsersDataCommand extends Command<List<DataUser>> implements InjectableAction {
 
    @Inject UserDataFetcher userDataFetcher;
 

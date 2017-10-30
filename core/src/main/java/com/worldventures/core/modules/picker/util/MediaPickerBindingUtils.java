@@ -13,7 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.utils.VideoDurationFormatter;
 
-public class MediaPickerBindingUtils {
+public final class MediaPickerBindingUtils {
 
    private MediaPickerBindingUtils() {
    }
@@ -26,10 +26,8 @@ public class MediaPickerBindingUtils {
 
    @BindingAdapter("pickerDisplayUri")
    public static void setImage(SimpleDraweeView draweeView, Uri uri) {
-      if (draweeView.getTag() != null) {
-         if (uri.equals(draweeView.getTag())) {
-            return;
-         }
+      if (draweeView.getTag() != null && uri.equals(draweeView.getTag())) {
+         return;
       }
 
       draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));

@@ -17,26 +17,21 @@ public class UndefinedFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedIt
 
    @Override
    public void prepareForReuse() {
-
-   }
-
-   @Override
-   protected void syncUIStateWithModel() {
-      super.syncUIStateWithModel();
+      //do nothing
    }
 
    @Override
    protected void onDelete() {
-
+      //do nothing
    }
 
    @Override
    protected void onEdit() {
-
+      //do nothing
    }
 
    @Override
    protected void onMore() {
-
+      //do nothing
    }
 }

@@ -49,78 +49,73 @@ public class MessageDAO extends BaseDAO {
       super(context, rxContentResolver);
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<DataMessage> getMessage(String messageId) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
-            "WHERE " + DataMessage$Table._ID + "=?").withSelectionArgs(new String[]{messageId}).build();
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " "
+            + "WHERE " + DataMessage$Table._ID + "=?").withSelectionArgs(new String[]{messageId}).build();
 
       return query(q, DataMessage.CONTENT_URI).compose(DaoTransformers.toEntity(DataMessage.class));
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<DataMessage> getLastOtherUserMessage(String conversationId, String ownerId, long lastMessageDate) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
-            "WHERE " + DataMessage$Table.FROMID + "<>? " +
-            "AND " + DataMessage$Table.TYPE + "=? " +
-            "AND " + DataMessage$Table.CONVERSATIONID + "=? " +
-            "AND " + DataMessage$Table.STATUS + "=? " +
-            "AND " + DataMessage$Table.DATE + "<=? " +
-            "ORDER BY " + DataMessage$Table.DATE + " DESC " +
-            "LIMIT 1")
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " "
+            + "WHERE " + DataMessage$Table.FROMID + "<>? "
+            + "AND " + DataMessage$Table.TYPE + "=? "
+            + "AND " + DataMessage$Table.CONVERSATIONID + "=? "
+            + "AND " + DataMessage$Table.STATUS + "=? "
+            + "AND " + DataMessage$Table.DATE + "<=? "
+            + "ORDER BY " + DataMessage$Table.DATE + " DESC "
+            + "LIMIT 1")
             .withSelectionArgs(new String[]{ownerId, MessageType.MESSAGE, conversationId, String.valueOf(MessageStatus.SENT), String.valueOf(lastMessageDate)})
             .build();
 
       return query(q, DataMessage.CONTENT_URI).compose(DaoTransformers.toEntity(DataMessage.class));
    }
 
-
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT m.*, " +
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT m.*, "
             // message author
-            "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
-            "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
-            "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
-            "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
+            + "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", "
+            + "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", "
+            + "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", "
+            + "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", "
 
             // message recipient
-            "uu." + DataUser$Table._ID + " as " + USER_ID + ", " +
-            "uu." + DataUser$Table.FIRSTNAME + " as " + USER_FIRST_NAME + ", " +
-            "uu." + DataUser$Table.LASTNAME + " as " + USER_LAST_NAME + ", " +
-
-            "a." + DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
-            "a." + DataAttachment$Table.TYPE + " as " + ATTACHMENT_TYPE + ", " +
-
-            "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", " +
-            "p." + DataPhotoAttachment$Table.LOCALPATH + " as " + DataPhotoAttachment$Table.LOCALPATH + ", " +
-            "p." + DataPhotoAttachment$Table.UPLOADSTATE + " as " + DataPhotoAttachment$Table.UPLOADSTATE + ", " +
-
-            "l." + DataLocationAttachment$Table.LAT + " as " + DataLocationAttachment$Table.LAT + ", " +
-            "l." + DataLocationAttachment$Table.LNG + " as " + DataLocationAttachment$Table.LNG + ", " +
-
-            "t." + DataTranslation$Table._ID + " as " + TRANSLATION_ID + ", " +
-            "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", " +
-            "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + ", " +
-
-            "c." + DataConversation$Table.TYPE + " as " + CONVERSATION_TYPE + " " +
-
-            "FROM " + DataMessage.TABLE_NAME + " m " +
-            "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
-            "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
-            "LEFT JOIN " + DataUser$Table.TABLE_NAME + " uu " +
-            "ON m." + DataMessage$Table.TOID + "=uu." + DataUser$Table._ID + " " +
-            "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
-            "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
-            "LEFT JOIN " + DataPhotoAttachment.TABLE_NAME + " p " +
-            "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " " +
-            "LEFT JOIN " + DataLocationAttachment.TABLE_NAME + " l " +
-            "ON a." + DataLocationAttachment$Table._ID + "=l." + DataLocationAttachment$Table._ID + " " +
-            "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
-            "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " " +
-            "LEFT JOIN " + DataConversation.TABLE_NAME + " c " +
-            "ON m." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-
-            "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
-            "AND m." + DataMessage$Table.DATE + ">=c." + DataConversation$Table.CLEARTIME + " " +
-            "AND m." + DataMessage$Table.SYNCTIME + " >=? " +
-            "ORDER BY m." + DataMessage$Table.DATE)
+            + "uu." + DataUser$Table._ID + " as " + USER_ID + ", "
+            + "uu." + DataUser$Table.FIRSTNAME + " as " + USER_FIRST_NAME + ", "
+            + "uu." + DataUser$Table.LASTNAME + " as " + USER_LAST_NAME + ", "
+            + "a." + DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", "
+            + "a." + DataAttachment$Table.TYPE + " as " + ATTACHMENT_TYPE + ", "
+            + "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", "
+            + "p." + DataPhotoAttachment$Table.LOCALPATH + " as " + DataPhotoAttachment$Table.LOCALPATH + ", "
+            + "p." + DataPhotoAttachment$Table.UPLOADSTATE + " as " + DataPhotoAttachment$Table.UPLOADSTATE + ", "
+            + "l." + DataLocationAttachment$Table.LAT + " as " + DataLocationAttachment$Table.LAT + ", "
+            + "l." + DataLocationAttachment$Table.LNG + " as " + DataLocationAttachment$Table.LNG + ", "
+            + "t." + DataTranslation$Table._ID + " as " + TRANSLATION_ID + ", "
+            + "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "
+            + "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + ", "
+            + "c." + DataConversation$Table.TYPE + " as " + CONVERSATION_TYPE + " "
+            + "FROM " + DataMessage.TABLE_NAME + " m "
+            + "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u "
+            + "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " "
+            + "LEFT JOIN " + DataUser$Table.TABLE_NAME + " uu "
+            + "ON m." + DataMessage$Table.TOID + "=uu." + DataUser$Table._ID + " "
+            + "LEFT JOIN " + DataAttachment.TABLE_NAME + " a "
+            + "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " "
+            + "LEFT JOIN " + DataPhotoAttachment.TABLE_NAME + " p "
+            + "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " "
+            + "LEFT JOIN " + DataLocationAttachment.TABLE_NAME + " l "
+            + "ON a." + DataLocationAttachment$Table._ID + "=l." + DataLocationAttachment$Table._ID + " "
+            + "LEFT JOIN " + DataTranslation.TABLE_NAME + " t "
+            + "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " "
+            + "LEFT JOIN " + DataConversation.TABLE_NAME + " c "
+            + "ON m." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " "
+            + "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? "
+            + "AND m." + DataMessage$Table.DATE + ">=c." + DataConversation$Table.CLEARTIME + " "
+            + "AND m." + DataMessage$Table.SYNCTIME + " >=? "
+            + "ORDER BY m." + DataMessage$Table.DATE)
             .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)})
             .build();
 
@@ -130,7 +125,10 @@ public class MessageDAO extends BaseDAO {
    public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
       return Observable.create(subscriber -> {
          subscriber.onStart();
-         String clause = DataMessage$Table.CONVERSATIONID + " = ? " + "AND " + DataMessage$Table.DATE + " <= ? " + "AND " + DataMessage$Table.FROMID + " <> ? " + "AND " + DataMessage$Table.STATUS + " = ? ";
+         String clause = DataMessage$Table.CONVERSATIONID + " = ? "
+               + "AND " + DataMessage$Table.DATE + " <= ? "
+               + "AND " + DataMessage$Table.FROMID + " <> ? "
+               + "AND " + DataMessage$Table.STATUS + " = ? ";
          ContentValues cv = new ContentValues(1);
          cv.put(DataMessage$Table.STATUS, MessageStatus.READ);
          try {
@@ -143,20 +141,21 @@ public class MessageDAO extends BaseDAO {
       });
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public void deleteMessagesByConversation(String conversationId) {
       // TODO: fucking sqlite does not execute DELETE with JOINed tables
       // TODO: somewhen we replace this code via FOREIGN KEY
-      String selectAttachments = "SELECT " + DataAttachment$Table._ID + " " +
-            "FROM " + DataAttachment$Table.TABLE_NAME + " " +
-            "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
-      String queryClearLocation = "DELETE FROM " + DataLocationAttachment.TABLE_NAME + " " +
-            "WHERE " + DataLocationAttachment$Table._ID + " IN (" + selectAttachments + ")";
-      String queryClearPhoto = "DELETE FROM " + DataPhotoAttachment$Table.TABLE_NAME + " " +
-            "WHERE " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " IN (" + selectAttachments + ")";
-      String queryClearAttachment = "DELETE FROM " + DataAttachment$Table.TABLE_NAME + " " +
-            "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
-      String queryClearMessages = "DELETE FROM " + DataMessage$Table.TABLE_NAME + " " +
-            "WHERE " + DataMessage$Table.CONVERSATIONID + "=?";
+      String selectAttachments = "SELECT " + DataAttachment$Table._ID + " "
+            + "FROM " + DataAttachment$Table.TABLE_NAME + " "
+            + "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+      String queryClearLocation = "DELETE FROM " + DataLocationAttachment.TABLE_NAME + " "
+            + "WHERE " + DataLocationAttachment$Table._ID + " IN (" + selectAttachments + ")";
+      String queryClearPhoto = "DELETE FROM " + DataPhotoAttachment$Table.TABLE_NAME + " "
+            + "WHERE " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " IN (" + selectAttachments + ")";
+      String queryClearAttachment = "DELETE FROM " + DataAttachment$Table.TABLE_NAME + " "
+            + "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+      String queryClearMessages = "DELETE FROM " + DataMessage$Table.TABLE_NAME + " "
+            + "WHERE " + DataMessage$Table.CONVERSATIONID + "=?";
 
       SQLiteDatabase db = getWritableDatabase();
       db.beginTransaction();

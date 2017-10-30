@@ -27,6 +27,7 @@ public class Location implements Serializable, Parcelable {
    protected double lng;
 
    public Location() {
+      //do nothing
    }
 
    public Location(Location location) {
@@ -102,22 +103,30 @@ public class Location implements Serializable, Parcelable {
 
    @Override
    public String toString() {
-      return "Location{" +
-            "name='" + name + '\'' +
-            ", lat=" + lat +
-            ", lng=" + lng +
-            '}';
+      return "Location{"
+            + "name='" + name + '\''
+            + ", lat=" + lat
+            + ", lng=" + lng
+            + '}';
    }
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       Location location = (Location) o;
 
-      if (Double.compare(location.lat, lat) != 0) return false;
-      if (Double.compare(location.lng, lng) != 0) return false;
+      if (Double.compare(location.lat, lat) != 0) {
+         return false;
+      }
+      if (Double.compare(location.lng, lng) != 0) {
+         return false;
+      }
       return !(name != null ? !name.equals(location.name) : location.name != null);
    }
 

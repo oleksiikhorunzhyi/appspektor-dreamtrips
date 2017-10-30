@@ -1,17 +1,17 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
+import com.worldventures.core.janet.cache.storage.PaginatedStorage;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripsHttpAction;
 import com.worldventures.dreamtrips.api.trip.ImmutableGetTripsHttpAction;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.ActionCommandSubscriber;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
@@ -34,10 +34,10 @@ public class GetTripsCommand extends CommandWithError<List<TripModel>> implement
    @Inject Janet janet;
    @Inject MapperyContext mappery;
 
-   private String searchQuery;
-   private TripsFilterData tripsFilterData;
+   private final String searchQuery;
+   private final TripsFilterData tripsFilterData;
 
-   private boolean refresh;
+   private final boolean refresh;
 
    private List<TripModel> cachedData;
 
@@ -49,7 +49,9 @@ public class GetTripsCommand extends CommandWithError<List<TripModel>> implement
 
    @Override
    protected void run(CommandCallback<List<TripModel>> callback) throws Throwable {
-      if (cachedData != null && !cachedData.isEmpty()) callback.onProgress(0);
+      if (cachedData != null && !cachedData.isEmpty()) {
+         callback.onProgress(0);
+      }
       //
       janet.createPipe(GetTripsHttpAction.class)
             .createObservableResult(new GetTripsHttpAction(params(tripsFilterData, searchQuery, getPage())))
@@ -60,7 +62,9 @@ public class GetTripsCommand extends CommandWithError<List<TripModel>> implement
    }
 
    private void clearCacheIfNeeded() {
-      if (refresh) cachedData = null;
+      if (refresh) {
+         cachedData = null;
+      }
    }
 
    private int getPage() {
@@ -119,8 +123,12 @@ public class GetTripsCommand extends CommandWithError<List<TripModel>> implement
 
    public List<TripModel> getItems() {
       List<TripModel> trips = new ArrayList<>();
-      if (cachedData != null) trips.addAll(cachedData);
-      if (getResult() != null) trips.addAll(getResult());
+      if (cachedData != null) {
+         trips.addAll(cachedData);
+      }
+      if (getResult() != null) {
+         trips.addAll(getResult());
+      }
       return trips;
    }
 

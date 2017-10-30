@@ -18,7 +18,7 @@ import static com.worldventures.core.modules.settings.util.SettingsFactory.MILES
 import static com.worldventures.core.modules.settings.util.SettingsFactory.NEW_MESSAGE;
 import static com.worldventures.core.modules.settings.util.SettingsFactory.PHOTO_TAGGING;
 
-public class SettingsManager {
+public final class SettingsManager {
 
    private SettingsManager() {
    }
@@ -26,7 +26,9 @@ public class SettingsManager {
    public static List<Setting> merge(List<Setting> fromServer, List<Setting> local) {
       return Queryable.from(fromServer).filter(local::contains).map(setting -> {
          Setting localSetting = Queryable.from(local).firstOrDefault(setting::equals);
-         if (localSetting != null) setting.setType(localSetting.getType());
+         if (localSetting != null) {
+            setting.setType(localSetting.getType());
+         }
          return setting;
       }).toList();
    }
@@ -60,12 +62,8 @@ public class SettingsManager {
    public static SelectDialogModel getSelectDialogModel(@NonNull Resources res, @NonNull String title, @NonNull List<String> options, String value) {
       SelectDialogModel model = new SelectDialogModel();
       //title
-      switch (title) {
-         case DISTANCE_UNITS:
-            model.setTitleId(R.string.show_distance_in);
-            break;
-         default:
-            break;
+      if (title.equals(DISTANCE_UNITS)) {
+         model.setTitleId(R.string.show_distance_in);
       }
       //items
       int optionsSize = options.size();
@@ -77,6 +75,8 @@ public class SettingsManager {
                break;
             case KILOMETERS:
                items.add(res.getString(R.string.settings_kilometers));
+               break;
+            default:
                break;
          }
       }

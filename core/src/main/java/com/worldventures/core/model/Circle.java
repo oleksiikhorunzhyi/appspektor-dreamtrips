@@ -6,16 +6,13 @@ import java.io.Serializable;
 
 public class Circle implements Serializable, Comparable<Circle> {
 
+   private String id;
+   private String name;
+
    public static Circle withTitle(String title) {
       Circle all = new Circle();
       all.name = title;
       return all;
-   }
-
-   private String id;
-   private String name;
-
-   public Circle() {
    }
 
    public String getId() {
@@ -46,8 +43,8 @@ public class Circle implements Serializable, Comparable<Circle> {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       Circle circle = (Circle) o;
 

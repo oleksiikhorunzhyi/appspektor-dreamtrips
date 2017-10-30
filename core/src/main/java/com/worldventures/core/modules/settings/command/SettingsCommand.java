@@ -2,7 +2,8 @@ package com.worldventures.core.modules.settings.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.R;
-import com.worldventures.janet.injection.InjectableAction;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.api.settings.UpdateSettingsHttpAction;
 import com.worldventures.dreamtrips.api.settings.model.ImmutableFlagSetting;
@@ -10,7 +11,6 @@ import com.worldventures.dreamtrips.api.settings.model.ImmutableSelectSetting;
 import com.worldventures.dreamtrips.api.settings.model.ImmutableSettingsBody;
 import com.worldventures.dreamtrips.api.settings.model.ImmutableUnknownSetting;
 import com.worldventures.dreamtrips.api.settings.model.SettingsBody;
-import com.worldventures.core.janet.CommandWithError;
 
 import java.util.List;
 
@@ -68,6 +68,8 @@ public class SettingsCommand extends CommandWithError<Void> implements Injectabl
                      .value((String) setting.getValue())
                      .build();
                settingsBodyBuilder.addSettings(unknownSetting);
+               break;
+            default:
                break;
          }
       });

@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.storage.PaginatedStorage;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.MerchantsActionCreator;
@@ -95,13 +95,19 @@ public class MerchantsAction extends CommandWithError<List<ThinMerchant>>
    }
 
    private void clearCacheIfNeeded() {
-      if (isRefresh()) cache = null;
+      if (isRefresh()) {
+         cache = null;
+      }
    }
 
    public List<ThinMerchant> merchants() {
       List<ThinMerchant> merchants = new ArrayList<>();
-      if (cache != null) merchants.addAll(cache);
-      if (getResult() != null) merchants.addAll(getResult());
+      if (cache != null) {
+         merchants.addAll(cache);
+      }
+      if (getResult() != null) {
+         merchants.addAll(getResult());
+      }
       return merchants;
    }
 }

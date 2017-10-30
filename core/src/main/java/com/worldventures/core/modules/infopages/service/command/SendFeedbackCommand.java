@@ -3,17 +3,17 @@ package com.worldventures.core.modules.infopages.service.command;
 import android.os.Build;
 
 import com.worldventures.core.R;
-import com.worldventures.janet.injection.InjectableAction;
+import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.core.modules.infopages.service.storage.InfopagesStorage;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.api.feedback.SendFeedbackHttpAction;
 import com.worldventures.dreamtrips.api.feedback.model.Feedback;
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedback;
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableMetadata;
-import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.service.DeviceInfoProvider;
-import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 
 import java.util.List;
 import java.util.Locale;

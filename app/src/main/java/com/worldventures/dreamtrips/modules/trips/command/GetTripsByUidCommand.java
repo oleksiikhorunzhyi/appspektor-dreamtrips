@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
@@ -8,9 +10,7 @@ import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripsDetailsHttpAction;
 import com.worldventures.dreamtrips.api.trip.model.TripWithoutDetails;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 
@@ -41,7 +41,9 @@ public class GetTripsByUidCommand extends CommandWithError<List<TripModel>> impl
 
    @Override
    protected void run(CommandCallback<List<TripModel>> callback) throws Throwable {
-      if (hasValidCachedItems()) callback.onProgress(0);
+      if (hasValidCachedItems()) {
+         callback.onProgress(0);
+      }
       //
       janet.createPipe(GetTripsDetailsHttpAction.class)
             .createObservableResult(new GetTripsDetailsHttpAction(tripUids))
@@ -63,8 +65,11 @@ public class GetTripsByUidCommand extends CommandWithError<List<TripModel>> impl
    }
 
    public List<TripModel> getItems() {
-      if (getResult() != null) return getResult();
-      else return cachedTrips;
+      if (getResult() != null) {
+         return getResult();
+      } else {
+         return cachedTrips;
+      }
    }
 
    @Override

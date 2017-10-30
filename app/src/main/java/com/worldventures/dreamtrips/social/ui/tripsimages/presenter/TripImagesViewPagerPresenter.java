@@ -94,7 +94,9 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
    }
 
    void subscribeToTripImages() {
-      if (tripImagesArgs == null) return;
+      if (tripImagesArgs == null) {
+         return;
+      }
       tripImagesInteractor.baseTripImagesCommandActionPipe()
             .observe()
             .filter(new TripImageArgsFilterFunc(tripImagesArgs))

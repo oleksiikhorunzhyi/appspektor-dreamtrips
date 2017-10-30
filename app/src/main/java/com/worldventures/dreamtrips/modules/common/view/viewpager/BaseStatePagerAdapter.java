@@ -64,6 +64,7 @@ public class BaseStatePagerAdapter<T extends FragmentItem> extends FragmentState
    }
 
    public void setArgs(int position, Fragment fragment) {
+      //do nothing
    }
 
 
@@ -80,11 +81,6 @@ public class BaseStatePagerAdapter<T extends FragmentItem> extends FragmentState
    @Override
    public int getCount() {
       return fragmentItems.size();
-   }
-
-   @Override
-   public void notifyDataSetChanged() {
-      super.notifyDataSetChanged();
    }
 
 }

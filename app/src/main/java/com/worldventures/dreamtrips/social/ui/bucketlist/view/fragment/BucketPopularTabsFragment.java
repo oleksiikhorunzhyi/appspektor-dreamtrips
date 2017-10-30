@@ -59,7 +59,9 @@ public class BucketPopularTabsFragment extends BaseFragmentWithArgs<BucketPopula
 
       tabs.setupWithPagerBadged(pager);
 
-      if (type != null) pager.setCurrentItem(type.ordinal());
+      if (type != null) {
+         pager.setCurrentItem(type.ordinal());
+      }
 
       PageSelectionDetector.listenPageSelection(pager, pageNumber -> {
          SelectablePagerFragment fragment = (SelectablePagerFragment) adapter.getCurrentFragment();

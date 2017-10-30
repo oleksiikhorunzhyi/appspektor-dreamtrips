@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.flow.path;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot;
+import com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot; //NOPMD
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 import flow.path.Path;

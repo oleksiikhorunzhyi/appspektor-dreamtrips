@@ -174,14 +174,22 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.layout_rating_reviews_detail)
    void onClickRatingsReview() {
-      if (!deviceInfoProvider.isTablet()) getPresenter().onClickRatingsReview(merchant);
+      if (!deviceInfoProvider.isTablet()) {
+         getPresenter().onClickRatingsReview(merchant);
+      }
    }
 
    @Override
    protected void onDetachedFromWindow() {
-      if (merchantDataInflater != null) merchantDataInflater.release();
-      if (merchantInfoInflater != null) merchantInfoInflater.release();
-      if (merchantHoursInflater != null) merchantHoursInflater.release();
+      if (merchantDataInflater != null) {
+         merchantDataInflater.release();
+      }
+      if (merchantInfoInflater != null) {
+         merchantInfoInflater.release();
+      }
+      if (merchantHoursInflater != null) {
+         merchantHoursInflater.release();
+      }
       activityResultDelegate.removeListener(this);
       super.onDetachedFromWindow();
    }
@@ -254,9 +262,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
                contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
                contactView.setText(contact.text);
 
-               if (MerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
-                     .compose(RxLifecycleAndroid.bindView(contactView))
-                     .subscribe(aVoid -> onContactClick(contact));
+               if (MerchantHelper.contactCanBeResolved(contact, getActivity())) {
+                  RxView.clicks(contactView)
+                        .compose(RxLifecycleAndroid.bindView(contactView))
+                        .subscribe(aVoid -> onContactClick(contact));
+               }
 
                additionalContainer.addView(contactView);
             });
@@ -264,7 +274,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private void setLocation() {
       ImageTextItem contact = ImageTextItemFactory.create(getContext(), merchant, ImageTextItem.Type.ADDRESS);
-      if (contact != null) merchantAddress.setText(contact.text);
+      if (contact != null) {
+         merchantAddress.setText(contact.text);
+      }
    }
 
    protected TextView inflateContactView() {
@@ -273,8 +285,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private void onContactClick(ImageTextItem contact) {
-      if (contact.type.equals(ImageTextItem.Type.ADDRESS)) getPresenter().routeToMerchantRequested(contact.intent);
-      else getContext().startActivity(contact.intent);
+      if (contact.type.equals(ImageTextItem.Type.ADDRESS)) {
+         getPresenter().routeToMerchantRequested(contact.intent);
+      } else {
+         getContext().startActivity(contact.intent);
+      }
    }
 
    public void bindMap(GoogleMap map) {
@@ -294,11 +309,16 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       View estimate = ButterKnife.findById(this, R.id.merchant_details_estimate_points);
 
-      if (earn != null)
-         RxView.clicks(earn).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
-      if (estimate != null) RxView.clicks(estimate)
-            .compose(RxLifecycleAndroid.bindView(this))
-            .subscribe(aVoid -> getPresenter().onEstimationClick());
+      if (earn != null) {
+         RxView.clicks(earn)
+               .compose(RxLifecycleAndroid.bindView(this))
+               .subscribe(aVoid -> getPresenter().onCheckInClicked());
+      }
+      if (estimate != null) {
+         RxView.clicks(estimate)
+               .compose(RxLifecycleAndroid.bindView(this))
+               .subscribe(aVoid -> getPresenter().onEstimationClick());
+      }
    }
 
    private void setReviews() {
@@ -353,8 +373,12 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       Button earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
 
-      if (earn != null) earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
-      if (checkedIn != null) ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+      if (earn != null) {
+         earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
+      }
+      if (checkedIn != null) {
+         ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+      }
    }
 
    @Override
@@ -392,18 +416,24 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void enableCheckinButton() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
-      if (earn != null) earn.setEnabled(true);
+      if (earn != null) {
+         earn.setEnabled(true);
+      }
    }
 
    @Override
    public void disableCheckinButton() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
-      if (earn != null) earn.setEnabled(false);
+      if (earn != null) {
+         earn.setEnabled(false);
+      }
    }
 
    @Override
    public void showMerchantMap(@Nullable Intent intent) {
-      if (intent != null) getContext().startActivity(intent);
+      if (intent != null) {
+         getContext().startActivity(intent);
+      }
    }
 
    @Override
@@ -426,6 +456,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
             case Activity.RESULT_CANCELED:
                // The user was asked to change settings, but chose not to
                getPresenter().locationNotGranted();
+               break;
+            default:
                break;
          }
          return true;
@@ -452,7 +484,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       ViewUtils.setViewVisibility(this.perks, perkVisibility);
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
-      if (perkVisibility == View.VISIBLE) this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
+      if (perkVisibility == View.VISIBLE) {
+         this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -472,7 +506,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void hideReviewViewsOnTablets(){
+   public void hideReviewViewsOnTablets() {
       rateAndReviewBtn.setVisibility(View.GONE);
    }
 

@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
-   private Context context;
+   private final Context context;
    private OnFriendRequestListener onFriendRequestListener;
    private List<User> friendList = new ArrayList<>();
    private Set<User> cachedFriendList = new HashSet<>();

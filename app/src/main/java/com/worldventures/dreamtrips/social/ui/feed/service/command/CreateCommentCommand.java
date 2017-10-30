@@ -11,8 +11,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CreateCommentCommand extends MappableApiActionCommand<CreateCommentHttpAction, Comment, Comment> {
 
-   private FeedEntity feedEntity;
-   private String text;
+   private final FeedEntity feedEntity;
+   private final String text;
 
    public CreateCommentCommand(FeedEntity feedEntity, String text) {
       this.feedEntity = feedEntity;

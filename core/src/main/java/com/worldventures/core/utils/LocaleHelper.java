@@ -7,7 +7,10 @@ import com.worldventures.core.model.session.SessionHolder;
 
 import java.util.Locale;
 
-public class LocaleHelper {
+public final class LocaleHelper {
+
+   private LocaleHelper() {
+   }
 
    public static String getDefaultLocaleFormatted() {
       return formatLocale(LocaleHelper.getDefaultLocale());
@@ -15,6 +18,7 @@ public class LocaleHelper {
 
    /**
     * Sugar to wrap <code>Locale.getDefault()</code> to have all locale accessing code in one place
+    *
     * @return Locale that is currently set as default
     */
    public static Locale getDefaultLocale() {
@@ -22,11 +26,11 @@ public class LocaleHelper {
    }
 
    public static String formatLocale(Locale locale) {
-      return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
+      return TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
    }
 
    public static boolean isOwnLanguage(SessionHolder sessionHolder, @Nullable String languageCode) {
-      if (!sessionHolder.get().isPresent()) return false;
+      if (!sessionHolder.get().isPresent()) { return false; }
 
       String locale = sessionHolder.get().get().getLocale();
       String userLanguageCode = TextUtils.isEmpty(locale) ? getDefaultLocaleFormatted() : locale;
@@ -36,13 +40,14 @@ public class LocaleHelper {
    public static Locale buildFromLanguageCode(String languageCode) {
       final String[] codeParts = languageCode.split("-");
 
-      if (codeParts.length == 1) return new Locale(codeParts[0]);
-      else return new Locale(codeParts[0], codeParts[1]);
+      if (codeParts.length == 1) { return new Locale(codeParts[0]); } else {
+         return new Locale(codeParts[0], codeParts[1]);
+      }
    }
 
    public static boolean compareLocales(Locale lhs, Locale rhs) {
-      return lhs.getCountry().equalsIgnoreCase(rhs.getCountry()) &&
-            lhs.getLanguage().equalsIgnoreCase(rhs.getLanguage());
+      return lhs.getCountry().equalsIgnoreCase(rhs.getCountry())
+            && lhs.getLanguage().equalsIgnoreCase(rhs.getLanguage());
    }
 
    public static String obtainLanguageCode(String localName) {

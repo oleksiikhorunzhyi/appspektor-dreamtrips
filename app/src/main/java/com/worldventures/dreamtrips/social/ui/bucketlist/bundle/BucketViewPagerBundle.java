@@ -6,8 +6,9 @@ import android.os.Parcelable;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 public class BucketViewPagerBundle implements Parcelable {
-   private BucketItem bucketItem;
-   private int selection;
+
+   private final BucketItem bucketItem;
+   private final int selection;
 
    public BucketViewPagerBundle(BucketItem bucketItem, int selection) {
       this.bucketItem = bucketItem;

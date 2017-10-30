@@ -27,7 +27,7 @@ public class SocialCropImageManager {
 
    private static final String TEMP_PHOTO_DIR = "cropped_images";
 
-   private PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
+   private final PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
 
    private int ratioX = RATIO_X_DEFAULT;
    private int ratioY = RATIO_Y_DEFAULT;
@@ -51,10 +51,14 @@ public class SocialCropImageManager {
    }
 
    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (!isCroppingResult(requestCode)) return false;
+      if (!isCroppingResult(requestCode)) {
+         return false;
+      }
 
       Pair<String, Throwable> resultPair = obtainResults(requestCode, resultCode, data);
-      if (resultPair == null) return true;
+      if (resultPair == null) {
+         return true;
+      }
 
       onCropFinished(resultPair.first, String.valueOf(resultPair.second));
       return true;

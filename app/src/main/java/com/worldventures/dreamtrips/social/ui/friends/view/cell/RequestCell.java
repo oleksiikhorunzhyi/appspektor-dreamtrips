@@ -52,6 +52,8 @@ public class RequestCell extends BaseUserCell<RequestCellDelegate> {
             cancel.setVisibility(View.GONE);
             tvMutual.setVisibility(View.GONE);
             break;
+         default:
+            break;
       }
       enableButtons();
    }

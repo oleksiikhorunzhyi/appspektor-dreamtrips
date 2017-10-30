@@ -48,10 +48,11 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesAr
 
 import java.util.List;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class FragmentWithFeedDelegate {
 
-   private Router router;
-   private FeedAspectRatioHelper feedAspectRatioHelper;
+   private final Router router;
+   private final FeedAspectRatioHelper feedAspectRatioHelper;
 
    private BaseDelegateAdapter adapter;
 
@@ -92,12 +93,12 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel &&
-                  items.get(newItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel) {
+            if (adapter.getItem(oldItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel
+                  && items.get(newItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel) {
                return true;
             }
-            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList &&
-                  items.get(newItemPosition) instanceof UploadingPostsList) {
+            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList
+                  && items.get(newItemPosition) instanceof UploadingPostsList) {
                return true;
             }
             return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
@@ -105,8 +106,8 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof FeedItem &&
-                  items.get(newItemPosition) instanceof FeedItem) {
+            if (adapter.getItem(oldItemPosition) instanceof FeedItem
+                  && items.get(newItemPosition) instanceof FeedItem) {
                FeedItem oldItem = (FeedItem) adapter.getItem(oldItemPosition);
                FeedItem newItem = (FeedItem) items.get(newItemPosition);
                return oldItem.contentSame(newItem);
@@ -143,16 +144,22 @@ public class FragmentWithFeedDelegate {
          int firstBunchSize = focusedItemIndex;
          int lastBunchSize = adapter.getCount() - focusedItemIndex - 1;
 
-         if (firstBunchSize != 0) adapter.notifyItemRangeChanged(0, firstBunchSize);
+         if (firstBunchSize != 0) {
+            adapter.notifyItemRangeChanged(0, firstBunchSize);
+         }
          adapter.notifyItemChanged(focusedItemIndex);
-         if (lastBunchSize != 0) adapter.notifyItemRangeChanged(focusedItemIndex + 1, lastBunchSize);
+         if (lastBunchSize != 0) {
+            adapter.notifyItemRangeChanged(focusedItemIndex + 1, lastBunchSize);
+         }
       } else {
          notifyDataSetChanged();
       }
    }
 
    public void notifyItemChanged(FeedItem feedItem) {
-      if (feedItem == null) return;
+      if (feedItem == null) {
+         return;
+      }
       int size = adapter.getItems().size();
       for (int i = 0; i < size; i++) {
          Object object = adapter.getItems().get(i);
@@ -169,7 +176,9 @@ public class FragmentWithFeedDelegate {
     */
    public void resetTranslatedStatus() {
       Queryable.from(adapter.getItems()).forEachR(item -> {
-         if (item instanceof FeedItem) ((FeedItem) item).getItem().setTranslated(false);
+         if (item instanceof FeedItem) {
+            ((FeedItem) item).getItem().setTranslated(false);
+         }
       });
       notifyDataSetChanged();
    }

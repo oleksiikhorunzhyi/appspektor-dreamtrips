@@ -42,7 +42,9 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
    public void takeView(View view) {
       super.takeView(view);
       podcastPlayerDelegate.stop();
-      if (needMove) view.moveTo(route, args);
+      if (needMove) {
+         view.moveTo(route, args);
+      }
    }
 
    public int getTitle() {

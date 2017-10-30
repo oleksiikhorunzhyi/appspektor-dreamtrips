@@ -7,7 +7,7 @@ import com.worldventures.core.ui.view.cell.AbstractCell;
 
 import butterknife.ButterKnife;
 
-public abstract class BaseAbstractCell<T> extends AbstractCell<T>{
+public abstract class BaseAbstractCell<T> extends AbstractCell<T> {
 
    public BaseAbstractCell(View view) {
       super(view);

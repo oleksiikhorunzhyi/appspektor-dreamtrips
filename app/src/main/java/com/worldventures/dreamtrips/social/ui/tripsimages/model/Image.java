@@ -24,6 +24,7 @@ public class Image implements Parcelable, Serializable {
    private String url;
 
    public Image() {
+      //do nothing
    }
 
    private Image(Parcel in) {

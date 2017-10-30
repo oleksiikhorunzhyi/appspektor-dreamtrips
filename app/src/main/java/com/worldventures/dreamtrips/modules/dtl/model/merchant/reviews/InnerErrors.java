@@ -12,6 +12,6 @@ import java.io.Serializable;
 @Value.Immutable
 public interface InnerErrors extends Serializable {
 
-    @Nullable
-    FormErrors formErrors();
+   @Nullable
+   FormErrors formErrors();
 }

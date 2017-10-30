@@ -45,7 +45,9 @@ public class MemberImagesPresenter extends TripImagesPresenter {
             .compose(bindUntilPauseIoToMainComposer())
             .subscribe(this::processNewPhotosFromRefresher,
                   throwable -> Timber.w(throwable, "Could not refresh trip images"));
-      if (!loading) startRefreshingMemberImages();
+      if (!loading) {
+         startRefreshingMemberImages();
+      }
    }
 
    public void onShowNewImagesClick() {
@@ -66,10 +68,14 @@ public class MemberImagesPresenter extends TripImagesPresenter {
    }
 
    private void startRefreshingMemberImages() {
-      if (memberImagesAreRefreshing) return;
+      if (memberImagesAreRefreshing) {
+         return;
+      }
       memberImagesAreRefreshing = true;
       memberImagesRefresher.startRefreshing(Observable.defer(() -> {
-         if (currentItems.isEmpty()) return Observable.empty();
+         if (currentItems.isEmpty()) {
+            return Observable.empty();
+         }
          return Observable.just(currentItems.get(0));
       }), tripImagesArgs);
    }
@@ -89,7 +95,9 @@ public class MemberImagesPresenter extends TripImagesPresenter {
             .filter(element -> element.state() == CompoundOperationState.STARTED
                   || element.state() == CompoundOperationState.FINISHED)
             .count() > 0;
-      if (loading || uploading) return;
+      if (loading || uploading) {
+         return;
+      }
       int newPhotosCount = Queryable.from(newPhotos).filter(photo -> !currentItems.contains(photo)).count();
       if (newPhotosCount > 0) {
          String newImagesString;

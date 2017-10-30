@@ -16,7 +16,7 @@ public class VersionComparator {
       return currentVersionIsOlderThanSuggested(currentVersionVersionsPartsArray, suggestedVersionVersionsPartsArray);
    }
 
-   private int[] parseVersionParts(int size, String[] stringVersions) {
+   private int[] parseVersionParts(int size, String... stringVersions) {
       int[] intVersions = new int[size];
       for (int i = 0; i < intVersions.length; i++) {
          int version = 0;
@@ -28,11 +28,14 @@ public class VersionComparator {
       return intVersions;
    }
 
-   private boolean currentVersionIsOlderThanSuggested(int[] currentVersion, int[] newerVersion) {
+   private boolean currentVersionIsOlderThanSuggested(int[] currentVersion, int... newerVersion) {
+      boolean older = false;
       for (int i = 0; i < currentVersion.length; i++) {
-         if (currentVersion[i] == newerVersion[i]) continue;
-         return currentVersion[i] < newerVersion[i];
+         if (currentVersion[i] != newerVersion[i]) {
+            older = currentVersion[i] < newerVersion[i];
+            break;
+         }
       }
-      return false;
+      return older;
    }
 }

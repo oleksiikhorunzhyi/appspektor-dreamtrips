@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.media_picker.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.core.modules.picker.service.PickImageDelegate;
-import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
-import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
+import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,11 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
    }
 
    public void onCameraIconClicked() {
-      if (!videoPickingEnabled) tryOpenCameraForPhoto();
-      else view.showAttachmentTypeDialog();
+      if (!videoPickingEnabled) {
+         tryOpenCameraForPhoto();
+      } else {
+         view.showAttachmentTypeDialog();
+      }
    }
 
    public void openCameraForPhoto() {
@@ -69,7 +72,9 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
       MediaPickerModel previouslySelectedVideo = Queryable.from(mediaPickerModels)
             .filter(element -> element.isChecked() && !element.equals(model))
             .firstOrDefault();
-      if (previouslySelectedVideo != null) resetModelState(previouslySelectedVideo);
+      if (previouslySelectedVideo != null) {
+         resetModelState(previouslySelectedVideo);
+      }
       view.updateItem(model);
    }
 
@@ -84,7 +89,8 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
          view.addItems(mediaPickerModels);
          return;
       }
-      mediaPickerInteractor.getMediaFromGalleryPipe().createObservable(new GetMediaFromGalleryCommand(videoPickingEnabled))
+      mediaPickerInteractor.getMediaFromGalleryPipe()
+            .createObservable(new GetMediaFromGalleryCommand(videoPickingEnabled))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetMediaFromGalleryCommand>()
                   .onSuccess(getMediaFromGalleryCommand -> updateData(getMediaFromGalleryCommand.getResult())));

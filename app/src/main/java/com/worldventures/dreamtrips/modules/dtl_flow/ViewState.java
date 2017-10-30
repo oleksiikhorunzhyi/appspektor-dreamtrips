@@ -6,13 +6,17 @@ import android.os.Parcelable;
 public abstract class ViewState implements Parcelable {
 
    public ViewState() {
+      //do nothing
    }
 
+   @SuppressWarnings("PMD.UnusedFormalParameter") //TODO: Resolve PMD error
    protected ViewState(Parcel in) {
+      //do nothing
    }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
+      //do nothing
    }
 
    @Override

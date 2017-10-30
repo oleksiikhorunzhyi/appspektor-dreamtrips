@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.ui.podcast_player;
 
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -43,11 +42,6 @@ public class PodcastPlayerActivity extends ActivityWithPresenter<PodcastPlayerPr
 
       toolbar.setNavigationOnClickListener(v -> onBackPressed());
       podcastPlayerScreen.setProgressListener(getPresentationModel()::onPodcastProgressChanged);
-   }
-
-   @Override
-   protected void onNewIntent(Intent intent) {
-      super.onNewIntent(intent);
    }
 
    @Override

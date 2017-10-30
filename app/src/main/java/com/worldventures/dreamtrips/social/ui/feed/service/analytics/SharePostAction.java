@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.Hashtag;
 
 @AnalyticsEvent(action = "activity_feed:Post Added",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class SharePostAction extends BaseAnalyticsAction {
+public final class SharePostAction extends BaseAnalyticsAction {
    @Attribute("hashtagging") String hashTags;
    @Attribute("addlocation") String addLocation;
 

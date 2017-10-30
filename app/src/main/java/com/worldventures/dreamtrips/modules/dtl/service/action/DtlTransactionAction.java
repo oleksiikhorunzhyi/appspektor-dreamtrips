@@ -20,7 +20,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class DtlTransactionAction extends Command<DtlTransaction> implements CachedAction<Pair<String, DtlTransaction>>, InjectableAction {
+public final class DtlTransactionAction extends Command<DtlTransaction> implements CachedAction<Pair<String, DtlTransaction>>, InjectableAction {
 
    @Inject SnappyRepository db;
 
@@ -63,7 +63,9 @@ public class DtlTransactionAction extends Command<DtlTransaction> implements Cac
 
    @Override
    protected void run(CommandCallback<DtlTransaction> callback) throws Throwable {
-      if (transaction == null) transaction = db.getDtlTransaction(id);
+      if (transaction == null) {
+         transaction = db.getDtlTransaction(id);
+      }
       //changing
       if (updateFunc != null) {
          transaction = updateFunc.call(transaction);

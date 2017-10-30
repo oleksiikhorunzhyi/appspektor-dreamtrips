@@ -4,7 +4,10 @@ import com.worldventures.core.model.Session;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 
-public class SessionUtil {
+public final class SessionUtil {
+
+   private SessionUtil() {
+   }
 
    public static UserSession createUserSession(Session session, String userName, String userPassword) {
       UserSession userSession = new UserSession();
@@ -21,7 +24,7 @@ public class SessionUtil {
 
    public static boolean isUserSessionTokenExist(SessionHolder sessionHolder) {
       try {
-         UserSession userSession = sessionHolder.get().isPresent() ? sessionHolder.get().get() : null;
+         UserSession userSession = sessionHolder.get().isPresent() ? sessionHolder.get().get() : null; //NOPMD
          return userSession != null && userSession.getApiToken() != null;
       } catch (Exception ex) {
          return false;

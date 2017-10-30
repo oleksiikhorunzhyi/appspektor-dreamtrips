@@ -85,7 +85,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
       Icepick.saveInstanceState(this, outState);
-      if (presenter != null) this.presenter.saveInstanceState(outState);
+      if (presenter != null) {
+         this.presenter.saveInstanceState(outState);
+      }
    }
 
    @Override
@@ -102,7 +104,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      if (userVisibleHints.contains(true)) trackViewFromViewPagerIfNeeded();
+      if (userVisibleHints.contains(true)) {
+         trackViewFromViewPagerIfNeeded();
+      }
    }
 
    @Override
@@ -115,7 +119,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    public void setUserVisibleHint(boolean isVisibleToUser) {
       super.setUserVisibleHint(isVisibleToUser);
       userVisibleHints.add(isVisibleToUser);
-      if (isVisibleToUser && presenter != null) trackViewFromViewPagerIfNeeded();
+      if (isVisibleToUser && presenter != null) {
+         trackViewFromViewPagerIfNeeded();
+      }
    }
 
    /**
@@ -126,7 +132,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     */
    @Nullable
    private Layout getLayoutFromAnnotation(Class clazz) {
-      if (clazz == null || clazz.equals(Object.class)) return null;
+      if (clazz == null || clazz.equals(Object.class)) {
+         return null;
+      }
       //
       Layout layout = (Layout) clazz.getAnnotation(Layout.class);
       if (layout != null) {
@@ -153,7 +161,9 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
    @Override
    public void onPrepareOptionsMenu(Menu menu) {
       super.onPrepareOptionsMenu(menu);
-      if (this.presenter != null && isAdded()) this.presenter.onMenuPrepared();
+      if (this.presenter != null && isAdded()) {
+         this.presenter.onMenuPrepared();
+      }
    }
 
    @Override
@@ -194,21 +204,25 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
    @Override
    public void informUser(String message) {
-      if (isAdded() && getView() != null) try {
-         Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
-      } catch (Exception e) {
-         // Snackbar initialization can produce NullPointerException on view parent getContext();
-         Timber.e(e.getMessage());
+      if (isAdded() && getView() != null) {
+         try {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+         } catch (Exception e) {
+            // Snackbar initialization can produce NullPointerException on view parent getContext();
+            Timber.e(e.getMessage());
+         }
       }
    }
 
    @Override
    public void informUser(int stringId) {
-      if (isAdded() && getView() != null) try {
-         Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
-      } catch (Exception e) {
-         // Snackbar initialization can produce NullPointerException on view parent getContext();
-         Timber.e(e.getMessage());
+      if (isAdded() && getView() != null) {
+         try {
+            Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
+         } catch (Exception e) {
+            // Snackbar initialization can produce NullPointerException on view parent getContext();
+            Timber.e(e.getMessage());
+         }
       }
    }
 
@@ -261,6 +275,8 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     * Will hide (if possible) soft input based on current fragment's view
     */
    public void tryHideSoftInput() {
-      if (getView() != null) SoftInputUtil.hideSoftInputMethod(getView());
+      if (getView() != null) {
+         SoftInputUtil.hideSoftInputMethod(getView());
+      }
    }
 }

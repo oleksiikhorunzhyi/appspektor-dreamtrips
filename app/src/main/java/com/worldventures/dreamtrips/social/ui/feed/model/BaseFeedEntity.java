@@ -23,6 +23,9 @@ public abstract class BaseFeedEntity implements FeedEntity {
    protected boolean liked;
    protected int likesCount;
    protected String language;
+   protected String firstLikerName;
+   private transient String translation;
+   private transient boolean translated;
 
    ///////////////////////////////////////////////////////////////////////////
    // Getters & Setters
@@ -109,9 +112,6 @@ public abstract class BaseFeedEntity implements FeedEntity {
    // Translate staff
    ///////////////////////////////////////////////////////////////////////////
 
-   private transient String translation;
-   private transient boolean translated;
-
    @Override
    public String getOriginalText() {
       return null;
@@ -142,8 +142,6 @@ public abstract class BaseFeedEntity implements FeedEntity {
    // Helpers
    ///////////////////////////////////////////////////////////////////////////
 
-   protected String firstLikerName;
-
    @Override
    public String getFirstLikerName() {
       return firstLikerName;
@@ -158,16 +156,23 @@ public abstract class BaseFeedEntity implements FeedEntity {
    // Misc
    ///////////////////////////////////////////////////////////////////////////
 
-
    @Override
    public boolean contentSame(FeedEntity feedEntity) {
-      if (feedEntity == null || getClass() != feedEntity.getClass()) return false;
+      if (feedEntity == null || getClass() != feedEntity.getClass()) {
+         return false;
+      }
 
       BaseFeedEntity that = (BaseFeedEntity) feedEntity;
 
-      if (commentsCount != that.commentsCount) return false;
-      if (liked != that.liked) return false;
-      if (likesCount != that.likesCount) return false;
+      if (commentsCount != that.commentsCount) {
+         return false;
+      }
+      if (liked != that.liked) {
+         return false;
+      }
+      if (likesCount != that.likesCount) {
+         return false;
+      }
       return comments != null ? comments.equals(that.comments) : that.comments == null;
    }
 
@@ -179,8 +184,12 @@ public abstract class BaseFeedEntity implements FeedEntity {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       BaseFeedEntity that = (BaseFeedEntity) o;
 
@@ -192,16 +201,4 @@ public abstract class BaseFeedEntity implements FeedEntity {
       return uid.hashCode();
    }
 
-   @Override
-   public String toString() {
-      return "BaseFeedEntity{" +
-            "likesCount=" + likesCount +
-            ", liked=" + liked +
-            ", commentsCount=" + commentsCount +
-            ", comments=" + comments +
-            ", owner=" + owner +
-            ", uid='" + uid + '\'' +
-            ", language='" + language + '\'' +
-            '}';
-   }
 }

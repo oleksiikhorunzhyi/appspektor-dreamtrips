@@ -102,16 +102,18 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             int itemCount = recyclerView.getLayoutManager().getItemCount();
             int lastVisibleItemPosition = layout.findLastVisibleItemPosition();
-            if (lastVisibleItemPosition == itemCount - 1)
+            if (lastVisibleItemPosition == itemCount - 1) {
                getPresenter().scrolled();
+            }
          }
       });
    }
 
    private void showFilters() {
       Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
-      if (filtersFragment != null && filtersFragment.getClass().getName().equals(Route.TRIP_FILTERS.getClazzName()))
+      if (filtersFragment != null && filtersFragment.getClass().getName().equals(Route.TRIP_FILTERS.getClazzName())) {
          return;
+      }
 
       router.moveTo(Route.TRIP_FILTERS, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
@@ -192,6 +194,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          case R.id.action_map:
             getPresenter().openMap();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -222,14 +226,18 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
       stateDelegate.restoreStateIfNeeded();
    }

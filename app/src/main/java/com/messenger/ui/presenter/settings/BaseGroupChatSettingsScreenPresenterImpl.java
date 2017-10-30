@@ -65,7 +65,9 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
          if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
             getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
             // TODO: 9/26/17 remove from wallet
-         } else cropImageDelegate.cropImage(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel));
+         } else {
+            cropImageDelegate.cropImage(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel));
+         }
       });
    }
 

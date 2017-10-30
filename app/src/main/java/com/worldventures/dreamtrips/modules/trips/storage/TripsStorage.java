@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.trips.storage;
 
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.Storage;
 import com.worldventures.core.janet.cache.storage.CombinedListStorage;
+import com.worldventures.core.janet.cache.storage.Storage;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 

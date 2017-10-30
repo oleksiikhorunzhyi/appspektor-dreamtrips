@@ -1,17 +1,15 @@
 package com.worldventures.dreamtrips
 
+//import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.core.model.session.SessionHolder
-import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.core.janet.cache.CacheResultWrapper
 import com.worldventures.core.janet.cache.storage.ActionStorage
-//import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
+import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
-import com.worldventures.core.test.common.RxJavaSchedulerInitializer
-import com.worldventures.core.test.janet.MockDaggerActionService
-import com.worldventures.core.test.janet.StubServiceWrapper
+import com.worldventures.core.storage.complex_objects.Optional
+import com.worldventures.dreamtrips.common.RxJavaSchedulerInitializer
+import com.worldventures.dreamtrips.janet.MockDaggerActionService
 import io.techery.janet.ActionService
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
@@ -68,7 +66,7 @@ abstract class BaseSpec(spekBody: SpecBody.() -> Unit) : Spek(spekBody) {
          val sessionHolder: SessionHolder = mock()
          val userSession: UserSession = mock()
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
-         return sessionHolder;
+         return sessionHolder
       }
 
       //hard code because mockito_kotlin doesn't work with String correctly

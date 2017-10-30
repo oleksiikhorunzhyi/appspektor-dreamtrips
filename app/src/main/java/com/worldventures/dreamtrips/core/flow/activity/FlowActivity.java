@@ -109,8 +109,12 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
    @Override
    public Object getSystemService(@NonNull String name) {
       Object service = null;
-      if (flowActivityHelper != null) service = flowActivityHelper.getSystemService(name);
-      if (service == null) service = super.getSystemService(name);
+      if (flowActivityHelper != null) {
+         service = flowActivityHelper.getSystemService(name);
+      }
+      if (service == null) {
+         service = super.getSystemService(name);
+      }
       return service;
    }
 
@@ -207,9 +211,11 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
       }
       drawerLayout.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
       if (ViewUtils.isLandscapeOrientation(this)) {
-         if (path instanceof FullScreenPath && ((FullScreenPath) path).shouldHideDrawer())
+         if (path instanceof FullScreenPath && ((FullScreenPath) path).shouldHideDrawer()) {
             navDrawer.setVisibility(View.GONE);
-         else navDrawer.setVisibility(View.VISIBLE);
+         } else {
+            navDrawer.setVisibility(View.VISIBLE);
+         }
       }
    }
 

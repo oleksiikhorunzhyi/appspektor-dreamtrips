@@ -66,7 +66,8 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> {}));
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> {
+      }));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
@@ -80,7 +81,8 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
                         analyticsInteractor.analyticsCommandPipe()
                               .send(DtlAnalyticsCommand.create(new TransactionSuccessEvent(
                                     merchant.asMerchantAttributes(), transaction, location)));
-                     }, e -> {});
+                     }, e -> {
+                     });
             }, apiErrorViewAdapter::handleError);
       bindApiPipe();
    }

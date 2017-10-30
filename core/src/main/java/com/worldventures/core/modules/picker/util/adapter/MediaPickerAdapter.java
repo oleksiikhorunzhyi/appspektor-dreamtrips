@@ -4,16 +4,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.modules.picker.viewmodel.BaseMediaPickerViewModel;
 import com.worldventures.core.modules.picker.util.adapter.holder.BaseMediaPickerHolder;
+import com.worldventures.core.modules.picker.viewmodel.BaseMediaPickerViewModel;
 
 import java.util.List;
 
 
 public class MediaPickerAdapter<M extends BaseMediaPickerViewModel> extends RecyclerView.Adapter<BaseMediaPickerHolder> {
 
+   private final MediaPickerHolderFactory factory;
    protected List<M> items;
-   private MediaPickerHolderFactory factory;
 
    public MediaPickerAdapter(List<M> items, MediaPickerHolderFactory holderTypeFactory) {
       this.items = items;

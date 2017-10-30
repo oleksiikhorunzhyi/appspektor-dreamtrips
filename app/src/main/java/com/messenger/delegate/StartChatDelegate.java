@@ -12,8 +12,8 @@ import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.core.model.User;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +25,8 @@ import rx.functions.Action1;
 import timber.log.Timber;
 
 public class StartChatDelegate {
+
+   private final static String ERROR_MESSAGE = "Error";
 
    private final UsersDAO usersDAO;
    private final ParticipantsDAO participantsDAO;
@@ -39,7 +41,9 @@ public class StartChatDelegate {
    }
 
    public void startSingleChat(User user, @NotNull Action1<DataConversation> crossingAction) {
-      if (user.getUsername() == null) return;
+      if (user.getUsername() == null) {
+         return;
+      }
 
       usersDAO.getUserById(user.getUsername())
             .first()
@@ -52,7 +56,7 @@ public class StartChatDelegate {
             })
             .flatMap(this::startSingleChatObservable)
             .compose(new IoToMainComposer<>())
-            .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
+            .subscribe(crossingAction, throwable -> Timber.e(throwable, ERROR_MESSAGE));
    }
 
    public void startSingleChat(String userId, @NotNull Action1<DataConversation> crossingAction) {
@@ -60,19 +64,21 @@ public class StartChatDelegate {
             .take(1)
             .flatMap(this::startSingleChatObservable)
             .compose(new IoToMainComposer<>())
-            .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
+            .subscribe(crossingAction, throwable -> Timber.e(throwable, ERROR_MESSAGE));
    }
 
    public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction, @Nullable Action1<Throwable> errorAction) {
       if (errorAction == null) {
-         errorAction = throwable -> Timber.e(throwable, "Error");
+         errorAction = throwable -> Timber.e(throwable, ERROR_MESSAGE);
       }
       startSingleChatObservable(user).compose(new IoToMainComposer<>()).subscribe(crossingAction, errorAction);
    }
 
    private Observable<DataConversation> startSingleChatObservable(DataUser participant) {
       DataConversation conversation = createConversationHelper.getExistingSingleConversation(participant.getId());
-      if (conversation != null) return Observable.just(conversation);
+      if (conversation != null) {
+         return Observable.just(conversation);
+      }
 
       return createConversationHelper.createNewConversation(Collections.singletonList(participant), "")
             .doOnNext(dataConversation -> {
@@ -86,7 +92,7 @@ public class StartChatDelegate {
 
    public void startNewGroupChat(String ownerId, List<DataUser> participant, @Nullable String subject, @NotNull Action1<DataConversation> crossingAction, @Nullable Action1<Throwable> errorAction) {
       if (errorAction == null) {
-         errorAction = throwable -> Timber.d(throwable, "Error");
+         errorAction = throwable -> Timber.d(throwable, ERROR_MESSAGE);
       }
       createConversationHelper.createNewConversation(participant, subject).doOnNext(conversation -> {
          conversation.setOwnerId(ownerId);

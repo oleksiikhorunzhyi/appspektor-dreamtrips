@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class ClearMerchantsStorageAction extends Command<Void> implements InjectableAction {
-   
+
    @Inject FullMerchantStorage fullMerchantStorage;
 
    public static ClearMerchantsStorageAction clear() {

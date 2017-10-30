@@ -20,13 +20,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEntity>>, ClearableStorage {
+
    public static final String PARAM_ARGS = "args";
    public static final String RELOAD = "RELOAD";
    public static final String LOAD_MORE = "LOAD_MORE";
    public static final String REMOVE_ITEMS = "REMOVE_ITEM";
    public static final String LOAD_LATEST = "LOAD_LATEST";
 
-   private Map<TripImagesArgs, MemoryStorage<List<BaseMediaEntity>>> map = new ConcurrentHashMap<>();
+   private final Map<TripImagesArgs, MemoryStorage<List<BaseMediaEntity>>> map = new ConcurrentHashMap<>();
 
    @Override
    public void clearMemory() {

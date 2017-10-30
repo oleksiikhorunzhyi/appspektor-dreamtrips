@@ -17,10 +17,11 @@ public class Member implements Parcelable, Filterable {
    private boolean isChecked;
    private SentInvite sentInvite;
 
-   public Member() {
-   }
-
    private int originalPosition;
+
+   public Member() {
+      //do nothing
+   }
 
    public SentInvite getSentInvite() {
       return sentInvite;
@@ -92,16 +93,23 @@ public class Member implements Parcelable, Filterable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       Member member = (Member) o;
 
       boolean nameEq = name != null ? name.equals(member.name) : member.name == null;
       boolean emailEq = email != null ? email.equals(member.email) : member.email == null;
       boolean phoneEq = phone != null ? phone.equals(member.phone) : member.phone == null;
-      if (emailIsMain && nameEq && emailEq) return true;
-      else return nameEq && phoneEq;
+      if (emailIsMain && nameEq && emailEq) {
+         return true;
+      } else {
+         return nameEq && phoneEq;
+      }
    }
 
    @Override

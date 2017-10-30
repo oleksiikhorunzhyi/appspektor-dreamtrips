@@ -66,14 +66,24 @@ public class TextualPost extends BaseFeedEntity {
 
    @Override
    public boolean contentSame(FeedEntity feedEntity) {
-      if (feedEntity == null || getClass() != feedEntity.getClass()) return false;
-      if (!super.equals(feedEntity)) return false;
+      if (feedEntity == null || getClass() != feedEntity.getClass()) {
+         return false;
+      }
+      if (!super.equals(feedEntity)) {
+         return false;
+      }
 
       TextualPost that = (TextualPost) feedEntity;
 
-      if (description != null ? !description.equals(that.description) : that.description != null) return false;
-      if (attachments != null ? !attachments.equals(that.attachments) : that.attachments != null) return false;
-      if (location != null ? !location.equals(that.location) : that.location != null) return false;
+      if (description != null ? !description.equals(that.description) : that.description != null) {
+         return false;
+      }
+      if (attachments != null ? !attachments.equals(that.attachments) : that.attachments != null) {
+         return false;
+      }
+      if (location != null ? !location.equals(that.location) : that.location != null) {
+         return false;
+      }
       return hashtags != null ? hashtags.equals(that.hashtags) : that.hashtags == null;
    }
 }

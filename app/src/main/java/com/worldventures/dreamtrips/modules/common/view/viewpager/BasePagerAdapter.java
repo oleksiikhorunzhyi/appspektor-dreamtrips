@@ -60,6 +60,7 @@ public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapt
    }
 
    public void setArgs(int position, Fragment fragment) {
+      //do nothing
    }
 
    @Override

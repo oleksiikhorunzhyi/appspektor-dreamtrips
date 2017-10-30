@@ -23,7 +23,7 @@ public class GetRequestsCommand extends GetUsersCommand implements CachedAction<
 
    private List<User> cachedUsers;
 
-   private int page;
+   private final int page;
 
    public GetRequestsCommand(int page) {
       this.page = page;
@@ -69,9 +69,13 @@ public class GetRequestsCommand extends GetUsersCommand implements CachedAction<
       //we should add previous loaded pages in beginning of list
       //and avoid situation when we add entire cache of previous loading session
       if (getResult() != null) {
-         if (!isFirstPage() && cachedUsers != null) users.addAll(cachedUsers);
+         if (!isFirstPage() && cachedUsers != null) {
+            users.addAll(cachedUsers);
+         }
          users.addAll(getResult());
-      } else if (cachedUsers != null) users.addAll(cachedUsers);
+      } else if (cachedUsers != null) {
+         users.addAll(cachedUsers);
+      }
 
       return users;
    }

@@ -45,6 +45,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    public ProfilePresenter() {
+      //do nothing
    }
 
    public ProfilePresenter(User user) {
@@ -54,7 +55,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    @Override
    public void restoreInstanceState(Bundle savedState) {
       super.restoreInstanceState(savedState);
-      if (savedState == null || feedItems == null) feedItems = new ArrayList<>();
+      if (savedState == null || feedItems == null) {
+         feedItems = new ArrayList<>();
+      }
    }
 
    @Override
@@ -74,7 +77,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    }
 
    void restoreItemsInView() {
-      if (!feedItems.isEmpty()) refreshFeedItems();
+      if (!feedItems.isEmpty()) {
+         refreshFeedItems();
+      }
    }
 
    @Override
@@ -161,7 +166,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    }
 
    public boolean onLoadNext() {
-      if (feedItems.isEmpty()) return false;
+      if (feedItems.isEmpty()) {
+         return false;
+      }
       loadNext(feedItems.get(feedItems.size() - 1).getCreatedAt());
       return true;
    }

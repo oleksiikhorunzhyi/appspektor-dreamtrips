@@ -9,7 +9,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DeleteCompoundOperationsCommand extends CompoundOperationsCommand {
 
-   private PostCompoundOperationModel removedModel;
+   private final PostCompoundOperationModel removedModel;
 
    DeleteCompoundOperationsCommand(PostCompoundOperationModel removedModel) {
       this.removedModel = removedModel;

@@ -35,13 +35,13 @@ public class StaticPageProvider {
    private static final String MASK_USER_NAME = "%username%";
    private static final String MASK_TRIP_ID = "%trip_id%";
 
-   private SessionHolder appSessionHolder;
-   private DeviceInfoProvider deviceInfoProvider;
+   private final SessionHolder appSessionHolder;
+   private final DeviceInfoProvider deviceInfoProvider;
 
-   private String apiUrl;
-   private String backofficeUrl;
-   private String forgotPasswordUrl;
-   private String uploaderyUrl;
+   private final String apiUrl;
+   private final String backofficeUrl;
+   private final String forgotPasswordUrl;
+   private final String uploaderyUrl;
 
    public StaticPageProvider(StaticPageProviderConfig config) {
       this.appSessionHolder = config.appSessionHolder();

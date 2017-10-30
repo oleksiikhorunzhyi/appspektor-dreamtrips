@@ -1,3 +1,10 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'io.fabric'
+apply plugin: 'newrelic'
+apply plugin: 'com.github.ben-manes.versions'
+//
 apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/env-default-config.gradle"
@@ -7,12 +14,7 @@ apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-utils.gradle"
-//
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
-apply plugin: 'newrelic'
-apply plugin: 'com.github.ben-manes.versions'
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 def deps = project.ext.moduleDependencies
 def coreDeps = project.ext.coreDependencies
@@ -153,8 +155,8 @@ android {
    }
 
    compileOptions {
-      sourceCompatibility project.ext.pluginDependencies.languages.java
-      targetCompatibility project.ext.pluginDependencies.languages.java
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
    }
    testOptions {
       unitTests.returnDefaultValues = true
@@ -175,7 +177,7 @@ android {
    }
    useLibrary 'org.apache.http.legacy'
 
-   dataBinding{
+   dataBinding {
       enabled = true
    }
 
@@ -248,8 +250,8 @@ dependencies {
    applyDependencies(owner, deps.test)
    applyDependencies(owner, deps.annotationProcesssor)
 
-   devImplementation                 provideDep(deps.util.leakcanary)
-   devpremarshmallowImplementation   provideDep(deps.util.leakcanary)
-   externalImplementation            provideDep(deps.util.leakcanaryNoOp)
+   devImplementation provideDep(deps.util.leakcanary)
+   devpremarshmallowImplementation provideDep(deps.util.leakcanary)
+   externalImplementation provideDep(deps.util.leakcanaryNoOp)
 }
 bindModuleTestsToAppFlavor(":wallet", "Smartcardmock")

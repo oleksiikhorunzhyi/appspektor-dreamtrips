@@ -26,6 +26,6 @@ public class GeneralSettingsFragment extends SettingsFragment implements Setting
 
    @Override
    public void onCellClicked(SelectSetting model) {
-
+      //do nothing
    }
 }

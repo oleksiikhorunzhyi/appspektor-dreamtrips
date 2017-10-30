@@ -5,7 +5,7 @@ import com.worldventures.core.modules.video.model.VideoLocale;
 
 public class MediaHeader {
 
-   private String title;
+   private final String title;
    private boolean showLanguage;
    private VideoLocale videoLocale;
    private VideoLanguage videoLanguage;

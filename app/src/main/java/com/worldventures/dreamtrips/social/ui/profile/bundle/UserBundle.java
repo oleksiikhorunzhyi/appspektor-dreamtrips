@@ -26,7 +26,9 @@ public class UserBundle implements Parcelable {
       this.notificationId = notificationId;
       this.acceptFriend = acceptFriend;
       //
-      if (notificationId == 0) this.notificationId = NO_NOTIFICATION;
+      if (notificationId == 0) {
+         this.notificationId = NO_NOTIFICATION;
+      }
    }
 
    public User getUser() {

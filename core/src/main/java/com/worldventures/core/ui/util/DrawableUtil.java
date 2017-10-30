@@ -28,7 +28,7 @@ public class DrawableUtil {
 
    public static final String CACHE_DIR = "dreamtrips_cache_images";
 
-   private Context context;
+   private final Context context;
 
    public DrawableUtil(Context context) {
       this.context = context;
@@ -89,7 +89,7 @@ public class DrawableUtil {
          return new Pair<>(fileImage, new Size(0, 0));
       } finally {
          try {
-            if (bitmap != null) bitmap.recycle();
+            if (bitmap != null) { bitmap.recycle(); }
             stream.flush();
             stream.close();
          } catch (Exception e) {
@@ -138,6 +138,8 @@ public class DrawableUtil {
             break;
          case ExifInterface.ORIENTATION_ROTATE_90:
             rotate = 90;
+            break;
+         default:
             break;
       }
 

@@ -63,7 +63,9 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    }
 
    public void reload() {
-      if (view == null) return;
+      if (view == null) {
+         return;
+      }
 
       loading = true;
       noMoreItems = false;
@@ -177,8 +179,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       view.moveToTripDetails(tripModel);
       tripFilterEventDelegate.last()
             .subscribe(tripsFilterData -> {
-               ViewTripDetailsAnalyticAction analyticAction = (new ViewTripDetailsAnalyticAction(tripModel.getTripId(),
-                     tripModel.getName(), view.isSearchOpened() ? query : "", new TripsFilterDataAnalyticsWrapper(tripsFilterData)));
+               ViewTripDetailsAnalyticAction analyticAction = new ViewTripDetailsAnalyticAction(tripModel.getTripId(),
+                     tripModel.getName(), view.isSearchOpened() ? query : "", new TripsFilterDataAnalyticsWrapper(tripsFilterData));
                sendAnalyticAction(analyticAction);
             });
    }

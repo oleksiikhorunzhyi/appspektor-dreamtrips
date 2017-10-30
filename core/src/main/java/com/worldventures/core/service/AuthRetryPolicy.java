@@ -38,7 +38,7 @@ public class AuthRetryPolicy {
    private boolean shouldRetry(Throwable error) {
       Timber.d("Check retry");
       boolean wrapperException = error instanceof HttpServiceException && error.getCause() != null;
-      return isLoginError(wrapperException? error.getCause() : error) && isCredentialExist(appSessionHolder);
+      return isLoginError(wrapperException ? error.getCause() : error) && isCredentialExist(appSessionHolder);
    }
 
    private void handleSession(Session session) {

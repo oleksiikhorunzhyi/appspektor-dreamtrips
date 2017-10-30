@@ -2,7 +2,10 @@ package com.worldventures.dreamtrips.modules.feed.service.analytics;
 
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 
-public class FeedAnalyticsUtils {
+public final class FeedAnalyticsUtils {
+
+   private FeedAnalyticsUtils() {
+   }
 
    public static String getIdAttributeName(FeedEntityHolder.Type type) {
       switch (type) {

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.model;
 
 public class Suggestion {
 
-   private String name;
+   private final String name;
 
    public Suggestion(String name) {
       this.name = name;

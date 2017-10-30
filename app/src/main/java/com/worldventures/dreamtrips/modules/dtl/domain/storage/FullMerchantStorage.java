@@ -19,13 +19,18 @@ public class FullMerchantStorage implements Storage<Merchant>, ActionStorage<Mer
 
    public static final String BUNDLE_MERCHANT_ID = "BUNDLE_MERCHANT_ID";
 
-   private Map<String, Merchant> cache = new ConcurrentHashMap<>();
+   private final Map<String, Merchant> cache = new ConcurrentHashMap<>();
 
-   @Inject public FullMerchantStorage() {}
+   @Inject
+   public FullMerchantStorage() {
+      //do nothing
+   }
 
    @Override
    public synchronized void save(@Nullable CacheBundle params, Merchant merchant) {
-      if (merchant != null) cache.put(merchant.id(), merchant);
+      if (merchant != null) {
+         cache.put(merchant.id(), merchant);
+      }
    }
 
    @Override

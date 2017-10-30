@@ -17,7 +17,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
       itemView.addOnAttachStateChangeListener(lifeCycleListener);
    }
 
-   private View.OnAttachStateChangeListener lifeCycleListener = new View.OnAttachStateChangeListener() {
+   private final View.OnAttachStateChangeListener lifeCycleListener = new View.OnAttachStateChangeListener() {
       @Override
       public void onViewAttachedToWindow(View v) {
          onAttachedToWindow();
@@ -30,8 +30,10 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
    };
 
    protected void onAttachedToWindow() {
+      //do nothing
    }
 
    protected void onDetachedFromWindow() {
+      //do nothing
    }
 }

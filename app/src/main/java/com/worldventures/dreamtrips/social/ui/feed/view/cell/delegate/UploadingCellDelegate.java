@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.Uploading
 
 public class UploadingCellDelegate implements UploadingPostsSectionCell.Delegate {
 
-   private UploadingListenerPresenter presenter;
-   private Context context;
+   private final UploadingListenerPresenter presenter;
+   private final Context context;
 
    public UploadingCellDelegate(UploadingListenerPresenter presenter, Context context) {
       this.presenter = presenter;
@@ -46,6 +46,6 @@ public class UploadingCellDelegate implements UploadingPostsSectionCell.Delegate
 
    @Override
    public void onCellClicked(UploadingPostsList model) {
-
+      //do nothing
    }
 }

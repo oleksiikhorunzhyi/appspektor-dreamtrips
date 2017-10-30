@@ -14,7 +14,7 @@ import org.joda.time.Days;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimeUtils {
+public final class TimeUtils {
 
    private TimeUtils() {
    }

@@ -5,6 +5,6 @@ ext {
          targetSdk : 22,
          buildTools: '26.0.2',
          //
-         preDex : !project.hasProperty('disablePreDex')
+         preDex    : !project.hasProperty('disablePreDex')
    ]
 }

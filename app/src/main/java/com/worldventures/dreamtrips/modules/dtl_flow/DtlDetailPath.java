@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScr
 
 public abstract class DtlDetailPath extends DtlPath {
 
-   private MasterDetailPath master;
+   private final MasterDetailPath master;
 
    public DtlDetailPath(MasterDetailPath master) {
       this.master = master;

@@ -25,6 +25,8 @@ public class ViewTripDetailsAnalyticAction extends BaseAnalyticsAction {
       this.filters = filterData.getFilterAnalyticString();
       this.regionFilters = filterData.getAcceptedRegionsAnalyticString();
       this.themeFilters = filterData.getAcceptedActivitiesAnalyticString();
-      if (!TextUtils.isEmpty(searchQuery)) this.searchQuery = searchQuery;
+      if (!TextUtils.isEmpty(searchQuery)) {
+         this.searchQuery = searchQuery;
+      }
    }
 }

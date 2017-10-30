@@ -29,7 +29,7 @@ public class DrawerToggleObservable implements Observable.OnSubscribe<Integer> {
       DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
          @Override
          public void onDrawerSlide(View drawerView, float slideOffset) {
-
+            //do nothing
          }
 
          @Override
@@ -48,7 +48,7 @@ public class DrawerToggleObservable implements Observable.OnSubscribe<Integer> {
 
          @Override
          public void onDrawerStateChanged(int newState) {
-
+            //do nothing
          }
       };
 

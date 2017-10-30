@@ -55,7 +55,9 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
-         if (s.length() != 0) getPresenter().onAmountChanged(Double.valueOf(s.toString()));
+         if (s.length() != 0) {
+            getPresenter().onAmountChanged(Double.valueOf(s.toString()));
+         }
       }
    };
 
@@ -102,7 +104,9 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
 
    @OnClick(R.id.verify)
    void onVerify() {
-      if (amountInput.validate()) getPresenter().verify();
+      if (amountInput.validate()) {
+         getPresenter().verify();
+      }
    }
 
    @OnClick(R.id.scan_receipt)

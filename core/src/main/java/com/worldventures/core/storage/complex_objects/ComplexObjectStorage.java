@@ -18,7 +18,7 @@ public class ComplexObjectStorage<T> implements ObjectStorage<T> {
    private final Type type;
    private Optional<T> cachedInstance = Optional.absent();
 
-   {
+   { //NOPMD
       gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateTimeDeserializer()).create();
    }
 
@@ -48,9 +48,11 @@ public class ComplexObjectStorage<T> implements ObjectStorage<T> {
 
          if (value.isPresent()) {
             T item;
-            if (typeClass != null) item = this.gson.fromJson(value.get(), typeClass);
-            else if (type != null) item = this.gson.fromJson(value.get(), type);
-            else throw new IllegalStateException("Neither type or typeClass is set to deserialize");
+            if (typeClass != null) { item = this.gson.fromJson(value.get(), typeClass); } else if (type != null) {
+               item = this.gson.fromJson(value.get(), type);
+            } else {
+               throw new IllegalStateException("Neither type or typeClass is set to deserialize");
+            }
             cachedInstance = Optional.of(item);
          }
       }

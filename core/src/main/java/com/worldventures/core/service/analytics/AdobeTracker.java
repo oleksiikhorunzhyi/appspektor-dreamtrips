@@ -27,11 +27,10 @@ public class AdobeTracker extends Tracker {
    private static final String DEVICE_ID = "deviceid";
    private static final String WIFI_CONNECTED = "wifi";
 
-   private String lastTrackedViewState;
-
-   private ConnectionInfoProvider connectionInfoProvider;
-   private DeviceInfoProvider deviceInfoProvider;
+   private final ConnectionInfoProvider connectionInfoProvider;
+   private final DeviceInfoProvider deviceInfoProvider;
    private final boolean debugLogging;
+   private String lastTrackedViewState;
 
    public AdobeTracker(DeviceInfoProvider deviceInfoProvider, ConnectionInfoProvider connectionInfoProvider, boolean debugLogging) {
       this.connectionInfoProvider = connectionInfoProvider;
@@ -46,38 +45,41 @@ public class AdobeTracker extends Tracker {
 
    @Override
    public void onCreate(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (checkNullAndWarn(activity)) { return; }
       Config.setDebugLogging(debugLogging);
       Config.setContext(activity.getApplicationContext());
    }
 
    @Override
    public void onResume(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (checkNullAndWarn(activity)) { return; }
       Config.collectLifecycleData(activity);
    }
 
    @Override
    public void onPause(@Nullable Activity activity) {
-      if (checkNullAndWarn(activity)) return;
+      if (checkNullAndWarn(activity)) { return; }
       Config.pauseCollectingLifecycleData();
    }
 
    @Override
    public void trackEvent(String category, String viewState, Map<String, Object> data) {
-      if (data == null) data = new HashMap<>();
-      if (getHeaderData() != null) data.putAll(getHeaderData());
+      Map<String, Object> contextData = new HashMap<>();
+      if (data != null) {
+         contextData.putAll(data);
+      }
+      if (getHeaderData() != null) { contextData.putAll(getHeaderData()); }
 
       String preparedViewState = prepareViewState(viewState);
 
-      data.put(CHANNEL_KEY, CHANNEL_VALUE);
-      data.put(PREV_VIEW_STATE, lastTrackedViewState);
-      data.put(ACTION, preparedViewState);
-      data.put(TIME_PARTING, DateTimeUtils.convertDateToString(new Date(), TIME_FORMAT_ANALYTICS));
-      data.put(WIFI_CONNECTED, connectionInfoProvider.isWifi() ? "Yes" : "No");
-      data.put(DEVICE_ID, deviceInfoProvider.getUniqueIdentifier());
+      contextData.put(CHANNEL_KEY, CHANNEL_VALUE);
+      contextData.put(PREV_VIEW_STATE, lastTrackedViewState);
+      contextData.put(ACTION, preparedViewState);
+      contextData.put(TIME_PARTING, DateTimeUtils.convertDateToString(new Date(), TIME_FORMAT_ANALYTICS));
+      contextData.put(WIFI_CONNECTED, connectionInfoProvider.isWifi() ? "Yes" : "No");
+      contextData.put(DEVICE_ID, deviceInfoProvider.getUniqueIdentifier());
 
-      Analytics.trackState(preparedViewState, data);
+      Analytics.trackState(preparedViewState, contextData);
       lastTrackedViewState = preparedViewState;
    }
 

@@ -42,7 +42,9 @@ public class SelectDialog extends BaseDialogFragment {
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      if (savedInstanceState != null) dismiss(); //temp while dialog opens from cell
+      if (savedInstanceState != null) {
+         dismiss(); //temp while dialog opens from cell
+      }
       Bundle args = getArguments();
       SelectDialogModel model = args.getParcelable(MODEL);
       titleId = model.getTitleId();

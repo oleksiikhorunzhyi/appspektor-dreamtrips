@@ -59,9 +59,13 @@ public class VideoPickerModel extends MediaPickerModelImpl {
 
    public static final Creator<VideoPickerModel> CREATOR = new Creator<VideoPickerModel>() {
       @Override
-      public VideoPickerModel createFromParcel(Parcel source) {return new VideoPickerModel(source);}
+      public VideoPickerModel createFromParcel(Parcel source) {
+         return new VideoPickerModel(source);
+      }
 
       @Override
-      public VideoPickerModel[] newArray(int size) {return new VideoPickerModel[size];}
+      public VideoPickerModel[] newArray(int size) {
+         return new VideoPickerModel[size];
+      }
    };
 }

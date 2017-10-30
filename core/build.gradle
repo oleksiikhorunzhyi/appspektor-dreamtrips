@@ -3,6 +3,7 @@ apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-core-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
@@ -17,7 +18,7 @@ android {
       targetSdkVersion project.ext.androidConfig.targetSdk
    }
 
-   dataBinding{
+   dataBinding {
       enabled = true
    }
 
@@ -36,8 +37,8 @@ android {
    }
 
    compileOptions {
-      sourceCompatibility project.ext.pluginDependencies.languages.java
-      targetCompatibility project.ext.pluginDependencies.languages.java
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
    }
 
 }

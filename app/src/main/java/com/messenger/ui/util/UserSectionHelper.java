@@ -90,17 +90,27 @@ public class UserSectionHelper {
    private <T> List<Group<T>> convertToGroups(Map<String, Collection<T>> groupedMap) {
       Set<String> names = groupedMap.keySet();
       List<Group<T>> groups = new LinkedList<>();
-      for (String groupName : names) groups.add(new Group<>(groupName, groupedMap.get(groupName)));
+      for (String groupName : names) {
+         groups.add(new Group<>(groupName, groupedMap.get(groupName)));
+      }
       return groups;
    }
 
    private <T> void sortGroups(List<Group<T>> groups) {
       Collections.sort(groups, (lhs, rhs) -> {
-         if (TextUtils.equals(lhs.groupName, ADMIN_TYPE)) return -1;
-         if (TextUtils.equals(rhs.groupName, ADMIN_TYPE)) return 1;
+         if (TextUtils.equals(lhs.groupName, ADMIN_TYPE)) {
+            return -1;
+         }
+         if (TextUtils.equals(rhs.groupName, ADMIN_TYPE)) {
+            return 1;
+         }
 
-         if (TextUtils.equals(lhs.groupName, HOST_TYPE)) return -1;
-         if (TextUtils.equals(rhs.groupName, HOST_TYPE)) return 1;
+         if (TextUtils.equals(lhs.groupName, HOST_TYPE)) {
+            return -1;
+         }
+         if (TextUtils.equals(rhs.groupName, HOST_TYPE)) {
+            return 1;
+         }
 
          return lhs.groupName.compareTo(rhs.groupName);
       });
@@ -131,8 +141,12 @@ public class UserSectionHelper {
    }
 
    private String getUserGroup(DataUser user, String affiliation, boolean isTripConversation) {
-      if (TextUtils.equals(affiliation, Affiliation.OWNER)) return ADMIN_TYPE;
-      else if (isTripConversation && user.isHost()) return HOST_TYPE;
-      else return user.getFirstName().substring(0, 1).toUpperCase();
+      if (TextUtils.equals(affiliation, Affiliation.OWNER)) {
+         return ADMIN_TYPE;
+      } else if (isTripConversation && user.isHost()) {
+         return HOST_TYPE;
+      } else {
+         return user.getFirstName().substring(0, 1).toUpperCase();
+      }
    }
 }

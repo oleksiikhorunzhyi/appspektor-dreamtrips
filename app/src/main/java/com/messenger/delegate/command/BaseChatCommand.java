@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import rx.Observable;
 
-public abstract class BaseChatCommand<Result> extends Command<Result> implements InjectableAction {
+public abstract class BaseChatCommand<R> extends Command<R> implements InjectableAction {
 
    protected final String conversationId;
 
@@ -31,7 +31,9 @@ public abstract class BaseChatCommand<Result> extends Command<Result> implements
       return conversationsDAO.getConversation(conversationId).take(1).flatMap(dataConversation -> {
          if (ConversationHelper.isAbandoned(dataConversation)) {
             return Observable.error(new AccessConversationDeniedException());
-         } else return createChatHelper.createChat(conversationId);
+         } else {
+            return createChatHelper.createChat(conversationId);
+         }
       });
    }
 }

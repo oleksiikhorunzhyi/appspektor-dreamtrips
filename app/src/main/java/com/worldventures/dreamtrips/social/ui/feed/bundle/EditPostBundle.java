@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 
 public class EditPostBundle implements Parcelable {
 
-   private TextualPost post;
+   private final TextualPost post;
 
    public EditPostBundle(TextualPost post) {
       this.post = post;

@@ -5,7 +5,7 @@ import com.worldventures.core.model.User;
 
 public class FeatureManager {
 
-   private SessionHolder sessionHolder;
+   private final SessionHolder sessionHolder;
 
    public FeatureManager(SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
@@ -31,9 +31,9 @@ public class FeatureManager {
 
    public void with(@Feature.FeatureName String name, OnFeatureAvailable onAvailable, OnFeatureMissing onMissing) {
       if (available(name)) {
-         if (onAvailable != null) onAvailable.onAvailable();
+         if (onAvailable != null) { onAvailable.onAvailable(); }
       } else {
-         if (onMissing != null) onMissing.onMissing();
+         if (onMissing != null) { onMissing.onMissing(); }
       }
    }
 

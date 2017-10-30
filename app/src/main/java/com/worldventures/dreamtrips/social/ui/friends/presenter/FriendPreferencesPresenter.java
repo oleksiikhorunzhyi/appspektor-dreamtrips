@@ -80,6 +80,8 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
             profileInteractor.removeFriendFromCirclesPipe().send(new RemoveFriendFromCircleCommand(circle, friend));
             friend.getCircles().remove(circle);
             break;
+         default:
+            break;
       }
 
    }

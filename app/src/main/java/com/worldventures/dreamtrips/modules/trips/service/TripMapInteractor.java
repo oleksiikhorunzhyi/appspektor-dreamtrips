@@ -14,9 +14,9 @@ import rx.schedulers.Schedulers;
 @Singleton
 public class TripMapInteractor {
 
-   private ActionPipe<GetTripsLocationsCommand> mapObjectsActionPipe;
-   private ActionPipe<GetTripsByUidCommand> tripsByUidPipe;
-   private ActionPipe<CheckTripsByUidCommand> checkTripsByUidPipe;
+   private final ActionPipe<GetTripsLocationsCommand> mapObjectsActionPipe;
+   private final ActionPipe<GetTripsByUidCommand> tripsByUidPipe;
+   private final ActionPipe<CheckTripsByUidCommand> checkTripsByUidPipe;
 
    @Inject
    public TripMapInteractor(SessionActionPipeCreator sessionActionPipeCreator) {

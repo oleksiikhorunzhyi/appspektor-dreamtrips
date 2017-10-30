@@ -65,7 +65,9 @@ public class PhotoPostCreationCell extends BaseAbstractDelegateCell<PhotoCreatio
       photoTitle.addTextChangedListener(textWatcher);
 
       photoTitle.setOnFocusChangeListener((view, hasFocus) -> {
-         if (!hasFocus) photoContainer.requestFocus();
+         if (!hasFocus) {
+            photoContainer.requestFocus();
+         }
          cellDelegate.onPhotoTitleFocusChanged(hasFocus);
       });
       itemView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
@@ -154,7 +156,9 @@ public class PhotoPostCreationCell extends BaseAbstractDelegateCell<PhotoCreatio
 
       photoTagHolderManager.setTagDeletedListener(photoTag -> {
          boolean removed = getModelObject().getCachedAddedPhotoTags().remove(photoTag);
-         if (!removed) getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         if (!removed) {
+            getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         }
          addTagSuggestions(photoTagHolderManager);
          invalidateTags();
       });
@@ -169,9 +173,8 @@ public class PhotoPostCreationCell extends BaseAbstractDelegateCell<PhotoCreatio
       currentTags.addAll(getModelObject().getCombinedTags());
       currentTags.addAll(getModelObject().getCachedAddedPhotoTags());
       currentTags.removeAll(getModelObject().getCachedRemovedPhotoTags());
-      List<PhotoTag> notIntersectingSuggestions =
-            PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
-                  new ArrayList<>(currentTags));
+      List<PhotoTag> notIntersectingSuggestions = PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
+            new ArrayList<>(currentTags));
       photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
             tag -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
    }

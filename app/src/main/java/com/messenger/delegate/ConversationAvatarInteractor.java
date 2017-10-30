@@ -19,7 +19,8 @@ public class ConversationAvatarInteractor {
 
    @Inject
    ConversationAvatarInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      this.sendChatAvatarCommandActionPipe = sessionActionPipeCreator.createPipe(SendChatAvatarCommand.class, Schedulers.io());
+      this.sendChatAvatarCommandActionPipe = sessionActionPipeCreator.createPipe(SendChatAvatarCommand.class, Schedulers
+            .io());
       this.setChatAvatarCommandPipe = sessionActionPipeCreator.createPipe(SetChatAvatarCommand.class, Schedulers.io());
       this.removeChatAvatarCommandPipe = sessionActionPipeCreator.createPipe(RemoveChatAvatarCommand.class, Schedulers.io());
    }

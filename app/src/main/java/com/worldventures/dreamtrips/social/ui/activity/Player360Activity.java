@@ -1,13 +1,3 @@
-/*
- * SimpleStreamPlayer
- * Android example of Panframe library
- * The example plays back an panoramic movie from a resource.
- * 
- * (c) 2012-2013 Mindlight. All rights reserved.
- * Visit www.panframe.com for more information. 
- * 
- */
-
 package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.content.res.Configuration;
@@ -39,6 +29,15 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+/*
+ * SimpleStreamPlayer
+ * Android example of Panframe library
+ * The example plays back an panoramic movie from a resource.
+ *
+ * (c) 2012-2013 Mindlight. All rights reserved.
+ * Visit www.panframe.com for more information.
+ *
+ */
 @Layout(R.layout.activity_360)
 public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresenter> implements PFAssetObserver, VideoPlayerPresenter.View {
 
@@ -47,7 +46,7 @@ public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresente
 
    private PFView pfView;
    private PFAsset pfAsset;
-   private PFNavigationMode currentNavigationMode = PFNavigationMode.MOTION;
+   private final PFNavigationMode currentNavigationMode = PFNavigationMode.MOTION;
 
    private boolean isBarsShown = true;
 
@@ -72,7 +71,9 @@ public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresente
       if (TextUtils.isEmpty(url)) {
          finish();
       } else {
-         if (!Utils.isConnected(this)) informUser(R.string.no_connection);
+         if (!Utils.isConnected(this)) {
+            informUser(R.string.no_connection);
+         }
          loadVideo(url);
       }
 
@@ -226,6 +227,8 @@ public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresente
             break;
          case ERROR:
             informUser(Utils.isConnected(this) ? R.string.error_something_went_wrong : R.string.no_connection);
+            break;
+         default:
             break;
       }
    }

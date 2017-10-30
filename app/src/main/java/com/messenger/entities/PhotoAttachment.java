@@ -98,9 +98,6 @@ public class PhotoAttachment implements Parcelable {
       private Date date;
       private boolean flaggingEnabled;
 
-      public Builder() {
-      }
-
       public Builder photoAttachmentId(String attachmentId) {
          this.photoAttachmentId = attachmentId;
          return this;

@@ -25,7 +25,7 @@ public class TranslateBucketItemViewInjector {
    @InjectView(R.id.translated_from) TextView translatedFrom;
    @Optional @InjectView(R.id.textViewDescription) TextView textViewDescription;
 
-   private Context context;
+   private final Context context;
    private SessionHolder appSessionHolder;
 
    public TranslateBucketItemViewInjector(View rootView, Context context, SessionHolder appSessionHolder) {

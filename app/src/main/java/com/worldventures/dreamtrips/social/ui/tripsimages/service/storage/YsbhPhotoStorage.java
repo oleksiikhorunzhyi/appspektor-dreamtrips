@@ -16,7 +16,7 @@ public class YsbhPhotoStorage implements ActionStorage<List<YSBHPhoto>> {
    public static final String RELOAD = "RELOAD";
    public static final String LOAD_MORE = "LOAD_MORE";
 
-   private MemoryStorage<List<YSBHPhoto>> storage = new MemoryStorage<>();
+   private final MemoryStorage<List<YSBHPhoto>> storage = new MemoryStorage<>();
 
    @Override
    public Class<? extends CachedAction> getActionClass() {

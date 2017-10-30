@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Value.Immutable
 public interface ReviewSettings extends Serializable {
 
-    String maximumCharactersAllowed();
+   String maximumCharactersAllowed();
 
-    String minimumCharactersAllowed();
+   String minimumCharactersAllowed();
 }

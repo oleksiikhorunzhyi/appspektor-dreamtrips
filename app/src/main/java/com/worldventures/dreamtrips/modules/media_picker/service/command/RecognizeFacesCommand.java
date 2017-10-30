@@ -15,7 +15,7 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class RecognizeFacesCommand extends Command<PhotoCreationItem> implements InjectableAction{
+public class RecognizeFacesCommand extends Command<PhotoCreationItem> implements InjectableAction {
 
    private PhotoCreationItem photoCreationItem;
 

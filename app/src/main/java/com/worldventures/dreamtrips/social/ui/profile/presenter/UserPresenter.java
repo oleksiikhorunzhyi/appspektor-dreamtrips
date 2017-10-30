@@ -76,9 +76,10 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    @Override
    public void onStart() {
       super.onStart();
-      if (notificationId != UserBundle.NO_NOTIFICATION)
+      if (notificationId != UserBundle.NO_NOTIFICATION) {
          notificationFeedInteractor.markNotificationPipe()
                .send(new MarkNotificationAsReadCommand(notificationId));
+      }
       if (acceptFriend) {
          acceptClicked();
          acceptFriend = false;
@@ -140,7 +141,9 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
    public void addFriendClicked() {
       User.Relationship userRelationship = user.getRelationship();
-      if (userRelationship == null) return;
+      if (userRelationship == null) {
+         return;
+      }
 
       switch (userRelationship) {
          case REJECTED:
@@ -149,6 +152,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
             break;
          case FRIEND:
             view.showFriendDialog(user);
+            break;
+         default:
             break;
       }
    }

@@ -139,7 +139,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    @Override
    public void onStart() {
       super.onStart();
-      if (googleMap != null) subscribeToMapUpdates();
+      if (googleMap != null) {
+         subscribeToMapUpdates();
+      }
    }
 
    @Override
@@ -242,7 +244,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    protected void onMenuInflated(Menu menu) {
       super.onMenuInflated(menu);
       MenuItem searchItem = menu.findItem(R.id.action_search);
-      if (searchOpened) searchItem.expandActionView();
+      if (searchOpened) {
+         searchItem.expandActionView();
+      }
       MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
          @Override
          public boolean onMenuItemActionExpand(MenuItem item) {
@@ -280,6 +284,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
             break;
          case R.id.action_list:
             moveToListView();
+            break;
+         default:
             break;
       }
       return super.onOptionsItemSelected(item);
@@ -431,6 +437,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                params.rightMargin = margin;
                params.bottomMargin = 0;
                params.leftMargin = 0;
+               break;
+            default:
                break;
          }
       }

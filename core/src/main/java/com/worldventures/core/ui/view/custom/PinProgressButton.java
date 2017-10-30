@@ -41,6 +41,7 @@ import com.worldventures.core.R;
  * indicator.
  */
 public class PinProgressButton extends CompoundButton {
+
    private int mMax;
    private int mProgress;
 
@@ -52,8 +53,8 @@ public class PinProgressButton extends CompoundButton {
    private Paint mCirclePaint;
    private Paint mProgressPaint;
    private Paint mErrorPaint;
-   private Rect mTempRect = new Rect();
-   private RectF mTempRectF = new RectF();
+   private final Rect mTempRect = new Rect();
+   private final RectF mTempRectF = new RectF();
 
    private int mDrawableSize;
    private int mInnerSize;

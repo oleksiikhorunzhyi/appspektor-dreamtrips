@@ -59,7 +59,9 @@ public class BucketFullscreenPresenter extends Presenter<BucketFullscreenPresent
    }
 
    public void onCheckboxPressed(boolean setAsCover) {
-      if (!setAsCover || bucketItem.getCoverPhoto().equals(bucketPhoto)) return;
+      if (!setAsCover || bucketItem.getCoverPhoto().equals(bucketPhoto)) {
+         return;
+      }
       bucketInteractor.updatePipe()
             .createObservable(new UpdateBucketItemCommand(ImmutableBucketCoverBody.builder()
                   .id(bucketItem.getUid())

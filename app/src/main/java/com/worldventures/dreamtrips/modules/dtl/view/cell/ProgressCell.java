@@ -9,11 +9,11 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell
 @Layout(R.layout.adapter_item_progress)
 public class ProgressCell extends BaseAbstractCell<ProgressCell.Model> {
 
+   public static final ProgressCell.Model INSTANCE = new ProgressCell.Model();
+
    public ProgressCell(View view) {
       super(view);
    }
-
-   public static final ProgressCell.Model INSTANCE = new ProgressCell.Model();
 
    @Override
    public boolean shouldInject() {
@@ -22,11 +22,12 @@ public class ProgressCell extends BaseAbstractCell<ProgressCell.Model> {
 
    @Override
    protected void syncUIStateWithModel() {
-
+      //do nothing
    }
 
    @Override
    public void prepareForReuse() {
+      //do nothing
    }
 
    public static final class Model {

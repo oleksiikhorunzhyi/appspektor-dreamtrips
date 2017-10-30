@@ -107,15 +107,17 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    private void mediaPickerModelChanged(MediaPickerModel model) {
       if (model.isChecked()) {
          MediaPickerAttachment mediaAttachment;
-         mediaAttachment = model.getType() == MediaPickerModel.Type.PHOTO ?
-               new MediaPickerAttachment(Collections.singletonList((PhotoPickerModel) model), -1) :
-               new MediaPickerAttachment((VideoPickerModel) model, -1);
+         mediaAttachment = model.getType() == MediaPickerModel.Type.PHOTO
+               ? new MediaPickerAttachment(Collections.singletonList((PhotoPickerModel) model), -1)
+               : new MediaPickerAttachment((VideoPickerModel) model, -1);
 
          attachMedia(mediaAttachment);
       } else {
          if (model.getType() == MediaPickerModel.Type.PHOTO) {
             PhotoCreationItem photoCreationItem = findPhotoPostCreation(model);
-            if (photoCreationItem != null) removeImage(photoCreationItem);
+            if (photoCreationItem != null) {
+               removeImage(photoCreationItem);
+            }
          } else {
             removeVideo(ImmutableVideoCreationModel.builder()
                   .uri(model.getUri())
@@ -194,7 +196,9 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    public void attachMedia(MediaPickerAttachment mediaPickerAttachment) {
-      if (!mediaPickerAttachment.hasImages() && !mediaPickerAttachment.hasVideo()) return;
+      if (!mediaPickerAttachment.hasImages() && !mediaPickerAttachment.hasVideo()) {
+         return;
+      }
 
       view.setEnabledImagePicker(false);
       if (mediaPickerAttachment.hasImages()) {

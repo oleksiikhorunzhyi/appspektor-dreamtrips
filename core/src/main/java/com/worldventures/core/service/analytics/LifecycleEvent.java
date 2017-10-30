@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 
 @AnalyticsEvent(
       category = LifecycleEvent.LIFECYCLE_CATEGORY,
-      trackers = {AdobeTracker.TRACKER_KEY, ApptentiveTracker.TRACKER_KEY,})
+      trackers = {AdobeTracker.TRACKER_KEY, ApptentiveTracker.TRACKER_KEY})
 public class LifecycleEvent extends BaseAnalyticsAction {
 
    public static final String LIFECYCLE_CATEGORY = "lifecycle";
@@ -22,7 +22,7 @@ public class LifecycleEvent extends BaseAnalyticsAction {
    public static final String ACTION_ONSAVESTATE = "save_state";
    public static final String ACTION_ONRESTORESTATE = "restore_state";
 
-   private String action;
+   private final String action;
    private Bundle state;
    private WeakReference<Activity> weakActivity;
 

@@ -85,6 +85,8 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                      Timber.e(actionState.exception, "[New Photo Attachment Creation] Upload failed");
                      builder.state(PostBody.State.FAILED);
                      break;
+                  default:
+                     break;
                }
                photoAttachmentUpdated(builder.build());
                return actionState;

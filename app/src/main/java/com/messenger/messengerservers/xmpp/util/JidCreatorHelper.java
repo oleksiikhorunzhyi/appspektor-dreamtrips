@@ -24,12 +24,12 @@ public final class JidCreatorHelper {
    }
 
    public static String obtainId(@NonNull String jid) {
-      int pos = jid.indexOf("@");
+      int pos = jid.indexOf('@');
       return jid.substring(0, pos);
    }
 
    public static String obtainUserIdFromGroupJid(String roomJidWithResource) {
-      int pos = roomJidWithResource.lastIndexOf("/");
+      int pos = roomJidWithResource.lastIndexOf('/');
       return pos == -1 ? null : roomJidWithResource.substring(pos + 1);
    }
 

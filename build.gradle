@@ -1,21 +1,29 @@
-buildscript {
-   apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
+allprojects { // <-- it's needed for plugin detekt. there is specific condition for getting its app-client (alex.kozlov)
+   buildscript {
+      apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 
-   repositories {
-      project.ext.pluginDependencies.repos.each { it.call(owner) }
-   }
-
-   dependencies {
-      classpath project.ext.pluginDependencies.android
-      classpath (project.ext.pluginDependencies.proguard) {
-         force = true
+      repositories {
+         project.ext.pluginDependencies.repos.each { it.call(owner) }
       }
-      classpath project.ext.pluginDependencies.kotlin
-      //
-      classpath project.ext.pluginDependencies.fabric
-      classpath project.ext.pluginDependencies.newrelic
-      //
-      classpath project.ext.pluginDependencies.versionChecker
-   }
 
+      dependencies {
+         classpath project.ext.pluginDependencies.android
+         classpath(project.ext.pluginDependencies.proguard) {
+            force = true
+         }
+         classpath project.ext.pluginDependencies.kotlin
+         classpath project.ext.pluginDependencies.retrolambda
+         classpath project.ext.pluginDependencies.retrolambdaAst
+         //
+         classpath project.ext.pluginDependencies.fabric
+         classpath project.ext.pluginDependencies.newrelic
+         //
+         classpath project.ext.pluginDependencies.versionChecker
+         //
+         classpath project.ext.pluginDependencies.detekt
+         classpath project.ext.pluginDependencies.ktlint
+      }
+
+      configurations.classpath.exclude group: 'com.android.tools.external.lombok'
+   }
 }

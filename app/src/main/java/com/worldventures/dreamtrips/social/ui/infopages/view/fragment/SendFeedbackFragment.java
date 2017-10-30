@@ -113,6 +113,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
                getPresenter().sendFeedback(id, message.getText().toString());
             }
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -159,7 +161,9 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
 
    @Override
    public void changeDoneButtonState(boolean enable) {
-      if (doneButtonMenuItem != null) doneButtonMenuItem.setEnabled(enable);
+      if (doneButtonMenuItem != null) {
+         doneButtonMenuItem.setEnabled(enable);
+      }
    }
 
    @Override
@@ -231,6 +235,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
                      break;
                   case 1:
                      getPresenter().onRemoveAttachment(attachmentHolder);
+                     break;
+                  default:
                      break;
                }
             }).show();

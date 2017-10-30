@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.social.ui.membership.model.InviteTemplate;
 import io.techery.mappery.MapperyContext;
 
 public class InviteTemplateConverter implements Converter<InvitationTemplate, InviteTemplate> {
+
    @Override
    public Class<InvitationTemplate> sourceClass() {
       return InvitationTemplate.class;
@@ -29,6 +30,7 @@ public class InviteTemplateConverter implements Converter<InvitationTemplate, In
          case UNKNOWN:
          default:
             type = InviteTemplate.Type.EMAIL;
+            break;
       }
       return new InviteTemplate(invitationTemplate.id(), invitationTemplate.title(), type,
             invitationTemplate.category(), invitationTemplate.coverImage().url(), invitationTemplate.video(),

@@ -40,9 +40,8 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
       profileToolbar.inflateMenu(R.menu.profile_fragment);
 
       profileToolbar.setOnMenuItemClickListener(item -> {
-         switch (item.getItemId()) {
-            case R.id.item_logout:
-               showLogoutDialog();
+         if (item.getItemId() == R.id.item_logout) {
+            showLogoutDialog();
          }
          return true;
       });
@@ -142,8 +141,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
 
    @Override
    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (!getPresenter().onActivityResult(requestCode, resultCode, data))
+      if (!getPresenter().onActivityResult(requestCode, resultCode, data)) {
          super.onActivityResult(requestCode, resultCode, data);
+      }
    }
 
    @Override

@@ -15,7 +15,8 @@ public class MediaMetadataInteractor {
    public MediaMetadataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this.videoMetadataCommandActionPipe = sessionActionPipeCreator.createPipe(GetVideoMetadataCommand.class, Schedulers
             .io());
-      this.recognizeFacesCommandActionPipe = sessionActionPipeCreator.createPipe(RecognizeFacesCommand.class, Schedulers.io());
+      this.recognizeFacesCommandActionPipe = sessionActionPipeCreator.createPipe(RecognizeFacesCommand.class, Schedulers
+            .io());
    }
 
    public ActionPipe<GetVideoMetadataCommand> videoMetadataCommandActionPipe() {

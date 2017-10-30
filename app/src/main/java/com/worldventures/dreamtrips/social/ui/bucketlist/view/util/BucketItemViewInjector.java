@@ -25,7 +25,7 @@ public class BucketItemViewInjector {
    @InjectView(R.id.textViewDate) TextView textViewDate;
    @InjectView(R.id.textViewPlace) TextView textViewPlace;
 
-   private Context context;
+   private final Context context;
    private TranslateBucketItemViewInjector translateBucketItemViewInjector;
 
    public BucketItemViewInjector(View rootView, Context context, SessionHolder appSessionHolder) {

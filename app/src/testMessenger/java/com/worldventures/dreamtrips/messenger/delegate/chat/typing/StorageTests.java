@@ -9,8 +9,10 @@ import org.junit.Test;
 
 import java.util.List;
 
+@SuppressWarnings("PMD") //TODO: Resolve this PMD error
 public class StorageTests extends BaseTest {
-   private TypingStore typingStore = new MemoryTypingStore();
+
+   private final TypingStore typingStore = new MemoryTypingStore();
 
    @Test
    public void testAdding() {

@@ -47,7 +47,9 @@ public class LikersPanelHelper {
          panel.setVisibility(View.VISIBLE);
       }
 
-      if (likersPanelListener != null) likersPanelListener.onLikersPanelSetted();
+      if (likersPanelListener != null) {
+         likersPanelListener.onLikersPanelSetted();
+      }
    }
 
    public void setLikersPanelListener(LikersPanelListener likersPanelListener) {

@@ -27,7 +27,9 @@ public class ClearStoragesCommand extends Command<Void> implements InjectableAct
 
    private void cleanStorageSet(Set<? extends Storage> storageSet) {
       for (Storage storage : storageSet) {
-         if (storage instanceof ClearableStorage) ((ClearableStorage) storage).clearMemory();
+         if (storage instanceof ClearableStorage) {
+            ((ClearableStorage) storage).clearMemory();
+         }
       }
    }
 }

@@ -176,7 +176,9 @@ public class ChatUsersTypingView extends RelativeLayout {
    }
 
    private void hideView() {
-      if (hideViewAnimator != null) return;
+      if (hideViewAnimator != null) {
+         return;
+      }
 
       ValueAnimator animator = ValueAnimator.ofFloat(0, -getMeasuredHeight());
       animator.addUpdateListener(this::animatorUpdateListener);
@@ -192,7 +194,9 @@ public class ChatUsersTypingView extends RelativeLayout {
    }
 
    private void showView() {
-      if (showViewAnimator != null) return;
+      if (showViewAnimator != null) {
+         return;
+      }
 
       setVisibility(View.VISIBLE);
       if (getMeasuredHeight() == 0) {

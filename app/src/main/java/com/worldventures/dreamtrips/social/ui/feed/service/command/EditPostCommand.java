@@ -14,8 +14,8 @@ import io.techery.janet.command.annotations.CommandAction;
 public class EditPostCommand extends MappableApiActionCommand<UpdatePostHttpAction, TextualPost, TextualPost>
       implements InjectableAction {
 
-   private String id;
-   private CreatePhotoPostEntity createPhotoPostEntity;
+   private final String id;
+   private final CreatePhotoPostEntity createPhotoPostEntity;
 
    public EditPostCommand(String id, CreatePhotoPostEntity createPhotoPostEntity) {
       this.id = id;

@@ -42,7 +42,8 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle.PhotoEntity;
 
-public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P> implements ActionReviewEntityPresenter.View, PhotoReviewPostCreationDelegate {
+public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P>
+      implements ActionReviewEntityPresenter.View, PhotoReviewPostCreationDelegate {
 
    @Inject BackStackDelegate backStackDelegate;
    @Inject @ForActivity Provider<Injector> injectorProvider;
@@ -64,9 +65,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
       postButton.setText(getPostButtonText());
       //
       adapter = new BaseDelegateAdapter(getContext(), this);
-      adapter.registerCell(PhotoReviewCreationItem.class, PhotoReviewPostCreationCell.class);//Tag
-      adapter.registerCell(PostReviewDescription.class, PostReviewCreationTextCell.class);//hashtag
-      adapter.registerDelegate(PostReviewDescription.class, new PostReviewCreationTextCell.Delegate() {//desc photo
+      adapter.registerCell(PhotoReviewCreationItem.class, PhotoReviewPostCreationCell.class); //Tag
+      adapter.registerCell(PostReviewDescription.class, PostReviewCreationTextCell.class); //hashtag
+      adapter.registerDelegate(PostReviewDescription.class, new PostReviewCreationTextCell.Delegate() { //desc photo
          @Override
          public void onCellClicked(PostReviewDescription model) {
             router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
@@ -172,7 +173,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @Override
    public void cancel() {
-      if (dialog != null && dialog.isShowing()) dialog.dismiss();
+      if (dialog != null && dialog.isShowing()) {
+         dialog.dismiss();
+      }
 
       router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
@@ -204,7 +207,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    protected boolean onBack() {
       try {
-         if (getChildFragmentManager().popBackStackImmediate()) return true;
+         if (getChildFragmentManager().popBackStackImmediate()) {
+            return true;
+         }
       } catch (Exception e) {
          Timber.e(e, "OnBack error"); //for avoid application crash
       }
@@ -225,7 +230,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @OnClick(R.id.content_layout)
    void onSpaceClicked() {
-      if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
+      if (ViewUtils.isTablet(getActivity())) {
+         getPresenter().cancelClicked();
+      }
    }
 
    @Override

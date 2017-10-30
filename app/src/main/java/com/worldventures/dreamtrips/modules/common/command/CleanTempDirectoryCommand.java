@@ -42,12 +42,12 @@ public class CleanTempDirectoryCommand extends Command implements InjectableActi
             compoundOperationsInteractor.compoundOperationsPipe()
                   .createObservableResult(new QueryCompoundOperationsCommand()),
             photoDAO.getErrorAttachments().take(1),
-            ((queryCompoundOperationsCommand, dataPhotoAttachments) -> {
+            (queryCompoundOperationsCommand, dataPhotoAttachments) -> {
                List<String> exceptFilePaths = new ArrayList<>();
                exceptFilePaths.addAll(Queryable.from(dataPhotoAttachments).map(DataPhotoAttachment::getUrl).toList());
                exceptFilePaths.addAll(obtainMediaFilesPaths(queryCompoundOperationsCommand.getResult()));
                return exceptFilePaths;
-            }))
+            })
             .subscribe(exceptFilePaths -> {
                File directory = new File(FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
                if (!directory.exists()) {

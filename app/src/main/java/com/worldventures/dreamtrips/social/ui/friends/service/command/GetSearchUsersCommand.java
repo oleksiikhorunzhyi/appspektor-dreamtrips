@@ -13,9 +13,9 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class GetSearchUsersCommand extends GetUsersCommand {
 
-   private String query;
-   private int page;
-   private int perPage;
+   private final String query;
+   private final int page;
+   private final int perPage;
 
    public GetSearchUsersCommand(String query, int page, int perPage) {
       this.query = query;

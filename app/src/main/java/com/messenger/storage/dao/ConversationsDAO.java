@@ -38,6 +38,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class ConversationsDAO extends BaseDAO {
+
    public static final String MESSAGE_TYPE_COLUMN = "messageType";
    public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
    public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
@@ -50,7 +51,7 @@ public class ConversationsDAO extends BaseDAO {
    public static final String RECIPIENT_FIRST_NAME_COLUMN = "recipientFirstName";
    public static final String RECIPIENT_LAST_NAME_COLUMN = "recipientLastName";
 
-   private SessionHolder appSessionHolder;
+   private final SessionHolder appSessionHolder;
 
    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder appSessionHolder) {
       super(context, rxContentResolver);
@@ -72,8 +73,8 @@ public class ConversationsDAO extends BaseDAO {
    }
 
    public Observable<Integer> conversationsCount() {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT COUNT(_id) FROM " + DataConversation.TABLE_NAME + " " +
-            "WHERE " + DataConversation$Table.STATUS + " =  ?")
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT COUNT(_id) FROM " + DataConversation.TABLE_NAME + " "
+            + "WHERE " + DataConversation$Table.STATUS + " =  ?")
             .withSelectionArgs(new String[]{ConversationStatus.PRESENT})
             .build();
 
@@ -84,20 +85,18 @@ public class ConversationsDAO extends BaseDAO {
       });
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<Pair<DataConversation, List<DataUser>>> getConversationWithParticipants(String conversationId) {
       //TODO: rename DataUser#_ID field to userId, because we don't use cursor with DataUser in list
-      String stringQuery = "SELECT c.*, u.*" +
-            "FROM " + DataConversation.TABLE_NAME + " c " +
-
-            "JOIN " + DataParticipant.TABLE_NAME + " p " +
-            "ON p." + DataParticipant$Table.CONVERSATIONID + "= c." + DataConversation$Table._ID + " " +
-            "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'" +
-
-            "JOIN " + DataUser$Table.TABLE_NAME + " u " +
-            "ON p." + DataParticipant$Table.USERID + "=u." + DataUser$Table._ID + " " +
-
-            "WHERE c." + DataConversation$Table._ID + "=? " +
-            "ORDER BY u." + DataUser$Table._ID;
+      String stringQuery = "SELECT c.*, u.*"
+            + "FROM " + DataConversation.TABLE_NAME + " c "
+            + "JOIN " + DataParticipant.TABLE_NAME + " p "
+            + "ON p." + DataParticipant$Table.CONVERSATIONID + "= c." + DataConversation$Table._ID + " "
+            + "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'"
+            + "JOIN " + DataUser$Table.TABLE_NAME + " u "
+            + "ON p." + DataParticipant$Table.USERID + "=u." + DataUser$Table._ID + " "
+            + "WHERE c." + DataConversation$Table._ID + "=? "
+            + "ORDER BY u." + DataUser$Table._ID;
 
       RxContentResolver.Query query = new RxContentResolver.Query.Builder(null).withSelection(stringQuery)
             .withSelectionArgs(new String[]{conversationId})
@@ -136,86 +135,75 @@ public class ConversationsDAO extends BaseDAO {
             .queryClose();
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type, String searchQuery) {
       String currentUserId = appSessionHolder.get().get().getUser().getUsername(); // username is id for messenger
 
-      StringBuilder query = new StringBuilder("SELECT c.*, " +
-            "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
-            "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
-            "m." + DataMessage$Table.TOID + " as " + DataMessage$Table.TOID + ", " +
-            "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
-            "m." + DataMessage$Table.TYPE + " as " + MESSAGE_TYPE_COLUMN + ", " +
-
-            "u." + DataUser$Table._ID + " as " + SENDER_ID_COLUMN + ", " +
-            "u." + DataUser$Table.FIRSTNAME + " as " + SENDER_FIRST_NAME_COLUMN + ", " +
-            "u." + DataUser$Table.LASTNAME + " as " + SENDER_LAST_NAME_COLUMN + ", " +
-            "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
-            "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", " +
-
-            "uuuu." + DataUser$Table._ID + " as " + RECIPIENT_ID_COLUMN + ", " +
-            "uuuu." + DataUser$Table.FIRSTNAME + " as " + RECIPIENT_FIRST_NAME_COLUMN + ", " +
-            "uuuu." + DataUser$Table.LASTNAME + " as " + RECIPIENT_LAST_NAME_COLUMN + ", " +
-
-            "IFNULL(uu." + DataUser$Table.FIRSTNAME + ",'') || ' ' || IFNULL(uu." + DataUser$Table.LASTNAME + ",'') " +
-            "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
-            "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
-            "t." + DataTranslation$Table.TRANSLATESTATUS + " as  " + DataTranslation$Table.TRANSLATESTATUS + ", " +
-            "t." + DataTranslation$Table.TRANSLATION + " as  " + DataTranslation$Table.TRANSLATION + ", " +
-
-            "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') " +
-            "as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
-            "COUNT(uuu." + DataUser$Table._ID + ") as " + GROUP_CONVERSATION_USER_COUNT_COLUMN + " " +
-
-            "FROM " + DataConversation.TABLE_NAME + " c " +
-            "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +
-            "ON m." + DataMessage$Table._ID + "=(" +
-            "SELECT " + DataMessage$Table._ID + " FROM " + DataMessage.TABLE_NAME + " mm " +
-            "WHERE mm." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-            "AND mm." + DataMessage$Table.DATE + ">c." + DataConversation$Table.CLEARTIME + " " +
-            "ORDER BY mm." + DataMessage$Table.DATE + " DESC LIMIT 1) " +
-
-            "LEFT JOIN " + DataUser.TABLE_NAME + " u " +
-            "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
-
-            "LEFT JOIN " + DataUser.TABLE_NAME + " uuuu " +
-            "ON m." + DataMessage$Table.TOID + "=uuuu." + DataUser$Table._ID + " " +
-
-            "JOIN " + DataParticipant.TABLE_NAME + " p " +
-            "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-            "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'" +
-
-            "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
-            "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
-
-            "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
-            "ON t." + DataTranslation$Table._ID + "=m." + DataMessage$Table._ID + " " +
-
-            "JOIN " + DataUser.TABLE_NAME + " uuu " +
-            "ON p." + DataParticipant$Table.USERID + "=uuu." + DataUser$Table._ID + " " +
-
-            "LEFT JOIN " + DataUser.TABLE_NAME + " uu " +
-            "ON uu." + DataUser$Table._ID + "=(" +
-            "SELECT pp." + DataParticipant$Table.USERID + " FROM " + DataParticipant.TABLE_NAME + " pp " +
-            "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-            "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) ");
+      StringBuilder query = new StringBuilder("SELECT c.*, "
+            + "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", "
+            + "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", "
+            + "m." + DataMessage$Table.TOID + " as " + DataMessage$Table.TOID + ", "
+            + "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", "
+            + "m." + DataMessage$Table.TYPE + " as " + MESSAGE_TYPE_COLUMN + ", "
+            + "u." + DataUser$Table._ID + " as " + SENDER_ID_COLUMN + ", "
+            + "u." + DataUser$Table.FIRSTNAME + " as " + SENDER_FIRST_NAME_COLUMN + ", "
+            + "u." + DataUser$Table.LASTNAME + " as " + SENDER_LAST_NAME_COLUMN + ", "
+            + "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", "
+            + "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", "
+            + "uuuu." + DataUser$Table._ID + " as " + RECIPIENT_ID_COLUMN + ", "
+            + "uuuu." + DataUser$Table.FIRSTNAME + " as " + RECIPIENT_FIRST_NAME_COLUMN + ", "
+            + "uuuu." + DataUser$Table.LASTNAME + " as " + RECIPIENT_LAST_NAME_COLUMN + ", "
+            + "IFNULL(uu." + DataUser$Table.FIRSTNAME + ",'') || ' ' || IFNULL(uu." + DataUser$Table.LASTNAME + ",'') "
+            + "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", "
+            + "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", "
+            + "t." + DataTranslation$Table.TRANSLATESTATUS + " as  " + DataTranslation$Table.TRANSLATESTATUS + ", "
+            + "t." + DataTranslation$Table.TRANSLATION + " as  " + DataTranslation$Table.TRANSLATION + ", "
+            + "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') "
+            + "as " + GROUP_CONVERSATION_NAME_COLUMN + ", "
+            + "COUNT(uuu." + DataUser$Table._ID + ") as " + GROUP_CONVERSATION_USER_COUNT_COLUMN + " "
+            + "FROM " + DataConversation.TABLE_NAME + " c "
+            + "LEFT JOIN " + DataMessage.TABLE_NAME + " m "
+            + "ON m." + DataMessage$Table._ID + "=("
+            + "SELECT " + DataMessage$Table._ID + " FROM " + DataMessage.TABLE_NAME + " mm "
+            + "WHERE mm." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " "
+            + "AND mm." + DataMessage$Table.DATE + ">c." + DataConversation$Table.CLEARTIME + " "
+            + "ORDER BY mm." + DataMessage$Table.DATE + " DESC LIMIT 1) "
+            + "LEFT JOIN " + DataUser.TABLE_NAME + " u "
+            + "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " "
+            + "LEFT JOIN " + DataUser.TABLE_NAME + " uuuu "
+            + "ON m." + DataMessage$Table.TOID + "=uuuu." + DataUser$Table._ID + " "
+            + "JOIN " + DataParticipant.TABLE_NAME + " p "
+            + "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " "
+            + "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'"
+            + "LEFT JOIN " + DataAttachment.TABLE_NAME + " a "
+            + "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " "
+            + "LEFT JOIN " + DataTranslation.TABLE_NAME + " t "
+            + "ON t." + DataTranslation$Table._ID + "=m." + DataMessage$Table._ID + " "
+            + "JOIN " + DataUser.TABLE_NAME + " uuu "
+            + "ON p." + DataParticipant$Table.USERID + "=uuu." + DataUser$Table._ID + " "
+            + "LEFT JOIN " + DataUser.TABLE_NAME + " uu "
+            + "ON uu." + DataUser$Table._ID + "=("
+            + "SELECT pp." + DataParticipant$Table.USERID + " FROM " + DataParticipant.TABLE_NAME + " pp "
+            + "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " "
+            + "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) ");
       StringBuilder whereBuilder = new StringBuilder();
 
-      boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
+      boolean onlyGroup = type != null && type.equals(ConversationType.GROUP);
       if (onlyGroup) {
          whereBuilder.append("WHERE c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
       }
 
       if (!TextUtils.isEmpty(searchQuery)) {
          whereBuilder.append(whereBuilder.length() == 0 ? "WHERE (" : "AND (");
-         String wherePattern = "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
-               "OR " + SINGLE_CONVERSATION_NAME_COLUMN + " LIKE '%" + searchQuery + "%')";
+         String wherePattern = "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' "
+               + "OR " + SINGLE_CONVERSATION_NAME_COLUMN + " LIKE '%" + searchQuery + "%')";
          whereBuilder.append(wherePattern);
       }
 
-      query.append(whereBuilder).append("GROUP BY c." + DataConversation$Table._ID + " " +
-            "HAVING c." + DataConversation$Table.TYPE + "='" + ConversationType.CHAT + "' " +
-            "OR COUNT(p." + DataParticipant$Table.ID + ") > 1 " +
-            "ORDER BY c." + DataConversation$Table.LASTACTIVEDATE + " DESC");
+      query.append(whereBuilder).append("GROUP BY c." + DataConversation$Table._ID + " "
+            + "HAVING c." + DataConversation$Table.TYPE + "='" + ConversationType.CHAT + "' "
+            + "OR COUNT(p." + DataParticipant$Table.ID + ") > 1 "
+            + "ORDER BY c." + DataConversation$Table.LASTACTIVEDATE + " DESC");
 
       RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null).withSelection(query.toString());
 
@@ -258,7 +246,12 @@ public class ConversationsDAO extends BaseDAO {
 
    public Observable<Integer> getUnreadConversationsCount() {
       String selection = "SELECT con." + DataConversation$Table._ID // cause Count(con._id) is interpreted as field for every id
-            + " FROM " + DataConversation.TABLE_NAME + " con" + " LEFT JOIN " + DataParticipant.TABLE_NAME + " par" + " ON par." + DataParticipant$Table.CONVERSATIONID + "=con." + DataConversation$Table._ID + " WHERE " + DataConversation$Table.UNREADMESSAGECOUNT + ">0" + " AND " + DataConversation$Table.STATUS + " like ? " + " GROUP BY con." + DataConversation$Table._ID + " HAVING con." + DataConversation$Table.TYPE + "=? " + " OR COUNT(par." + DataParticipant$Table.ID + ")>1 ";
+            + " FROM " + DataConversation.TABLE_NAME + " con"
+            + " LEFT JOIN " + DataParticipant.TABLE_NAME + " par" + " ON par." + DataParticipant$Table.CONVERSATIONID + "=con." + DataConversation$Table._ID
+            + " WHERE " + DataConversation$Table.UNREADMESSAGECOUNT + ">0"
+            + " AND " + DataConversation$Table.STATUS + " like ? "
+            + " GROUP BY con." + DataConversation$Table._ID
+            + " HAVING con." + DataConversation$Table.TYPE + "=? " + " OR COUNT(par." + DataParticipant$Table.ID + ")>1 ";
       String[] args = new String[]{ConversationStatus.PRESENT, ConversationType.CHAT};
 
       RxContentResolver.Query query = new RxContentResolver.Query.Builder(null).withSelection(selection)

@@ -9,10 +9,13 @@ import com.worldventures.dreamtrips.R;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ValidationUtils {
+public final class ValidationUtils {
 
    private static final String USERNAME_PATTERN = ".+";
    private static final String PASSWORD_PATTERN = ".+";
+
+   private ValidationUtils() {
+   }
 
    public static VResult isUsernameValid(String username) {
 

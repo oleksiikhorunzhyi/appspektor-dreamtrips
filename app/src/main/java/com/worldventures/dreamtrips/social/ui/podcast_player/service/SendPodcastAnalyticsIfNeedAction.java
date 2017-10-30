@@ -22,10 +22,13 @@ public class SendPodcastAnalyticsIfNeedAction extends SendProgressAnalyticsIfNee
 
    @Override
    protected PodcastAnalyticsAction chooseAnalyticAction(int currentStep, int expectedAnalyticStep) {
-      if (expectedAnalyticStep == 0)
+      if (expectedAnalyticStep == 0) {
          return PodcastAnalyticsAction.startPodcast(podcastName);
+      }
 
-      if (currentStep < expectedAnalyticStep) return null;
+      if (currentStep < expectedAnalyticStep) {
+         return null;
+      }
 
       PodcastAnalyticsAction action = null;
       switch (currentStep) {
@@ -40,6 +43,8 @@ public class SendPodcastAnalyticsIfNeedAction extends SendProgressAnalyticsIfNee
             break;
          case 4:
             action = PodcastAnalyticsAction.progress100(podcastName);
+         default:
+            break;
       }
       return action;
    }

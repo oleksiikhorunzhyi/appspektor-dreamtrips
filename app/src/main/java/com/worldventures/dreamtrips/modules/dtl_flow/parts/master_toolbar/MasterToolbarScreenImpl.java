@@ -147,7 +147,9 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       Observable<Boolean> clicks = RxView.clicks(toolbar.getLocationSearchInput())
             .flatMap(aVoid -> Observable.just(Boolean.TRUE));
 
-      Observable.merge(clicks, focus).compose(RxLifecycleAndroid.bindView(this)).subscribe(this::onPopupVisibilityChange);
+      Observable.merge(clicks, focus)
+            .compose(RxLifecycleAndroid.bindView(this))
+            .subscribe(this::onPopupVisibilityChange);
    }
 
    protected void onPopupVisibilityChange(boolean visible) {
@@ -236,12 +238,13 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
                // The user was asked to change settings, but chose not to
                getPresenter().onLocationResolutionDenied();
                break;
+            default:
+               break;
          }
          return true;
       }
       return false;
    }
-
 
 
    @Override

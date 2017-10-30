@@ -68,7 +68,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
 
-      if (friendsView == null) return;
+      if (friendsView == null) {
+         return;
+      }
       //
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -112,14 +114,18 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
       // timeout was set according to the issue:
       // https://code.google.com/p/android/issues/detail?id=77712
       handler.postDelayed(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       }, 100);
    }
 
    @Override
    public void finishLoading() {
       handler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
    }
 
@@ -134,7 +140,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override

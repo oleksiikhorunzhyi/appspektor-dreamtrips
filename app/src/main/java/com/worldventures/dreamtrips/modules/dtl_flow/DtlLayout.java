@@ -131,7 +131,9 @@ public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override

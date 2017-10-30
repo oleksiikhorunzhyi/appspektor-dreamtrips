@@ -96,7 +96,9 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    @Override
    protected void onTitleFocusChanged(boolean hasFocus) {
       super.onTitleFocusChanged(hasFocus);
-      if (!hasFocus) name.requestFocus();
+      if (!hasFocus) {
+         name.requestFocus();
+      }
    }
 
    @OnClick(R.id.image)

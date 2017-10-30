@@ -84,7 +84,9 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
    @Override
    public void setText(String text) {
       editComment.setText(text);
-      if (text != null) editComment.setSelection(text.length());
+      if (text != null) {
+         editComment.setSelection(text.length());
+      }
    }
 
    @Override

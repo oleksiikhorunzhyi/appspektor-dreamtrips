@@ -9,7 +9,7 @@ public class SettingsGroup implements Parcelable {
    private Type type;
 
    public SettingsGroup() {
-
+      //do nothing
    }
 
    public SettingsGroup(Type type, String title) {

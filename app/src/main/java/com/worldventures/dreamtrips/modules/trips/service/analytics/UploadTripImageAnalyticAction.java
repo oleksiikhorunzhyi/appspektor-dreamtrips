@@ -6,7 +6,7 @@ import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 @AnalyticsEvent(action = "member_images", trackers = AdobeTracker.TRACKER_KEY)
-public class UploadTripImageAnalyticAction extends BaseAnalyticsAction {
+public final class UploadTripImageAnalyticAction extends BaseAnalyticsAction {
 
    @Attribute("my_images") String myImages;
    @Attribute("member_images") String memberImages;

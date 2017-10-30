@@ -83,6 +83,8 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
          case R.id.action_add_to_bucket:
             getPresenter().addTripToBucket();
             return true;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -186,8 +188,9 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    @Override
    public void setup(TripModel tripModel) {
       tripDetailsViewInjector.initTripData(tripModel);
-      if (toolbarLandscape != null)
+      if (toolbarLandscape != null) {
          ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
+      }
    }
 
    @Override

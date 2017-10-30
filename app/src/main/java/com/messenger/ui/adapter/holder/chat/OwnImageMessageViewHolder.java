@@ -32,7 +32,9 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
    void onMessageErrorClicked() {
       if (dataMessage.getStatus() == MessageStatus.ERROR) {
          cellDelegate.onRetryClicked(dataMessage);
-      } else loadImage();
+      } else {
+         loadImage();
+      }
    }
 
    @Override

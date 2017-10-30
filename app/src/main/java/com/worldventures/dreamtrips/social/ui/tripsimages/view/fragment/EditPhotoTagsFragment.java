@@ -84,6 +84,8 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
             getPresenter().onDone();
             router.back();
             break;
+         default:
+            break;
       }
       return true;
    }

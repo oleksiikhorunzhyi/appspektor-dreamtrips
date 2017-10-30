@@ -110,8 +110,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       // setup empty view
       BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
 
-      if (textViewEmptyAdd != null)
+      if (textViewEmptyAdd != null) {
          textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
+      }
       recyclerView.setEmptyView(emptyView);
       // setup drag&drop with adapter
       dragDropManager = new RecyclerViewDragDropManager();
@@ -145,7 +146,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
       wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
       recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
-      if (isDragEnabled()) dragDropManager.attachRecyclerView(recyclerView);
+      if (isDragEnabled()) {
+         dragDropManager.attachRecyclerView(recyclerView);
+      }
       // set state delegate
       stateDelegate.setRecyclerView(recyclerView);
    }
@@ -214,7 +217,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       super.onMenuInflated(menu);
       menuItemAdd = menu.findItem(R.id.action_quick);
 
-      if (menuItemAdd != null) setupQuickTypeInput(menuItemAdd);
+      if (menuItemAdd != null) {
+         setupQuickTypeInput(menuItemAdd);
+      }
    }
 
    private void setupQuickTypeInput(MenuItem item) {
@@ -280,6 +285,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
          case R.id.action_popular:
             getPresenter().popularClicked();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -299,9 +306,13 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       boolean showCompleted = getPresenter().isShowCompleted();
       boolean showToDO = getPresenter().isShowToDO();
 
-      if (showCompleted && showToDO) popupMenu.getMenu().getItem(0).setChecked(true);
-      else if (showCompleted) popupMenu.getMenu().getItem(1).setChecked(true);
-      else popupMenu.getMenu().getItem(2).setChecked(true);
+      if (showCompleted && showToDO) {
+         popupMenu.getMenu().getItem(0).setChecked(true);
+      } else if (showCompleted) {
+         popupMenu.getMenu().getItem(1).setChecked(true);
+      } else {
+         popupMenu.getMenu().getItem(2).setChecked(true);
+      }
 
       popupMenu.setOnMenuItemClickListener((menuItem) -> {
          getPresenter().reloadWithFilter(menuItem.getItemId());
@@ -316,14 +327,18 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    @Override
    public void showDetailsContainer() {
       handler.post(() -> {
-         if (detailsContainer != null) detailsContainer.setVisibility(View.VISIBLE);
+         if (detailsContainer != null) {
+            detailsContainer.setVisibility(View.VISIBLE);
+         }
       });
    }
 
    @Override
    public void hideDetailContainer() {
       handler.post(() -> {
-         if (detailsContainer != null) detailsContainer.setVisibility(View.GONE);
+         if (detailsContainer != null) {
+            detailsContainer.setVisibility(View.GONE);
+         }
       });
    }
 
@@ -356,12 +371,16 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
    @Override
    public void startLoading() {
-      if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+      if (progressBar != null) {
+         progressBar.setVisibility(View.VISIBLE);
+      }
    }
 
    @Override
    public void finishLoading() {
-      if (progressBar != null) progressBar.setVisibility(View.GONE);
+      if (progressBar != null) {
+         progressBar.setVisibility(View.GONE);
+      }
       stateDelegate.restoreStateIfNeeded();
    }
 

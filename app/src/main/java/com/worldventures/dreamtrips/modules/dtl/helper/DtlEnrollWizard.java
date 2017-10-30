@@ -13,8 +13,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 
 public class DtlEnrollWizard {
 
-   private Router router;
-   private RouteCreator<DtlTransaction> routeCreator;
+   private final Router router;
+   private final RouteCreator<DtlTransaction> routeCreator;
 
    public DtlEnrollWizard(Router router, RouteCreator<DtlTransaction> routeCreator) {
       this.router = router;

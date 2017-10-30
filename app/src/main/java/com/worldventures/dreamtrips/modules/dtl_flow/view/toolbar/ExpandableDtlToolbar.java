@@ -114,7 +114,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       navigationIconResource = a.getResourceId(R.styleable.ExpandableDtlToolbar_dtlt_navigation_icon_src, DEF_NAVIGATION_ICON);
       focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.ExpandableDtlToolbar_dtlt_focused_mode, FocusedMode.UNDEFINED.id));
       a.recycle();
-      if (focusedMode != FocusedMode.UNDEFINED) collapsed = false;
+      if (focusedMode != FocusedMode.UNDEFINED) {
+         collapsed = false;
+      }
       showNavigation = !ViewUtils.isLandscapeOrientation(getContext());
    }
 
@@ -124,7 +126,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       if (collapsed) {
          locationSearchLayout.setVisibility(GONE);
          actionView.setAction(new DrawerAction(), false);
-         if (!showNavigation) actionViewLayout.setVisibility(INVISIBLE);
+         if (!showNavigation) {
+            actionViewLayout.setVisibility(INVISIBLE);
+         }
       } else {
          locationSearchLayout.setVisibility(VISIBLE);
          actionViewLayout.setVisibility(VISIBLE);
@@ -166,7 +170,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       }
    }
 
-   public void removeSearchFieldFocus(){
+   public void removeSearchFieldFocus() {
       merchantSearchInput.clearFocus();
    }
 
@@ -200,8 +204,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    }
 
    private void animateExpanding() {
-      if (showNavigation) actionView.setAction(new CloseAction());
-      else {
+      if (showNavigation) {
+         actionView.setAction(new CloseAction());
+      } else {
          actionViewLayout.setVisibility(VISIBLE);
          Animator revealNavigationAnimator = ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 0F, 1F);
          revealNavigationAnimator.start();
@@ -218,8 +223,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    }
 
    private void animateCollapsing() {
-      if (showNavigation) actionView.setAction(new DrawerAction());
-      else {
+      if (showNavigation) {
+         actionView.setAction(new DrawerAction());
+      } else {
          Animator hideNavigationAnimator = ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 1F, 0F);
          hideNavigationAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -300,7 +306,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    }
 
    public void addNavigationClickListener(@NonNull NavigationClickListener listener) {
-      if (checkListenerNull(listener)) return;
+      if (checkListenerNull(listener)) {
+         return;
+      }
       navigationClickListeners.add(listener);
    }
 
@@ -309,7 +317,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    }
 
    public void addNavigationControlClickListener(@NonNull NavigationControlListener listener) {
-      if (checkListenerNull(listener)) return;
+      if (checkListenerNull(listener)) {
+         return;
+      }
       navigationControlListeners.add(listener);
    }
 
@@ -318,7 +328,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    }
 
    public void addCollapseListener(@NonNull CollapseListener listener) {
-      if (checkListenerNull(listener)) return;
+      if (checkListenerNull(listener)) {
+         return;
+      }
       collapseListeners.add(listener);
    }
 
@@ -327,7 +339,9 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    }
 
    public void addExpandListener(@NonNull ExpandListener listener) {
-      if (checkListenerNull(listener)) return;
+      if (checkListenerNull(listener)) {
+         return;
+      }
       expandListeners.add(listener);
    }
 

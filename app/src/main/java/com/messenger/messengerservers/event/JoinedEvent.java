@@ -3,8 +3,9 @@ package com.messenger.messengerservers.event;
 import com.messenger.messengerservers.model.Participant;
 
 public class JoinedEvent {
-   private Participant participant;
-   private boolean isOnline;
+
+   private final Participant participant;
+   private final boolean isOnline;
 
    public JoinedEvent(Participant participant, boolean isOnline) {
       this.participant = participant;

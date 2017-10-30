@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AddToStorageOperation<T> implements ListStorageOperation<T> {
 
-   private List<T> operationItems;
+   private final List<T> operationItems;
 
    public AddToStorageOperation(List<T> items) {
       this.operationItems = items;

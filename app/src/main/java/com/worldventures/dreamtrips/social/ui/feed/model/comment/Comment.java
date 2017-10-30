@@ -13,28 +13,24 @@ import java.util.Date;
 
 public class Comment implements Parcelable, Serializable, UidItem, TranslatableItem {
 
-   private static final String TEXT_KEY = "description";
-
    private String uid;
-   private String parent_id;
-   private String originId; // Parent entity uid
+   private String parentId;
    private String text;
    private User user;
    private Date createdAt;
-   private Date updatedAt;
    private boolean update;
-   private String company;
    private String language;
 
    private transient String translation;
    private transient boolean translated;
 
    public Comment() {
+      //do nothing
    }
 
    protected Comment(Parcel in) {
       uid = in.readString();
-      parent_id = in.readString();
+      parentId = in.readString();
       text = in.readString();
       user = in.readParcelable(User.class.getClassLoader());
       language = in.readString();
@@ -52,20 +48,12 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
       }
    };
 
-   public void setCompany(String company) {
-      this.company = company;
-   }
-
    public void setUid(String uid) {
       this.uid = uid;
    }
 
-   public void setParentId(String parent_id) {
-      this.parent_id = parent_id;
-   }
-
-   public void setPostId(String originId) {
-      this.originId = originId;
+   public void setParentId(String parentId) {
+      this.parentId = parentId;
    }
 
    public void setText(String text) {
@@ -74,10 +62,6 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
 
    public void setUser(User user) {
       this.user = user;
-   }
-
-   public void setUpdatedAt(Date updatedAt) {
-      this.updatedAt = updatedAt;
    }
 
    public void setUpdate(boolean update) {
@@ -125,7 +109,7 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
    @Override
    public void writeToParcel(Parcel parcel, int i) {
       parcel.writeString(uid);
-      parcel.writeString(parent_id);
+      parcel.writeString(parentId);
       parcel.writeString(text);
       parcel.writeParcelable(user, i);
       parcel.writeString(language);
@@ -133,8 +117,12 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       Comment comment = (Comment) o;
 

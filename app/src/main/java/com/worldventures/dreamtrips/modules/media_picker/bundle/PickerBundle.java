@@ -75,9 +75,13 @@ public class PickerBundle implements Parcelable {
 
    public static final Creator<PickerBundle> CREATOR = new Creator<PickerBundle>() {
       @Override
-      public PickerBundle createFromParcel(Parcel source) {return new PickerBundle(source);}
+      public PickerBundle createFromParcel(Parcel source) {
+         return new PickerBundle(source);
+      }
 
       @Override
-      public PickerBundle[] newArray(int size) {return new PickerBundle[size];}
+      public PickerBundle[] newArray(int size) {
+         return new PickerBundle[size];
+      }
    };
 }

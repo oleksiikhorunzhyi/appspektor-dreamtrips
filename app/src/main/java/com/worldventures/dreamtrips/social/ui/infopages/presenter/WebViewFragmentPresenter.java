@@ -28,7 +28,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    @Override
    public void onResume() {
       super.onResume();
-      if (inErrorState) load();
+      if (inErrorState) {
+         load();
+      }
    }
 
    public void noInternetConnection() {
@@ -51,7 +53,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
       // TODO Check if view is still attached.
       // To improve this and remove check we need to refactor our StaticInfoFragment,
       // saving its state and detecting if page was already loaded
-      if (view != null) view.hideLoadingProgress();
+      if (view != null) {
+         view.hideLoadingProgress();
+      }
    }
 
    public void setInErrorState(boolean inErrorState) {
@@ -80,6 +84,8 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
             break;
          case ENROLL_MERCHANT:
             analyticsInteractor.analyticsActionPipe().send(new EnrollMerchantViewedAction(getAccountUserId()));
+            break;
+         default:
             break;
       }
    }

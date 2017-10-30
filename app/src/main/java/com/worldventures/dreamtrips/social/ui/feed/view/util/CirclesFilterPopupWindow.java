@@ -57,7 +57,9 @@ public class CirclesFilterPopupWindow {
          String circleName = circle.getName();
          paint.getTextBounds(circleName, 0, circleName.length(), bounds);
          int width = bounds.width();
-         if (width > maxWidth) maxWidth = width;
+         if (width > maxWidth) {
+            maxWidth = width;
+         }
       }
 
       width = maxWidth + context.getResources().getDimensionPixelOffset(R.dimen.popup_filter_item_extra_space);
@@ -82,7 +84,9 @@ public class CirclesFilterPopupWindow {
    private void checkCircle() {
       ListView listView = listPopupWindow.getListView();
 
-      if (listView == null) return;
+      if (listView == null) {
+         return;
+      }
 
       for (int position = 0; position < adapter.getCount(); position++) {
          if (TextUtils.equals(adapter.getItem(position).getId(), checkedCircle.getId())) {

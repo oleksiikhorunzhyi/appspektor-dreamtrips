@@ -20,7 +20,6 @@ abstract class BaseTest {
          RxJavaSchedulerInitializer.init()
       }
 
-
       fun <V : RxLifecycleView> mockScreen(clazz: Class<V>) : V {
          val screen : V = Mockito.mock(clazz)
          Mockito.`when`(screen.bindUntilDetach<Any>()).thenReturn(RxLifecycle.bind(BehaviorSubject.create<Any>()))

@@ -26,8 +26,6 @@ class FirmwareInteractorSpec : BaseSpec({
 
          deviceStore.batteryLevel = "100"
       }
-
-
    }
 }) {
    companion object {

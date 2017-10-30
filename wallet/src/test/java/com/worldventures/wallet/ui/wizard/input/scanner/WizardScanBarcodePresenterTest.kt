@@ -1,6 +1,10 @@
 package com.worldventures.wallet.ui.wizard.input.scanner
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.ui.util.permission.PermissionDispatcher
 import com.worldventures.core.ui.util.permission.PermissionsResult
 import com.worldventures.wallet.domain.entity.ImmutableSmartCardStatus
@@ -35,7 +39,7 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
 
    override fun setup() {
       screen = mockScreen(WizardScanBarcodeScreen::class.java)
-      val deviceConnectionDelegate : WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
+      val deviceConnectionDelegate: WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       permissionDispatcher = mock()
       inputBarcodeDelegate = mock()
 

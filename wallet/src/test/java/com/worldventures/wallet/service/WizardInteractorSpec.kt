@@ -2,7 +2,11 @@ package com.worldventures.wallet.service
 
 import android.content.Context
 import android.test.mock.MockContext
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.janet.cache.CacheResultWrapper
 import com.worldventures.core.janet.cache.storage.ActionStorage
@@ -21,7 +25,11 @@ import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
-import com.worldventures.wallet.model.*
+import com.worldventures.wallet.model.TestSmartCard
+import com.worldventures.wallet.model.TestSmartCardDetails
+import com.worldventures.wallet.model.TestSmartCardUser
+import com.worldventures.wallet.model.TestTermsAndConditions
+import com.worldventures.wallet.model.TestUpdateCardUserData
 import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
@@ -216,11 +224,9 @@ class WizardInteractorSpec : BaseSpec({
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1))).subscribe()
       }
 
-
       fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
 
       fun createSettingsInteractor(janet: Janet) = SettingsInteractor(SessionActionPipeCreator(janet))
-
 
       fun createPropertiesProvider(): SystemPropertiesProvider {
          val propertiesProvider: SystemPropertiesProvider = mock()

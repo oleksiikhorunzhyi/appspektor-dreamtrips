@@ -2,11 +2,15 @@ package com.worldventures.wallet.service
 
 import android.content.Context
 import android.test.mock.MockContext
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.janet.cache.storage.ActionStorage
-import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.modules.settings.service.SettingsInteractor
+import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.wallet.BaseSpec
 import com.worldventures.wallet.domain.entity.SmartCard

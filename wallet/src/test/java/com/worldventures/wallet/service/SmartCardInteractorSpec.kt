@@ -9,9 +9,15 @@ import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.janet.cache.CacheResultWrapper
 import com.worldventures.core.janet.cache.storage.ActionStorage
 import com.worldventures.core.service.analytics.AnalyticsInteractor
-import com.worldventures.core.test.AssertUtil.*
+import com.worldventures.core.test.AssertUtil.assertActionFail
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.wallet.BaseSpec
-import com.worldventures.wallet.domain.converter.*
+import com.worldventures.wallet.domain.converter.SmartCardFinancialServiceToWalletFinancialServiceConverter
+import com.worldventures.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
+import com.worldventures.wallet.domain.converter.SmartCardRecordTypeToWalletRecordTypeConverter
+import com.worldventures.wallet.domain.converter.WalletFinancialServiceToSmartCardFinancialServiceConverter
+import com.worldventures.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
+import com.worldventures.wallet.domain.converter.WalletRecordTypeToSmartCardRecordTypeConverter
 import com.worldventures.wallet.domain.entity.record.FinancialService
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.domain.entity.record.RecordType
@@ -51,7 +57,9 @@ import io.techery.janet.smartcard.mock.client.MockSmartCardClient
 import io.techery.janet.smartcard.model.ImmutableConnectionParams
 import io.techery.mappery.Mappery
 import io.techery.mappery.MapperyContext
-import org.jetbrains.spek.api.dsl.*
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.it
 import org.junit.Assert
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
@@ -381,7 +389,7 @@ class SmartCardInteractorSpec : BaseSpec({
          return testSubscriber
       }
 
-      fun fetchCardListOfCard(predicate: (command: RecordListCommand) -> Boolean): Unit {
+      fun fetchCardListOfCard(predicate: (command: RecordListCommand) -> Boolean) {
          val testSubscriber: TestSubscriber<ActionState<RecordListCommand>> = TestSubscriber()
 
          recordInteractor.cardsListPipe()

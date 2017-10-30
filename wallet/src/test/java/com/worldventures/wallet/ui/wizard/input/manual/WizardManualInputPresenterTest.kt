@@ -1,6 +1,12 @@
 package com.worldventures.wallet.ui.wizard.input.manual
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.eq
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand
 import com.worldventures.wallet.domain.entity.ImmutableSmartCardStatus
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
@@ -18,8 +24,8 @@ import rx.lang.kotlin.PublishSubject
 
 class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen, WizardManualInputPresenter>() {
 
-   lateinit var screen : WizardManualInputScreen
-   lateinit var presenter : WizardManualInputPresenter
+   lateinit var screen: WizardManualInputScreen
+   lateinit var presenter: WizardManualInputPresenter
    lateinit var inputBarcodeDelegate: InputBarcodeDelegate
 
    private val inputSubject = PublishSubject<CharSequence>()
@@ -36,7 +42,7 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
          ViewPresenterBinder(screen, presenter)
 
    override fun setup() {
-      val deviceConnectionDelegate : WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
+      val deviceConnectionDelegate: WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
 
       screen = mockScreen(WizardManualInputScreen::class.java)

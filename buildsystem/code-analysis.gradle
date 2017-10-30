@@ -3,12 +3,6 @@ apply plugin: "pmd"
 apply plugin: "io.gitlab.arturbosch.detekt"
 apply plugin: "org.jmailen.kotlinter"
 
-//check.dependsOn 'analizeCode'
-
-task analizeCode() {
-   dependsOn 'checkstyle', 'pmd', 'lintKotlin', 'detektCheck'
-}
-
 checkstyle {
    toolVersion = "8.3"
 }
@@ -87,6 +81,7 @@ detekt {
    }
 }
 
+// gradle plugin for https://ktlint.github.io/
 kotlinter {
    ignoreFailures = false
    indentSize = 3

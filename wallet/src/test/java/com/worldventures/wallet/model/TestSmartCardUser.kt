@@ -4,7 +4,7 @@ import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.SmartCardUserPhone
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto
 
-class TestSmartCardUser: SmartCardUser() {
+class TestSmartCardUser : SmartCardUser() {
    override fun phoneNumber(): SmartCardUserPhone? = null
 
    override fun firstName(): String = "USER FIRST NAME"

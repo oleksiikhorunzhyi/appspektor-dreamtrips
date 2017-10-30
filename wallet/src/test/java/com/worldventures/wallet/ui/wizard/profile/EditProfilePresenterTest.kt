@@ -1,8 +1,17 @@
 package com.worldventures.wallet.ui.wizard.profile
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.anyOrNull
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.wallet.domain.entity.ImmutableSmartCardUser
-import com.worldventures.wallet.service.*
+import com.worldventures.wallet.service.SmartCardInteractor
+import com.worldventures.wallet.service.SmartCardUserDataInteractor
+import com.worldventures.wallet.service.WalletAnalyticsInteractor
+import com.worldventures.wallet.service.WalletSocialInfoProvider
+import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.SetupUserDataCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand

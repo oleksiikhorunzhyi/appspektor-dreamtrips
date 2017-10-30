@@ -13,7 +13,7 @@ class TestFirmwareUpdateData(
       private val currentFirmwareVersion: SmartCardFirmware,
       private val firmwareInfo: FirmwareInfo? = TestFirmwareInfo(),
       private val firmwareFile: File? = null
-): FirmwareUpdateData() {
+) : FirmwareUpdateData() {
 
    override fun updateAvailable() = updateAvailable
 

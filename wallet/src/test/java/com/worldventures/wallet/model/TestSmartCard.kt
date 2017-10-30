@@ -7,7 +7,7 @@ open class TestSmartCard(private val smartCardId: String) : SmartCard() {
    var deviceId: String = "Android1234567890device"
    var cardStatus: CardStatus = SmartCard.CardStatus.ACTIVE
 
-   constructor(smartCardId: String, deviceId: String, cardStatus: CardStatus) : this(smartCardId){
+   constructor(smartCardId: String, deviceId: String, cardStatus: CardStatus) : this(smartCardId) {
       this.deviceId = deviceId
       this.cardStatus = cardStatus
    }

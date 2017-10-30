@@ -1,7 +1,7 @@
 package com.worldventures.wallet.model
 
 import com.worldventures.wallet.domain.entity.SmartCardDetails
-import java.util.*
+import java.util.Date
 
 open class TestLocalSmartCardDetails(private val smartCardId: Long) : SmartCardDetails {
 

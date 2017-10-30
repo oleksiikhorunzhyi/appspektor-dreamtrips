@@ -1,7 +1,7 @@
 package com.worldventures.wallet.model
 
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails
-import java.util.*
+import java.util.Date
 
 open class TestSmartCardDetails(private val smartCardId: Long) : SmartCardDetails {
 

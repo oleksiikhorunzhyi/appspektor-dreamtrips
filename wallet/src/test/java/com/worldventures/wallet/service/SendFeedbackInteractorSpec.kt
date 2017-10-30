@@ -70,8 +70,6 @@ class SendFeedbackInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(AppVersionNameBuilder::class.java) { versionBuilder }
          daggerCommandActionService.registerProvider(DeviceInfoProvider::class.java) { deviceInfoProvider }
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java) { smartCardInteractor }
-
-
          feedbackInteractor = FeedbackInteractor(SessionActionPipeCreator(janet))
       }
 

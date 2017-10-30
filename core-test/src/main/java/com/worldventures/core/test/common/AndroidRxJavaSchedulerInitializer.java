@@ -5,7 +5,7 @@ import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.schedulers.Schedulers;
 
-public class AndroidRxJavaSchedulerInitializer extends RxAndroidSchedulersHook {
+public final class AndroidRxJavaSchedulerInitializer extends RxAndroidSchedulersHook {
 
    static {
       RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -16,7 +16,10 @@ public class AndroidRxJavaSchedulerInitializer extends RxAndroidSchedulersHook {
       });
    }
 
-   public static void init() {
+   private AndroidRxJavaSchedulerInitializer() {
+   }
 
+   public static void init() {
+      //do nothing
    }
 }

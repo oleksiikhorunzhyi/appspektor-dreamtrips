@@ -8,5 +8,10 @@ public final class RxJavaSchedulerInitializer {
       RxJavaHooks.setOnIOScheduler(scheduler -> Schedulers.immediate());
    }
 
-   public static void init() {}
+   private RxJavaSchedulerInitializer() {
+   }
+
+   public static void init() {
+      //do nothing
+   }
 }

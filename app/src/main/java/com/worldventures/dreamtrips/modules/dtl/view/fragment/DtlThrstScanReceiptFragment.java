@@ -39,8 +39,6 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
    public void onActivityCreated(Bundle savedInstanceState) {
       super.onActivityCreated(savedInstanceState);
       ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setNavigationIcon(R.drawable.ic_close_light);
-      ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setNavigationOnClickListener(v -> getActivity()
-            .onBackPressed());
    }
 
    @Override
@@ -113,8 +111,8 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
    public void openThrstFlow(Merchant merchant, String receiptUrl, String token, String transactionId) {
       router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forFragment()
             .containerId(R.id.container_main)
-            .backStackEnabled(false)
-            .clearBackStack(true)
+            .backStackEnabled(true)
+            .clearBackStack(false)
             .data(new ThrstFlowBundle(merchant, receiptUrl, token, transactionId))
             .fragmentManager(getFragmentManager())
             .build());

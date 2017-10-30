@@ -95,7 +95,9 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
    }
 
    private void calibrateVideoDimensions() {
-      if (isInEditMode()) return;
+      if (isInEditMode()) {
+         return;
+      }
 
       try {
          MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
@@ -117,7 +119,9 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
          int containerHeight = getMeasuredHeight();
          int textureHeight = textureView.getMeasuredHeight();
 
-         if (textureHeight >= containerHeight) return;
+         if (textureHeight >= containerHeight) {
+            return;
+         }
 
          int marginTop = containerHeight - textureHeight;
          ((MarginLayoutParams) textureView.getLayoutParams()).topMargin = marginTop;

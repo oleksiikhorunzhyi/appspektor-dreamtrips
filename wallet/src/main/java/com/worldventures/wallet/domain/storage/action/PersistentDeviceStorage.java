@@ -12,7 +12,7 @@ import io.techery.janet.smartcard.model.FirmwareVersion;
 import io.techery.janet.smartcard.model.Record;
 import io.techery.janet.smartcard.model.User;
 
-public class PersistentDeviceStorage implements DeviceStorage {
+public final class PersistentDeviceStorage implements DeviceStorage {
 
    private final WalletStorage db;
    private final SimpleDeviceStorage memoryStorage;

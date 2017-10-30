@@ -45,7 +45,7 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
       final Button btnNext = view.findViewById(R.id.btn_next);
       btnNext.setOnClickListener(nextBtn -> getPresenter().navigateNext());
       final TextView tvCardNotTurnOn = view.findViewById(R.id.tv_card_not_turn_on);
-      tvCardNotTurnOn.setOnClickListener(cardNotTurnOnTextView ->getPresenter().cantTurnOnSmartCard());
+      tvCardNotTurnOn.setOnClickListener(cardNotTurnOnTextView -> getPresenter().cantTurnOnSmartCard());
    }
 
    @Override
@@ -64,7 +64,9 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
                .build();
       }
 
-      if (!dontTurnOnCardDialog.isShowing()) dontTurnOnCardDialog.show();
+      if (!dontTurnOnCardDialog.isShowing()) {
+         dontTurnOnCardDialog.show();
+      }
    }
 
    @Override
@@ -77,7 +79,9 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (dontTurnOnCardDialog != null) dontTurnOnCardDialog.dismiss();
+      if (dontTurnOnCardDialog != null) {
+         dontTurnOnCardDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

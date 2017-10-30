@@ -37,14 +37,16 @@ public class AndroidBleService implements WalletBluetoothService {
    @Override
    public Observable<Boolean> observeEnablesState() {
       BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-      if (bluetoothAdapter == null) return Observable.empty();
+      if (bluetoothAdapter == null) {
+         return Observable.empty();
+      }
 
       RxBluetoothAdapter adapter = new RxBluetoothAdapter(appContext);
       return Observable.create(adapter)
             .doOnUnsubscribe(adapter::release);
    }
 
-   private static class RxBluetoothAdapter implements Observable.OnSubscribe<Boolean> {
+   private final static class RxBluetoothAdapter implements Observable.OnSubscribe<Boolean> {
 
       private final Context appContext;
       private BroadcastReceiver broadcastReceiver;

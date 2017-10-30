@@ -7,7 +7,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class SyncRecordStatusCommand extends CachedValueCommand<SyncRecordsStatus> {
+public final class SyncRecordStatusCommand extends CachedValueCommand<SyncRecordsStatus> {
 
    private SyncRecordStatusCommand(Func1<SyncRecordsStatus, SyncRecordsStatus> func) {
       super(func);
@@ -15,7 +15,9 @@ public class SyncRecordStatusCommand extends CachedValueCommand<SyncRecordsStatu
 
    public static SyncRecordStatusCommand fetch() {
       return new SyncRecordStatusCommand(syncRecordsStatus -> {
-         if (syncRecordsStatus == null) return SyncRecordsStatus.SUCCESS;
+         if (syncRecordsStatus == null) {
+            return SyncRecordsStatus.SUCCESS;
+         }
          return syncRecordsStatus;
       });
    }

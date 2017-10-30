@@ -1,6 +1,7 @@
 apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-core-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 apply plugin: 'java-library'
 
 def coreDeps = project.ext.coreDependencies

@@ -10,11 +10,8 @@ import android.widget.Toast;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.service.RecordInteractor;
-import com.worldventures.wallet.service.WizardInteractor;
 import com.worldventures.wallet.service.command.RecordListCommand;
 import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
-import com.worldventures.wallet.service.provisioning.ProvisioningModeCommand;
-import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsScreen;
@@ -24,9 +21,7 @@ import java.util.List;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 
 public class WalletFeatureHelperRelease implements WalletFeatureHelper {

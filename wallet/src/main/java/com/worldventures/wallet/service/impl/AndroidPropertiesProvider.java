@@ -41,7 +41,9 @@ public class AndroidPropertiesProvider implements SystemPropertiesProvider {
    }
 
    private String capitalize(String name) {
-      if (TextUtils.isEmpty(name)) return "";
+      if (TextUtils.isEmpty(name)) {
+         return "";
+      }
 
       char firstLetter = name.charAt(0);
       return Character.isUpperCase(firstLetter) ? name : Character.toUpperCase(firstLetter) + name.substring(1);
@@ -59,12 +61,19 @@ public class AndroidPropertiesProvider implements SystemPropertiesProvider {
       String pseudoDeviceId = getPseudoDeviceId();
       String serialNumber = Build.SERIAL;
 
-      if (androidId != null) sb.append(androidId);
-      if (pseudoDeviceId != null) sb.append(pseudoDeviceId);
-      if (serialNumber != null && !TextUtils.equals(serialNumber, "unknown")) sb.append(serialNumber);
+      if (androidId != null) {
+         sb.append(androidId);
+      }
+      if (pseudoDeviceId != null) {
+         sb.append(pseudoDeviceId);
+      }
+      if (serialNumber != null && !TextUtils.equals(serialNumber, "unknown")) {
+         sb.append(serialNumber);
+      }
 
-      if (sb.length() == 0)
+      if (sb.length() == 0) {
          throw new RuntimeException("Unique device indentifier wasn't obtained");
+      }
 
       return sb.toString();
    }
@@ -73,14 +82,14 @@ public class AndroidPropertiesProvider implements SystemPropertiesProvider {
    private String getPseudoDeviceId() {
       String result = null;
       try {
-         result = "35" + //we make this look like a valid IMEI
-               Build.BOARD.length() % 10 + Build.BRAND.length() % 10 +
-               Build.CPU_ABI.length() % 10 + Build.DEVICE.length() % 10 +
-               Build.DISPLAY.length() % 10 + Build.HOST.length() % 10 +
-               Build.ID.length() % 10 + Build.MANUFACTURER.length() % 10 +
-               Build.MODEL.length() % 10 + Build.PRODUCT.length() % 10 +
-               Build.TAGS.length() % 10 + Build.TYPE.length() % 10 +
-               Build.USER.length() % 10; //13 digits
+         result = "35" //we make this look like a valid IMEI
+               + Build.BOARD.length() % 10 + Build.BRAND.length() % 10
+               + Build.CPU_ABI.length() % 10 + Build.DEVICE.length() % 10
+               + Build.DISPLAY.length() % 10 + Build.HOST.length() % 10
+               + Build.ID.length() % 10 + Build.MANUFACTURER.length() % 10
+               + Build.MODEL.length() % 10 + Build.PRODUCT.length() % 10
+               + Build.TAGS.length() % 10 + Build.TYPE.length() % 10
+               + Build.USER.length() % 10; //13 digits
       } catch (Exception exception) { // in case china devices
          Timber.e(exception, "Error while fetching PseudoDeviceId");
       }

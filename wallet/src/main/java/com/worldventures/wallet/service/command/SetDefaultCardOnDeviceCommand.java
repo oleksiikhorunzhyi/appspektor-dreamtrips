@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
 import static com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetDefaultCardOnDeviceCommand extends Command<String> implements InjectableAction {
+public final class SetDefaultCardOnDeviceCommand extends Command<String> implements InjectableAction {
 
    @Inject @Named(JANET_WALLET) Janet janet;
    @Inject RecordInteractor recordInteractor;

@@ -1,7 +1,7 @@
 package com.worldventures.wallet.analytics.oncard.action;
 
-import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
 
@@ -30,6 +30,8 @@ class SmartCardPinAction extends SmartCardAnalyticsAction {
             break;
          case AnalyticsLog.PIN_RESET:
             attributeMap.put("ocpinreset", "1");
+            break;
+         default:
             break;
       }
    }

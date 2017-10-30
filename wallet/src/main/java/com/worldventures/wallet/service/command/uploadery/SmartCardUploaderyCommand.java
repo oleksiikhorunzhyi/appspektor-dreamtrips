@@ -1,11 +1,11 @@
 package com.worldventures.wallet.service.command.uploadery;
 
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.infopages.StaticPageProviderConfig;
 import com.worldventures.core.service.UriPathProvider;
 import com.worldventures.core.service.command.BaseUploadImageCommand;
 import com.worldventures.core.utils.HttpUploaderyException;
 import com.worldventures.dreamtrips.api.uploadery.UploadSmartCardImageHttpAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.wallet.util.MaltyPartImageBodyCreator;
 

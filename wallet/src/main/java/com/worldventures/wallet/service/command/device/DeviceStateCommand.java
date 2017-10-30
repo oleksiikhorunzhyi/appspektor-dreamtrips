@@ -13,7 +13,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class DeviceStateCommand extends Command<SmartCardStatus> implements CachedAction<SmartCardStatus> {
+public final class DeviceStateCommand extends Command<SmartCardStatus> implements CachedAction<SmartCardStatus> {
 
    private final Func1<SmartCardStatus, SmartCardStatus> func;
    private SmartCardStatus cachedSmartCardStatus;
@@ -52,7 +52,9 @@ public class DeviceStateCommand extends Command<SmartCardStatus> implements Cach
 
    @Override
    protected void run(CommandCallback<SmartCardStatus> callback) throws Throwable {
-      if (cachedSmartCardStatus == null) cachedSmartCardStatus = createDefault();
+      if (cachedSmartCardStatus == null) {
+         cachedSmartCardStatus = createDefault();
+      }
       SmartCardStatus newSmartCardStatus = func.call(cachedSmartCardStatus);
       callback.onSuccess(newSmartCardStatus);
    }

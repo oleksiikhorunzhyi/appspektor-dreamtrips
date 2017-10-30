@@ -3,10 +3,10 @@ package com.worldventures.wallet.service.command.profile;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto;
@@ -82,7 +82,11 @@ public class UpdateSmartCardUserCommand extends Command<SmartCardUser> implement
             changedFields.lastName());
    }
 
-   private void validateNetwork() {if (!networkService.isAvailable()) throw new NetworkUnavailableException();}
+   private void validateNetwork() {
+      if (!networkService.isAvailable()) {
+         throw new NetworkUnavailableException();
+      }
+   }
 
    private Observable<SmartCardUser> uploadData(String smartCardId, SmartCardUser user) {
       return pushToSmartCard(smartCardId, user)

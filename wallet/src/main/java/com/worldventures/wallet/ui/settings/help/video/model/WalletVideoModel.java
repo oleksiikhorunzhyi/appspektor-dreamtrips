@@ -21,7 +21,9 @@ public class WalletVideoModel extends BaseViewModel<VideoTypeFactory> implements
    }
 
    @Override
-   public int describeContents() { return 0; }
+   public int describeContents() {
+      return 0;
+   }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
@@ -46,10 +48,14 @@ public class WalletVideoModel extends BaseViewModel<VideoTypeFactory> implements
 
    public static final Creator<WalletVideoModel> CREATOR = new Creator<WalletVideoModel>() {
       @Override
-      public WalletVideoModel createFromParcel(Parcel source) {return new WalletVideoModel(source);}
+      public WalletVideoModel createFromParcel(Parcel source) {
+         return new WalletVideoModel(source);
+      }
 
       @Override
-      public WalletVideoModel[] newArray(int size) {return new WalletVideoModel[size];}
+      public WalletVideoModel[] newArray(int size) {
+         return new WalletVideoModel[size];
+      }
    };
 
    @Override

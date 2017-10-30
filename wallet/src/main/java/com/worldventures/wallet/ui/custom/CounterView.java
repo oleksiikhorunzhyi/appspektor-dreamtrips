@@ -155,7 +155,9 @@ public class CounterView extends LinearLayout implements TextSwitcher.ViewFactor
    private void actionPlusCount() {
       if (count + 1 <= maxValue) {
          count++;
-         if (countChangeListener != null) countChangeListener.onCountChanged(minValue, maxValue, count);
+         if (countChangeListener != null) {
+            countChangeListener.onCountChanged(minValue, maxValue, count);
+         }
          updateDisplay();
       }
    }
@@ -163,7 +165,9 @@ public class CounterView extends LinearLayout implements TextSwitcher.ViewFactor
    private void actionMinusCount() {
       if (count - 1 >= minValue) {
          count--;
-         if (countChangeListener != null) countChangeListener.onCountChanged(minValue, maxValue, count);
+         if (countChangeListener != null) {
+            countChangeListener.onCountChanged(minValue, maxValue, count);
+         }
          updateDisplay();
       }
    }

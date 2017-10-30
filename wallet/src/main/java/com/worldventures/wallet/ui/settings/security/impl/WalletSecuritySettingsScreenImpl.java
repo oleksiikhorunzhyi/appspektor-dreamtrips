@@ -177,7 +177,9 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
                .positiveText(R.string.wallet_ok)
                .build();
       }
-      if (!noConnectionDialog.isShowing()) noConnectionDialog.show();
+      if (!noConnectionDialog.isShowing()) {
+         noConnectionDialog.show();
+      }
    }
 
    @Override
@@ -216,7 +218,9 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (noConnectionDialog != null) noConnectionDialog.dismiss();
+      if (noConnectionDialog != null) {
+         noConnectionDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

@@ -56,7 +56,9 @@ public class WalletCheckWidget extends RelativeLayout {
 
    private void init(Context context, @Nullable AttributeSet attrs) {
       final View view = LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_check, this);
-      if (isInEditMode()) return;
+      if (isInEditMode()) {
+         return;
+      }
 
       ivStatusIcon = view.findViewById(R.id.check_icon_status);
       ivIcon = view.findViewById(R.id.check_icon);
@@ -88,7 +90,9 @@ public class WalletCheckWidget extends RelativeLayout {
 
    public void setIconDrawable(Drawable drawable) {
       PorterDuffColorFilter colorFiler = checked ? checkedFilter : uncheckedFilter;
-      if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && colorFiler == drawable.getColorFilter()) return;
+      if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP && colorFiler == drawable.getColorFilter()) {
+         return;
+      }
       drawable.clearColorFilter();
       drawable.setColorFilter(colorFiler);
       ivIcon.setImageDrawable(drawable);
@@ -96,7 +100,9 @@ public class WalletCheckWidget extends RelativeLayout {
    }
 
    public void setChecked(boolean checked) {
-      if (this.checked != null && this.checked == checked) return;
+      if (this.checked != null && this.checked == checked) {
+         return;
+      }
       this.checked = checked;
       updateStatus();
    }

@@ -13,9 +13,6 @@ import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.wizard.pin.complete.WalletPinIsSetPresenter;
 import com.worldventures.wallet.ui.wizard.pin.complete.WalletPinIsSetScreen;
 
-import io.techery.janet.helper.ActionStateSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
-
 public class WalletPinIsSetPresenterImpl extends WalletPresenterImpl<WalletPinIsSetScreen> implements WalletPinIsSetPresenter {
 
    private final WalletAnalyticsInteractor analyticsInteractor;

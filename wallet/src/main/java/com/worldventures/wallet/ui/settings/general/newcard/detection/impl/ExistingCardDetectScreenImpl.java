@@ -74,7 +74,7 @@ public class ExistingCardDetectScreenImpl extends WalletBaseController<ExistingC
             ErrorViewFactory.<WipeSmartCardDataCommand>builder()
                   .addProvider(new SmartCardErrorViewProvider<>(getContext()))
                   .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
-                        command -> unassignButton.performClick(), command -> { /*nothing*/}))
+                        command -> unassignButton.performClick(), command -> { /*nothing*/ }))
                   .build()
       );
    }

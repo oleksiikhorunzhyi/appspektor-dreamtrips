@@ -1,7 +1,7 @@
 package com.worldventures.wallet.service.firmware.command;
 
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareVersions;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
 
 import java.io.File;

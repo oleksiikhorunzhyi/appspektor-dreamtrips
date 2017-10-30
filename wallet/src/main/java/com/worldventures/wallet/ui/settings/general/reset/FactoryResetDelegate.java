@@ -92,7 +92,7 @@ public abstract class FactoryResetDelegate {
 
    protected abstract void handleSuccessResult();
 
-   private static class GeneralFactoryResetDelegate extends FactoryResetDelegate {
+   private final static class GeneralFactoryResetDelegate extends FactoryResetDelegate {
 
       private GeneralFactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
             WalletAnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {
@@ -132,7 +132,7 @@ public abstract class FactoryResetDelegate {
       }
    }
 
-   private static class NewCardFactoryResetDelegate extends FactoryResetDelegate {
+   private final static class NewCardFactoryResetDelegate extends FactoryResetDelegate {
 
       private NewCardFactoryResetDelegate(FactoryResetInteractor factoryResetInteractor,
             WalletAnalyticsInteractor analyticsInteractor, Navigator navigator, PinMode pinMode) {

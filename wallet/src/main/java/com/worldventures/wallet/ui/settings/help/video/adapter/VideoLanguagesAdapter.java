@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.worldventures.wallet.R;
 import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.wallet.R;
 
 import java.util.List;
 

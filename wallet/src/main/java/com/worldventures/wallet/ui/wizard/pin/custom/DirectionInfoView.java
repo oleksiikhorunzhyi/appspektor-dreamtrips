@@ -33,7 +33,9 @@ public class DirectionInfoView extends LinearLayout {
 
    private void init(Context context, AttributeSet attrs) {
       final View view = inflate(context, R.layout.wallet_custom_view_guesture_info, this);
-      if (isInEditMode()) return;
+      if (isInEditMode()) {
+         return;
+      }
       tvTitle = view.findViewById(R.id.tv_title);
       ivImage = view.findViewById(R.id.iv_image);
       if (attrs != null) {

@@ -38,12 +38,18 @@ public class PaymentTerminalViewModel extends BaseObservable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       PaymentTerminalViewModel that = (PaymentTerminalViewModel) o;
 
-      if (isMagneticSwipe != that.isMagneticSwipe) return false;
+      if (isMagneticSwipe != that.isMagneticSwipe) {
+         return false;
+      }
       return terminalNameModel != null ? terminalNameModel.equals(that.terminalNameModel) : that.terminalNameModel == null;
 
    }

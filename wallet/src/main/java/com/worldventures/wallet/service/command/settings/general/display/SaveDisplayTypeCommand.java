@@ -2,8 +2,8 @@ package com.worldventures.wallet.service.command.settings.general.display;
 
 import android.support.annotation.NonNull;
 
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.utils.ProjectTextUtils;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto;
@@ -47,7 +47,9 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
    protected void run(CommandCallback<Void> callback) throws Throwable {
       Observable.just(user)
             .doOnNext(smartCardUser -> {
-               if (smartCardUser == null) throw new NullPointerException("User cannot be null at this point");
+               if (smartCardUser == null) {
+                  throw new NullPointerException("User cannot be null at this point");
+               }
 
                switch (displayType) {
                   case DISPLAY_PHONE_AND_NAME:
@@ -62,6 +64,8 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
                      if (userPhoto == null) {
                         throw new MissingUserPhotoException();
                      }
+                     break;
+                  default:
                      break;
                }
             })

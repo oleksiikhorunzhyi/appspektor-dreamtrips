@@ -19,7 +19,7 @@ public class PlacesNearbyHttpAction extends BaseThirdPartyHttpAction {
 
    @Query("location") String location;
    @Query("radius") String radius = "1";
-   @Query("key") String key = "AIzaSyDGK1DDsWvVa661zcnkCUjEJnuw_dzdUjQ";// TODO: 2/8/17 is test key, before release need to exchange
+   @Query("key") String key = "AIzaSyDGK1DDsWvVa661zcnkCUjEJnuw_dzdUjQ"; // TODO: 2/8/17 is test key, before release need to exchange
 
    @Response NearbyResponse response;
 

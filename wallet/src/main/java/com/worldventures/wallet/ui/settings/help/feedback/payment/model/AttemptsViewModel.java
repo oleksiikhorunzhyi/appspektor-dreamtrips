@@ -30,12 +30,18 @@ public class AttemptsViewModel extends BaseObservable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       AttemptsViewModel that = (AttemptsViewModel) o;
 
-      if (isSuccessPayment != that.isSuccessPayment) return false;
+      if (isSuccessPayment != that.isSuccessPayment) {
+         return false;
+      }
       return countOfAttempts == that.countOfAttempts;
 
    }

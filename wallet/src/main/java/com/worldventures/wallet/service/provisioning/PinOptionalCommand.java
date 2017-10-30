@@ -9,7 +9,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class PinOptionalCommand extends Command<Boolean> implements InjectableAction {
+public final class PinOptionalCommand extends Command<Boolean> implements InjectableAction {
 
    @Inject PinOptionalStorage pinOptionalStorage;
    private final Func1<Boolean, Boolean> func;

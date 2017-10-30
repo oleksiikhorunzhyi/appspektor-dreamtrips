@@ -67,14 +67,20 @@ public class SnappyCrypter {
 
    public <T> List<T> getList(DB db, String key) throws SnappydbException {
       List data = get(db, key, List.class);
-      if (data == null) return Collections.emptyList();
-      else return (List<T>) data;
+      if (data == null) {
+         return Collections.emptyList();
+      } else {
+         return (List<T>) data;
+      }
    }
 
    public <T> List<T> getEncryptedList(DB db, String key) throws SnappydbException {
       List decrypted = getEncrypted(db, key, List.class);
-      if (decrypted == null) return Collections.emptyList();
-      else return (List<T>) decrypted;
+      if (decrypted == null) {
+         return Collections.emptyList();
+      } else {
+         return (List<T>) decrypted;
+      }
    }
 
 }

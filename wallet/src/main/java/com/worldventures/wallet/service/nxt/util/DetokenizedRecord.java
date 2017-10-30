@@ -8,7 +8,7 @@ import com.worldventures.wallet.service.nxt.model.MultiResponseBody;
 import java.util.Collections;
 import java.util.List;
 
-public class DetokenizedRecord extends NxtRecordResponse {
+public final class DetokenizedRecord extends NxtRecordResponse {
 
    public static DetokenizedRecord from(@NonNull Record tokenizedRecord, @NonNull MultiResponseBody nxtResponses) {
       return from(tokenizedRecord, Collections.singletonList(nxtResponses));

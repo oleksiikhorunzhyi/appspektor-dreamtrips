@@ -37,6 +37,8 @@ public class SmartCardFinancialServiceToWalletFinancialServiceConverter implemen
          case GENERIC:
             financialService = FinancialService.GENERIC;
             break;
+         default:
+            break;
       }
       return financialService;
    }

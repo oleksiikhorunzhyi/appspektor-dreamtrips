@@ -38,7 +38,9 @@ public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<Connection
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(connectionStatus -> {
-               if (connectionStatus.isConnected()) getNavigator().goWizardCharging();
+               if (connectionStatus.isConnected()) {
+                  getNavigator().goWizardCharging();
+               }
             });
 
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());

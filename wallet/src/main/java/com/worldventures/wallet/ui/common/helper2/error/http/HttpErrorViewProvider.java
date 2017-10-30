@@ -57,12 +57,16 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
       }
 
       if (throwable instanceof JanetActionException || parentIsJanetException) {
-         if (parentIsJanetException) throwable = parentThrowable;
+         if (parentIsJanetException) {
+            throwable = parentThrowable;
+         }
 
          final Object action = ((JanetActionException) throwable).getAction();
          final String httpErrorMessage = httpErrorHandlingUtil.handleJanetHttpError(action, throwable, null,
                context.getString(R.string.wallet_no_internet_connection));
-         if (httpErrorMessage == null) return null;
+         if (httpErrorMessage == null) {
+            return null;
+         }
          return new SimpleErrorView<>(context, httpErrorMessage, cancelAction);
       }
 

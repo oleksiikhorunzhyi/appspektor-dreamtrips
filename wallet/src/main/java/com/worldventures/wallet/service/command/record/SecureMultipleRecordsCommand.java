@@ -30,7 +30,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 @CommandAction
-public class SecureMultipleRecordsCommand extends Command<List<Record>> implements InjectableAction {
+public final class SecureMultipleRecordsCommand extends Command<List<Record>> implements InjectableAction {
 
    @Inject NxtInteractor nxtInteractor;
    @Inject WalletAnalyticsInteractor analyticsInteractor;
@@ -97,7 +97,9 @@ public class SecureMultipleRecordsCommand extends Command<List<Record>> implemen
    }
 
    private void sendTokenizationAnalytics(List<Record> records, boolean success) {
-      if (actionType == null || records.isEmpty()) return;
+      if (actionType == null || records.isEmpty()) {
+         return;
+      }
 
       Queryable.from(records).forEachR(recordWithError -> analyticsInteractor.walletAnalyticsPipe()
             .send(new TokenizationAnalyticsLocationCommand(
@@ -105,7 +107,7 @@ public class SecureMultipleRecordsCommand extends Command<List<Record>> implemen
             )));
    }
 
-   public static class Builder {
+   public final static class Builder {
 
       private final List<Record> records = new ArrayList<>();
       private final boolean secureForLocalStorage;

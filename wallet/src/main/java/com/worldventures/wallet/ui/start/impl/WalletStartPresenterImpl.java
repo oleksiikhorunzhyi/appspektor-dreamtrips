@@ -28,7 +28,7 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
 
 
    public WalletStartPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator, 
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, WalletAccessValidator walletAccessValidator,
          HttpErrorHandlingUtil httpErrorHandlingUtil) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;

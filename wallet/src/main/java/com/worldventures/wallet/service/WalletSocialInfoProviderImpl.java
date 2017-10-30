@@ -56,7 +56,9 @@ public class WalletSocialInfoProviderImpl implements WalletSocialInfoProvider {
    @Nullable
    @Override
    public String photoThumb() {
-      if (!hasUser()) return null;
+      if (!hasUser()) {
+         return null;
+      }
       final User.Avatar avatar = sessionHolder.get().get().getUser().getAvatar();
       return avatar != null ? avatar.getThumb() : null;
    }
@@ -65,9 +67,15 @@ public class WalletSocialInfoProviderImpl implements WalletSocialInfoProvider {
    @Override
    public io.techery.janet.smartcard.model.User.MemberStatus memberStatus() {
       final User user = sessionHolder.get().get().getUser();
-      if (!hasUser()) return null;
-      if (user.isGold()) return io.techery.janet.smartcard.model.User.MemberStatus.GOLD;
-      if (user.isGeneral() || user.isPlatinum()) return io.techery.janet.smartcard.model.User.MemberStatus.ACTIVE;
+      if (!hasUser()) {
+         return null;
+      }
+      if (user.isGold()) {
+         return io.techery.janet.smartcard.model.User.MemberStatus.GOLD;
+      }
+      if (user.isGeneral() || user.isPlatinum()) {
+         return io.techery.janet.smartcard.model.User.MemberStatus.ACTIVE;
+      }
       return io.techery.janet.smartcard.model.User.MemberStatus.INACTIVE;
    }
 }

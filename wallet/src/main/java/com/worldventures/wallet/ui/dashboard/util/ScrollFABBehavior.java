@@ -23,9 +23,9 @@ public class ScrollFABBehavior extends FloatingActionButton.Behavior {
    @Override
    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout,
          FloatingActionButton child, View directTargetChild, View target, int nestedScrollAxes) {
-      return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL ||
-            super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target,
-                  nestedScrollAxes);
+      return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL
+            || super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target,
+            nestedScrollAxes);
    }
 
    @Override
@@ -49,7 +49,9 @@ public class ScrollFABBehavior extends FloatingActionButton.Behavior {
    public boolean onLayoutChild(CoordinatorLayout parent, FloatingActionButton child, int layoutDirection) {
       if (!child.isShown()) {
          View connectionPlank = findConnectionPlank(findRootView(parent));
-         if (connectionPlank == null) child.show();
+         if (connectionPlank == null) {
+            child.show();
+         }
       }
       return super.onLayoutChild(parent, child, layoutDirection);
    }
@@ -65,7 +67,9 @@ public class ScrollFABBehavior extends FloatingActionButton.Behavior {
    private View findConnectionPlank(ViewGroup parent) {
       for (int i = 0; i < parent.getChildCount(); i++) {
          View child = parent.getChildAt(i);
-         if (child.getId() == R.id.plank_smartcard_connection) return child;
+         if (child.getId() == R.id.plank_smartcard_connection) {
+            return child;
+         }
       }
       return null;
    }

@@ -7,7 +7,7 @@ import com.worldventures.wallet.domain.storage.SnappyCrypter;
 
 public final class PersistentFirmwareDataStorage extends CryptedModelStorage implements FirmwareDataStorage {
 
-   private final String WALLET_ABOUT_SMART_CARD_DATA = "WALLET_ABOUT_SMART_CARD_DATA";
+   private final static String WALLET_ABOUT_SMART_CARD_DATA = "WALLET_ABOUT_SMART_CARD_DATA";
 
    public PersistentFirmwareDataStorage(SnappyStorage storage, SnappyCrypter snappyCrypter) {
       super(storage, snappyCrypter);

@@ -37,8 +37,12 @@ public class LocationTrackingManager {
    }
 
    public void track() {
-      if (trackSubscription != null && !trackSubscription.isUnsubscribed()) return;
-      if (reloginSubscription != null && !reloginSubscription.isUnsubscribed()) reloginSubscription.unsubscribe();
+      if (trackSubscription != null && !trackSubscription.isUnsubscribed()) {
+         return;
+      }
+      if (reloginSubscription != null && !reloginSubscription.isUnsubscribed()) {
+         reloginSubscription.unsubscribe();
+      }
 
       final Observable<Object> stopper = Observable.merge(
             smartCardInteractor.wipeSmartCardDataPipe().observeSuccess().map(command -> (Void) null),
@@ -71,7 +75,10 @@ public class LocationTrackingManager {
    }
 
    private void handleTrackingStatus(boolean isEnabled) {
-      if (isEnabled) lostCardManager.connect();
-      else lostCardManager.disconnect();
+      if (isEnabled) {
+         lostCardManager.connect();
+      } else {
+         lostCardManager.disconnect();
+      }
    }
 }

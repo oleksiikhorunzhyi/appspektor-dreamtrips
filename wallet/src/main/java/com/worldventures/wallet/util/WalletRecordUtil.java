@@ -29,7 +29,9 @@ public class WalletRecordUtil {
    }
 
    public static String obtainLastCardDigits(String cardNumber) {
-      if (cardNumber.length() <= 4) return cardNumber;
+      if (cardNumber.length() <= 4) {
+         return cardNumber;
+      }
       return cardNumber.substring(cardNumber.length() - 4);
    }
 
@@ -106,7 +108,9 @@ public class WalletRecordUtil {
    }
 
    public CharSequence toBoldSpannable(CharSequence text) {
-      if (TextUtils.isEmpty(text)) return "";
+      if (TextUtils.isEmpty(text)) {
+         return "";
+      }
       SpannableString boldSpannable = new SpannableString(text);
       boldSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, boldSpannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
       return boldSpannable;
@@ -119,7 +123,9 @@ public class WalletRecordUtil {
       SpannableString cardNumber = new SpannableString(format(" •••• %s", record.numberLastFourDigits()));
       cardNumber.setSpan(new RelativeSizeSpan(0.8f), 0, cardNumber.length(), 0);
 
-      if (TextUtils.isEmpty(bankName)) return cardNumber;
+      if (TextUtils.isEmpty(bankName)) {
+         return cardNumber;
+      }
 
       return new SpannableStringBuilder()
             .append(bankName)
@@ -174,9 +180,9 @@ public class WalletRecordUtil {
 
    public static String fetchFullName(Record card) {
       return String.format("%s %s", card.cardHolderFirstName(),
-            (ProjectTextUtils.isEmpty(card.cardHolderMiddleName()) ?
-                  card.cardHolderLastName() :
-                  String.format("%s %s", card.cardHolderMiddleName(), card.cardHolderLastName()))
+            (ProjectTextUtils.isEmpty(card.cardHolderMiddleName())
+                  ? card.cardHolderLastName()
+                  : String.format("%s %s", card.cardHolderMiddleName(), card.cardHolderLastName()))
       );
    }
 

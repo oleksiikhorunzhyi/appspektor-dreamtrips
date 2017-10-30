@@ -59,7 +59,9 @@ public class BatteryView extends AppCompatImageView {
       super.onDraw(canvas);
       int primaryColor = getColorPaintByLevel(level);
       levelPaint.setColor(primaryColor);
-      if (!isInEditMode()) setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
+      if (!isInEditMode()) {
+         setColorFilter(primaryColor, PorterDuff.Mode.MULTIPLY);
+      }
 
       drawBatteryLevel(canvas);
    }

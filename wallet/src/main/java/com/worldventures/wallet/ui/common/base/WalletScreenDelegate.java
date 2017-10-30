@@ -40,7 +40,9 @@ public abstract class WalletScreenDelegate {
    }
 
    public void showConnectionStatus(ConnectionStatus connectionStatus) {
-      if (!visibleConnectionSmartCardLabel) return;
+      if (!visibleConnectionSmartCardLabel) {
+         return;
+      }
 
       viewLabelController(connectionSmartCardHeader, connectionStatus.isConnected());
    }
@@ -48,7 +50,9 @@ public abstract class WalletScreenDelegate {
    public abstract void viewLabelController(View view, boolean connected);
 
    public void showHttpConnectionStatus(boolean connected) {
-      if (!visibleHttpConnectionLabel || visibleConnectionSmartCardLabel) return;
+      if (!visibleHttpConnectionLabel || visibleConnectionSmartCardLabel) {
+         return;
+      }
 
       viewLabelController(connectionHttpHeader, connected);
    }
@@ -70,7 +74,7 @@ public abstract class WalletScreenDelegate {
    }
 
 
-   private static class WalletLinearScreenDelegate extends WalletScreenDelegate {
+   private final static class WalletLinearScreenDelegate extends WalletScreenDelegate {
       private final LinearLayout containerLayout;
 
       private WalletLinearScreenDelegate(View container, boolean visibleConnectionSmartCardLabel,
@@ -121,7 +125,7 @@ public abstract class WalletScreenDelegate {
       }
    }
 
-   private static class WalletConstraintScreenDelegate extends WalletScreenDelegate {
+   private final static class WalletConstraintScreenDelegate extends WalletScreenDelegate {
 
       private WalletConstraintScreenDelegate(View container, boolean visibleConnectionSmartCardLabel,
             boolean visibleHttpConnectionLabel) {

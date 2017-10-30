@@ -90,8 +90,8 @@ class LostCardManager {
                         new RegionBundle("Motion region", UUID_MOTION, null, activeSmartCardId)))
                   .doOnUnsubscribe(beaconClient::stopScan))
 
-            .subscribe(beaconEvent -> triggerLocation(beaconEvent.enteredRegion() ?
-                        WalletLocationType.CONNECT : WalletLocationType.DISCONNECT),
+            .subscribe(beaconEvent -> triggerLocation(beaconEvent.enteredRegion()
+                        ? WalletLocationType.CONNECT : WalletLocationType.DISCONNECT),
                   throwable -> Timber.e(throwable, "Beacon client :: observeBeacon"))
       );
    }

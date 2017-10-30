@@ -3,6 +3,7 @@ package com.worldventures.wallet.service;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.service.analytics.AnalyticsService;
 import com.worldventures.janet.analytics.AnalyticsEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 

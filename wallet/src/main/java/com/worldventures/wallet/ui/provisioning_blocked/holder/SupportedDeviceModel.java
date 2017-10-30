@@ -10,14 +10,13 @@ public class SupportedDeviceModel extends BaseViewModel<SupportDeviceItemTypeFac
 
    private String device;
 
-   public SupportedDeviceModel() {}
-
    public SupportedDeviceModel(String device) {
       this.device = device;
    }
 
-   protected SupportedDeviceModel(Parcel in) {this.device = in.readString();}
-
+   protected SupportedDeviceModel(Parcel in) {
+      this.device = in.readString();
+   }
 
    public String getDevice() {
       return device;
@@ -33,16 +32,24 @@ public class SupportedDeviceModel extends BaseViewModel<SupportDeviceItemTypeFac
    }
 
    @Override
-   public int describeContents() { return 0; }
+   public int describeContents() {
+      return 0;
+   }
 
    @Override
-   public void writeToParcel(Parcel dest, int flags) {dest.writeString(this.device);}
+   public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(this.device);
+   }
 
    public static final Creator<SupportedDeviceModel> CREATOR = new Creator<SupportedDeviceModel>() {
       @Override
-      public SupportedDeviceModel createFromParcel(Parcel source) {return new SupportedDeviceModel(source);}
+      public SupportedDeviceModel createFromParcel(Parcel source) {
+         return new SupportedDeviceModel(source);
+      }
 
       @Override
-      public SupportedDeviceModel[] newArray(int size) {return new SupportedDeviceModel[size];}
+      public SupportedDeviceModel[] newArray(int size) {
+         return new SupportedDeviceModel[size];
+      }
    };
 }

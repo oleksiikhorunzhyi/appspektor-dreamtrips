@@ -1,7 +1,7 @@
 package com.worldventures.wallet.analytics.oncard.action;
 
-import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 import java.util.Locale;
 
@@ -29,6 +29,8 @@ class SmartCardExceptionAction extends SmartCardAnalyticsAction {
                   exception.exceptionCategory(),
                   exception.exceptionType(),
                   exception.errorCode()));
+            break;
+         default:
             break;
       }
    }

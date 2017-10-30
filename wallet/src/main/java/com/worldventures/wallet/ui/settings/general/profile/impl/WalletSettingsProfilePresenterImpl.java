@@ -141,12 +141,12 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    @Override
    public boolean isDataChanged() {
       final ProfileViewModel profile = getView().getUser();
-      return user != null &&
-            !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri()) &&
-                  profile.getFirstName().equals(user.firstName()) &&
-                  profile.getMiddleName().equals(user.middleName()) &&
-                  profile.getLastNameWithSuffix().equals(user.lastName()) &&
-                  equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
+      return user != null
+            && !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri())
+            && profile.getFirstName().equals(user.firstName())
+            && profile.getMiddleName().equals(user.middleName())
+            && profile.getLastNameWithSuffix().equals(user.lastName())
+            && equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
    }
 
    @Override
@@ -198,8 +198,11 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> {
-                     if (command.getResult().connectionStatus().isConnected()) onConnected.call();
-                     else getView().showSCNonConnectionDialog();
+                     if (command.getResult().connectionStatus().isConnected()) {
+                        onConnected.call();
+                     } else {
+                        getView().showSCNonConnectionDialog();
+                     }
                   })
             );
    }

@@ -32,7 +32,9 @@ public class SwitchOfflineModeCommand extends Command<Boolean> implements Inject
 
       List<Record> storedRecords = recordsStorage.readRecords();
       if (!storedRecords.isEmpty()) {
-         if (!networkService.isAvailable()) throw new NetworkUnavailableException();
+         if (!networkService.isAvailable()) {
+            throw new NetworkUnavailableException();
+         }
 
          Observable.just(storedRecords)
                .flatMap(records -> offlineModeEnabled ? tokenizeRecords(records) : detokenizeRecords(records))

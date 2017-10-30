@@ -109,7 +109,9 @@ public class SyncRecordsScreenImpl extends WalletBaseController<SyncRecordsScree
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (retrySyncCardsDialog != null) retrySyncCardsDialog.dismiss();
+      if (retrySyncCardsDialog != null) {
+         retrySyncCardsDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

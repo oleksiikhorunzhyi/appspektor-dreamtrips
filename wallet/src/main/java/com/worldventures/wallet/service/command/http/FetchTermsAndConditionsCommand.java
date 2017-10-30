@@ -3,8 +3,8 @@ package com.worldventures.wallet.service.command.http;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.GetTermsAndConditionsHttpAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.ImmutableTermsAndConditions;
 import com.worldventures.wallet.domain.entity.TermsAndConditions;
 

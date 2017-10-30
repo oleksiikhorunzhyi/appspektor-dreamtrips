@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.worldventures.core.utils.FileUtils;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.wallet.R;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
+import com.worldventures.wallet.R;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.wallet.service.command.FetchFirmwareUpdateDataCommand;
 import com.worldventures.wallet.ui.common.base.WalletBaseController;

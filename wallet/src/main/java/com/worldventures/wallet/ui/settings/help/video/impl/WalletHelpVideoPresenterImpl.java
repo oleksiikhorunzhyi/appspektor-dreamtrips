@@ -3,9 +3,6 @@ package com.worldventures.wallet.ui.settings.help.video.impl;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
-import com.worldventures.core.service.CachedEntityDelegate;
-import com.worldventures.core.service.CachedEntityInteractor;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.model.Video;
 import com.worldventures.core.modules.video.model.VideoCategory;
@@ -14,6 +11,9 @@ import com.worldventures.core.modules.video.model.VideoLocale;
 import com.worldventures.core.modules.video.service.MemberVideosInteractor;
 import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand;
 import com.worldventures.core.modules.video.service.command.GetVideoLocalesCommand;
+import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
+import com.worldventures.core.service.CachedEntityDelegate;
+import com.worldventures.core.service.CachedEntityInteractor;
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
@@ -72,7 +72,9 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    }
 
    private List<WalletVideoModel> convert(List<Video> videos) {
-      if (videos.isEmpty()) return Collections.emptyList();
+      if (videos.isEmpty()) {
+         return Collections.emptyList();
+      }
       return Queryable.from(videos).map(WalletVideoModel::new).toList();
    }
 

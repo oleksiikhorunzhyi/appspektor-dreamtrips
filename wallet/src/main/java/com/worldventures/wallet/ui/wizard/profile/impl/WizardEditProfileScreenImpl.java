@@ -194,7 +194,9 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    @Override
    public void hideDialog() {
-      if (photoActionDialog == null) return;
+      if (photoActionDialog == null) {
+         return;
+      }
       photoActionDialog.hide();
       photoActionDialog = null;
    }
@@ -208,7 +210,8 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
                   .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
-                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> {}))
+                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> {
+                  }))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), cmd -> getPresenter().onUserDataConfirmed()))
                   .build()
       );

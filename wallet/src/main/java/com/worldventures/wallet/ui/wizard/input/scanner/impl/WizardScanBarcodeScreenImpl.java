@@ -87,12 +87,16 @@ public class WizardScanBarcodeScreenImpl extends WalletBaseController<WizardScan
    @Override
    protected void onActivityStarted(Activity activity) {
       super.onActivityStarted(activity);
-      if (isAttached()) getPresenter().requestCamera();
+      if (isAttached()) {
+         getPresenter().requestCamera();
+      }
    }
 
    @Override
    protected void onActivityStopped(Activity activity) {
-      if (scanner != null) scanner.stopCamera();
+      if (scanner != null) {
+         scanner.stopCamera();
+      }
       super.onActivityStopped(activity);
    }
 

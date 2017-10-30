@@ -14,6 +14,7 @@ import rx.functions.Action1;
 import static com.worldventures.core.utils.ProjectTextUtils.isEmpty;
 
 public class WalletProfileUtils {
+
    private static final String DEFAULT_AVATAR_URL = "/avatars/thumb/missing.png";
 
    public static boolean isPhotoEmpty(String chosenPhotoUri) {
@@ -29,8 +30,8 @@ public class WalletProfileUtils {
       if (!countryCode.contains("+")) {
          countryCode = String.format(Locale.getDefault(), "+%s", countryCode);
       }
-      return (phone == null && isStrPhoneEmpty) ||
-            (phone != null && phone.code().equals(countryCode) && phone.number().equals(number));
+      return (phone == null && isStrPhoneEmpty)
+            || (phone != null && phone.code().equals(countryCode) && phone.number().equals(number));
    }
 
    public static boolean equalsPhoto(@Nullable SmartCardUserPhoto photo, @Nullable String photoUri) {

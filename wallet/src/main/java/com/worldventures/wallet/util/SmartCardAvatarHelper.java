@@ -37,7 +37,9 @@ public class SmartCardAvatarHelper {
    }
 
    public static void applyGrayScaleColorFilter(SimpleDraweeView draweeView) {
-      if (draweeView == null) return;
+      if (draweeView == null) {
+         return;
+      }
       ColorMatrix matrix = new ColorMatrix();
       matrix.setSaturation(0);
       ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);

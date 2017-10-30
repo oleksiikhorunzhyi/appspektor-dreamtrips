@@ -28,7 +28,9 @@ public class WalletDelayRadioGroup extends RadioGroup {
    private int checkedId;
 
    private final OnCheckedChangeListener onCheckedChangeListener = (group, checkedId) -> {
-      if (this.checkedId == checkedId) return;
+      if (this.checkedId == checkedId) {
+         return;
+      }
       this.checkedId = checkedId;
       if (onChosenListener != null) {
          onChosenListener.call(items.get(checkedId));

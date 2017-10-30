@@ -59,8 +59,10 @@ public class UpdateSmartCardUserOperationView {
          @Nullable Action0 confirmDisplayTypeChange, Class<? extends Throwable> throwable, @StringRes int message) {
       final SimpleDialogErrorViewProvider<T> errorProvider = new SimpleDialogErrorViewProvider<>(
             context, throwable, message, command -> {
-         if (confirmDisplayTypeChange != null) confirmDisplayTypeChange.call();
-      }, t -> {/*nothing*/});
+         if (confirmDisplayTypeChange != null) {
+            confirmDisplayTypeChange.call();
+         }
+      }, t -> { /*nothing*/ });
       errorProvider.setPositiveText(R.string.wallet_continue_label);
       return errorProvider;
    }

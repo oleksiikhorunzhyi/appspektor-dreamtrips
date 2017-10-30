@@ -13,15 +13,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.UnrecoverableEntryException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Calendar;
 
@@ -88,7 +87,9 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
    }
 
    private ByteArrayOutputStream encrypt(ByteArrayInputStream is) throws IllegalStateException {
-      if (is.available() == 0) return new ByteArrayOutputStream(0);
+      if (is.available() == 0) {
+         return new ByteArrayOutputStream(0);
+      }
       initSymmetricKeyIfNeeded();
       try {
          symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKeySpec);
@@ -104,7 +105,9 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
    }
 
    private ByteArrayOutputStream decrypt(ByteArrayInputStream is) throws IllegalStateException {
-      if (is.available() == 0) return new ByteArrayOutputStream(0);
+      if (is.available() == 0) {
+         return new ByteArrayOutputStream(0);
+      }
       initSymmetricKeyIfNeeded();
       try {
          symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKeySpec);
@@ -132,7 +135,9 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
    ///////////////////////////////////////////////////////////////////////////
 
    private synchronized void initSymmetricKeyIfNeeded() throws IllegalStateException {
-      if (symmetricKeySpec != null) return;
+      if (symmetricKeySpec != null) {
+         return;
+      }
       //
       try {
          symmetricKeySpec = loadSymmetricKey();
@@ -144,8 +149,10 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
       }
    }
 
-   private SecretKeySpec loadSymmetricKey() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, NoSuchProviderException, KeyStoreException, UnrecoverableEntryException, InvalidKeyException, IOException {
-      if (!symmetricKeyFile.exists()) return null;
+   private SecretKeySpec loadSymmetricKey() throws GeneralSecurityException, IOException {
+      if (!symmetricKeyFile.exists()) {
+         return null;
+      }
       // load Asymmetric key
       prepareAsymmetricKey();
       KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
@@ -158,7 +165,7 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
       return new SecretKeySpec(symmetricKey, symmetricParams.keyType);
    }
 
-   private SecretKeySpec createAndSaveSymmetricKey() throws UnrecoverableEntryException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, IOException {
+   private SecretKeySpec createAndSaveSymmetricKey() throws GeneralSecurityException, IOException {
       // load Asymmetric key
       prepareAsymmetricKey();
       KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
@@ -177,7 +184,9 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
    }
 
    private void prepareAsymmetricKey() throws KeyStoreException, NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-      if (keyStore.containsAlias(keyAlias)) return;
+      if (keyStore.containsAlias(keyAlias)) {
+         return;
+      }
       //
       Calendar start = Calendar.getInstance();
       Calendar end = Calendar.getInstance();
@@ -200,7 +209,9 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
 
    public void deleteKeys() throws KeyStoreException {
       keyStore.deleteEntry(keyAlias);
-      if (symmetricKeyFile.exists()) symmetricKeyFile.delete();
+      if (symmetricKeyFile.exists()) {
+         symmetricKeyFile.delete();
+      }
    }
 
    public static class AsymmetricKeyParams {

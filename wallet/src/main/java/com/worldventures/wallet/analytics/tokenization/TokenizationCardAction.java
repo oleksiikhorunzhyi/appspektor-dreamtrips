@@ -30,7 +30,9 @@ public class TokenizationCardAction extends BaseCardDetailsAction {
    }
 
    void setCoordinates(@Nullable WalletCoordinates coordinates) {
-      if (coordinates != null) this.coordinates = String.format("%s,%s", coordinates.lat(), coordinates.lng());
+      if (coordinates != null) {
+         this.coordinates = String.format("%s,%s", coordinates.lat(), coordinates.lng());
+      }
    }
 
    String generateCondition() {

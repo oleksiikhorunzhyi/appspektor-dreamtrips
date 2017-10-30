@@ -154,7 +154,9 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
 
    @Override
    public void hideDialog() {
-      if (photoActionDialog == null) return;
+      if (photoActionDialog == null) {
+         return;
+      }
       photoActionDialog.hide();
       photoActionDialog = null;
    }
@@ -234,7 +236,9 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
                .positiveText(R.string.wallet_ok)
                .build();
       }
-      if (!scNonConnectionDialog.isShowing()) scNonConnectionDialog.show();
+      if (!scNonConnectionDialog.isShowing()) {
+         scNonConnectionDialog.show();
+      }
    }
 
    @Override
@@ -254,7 +258,9 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
 
    @Override
    public void setDoneButtonEnabled(boolean enable) {
-      if (actionDoneMenuItem != null) actionDoneMenuItem.setEnabled(enable);
+      if (actionDoneMenuItem != null) {
+         actionDoneMenuItem.setEnabled(enable);
+      }
    }
 
    @Override
@@ -264,7 +270,9 @@ public class WalletSettingsProfileScreenImpl extends WalletBaseController<Wallet
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (scNonConnectionDialog != null) scNonConnectionDialog.dismiss();
+      if (scNonConnectionDialog != null) {
+         scNonConnectionDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

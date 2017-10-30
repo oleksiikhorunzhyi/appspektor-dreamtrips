@@ -17,9 +17,9 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.databinding.DialogWalletDisplayOptionsEnterUserPhoneBinding;
-import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.service.WalletCropImageService;
 import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
@@ -66,8 +66,9 @@ import static android.view.View.OVER_SCROLL_NEVER;
 import static android.view.View.inflate;
 
 public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter> implements DisplayOptionsSettingsScreen {
-   public static String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
-   public static String KEY_DISPLAY_OPTIONS_SOURCE = "key_smart_card_user";
+
+   private final static String KEY_PROFILE_VIEWMODEL = "key_profile_viewmodel";
+   private final static String KEY_DISPLAY_OPTIONS_SOURCE = "key_smart_card_user";
 
    private ViewGroup wrapperPager;
    private ViewPager viewPager;

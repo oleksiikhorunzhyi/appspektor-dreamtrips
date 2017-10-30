@@ -4,6 +4,7 @@ apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-wallet-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'

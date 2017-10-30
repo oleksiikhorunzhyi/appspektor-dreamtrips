@@ -12,8 +12,12 @@ public abstract class BaseViewModel<T extends HolderTypeFactory> extends BaseObs
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       BaseViewModel that = (BaseViewModel) o;
 

@@ -1,7 +1,6 @@
 package com.worldventures.wallet.ui;
 
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -103,8 +102,12 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (cropImageService.onActivityResult(requestCode, resultCode, data)) return;
-      if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) return;
+      if (cropImageService.onActivityResult(requestCode, resultCode, data)) {
+         return;
+      }
+      if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) {
+         return;
+      }
       super.onActivityResult(requestCode, resultCode, data);
    }
 

@@ -131,7 +131,9 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
                .positiveText(R.string.wallet_ok)
                .build();
       }
-      if (!noConnectionDialog.isShowing()) noConnectionDialog.show();
+      if (!noConnectionDialog.isShowing()) {
+         noConnectionDialog.show();
+      }
    }
 
    @Override
@@ -145,7 +147,9 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
                .onPositive(((dialog, which) -> getPresenter().onConfirmedRestartSmartCard()))
                .build();
       }
-      if (!confirmRestartSmartCardDialog.isShowing()) confirmRestartSmartCardDialog.show();
+      if (!confirmRestartSmartCardDialog.isShowing()) {
+         confirmRestartSmartCardDialog.show();
+      }
    }
 
    @Override
@@ -168,14 +172,22 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
                .onPositive((dialog, which) -> getPresenter().openFactoryResetScreen())
                .build();
       }
-      if (!confirmFactoryResetDialog.isShowing()) confirmFactoryResetDialog.show();
+      if (!confirmFactoryResetDialog.isShowing()) {
+         confirmFactoryResetDialog.show();
+      }
    }
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (noConnectionDialog != null) noConnectionDialog.dismiss();
-      if (confirmFactoryResetDialog != null) confirmFactoryResetDialog.dismiss();
-      if (confirmRestartSmartCardDialog != null) confirmRestartSmartCardDialog.dismiss();
+      if (noConnectionDialog != null) {
+         noConnectionDialog.dismiss();
+      }
+      if (confirmFactoryResetDialog != null) {
+         confirmFactoryResetDialog.dismiss();
+      }
+      if (confirmRestartSmartCardDialog != null) {
+         confirmRestartSmartCardDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

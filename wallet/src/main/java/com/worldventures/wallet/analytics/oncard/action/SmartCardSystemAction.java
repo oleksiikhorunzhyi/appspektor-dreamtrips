@@ -1,7 +1,7 @@
 package com.worldventures.wallet.analytics.oncard.action;
 
-import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
 import io.techery.janet.smartcard.model.analytics.AnalyticsLogEntryRestart;
@@ -24,6 +24,8 @@ class SmartCardSystemAction extends SmartCardAnalyticsAction {
             break;
          case AnalyticsLog.SET_TIME:
             attributeMap.put("ocsettime", "1");
+            break;
+         default:
             break;
       }
    }

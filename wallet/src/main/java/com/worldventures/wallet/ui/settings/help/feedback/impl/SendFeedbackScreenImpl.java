@@ -15,9 +15,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.EntityStateHolder;
-import com.worldventures.wallet.R;
-import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView;
+import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
+import com.worldventures.wallet.R;
 import com.worldventures.wallet.service.command.settings.help.SendWalletFeedbackCommand;
 import com.worldventures.wallet.ui.common.helper2.error.SimpleErrorDialogView;
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
@@ -78,11 +78,15 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
    @Override
    public void applyFeedbackType(FeedbackType feedbackType) {
       boolean smartCardFeedback = feedbackType == FeedbackType.SmartCardFeedback;
-      toolbar.setTitle(smartCardFeedback ? R.string.wallet_card_settings_send_feedback : R.string.wallet_card_settings_customer_support);
-      tvDescription.setText(smartCardFeedback ? R.string.wallet_settings_help_feedback_user_approve_info :
-            R.string.wallet_settings_help_customer_support_email_us_description);
-      etFeedbackMessage.setHint(smartCardFeedback ? R.string.wallet_settings_help_feedback_enter_comment_hint :
-            R.string.wallet_settings_help_customer_support_email_us_hint);
+      toolbar.setTitle(smartCardFeedback
+            ? R.string.wallet_card_settings_send_feedback
+            : R.string.wallet_card_settings_customer_support);
+      tvDescription.setText(smartCardFeedback
+            ? R.string.wallet_settings_help_feedback_user_approve_info
+            : R.string.wallet_settings_help_customer_support_email_us_description);
+      etFeedbackMessage.setHint(smartCardFeedback
+            ? R.string.wallet_settings_help_feedback_enter_comment_hint
+            : R.string.wallet_settings_help_customer_support_email_us_hint);
    }
 
    private void onNavigationBack() {
@@ -125,6 +129,8 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
          case FAIL:
             showRetryUploadingUiForAttachment(holder);
             break;
+         default:
+            break;
       }
    }
 
@@ -149,7 +155,9 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
 
    @Override
    public void changeActionSendMenuItemEnabled(boolean enable) {
-      if (actionSendMenuItem != null) actionSendMenuItem.setEnabled(enable);
+      if (actionSendMenuItem != null) {
+         actionSendMenuItem.setEnabled(enable);
+      }
    }
 
    @Override
@@ -174,6 +182,8 @@ public class SendFeedbackScreenImpl extends BaseFeedbackScreenImpl<SendFeedbackS
                      break;
                   case 1:
                      getPresenter().onRemoveAttachment(attachmentHolder);
+                     break;
+                  default:
                      break;
                }
             }).show();

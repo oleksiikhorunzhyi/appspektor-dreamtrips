@@ -3,7 +3,7 @@ package com.worldventures.wallet.service.impl
 import com.worldventures.wallet.service.WalletNetworkService
 import rx.Observable
 
-class MockWalletNetworkService(private val available: Boolean = true): WalletNetworkService {
+class MockWalletNetworkService(private val available: Boolean = true) : WalletNetworkService {
 
    override fun isAvailable() = available
 

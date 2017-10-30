@@ -84,8 +84,8 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
             .doOnSubscribe(this::fetchDisplayType)
             .subscribe(pair -> getView().setupViewPager(user, pair.second), t -> Timber.e(t, ""));
 
-      final OperationView<GetDisplayTypeCommand> getDisplayTypeOperationView =
-            getView().<GetDisplayTypeCommand>provideGetDisplayTypeOperationView();
+      final OperationView<GetDisplayTypeCommand> getDisplayTypeOperationView
+            = getView().<GetDisplayTypeCommand>provideGetDisplayTypeOperationView();
       getDisplayTypeOperationView.showProgress(null);
       smartCardInteractor.getDisplayTypePipe().observe()
             .compose(new GuaranteedProgressVisibilityTransformer<>())
@@ -122,12 +122,16 @@ public class DisplayOptionsSettingsPresenterImpl extends WalletPresenterImpl<Dis
    }
 
    @Override
-   public void fetchDisplayType() {smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));}
+   public void fetchDisplayType() {
+      smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));
+   }
 
    @Override
    public void savePhoneNumber(ProfileViewModel profile) {
       final SmartCardUserPhone enteredPhone = delegate.createPhone(profile);
-      if (enteredPhone == null) return;
+      if (enteredPhone == null) {
+         return;
+      }
 
       user = ImmutableSmartCardUser.builder()
             .from(user)

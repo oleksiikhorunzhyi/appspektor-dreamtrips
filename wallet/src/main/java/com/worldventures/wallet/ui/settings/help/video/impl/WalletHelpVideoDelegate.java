@@ -4,10 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.model.VideoLanguage;
 import com.worldventures.core.modules.video.model.VideoLocale;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.wallet.ui.settings.help.video.WalletHelpVideoScreen;
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel;
 
@@ -34,7 +34,9 @@ public class WalletHelpVideoDelegate {
       }
 
       //for retry when HttpError
-      if (videoLocale == null && lastVideoLocale != null) videoLocale = lastVideoLocale;
+      if (videoLocale == null && lastVideoLocale != null) {
+         videoLocale = lastVideoLocale;
+      }
 
       return getDefaultLanguage(videoLocale);
    }
@@ -44,7 +46,9 @@ public class WalletHelpVideoDelegate {
          final VideoLanguage videoLanguage = Queryable.from(videoLocale.getLanguages())
                .firstOrDefault(language -> language.getLocaleName()
                      .equalsIgnoreCase(Locale.getDefault().getLanguage()));
-         if (videoLanguage != null) return videoLanguage;
+         if (videoLanguage != null) {
+            return videoLanguage;
+         }
       }
       return new VideoLanguage(
             Locale.getDefault().getDisplayLanguage(),

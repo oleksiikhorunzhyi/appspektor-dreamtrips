@@ -7,7 +7,7 @@ import com.worldventures.wallet.domain.entity.lostcard.WalletLocation;
 
 import java.util.List;
 
-public class WalletLocationsUtil {
+public final class WalletLocationsUtil {
 
    private WalletLocationsUtil() {
    }

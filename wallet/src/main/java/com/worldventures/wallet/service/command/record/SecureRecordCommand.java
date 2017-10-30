@@ -23,7 +23,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 @CommandAction
-public class SecureRecordCommand extends Command<Record> implements InjectableAction {
+public final class SecureRecordCommand extends Command<Record> implements InjectableAction {
 
    @Inject NxtInteractor nxtInteractor;
    @Inject WalletAnalyticsInteractor analyticsInteractor;
@@ -86,14 +86,16 @@ public class SecureRecordCommand extends Command<Record> implements InjectableAc
    }
 
    private void sendTokenizationAnalytics(Record record, boolean success) {
-      if (actionType == null) return;
+      if (actionType == null) {
+         return;
+      }
 
       analyticsInteractor.walletAnalyticsPipe().send(new TokenizationAnalyticsLocationCommand(
             TokenizationCardAction.from(record, success, actionType, secureForLocalStorage)
       ));
    }
 
-   public static class Builder {
+   public final static class Builder {
 
       private final Record record;
       private final boolean secureForLocalStorage;

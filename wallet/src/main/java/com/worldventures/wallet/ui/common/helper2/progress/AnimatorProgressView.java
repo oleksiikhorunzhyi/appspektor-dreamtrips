@@ -6,7 +6,7 @@ import android.os.Build;
 
 import io.techery.janet.operationsubscriber.view.ProgressView;
 
-public class AnimatorProgressView<T> implements ProgressView<T> {
+public final class AnimatorProgressView<T> implements ProgressView<T> {
 
    private final ProgressView progressViewImpl;
 
@@ -61,7 +61,7 @@ public class AnimatorProgressView<T> implements ProgressView<T> {
    }
 
    @TargetApi(Build.VERSION_CODES.KITKAT)
-   private static class KitKatImpl implements ProgressView {
+   private final static class KitKatImpl implements ProgressView {
 
       private final ObjectAnimator animator;
 

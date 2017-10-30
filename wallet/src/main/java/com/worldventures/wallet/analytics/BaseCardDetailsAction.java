@@ -11,7 +11,9 @@ public abstract class BaseCardDetailsAction extends WalletAnalyticsAction {
    @AttributeMap final Map<String, String> attributeMap = new HashMap<>();
 
    public void fillRecordDetails(Record record) {
-      if (record.financialService() == null) return;
+      if (record.financialService() == null) {
+         return;
+      }
 
       final String cardType = "Payment";
       String paymentCardType, paymentCardIssuer;

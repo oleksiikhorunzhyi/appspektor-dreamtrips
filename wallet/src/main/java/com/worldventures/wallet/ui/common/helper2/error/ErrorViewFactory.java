@@ -11,7 +11,7 @@ import java.util.List;
 import io.techery.janet.JanetException;
 import io.techery.janet.operationsubscriber.view.ErrorView;
 
-public class ErrorViewFactory<T> implements ErrorView<T> {
+public final class ErrorViewFactory<T> implements ErrorView<T> {
 
    private final List<ErrorViewProvider<T>> errorViewFactories;
    private final ErrorView<T> defaultErrorView;
@@ -61,7 +61,7 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
       return new ErrorViewAdapter<>(defaultErrorView, throwable, t);
    }
 
-   public static class Builder<T> {
+   public final static class Builder<T> {
 
       private final List<ErrorViewProvider<T>> providers = new LinkedList<>();
       private ErrorView<T> defaultErrorView;
@@ -84,7 +84,7 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
       }
    }
 
-   private static class ErrorViewAdapter<T> {
+   private final static class ErrorViewAdapter<T> {
 
       private final ErrorView<T> errorView;
       private final Throwable throwable;
@@ -97,11 +97,15 @@ public class ErrorViewFactory<T> implements ErrorView<T> {
       }
 
       public void show() {
-         if (errorView != null) errorView.showError(t, throwable);
+         if (errorView != null) {
+            errorView.showError(t, throwable);
+         }
       }
 
       public void hide() {
-         if (errorView != null) errorView.hideError();
+         if (errorView != null) {
+            errorView.hideError();
+         }
       }
 
       public boolean isVisible() {

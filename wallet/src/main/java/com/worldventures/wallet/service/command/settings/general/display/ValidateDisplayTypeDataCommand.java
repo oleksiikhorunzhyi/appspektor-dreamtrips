@@ -52,13 +52,23 @@ public class ValidateDisplayTypeDataCommand extends Command<Void> implements Inj
          case SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME:
          case SetHomeDisplayTypeAction.DISPLAY_PICTURE_ONLY:
             if (!hasPhoto) {
-               if (forceUpdateDisplayType) {return true;} else {throw new MissingUserPhotoException();}
+               if (forceUpdateDisplayType) {
+                  return true;
+               } else {
+                  throw new MissingUserPhotoException();
+               }
             }
             break;
          case SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME:
             if (!hasPhone) {
-               if (forceUpdateDisplayType) {return true;} else {throw new MissingUserPhoneException();}
+               if (forceUpdateDisplayType) {
+                  return true;
+               } else {
+                  throw new MissingUserPhoneException();
+               }
             }
+            break;
+         default:
             break;
       }
 

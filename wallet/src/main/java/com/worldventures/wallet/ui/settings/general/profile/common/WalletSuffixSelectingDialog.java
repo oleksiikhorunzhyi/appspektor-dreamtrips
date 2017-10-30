@@ -31,7 +31,9 @@ public class WalletSuffixSelectingDialog extends BottomSheetDialog {
       lvSuffixes.setAdapter(adapter);
 
       lvSuffixes.setOnItemClickListener((adapterView, view, i, l) -> {
-         if (actionSelect != null) actionSelect.call(i == 0 ? "" : suffixes[i]);
+         if (actionSelect != null) {
+            actionSelect.call(i == 0 ? "" : suffixes[i]);
+         }
          dismiss();
       });
       setContentView(lvSuffixes);

@@ -1,8 +1,8 @@
 package com.worldventures.wallet.ui.settings.help.feedback.impl;
 
 
-import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.wallet.service.command.settings.WalletSettingsInteractor;
 import com.worldventures.wallet.service.command.settings.help.CustomerSupportFeedbackCommand;
 import com.worldventures.wallet.service.command.settings.help.SendWalletFeedbackCommand;
@@ -46,9 +46,9 @@ public class SendFeedbackPresenterImpl extends BaseFeedbackPresenterImpl<SendFee
    public void sendFeedback(String text) {
       getView().changeActionSendMenuItemEnabled(false);
 
-      sendFeedbackCommand(getView().getFeedbackType() == FeedbackType.SmartCardFeedback ?
-            new SmartCardFeedbackCommand(text, getImagesAttachments()) :
-            new CustomerSupportFeedbackCommand(text, getImagesAttachments()));
+      sendFeedbackCommand(getView().getFeedbackType() == FeedbackType.SmartCardFeedback
+            ? new SmartCardFeedbackCommand(text, getImagesAttachments())
+            : new CustomerSupportFeedbackCommand(text, getImagesAttachments()));
    }
 
    @Override

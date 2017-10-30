@@ -10,7 +10,7 @@ import android.view.View;
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.wallet.R;
 
-public class FlipAnim {
+public final class FlipAnim {
 
    private AnimatorSet setRightOut;
    private AnimatorSet setLeftIn;
@@ -25,7 +25,9 @@ public class FlipAnim {
       this.cardBackLayout = cardBackLayout;
    }
 
-   public void flipCard() {flipCard(0);}
+   public void flipCard() {
+      flipCard(0);
+   }
 
    public void flipCard(long delay) {
       handler.postDelayed(() -> {

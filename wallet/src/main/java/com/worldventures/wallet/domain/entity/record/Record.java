@@ -73,7 +73,9 @@ public abstract class Record {
 
    @Override
    public boolean equals(Object obj) {
-      if (super.equals(obj)) return true;
+      if (super.equals(obj)) {
+         return true;
+      }
       if (obj instanceof Record) {
          final Record record = (Record) obj;
          final String recordId = record.id();

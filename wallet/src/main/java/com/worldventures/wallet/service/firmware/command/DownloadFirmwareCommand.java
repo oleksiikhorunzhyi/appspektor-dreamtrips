@@ -3,9 +3,9 @@ package com.worldventures.wallet.service.firmware.command;
 import android.content.Context;
 
 import com.worldventures.core.di.qualifier.ForApplication;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.command.DownloadFileCommand;
 import com.worldventures.dreamtrips.api.smart_card.firmware.model.FirmwareInfo;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.wallet.domain.entity.ImmutableFirmwareUpdateData;
 import com.worldventures.wallet.service.firmware.FirmwareRepository;
@@ -32,7 +32,9 @@ public class DownloadFirmwareCommand extends Command<Void> implements Injectable
    protected void run(CommandCallback<Void> callback) throws Throwable {
       final FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
       final FirmwareInfo firmwareInfo = firmwareUpdateData.firmwareInfo();
-      if (firmwareInfo == null) throw new IllegalStateException("Firmware is not available");
+      if (firmwareInfo == null) {
+         throw new IllegalStateException("Firmware is not available");
+      }
 
       janet.createPipe(DownloadFileCommand.class)
             .createObservableResult(new DownloadFileCommand(getAppropriateFirmwareFile(appContext), firmwareInfo.url()))

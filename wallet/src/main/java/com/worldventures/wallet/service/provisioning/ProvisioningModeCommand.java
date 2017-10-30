@@ -9,7 +9,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class ProvisioningModeCommand extends Command<ProvisioningMode> implements InjectableAction {
+public final class ProvisioningModeCommand extends Command<ProvisioningMode> implements InjectableAction {
 
    private final Func1<ProvisioningMode, ProvisioningMode> func;
 

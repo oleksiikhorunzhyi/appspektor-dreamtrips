@@ -51,18 +51,18 @@ public class WizardCheckingScreenImpl extends WalletBaseController<WizardCheckin
 
    @Override
    public void networkAvailable(boolean available) {
-      checkInternet.setTitle(available ?
-            R.string.wallet_wizard_checks_network_available :
-            R.string.wallet_wizard_checks_network_not_available
+      checkInternet.setTitle(available
+            ? R.string.wallet_wizard_checks_network_available
+            : R.string.wallet_wizard_checks_network_not_available
       );
       checkInternet.setChecked(available);
    }
 
    @Override
    public void bluetoothEnable(boolean enable) {
-      checkBluetooth.setTitle(enable ?
-            R.string.wallet_wizard_checks_bluetooth_enable :
-            R.string.wallet_wizard_checks_bluetooth_not_enable);
+      checkBluetooth.setTitle(enable
+            ? R.string.wallet_wizard_checks_bluetooth_enable
+            : R.string.wallet_wizard_checks_bluetooth_not_enable);
       checkBluetooth.setChecked(enable);
    }
 

@@ -52,7 +52,9 @@ class LastKnownLocationObservable extends GoogleApiObservable<Location> {
          subscriber.onCompleted();
          Timber.d("Location is updated %s", location);
          Looper looper = Looper.myLooper();
-         if (looper != null) looper.quit();
+         if (looper != null) {
+            looper.quit();
+         }
       };
       Looper.prepare();
       FusedLocationApi.requestLocationUpdates(googleApiClient, provideLocationRequest(), listener, Looper.myLooper());

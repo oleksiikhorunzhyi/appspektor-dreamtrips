@@ -51,7 +51,9 @@ public class SmartCardWidget extends ConstraintLayout {
 
    private void setup() {
       final View view = LayoutInflater.from(getContext()).inflate(R.layout.wallet_custom_view_smartcard, this);
-      if (isInEditMode()) return;
+      if (isInEditMode()) {
+         return;
+      }
       photoContainer = view.findViewById(R.id.photo_container);
       scAvatar = view.findViewById(R.id.cardListSCAvatar);
       SmartCardAvatarHelper.applyGrayScaleColorFilter(scAvatar);
@@ -82,8 +84,12 @@ public class SmartCardWidget extends ConstraintLayout {
       final int type = getNormalizedType(holder);
 
       final StringBuilder fullNameBuilder = new StringBuilder(holder.firstName());
-      if (!holder.middleName().isEmpty()) fullNameBuilder.append("\n").append(holder.middleName());
-      if (!holder.lastName().isEmpty()) fullNameBuilder.append("\n").append(holder.lastName());
+      if (!holder.middleName().isEmpty()) {
+         fullNameBuilder.append("\n").append(holder.middleName());
+      }
+      if (!holder.lastName().isEmpty()) {
+         fullNameBuilder.append("\n").append(holder.lastName());
+      }
 
       final String photoFullName = fullNameBuilder.toString();
       final String fullName = photoFullName.replace("\n", " ");
@@ -102,10 +108,12 @@ public class SmartCardWidget extends ConstraintLayout {
             tvPhotoFullName.setText(photoFullName);
             break;
          case DISPLAY_PHONE_AND_NAME:
-            final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber()) ?
-                  String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
+            final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber())
+                  ? String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
                   : holder.phoneNumber();
             tvPhotoFullName.setText(photoFullName + "\n\n" + phoneNumber);
+            break;
+         default:
             break;
       }
 
@@ -131,13 +139,21 @@ public class SmartCardWidget extends ConstraintLayout {
       switch (displayType) {
          case DISPLAY_PICTURE_ONLY:
          case DISPLAY_PICTURE_AND_NAME:
-            if (ProjectTextUtils.isEmpty(holder.photoUrl())) break;
-            else return displayType;
+            if (ProjectTextUtils.isEmpty(holder.photoUrl())) {
+               break;
+            } else {
+               return displayType;
+            }
          case DISPLAY_PHONE_AND_NAME:
-            if (ProjectTextUtils.isEmpty(holder.phoneNumber())) break;
-            else return displayType;
+            if (ProjectTextUtils.isEmpty(holder.phoneNumber())) {
+               break;
+            } else {
+               return displayType;
+            }
          case DISPLAY_NAME_ONLY:
             return displayType;
+         default:
+            break;
       }
       return WalletConstants.SMART_CARD_DEFAULT_DISPLAY_TYPE;
    }

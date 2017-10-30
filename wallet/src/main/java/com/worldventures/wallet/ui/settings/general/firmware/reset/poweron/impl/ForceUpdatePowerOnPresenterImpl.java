@@ -57,8 +57,9 @@ public class ForceUpdatePowerOnPresenterImpl extends WalletPresenterImpl<ForceUp
    }
 
    private void bindResult(WizardCheckCommand.Checks result) {
-      getView().setButtonAction((result.internetIsAvailable() && result.bluetoothIsEnabled()) ? v -> openPairCardScreen() :
-            v -> getView().showDialogEnableBleAndInternet());
+      getView().setButtonAction((result.internetIsAvailable() && result.bluetoothIsEnabled())
+            ? v -> openPairCardScreen()
+            : v -> getView().showDialogEnableBleAndInternet());
    }
 
    public void openPairCardScreen() {

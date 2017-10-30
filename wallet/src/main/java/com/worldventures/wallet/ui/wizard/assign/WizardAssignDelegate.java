@@ -33,7 +33,8 @@ public abstract class WizardAssignDelegate {
    protected final SmartCardInteractor smartCardInteractor;
    protected final Navigator navigator;
 
-   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor,
+         SmartCardInteractor smartCardInteractor, Navigator navigator) {
       this.wizardInteractor = wizardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;

@@ -88,17 +88,33 @@ public class MerchantViewModel extends BaseObservable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       MerchantViewModel that = (MerchantViewModel) o;
 
-      if (selectedTypeIndex != that.selectedTypeIndex) return false;
-      if (merchantName != null ? !merchantName.equals(that.merchantName) : that.merchantName != null) return false;
-      if (addressLine1 != null ? !addressLine1.equals(that.addressLine1) : that.addressLine1 != null) return false;
-      if (addressLine2 != null ? !addressLine2.equals(that.addressLine2) : that.addressLine2 != null) return false;
-      if (city != null ? !city.equals(that.city) : that.city != null) return false;
-      if (state != null ? !state.equals(that.state) : that.state != null) return false;
+      if (selectedTypeIndex != that.selectedTypeIndex) {
+         return false;
+      }
+      if (merchantName != null ? !merchantName.equals(that.merchantName) : that.merchantName != null) {
+         return false;
+      }
+      if (addressLine1 != null ? !addressLine1.equals(that.addressLine1) : that.addressLine1 != null) {
+         return false;
+      }
+      if (addressLine2 != null ? !addressLine2.equals(that.addressLine2) : that.addressLine2 != null) {
+         return false;
+      }
+      if (city != null ? !city.equals(that.city) : that.city != null) {
+         return false;
+      }
+      if (state != null ? !state.equals(that.state) : that.state != null) {
+         return false;
+      }
       return zip != null ? zip.equals(that.zip) : that.zip == null;
 
    }

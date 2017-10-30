@@ -78,7 +78,9 @@ public abstract class MultiHolderAdapter<ITEM extends BaseViewModel> extends Rec
    public void remove(ITEM item) {
       if (item != null) {
          int position = items.indexOf(item);
-         if (position != -1) remove(position);
+         if (position != -1) {
+            remove(position);
+         }
          notifyItemRemoved(position);
       }
    }

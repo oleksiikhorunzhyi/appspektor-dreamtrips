@@ -12,11 +12,13 @@ import java.io.File;
 
 import timber.log.Timber;
 
-public class WalletFilesUtils {
+public final class WalletFilesUtils {
 
    private static final String FIRMWARE_FILE_NAME = "flyee_firmware.zip";
 
-   private WalletFilesUtils() {}
+   private WalletFilesUtils() {
+      //do nothing
+   }
 
    public static File getMostAppropriateCacheStorage(Context context) {
       File result = null;
@@ -73,7 +75,9 @@ public class WalletFilesUtils {
    public static class NotEnoughSpaceException extends Throwable {
       private final long missingByteSpace;
 
-      public NotEnoughSpaceException(long missingByteSpace) {this.missingByteSpace = missingByteSpace;}
+      public NotEnoughSpaceException(long missingByteSpace) {
+         this.missingByteSpace = missingByteSpace;
+      }
 
       public long getMissingByteSpace() {
          return missingByteSpace;

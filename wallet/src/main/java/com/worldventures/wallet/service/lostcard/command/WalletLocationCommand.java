@@ -53,7 +53,7 @@ public class WalletLocationCommand extends Command<WalletLocation> implements In
    }
 
    private Observable<WalletLocation> saveLocation(WalletLocation location) {
-//      WalletBeaconClient.logBeacon("Save location - %s", location); todo remove it for tests
+      //      WalletBeaconClient.logBeacon("Save location - %s", location); todo remove it for tests
       final List<WalletLocation> walletLocations = locationRepository.getWalletLocations();
       walletLocations.add(location);
       locationRepository.saveWalletLocations(walletLocations);

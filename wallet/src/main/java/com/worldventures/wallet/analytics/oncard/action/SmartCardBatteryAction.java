@@ -1,7 +1,7 @@
 package com.worldventures.wallet.analytics.oncard.action;
 
-import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
 import io.techery.janet.smartcard.model.analytics.AnalyticsLogEntryBattery;
@@ -23,6 +23,8 @@ class SmartCardBatteryAction extends SmartCardAnalyticsAction {
             break;
          case AnalyticsLog.BATTERY_CRITICAL:
             attributeMap.put("ocbatcritical", "1");
+            break;
+         default:
             break;
       }
    }

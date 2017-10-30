@@ -1,7 +1,7 @@
 package com.worldventures.wallet.analytics.oncard.action;
 
-import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.wallet.domain.entity.record.Record;
 
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog;
@@ -45,6 +45,8 @@ public class SmartCardPaymentAction extends SmartCardAnalyticsAction {
             attributeMap.put("ocpayswipe", String.valueOf(cardSwipe.swipeSequenceNumber()));
             attributeMap.put("ocpayswipespd", String.valueOf(cardSwipe.swipeSpeed()));
             attributeMap.put("ocpaytrack", String.valueOf(cardSwipe.trackIdentifier()));
+            break;
+         default:
             break;
       }
    }

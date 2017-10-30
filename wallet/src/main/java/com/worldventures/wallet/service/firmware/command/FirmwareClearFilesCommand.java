@@ -21,9 +21,11 @@ public class FirmwareClearFilesCommand extends Command<Void> {
    }
 
    private void deleteFile(File fileOrDirectory) {
-      if (fileOrDirectory.isDirectory())
-         for (File child : fileOrDirectory.listFiles())
+      if (fileOrDirectory.isDirectory()) {
+         for (File child : fileOrDirectory.listFiles()) {
             deleteFile(child);
+         }
+      }
       fileOrDirectory.delete();
    }
 }

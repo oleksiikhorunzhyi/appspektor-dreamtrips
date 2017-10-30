@@ -22,13 +22,15 @@ class LocationSyncManager {
       if (scheduledLocationFuture == null
             || scheduledLocationFuture.isCancelled()
             || scheduledLocationFuture.isDone()) {
-         scheduledLocationFuture =
-               scheduledExecutor.scheduleAtFixedRate(new LocationTask(), 0, SCHEDULE_TIME, TimeUnit.MINUTES);
+         scheduledLocationFuture
+               = scheduledExecutor.scheduleAtFixedRate(new LocationTask(), 0, SCHEDULE_TIME, TimeUnit.MINUTES);
       }
    }
 
    void cancelSync() {
-      if (scheduledLocationFuture != null) scheduledLocationFuture.cancel(true);
+      if (scheduledLocationFuture != null) {
+         scheduledLocationFuture.cancel(true);
+      }
       locationInteractor.postLocationPipe().cancelLatest();
    }
 

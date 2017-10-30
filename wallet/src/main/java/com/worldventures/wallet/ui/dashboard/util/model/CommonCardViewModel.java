@@ -164,25 +164,48 @@ public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactor
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-      if (!super.equals(o)) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      if (!super.equals(o)) {
+         return false;
+      }
 
       CommonCardViewModel that = (CommonCardViewModel) o;
 
-      if (defaultCard != that.defaultCard) return false;
-      if (cardBackGround != that.cardBackGround) return false;
-      if (sampleCard != that.sampleCard) return false;
-      if (recordId != null ? !recordId.equals(that.recordId) : that.recordId != null) return false;
-      if (cardName != null ? !cardName.equals(that.cardName) : that.cardName != null) return false;
-      if (cardType != that.cardType) return false;
-      if (cardTypeName != null ? !cardTypeName.equals(that.cardTypeName) : that.cardTypeName != null) return false;
-      if (cardLastDigitsShort != null ? !cardLastDigitsShort.equals(that.cardLastDigitsShort) : that.cardLastDigitsShort != null)
+      if (defaultCard != that.defaultCard) {
          return false;
-      if (cardHolderName != null ? !cardHolderName.equals(that.cardHolderName) : that.cardHolderName != null)
+      }
+      if (cardBackGround != that.cardBackGround) {
          return false;
-      if (cardLastDigitsLong != null ? !cardLastDigitsLong.equals(that.cardLastDigitsLong) : that.cardLastDigitsLong != null)
+      }
+      if (sampleCard != that.sampleCard) {
          return false;
+      }
+      if (recordId != null ? !recordId.equals(that.recordId) : that.recordId != null) {
+         return false;
+      }
+      if (cardName != null ? !cardName.equals(that.cardName) : that.cardName != null) {
+         return false;
+      }
+      if (cardType != that.cardType) {
+         return false;
+      }
+      if (cardTypeName != null ? !cardTypeName.equals(that.cardTypeName) : that.cardTypeName != null) {
+         return false;
+      }
+      if (cardLastDigitsShort != null ? !cardLastDigitsShort.equals(that.cardLastDigitsShort) : that.cardLastDigitsShort != null) {
+         return false;
+      }
+      if (cardHolderName != null ? !cardHolderName.equals(that.cardHolderName) : that.cardHolderName != null) {
+         return false;
+      }
+      if (cardLastDigitsLong != null ? !cardLastDigitsLong.equals(that.cardLastDigitsLong) : that.cardLastDigitsLong != null) {
+         return false;
+      }
       return goodThrough != null ? goodThrough.equals(that.goodThrough) : that.goodThrough == null;
    }
 

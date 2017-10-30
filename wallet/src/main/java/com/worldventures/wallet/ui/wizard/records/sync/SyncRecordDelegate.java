@@ -42,7 +42,7 @@ public abstract class SyncRecordDelegate {
       }
    }
 
-   private static class SyncToDeviceDelegate extends SyncRecordDelegate {
+   private final static class SyncToDeviceDelegate extends SyncRecordDelegate {
 
       private SyncToDeviceDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
          super(smartCardInteractor, recordInteractor, navigator);
@@ -76,7 +76,7 @@ public abstract class SyncRecordDelegate {
       }
    }
 
-   private static class SyncToCardDelegate extends SyncRecordDelegate {
+   private final static class SyncToCardDelegate extends SyncRecordDelegate {
 
       private SyncToCardDelegate(SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor, Navigator navigator) {
          super(smartCardInteractor, recordInteractor, navigator);

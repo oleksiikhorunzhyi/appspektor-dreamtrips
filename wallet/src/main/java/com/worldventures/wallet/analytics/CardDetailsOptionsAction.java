@@ -1,8 +1,8 @@
 package com.worldventures.wallet.analytics;
 
-import com.worldventures.janet.analytics.AnalyticsEvent;
-import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.wallet.domain.entity.record.Record;
 
 @AnalyticsEvent(action = "wallet:Add a Card:Card Detail Options",

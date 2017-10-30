@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
-import com.worldventures.wallet.R;
 import com.worldventures.wallet.BR;
+import com.worldventures.wallet.R;
 import com.worldventures.wallet.databinding.ScreenWalletWizardViewCardDetailsBinding;
 import com.worldventures.wallet.domain.entity.record.Record;
 import com.worldventures.wallet.service.command.SetDefaultCardOnDeviceCommand;
@@ -87,7 +87,9 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
             if (propertyId == BR.recordName) {
                presenter.validateRecordName(detailViewModel.getRecordName().trim());
             } else if (propertyId == BR.defaultRecord) {
-               if (detailViewModel.getRecordModel().isDefaultCard() == detailViewModel.isDefaultRecord()) return;
+               if (detailViewModel.getRecordModel().isDefaultCard() == detailViewModel.isDefaultRecord()) {
+                  return;
+               }
                presenter.changeDefaultCard(detailViewModel.isDefaultRecord());
             }
          }
@@ -150,7 +152,9 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
                .onPositive((dialog, which) -> dialog.dismiss())
                .build();
       }
-      if (!networkConnectionErrorDialog.isShowing()) networkConnectionErrorDialog.show();
+      if (!networkConnectionErrorDialog.isShowing()) {
+         networkConnectionErrorDialog.show();
+      }
    }
 
    @Override
@@ -250,7 +254,9 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (networkConnectionErrorDialog != null) networkConnectionErrorDialog.dismiss();
+      if (networkConnectionErrorDialog != null) {
+         networkConnectionErrorDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

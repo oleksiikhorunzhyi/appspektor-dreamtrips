@@ -49,9 +49,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
    }
 
    private Observable<Void> revertName(ChangedFields changedFields, SmartCardUser user, String smartCardId) {
-      final boolean nameChanged = changedFields.firstName().equals(user.firstName()) &&
-            changedFields.middleName().equals(user.middleName()) &&
-            changedFields.lastName().equals(user.lastName());
+      final boolean nameChanged = changedFields.firstName().equals(user.firstName())
+            && changedFields.middleName().equals(user.middleName())
+            && changedFields.lastName().equals(user.lastName());
       if (nameChanged) {
          return janet.createPipe(UpdateUserAction.class)
                .createObservableResult(new UpdateUserAction(createUser(user, smartCardId)))
@@ -63,7 +63,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
 
    private Observable<Void> revertPhoto(ChangedFields changedFields, SmartCardUser user) {
       final SmartCardUserPhoto userPhoto = user.userPhoto();
-      if (changedFields.photo() == null || userPhoto == null) return Observable.just(null);
+      if (changedFields.photo() == null || userPhoto == null) {
+         return Observable.just(null);
+      }
       return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
             .createObservableResult(new UpdateSmartCardUserPhotoCommand(userPhoto.uri()))
             .map(action -> null);

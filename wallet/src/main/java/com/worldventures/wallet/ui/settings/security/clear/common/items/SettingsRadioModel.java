@@ -22,7 +22,9 @@ public class SettingsRadioModel implements Parcelable {
    }
 
    @Override
-   public int describeContents() { return 0; }
+   public int describeContents() {
+      return 0;
+   }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
@@ -37,9 +39,13 @@ public class SettingsRadioModel implements Parcelable {
 
    public static final Creator<SettingsRadioModel> CREATOR = new Creator<SettingsRadioModel>() {
       @Override
-      public SettingsRadioModel createFromParcel(Parcel source) {return new SettingsRadioModel(source);}
+      public SettingsRadioModel createFromParcel(Parcel source) {
+         return new SettingsRadioModel(source);
+      }
 
       @Override
-      public SettingsRadioModel[] newArray(int size) {return new SettingsRadioModel[size];}
+      public SettingsRadioModel[] newArray(int size) {
+         return new SettingsRadioModel[size];
+      }
    };
 }

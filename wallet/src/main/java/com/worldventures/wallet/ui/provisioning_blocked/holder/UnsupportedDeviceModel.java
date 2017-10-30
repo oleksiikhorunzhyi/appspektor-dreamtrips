@@ -15,20 +15,28 @@ public class UnsupportedDeviceModel extends BaseViewModel<ProvisionBlockedTypeFa
    }
 
    @Override
-   public int describeContents() { return 0; }
+   public int describeContents() {
+      return 0;
+   }
 
    @Override
-   public void writeToParcel(Parcel dest, int flags) {}
+   public void writeToParcel(Parcel dest, int flags) {
+      //do nothing
+   }
 
-   public UnsupportedDeviceModel() {}
-
-   protected UnsupportedDeviceModel(Parcel in) {}
+   public UnsupportedDeviceModel() {
+      //do nothing
+   }
 
    public static final Creator<UnsupportedDeviceModel> CREATOR = new Creator<UnsupportedDeviceModel>() {
       @Override
-      public UnsupportedDeviceModel createFromParcel(Parcel source) {return new UnsupportedDeviceModel(source);}
+      public UnsupportedDeviceModel createFromParcel(Parcel source) {
+         return new UnsupportedDeviceModel();
+      }
 
       @Override
-      public UnsupportedDeviceModel[] newArray(int size) {return new UnsupportedDeviceModel[size];}
+      public UnsupportedDeviceModel[] newArray(int size) {
+         return new UnsupportedDeviceModel[size];
+      }
    };
 }

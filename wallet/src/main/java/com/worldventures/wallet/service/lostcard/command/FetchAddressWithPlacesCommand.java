@@ -26,7 +26,7 @@ import io.techery.mappery.MapperyContext;
 import static rx.Observable.zip;
 
 @CommandAction
-public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlacesCommand.PlacesWithAddress>
+public final class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlacesCommand.PlacesWithAddress>
       implements InjectableAction, CachedAction<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
 
    @Inject Janet janet;
@@ -85,7 +85,7 @@ public class FetchAddressWithPlacesCommand extends Command<FetchAddressWithPlace
       return coordinates;
    }
 
-   public class PlacesWithAddress {
+   public final static class PlacesWithAddress {
       public final WalletAddress address;
       public final List<WalletPlace> places;
 

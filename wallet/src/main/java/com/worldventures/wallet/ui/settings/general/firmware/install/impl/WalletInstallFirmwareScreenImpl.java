@@ -92,7 +92,9 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
 
    @Override
    protected void onDetach(@NonNull View view) {
-      if (errorDialog != null) errorDialog.dismiss();
+      if (errorDialog != null) {
+         errorDialog.dismiss();
+      }
       super.onDetach(view);
    }
 

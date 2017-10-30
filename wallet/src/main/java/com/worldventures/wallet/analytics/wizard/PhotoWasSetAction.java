@@ -1,13 +1,13 @@
 package com.worldventures.wallet.analytics.wizard;
 
-import com.worldventures.janet.analytics.AnalyticsEvent;
-import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.wallet.analytics.WalletAnalyticsAction;
 
 @AnalyticsEvent(action = "wallet:setup:Step 5:Display Photo Has Been Set",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class PhotoWasSetAction extends WalletAnalyticsAction {
+public final class PhotoWasSetAction extends WalletAnalyticsAction {
 
    private static final String PHOTO_METHOD_DEFAULT = "Default";
    private static final String PHOTO_METHOD_NO_PHOTO = "No Photo";

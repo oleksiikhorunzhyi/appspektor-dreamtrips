@@ -13,7 +13,9 @@ public class WalletDocumentModel extends BaseViewModel<HelpDocsTypeFactory> impl
    private String originalName;
    private String url;
 
-   public WalletDocumentModel() {}
+   public WalletDocumentModel() {
+      //do nothing
+   }
 
    public WalletDocumentModel(Document document) {
       this(document.getName(), document.getOriginalName(), document.getUrl());
@@ -49,7 +51,9 @@ public class WalletDocumentModel extends BaseViewModel<HelpDocsTypeFactory> impl
    }
 
    @Override
-   public int describeContents() { return 0; }
+   public int describeContents() {
+      return 0;
+   }
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
@@ -60,9 +64,13 @@ public class WalletDocumentModel extends BaseViewModel<HelpDocsTypeFactory> impl
 
    public static final Creator<WalletDocumentModel> CREATOR = new Creator<WalletDocumentModel>() {
       @Override
-      public WalletDocumentModel createFromParcel(Parcel source) {return new WalletDocumentModel(source);}
+      public WalletDocumentModel createFromParcel(Parcel source) {
+         return new WalletDocumentModel(source);
+      }
 
       @Override
-      public WalletDocumentModel[] newArray(int size) {return new WalletDocumentModel[size];}
+      public WalletDocumentModel[] newArray(int size) {
+         return new WalletDocumentModel[size];
+      }
    };
 }

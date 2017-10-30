@@ -26,7 +26,9 @@ class ProvisioningModeStorageImpl implements ProvisioningModeStorage {
    @Override
    public ProvisioningMode getState() {
       String provisioningName = sharedPreferences.getString(PROVISIONING_STATE_NAME, null);
-      if (provisioningName == null) return null;
+      if (provisioningName == null) {
+         return null;
+      }
       return ProvisioningMode.valueOf(provisioningName);
    }
 

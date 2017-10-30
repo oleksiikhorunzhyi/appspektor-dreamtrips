@@ -2,9 +2,9 @@ package com.worldventures.wallet.service.command;
 
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.session.model.Device;
 import com.worldventures.dreamtrips.api.smart_card.user_association.GetCompatibleDevicesHttpAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,9 @@ public class GetCompatibleDevicesCommand extends Command<List<Device>> implement
                .subscribe(
                      devices -> {
                         allDevices.addAll(devices);
-                        if (devices.size() < pageSize) hasMore[0] = false;
+                        if (devices.size() < pageSize) {
+                           hasMore[0] = false;
+                        }
                         page[0]++;
                      },
                      t -> {

@@ -1,9 +1,9 @@
 package com.worldventures.wallet.service.command.wizard;
 
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData;
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.wallet.domain.entity.SmartCard;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
@@ -61,7 +61,9 @@ public class WizardCompleteCommand extends Command<Void> implements InjectableAc
 
    private Observable<SmartCardUser> checkUserPhotoAndUploadToServer(String smartCardId, SmartCardUser user) {
       final SmartCardUserPhoto photo = user.userPhoto();
-      if (photo == null) return Observable.just(user);
+      if (photo == null) {
+         return Observable.just(user);
+      }
       return uploadPhotoOnServer(smartCardId, photo)
             .map(photoUrl -> attachPhotoUrlToUser(user, photoUrl));
    }

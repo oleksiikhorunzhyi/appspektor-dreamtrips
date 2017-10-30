@@ -29,8 +29,12 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      if (factoryResetOptions.isWithPaymentCards()) deletePaymentsData();
-      if (factoryResetOptions.isWithUserSmartCardData()) deleteUserData();
+      if (factoryResetOptions.isWithPaymentCards()) {
+         deletePaymentsData();
+      }
+      if (factoryResetOptions.isWithUserSmartCardData()) {
+         deleteUserData();
+      }
       walletStorage.deleteSmartCardFirmware();
       walletStorage.deleteSmartCardDetails();
       walletStorage.deleteSmartCard();

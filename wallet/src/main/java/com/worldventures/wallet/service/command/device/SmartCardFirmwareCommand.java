@@ -12,7 +12,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class SmartCardFirmwareCommand extends Command<SmartCardFirmware> implements CachedAction<SmartCardFirmware> {
+public final class SmartCardFirmwareCommand extends Command<SmartCardFirmware> implements CachedAction<SmartCardFirmware> {
 
    private final Func1<SmartCardFirmware, SmartCardFirmware> func;
    private SmartCardFirmware cachedSmartCardFirmware;
@@ -35,7 +35,9 @@ public class SmartCardFirmwareCommand extends Command<SmartCardFirmware> impleme
 
    @Override
    protected void run(CommandCallback<SmartCardFirmware> callback) throws Throwable {
-      if (cachedSmartCardFirmware == null) cachedSmartCardFirmware = createDefault();
+      if (cachedSmartCardFirmware == null) {
+         cachedSmartCardFirmware = createDefault();
+      }
       SmartCardFirmware smartCardFirmware = func.call(cachedSmartCardFirmware);
       callback.onSuccess(smartCardFirmware);
    }

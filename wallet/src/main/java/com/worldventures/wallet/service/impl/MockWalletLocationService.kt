@@ -5,7 +5,7 @@ import com.google.android.gms.location.LocationSettingsResult
 import com.worldventures.wallet.service.location.WalletDetectLocationService
 import rx.Observable
 
-class MockWalletLocationService: WalletDetectLocationService {
+class MockWalletLocationService : WalletDetectLocationService {
 
    override fun isPermissionGranted(): Boolean = true
 

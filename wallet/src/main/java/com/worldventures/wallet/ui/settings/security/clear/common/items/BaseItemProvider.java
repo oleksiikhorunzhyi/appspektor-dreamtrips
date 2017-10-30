@@ -24,7 +24,9 @@ abstract class BaseItemProvider {
    public final int getPositionForValue(long value) {
       final List<SettingsRadioModel> items = items();
       for (int i = 0; i < items.size(); i++) {
-         if (value == items.get(i).getValue()) return i;
+         if (value == items.get(i).getValue()) {
+            return i;
+         }
       }
       return 0;
    }
@@ -32,7 +34,9 @@ abstract class BaseItemProvider {
    public final String provideTextByValue(long value) {
       final List<SettingsRadioModel> items = items();
       for (int i = 0; i < items.size(); i++) {
-         if (value == items.get(i).getValue()) return items.get(i).getText();
+         if (value == items.get(i).getValue()) {
+            return items.get(i).getText();
+         }
       }
       return items.get(0).getText();
    }

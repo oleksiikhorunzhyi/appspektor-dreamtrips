@@ -7,10 +7,10 @@ import com.worldventures.core.janet.ActionServiceLoggerImpl;
 import com.worldventures.core.janet.CommandInjectorImpl;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.janet.TimberServiceWrapper;
-import com.worldventures.janet.injection.CommandInjector;
-import com.worldventures.janet.injection.DaggerActionServiceWrapper;
 import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
+import com.worldventures.janet.injection.CommandInjector;
+import com.worldventures.janet.injection.DaggerActionServiceWrapper;
 import com.worldventures.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.wallet.service.nxt.DetokenizeMultipleRecordsCommand;
@@ -78,7 +78,9 @@ public class JanetNxtModule {
    OkHttpClient provideJanetOkHttp3Client(@Named(JANET_NXT) Interceptor interceptor,
          NxtIdConfigsProvider nxtIdConfigsProvider, WalletBuildConfigHelper configHelper) {
       OkHttpClient.Builder builder = new OkHttpClient.Builder();
-      if (configHelper.isDebug()) builder.addInterceptor(interceptor);
+      if (configHelper.isDebug()) {
+         builder.addInterceptor(interceptor);
+      }
       builder.connectTimeout(nxtIdConfigsProvider.apiTimeoutSec(), TimeUnit.SECONDS);
       builder.readTimeout(nxtIdConfigsProvider.apiTimeoutSec(), TimeUnit.SECONDS);
       builder.writeTimeout(nxtIdConfigsProvider.apiTimeoutSec(), TimeUnit.SECONDS);

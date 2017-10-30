@@ -29,7 +29,9 @@ public class WalletValidateHelper {
    }
 
    public static boolean isValidLastName(String lastName) {
-      if (lastName == null || lastName.length() > 21 || lastName.length() < 2) return false;
+      if (lastName == null || lastName.length() > 21 || lastName.length() < 2) {
+         return false;
+      }
       return LAST_NAME_PATTERN.matcher(lastName).matches();
    }
 
@@ -48,7 +50,9 @@ public class WalletValidateHelper {
    }
 
    public static void validateCardNameOrThrow(String cardName) throws CardNameFormatException {
-      if (!isValidCardName(cardName)) throw new CardNameFormatException();
+      if (!isValidCardName(cardName)) {
+         throw new CardNameFormatException();
+      }
    }
 
    public static boolean isValidCardName(String cardName) {
@@ -57,6 +61,8 @@ public class WalletValidateHelper {
    }
 
    public static void validateCvvOrThrow(String cvv, String cardNumber) throws CvvFormatException {
-      if (!validateCardCvv(cvv, cardNumber)) throw new CvvFormatException();
+      if (!validateCardCvv(cvv, cardNumber)) {
+         throw new CvvFormatException();
+      }
    }
 }

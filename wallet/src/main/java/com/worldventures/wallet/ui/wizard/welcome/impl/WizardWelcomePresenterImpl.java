@@ -42,7 +42,9 @@ public class WizardWelcomePresenterImpl extends WalletPresenterImpl<WizardWelcom
    }
 
    private void loadUserPhoto(String avatarPath) {
-      if (!TextUtils.isEmpty(avatarPath)) getView().userPhoto(avatarPath);
+      if (!TextUtils.isEmpty(avatarPath)) {
+         getView().userPhoto(avatarPath);
+      }
    }
 
    @Override

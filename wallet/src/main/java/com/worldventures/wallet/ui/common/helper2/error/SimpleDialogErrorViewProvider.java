@@ -19,17 +19,20 @@ public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
       this.errorView = new SimpleErrorDialogView<>(context, messageResId);
    }
 
-   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId, Action1<T> defaultAction) {
+   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId,
+         Action1<T> defaultAction) {
       this.throwable = throwable;
       this.errorView = new SimpleErrorDialogView<>(context, messageResId, defaultAction);
    }
 
-   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId, Action1<T> positiveAction, Action1<T> negativeAction) {
+   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId,
+         Action1<T> positiveAction, Action1<T> negativeAction) {
       this.throwable = throwable;
       this.errorView = new SimpleErrorDialogView<>(context, messageResId, positiveAction, negativeAction);
    }
 
-   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId, Action1<T> positiveAction, Action1<T> negativeAction, Action0 dismissAction) {
+   public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId,
+         Action1<T> positiveAction, Action1<T> negativeAction, Action0 dismissAction) {
       this.throwable = throwable;
       this.errorView = new SimpleErrorDialogView<>(context, messageResId, positiveAction, negativeAction, dismissAction);
    }

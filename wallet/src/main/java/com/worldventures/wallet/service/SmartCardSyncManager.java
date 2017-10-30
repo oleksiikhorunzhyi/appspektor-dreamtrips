@@ -97,7 +97,7 @@ public class SmartCardSyncManager {
       interactor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
-            .filter(smartCard -> connectionStatus == ConnectionStatus.CONNECTED
+            .filter(smartCard -> connectionStatus == CONNECTED
                   && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
             .takeUntil(interactor.disconnectPipe().observeSuccess())
             .take(1)

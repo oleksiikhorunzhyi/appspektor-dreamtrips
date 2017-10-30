@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SupportedDevicesListHolder extends BaseHolder<SupportedDevicesListModel> {
 
-   private MultiHolderAdapter<SupportedDeviceModel> adapter;
+   private final MultiHolderAdapter<SupportedDeviceModel> adapter;
 
    public SupportedDevicesListHolder(ItemWalletSupportedDevicesListBinding binding) {
       super(binding.getRoot());

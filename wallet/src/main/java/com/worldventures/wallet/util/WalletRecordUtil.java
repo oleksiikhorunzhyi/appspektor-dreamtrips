@@ -179,10 +179,10 @@ public class WalletRecordUtil {
    }
 
    public static String fetchFullName(Record card) {
-      return String.format("%s %s", card.cardHolderFirstName(),
+      return format("%s %s", card.cardHolderFirstName(),
             (ProjectTextUtils.isEmpty(card.cardHolderMiddleName())
                   ? card.cardHolderLastName()
-                  : String.format("%s %s", card.cardHolderMiddleName(), card.cardHolderLastName()))
+                  : format("%s %s", card.cardHolderMiddleName(), card.cardHolderLastName()))
       );
    }
 

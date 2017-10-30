@@ -18,6 +18,7 @@ public class GuaranteedProgressVisibilityTransformer<T extends ActionState> impl
    private long startTime;
 
    public GuaranteedProgressVisibilityTransformer() {
+      //do nothing
    }
 
    public GuaranteedProgressVisibilityTransformer(long guaranteedVisibilityTime) {

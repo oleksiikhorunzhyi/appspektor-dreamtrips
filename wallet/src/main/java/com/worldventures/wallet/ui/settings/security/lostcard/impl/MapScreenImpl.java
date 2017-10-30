@@ -79,7 +79,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       objectGraph.inject(this);
       mapView = view.findViewById(R.id.map_view);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
-         noGoogleContainer.setVisibility(View.VISIBLE);
+         noGoogleContainer.setVisibility(VISIBLE);
       } else {
          mapView.onCreate(bundle);
       }

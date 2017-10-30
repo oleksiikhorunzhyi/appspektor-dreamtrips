@@ -85,10 +85,10 @@ public class SmartCardWidget extends ConstraintLayout {
 
       final StringBuilder fullNameBuilder = new StringBuilder(holder.firstName());
       if (!holder.middleName().isEmpty()) {
-         fullNameBuilder.append("\n").append(holder.middleName());
+         fullNameBuilder.append('\n').append(holder.middleName());
       }
       if (!holder.lastName().isEmpty()) {
-         fullNameBuilder.append("\n").append(holder.lastName());
+         fullNameBuilder.append('\n').append(holder.lastName());
       }
 
       final String photoFullName = fullNameBuilder.toString();

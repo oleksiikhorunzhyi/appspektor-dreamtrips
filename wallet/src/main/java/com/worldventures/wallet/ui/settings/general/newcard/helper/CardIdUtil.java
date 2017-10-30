@@ -2,6 +2,9 @@ package com.worldventures.wallet.ui.settings.general.newcard.helper;
 
 public final class CardIdUtil {
 
+   private CardIdUtil() {
+   }
+
    public static String pushZeroToSmartCardId(String cardId) {
       if (cardId == null) {
          return "";

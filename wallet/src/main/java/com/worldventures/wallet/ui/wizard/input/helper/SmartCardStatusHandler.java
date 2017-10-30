@@ -10,7 +10,10 @@ import rx.functions.Action1;
  * Handle response for SmartCardStatusHttpAction
  * For check assigned of SmartCard.
  */
-public class SmartCardStatusHandler {
+public final class SmartCardStatusHandler {
+
+   private SmartCardStatusHandler() {
+   }
 
    public static void handleSmartCardStatus(@NonNull SmartCardStatus smartCardStatus,
          @NonNull Action1<SmartCardStatus> cardIsUnassign,

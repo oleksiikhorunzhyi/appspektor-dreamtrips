@@ -69,6 +69,7 @@ import timber.log.Timber;
 
 import static com.worldventures.wallet.util.WalletFilesUtils.getAppropriateFirmwareFile;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> implements CardListPresenter {
 
    private final SmartCardInteractor smartCardInteractor;

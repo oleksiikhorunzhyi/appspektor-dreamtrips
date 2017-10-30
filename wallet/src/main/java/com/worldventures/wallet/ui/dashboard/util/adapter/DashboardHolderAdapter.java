@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 public class DashboardHolderAdapter<ITEM extends BaseViewModel> extends MultiHolderAdapter<ITEM> {
 
    private final ExecutorService exService = Executors.newSingleThreadExecutor();
-   private Handler handler = new Handler(Looper.getMainLooper());
+   private final Handler handler = new Handler(Looper.getMainLooper());
 
    public DashboardHolderAdapter(List<ITEM> items, HolderTypeFactory holderTypeFactory) {
       super(items, holderTypeFactory);
@@ -25,7 +25,7 @@ public class DashboardHolderAdapter<ITEM extends BaseViewModel> extends MultiHol
       exService.execute(() -> {
          final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallBack<>(items, newList));
          handler.post(() -> {
-            diffResult.dispatchUpdatesTo(DashboardHolderAdapter.this);
+            diffResult.dispatchUpdatesTo(this);
             items = newList;
          });
       });

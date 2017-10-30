@@ -9,7 +9,10 @@ import java.util.List;
 
 import static com.worldventures.wallet.domain.entity.record.FinancialService.GENERIC;
 
-public class DummyRecordCreator {
+public final class DummyRecordCreator {
+
+   private DummyRecordCreator() {
+   }
 
    public static String defaultRecordId() {
       return "0";

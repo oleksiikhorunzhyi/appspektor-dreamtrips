@@ -11,6 +11,7 @@ import com.bluelinelabs.conductor.changehandler.AnimatorChangeHandler;
 
 public class RevertHorizontalChangeHandler extends AnimatorChangeHandler {
    public RevertHorizontalChangeHandler() {
+      //do nothing
    }
 
    public RevertHorizontalChangeHandler(boolean removesFromViewOnPush) {

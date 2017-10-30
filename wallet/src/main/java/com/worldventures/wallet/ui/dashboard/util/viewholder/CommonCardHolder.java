@@ -6,7 +6,7 @@ import com.worldventures.wallet.ui.dashboard.util.model.CommonCardViewModel;
 
 public class CommonCardHolder extends BaseHolder<CommonCardViewModel> {
 
-   private ItemWalletRecordBinding binding;
+   private final ItemWalletRecordBinding binding;
 
    public CommonCardHolder(ItemWalletRecordBinding binding) {
       super(binding.getRoot());

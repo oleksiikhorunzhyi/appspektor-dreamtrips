@@ -11,8 +11,8 @@ import rx.functions.Action1;
 
 public class SimpleDialogErrorViewProvider<T> implements ErrorViewProvider<T> {
 
-   private Class<? extends Throwable> throwable;
-   private SimpleErrorDialogView<T> errorView;
+   private final Class<? extends Throwable> throwable;
+   private final SimpleErrorDialogView<T> errorView;
 
    public SimpleDialogErrorViewProvider(Context context, Class<? extends Throwable> throwable, @StringRes int messageResId) {
       this.throwable = throwable;

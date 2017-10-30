@@ -9,8 +9,8 @@ import com.worldventures.wallet.domain.entity.record.Record;
                 trackers = AdobeTracker.TRACKER_KEY)
 class TokenizeSuccessAction extends TokenizationCardAction {
 
-   @Attribute("tokensuccess") private final int tokenSuccess = 1;
-   @Attribute("successcondition") private final String successCondition;
+   @Attribute("tokensuccess") final int tokenSuccess = 1;
+   @Attribute("successcondition") final String successCondition;
 
    TokenizeSuccessAction(Record record, ActionType actionType, boolean tokenize) {
       super(record, actionType, tokenize);

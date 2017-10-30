@@ -72,6 +72,7 @@ public abstract class Record {
    }
 
    @Override
+   @SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
    public boolean equals(Object obj) {
       if (super.equals(obj)) {
          return true;

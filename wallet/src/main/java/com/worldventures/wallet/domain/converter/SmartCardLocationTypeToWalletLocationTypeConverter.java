@@ -29,6 +29,7 @@ public class SmartCardLocationTypeToWalletLocationTypeConverter implements Conve
             break;
          case DISCONNECT:
             walletLocationType = DISCONNECT;
+            break;
          default:
             break;
       }

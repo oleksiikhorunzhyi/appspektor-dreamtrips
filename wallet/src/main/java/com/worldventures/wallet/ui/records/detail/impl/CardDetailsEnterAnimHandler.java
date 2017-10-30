@@ -48,6 +48,7 @@ public class CardDetailsEnterAnimHandler extends AnimatorChangeHandler {
 
    @Override
    protected void resetFromView(@NonNull View from) {
+      //do nothing
    }
 
    @Override

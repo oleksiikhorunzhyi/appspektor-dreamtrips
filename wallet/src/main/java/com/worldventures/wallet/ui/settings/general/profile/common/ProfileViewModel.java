@@ -25,7 +25,9 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
    @Nullable private String chosenPhotoUri;
    private boolean isPhotoEmpty = true; // because chosenPhotoUri is null by default
 
-   public ProfileViewModel() {}
+   public ProfileViewModel() {
+      //do nothing
+   }
 
    @BindingAdapter("imageUrl")
    public static void setImageUrl(SimpleDraweeView view, String imageUrl) {

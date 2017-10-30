@@ -8,7 +8,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class FirmwareClearFilesCommand extends Command<Void> {
 
-   private String path;
+   private final String path;
 
    public FirmwareClearFilesCommand(String path) {
       this.path = path;

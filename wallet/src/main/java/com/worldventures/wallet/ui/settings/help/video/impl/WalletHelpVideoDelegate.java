@@ -122,6 +122,6 @@ public class WalletHelpVideoDelegate {
    }
 
    private String getFileName(String url) {
-      return url.substring(url.lastIndexOf("/") + 1);
+      return url.substring(url.lastIndexOf('/') + 1);
    }
 }

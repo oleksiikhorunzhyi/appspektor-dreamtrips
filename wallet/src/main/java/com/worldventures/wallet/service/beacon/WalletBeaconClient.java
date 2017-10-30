@@ -24,15 +24,6 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
 
    public static final String TAG = "Beacon client";
    private static final Logger FILE_LOGGER = LoggerFactory.getLogger(TAG);
-
-   public static void logBeacon(String s, Object... args) {
-      if (args.length > 0) {
-         s = String.format(s, args);
-      }
-      Timber.d("%s :: %s", TAG, s);
-      FILE_LOGGER.debug(s);
-   }
-
    private static final String BEACON_LAYOUT = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24";
 
    private final PublishSubject<BeaconEvent> beaconEventPipe = PublishSubject.create();
@@ -46,6 +37,15 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
    private RegionBootstrap regionBootstrap;
 
    private Region scanRegion;
+
+   public static void logBeacon(String s, Object... args) {
+      if (args.length > 0) {
+         s = String.format(s, args);
+      }
+      Timber.d("%s :: %s", TAG, s);
+      FILE_LOGGER.debug(s);
+   }
+
 
    public WalletBeaconClient(Context context) {
       this.context = context;
@@ -115,6 +115,7 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
 
    @Override
    public void didDetermineStateForRegion(int i, Region region) {
+      //do nothing
    }
 
    @Override

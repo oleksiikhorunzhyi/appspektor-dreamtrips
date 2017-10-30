@@ -68,7 +68,7 @@ public class HybridAndroidCrypter implements Crypter<ByteArrayInputStream, ByteA
          symmetricCipher = Cipher.getInstance(this.symmetricParams.keyType);
          symmetricKeyFile = new File(context.getFilesDir(), keyFilename);
       } catch (Exception e) {
-         throw new IllegalStateException("Can't load keystore");
+         throw new IllegalStateException("Can't load keystore", e);
       }
    }
 

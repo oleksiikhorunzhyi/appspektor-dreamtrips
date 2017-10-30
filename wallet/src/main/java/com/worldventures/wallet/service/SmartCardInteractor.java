@@ -30,8 +30,6 @@ import com.worldventures.wallet.service.command.settings.general.display.SaveDis
 import com.worldventures.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand;
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 
-import java.util.concurrent.Executors;
-
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction;
@@ -51,7 +49,6 @@ import io.techery.janet.smartcard.event.CardInChargerEvent;
 import io.techery.janet.smartcard.event.CardSwipedEvent;
 import io.techery.janet.smartcard.event.LockDeviceChangedEvent;
 import io.techery.janet.smartcard.event.PinStatusEvent;
-import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
 public final class SmartCardInteractor {
@@ -175,10 +172,6 @@ public final class SmartCardInteractor {
             .io());
       validateDisplayTypeDataPipe = sessionActionPipeCreator.createPipe(ValidateDisplayTypeDataCommand.class, Schedulers
             .io());
-   }
-
-   private static Scheduler singleThreadScheduler() {
-      return Schedulers.from(Executors.newSingleThreadExecutor());
    }
 
    public ActionPipe<ActiveSmartCardCommand> activeSmartCardPipe() {

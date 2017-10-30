@@ -158,7 +158,7 @@ public final class NxtBankCardHelper {
          MultiErrorResponse errorResponse = errorResponseList.get(i);
          sb.append(String.format("\"%s\" : \"%s\"", errorResponse.code(), errorResponse.message()));
       }
-      sb.append("]");
+      sb.append(']');
 
       return sb.toString();
    }

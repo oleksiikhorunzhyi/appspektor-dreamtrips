@@ -20,10 +20,11 @@ import rx.Observable;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public abstract class WalletBaseController<V extends WalletScreen, P extends WalletPresenter> extends PresentableController<V, P> implements WalletScreen {
-   private ObjectGraph objectGraph;
+
    private WalletScreenDelegate walletScreenDelegate;
 
    public WalletBaseController() {
+      //do nothing
    }
 
    public WalletBaseController(Bundle args) {
@@ -39,7 +40,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    protected void onFinishInflate(View view) {
       //noinspection all
-      this.objectGraph = (ObjectGraph) view.getContext().getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
+      ObjectGraph objectGraph = (ObjectGraph) view.getContext().getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
       this.walletScreenDelegate = WalletScreenDelegate.create(view, supportConnectionStatusLabel(), supportHttpConnectionStatusLabel());
    }

@@ -13,9 +13,12 @@ import rx.functions.Action1;
 
 import static com.worldventures.core.utils.ProjectTextUtils.isEmpty;
 
-public class WalletProfileUtils {
+public final class WalletProfileUtils {
 
    private static final String DEFAULT_AVATAR_URL = "/avatars/thumb/missing.png";
+
+   private WalletProfileUtils() {
+   }
 
    public static boolean isPhotoEmpty(String chosenPhotoUri) {
       return chosenPhotoUri == null || chosenPhotoUri.equals(DEFAULT_AVATAR_URL) || chosenPhotoUri.isEmpty();

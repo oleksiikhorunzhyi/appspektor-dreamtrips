@@ -11,7 +11,7 @@ import com.worldventures.wallet.service.command.AboutSmartCardDataCommand;
 
 public class AboutSmartCardDataActionStorage implements ActionStorage<AboutSmartCardData> {
 
-   private FirmwareDataStorage persistentStorage;
+   private final FirmwareDataStorage persistentStorage;
 
    public AboutSmartCardDataActionStorage(FirmwareDataStorage persistentStorage) {
       this.persistentStorage = persistentStorage;

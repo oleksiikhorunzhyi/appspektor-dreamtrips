@@ -138,7 +138,7 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
 
    @Override
    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
+      //do nothing
    }
 
    @Override
@@ -151,6 +151,6 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
 
    @Override
    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
+      //do nothing
    }
 }

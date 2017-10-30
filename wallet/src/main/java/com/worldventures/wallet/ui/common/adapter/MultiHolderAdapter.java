@@ -8,7 +8,7 @@ import java.util.List;
 public abstract class MultiHolderAdapter<ITEM extends BaseViewModel> extends RecyclerView.Adapter<BaseHolder> {
 
    protected List<ITEM> items;
-   private HolderTypeFactory factory;
+   private final HolderTypeFactory factory;
 
    public MultiHolderAdapter(List<ITEM> items, HolderTypeFactory holderTypeFactory) {
       this.items = items;

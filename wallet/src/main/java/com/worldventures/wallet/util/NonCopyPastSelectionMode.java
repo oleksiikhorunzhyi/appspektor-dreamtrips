@@ -24,6 +24,6 @@ public class NonCopyPastSelectionMode implements ActionMode.Callback {
 
    @Override
    public void onDestroyActionMode(ActionMode actionMode) {
-
+      //do nothing
    }
 }

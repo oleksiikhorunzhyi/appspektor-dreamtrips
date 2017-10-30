@@ -24,14 +24,14 @@ public class CustomerSupportContactModel extends BaseViewModel<ProvisionBlockedT
       //do nothing
    }
 
-   public CustomerSupportContactModel() {}
-
-   protected CustomerSupportContactModel(Parcel in) {}
+   public CustomerSupportContactModel() {
+      //do nothing
+   }
 
    public static final Creator<CustomerSupportContactModel> CREATOR = new Creator<CustomerSupportContactModel>() {
       @Override
       public CustomerSupportContactModel createFromParcel(Parcel source) {
-         return new CustomerSupportContactModel(source);
+         return new CustomerSupportContactModel();
       }
 
       @Override

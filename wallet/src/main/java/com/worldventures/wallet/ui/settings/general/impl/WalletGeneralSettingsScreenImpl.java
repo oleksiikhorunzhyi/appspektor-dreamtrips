@@ -144,7 +144,7 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
                .content(R.string.wallet_card_settings_are_you_sure)
                .positiveText(R.string.wallet_card_settings_power_off_dialog_ok)
                .negativeText(R.string.wallet_cancel_label)
-               .onPositive(((dialog, which) -> getPresenter().onConfirmedRestartSmartCard()))
+               .onPositive((dialog, which) -> getPresenter().onConfirmedRestartSmartCard())
                .build();
       }
       if (!confirmRestartSmartCardDialog.isShowing()) {

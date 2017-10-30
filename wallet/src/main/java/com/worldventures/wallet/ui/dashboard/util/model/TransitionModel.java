@@ -6,13 +6,14 @@ import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 
 public class TransitionModel implements Parcelable {
-   private boolean defaultCard;
-   private int left;
-   private int top;
-   private int width;
-   private int height;
-   private int overlap;
-   private @DrawableRes int background;
+
+   private final boolean defaultCard;
+   private final int left;
+   private final int top;
+   private final int width;
+   private final int height;
+   private final int overlap;
+   private final @DrawableRes int background;
 
    public TransitionModel(boolean defaultCard, int left, int top, int width, int height,
          int overlap, @DrawableRes int background) {

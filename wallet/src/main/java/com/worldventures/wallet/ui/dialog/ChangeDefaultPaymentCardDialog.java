@@ -11,7 +11,7 @@ import rx.functions.Action0;
 
 public class ChangeDefaultPaymentCardDialog {
 
-   private Dialog dialog;
+   private final Dialog dialog;
    private Action0 confirmAction;
    private Action0 cancelAction;
 

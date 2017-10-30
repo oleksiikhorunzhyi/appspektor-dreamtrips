@@ -11,7 +11,9 @@ import timber.log.Timber;
 public class CachedPhotoUtil {
 
    @Inject
-   CachedPhotoUtil() {}
+   CachedPhotoUtil() {
+      //do nothing
+   }
 
    public void removeCachedPhoto(String photoUri) {
       try {

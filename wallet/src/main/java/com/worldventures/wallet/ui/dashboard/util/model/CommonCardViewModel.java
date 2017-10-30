@@ -12,6 +12,7 @@ import com.worldventures.wallet.BR;
 import com.worldventures.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.wallet.ui.dashboard.util.adapter.DashboardHolderTypeFactory;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class CommonCardViewModel extends BaseViewModel<DashboardHolderTypeFactory> implements Parcelable {
 
    private final String recordId;

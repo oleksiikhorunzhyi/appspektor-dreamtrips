@@ -58,6 +58,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       getView().setEventListener(listener);
+      connectReviewMerchants();
       loadFirstReviews();
       getFirstPage();
    }
@@ -100,7 +101,14 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public void addMoreReviews(int indexOf) {
-      connectReviewMerchants(indexOf);
+      merchantInteractor.reviewsMerchantsHttpPipe()
+            .send(ReviewMerchantsAction.create(ImmutableReviewsMerchantsActionParams
+                  .builder()
+                  .brandId(BRAND_ID)
+                  .productId(merchant.id())
+                  .limit(10)
+                  .indexOf(indexOf)
+                  .build()));
    }
 
    @Override
@@ -111,25 +119,23 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public void getFirstPage() {
-      connectReviewMerchants(0);
+      merchantInteractor.reviewsMerchantsHttpPipe().send(ReviewMerchantsAction
+            .create(ImmutableReviewsMerchantsActionParams.builder()
+                  .brandId(BRAND_ID)
+                  .productId(merchant.id())
+                  .limit(10)
+                  .indexOf(0)
+                  .build()));
    }
 
-   private void connectReviewMerchants(int indexOf) {
-      ActionPipe<ReviewMerchantsAction> reviewActionPipe = merchantInteractor.reviewsMerchantsHttpPipe();
-      reviewActionPipe
+   private void connectReviewMerchants() {
+      merchantInteractor.reviewsMerchantsHttpPipe()
             .observeWithReplay()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ReviewMerchantsAction>()
                   .onSuccess(this::onMerchantsLoaded)
                   .onProgress(this::onMerchantsLoading)
                   .onFail(this::onMerchantsLoadingError));
-      reviewActionPipe.send(ReviewMerchantsAction.create(ImmutableReviewsMerchantsActionParams
-            .builder()
-            .brandId(BRAND_ID)
-            .productId(merchant.id())
-            .limit(10)
-            .indexOf(indexOf)
-            .build()));
    }
 
    public void onMerchantsLoaded(ReviewMerchantsAction action) {
@@ -138,7 +144,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
       ArrayList<ReviewObject> reviewObjects = ReviewObject.getReviewList(action.getResult().reviews());
       List<ReviewObject> currentReviews = getView().getCurrentReviews();
       boolean validReceivedData = isValidReceivedData(currentReviews, reviewObjects);
-      if(!validReceivedData) return;
+      if (!validReceivedData) return;
 
       getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
                   .ratingAverage()), Integer.parseInt(action.getResult().total()),

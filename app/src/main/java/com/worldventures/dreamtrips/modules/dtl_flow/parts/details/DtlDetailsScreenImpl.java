@@ -480,12 +480,14 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void showThrstFlowButton() {
       View payBtn = ButterKnife.findById(this, R.id.merchant_details_pay);
+      if (null == payBtn) return;
       payBtn.setVisibility(VISIBLE);
    }
 
    @Override
    public void showEarnFlowButton() {
       View earnBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
+      if (null == earnBtn) return;
       earnBtn.setVisibility(VISIBLE);
    }
 

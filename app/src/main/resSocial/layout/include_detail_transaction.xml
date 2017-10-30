@@ -244,16 +244,6 @@
             android:textStyle="bold"
             />
 
-      <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dtl_transaction_screen_margin_extra_big"
-            android:gravity="center"
-            android:text="2017-Oct-10 13:21:26"
-            />
-
-
       <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

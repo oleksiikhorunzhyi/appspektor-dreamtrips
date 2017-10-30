@@ -22,6 +22,7 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
     public TransactionModel convert(MapperyContext mapperyContext, DetailTransactionThrst detailTransactionThrst) {
         TransactionModel transactionModel = new TransactionModel();
         transactionModel.setId(detailTransactionThrst.id());
+        transactionModel.setMerchantId(detailTransactionThrst.merchantId());
         transactionModel.setMerchantName(detailTransactionThrst.merchantName());
         transactionModel.setReceiptUrl(detailTransactionThrst.receiptUrl());
         transactionModel.setSubTotalAmount(safeConversion(detailTransactionThrst.subTotalAmount()));

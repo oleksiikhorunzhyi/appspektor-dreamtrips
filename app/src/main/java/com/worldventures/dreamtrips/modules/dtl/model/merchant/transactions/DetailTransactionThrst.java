@@ -17,6 +17,7 @@ import java.util.Date;
 @Gson.TypeAdapters
 public interface DetailTransactionThrst extends Serializable {
    @SerializedName("Id") @Nullable String id();
+   @SerializedName("MerchantId") @Nullable String merchantId();
    @SerializedName("MerchantName") @Nullable String merchantName();
    @SerializedName("Date") @Nullable Date date();
    @SerializedName("PointsEarned")  @Nullable Double pointsEarned();

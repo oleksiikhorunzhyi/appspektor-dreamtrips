@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
@@ -28,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
 import java.util.Random;
 
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.Flow;
 
 public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, DtlTransactionPresenter, DtlTransactionPath>
@@ -36,6 +38,7 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    private final String SUCCESSFUL_STATUS = "SUCCESSFUL";
 
    private TransactionModel transaction;
+   private MaterialDialog progressDialog;
 
    @InjectView(R.id.tv_thank_you_pilot) TextView mThankYouView;
    @InjectView(R.id.tv_thank_you_pilot2) TextView mThankYouView2;
@@ -155,4 +158,28 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
 
    }
 
+   @Override
+   public void showLoadingMerchantDialog() {
+      progressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
+
+   @Override
+   public void hideLoadingMerchantDialog() {
+      if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
+   }
+
+   @Override
+   public void showCouldNotShowMerchantDialog() {
+      new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE).setTitleText(getContext().getString(R.string.app_name))
+            .setContentText(getContext().getString(R.string.could_not_load_merchant_for_review))
+            .setConfirmText(getContext().getString(R.string.OK))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.dismissWithAnimation();
+            })
+            .setCancelClickListener(SweetAlertDialog::dismissWithAnimation);
+   }
 }

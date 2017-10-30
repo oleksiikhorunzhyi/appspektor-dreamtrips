@@ -17,7 +17,7 @@ public class WalletBuildConfigHelperImpl implements WalletBuildConfigHelper {
 
    @Override
    public boolean useNxtClient() {
-      return BuildConfig.SMART_CARD_SDK_CLIENT.equals("nxtid");
+      return "nxtid".equals(BuildConfig.SMART_CARD_SDK_CLIENT);
    }
 
    @Override

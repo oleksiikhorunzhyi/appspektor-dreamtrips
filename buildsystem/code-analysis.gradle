@@ -3,7 +3,7 @@ apply plugin: "pmd"
 apply plugin: "io.gitlab.arturbosch.detekt"
 apply plugin: "org.jmailen.kotlinter"
 
-check.dependsOn 'analizeCode'
+//check.dependsOn 'analizeCode'
 
 task analizeCode() {
    dependsOn 'checkstyle', 'pmd', 'lintKotlin', 'detektCheck'

@@ -19,9 +19,13 @@ public class FabricInitializer implements AppInitializer {
    @Override
    public void initialize(Injector injector) {
       injector.inject(this);
-      Crashlytics crashlyticsKit =
-            new Crashlytics.Builder().core(new CrashlyticsCore.Builder().disabled(BuildConfig.CRASHLYTICS_DISABLED)
-            .build()).build();
+      Crashlytics crashlyticsKit
+            = new Crashlytics.Builder()
+            .core(
+                  new CrashlyticsCore.Builder()
+                        .disabled(BuildConfig.CRASHLYTICS_DISABLED)
+                        .build()
+            ).build();
       Fabric.with(application, crashlyticsKit);
    }
 }

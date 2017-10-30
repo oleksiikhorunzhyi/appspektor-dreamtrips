@@ -17,8 +17,8 @@ android {
    }
 
    compileOptions {
-      sourceCompatibility project.ext.pluginDependencies.languages.java
-      targetCompatibility project.ext.pluginDependencies.languages.java
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
    }
 
    dataBinding{

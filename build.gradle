@@ -12,8 +12,6 @@ allprojects { // <-- it's needed for plugin detekt. there is specific condition 
             force = true
          }
          classpath project.ext.pluginDependencies.kotlin
-         classpath project.ext.pluginDependencies.retrolambda
-         classpath project.ext.pluginDependencies.retrolambdaAst
          //
          classpath project.ext.pluginDependencies.fabric
          classpath project.ext.pluginDependencies.newrelic

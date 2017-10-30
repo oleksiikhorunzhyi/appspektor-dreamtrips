@@ -5,12 +5,15 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-public class SoftInputUtil {
+public final class SoftInputUtil {
+
    private SoftInputUtil() { }
 
    /** Show soft keyboard explicitly */
    public static void showSoftInputMethod(View view) {
-      if (view == null) return;
+      if (view == null) {
+         return;
+      }
       //
       view.requestFocus();
       InputMethodManager inputManager = (InputMethodManager) view.getContext()
@@ -42,7 +45,9 @@ public class SoftInputUtil {
 
    /** Hide soft keyboard if visible */
    public static void hideSoftInputMethod(View view) {
-      if (view == null) return;
+      if (view == null) {
+         return;
+      }
       //
       InputMethodManager inputManager = (InputMethodManager) view.getContext()
             .getSystemService(Context.INPUT_METHOD_SERVICE);

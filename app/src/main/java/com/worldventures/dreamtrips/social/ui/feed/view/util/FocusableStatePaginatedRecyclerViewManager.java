@@ -20,8 +20,8 @@ import rx.subjects.PublishSubject;
 
 public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRecyclerViewManager {
 
+   private final PublishSubject<Integer> scrollStateSubject = PublishSubject.create();
    private Subscription scrollStateAutoplaySubscription;
-   private PublishSubject<Integer> scrollStateSubject = PublishSubject.create();
 
    public FocusableStatePaginatedRecyclerViewManager(StateRecyclerView stateRecyclerView, SwipeRefreshLayout swipeContainer) {
       super(stateRecyclerView, swipeContainer);
@@ -35,7 +35,9 @@ public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRe
 
    public void findFirstCompletelyVisibleItemPosition() {
       Focusable focusableViewHolder = findNearestFocusableViewHolder();
-      if (focusableViewHolder != null) focusableViewHolder.onFocused();
+      if (focusableViewHolder != null) {
+         focusableViewHolder.onFocused();
+      }
    }
 
    private void initScrollStateListener() {
@@ -78,12 +80,14 @@ public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRe
 
       for (int i = firstItemPosition; i <= lastItemPosition; i++) {
          RecyclerView.ViewHolder viewHolder = getStateRecyclerView().findViewHolderForLayoutPosition(i);
-         if (viewHolder == null) continue;
+         if (viewHolder == null) {
+            continue;
+         }
          float viewHolderCenterPosition = viewHolder.itemView.getY() + viewHolder.itemView.getHeight() / 2;
          float positionDelta = Math.abs(centerPositionY - viewHolderCenterPosition);
 
-         if (positionDelta < minPositionDelta && viewHolder instanceof Focusable &&
-               ((Focusable) viewHolder).canFocus()) {
+         if (positionDelta < minPositionDelta && viewHolder instanceof Focusable
+               && ((Focusable) viewHolder).canFocus()) {
             minPositionDelta = positionDelta;
             nearestFocusableViewHolder = (Focusable) viewHolder;
          }

@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.wallet.DTWalletActivity;
 import com.worldventures.wallet.di.SmartCardModule;
-import com.worldventures.wallet.ui.WalletActivity;
 
 import butterknife.InjectView;
 import rx.schedulers.Schedulers;

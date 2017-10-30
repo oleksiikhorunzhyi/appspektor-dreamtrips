@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
-import com.worldventures.dreamtrips.core.initializer.AppConfigurationInitializer;
 import com.worldventures.dreamtrips.core.initializer.TwitterInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;

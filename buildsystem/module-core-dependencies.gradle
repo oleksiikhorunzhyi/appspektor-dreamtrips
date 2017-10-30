@@ -24,11 +24,11 @@ ext {
 
    //modules
    coreDependencies.modules = [
-         janetExt  : [moduleApi: ":janet-extensions"],
+         janetExt: [moduleApi: ":janet-extensions"],
    ]
 
    coreDependencies.lang = [
-         kotlin: [api: "org.jetbrains.kotlin:kotlin-stdlib:$project.ext.pluginDependencies.languages.kotlin"],
+         kotlin: [api: "org.jetbrains.kotlin:kotlin-stdlib:$project.ext.pluginDependencies.versions.kotlin"],
    ]
 
    coreDependencies.ui = [
@@ -96,27 +96,27 @@ ext {
          okhttpLoggingInterceptor3: [api: "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"],
 
          // janet base
-         janetCore         : [api: 'com.github.techery:janet:1.0.7'],
-         janetCommand      : [api: 'com.github.techery:janet-command:1.0.5'],
+         janetCore                : [api: 'com.github.techery:janet:1.0.7'],
+         janetCommand             : [api: 'com.github.techery:janet-command:1.0.5'],
          // janet http
-         janetHttpService  : [api: "com.github.techery.janet-http:service:$janetHttpVersion"],
-         janetHttpClient   : [api: "com.github.techery.janet-http:client-okhttp3:$janetHttpVersion"],
-         janetHttpConverter: [api: 'com.github.techery.janet-converters:gson:1.1.1'],
+         janetHttpService         : [api: "com.github.techery.janet-http:service:$janetHttpVersion"],
+         janetHttpClient          : [api: "com.github.techery.janet-http:client-okhttp3:$janetHttpVersion"],
+         janetHttpConverter       : [api: 'com.github.techery.janet-converters:gson:1.1.1'],
 
          // API
-         mobileSdkApi      : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
-         mobileSdkModel    : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith       : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.21-RELEASE-1.23-SNAPSHOT'],
+         mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
+         mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.21-RELEASE-1.23-SNAPSHOT'],
    ]
 
    coreDependencies.util = [
-         jodaTimeAndroidDebug    : [debugApi: "net.danlew:android.joda:$jodaTimeVersion"],
-         jodaTimeAndroidRelease  : [releaseApi: "net.danlew:android.joda:$jodaTimeVersion"],
-         timber                  : [api: 'com.jakewharton.timber:timber:4.5.1'],
-         collectionsQuery        : [api: 'com.innahema:collections-query:0.2.9'],
-         multidex                : [api: 'com.android.support:multidex:1.0.1'],
-         jetbrainsAnnotations    : [p: 'org.jetbrains:annotations:13.0'],
-         gson                    : [api: 'com.google.code.gson:gson:2.7'],
+         jodaTimeAndroidDebug  : [debugApi: "net.danlew:android.joda:$jodaTimeVersion"],
+         jodaTimeAndroidRelease: [releaseApi: "net.danlew:android.joda:$jodaTimeVersion"],
+         timber                : [api: 'com.jakewharton.timber:timber:4.5.1'],
+         collectionsQuery      : [api: 'com.innahema:collections-query:0.2.9'],
+         multidex              : [api: 'com.android.support:multidex:1.0.1'],
+         jetbrainsAnnotations  : [p: 'org.jetbrains:annotations:13.0'],
+         gson                  : [api: 'com.google.code.gson:gson:2.7'],
 
          // oauth sdk
          facebook              : [api: 'com.facebook.android:facebook-android-sdk:4.18.0'],
@@ -143,21 +143,21 @@ ext {
    ]
 
    coreDependencies.test = [
-         spekApi            : [testImpl: "org.jetbrains.spek:spek-api:$spekVersion"],
-         spekEngine         : [testImpl: "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"],
+         spekApi           : [testImpl: "org.jetbrains.spek:spek-api:$spekVersion"],
+         spekEngine        : [testImpl: "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"],
 
-         junit              : [testImpl: 'junit:junit:4.12'],
-         junitRunner        : [testImpl: 'org.junit.platform:junit-platform-runner:1.0.0-M4'],
-         junitRunnerJupiter : [testImpl: 'org.junit.jupiter:junit-jupiter-api:5.0.0-M4'],
+         junit             : [testImpl: 'junit:junit:4.12'],
+         junitRunner       : [testImpl: 'org.junit.platform:junit-platform-runner:1.0.0-M4'],
+         junitRunnerJupiter: [testImpl: 'org.junit.jupiter:junit-jupiter-api:5.0.0-M4'],
 
-         assertj            : [testImpl: 'org.assertj:assertj-core:1.7.1'],
-         mockito            : [testImpl: 'org.mockito:mockito-core:2.7.22'],
+         assertj           : [testImpl: 'org.assertj:assertj-core:1.7.1'],
+         mockito           : [testImpl: 'org.mockito:mockito-core:2.7.22'],
 
-         kotlinReflect      : [testImpl: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.languages.kotlin"],
-         kotlinTest         : [testImpl: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.languages.kotlin"],
-         kotlinMockito      : [testImpl: 'com.nhaarman:mockito-kotlin:1.5.0'],
-         kotlinRx           : [testImpl: 'io.reactivex:rxkotlin:0.55.0'],
+         kotlinReflect     : [testImpl: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.versions.kotlin"],
+         kotlinTest        : [testImpl: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.versions.kotlin"],
+         kotlinMockito     : [testImpl: 'com.nhaarman:mockito-kotlin:1.5.0'],
+         kotlinRx          : [testImpl: 'io.reactivex:rxkotlin:0.55.0'],
 
-         jodaTime           : [testImpl: "joda-time:joda-time:$jodaTimeVersion"],
+         jodaTime          : [testImpl: "joda-time:joda-time:$jodaTimeVersion"],
    ]
 }

@@ -8,7 +8,7 @@ ext {
    pluginDependencies.repos = [
          { o -> o.jcenter() },
          { o -> o.google() },
-//         { o -> o.maven { url 'https://plugins.gradle.org/m2' } },
+         { o -> o.maven { url 'https://plugins.gradle.org/m2' } },
          { o -> o.maven { url 'https://maven.fabric.io/public' } }
    ]
    pluginDependencies << [

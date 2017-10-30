@@ -22,8 +22,8 @@ import dagger.Provides;
 public class WalletDtAppModule {
 
    @Provides
-   WalletVideoHolderDelegate provideVideoHolderDelegate(SessionHolder appSessionHolder, CachedModelHelper cachedModelHelper) {
-      return new WalletVideoHolderDelegateImpl(appSessionHolder, cachedModelHelper);
+   WalletVideoHolderDelegate provideVideoHolderDelegate(CachedModelHelper cachedModelHelper) {
+      return new WalletVideoHolderDelegateImpl(cachedModelHelper);
    }
 
    @Singleton

@@ -30,7 +30,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
 
    abstract class TestBody<P : ProfilePresenter<V>, V : ProfilePresenter.View> {
       val USER_ID = 1100
-      val USER = User(USER_ID)
+      val USER =User(USER_ID)
       var sessionHolder = makeSessionHolder(USER_ID)
 
       lateinit var presenter: P
@@ -227,7 +227,14 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
          val userSession = mock<UserSession>()
          val user = User()
          user.id = id;
-         whenever(userSession.user).thenReturn(user)
+         whenever(userSession.user()).thenReturn(user)
+         whenever(userSession.locale()).thenReturn("mock-locale")
+         whenever(userSession.apiToken()).thenReturn("mock-token")
+         whenever(userSession.legacyApiToken()).thenReturn("mock-legacy-token")
+         whenever(userSession.username()).thenReturn("mock-username")
+         whenever(userSession.userPassword()).thenReturn("mock-password")
+         whenever(userSession.lastUpdate()).thenReturn(0L)
+         whenever(userSession.permissions()).thenReturn(emptyList())
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
          return sessionHolder
       }

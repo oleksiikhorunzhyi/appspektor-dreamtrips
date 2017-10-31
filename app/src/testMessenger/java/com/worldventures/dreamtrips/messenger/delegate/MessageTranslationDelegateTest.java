@@ -245,7 +245,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
    private SessionHolder obtainMockUserSession() {
       UserSession userSession = mock(UserSession.class);
-      doReturn("en-us").when(userSession).getLocale();
+      doReturn("en-us").when(userSession).locale();
 
       Optional<UserSession> optionalMock = mock(Optional.class);
       doReturn(true).when(optionalMock).isPresent();

@@ -25,16 +25,13 @@ public class SessionHolder extends ComplexObjectStorage<UserSession> {
 
    @Override
    public Optional<UserSession> get() {
-      Optional<UserSession> sessionOptional = super.get();
-      if (sessionOptional.isPresent()) {
-         UserSession userSession = sessionOptional.get();
-         if (userSession.user() == null) {
-            Crashlytics.logException(new IllegalStateException("UserSession storage is broken"));
-            destroy();
-            sessionOptional = get();
-         } else {
-            sessionOptional = Optional.of(ImmutableUserSession.copyOf(userSession));
-         }
+      Optional<UserSession> sessionOptional;
+      try {
+         sessionOptional = super.get();
+      } catch (Exception e) {
+         Crashlytics.logException(new IllegalStateException("UserSession storage is broken"));
+         destroy();
+         sessionOptional = Optional.absent();
       }
       return sessionOptional;
    }

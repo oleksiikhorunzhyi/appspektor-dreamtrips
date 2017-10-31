@@ -7,4 +7,5 @@ public interface TransactionDetailActionParams extends HttpActionParams {
    String localeId();
    int take();
    int skip();
+   boolean excludeInAppPaymentStatusInitiated();
 }

@@ -68,7 +68,7 @@ public class GetTransactionsCommand extends CommandWithError<List<TransactionMod
             callback.onProgress(0);
          }
          janet.createPipe(GetTransactionsHttpAction.class)
-               .createObservableResult(new GetTransactionsHttpAction(reviewParams.take(), reviewParams.skip(),
+               .createObservableResult(new GetTransactionsHttpAction(reviewParams.take(), reviewParams.skip(), reviewParams.excludeInAppPaymentStatusInitiated(),
                      reviewParams.localeId(), sessionHolder.get().get().getUsername(),
                      sessionHolder.get().get().getLegacyApiToken()))
                .map(GetTransactionsHttpAction::getResponse)

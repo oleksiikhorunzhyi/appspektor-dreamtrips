@@ -58,6 +58,8 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
 
+   public static final boolean EXCLUDE_INITIADED_TRANSACTIONS = true;
+
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DtlLocationInteractor locationInteractor;
@@ -198,6 +200,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                   .localeId(LocaleHelper.getDefaultLocale().getLanguage())
                   .skip(0)
                   .take(15)
+                  .excludeInAppPaymentStatusInitiated(EXCLUDE_INITIADED_TRANSACTIONS)
                   .build()));
    }
 

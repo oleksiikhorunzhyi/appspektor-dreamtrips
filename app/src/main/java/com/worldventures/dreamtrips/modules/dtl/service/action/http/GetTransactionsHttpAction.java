@@ -20,15 +20,17 @@ public class GetTransactionsHttpAction extends BaseThirdPartyHttpAction {
 
    @Query("skip") String skip;
    @Query("take") String take;
+   @Query("ExcludeInAppPaymentStatusInitiated") Boolean excludeInAppPaymentStatusInitiated;
    @Query("localeId") String localeId;
    @Query("api-version") final String apiVersion = "2.0";
 
    @Response ThrstTransactionResponse response;
 
-   public GetTransactionsHttpAction(int take, int skip, String localeId, String userId, String ssoToken) {
+   public GetTransactionsHttpAction(int take, int skip, boolean excludeInAppPaymentStatusInitiated, String localeId, String userId, String ssoToken) {
       this.header = "Basic " + ProjectTextUtils.convertToBase64NoWrap(userId + ":" + ssoToken);
       this.skip = String.valueOf(skip);
       this.take = String.valueOf(take);
+      this.excludeInAppPaymentStatusInitiated = excludeInAppPaymentStatusInitiated;
       this.localeId = localeId;
    }
 

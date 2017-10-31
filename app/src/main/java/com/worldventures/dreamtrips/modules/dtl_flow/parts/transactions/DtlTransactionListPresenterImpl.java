@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCo
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableTransactionDetailActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
                   .localeId(LocaleHelper.getDefaultLocale().getLanguage())
                   .skip(page * PAGE_SIZE)
                   .take(PAGE_SIZE)
+                  .excludeInAppPaymentStatusInitiated(DtlMerchantsPresenterImpl.EXCLUDE_INITIADED_TRANSACTIONS)
                   .build()));
    }
 

@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
@@ -89,6 +90,15 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
          EventBus.getDefault().postSticky(new DtlThrstTransactionSucceedEvent(earnedPoints, totalPoints));
       }
       getActivity().onBackPressed();
+   }
+
+   @Override
+   public void hideBackIcon() {
+      ActionBar actionBar = ((SocialComponentActivity) getActivity()).getSupportActionBar();
+      if (actionBar == null) return;
+
+      actionBar.setHomeButtonEnabled(false);
+      actionBar.setDisplayHomeAsUpEnabled(false);
    }
 
    @Override

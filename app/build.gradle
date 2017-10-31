@@ -148,7 +148,7 @@ android {
       preDexLibraries = project.ext.androidConfig.preDex
    }
    lintOptions {
-      disable 'MissingTranslation', 'RestrictedApi', 'GradleCompatible'
+      disable 'ExtraTranslation', 'MissingTranslation', 'RestrictedApi', 'GradleCompatible'
    }
    packagingOptions {
       exclude 'LICENSE.txt'

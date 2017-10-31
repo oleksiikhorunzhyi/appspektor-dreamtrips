@@ -7,11 +7,11 @@ import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.MerchantsActionCreator;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;

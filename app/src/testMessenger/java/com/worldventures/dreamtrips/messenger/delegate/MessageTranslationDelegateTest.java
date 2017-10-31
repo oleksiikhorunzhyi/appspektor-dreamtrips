@@ -7,13 +7,13 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.TranslationsDAO;
-import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.core.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
 import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
-import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.storage.complex_objects.Optional;
+import com.worldventures.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 
 import org.junit.Before;
@@ -28,7 +28,7 @@ import io.techery.janet.http.test.MockHttpActionService;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.AssertUtil.assertSubscriberWithoutErrorAndValues;
+import static com.worldventures.core.test.AssertUtil.assertSubscriberWithoutErrorAndValues;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;

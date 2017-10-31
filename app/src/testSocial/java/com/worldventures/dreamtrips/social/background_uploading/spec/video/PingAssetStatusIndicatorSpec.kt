@@ -6,8 +6,8 @@ import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.core.test.janet.MockAnalyticsService
-import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.post.model.response.ImmutablePostStatus
 import com.worldventures.dreamtrips.api.post.model.response.PostStatus

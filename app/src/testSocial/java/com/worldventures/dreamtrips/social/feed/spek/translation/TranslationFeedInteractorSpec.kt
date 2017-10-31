@@ -4,7 +4,7 @@ import com.messenger.api.TranslationInteractor
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.messenger.model.response.ImmutableTranslatedText
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository

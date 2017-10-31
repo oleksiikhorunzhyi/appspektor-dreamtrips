@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithPhotoAttachmentBody

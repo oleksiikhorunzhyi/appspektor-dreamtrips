@@ -5,9 +5,9 @@ import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.api.feedback.GetFeedbackReasonsHttpAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 

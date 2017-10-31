@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.innahema.collections.query.queriables.Queryable
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.RestoreCompoundOperationsCommand

@@ -398,7 +398,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private int thrstFlow(Button earn) {
       ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonPurpleTheme);
-      return R.string.dtl_thrst_text_button;
+      return R.string.dtl_merchant_earn_points;
    }
 
    @Override

@@ -178,5 +178,6 @@
    <string name="dtl_thrst_flow_title">Thrst</string>
    <string name="order_from_menu">Order From Menu</string>
    <string name="open_order_from_menu_msg">This is a pilot feature outside of DTL &amp; will not earn you points. You will be taken to an external site that opens in a separate browser outside the app</string>
+   <string name="dtl_merchant_earn_points">Earn points</string>
 
 </resources>

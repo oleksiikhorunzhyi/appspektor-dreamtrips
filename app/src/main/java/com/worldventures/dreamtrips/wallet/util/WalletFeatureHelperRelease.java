@@ -111,6 +111,11 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
       return true;
    }
 
+   @Override
+   public void finishRegularProvisioning(Navigator navigator) {
+      navigator.goCardList();
+   }
+
    private void invalidateDivider(LinearLayout container) {
       container.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_END);
       container.requestLayout();

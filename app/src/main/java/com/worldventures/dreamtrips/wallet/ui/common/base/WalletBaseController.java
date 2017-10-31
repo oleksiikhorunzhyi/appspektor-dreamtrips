@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
@@ -72,7 +71,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    @Override
    public <T> Observable.Transformer<T, T> bindUntilDetach() {
-      return bindUntilEvent(ControllerEvent.DETACH);
+      return bindToLifecycle();
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

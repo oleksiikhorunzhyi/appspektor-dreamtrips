@@ -65,6 +65,6 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Comman
             .build()
    }
 
-   data class PlacesWithAddress internal constructor(val address: WalletAddress, val places: List<WalletPlace>)
+   data class PlacesWithAddress internal constructor(val address: WalletAddress?, val places: List<WalletPlace>)
 }
 

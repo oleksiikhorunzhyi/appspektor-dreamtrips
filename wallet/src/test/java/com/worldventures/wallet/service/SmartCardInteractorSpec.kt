@@ -213,9 +213,7 @@ class SmartCardInteractorSpec : BaseSpec({
             val stateDefaultSubscriber = TestSubscriber<ActionState<OfflineModeStatusCommand>>()
             smartCardInteractor.restoreOfflineModeDefaultStatePipe()
                   .createObservableResult(RestoreOfflineModeDefaultStateCommand())
-                  .flatMap { v ->
-                     smartCardInteractor.offlineModeStatusPipe().createObservable(OfflineModeStatusCommand.fetch())
-                  }
+                  .flatMap { smartCardInteractor.offlineModeStatusPipe().createObservable(OfflineModeStatusCommand.fetch()) }
                   .subscribe(stateDefaultSubscriber)
 
             assertActionSuccess(stateNotDefaultSubscriber, { it.result == !defaultOfflineModeState })

@@ -64,11 +64,6 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideAndroidAddressToWalletAddressConverter() {
-      return new AndroidAddressToWalletAddressConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideHttpAddressToWalletAddressConverter() {
       return new HttpAddressToWalletAddressConverter();
    }

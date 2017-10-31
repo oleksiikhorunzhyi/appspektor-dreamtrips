@@ -8,7 +8,7 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand
-import com.worldventures.wallet.domain.entity.ImmutableSmartCardStatus
+import com.worldventures.wallet.domain.entity.SmartCardStatus
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.wallet.service.command.device.DeviceStateCommand
 import com.worldventures.wallet.ui.common.BasePresenterTest
@@ -24,16 +24,16 @@ import rx.lang.kotlin.PublishSubject
 
 class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen, WizardManualInputPresenter>() {
 
-   lateinit var screen: WizardManualInputScreen
-   lateinit var presenter: WizardManualInputPresenter
-   lateinit var inputBarcodeDelegate: InputBarcodeDelegate
+   private lateinit var screen: WizardManualInputScreen
+   private lateinit var presenter: WizardManualInputPresenter
+   private lateinit var inputBarcodeDelegate: InputBarcodeDelegate
 
    private val inputSubject = PublishSubject<CharSequence>()
 
    private val interactorBuilder = InteractorBuilder.configJanet {
       addMockAnalyticsService()
       addMockCommandActionService {
-         addContract(Contract.of(DeviceStateCommand::class.java).result(ImmutableSmartCardStatus.builder().build()))
+         addContract(Contract.of(DeviceStateCommand::class.java).result(SmartCardStatus()))
          addContract(Contract.of(WalletAnalyticsCommand::class.java).result(null))
       }
    }
@@ -47,7 +47,7 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
 
       screen = mockScreen(WizardManualInputScreen::class.java)
       whenever(screen.scidInput()).thenReturn(inputSubject)
-      whenever(screen.scIdLength).thenReturn(5)
+      whenever(screen.getScIdLength()).thenReturn(5)
 
       inputBarcodeDelegate = mock()
       presenter = WizardManualInputPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, inputBarcodeDelegate)

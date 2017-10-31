@@ -3,7 +3,7 @@ package com.worldventures.wallet.ui.settings
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.wallet.domain.entity.ImmutableSmartCardStatus
+import com.worldventures.wallet.domain.entity.SmartCardStatus
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.wallet.service.command.SetPinEnabledCommand
@@ -57,7 +57,7 @@ class WalletSecuritySettingsPresenterTest : BasePresenterTest<WalletSecuritySett
       smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
       deviceConnectionDelegate = MockDeviceConnectionDelegate()
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
-      deviceStateCommandContract.result(ImmutableSmartCardStatus.builder().build())
+      deviceStateCommandContract.result(SmartCardStatus())
       walletFeatureHelper = WalletFeatureHelperFull()
       screen = mockScreen(WalletSecuritySettingsScreen::class.java)
       whenever(screen.stealthModeStatus()).thenReturn(stealthToggleSubject.asObservable())

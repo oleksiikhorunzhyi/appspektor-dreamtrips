@@ -61,7 +61,7 @@ class TestInputBarcodeDelegate : BaseTest() {
       val wizardInteractor = interactorBuilder.createInteractor(WizardInteractor::class)
       val smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
       val analyticsDelegate: InputAnalyticsDelegate = mock()
-      delegate = InputBarcodeDelegate(navigator, wizardInteractor, analyticsDelegate, smartCardInteractor)
+      delegate = InputBarcodeDelegateImpl(navigator, wizardInteractor, analyticsDelegate, smartCardInteractor)
       delegate.init(view)
    }
 

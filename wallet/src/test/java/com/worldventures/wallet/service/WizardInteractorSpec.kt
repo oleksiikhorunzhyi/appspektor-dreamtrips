@@ -28,7 +28,6 @@ import com.worldventures.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.wallet.model.TestSmartCard
 import com.worldventures.wallet.model.TestSmartCardDetails
 import com.worldventures.wallet.model.TestSmartCardUser
-import com.worldventures.wallet.model.TestTermsAndConditions
 import com.worldventures.wallet.model.TestUpdateCardUserData
 import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
@@ -180,7 +179,7 @@ class WizardInteractorSpec : BaseSpec({
 
       fun createMockDb(): WalletStorage {
          val repository: WalletStorage = spy()
-         whenever(repository.walletTermsAndConditions).thenReturn(TestTermsAndConditions())
+         whenever(repository.walletTermsAndConditions).thenReturn(com.worldventures.wallet.domain.entity.TermsAndConditions("", "1"))
          return repository
       }
 

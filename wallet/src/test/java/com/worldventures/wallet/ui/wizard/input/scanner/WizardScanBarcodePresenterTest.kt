@@ -7,33 +7,22 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.ui.util.permission.PermissionDispatcher
 import com.worldventures.core.ui.util.permission.PermissionsResult
-import com.worldventures.wallet.domain.entity.ImmutableSmartCardStatus
-import com.worldventures.wallet.service.command.device.DeviceStateCommand
 import com.worldventures.wallet.ui.common.BasePresenterTest
-import com.worldventures.wallet.ui.common.InteractorBuilder
 import com.worldventures.wallet.ui.common.MockDeviceConnectionDelegate
 import com.worldventures.wallet.ui.common.ViewPresenterBinder
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate
 import com.worldventures.wallet.ui.wizard.input.helper.InputBarcodeDelegate
 import com.worldventures.wallet.ui.wizard.input.scanner.impl.WizardScanBarcodePresenterImpl
-import io.techery.janet.command.test.Contract
 import org.junit.Test
 import rx.Observable
 import kotlin.test.todo
 
 class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen, WizardScanBarcodePresenter>() {
 
-   lateinit var screen: WizardScanBarcodeScreen
-   lateinit var presenter: WizardScanBarcodePresenter
-   lateinit var inputBarcodeDelegate: InputBarcodeDelegate
-   lateinit var permissionDispatcher: PermissionDispatcher
-
-   private val interactorBuilder = InteractorBuilder.configJanet {
-      addMockAnalyticsService()
-      addMockCommandActionService {
-         addContract(Contract.of(DeviceStateCommand::class.java).result(ImmutableSmartCardStatus.builder().build()))
-      }
-   }
+   private lateinit var screen: WizardScanBarcodeScreen
+   private lateinit var presenter: WizardScanBarcodePresenter
+   private lateinit var inputBarcodeDelegate: InputBarcodeDelegate
+   private lateinit var permissionDispatcher: PermissionDispatcher
 
    override fun createViewPresenterBinder(): ViewPresenterBinder<WizardScanBarcodeScreen, WizardScanBarcodePresenter> = ViewPresenterBinder(screen, presenter)
 

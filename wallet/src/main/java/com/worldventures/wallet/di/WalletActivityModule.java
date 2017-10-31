@@ -180,7 +180,7 @@ import com.worldventures.wallet.ui.wizard.checking.WizardCheckingPresenter;
 import com.worldventures.wallet.ui.wizard.checking.impl.WizardCheckingPresenterImpl;
 import com.worldventures.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
 import com.worldventures.wallet.ui.wizard.input.helper.InputAnalyticsDelegate;
-import com.worldventures.wallet.ui.wizard.input.helper.InputBarcodeDelegate;
+import com.worldventures.wallet.ui.wizard.input.helper.InputBarcodeDelegateImpl;
 import com.worldventures.wallet.ui.wizard.input.manual.WizardManualInputPresenter;
 import com.worldventures.wallet.ui.wizard.input.manual.impl.WizardManualInputPresenterImpl;
 import com.worldventures.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
@@ -400,7 +400,7 @@ public class WalletActivityModule {
          WizardInteractor wizardInteractor, WalletAnalyticsInteractor analyticsInteractor,
          PermissionDispatcher permissionDispatcher, SmartCardInteractor smartCardInteractor) {
       return new WizardScanBarcodePresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
-            new InputBarcodeDelegate(navigator, wizardInteractor, InputAnalyticsDelegate.Companion.createForScannerScreen(analyticsInteractor), smartCardInteractor));
+            new InputBarcodeDelegateImpl(navigator, wizardInteractor, InputAnalyticsDelegate.Companion.createForScannerScreen(analyticsInteractor), smartCardInteractor));
    }
 
    @Provides
@@ -415,7 +415,7 @@ public class WalletActivityModule {
          WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor,
          SmartCardInteractor smartCardInteractor) {
       return new WizardManualInputPresenterImpl(navigator, deviceConnectionDelegate,
-            analyticsInteractor, new InputBarcodeDelegate(navigator, wizardInteractor,
+            analyticsInteractor, new InputBarcodeDelegateImpl(navigator, wizardInteractor,
             InputAnalyticsDelegate.Companion.createForManualInputScreen(analyticsInteractor), smartCardInteractor));
    }
 

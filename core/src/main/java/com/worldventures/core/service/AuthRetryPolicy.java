@@ -1,7 +1,6 @@
 package com.worldventures.core.service;
 
 import com.worldventures.core.model.Session;
-import com.worldventures.core.model.session.ImmutableUserSession;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.storage.complex_objects.Optional;
@@ -16,9 +15,11 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 public class AuthRetryPolicy {
 
    private final SessionHolder appSessionHolder;
+   private AuthStorage<Session> authStorage;
 
-   public AuthRetryPolicy(SessionHolder appSessionHolder) {
+   public AuthRetryPolicy(SessionHolder appSessionHolder, AuthStorage<Session> authStorage) {
       this.appSessionHolder = appSessionHolder;
+      this.authStorage = authStorage;
    }
 
    public boolean handle(Throwable apiError, Func0<Session> loginCall) {
@@ -40,15 +41,7 @@ public class AuthRetryPolicy {
 
    private void handleSession(Session session) {
       Timber.d("Handling user session");
-      UserSession oldUserSession = appSessionHolder.get().get();
-      appSessionHolder.put(ImmutableUserSession.builder()
-            .from(oldUserSession)
-            .locale(session.getLocale())
-            .user(session.getUser())
-            .apiToken(session.getToken())
-            .legacyApiToken(session.getSsoToken())
-            .lastUpdate(System.currentTimeMillis())
-            .permissions(session.getPermissions()).build());
+      authStorage.storeAuth(session);
    }
 
 

@@ -41,7 +41,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    private final String apiVersion;
 
    public NewDreamTripsHttpService(SessionHolder appSessionHolder, AppVersionNameBuilder appVersionNameBuilder,
-         MapperyContext mapperyContext, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource,
+         MapperyContext mapperyContext, AuthRetryPolicy retryPolicy, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource,
          String baseUrl, HttpClient client, Converter converter, String apiVersion) {
       super(new HttpActionService(baseUrl, client, converter));
       this.appSessionHolder = appSessionHolder;
@@ -49,7 +49,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       this.mapperyContext = mapperyContext;
       this.reLoginInteractor = reLoginInteractor;
       this.deviceSource = deviceSource;
-      this.retryPolicy = new AuthRetryPolicy(appSessionHolder);
+      this.retryPolicy = retryPolicy;
       this.apiVersion = apiVersion;
    }
 

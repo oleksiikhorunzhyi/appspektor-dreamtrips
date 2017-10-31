@@ -42,14 +42,14 @@ public class VideoHttpService extends ActionServiceWrapper {
 
    public VideoHttpService(String baseUrl, HttpClient client, Converter converter, SessionHolder appSessionHolder,
          MapperyContext mapperyContext, AppVersionNameBuilder appVersionNameBuilder,
-         ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
+         AuthRetryPolicy retryPolicy, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
       super(new HttpActionService(baseUrl, client, converter));
       this.appSessionHolder = appSessionHolder;
       this.mapperyContext = mapperyContext;
       this.appVersionNameBuilder = appVersionNameBuilder;
       this.reLoginInteractor = reLoginInteractor;
       this.deviceSource = deviceSource;
-      retryPolicy = new AuthRetryPolicy(this.appSessionHolder);
+      this.retryPolicy = retryPolicy;
    }
 
    @Override

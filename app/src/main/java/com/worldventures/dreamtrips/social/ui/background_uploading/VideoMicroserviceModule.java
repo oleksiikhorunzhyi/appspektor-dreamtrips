@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.service.AuthRetryPolicy;
 import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.session.model.Device;
@@ -38,13 +39,13 @@ public class VideoMicroserviceModule {
    @Named(JANET_QUALIFIER)
    Janet provideJanet(@Named(JANET_QUALIFIER) HttpClient httpClient, SessionHolder appSessionHolder,
          MapperyContext mapperyContext, AppVersionNameBuilder appVersionNameBuilder,
-         ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
+         AuthRetryPolicy retryPolicy, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
 
       final Janet.Builder builder = new Janet.Builder();
       final Gson gson = new GsonBuilder().create();
 
       builder.addService(new VideoHttpService(BuildConfig.VIDEO_MICROSERVICE_URL, httpClient, new GsonConverter(gson),
-            appSessionHolder, mapperyContext, appVersionNameBuilder, reLoginInteractor, deviceSource));
+            appSessionHolder, mapperyContext, appVersionNameBuilder, retryPolicy, reLoginInteractor, deviceSource));
 
       return builder.build();
    }

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.janet.api_lib;
 import com.worldventures.core.model.Session;
 import com.worldventures.core.model.session.ImmutableUserSession;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.service.AuthStorage;
 
 public class DreamTripsAuthStorage extends AuthStorage<Session> {
 
@@ -17,8 +18,8 @@ public class DreamTripsAuthStorage extends AuthStorage<Session> {
    public void storeAuth(Session session) {
       sessionHolder.put(ImmutableUserSession.builder()
             .from(sessionHolder.get().get())
-            .locale(session.getLocale())
             .user(session.getUser())
+            .locale(session.getLocale())
             .apiToken(session.getToken())
             .legacyApiToken(session.getSsoToken())
             .lastUpdate(System.currentTimeMillis())

@@ -258,6 +258,7 @@
                android:gravity="center_vertical|center_horizontal"
                android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
                android:text="View your receipt"
+               android:textStyle="bold"
                />
 
          <LinearLayout
@@ -276,6 +277,7 @@
                   android:layout_height="wrap_content"
                   android:layout_centerHorizontal="true"
                   android:text="Review Merchant"
+                  android:textStyle="bold"
                   />
 
             <Button

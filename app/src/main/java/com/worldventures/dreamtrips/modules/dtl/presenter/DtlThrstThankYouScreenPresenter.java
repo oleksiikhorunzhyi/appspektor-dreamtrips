@@ -38,6 +38,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
       view.setEarnedPoints(Integer.valueOf(thrstPaymentBundle.getEarnedPoints()));
       view.setReceiptURL(thrstPaymentBundle.getReceiptURL());
       view.showDoneButton();
+      view.hideBackIcon();
    }
 
    public void onDoneClick() {
@@ -79,5 +80,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
       void setReceiptURL(String url);
 
       void goBack(boolean isPaid, String earnedPoints, String totalPoints);
+
+      void hideBackIcon();
    }
 }

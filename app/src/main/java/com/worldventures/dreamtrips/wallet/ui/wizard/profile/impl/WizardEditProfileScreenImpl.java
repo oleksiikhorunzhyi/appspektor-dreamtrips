@@ -241,7 +241,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    }
 
    @Override
-   public void showConfirmationDialog(ProfileViewModel profileViewModel) {
+   public void  showConfirmationDialog(ProfileViewModel profileViewModel) {
       new MaterialDialog.Builder(getContext())
             .content(fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message,
                   userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastNameWithSuffix()))))

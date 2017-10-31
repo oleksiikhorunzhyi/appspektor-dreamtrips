@@ -398,7 +398,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private int thrstFlow(Button earn) {
       ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonPurpleTheme);
-      return R.string.dtl_thrst_text_button;
+      return R.string.dtl_merchant_earn_points;
    }
 
    @Override
@@ -480,12 +480,14 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void showThrstFlowButton() {
       View payBtn = ButterKnife.findById(this, R.id.merchant_details_pay);
+      if (null == payBtn) return;
       payBtn.setVisibility(VISIBLE);
    }
 
    @Override
    public void showEarnFlowButton() {
       View earnBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
+      if (null == earnBtn) return;
       earnBtn.setVisibility(VISIBLE);
    }
 

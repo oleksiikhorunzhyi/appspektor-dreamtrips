@@ -16,6 +16,7 @@ public class TransactionModel implements Parcelable {
    private double tip;
    private int earnedPoints;
    private Date transactionDate;
+   private String paymentStatus;
 
    public TransactionModel() { }
 
@@ -99,6 +100,14 @@ public class TransactionModel implements Parcelable {
       this.transactionDate = transactionDate;
    }
 
+   public String getPaymentStatus() {
+      return paymentStatus;
+   }
+
+   public void setPaymentStatus(String paymentStatus) {
+      this.paymentStatus = paymentStatus;
+   }
+
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;
@@ -125,6 +134,7 @@ public class TransactionModel implements Parcelable {
       tax = in.readDouble();
       tip = in.readDouble();
       earnedPoints = in.readInt();
+      paymentStatus  = in.readString();
    }
 
    @Override
@@ -139,6 +149,7 @@ public class TransactionModel implements Parcelable {
       dest.writeDouble(tax);
       dest.writeDouble(tip);
       dest.writeInt(earnedPoints);
+      dest.writeString(paymentStatus);
    }
 
    @Override

@@ -26,5 +26,6 @@ public interface DetailTransactionThrst extends Serializable {
    @SerializedName("Total")  @Nullable Double totalAmount();
    @SerializedName("Tax")  @Nullable Double tax();
    @SerializedName("Tip")  @Nullable Double tip();
+   @SerializedName("PaymentStatus")  @Nullable String paymentStatus();
 
 }

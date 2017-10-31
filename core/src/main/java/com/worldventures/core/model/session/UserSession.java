@@ -7,25 +7,23 @@ import org.immutables.value.Value;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 @Value.Immutable
 @Gson.TypeAdapters
 public interface UserSession {
 
-   @Nullable User user();
+   User user();
 
-   @Nullable String locale();
+   String locale();
 
-   @Nullable String apiToken();
+   String apiToken();
 
-   @Nullable String legacyApiToken();
+   String legacyApiToken();
 
-   @Nullable String userPassword();
+   String username();
 
-   @Nullable String username();
+   String userPassword();
 
-   @Nullable List<Feature> permissions();
+   List<Feature> permissions();
 
-   @Nullable Long lastUpdate();
+   Long lastUpdate();
 }

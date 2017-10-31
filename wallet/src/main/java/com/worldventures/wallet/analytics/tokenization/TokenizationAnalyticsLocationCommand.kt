@@ -3,6 +3,7 @@ package com.worldventures.wallet.analytics.tokenization
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
 import com.worldventures.wallet.service.lostcard.LostCardRepository
+import com.worldventures.wallet.util.WalletLocationsUtil
 import io.techery.janet.command.annotations.CommandAction
 import javax.inject.Inject
 
@@ -19,11 +20,8 @@ class TokenizationAnalyticsLocationCommand(private val tokenizationCardAction: T
 
    private fun fetchLastKnownCoordinates(): WalletCoordinates? {
       val locations = lostCardRepository.walletLocations
-      val lastKnownLocation = if (locations == null || locations.isEmpty())
-         null
-      else
-         locations[locations.size - 1]
-      return lastKnownLocation?.coordinates()
+      val lastKnownLocation = WalletLocationsUtil.getLatestLocation(locations)
+      return lastKnownLocation?.coordinates
    }
 
 }

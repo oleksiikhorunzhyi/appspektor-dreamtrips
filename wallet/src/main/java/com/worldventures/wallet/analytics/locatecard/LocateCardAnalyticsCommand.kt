@@ -22,7 +22,7 @@ class LocateCardAnalyticsCommand(private val baseLocateSmartCardAction: BaseLoca
       val locations = lostCardRepository.walletLocations
       val lastKnownLocation = WalletLocationsUtil.getLatestLocation(locations)
       if (lastKnownLocation != null) {
-         baseLocateSmartCardAction.setLocation(lastKnownLocation.coordinates())
+         baseLocateSmartCardAction.setLocation(lastKnownLocation.coordinates)
       }
    }
 }

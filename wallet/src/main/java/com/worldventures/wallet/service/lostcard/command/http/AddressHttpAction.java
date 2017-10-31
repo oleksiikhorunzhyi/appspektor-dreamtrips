@@ -23,7 +23,7 @@ public class AddressHttpAction extends BaseThirdPartyHttpAction {
    AddressRestResponse response;
 
    public AddressHttpAction(WalletCoordinates location) {
-      this.coords = String.format(Locale.US, "%.6f,%,6f", location.lat(), location.lng());
+      this.coords = String.format(Locale.US, "%.6f,%,6f", location.getLat(), location.getLng());
    }
 
    public AddressRestResponse response() {

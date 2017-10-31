@@ -25,7 +25,7 @@ public class PlacesNearbyHttpAction extends BaseThirdPartyHttpAction {
    @Response NearbyResponse response;
 
    public PlacesNearbyHttpAction(WalletCoordinates location) {
-      this.location = String.format(Locale.US, "%.6f,%,6f", location.lat(), location.lng());
+      this.location = String.format(Locale.US, "%.6f,%,6f", location.getLat(), location.getLng());
    }
 
    public NearbyResponse response() {

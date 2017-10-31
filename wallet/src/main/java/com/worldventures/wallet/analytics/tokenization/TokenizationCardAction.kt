@@ -14,7 +14,7 @@ open class TokenizationCardAction internal constructor(record: Record, private v
    }
 
    internal fun setCoordinates(coordinates: WalletCoordinates?) {
-      if (coordinates != null) this.coordinates = String.format("%s,%s", coordinates.lat(), coordinates.lng())
+      if (coordinates != null) this.coordinates = String.format("%s,%s", coordinates.lat, coordinates.lng)
    }
 
    internal fun generateCondition(): String {

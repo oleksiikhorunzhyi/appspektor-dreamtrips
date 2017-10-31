@@ -153,11 +153,11 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    }
 
    private String obtainPlace(List<WalletPlace> places) {
-      return places != null && places.size() == 1 ? places.get(0).name() : "";
+      return places != null && places.size() == 1 ? places.get(0).getName() : "";
    }
 
    private String obtainAddress(WalletAddress address) {
-      return format("%s, %s\n%s", address.countryName(), address.adminArea(), address.addressLine());
+      return format("%s, %s\n%s", address.getCountryName(), address.getAdminArea(), address.getAddressLine());
    }
 
    private void openExternalMap(LatLng position) {

@@ -21,7 +21,6 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
     @Override
     public TransactionModel convert(MapperyContext mapperyContext, DetailTransactionThrst detailTransactionThrst) {
         TransactionModel transactionModel = new TransactionModel();
-        transactionModel.setPaymentStatus(mapPaymentStatus(detailTransactionThrst.paymentStatus()));
         transactionModel.setId(detailTransactionThrst.id());
         transactionModel.setMerchantId(detailTransactionThrst.merchantId());
         transactionModel.setMerchantName(detailTransactionThrst.merchantName());
@@ -41,6 +40,7 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
     }
 
     private TransactionModel.PaymentStatus mapPaymentStatus(DetailTransactionThrst.PaymentStatus paymentStatus) {
+        if (paymentStatus == null) return TransactionModel.PaymentStatus.UNKNOWN;
         switch (paymentStatus) {
             case INITIATED:
                 return TransactionModel.PaymentStatus.INITIATED;

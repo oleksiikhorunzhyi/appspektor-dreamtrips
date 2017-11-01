@@ -30,6 +30,7 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
         transactionModel.setTip(safeConversion(detailTransactionThrst.tip()));
         transactionModel.setEarnedPoints((int)Math.round(safeConversion(detailTransactionThrst.pointsEarned())));
         transactionModel.setTransactionDate(detailTransactionThrst.date());
+        transactionModel.setPaymentStatus(detailTransactionThrst.paymentStatus());
         return transactionModel;
     }
 

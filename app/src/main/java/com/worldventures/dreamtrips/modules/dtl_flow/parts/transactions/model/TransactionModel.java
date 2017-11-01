@@ -17,7 +17,7 @@ public class TransactionModel implements Parcelable {
    private double tip;
    private int earnedPoints;
    private Date transactionDate;
-   private String paymentStatus;
+   private PaymentStatus paymentStatus;
 
    public TransactionModel() { }
 
@@ -109,12 +109,12 @@ public class TransactionModel implements Parcelable {
       this.transactionDate = transactionDate;
    }
 
-   public String getPaymentStatus() {
-      return paymentStatus;
+   public void setPaymentStatus(PaymentStatus paymentStatus) {
+      this.paymentStatus = paymentStatus;
    }
 
-   public void setPaymentStatus(String paymentStatus) {
-      this.paymentStatus = paymentStatus;
+   public PaymentStatus getPaymentStatus() {
+      return paymentStatus;
    }
 
    @Override
@@ -132,6 +132,12 @@ public class TransactionModel implements Parcelable {
       return id != null ? id.hashCode() : 0;
    }
 
+   public enum PaymentStatus {
+      INITIATED,
+      SUCCESSFUL,
+      UNKNOWN
+   }
+
    protected TransactionModel(Parcel in) {
       id = in.readString();
       merchantId = in.readString();
@@ -144,7 +150,8 @@ public class TransactionModel implements Parcelable {
       tax = in.readDouble();
       tip = in.readDouble();
       earnedPoints = in.readInt();
-      paymentStatus  = in.readString();
+      int tmpPaymentStatus = in.readInt();
+      this.paymentStatus = tmpPaymentStatus == -1 ? null : PaymentStatus.values()[tmpPaymentStatus];
    }
 
    @Override
@@ -160,7 +167,7 @@ public class TransactionModel implements Parcelable {
       dest.writeDouble(tax);
       dest.writeDouble(tip);
       dest.writeInt(earnedPoints);
-      dest.writeString(paymentStatus);
+      dest.writeInt(this.paymentStatus == null ? -1 : this.paymentStatus.ordinal());
    }
 
    @Override

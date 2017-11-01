@@ -20,18 +20,9 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
    private void init() {
       if (thrstPaymentBundle.isPaid()) {
-         view.thankYouSuccessfulText();
-         view.setSuccessPaymentText();
-         view.setPaymentSuccessImage();
-         view.setSuccessResume();
-         view.setShowScreenSuccessMessage();
+         view.showTransactionSuccessfulMessage();
       } else {
-         view.thankYouFailureText();
-         view.setFailurePaymentText();
-         view.setPaymentFailureImage();
-         view.setFailureResume();
-         view.setShowScreenFailureMessage();
-         view.showSubThankYouMessage();
+         view.showTransactionFailedMessage();
       }
       view.hideReviewMerchant();
       view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()), thrstPaymentBundle.getSubTotalAmount(), thrstPaymentBundle.getTaxAmount(), thrstPaymentBundle.getTipAmount());
@@ -49,27 +40,9 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
       void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount);
 
-      void thankYouSuccessfulText();
+      void showTransactionSuccessfulMessage();
 
-      void thankYouFailureText();
-
-      void setSuccessPaymentText();
-
-      void setFailurePaymentText();
-
-      void setSuccessResume();
-
-      void setFailureResume();
-
-      void setPaymentSuccessImage();
-
-      void setPaymentFailureImage();
-
-      void setShowScreenSuccessMessage();
-
-      void setShowScreenFailureMessage();
-
-      void showSubThankYouMessage();
+      void showTransactionFailedMessage();
 
       void showDoneButton();
 

@@ -13,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl.view.util.TransactionStatusInjector;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
@@ -39,6 +40,8 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    @InjectView(R.id.currentTime) TextView tvDate;
    @InjectView(R.id.tv_review_merchant) TextView tvReview;
    @InjectView(R.id.tv_receipt) TextView tvReceipt;
+
+   private TransactionStatusInjector transactionStatusInjector;
 
    public DtlTransactionScreenImpl(Context context) {
       super(context);
@@ -70,16 +73,24 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
             Flow.get(getContext()).goBack();
          });
       }
-      initData();
+
+      transactionStatusInjector = new TransactionStatusInjector(getActivity(), this);
    }
 
-   private void initData() {
+   @Override
+   public void showTransaction(TransactionModel transactionModel, boolean isSuccessful) {
+      if (isSuccessful) {
+         transactionStatusInjector.showSuccessMessage();
+      } else {
+         transactionStatusInjector.showFailureMessage();
+      }
+
       tvTotal.setText(CurrencyUtils.toCurrency(transaction.getTotalAmount()));
       tvSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount()));
       tvTax.setText(CurrencyUtils.toCurrency(transaction.getTax()));
       tvTip.setText(CurrencyUtils.toCurrency(transaction.getTip()));
       tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
-      tvEarnedPoints.setText(String.format(getContext().getString(R.string.dtl_earned_points), transaction.getEarnedPoints()));
+      tvEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
    }
 
    @OnClick(R.id.tv_receipt)

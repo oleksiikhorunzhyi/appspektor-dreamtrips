@@ -28,6 +28,12 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      getView().showTransaction(transaction, isTransactionSuccessful());
+   }
+
+   private boolean isTransactionSuccessful() {
+      return transaction.getPaymentStatus() == TransactionModel.PaymentStatus.INITIATED ||
+            transaction.getPaymentStatus() == TransactionModel.PaymentStatus.SUCCESSFUL;
    }
 
    @Override
@@ -61,7 +67,5 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
                      getView().hideLoadingMerchantDialog();
                      getView().showCouldNotShowMerchantDialog();
                   }));
-
-
    }
 }

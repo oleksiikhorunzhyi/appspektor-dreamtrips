@@ -21,6 +21,7 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
     @Override
     public TransactionModel convert(MapperyContext mapperyContext, DetailTransactionThrst detailTransactionThrst) {
         TransactionModel transactionModel = new TransactionModel();
+        transactionModel.setPaymentStatus(mapPaymentStatus(detailTransactionThrst.paymentStatus()));
         transactionModel.setId(detailTransactionThrst.id());
         transactionModel.setMerchantId(detailTransactionThrst.merchantId());
         transactionModel.setMerchantName(detailTransactionThrst.merchantName());
@@ -31,11 +32,23 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
         transactionModel.setTip(safeConversion(detailTransactionThrst.tip()));
         transactionModel.setEarnedPoints((int)Math.round(safeConversion(detailTransactionThrst.pointsEarned())));
         transactionModel.setTransactionDate(detailTransactionThrst.date());
-        transactionModel.setPaymentStatus(detailTransactionThrst.paymentStatus());
+        transactionModel.setPaymentStatus(mapPaymentStatus(detailTransactionThrst.paymentStatus()));
         return transactionModel;
     }
 
     private Double safeConversion(Double d) {
         return d == null ? 0 : d;
+    }
+
+    private TransactionModel.PaymentStatus mapPaymentStatus(DetailTransactionThrst.PaymentStatus paymentStatus) {
+        switch (paymentStatus) {
+            case INITIATED:
+                return TransactionModel.PaymentStatus.INITIATED;
+            case SUCCESSFUL:
+                return TransactionModel.PaymentStatus.SUCCESSFUL;
+            case UNKNOWN:
+            default:
+                return TransactionModel.PaymentStatus.UNKNOWN;
+        }
     }
 }

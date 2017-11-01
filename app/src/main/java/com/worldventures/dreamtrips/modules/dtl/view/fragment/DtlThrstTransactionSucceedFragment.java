@@ -33,11 +33,9 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
 
    @Override
-   public void afterCreateView(View rootView) {
-      super.afterCreateView(rootView);
-      ThrstPaymentCompletedBundle thrstPaymentCompletedBundle = getArgs();
-      earned.setText(String.format("+%spt", thrstPaymentCompletedBundle.getEarnedPoints()));
-      total.setText(thrstPaymentCompletedBundle.getTotalPoints());
+   public void onResume() {
+      super.onResume();
+      getPresenter().init();
    }
 
    @Override
@@ -48,6 +46,16 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    @Override
    public void sendToReview(Merchant merchant) {
       Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, false, true));
+   }
+
+   @Override
+   public void setTotalPoints(String points) {
+      total.setText(points);
+   }
+
+   @Override
+   public void setTotalEarnedPoints(String earnedPoints) {
+      earned.setText(String.format("+%spt", earnedPoints));
    }
 
    @OnClick(R.id.share)
@@ -62,7 +70,7 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    }
 
    @Override
-   public void showShareDialog(int amount, Merchant merchant) {
+   public void showShareDialog(String amount, Merchant merchant) {
       new ShareDialog(getContext(), type -> {
          getPresenter().trackSharing(type);
          ShareBundle shareBundle = MerchantHelper.buildShareBundle(getContext(), merchant, type);
@@ -72,6 +80,7 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
 
    @Override
    protected DtlThrstTransactionSucceedPresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlThrstTransactionSucceedPresenter(getArgs().getMerchant());
+      return new DtlThrstTransactionSucceedPresenter(getArgs().getMerchant(), getArgs().getEarnedPoints(),
+                                                     getArgs().getTotalPoints());
    }
 }

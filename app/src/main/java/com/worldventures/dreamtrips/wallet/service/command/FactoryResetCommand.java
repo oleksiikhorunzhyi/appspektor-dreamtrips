@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.wallet.service.FactoryResetInteractor;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetOptions;
 import com.worldventures.dreamtrips.wallet.service.command.reset.ResetSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.util.WalletFeatureHelper;
 
 import javax.inject.Inject;
 
@@ -23,6 +24,7 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
 
    @Inject SmartCardInteractor smartCardInteractor;
    @Inject FactoryResetInteractor factoryResetInteractor;
+   @Inject WalletFeatureHelper walletFeatureHelper;
 
    private final PublishSubject<Void> resetCommandPublishSubject;
    private final ResetOptions factoryResetOptions;
@@ -38,7 +40,7 @@ public class FactoryResetCommand extends Command<Void> implements InjectableActi
          Observable.merge(
                requestPinStatus()
                      .flatMap(status -> {
-                        if (status == PinStatus.DISABLED) {
+                        if (status == PinStatus.DISABLED || !walletFeatureHelper.pinFunctionalityAvailable()) {
                            // skip
                            return Observable.just(null);
                         } else {

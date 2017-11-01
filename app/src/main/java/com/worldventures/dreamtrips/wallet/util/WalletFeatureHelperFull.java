@@ -75,4 +75,9 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    public void finishRegularProvisioning(Navigator navigator) {
       navigator.goPinProposalUserSetup(PinProposalAction.WIZARD);
    }
+
+   @Override
+   public boolean pinFunctionalityAvailable() {
+      return true;
+   }
 }

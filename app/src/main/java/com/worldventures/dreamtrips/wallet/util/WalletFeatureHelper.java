@@ -37,4 +37,6 @@ public interface WalletFeatureHelper {
    boolean isSampleCardMode();
 
    void finishRegularProvisioning(Navigator navigator);
+
+   boolean pinFunctionalityAvailable();
 }

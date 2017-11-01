@@ -91,6 +91,10 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       tvTip.setText(CurrencyUtils.toCurrency(transaction.getTip()));
       tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
       tvEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
+
+      if (ViewUtils.isTablet(getActivity())) {
+         tvReview.setVisibility(GONE);
+      }
    }
 
    @OnClick(R.id.tv_receipt)

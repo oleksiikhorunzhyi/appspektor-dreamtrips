@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.Adobe
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.ApptentiveStartUploadBucketPhotoAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketPostBody;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody;
@@ -66,11 +67,22 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
    @Override
    public void onResume() {
       super.onResume();
+
       selectedDate = bucketItem.getTargetDate();
-      List<CategoryItem> list = db.getBucketListCategories();
-      if (!list.isEmpty()) {
-         view.setCategoryItems(list, bucketItem.getCategory());
-      }
+      loadCategories();
+   }
+
+   void loadCategories() {
+      bucketInteractor.getCategoriesPipe()
+            .createObservable(new GetCategoriesCommand())
+            .compose(bindViewToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetCategoriesCommand>()
+                  .onSuccess(command -> categoriesLoaded(command.getResult()))
+                  .onFail(this::handleError));
+   }
+
+   private void categoriesLoaded(List<CategoryItem> categoryItems) {
+      view.setCategoryItems(categoryItems, bucketItem.getCategory());
       mergeBucketItemPhotosWithStorage();
    }
 

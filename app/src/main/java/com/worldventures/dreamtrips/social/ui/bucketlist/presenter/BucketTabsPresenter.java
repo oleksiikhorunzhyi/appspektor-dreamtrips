@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.AdobeBucketListViewedAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand;
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 
 import java.util.Arrays;
@@ -34,7 +33,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
    public void onViewTaken() {
       super.onViewTaken();
       setTabs();
-      loadCategories();
       loadBucketList();
       subscribeToErrorUpdates();
    }
@@ -64,16 +62,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
             .observeSuccess()
             .compose(bindViewToMainComposer())
             .subscribe(command -> reportNoConnection());
-   }
-
-   void loadCategories() {
-      bucketInteractor.getCategoriesPipe()
-            .createObservable(new GetCategoriesCommand())
-            .compose(bindView())
-            .subscribe(new ActionStateSubscriber<GetCategoriesCommand>()
-                  .onSuccess(getCategoriesCommand -> db.saveBucketListCategories(getCategoriesCommand.getResult()))
-                  .onFail(this::handleError)
-            );
    }
 
    void loadBucketList() {

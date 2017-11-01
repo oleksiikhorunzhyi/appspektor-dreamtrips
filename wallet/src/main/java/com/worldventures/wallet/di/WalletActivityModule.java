@@ -378,8 +378,8 @@ public class WalletActivityModule {
 
    @Provides
    WizardTermsPresenter provideWizardTermsPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         WalletAnalyticsInteractor analyticsInteractor, @Named(JANET_WALLET) Janet janet) {
-      return new WizardTermsPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, janet);
+         WalletAnalyticsInteractor analyticsInteractor, WizardInteractor wizardInteractor) {
+      return new WizardTermsPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, wizardInteractor);
    }
 
    @Provides

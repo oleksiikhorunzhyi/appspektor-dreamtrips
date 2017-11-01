@@ -4,6 +4,7 @@ import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCheckCommand;
@@ -35,6 +36,7 @@ public final class WizardInteractor {
    private final ActionPipe<WizardCompleteCommand> completePipe;
    private final ActionPipe<ProvisioningModeCommand> provisioningStatePipe;
    private final ActionPipe<PinOptionalCommand> pinOptionalActionPipe;
+   private final ActionPipe<FetchTermsAndConditionsCommand> termsAndConditionsPipe;
 
    public WizardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       createAndConnectPipe = sessionActionPipeCreator.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
@@ -53,6 +55,7 @@ public final class WizardInteractor {
       completePipe = sessionActionPipeCreator.createPipe(WizardCompleteCommand.class, Schedulers.io());
       provisioningStatePipe = sessionActionPipeCreator.createPipe(ProvisioningModeCommand.class, Schedulers.io());
       pinOptionalActionPipe = sessionActionPipeCreator.createPipe(PinOptionalCommand.class, Schedulers.io());
+      termsAndConditionsPipe = sessionActionPipeCreator.createPipe(FetchTermsAndConditionsCommand.class, Schedulers.io());
    }
 
    public ActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
@@ -101,5 +104,9 @@ public final class WizardInteractor {
 
    public ActionPipe<PinOptionalCommand> pinOptionalActionPipe() {
       return pinOptionalActionPipe;
+   }
+
+   public ActionPipe<FetchTermsAndConditionsCommand> getTermsAndConditionsPipe() {
+      return termsAndConditionsPipe;
    }
 }

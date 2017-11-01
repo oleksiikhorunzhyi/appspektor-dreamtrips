@@ -20,7 +20,7 @@
          />
 
    <TextView
-         android:id="@+id/tv_thank_you_pilot"
+         android:id="@+id/tv_transaction_status_title"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:fontFamily="sans-serif"
@@ -35,7 +35,7 @@
          />
 
    <TextView
-         android:id="@+id/tv_thank_you_pilot2"
+         android:id="@+id/tv_transaction_status_error_secondary_title"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:fontFamily="sans-serif"
@@ -47,11 +47,11 @@
          android:visibility="gone"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/tv_payment_sub_thank_you_message_pilot"
+         app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
          />
 
    <TextView
-         android:id="@+id/tv_payment_status_pilot"
+         android:id="@+id/tv_accept_payment_status"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
@@ -63,11 +63,11 @@
          android:textStyle="normal"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/tv_payment_sub_thank_you_message_pilot"
+         app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
          />
 
    <TextView
-         android:id="@+id/tv_payment_sub_thank_you_message_pilot"
+         android:id="@+id/tv_show_to_server_text"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
@@ -79,7 +79,7 @@
          android:textStyle="bold"
          app:layout_constraintLeft_toLeftOf="parent"
          app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/tv_thank_you_pilot"
+         app:layout_constraintTop_toBottomOf="@+id/tv_transaction_status_title"
          />
 
    <LinearLayout
@@ -94,11 +94,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dtl_transaction_screen_margin_big"
             android:layout_marginTop="@dimen/dtl_transaction_screen_margin_big"
-            android:visibility="visible"
             app:cardCornerRadius="@dimen/dtl_transaction_screen_card_radius"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_payment_status_pilot"
+            app:layout_constraintTop_toBottomOf="@+id/tv_accept_payment_status"
             >
 
          <LinearLayout
@@ -117,7 +116,7 @@
                   >
 
                <ImageView
-                     android:id="@+id/iv_status_payment_pilot"
+                     android:id="@+id/iv_status_payment"
                      android:layout_width="@dimen/dtl_transaction_screen_icon"
                      android:layout_height="@dimen/dtl_transaction_screen_icon"
                      app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
@@ -142,12 +141,12 @@
                         />
 
                   <TextView
-                        android:id="@+id/tv_total_charged_text_pilot"
+                        android:id="@+id/tv_total_charged_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:text="Total Amount Paid"
+                        android:text="@string/transaction_total_amount_paid"
                         android:textSize="@dimen/font_medium"
                         />
 
@@ -162,12 +161,11 @@
                   >
 
                <TextView
-                     android:id="@+id/textView24"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:layout_alignParentStart="true"
                      android:layout_alignParentTop="true"
-                     android:text="Tip Amount:"
+                     android:text="@string/transaction_tip_amount"
                      android:textSize="@dimen/font_normal"
                      />
 
@@ -200,23 +198,22 @@
                />
 
          <TextView
-               android:id="@+id/textView27"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_alignParentStart="true"
-               android:layout_below="@+id/textView244"
+               android:layout_below="@+id/tv_subtotal_amount"
                android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-               android:text="Tax Amount:"
+               android:text="@string/transaction_tax_amount"
                android:textSize="@dimen/font_normal"
                />
 
          <TextView
-               android:id="@+id/textView244"
+               android:id="@+id/tv_subtotal_amount"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_alignParentStart="true"
                android:layout_alignParentTop="true"
-               android:text="Sub Total Amount:"
+               android:text="@string/transaction_sub_total_amount"
                android:textSize="@dimen/font_normal"
                />
 
@@ -253,16 +250,16 @@
                android:id="@+id/tv_receipt"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_above="@+id/linearLayout2"
+               android:layout_above="@+id/ll_review_and_payment"
                android:layout_centerHorizontal="true"
                android:gravity="center_vertical|center_horizontal"
                android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
-               android:text="View your receipt"
+               android:text="@string/transaction_view_your_receipt"
                android:textStyle="bold"
                />
 
          <LinearLayout
-               android:id="@+id/linearLayout2"
+               android:id="@+id/ll_review_and_payment"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_alignParentBottom="true"
@@ -276,7 +273,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_centerHorizontal="true"
-                  android:text="Review Merchant"
+                  android:text="@string/transaction_review_merchant"
                   android:textStyle="bold"
                   />
 

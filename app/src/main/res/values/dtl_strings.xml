@@ -181,5 +181,10 @@
    <string name="dtl_merchant_earn_points">Earn points</string>
 
    <string name="could_not_load_merchant_for_review">Could not load merchant details, please try again later</string>
-
+   <string name="transaction_total_amount_paid">Total Amount Paid</string>
+   <string name="transaction_tip_amount">Tip Amount:</string>
+   <string name="transaction_tax_amount">Tax Amount:</string>
+   <string name="transaction_sub_total_amount">Sub Total Amount:</string>
+   <string name="transaction_view_your_receipt">View your receipt</string>
+   <string name="transaction_review_merchant">Review Merchant</string>
 </resources>

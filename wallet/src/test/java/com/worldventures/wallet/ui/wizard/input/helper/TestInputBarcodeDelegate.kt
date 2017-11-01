@@ -68,7 +68,7 @@ class TestInputBarcodeDelegate : BaseTest() {
    @Test
    fun testAssignedToAnotherUser() {
       contractGetSmartCardStatus.result(SmartCardStatus.ASSIGNED_TO_ANOTHER_USER)
-      delegate.barcodeEntered("00000044")
+      delegate.checkBarcode("00000044")
 
       verify(view, times(1)).showErrorCardIsAssignedDialog()
       verify(navigator, times(0)).goExistingDeviceDetected(any())
@@ -77,7 +77,7 @@ class TestInputBarcodeDelegate : BaseTest() {
    @Test
    fun testAssignedToAnotherDevice() {
       contractGetSmartCardStatus.result(SmartCardStatus.ASSIGNED_TO_ANOTHER_DEVICE)
-      delegate.barcodeEntered("00000044")
+      delegate.checkBarcode("00000044")
 
       verify(view, times(0)).showErrorCardIsAssignedDialog()
       verify(navigator, times(1)).goExistingDeviceDetected(anyOrNull()) // we have a problem with command
@@ -86,7 +86,7 @@ class TestInputBarcodeDelegate : BaseTest() {
    @Test
    fun testAssignedToCurrentDevice() {
       contractGetSmartCardStatus.result(SmartCardStatus.ASSIGNED_TO_CURRENT_DEVICE)
-      delegate.barcodeEntered("00000044")
+      delegate.checkBarcode("00000044")
 
       verify(view, times(0)).showErrorCardIsAssignedDialog()
       verify(navigator, times(0)).goExistingDeviceDetected(anyOrNull())
@@ -97,7 +97,7 @@ class TestInputBarcodeDelegate : BaseTest() {
    @Test
    fun testUnassigned() {
       contractGetSmartCardStatus.result(SmartCardStatus.UNASSIGNED)
-      delegate.barcodeEntered("00000044")
+      delegate.checkBarcode("00000044")
 
       verify(view, times(0)).showErrorCardIsAssignedDialog()
       verify(navigator, times(0)).goExistingDeviceDetected(anyOrNull())

@@ -146,6 +146,6 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
    }
 
    override fun handleResult(result: Result) {
-      presenter.barcodeScanned(result.text)
+      presenter.checkBarcode(result.text)
    }
 }

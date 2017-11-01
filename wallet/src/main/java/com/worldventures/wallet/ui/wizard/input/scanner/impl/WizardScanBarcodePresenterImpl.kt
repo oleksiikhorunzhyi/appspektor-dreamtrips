@@ -7,6 +7,7 @@ import com.worldventures.core.ui.util.permission.PermissionsResult
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl
 import com.worldventures.wallet.ui.common.navigation.Navigator
+import com.worldventures.wallet.ui.wizard.input.helper.BaseBarcodeInputPresenter
 import com.worldventures.wallet.ui.wizard.input.helper.InputBarcodeDelegate
 import com.worldventures.wallet.ui.wizard.input.scanner.WizardScanBarcodePresenter
 import com.worldventures.wallet.ui.wizard.input.scanner.WizardScanBarcodeScreen
@@ -16,7 +17,8 @@ class WizardScanBarcodePresenterImpl(
       deviceConnectionDelegate: WalletDeviceConnectionDelegate,
       private val permissionDispatcher: PermissionDispatcher,
       private val inputBarcodeDelegate: InputBarcodeDelegate)
-   : WalletPresenterImpl<WizardScanBarcodeScreen>(navigator, deviceConnectionDelegate), WizardScanBarcodePresenter {
+   : WalletPresenterImpl<WizardScanBarcodeScreen>(navigator, deviceConnectionDelegate), WizardScanBarcodePresenter,
+      BaseBarcodeInputPresenter by inputBarcodeDelegate {
 
    override fun attachView(view: WizardScanBarcodeScreen) {
       super.attachView(view)
@@ -31,24 +33,12 @@ class WizardScanBarcodePresenterImpl(
                   .onPermissionDeniedAction { view!!.showDeniedForCamera() })
    }
 
-   override fun barcodeScanned(barcode: String) {
-      inputBarcodeDelegate.barcodeEntered(barcode)
-   }
-
    override fun startManualInput() {
       navigator.goWizardManualInput()
    }
 
    override fun goBack() {
       navigator.goBack()
-   }
-
-   override fun retry(barcode: String) {
-      inputBarcodeDelegate.retry(barcode)
-   }
-
-   override fun retryAssignedToCurrentDevice() {
-      inputBarcodeDelegate.retryAssignedToCurrentDevice()
    }
 
    override fun retryScan() {

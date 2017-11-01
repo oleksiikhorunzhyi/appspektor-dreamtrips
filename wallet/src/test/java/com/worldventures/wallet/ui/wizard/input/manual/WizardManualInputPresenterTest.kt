@@ -77,6 +77,6 @@ class WizardManualInputPresenterTest : BasePresenterTest<WizardManualInputScreen
    @Test
    fun testCheckBarcode() {
       presenter.checkBarcode("")
-      verify(inputBarcodeDelegate, times(1)).barcodeEntered(any())
+      verify(inputBarcodeDelegate, times(1)).checkBarcode(any())
    }
 }

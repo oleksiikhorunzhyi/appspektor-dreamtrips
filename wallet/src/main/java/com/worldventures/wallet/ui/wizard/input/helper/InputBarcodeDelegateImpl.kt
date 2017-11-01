@@ -19,7 +19,7 @@ class InputBarcodeDelegateImpl(private val navigator: Navigator,
                                private val analyticsDelegate: InputAnalyticsDelegate,
                                private val smartCardInteractor: SmartCardInteractor) : InputBarcodeDelegate {
 
-   override fun barcodeEntered(barcode: String) {
+   override fun checkBarcode(barcode: String) {
       fetchCardStatus(barcode)
    }
 

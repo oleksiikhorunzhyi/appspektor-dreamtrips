@@ -116,6 +116,11 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
       navigator.goCardList();
    }
 
+   @Override
+   public boolean pinFunctionalityAvailable() {
+      return false;
+   }
+
    private void invalidateDivider(LinearLayout container) {
       container.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_END);
       container.requestLayout();

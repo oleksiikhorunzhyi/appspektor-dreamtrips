@@ -8,9 +8,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionRatingEvent;
+import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentCompletedBundle;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
@@ -30,18 +32,22 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
 
    private final Merchant merchant;
    private User user;
+   private String earnedPoints;
+   private String totalPoints;
 
-   public DtlThrstTransactionSucceedPresenter(Merchant merchant) {
+   public DtlThrstTransactionSucceedPresenter(Merchant merchant, String earnPoints, String totalPoints) {
       this.merchant = merchant;
+      this.earnedPoints = earnPoints;
+      this.totalPoints = totalPoints;
    }
 
    public void share() {
-      transactionInteractor.transactionActionPipe()
-            .createObservableResult(DtlTransactionAction.get(merchant))
-            .map(DtlTransactionAction::getResult)
-            .compose(bindViewIoToMainComposer())
-            .subscribe(transaction -> view.showShareDialog((int) transaction.getDtlTransactionResult()
-                  .getEarnedPoints(), merchant), apiErrorViewAdapter::handleError);
+      view.showShareDialog(earnedPoints, merchant);
+   }
+
+   public void init() {
+      view.setTotalEarnedPoints(earnedPoints);
+      view.setTotalPoints(totalPoints);
    }
 
    public void done() {
@@ -65,8 +71,12 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
    }
 
    public interface View extends DtlApiErrorViewAdapter.ApiErrorView, RxView {
-      void showShareDialog(int amount, Merchant merchant);
+      void showShareDialog(String amount, Merchant merchant);
 
       void sendToReview(Merchant merchant);
+
+      void setTotalPoints(String points);
+
+      void setTotalEarnedPoints(String earnedPoints);
    }
 }

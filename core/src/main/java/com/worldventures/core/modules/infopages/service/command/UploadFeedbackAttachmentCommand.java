@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.worldventures.core.R;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.core.modules.infopages.StaticPageProvider;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
@@ -12,6 +11,7 @@ import com.worldventures.core.service.UploadingFileManager;
 import com.worldventures.core.service.UriPathProvider;
 import com.worldventures.dreamtrips.api.uploadery.UploadFeedbackImageHttpAction;
 import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.io.File;
 

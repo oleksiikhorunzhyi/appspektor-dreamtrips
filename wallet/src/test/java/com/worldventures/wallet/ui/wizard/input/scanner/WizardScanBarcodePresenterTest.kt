@@ -51,7 +51,7 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
       todo {
          // create factory for PermissionsResult or mock PermissionDispatcher
       }
-      whenever(permissionDispatcher.requestPermission(any())).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), intArrayOf(0))))
+      whenever(permissionDispatcher.requestPermission(any())).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), 0)))
 
       presenter.requestCamera()
       verify(screen, times(1)).startCamera()
@@ -59,7 +59,7 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
 
    @Test
    fun testRequestCameraPermissionDenied() {
-      whenever(permissionDispatcher.requestPermission(any())).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), intArrayOf(-1))))
+      whenever(permissionDispatcher.requestPermission(any())).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), -1)))
 
       presenter.requestCamera()
       verify(screen, times(1)).showDeniedForCamera()

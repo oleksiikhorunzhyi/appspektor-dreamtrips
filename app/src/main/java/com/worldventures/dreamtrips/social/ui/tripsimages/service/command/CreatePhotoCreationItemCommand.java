@@ -4,7 +4,6 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
@@ -13,6 +12,7 @@ import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.core.utils.Size;
 import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.io.File;
 

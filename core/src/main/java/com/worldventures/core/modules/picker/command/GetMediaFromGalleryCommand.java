@@ -1,9 +1,9 @@
 package com.worldventures.core.modules.picker.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -14,8 +14,8 @@ import com.worldventures.core.modules.auth.api.command.LoginCommand
 import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.modules.settings.storage.SettingsStorage
 import com.worldventures.core.storage.complex_objects.Optional
-import com.worldventures.dreamtrips.AssertUtil.assertActionFail
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.core.test.AssertUtil.assertActionFail
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.session.model.Device
 import io.techery.janet.ActionState

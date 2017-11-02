@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.service.analytics.AdobeTracker;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.FilterHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.FilterData;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

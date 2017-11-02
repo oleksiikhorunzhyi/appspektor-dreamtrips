@@ -3,6 +3,25 @@ apply plugin: "pmd"
 apply plugin: "io.gitlab.arturbosch.detekt"
 apply plugin: "org.jmailen.kotlinter"
 
+afterEvaluate {
+   it.task("analyzeCode") {
+      def tasks = []
+      if (project.plugins.hasPlugin("java")
+            || project.plugins.hasPlugin("java-library")
+            || project.plugins.hasPlugin("com.android.application")
+            || project.plugins.hasPlugin("com.android.library")) {
+         tasks.add('checkstyle')
+         tasks.add('pmd')
+      }
+      if (project.plugins.hasPlugin("kotlin")
+            || project.plugins.hasPlugin("kotlin-android")) {
+         tasks.add('lintKotlin')
+         tasks.add('detektCheck')
+      }
+      dependsOn tasks
+   }
+}
+
 checkstyle {
    toolVersion = "8.3"
 }

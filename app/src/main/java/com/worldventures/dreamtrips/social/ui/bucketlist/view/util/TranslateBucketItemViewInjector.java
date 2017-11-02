@@ -40,7 +40,7 @@ public class TranslateBucketItemViewInjector {
          hideTranslationUi(bucketItem);
          return;
       }
-      boolean ownItem = bucketItem.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownItem = bucketItem.getOwner().getId() == appSessionHolder.get().get().user().getId();
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, bucketItem.getLanguage());
       boolean emptyLanguage = TextUtils.isEmpty(bucketItem.getLanguage());
 

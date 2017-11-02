@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.janet.api_lib;
 
 import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.model.Session;
+import com.worldventures.core.service.AuthStorage;
 import com.worldventures.dreamtrips.api.session.LoginHttpAction;
 import com.worldventures.dreamtrips.core.janet.ResultStateOnlyComposer;
 import com.worldventures.dreamtrips.mobilesdk.AuthRefresher;
@@ -18,7 +20,7 @@ public class DreamTripsAuthRefresher implements AuthRefresher {
    private final MapperyContext mapperyContext;
 
    public DreamTripsAuthRefresher(ReLoginInteractor reLoginInteractor, CredentialsProvider credentialsProvider,
-         AuthStorage authStorage, MapperyContext mapperyContext) {
+         AuthStorage<Session> authStorage, MapperyContext mapperyContext) {
       this.reLoginInteractor = reLoginInteractor;
       this.credentialsProvider = credentialsProvider;
       this.authStorage = authStorage;

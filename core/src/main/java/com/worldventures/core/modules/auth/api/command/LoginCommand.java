@@ -56,8 +56,8 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
       if (userName == null || userPassword == null) {
          if (AuthRetryPolicy.isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
-            this.userName = userSession.getUsername();
-            this.userPassword = userSession.getUserPassword();
+            this.userName = userSession.username();
+            this.userPassword = userSession.userPassword();
          } else {
             throw new Exception("You have to set username and password");
          }
@@ -76,7 +76,7 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
    }
 
    private void saveSession(UserSession userSession) {
-      if (userSession.getUser() != null & userSession.getApiToken() != null) {
+      if (userSession.user() != null & userSession.apiToken() != null) {
          appSessionHolder.put(userSession);
       }
    }
@@ -90,6 +90,6 @@ public class LoginCommand extends CommandWithError<UserSession> implements Injec
    }
 
    private void notifyUserUpdated(UserSession userSession) {
-      authInteractor.updateUserPipe().send(new UpdateUserCommand(userSession.getUser()));
+      authInteractor.updateUserPipe().send(new UpdateUserCommand(userSession.user()));
    }
 }

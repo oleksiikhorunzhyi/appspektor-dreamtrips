@@ -12,6 +12,7 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.storage.complex_objects.Optional;
+import com.worldventures.core.test.janet.MockAnalyticsService;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
@@ -181,9 +182,13 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
    }
 
    private void mockJanetWithResponse(MockHttpActionService.Response response) {
-      MockHttpActionService httpActionService = new MockHttpActionService.Builder().bind(response, request -> request.getUrl()
-            .endsWith("/api/translate")).build();
-      janet = new Janet.Builder().addService(httpActionService).build();
+      MockHttpActionService httpActionService = new MockHttpActionService.Builder()
+            .bind(response, request -> request.getUrl().endsWith("/api/translate"))
+            .build();
+      janet = new Janet.Builder()
+            .addService(httpActionService)
+            .addService(new MockAnalyticsService())
+            .build();
    }
 
    private MockHttpActionService.Response createSuccessResponse() {
@@ -245,7 +250,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
    private SessionHolder obtainMockUserSession() {
       UserSession userSession = mock(UserSession.class);
-      doReturn("en-us").when(userSession).getLocale();
+      doReturn("en-us").when(userSession).locale();
 
       Optional<UserSession> optionalMock = mock(Optional.class);
       doReturn(true).when(optionalMock).isPresent();

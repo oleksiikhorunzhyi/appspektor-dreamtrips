@@ -63,13 +63,13 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    }
 
    public String getAuthToken() {
-      return NewDreamTripsHttpService.getAuthorizationHeader(appSessionHolder.get().get().getApiToken());
+      return NewDreamTripsHttpService.getAuthorizationHeader(appSessionHolder.get().get().apiToken());
    }
 
    public String getLegacyAuthTokenBase64() {
-      String legacyToken = appSessionHolder.get().get().getUsername() + ":" + appSessionHolder.get()
+      String legacyToken = appSessionHolder.get().get().username() + ":" + appSessionHolder.get()
             .get()
-            .getLegacyApiToken();
+            .legacyApiToken();
       String base64 = ProjectTextUtils.convertToBase64(legacyToken);
       return "Basic " + base64;
    }

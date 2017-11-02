@@ -30,7 +30,7 @@ public class AcceptTermsCommand extends CommandWithError implements InjectableAc
             .createObservableResult(new AcceptTermsAndConditionsHttpAction(text))
             .doOnNext(action -> {
                UserSession userSession = appSessionHolder.get().get();
-               userSession.getUser().setTermsAccepted(true);
+               userSession.user().setTermsAccepted(true);
                appSessionHolder.put(userSession);
             })
             .subscribe(callback::onSuccess, callback::onFail);

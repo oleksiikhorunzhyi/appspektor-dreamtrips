@@ -20,6 +20,6 @@ public class PostCreatedCommand extends ValueCommandAction<TextualPost> implemen
    }
 
    public FeedItem<TextualPost> getFeedItem() {
-      return FeedItem.create(getResult(), sessionHolder.get().get().getUser());
+      return FeedItem.create(getResult(), sessionHolder.get().get().user());
    }
 }

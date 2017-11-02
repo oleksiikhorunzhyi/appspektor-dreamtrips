@@ -97,7 +97,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
          return false;
       }
 
-      int accountId = userSessionOptional.get().getUser().getId();
+      int accountId = userSessionOptional.get().user().getId();
       int ownerId = feedItem.getItem().getOwner().getId();
       return accountId == ownerId;
    }

@@ -272,7 +272,7 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
    }
 
    private User getUser() {
-      return appSessionHolder.get().get().getUser();
+      return appSessionHolder.get().get().user();
    }
 
    private boolean isReviewCached() {

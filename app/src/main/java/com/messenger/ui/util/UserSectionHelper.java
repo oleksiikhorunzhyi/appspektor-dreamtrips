@@ -55,7 +55,7 @@ public class UserSectionHelper {
    }
 
    private String getCurrentUserId() {
-      return userSessionHolder.get().get().getUser().getUsername();
+      return userSessionHolder.get().get().user().getUsername();
    }
 
    public Observable.Transformer<List<Pair<DataUser, String>>, Pair<List<Object>, Integer>> groupTransformer(Observable<DataConversation> collectionObservable) {

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.janet.api_lib;
+package com.worldventures.core.service;
 
 public abstract class AuthStorage<T> {
 

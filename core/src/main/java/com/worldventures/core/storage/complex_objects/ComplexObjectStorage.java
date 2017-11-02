@@ -2,6 +2,7 @@ package com.worldventures.core.storage.complex_objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.worldventures.core.model.session.GsonAdaptersUserSession;
 import com.worldventures.core.storage.ObjectStorage;
 import com.worldventures.core.storage.preferences.ObjectPreferenceStorage;
 import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
@@ -19,7 +20,10 @@ public class ComplexObjectStorage<T> implements ObjectStorage<T> {
    private Optional<T> cachedInstance = Optional.absent();
 
    { //NOPMD
-      gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateTimeDeserializer()).create();
+      gson = new GsonBuilder()
+            .registerTypeAdapter(Date.class, new DateTimeDeserializer())
+            .registerTypeAdapterFactory(new GsonAdaptersUserSession())
+            .create();
    }
 
    public ComplexObjectStorage(SimpleKeyValueStorage storage, String key, Class<T> objectClass) {

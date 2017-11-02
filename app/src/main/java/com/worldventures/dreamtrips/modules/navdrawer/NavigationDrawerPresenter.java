@@ -54,7 +54,7 @@ public class NavigationDrawerPresenter {
       //
       navigationDrawerView.setNavigationDrawerPresenter(this);
       navigationDrawerView.setData(components);
-      navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
+      navigationDrawerView.setUser(appSessionHolder.get().get().user());
 
       notificationCountEventDelegate.getObservable()
             .observeOn(AndroidSchedulers.mainThread())

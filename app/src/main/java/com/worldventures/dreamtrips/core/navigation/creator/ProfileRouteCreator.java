@@ -17,7 +17,7 @@ public class ProfileRouteCreator implements RouteCreator<Integer> {
    public Route createRoute(Integer arg) {
       Optional<UserSession> userSessionOptional = appSessionHolder.get();
       if (userSessionOptional.isPresent()) {
-         if (arg == userSessionOptional.get().getUser().getId()) {
+         if (arg == userSessionOptional.get().user().getId()) {
             return Route.ACCOUNT_PROFILE;
          } else {
             return Route.FOREIGN_PROFILE;

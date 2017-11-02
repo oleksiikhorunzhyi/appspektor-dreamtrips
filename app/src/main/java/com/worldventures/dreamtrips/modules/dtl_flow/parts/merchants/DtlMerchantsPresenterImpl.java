@@ -221,7 +221,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
       getView().hideBlockingProgress();
       ReviewStorage.updateReviewsPosted(getContext(),
-            String.valueOf(appSessionHolder.get().get().getUser().getId()),
+            String.valueOf(appSessionHolder.get().get().user().getId()),
             action.getMerchantId(),
             action.getResult().reviews().userHasPendingReview());
       if (!action.getFromRating()) {

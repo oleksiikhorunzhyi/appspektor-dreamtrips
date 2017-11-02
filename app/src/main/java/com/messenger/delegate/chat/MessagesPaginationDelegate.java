@@ -107,7 +107,7 @@ public class MessagesPaginationDelegate {
       ListIterator<Message> iterator = loadedMessages.listIterator(loadedMessages.size());
       while (iterator.hasPrevious()) {
          Message message = iterator.previous();
-         String username = sessionHolder.get().get().getUsername();
+         String username = sessionHolder.get().get().username();
          if (!TextUtils.equals(message.getFromId(), username)) {
             return message.getStatus() == MessageStatus.READ;
          }

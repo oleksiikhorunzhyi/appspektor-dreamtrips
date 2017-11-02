@@ -425,7 +425,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public void sendPostReview() {
-      this.user = appSessionHolder.get().get().getUser();
+      this.user = appSessionHolder.get().get().user();
 
       ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
       addReviewActionActionPipe.createObservable(
@@ -501,7 +501,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
             e.printStackTrace();
          }
       } else {
-         this.user = appSessionHolder.get().get().getUser();
+         this.user = appSessionHolder.get().get().user();
          try {
             ReviewStorage.saveReviewsPosted(getActivity(), String.valueOf(user.getId()), getMerchantId());
          } catch (Exception e) {

@@ -55,18 +55,18 @@ public class PostCompoundOperationMutator {
       switch (compoundOperationModel.type()) {
          case VIDEO:
             compoundOperationState = CompoundOperationState.PROCESSING;
-            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
+            textualPost.setOwner(sessionSessionHolder.get().get().user());
             body = ImmutablePostWithVideoAttachmentBody.copyOf((PostWithVideoAttachmentBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;
          case PHOTO:
-            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
+            textualPost.setOwner(sessionSessionHolder.get().get().user());
             body = ImmutablePostWithPhotoAttachmentBody
                   .copyOf((PostWithPhotoAttachmentBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;
          case TEXT:
-            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
+            textualPost.setOwner(sessionSessionHolder.get().get().user());
             body = ImmutableTextPostBody.copyOf((TextPostBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;

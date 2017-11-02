@@ -41,7 +41,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    private final String apiVersion;
 
    public NewDreamTripsHttpService(SessionHolder appSessionHolder, AppVersionNameBuilder appVersionNameBuilder,
-         MapperyContext mapperyContext, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource,
+         MapperyContext mapperyContext, AuthRetryPolicy retryPolicy, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource,
          String baseUrl, HttpClient client, Converter converter, String apiVersion) {
       super(new HttpActionService(baseUrl, client, converter));
       this.appSessionHolder = appSessionHolder;
@@ -49,7 +49,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
       this.mapperyContext = mapperyContext;
       this.reLoginInteractor = reLoginInteractor;
       this.deviceSource = deviceSource;
-      this.retryPolicy = new AuthRetryPolicy(appSessionHolder);
+      this.retryPolicy = retryPolicy;
       this.apiVersion = apiVersion;
    }
 
@@ -69,7 +69,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
 
       if (action instanceof AuthorizedHttpAction && appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         ((AuthorizedHttpAction) action).setAuthorizationHeader(getAuthorizationHeader(userSession.getApiToken()));
+         ((AuthorizedHttpAction) action).setAuthorizationHeader(getAuthorizationHeader(userSession.apiToken()));
       }
    }
 
@@ -106,7 +106,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
          AuthorizedHttpAction action = (AuthorizedHttpAction) holder.action();
          String authHeader = action.getAuthorizationHeader();
          synchronized (this) {
-            if (!authHeader.endsWith(appSessionHolder.get().get().getApiToken())) {
+            if (!authHeader.endsWith(appSessionHolder.get().get().apiToken())) {
                prepareNewHttpAction(action);
                Timber.d("Action %s will be sent again because of invalid token", action);
                return true;
@@ -126,8 +126,8 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
    @Nullable
    private Session createSession() {
       UserSession userSession = appSessionHolder.get().get();
-      String username = userSession.getUsername();
-      String userPassword = userSession.getUserPassword();
+      String username = userSession.username();
+      String userPassword = userSession.userPassword();
       Device device = deviceSource.toBlocking().first();
       LoginHttpAction loginAction = new LoginHttpAction(username, userPassword, device);
       prepareNewHttpAction(loginAction);

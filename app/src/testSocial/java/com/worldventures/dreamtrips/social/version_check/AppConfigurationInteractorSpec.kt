@@ -85,7 +85,7 @@ class AppConfigurationInteractorSpec : BaseSpec({
       fun mockSessionHolder(): SessionHolder {
          val sessionHolder: SessionHolder = mock()
          val userSession: UserSession = mock()
-         whenever(userSession.locale).thenReturn("en-US")
+         whenever(userSession.locale()).thenReturn("en-US")
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
          return sessionHolder;
       }

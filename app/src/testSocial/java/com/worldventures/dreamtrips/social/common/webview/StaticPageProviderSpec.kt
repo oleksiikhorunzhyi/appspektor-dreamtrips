@@ -134,9 +134,9 @@ class StaticPageProviderSpec: BaseSpec({
 
          whenever(mockUser.username).thenReturn(USERNAME)
          whenever(deviceInfoProvider.uniqueIdentifier).thenReturn(DEVICE_ID)
-         whenever(userSession.user).thenReturn(mockUser)
-         whenever(userSession.legacyApiToken).thenReturn(LEGACY_API_TOKEN)
-         whenever(userSession.locale).thenReturn(LOCALE)
+         whenever(userSession.user()).thenReturn(mockUser)
+         whenever(userSession.legacyApiToken()).thenReturn(LEGACY_API_TOKEN)
+         whenever(userSession.locale()).thenReturn(LOCALE)
          whenever(mockSessionHolder.get()).thenReturn(Optional.of(userSession))
       }
 

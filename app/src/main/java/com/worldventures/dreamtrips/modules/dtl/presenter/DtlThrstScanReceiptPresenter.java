@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
@@ -37,6 +38,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    @Inject MediaPickerInteractor mediaInteractor;
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
+   @Inject DtlLocationInteractor locationInteractor;
    private final Merchant merchant;
 
    private UploadTask uploadTask;
@@ -77,19 +79,21 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    }
 
    public void openThrstFlow() {
-      merchantInteractor.urlTokenThrstHttpPipe().createObservable(UrlTokenAction.create(merchant.id(),
-            ImmutableUrlTokenActionParams.builder()
-                  .checkinTime(DateTimeUtils.currentUtcString())
-                  .merchantId(merchant.id())
-                  .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
-                  .receiptPhotoUrl(photoUploadingManagerS3.getResultUrl(uploadTask))
-                  .location(ImmutableLocation.builder().coordinates("33.0638987,-96.8020342").build())
-                  .build()))
+      locationInteractor.locationSourcePipe().observeSuccessWithReplay()
             .compose(bindViewIoToMainComposer())
+            .flatMap(command ->
+                  merchantInteractor.urlTokenThrstHttpPipe().createObservable(UrlTokenAction.create(merchant.id(),
+                        ImmutableUrlTokenActionParams.builder()
+                              .checkinTime(DateTimeUtils.currentUtcString())
+                              .merchantId(merchant.id())
+                              .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
+                              .receiptPhotoUrl(photoUploadingManagerS3.getResultUrl(uploadTask))
+                              .location(ImmutableLocation.builder().coordinates(command.getResult().provideFormattedLocation()).build())
+                              .build())))
             .subscribe(new ActionStateSubscriber<UrlTokenAction>()
                   .onSuccess(this::onThrstSuccess)
-                  .onProgress(this::onThrstProgress)
                   .onFail(this::onThrstError));
+
    }
 
    private void onThrstError(UrlTokenAction urlTokenAction, Throwable throwable) {

@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.Disclaimer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
@@ -137,7 +138,8 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       ViewUtils.setViewVisibility(disclaimer, merchantAttributes.disclaimers() != null ? View.VISIBLE : View.GONE);
       //
       if (disclaimer.getVisibility() == View.GONE) return;
-      disclaimer.setFullText(TextUtils.join("\n\n", merchantAttributes.disclaimers()));
+      disclaimer.setFullText(TextUtils.join("\n\n", Queryable.from(merchantAttributes.disclaimers())
+            .map(Disclaimer::text).toList()));
       disclaimer.setSimpleListener((view, collapsed) -> {
          if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
       });

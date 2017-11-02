@@ -26,6 +26,10 @@ public class FullMerchantInteractor {
       return fullMerchantPipe.asReadOnly();
    }
 
+   public void load(String merchantId) {
+      load(merchantId, null, null,false);
+   }
+
    public void load(String merchantId, ReviewSummary review, boolean fromRating) {
       load(merchantId, review, null, fromRating);
    }

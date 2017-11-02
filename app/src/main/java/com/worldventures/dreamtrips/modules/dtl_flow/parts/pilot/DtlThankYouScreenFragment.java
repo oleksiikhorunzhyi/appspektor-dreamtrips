@@ -2,10 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -13,7 +11,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.worldventures.core.ui.annotations.Layout;
@@ -25,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceed
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
 import com.worldventures.dreamtrips.modules.dtl.util.DtlDateTimeUtils;
+import com.worldventures.dreamtrips.modules.dtl.view.util.TransactionStatusInjector;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 
@@ -39,14 +37,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @Layout(R.layout.include_detail_transaction)
 public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle> implements DtlThrstThankYouScreenPresenter.View {
-   @InjectView(R.id.tv_thank_you_pilot) TextView mThankYouView;
-   @InjectView(R.id.tv_thank_you_pilot2) TextView mThankYouView2;
-   @InjectView(R.id.tv_payment_status_pilot) TextView mPaymentStatusView;
-   @InjectView(R.id.iv_status_payment_pilot) ImageView mPaymentImage;
-   @InjectView(R.id.tv_total_charged_text_pilot) TextView mPaymentCharged;
-   @InjectView(R.id.tv_total) TextView mMoneyCharged;
-   @InjectView(R.id.tv_payment_sub_thank_you_message_pilot) TextView mSubThankYouMessage;
    @InjectView(R.id.payment_done_button) Button mButtonDone;
+   @InjectView(R.id.tv_total) TextView mMoneyCharged;
    @InjectView(R.id.tv_earned_points) TextView tvEarnedPoints;
    @InjectView(R.id.tv_subtotal) TextView tvSubTotal;
    @InjectView(R.id.tv_tip) TextView tvTip;
@@ -55,6 +47,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    @InjectView(R.id.tv_review_merchant) TextView tvReviewMerchant;
    @InjectView(R.id.currentTime) TextView tvDate;
 
+   private TransactionStatusInjector transactionStatusInjector;
    private Merchant merchant;
 
    @Override
@@ -63,6 +56,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
       ThrstPaymentBundle thrstPaymentBundle = getArgs();
       merchant = thrstPaymentBundle.getMerchant();
       ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(merchant.displayName());
+      transactionStatusInjector = new TransactionStatusInjector(getActivity(), rootView);
    }
 
    @Override
@@ -102,34 +96,13 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    }
 
    @Override
-   public void thankYouSuccessfulText() {
-      mThankYouView.setText(getTextFromResource(R.string.thank_you_thrst_pilot));
+   public void showTransactionSuccessfulMessage() {
+      transactionStatusInjector.showSuccessMessage();
    }
 
    @Override
-   public void thankYouFailureText() {
-      mThankYouView.setText(getTextFromResource(R.string.first_failure_text_thrst_pilot));
-      mThankYouView2.setVisibility(View.VISIBLE);
-   }
-
-   @Override
-   public void setSuccessPaymentText() {
-      mPaymentStatusView.setText(getTextFromResource(R.string.payment_success_status_pilot));
-   }
-
-   @Override
-   public void setFailurePaymentText() {
-      mPaymentStatusView.setText(getTextFromResource(R.string.payment_error_status_pilot));
-   }
-
-   @Override
-   public void setSuccessResume() {
-      mPaymentCharged.setText(getTextFromResource(R.string.total_amount_charged_pilot));
-   }
-
-   @Override
-   public void setFailureResume() {
-      mPaymentCharged.setText(getTextFromResource(R.string.payment_amount_due_pilot));
+   public void showTransactionFailedMessage() {
+      transactionStatusInjector.showFailureMessage();
    }
 
    @Override
@@ -138,31 +111,6 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
       tvSubTotal.setText(CurrencyUtils.toCurrency(subTotal));
       tvTax.setText(CurrencyUtils.toCurrency(taxAmount));
       tvTip.setText(CurrencyUtils.toCurrency(tipAmount));
-   }
-
-   @Override
-   public void setPaymentSuccessImage() {
-      mPaymentImage.setImageDrawable(getDrawableFromResource(R.drawable.check_succes_pilot));
-   }
-
-   @Override
-   public void setPaymentFailureImage() {
-      mPaymentImage.setImageDrawable(getDrawableFromResource(R.drawable.check_error_pilot));
-   }
-
-   @Override
-   public void setShowScreenSuccessMessage() {
-      mSubThankYouMessage.setText(getTextFromResource(R.string.payment_resume_success_pilot));
-   }
-
-   @Override
-   public void setShowScreenFailureMessage() {
-      mSubThankYouMessage.setText(getTextFromResource(R.string.payment_resume_failure_pilot));
-   }
-
-   @Override
-   public void showSubThankYouMessage() {
-      mSubThankYouMessage.setVisibility(View.VISIBLE);
    }
 
    @Override
@@ -184,10 +132,6 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    public void setReceiptURL(String url) {
       setupSpannableAction(tvReceipt, new OpenURLSpannable(), url);
    }
-
-   private String getTextFromResource(int id) { return getContext().getString(id);}
-
-   private Drawable getDrawableFromResource(int id) { return ContextCompat.getDrawable(getContext(), id);}
 
    public void showReceipt(String url) {
       Intent intent = new Intent(Intent.ACTION_VIEW);

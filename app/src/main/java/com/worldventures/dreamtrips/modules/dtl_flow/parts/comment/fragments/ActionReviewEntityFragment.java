@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -100,7 +101,6 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    @Override
    public void onResume() {
       super.onResume();
-      backStackDelegate.setListener(this::onBack);
       updateLocationButtonState();
       getPresenter().invalidateDynamicViews();
    }
@@ -128,7 +128,6 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    @Override
    public void onPause() {
       super.onPause();
-      backStackDelegate.setListener(null);
       SoftInputUtil.hideSoftInputMethod(getActivity());
    }
 
@@ -173,7 +172,6 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    @Override
    public void cancel() {
       if (dialog != null && dialog.isShowing()) dialog.dismiss();
-
       router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
 

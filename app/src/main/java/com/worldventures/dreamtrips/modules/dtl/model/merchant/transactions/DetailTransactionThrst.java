@@ -15,17 +15,25 @@ import java.util.Date;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
 @Gson.TypeAdapters
-public interface DetailTransactionThrst extends Serializable {
-   @SerializedName("Id") @Nullable String id();
-   @SerializedName("MerchantName") @Nullable String merchantName();
-   @SerializedName("Date") @Nullable Date date();
-   @SerializedName("PointsEarned")  @Nullable Double pointsEarned();
-   @SerializedName("ReceiptURL")  @Nullable String receiptUrl();
-   @SerializedName("RewardPointStatus")  @Nullable String rewardStatus();
-   @SerializedName("SubTotal")  @Nullable Double subTotalAmount();
-   @SerializedName("Total")  @Nullable Double totalAmount();
-   @SerializedName("Tax")  @Nullable Double tax();
-   @SerializedName("Tip")  @Nullable Double tip();
-   @SerializedName("PaymentStatus")  @Nullable String paymentStatus();
+public abstract class DetailTransactionThrst implements Serializable {
+   @SerializedName("Id") @Nullable public abstract String id();
+   @SerializedName("MerchantId") @Nullable public abstract String merchantId();
+   @SerializedName("MerchantName") @Nullable public abstract String merchantName();
+   @SerializedName("Date") @Nullable public abstract Date date();
+   @SerializedName("PointsEarned")  @Nullable public abstract Double pointsEarned();
+   @SerializedName("ReceiptURL")  @Nullable public abstract String receiptUrl();
+   @SerializedName("RewardPointStatus")  @Nullable public abstract String rewardStatus();
+   @SerializedName("SubTotal")  @Nullable public abstract Double subTotalAmount();
+   @SerializedName("Total")  @Nullable public abstract Double totalAmount();
+   @SerializedName("Tax")  @Nullable public abstract Double tax();
+   @SerializedName("Tip")  @Nullable public abstract Double tip();
+   @SerializedName("PaymentStatus")  @Nullable @Value.Default public PaymentStatus paymentStatus() {
+      return PaymentStatus.UNKNOWN;
+   }
 
+   public enum PaymentStatus {
+      @SerializedName("INITIATED") INITIATED,
+      @SerializedName("SUCCESSFUL") SUCCESSFUL,
+      UNKNOWN
+   }
 }

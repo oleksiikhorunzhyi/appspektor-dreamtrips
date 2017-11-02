@@ -38,8 +38,8 @@ public class LoadConfigurationCommand extends MappableApiActionCommand<GetConfig
    }
 
    private Locale getLocale() {
-      if (sessionHolder.get().isPresent() && !TextUtils.isEmpty(sessionHolder.get().get().getLocale())) {
-         return LocaleHelper.buildFromLanguageCode(sessionHolder.get().get().getLocale());
+      if (sessionHolder.get().isPresent() && !TextUtils.isEmpty(sessionHolder.get().get().locale())) {
+         return LocaleHelper.buildFromLanguageCode(sessionHolder.get().get().locale());
       } else {
          return Locale.getDefault();
       }

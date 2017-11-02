@@ -111,7 +111,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
 
    @Override
    public void sendAddReview(String description, Integer rating, boolean verified) {
-      this.user = appSessionHolder.get().get().getUser();
+      this.user = appSessionHolder.get().get().user();
       Log.i("post", "count" + mCount++);
 
    }
@@ -148,7 +148,7 @@ public class DtlCommentReviewPresenterImpl extends DtlPresenterImpl<DtlCommentRe
                .reviewText()
                .code());
       } else {
-         this.user = appSessionHolder.get().get().getUser();
+         this.user = appSessionHolder.get().get().user();
          ReviewStorage.saveReviewsPosted(context, String.valueOf(user.getId()), merchant.id());
          getView().onRefreshSuccess();
          handlePostNavigation();

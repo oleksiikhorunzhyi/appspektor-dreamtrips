@@ -56,7 +56,7 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
       }
       feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get()
             .get()
-            .getUser()
+            .user()
             .getId(), injectorProvider.get());
       feedViewInjector.initCardViewWrapper(cardViewWrapper);
    }

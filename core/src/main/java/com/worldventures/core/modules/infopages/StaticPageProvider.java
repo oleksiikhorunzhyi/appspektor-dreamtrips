@@ -122,6 +122,6 @@ public class StaticPageProvider {
    }
 
    private String getUsername() {
-      return appSessionHolder.get().get().getUser().getUsername();
+      return appSessionHolder.get().get().user().getUsername();
    }
 }

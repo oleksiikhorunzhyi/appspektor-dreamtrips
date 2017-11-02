@@ -11,7 +11,11 @@ import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.ImmutableUserSession;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.model.session.UserSession;
@@ -22,11 +26,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
+import java.util.Collections;
+
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 @PrepareForTest(MessengerDatabase.class)
 public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
@@ -48,8 +55,16 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
       super.setup();
       messageBodyCreator = new MessageBodyCreator();
 
-      UserSession userSession = new UserSession();
-      userSession.setUsername(testDataUserId);
+      UserSession userSession = ImmutableUserSession.builder()
+            .user(mock(User.class))
+            .locale("mock-locale")
+            .apiToken("mock-token")
+            .legacyApiToken("mock-legacy-token")
+            .username(testDataUserId)
+            .userPassword("mock-password")
+            .lastUpdate(0L)
+            .permissions(Collections.emptyList())
+            .build();
 
       doReturn(userSessionOptional).when(sessionHolder).get();
       doReturn(userSession).when(userSessionOptional).get();

@@ -213,7 +213,7 @@ public class Presenter<VT extends Presenter.View> {
    ///////////////////////////////////////////////////////////////////////////
 
    public User getAccount() {
-      return appSessionHolder.get().get().getUser();
+      return appSessionHolder.get().get().user();
    }
 
    public String getAccountUserId() {

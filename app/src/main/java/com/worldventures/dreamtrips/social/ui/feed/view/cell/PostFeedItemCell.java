@@ -116,7 +116,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
          return;
       }
 
-      boolean ownPost = textualPost.getOwner().getId() == sessionHolder.get().get().getUser().getId();
+      boolean ownPost = textualPost.getOwner().getId() == sessionHolder.get().get().user().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(sessionHolder, textualPost.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguage());

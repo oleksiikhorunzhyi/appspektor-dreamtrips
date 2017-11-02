@@ -36,7 +36,8 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
 
    private void doWithAuth(Action0 action) {
       UserSession userSession = appSessionHolder.get().get();
-      if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
+      long lastUpdate = userSession.lastUpdate() != null ? userSession.lastUpdate() : 0;
+      if (lastUpdate > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
          action.call();
       } else {
          view.setRefreshing(true);

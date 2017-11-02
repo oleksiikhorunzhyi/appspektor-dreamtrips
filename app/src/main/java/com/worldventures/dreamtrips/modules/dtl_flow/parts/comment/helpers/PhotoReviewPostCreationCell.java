@@ -134,7 +134,7 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
    }
 
    private void showTagViewGroup() {
-      User user = userSessionHolder.get().get().getUser();
+      User user = userSessionHolder.get().get().user();
       PhotoTagHolderManager photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, user, user);
       photoTagHolderManager.setTagCreatedListener(photoTag -> {
          getModelObject().getCachedRemovedPhotoTags().remove(photoTag);

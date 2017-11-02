@@ -1,7 +1,9 @@
 package com.worldventures.core.model.session;
 
+import com.crashlytics.android.Crashlytics;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.storage.complex_objects.ComplexObjectStorage;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.core.utils.LocaleHelper;
 
@@ -22,12 +24,25 @@ public class SessionHolder extends ComplexObjectStorage<UserSession> {
    }
 
    @Override
-   public void put(UserSession userSession) {
-      final Locale localeFromSession = LocaleHelper.buildFromLanguageCode(userSession.getLocale());
-      if (Queryable.from(supportedLocales).firstOrDefault(locale ->
-            LocaleHelper.compareLocales(localeFromSession, locale)) == null) {
-         userSession.setLocale(Locale.US.getLanguage() + "-" + Locale.US.getCountry());
+   public Optional<UserSession> get() {
+      Optional<UserSession> sessionOptional;
+      try {
+         sessionOptional = super.get();
+      } catch (Exception e) {
+         Crashlytics.logException(new IllegalStateException("UserSession storage is broken"));
+         destroy();
+         sessionOptional = Optional.absent();
       }
-      super.put(userSession);
+      return sessionOptional;
+   }
+
+   @Override
+   public void put(UserSession userSession) {
+      ImmutableUserSession temp = ImmutableUserSession.copyOf(userSession);
+      if (Queryable.from(supportedLocales).firstOrDefault(locale ->
+            LocaleHelper.compareLocales(LocaleHelper.buildFromLanguageCode(userSession.locale()), locale)) == null) {
+         temp = temp.withLocale(Locale.US.getLanguage() + "-" + Locale.US.getCountry());
+      }
+      super.put(temp);
    }
 }

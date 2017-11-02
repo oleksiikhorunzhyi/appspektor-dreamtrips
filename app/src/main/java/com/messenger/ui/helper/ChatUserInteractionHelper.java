@@ -40,7 +40,7 @@ public class ChatUserInteractionHelper {
       this.mediaDAO = mediaDAO;
       this.profileCrosser = profileCrosser;
       this.router = router;
-      this.currentUserId = sessionHolder.get().get().getUsername();
+      this.currentUserId = sessionHolder.get().get().username();
    }
 
    public void openUserProfile(DataUser user) {

@@ -1,8 +1,10 @@
 package com.worldventures.core.modules.auth.util;
 
 import com.worldventures.core.model.Session;
+import com.worldventures.core.model.session.ImmutableUserSession;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.storage.complex_objects.Optional;
 
 public final class SessionUtil {
 
@@ -10,24 +12,20 @@ public final class SessionUtil {
    }
 
    public static UserSession createUserSession(Session session, String userName, String userPassword) {
-      UserSession userSession = new UserSession();
-      userSession.setUser(session.getUser());
-      userSession.setApiToken(session.getToken());
-      userSession.setLegacyApiToken(session.getSsoToken());
-      userSession.setUsername(userName);
-      userSession.setUserPassword(userPassword);
-      userSession.setLocale(session.getLocale());
-      userSession.setLastUpdate(System.currentTimeMillis());
-      userSession.setFeatures(session.getPermissions());
-      return userSession;
+      return ImmutableUserSession.builder()
+            .user(session.getUser())
+            .locale(session.getLocale())
+            .apiToken(session.getToken())
+            .legacyApiToken(session.getSsoToken())
+            .username(userName)
+            .userPassword(userPassword)
+            .lastUpdate(System.currentTimeMillis())
+            .addAllPermissions(session.getPermissions())
+            .build();
    }
 
    public static boolean isUserSessionTokenExist(SessionHolder sessionHolder) {
-      try {
-         UserSession userSession = sessionHolder.get().isPresent() ? sessionHolder.get().get() : null; //NOPMD
-         return userSession != null && userSession.getApiToken() != null;
-      } catch (Exception ex) {
-         return false;
-      }
+      Optional<UserSession> session = sessionHolder.get();
+      return session.isPresent() && session.get().apiToken() != null;
    }
 }

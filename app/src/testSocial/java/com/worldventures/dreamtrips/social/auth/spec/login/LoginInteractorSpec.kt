@@ -46,14 +46,14 @@ class LoginInteractorSpec : BaseSpec({
 
       it("Perform relogin request without username and password") {
          whenever(sessionHolderMock.get()).thenReturn(Optional.of(userSessionMock))
-         whenever(userSessionMock.username).thenReturn(USERNAME)
-         whenever(userSessionMock.userPassword).thenReturn(PASSWORD)
+         whenever(userSessionMock.username()).thenReturn(USERNAME)
+         whenever(userSessionMock.userPassword()).thenReturn(PASSWORD)
 
          val testSubscribe = relogin()
 
          assertActionSuccess(testSubscribe) {
             isUserSessionValid(it.result) &&
-                  !it.result.apiToken.equals(userSessionMock.apiToken)
+                  !it.result.apiToken().equals(userSessionMock.apiToken())
          }
       }
 
@@ -153,7 +153,7 @@ class LoginInteractorSpec : BaseSpec({
       }
 
       fun session(): Session {
-         val session: Session = Session()
+         val session = Session()
          session.locale = LOCALE
          session.ssoToken = SSO_TOKEN
          session.token = API_TOKEN
@@ -163,13 +163,13 @@ class LoginInteractorSpec : BaseSpec({
       }
 
       fun isUserSessionValid(userSession: UserSession): Boolean {
-         return userSession.apiToken.equals(API_TOKEN) &&
-               userSession.username.equals(USERNAME) &&
-               userSession.userPassword.equals(PASSWORD) &&
-               userSession.locale.equals(LOCALE) &&
-               userSession.legacyApiToken.equals(SSO_TOKEN) &&
-               userSession.features.equals(FEATURES) &&
-               userSession.user.id == USER_ID
+         return userSession.apiToken().equals(API_TOKEN) &&
+               userSession.username().equals(USERNAME) &&
+               userSession.userPassword().equals(PASSWORD) &&
+               userSession.locale().equals(LOCALE) &&
+               userSession.legacyApiToken().equals(SSO_TOKEN) &&
+               userSession.permissions()!! == FEATURES &&
+               userSession.user()!!.id == USER_ID
       }
    }
 }

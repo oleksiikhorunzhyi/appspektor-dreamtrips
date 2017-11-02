@@ -74,7 +74,7 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
       notificationAvatar.setup(firstUser, injectorProvider.get());
       notificationOwner.setText(firstUser.getFullName());
 
-      int currentAccountId = appSessionHolder.get().get().getUser().getId();
+      int currentAccountId = appSessionHolder.get().get().user().getId();
       notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources(), currentAccountId)));
       notificationTime.setText(TimeUtils.getRelativeTimeSpanString(itemView.getResources(),
             getModelObject().getCreatedAt().getTime()));

@@ -81,10 +81,10 @@ public class MessengerConnector {
          return;
       }
       UserSession userSession = appSessionHolder.get().get();
-      if (userSession.getUser() == null) {
+      if (userSession.user() == null) {
          return;
       }
-      messengerServerFacade.connect(userSession.getUsername(), userSession.getLegacyApiToken());
+      messengerServerFacade.connect(userSession.username(), userSession.legacyApiToken());
    }
 
    public void disconnect() {

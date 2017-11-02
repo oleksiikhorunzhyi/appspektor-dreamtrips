@@ -150,6 +150,7 @@ ext {
    def jodaTimeVersion = '2.9.9'
    def dataBindingCompilerVersion = '2.2.3'
    moduleDependencies.util = [
+         techeryImmutables        : [a: 'com.github.techery:immutables-gson-adapters-provider:0.1'],
          androidMapsUtils         : [c: 'com.google.maps.android:android-maps-utils:0.4'],
          androidReactiveLocation  : [c: 'pl.charmas.android:android-reactive-location:0.8@aar'],
          operationActionSubscriber: [c: 'com.github.techery:OperationActionSubscriber:1.0.3'],

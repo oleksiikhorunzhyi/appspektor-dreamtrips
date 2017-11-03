@@ -42,8 +42,8 @@
          android:visibility="visible"
          >
 
-      <com.worldventures.core.ui.view.custom.EmptyRecyclerView
-            android:id="@+id/list_items"
+      <com.worldventures.dreamtrips.social.ui.feed.view.custom.StateRecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/spacing_tiniest"

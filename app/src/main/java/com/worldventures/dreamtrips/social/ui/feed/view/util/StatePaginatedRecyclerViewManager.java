@@ -25,7 +25,7 @@ import rx.subjects.PublishSubject;
 public class StatePaginatedRecyclerViewManager {
 
    @InjectView(R.id.recyclerView) public StateRecyclerView stateRecyclerView;
-   @InjectView(R.id.swipe_container) public SwipeRefreshLayout swipeContainer;
+   @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
 
    private WeakHandler weakHandler;
    private PaginationViewManager paginationViewManager;

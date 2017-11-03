@@ -24,6 +24,10 @@ public class CachedModelHelper {
       return new File(getFileForStorage(Environment.DIRECTORY_PODCASTS, cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
    }
 
+   public String getPodcastPath(CachedModel entity) {
+      return getFileForStorage(Environment.DIRECTORY_PODCASTS, entity.getUrl());
+   }
+
    public String getFilePath(String url) {
       return filePathProvider.getFilesDir() + File.separator + getFileName(url);
    }

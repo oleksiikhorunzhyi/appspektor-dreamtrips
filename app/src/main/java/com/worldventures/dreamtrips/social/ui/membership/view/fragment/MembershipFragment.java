@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePager
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.membership.presenter.MembershipPresenter;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -49,7 +51,8 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
       pager.addOnPageChangeListener(this);
    }
 
-   public void setScreens(List<FragmentItem> items) {
+   @Override
+   public void setScreens(@Nullable List<? extends FragmentItem> items) {
       adapter.addItems(items);
       adapter.notifyDataSetChanged();
       tabs.setupWithPagerBadged(pager);

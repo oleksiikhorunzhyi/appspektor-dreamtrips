@@ -36,7 +36,7 @@ public class MediaHeaderCell extends BaseAbstractDelegateCell<MediaHeader, Video
       }
 
       header.setTextColor(itemView.getResources().getColor(R.color.white));
-      language.setVisibility(getModelObject().isShowLanguage() ? View.VISIBLE : View.INVISIBLE);
+      language.setVisibility(getModelObject().getShowLanguage() ? View.VISIBLE : View.INVISIBLE);
 
       if (getModelObject().getVideoLocale() != null) {
          flag.setImageURI(Uri.parse(getModelObject().getVideoLocale().getImage()));

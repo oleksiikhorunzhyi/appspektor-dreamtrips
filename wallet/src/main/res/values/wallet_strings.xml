@@ -562,11 +562,6 @@
    <string name="wallet_payment_feedback_payment_terminal_label">Payment Terminal</string>
    <string name="wallet_payment_feedback_payment_terminal_name_model">Terminal Name &amp; Model Number</string>
    <string name="wallet_payment_feedback_enter_name_model_hint">Enter name and model</string>
-   <string name="wallet_payment_feedback_how_pay_label">How did you pay?</string>
-   <string name="wallet_payment_feedback_magnetic_swipe_label">Magnetic Swipe</string>
-   <string name="wallet_payment_feedback_magnetic_swipe_description">Swiped card through reader</string>
-   <string name="wallet_payment_feedback_wireless_magnetic_label">Wireless Magnetic</string>
-   <string name="wallet_payment_feedback_wireless_magnetic_description">Held card near reader</string>
    <string name="wallet_payment_feedback_additional_info_title">Additional info</string>
    <string name="wallet_payment_feedback_notes_label">Notes</string>
    <string name="wallet_payment_feedback_notes_hint">Enter Notes (Optional)</string>

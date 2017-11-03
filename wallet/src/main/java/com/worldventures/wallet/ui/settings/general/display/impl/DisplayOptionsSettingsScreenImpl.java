@@ -48,8 +48,6 @@ import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewMo
 import com.worldventures.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView;
 import com.worldventures.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 
 import javax.inject.Inject;
@@ -63,7 +61,6 @@ import me.relex.circleindicator.CircleIndicator;
 import rx.Observable;
 
 import static android.view.View.OVER_SCROLL_NEVER;
-import static android.view.View.inflate;
 
 public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter> implements DisplayOptionsSettingsScreen {
 
@@ -222,21 +219,21 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
 
    @Override
    public ProfileViewModel getProfileViewModel() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_PROFILE_VIEWMODEL))
+      return !getArgs().isEmpty() && getArgs().containsKey(KEY_PROFILE_VIEWMODEL)
             ? getArgs().getParcelable(KEY_PROFILE_VIEWMODEL)
             : null;
    }
 
    @Override
    public DisplayOptionsSource getDisplayOptionsSource() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_DISPLAY_OPTIONS_SOURCE))
+      return !getArgs().isEmpty() && getArgs().containsKey(KEY_DISPLAY_OPTIONS_SOURCE)
             ? (DisplayOptionsSource) getArgs().getSerializable(KEY_DISPLAY_OPTIONS_SOURCE)
             : null;
    }
 
    @Override
    public void showAddPhoneDialog() {
-      final View phoneView = inflate(getContext(), R.layout.dialog_wallet_display_options_enter_user_phone, null);
+      final View phoneView = View.inflate(getContext(), R.layout.dialog_wallet_display_options_enter_user_phone, null);
       final DialogWalletDisplayOptionsEnterUserPhoneBinding phoneBinding = DataBindingUtil.bind(phoneView);
       phoneBinding.setProfile(new ProfileViewModel());
       MaterialDialog builder = new MaterialDialog.Builder(getContext())
@@ -320,7 +317,7 @@ public class DisplayOptionsSettingsScreenImpl extends WalletBaseController<Displ
             return error;
          }
 
-         @Nullable
+         @NonNull
          @Override
          public ErrorView<SaveDisplayTypeCommand> create(SaveDisplayTypeCommand command, Throwable parentThrowable, Throwable throwable) {
             return new DialogErrorView<SaveDisplayTypeCommand>(getContext()) {

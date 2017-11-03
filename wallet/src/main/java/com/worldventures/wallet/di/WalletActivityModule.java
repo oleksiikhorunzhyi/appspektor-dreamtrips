@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.bluelinelabs.conductor.Router;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
+import com.worldventures.core.modules.infopages.service.CancelableFeedbackAttachmentsManager;
 import com.worldventures.core.modules.infopages.service.DocumentsInteractor;
 import com.worldventures.core.modules.infopages.service.FeedbackInteractor;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
@@ -133,12 +134,13 @@ import com.worldventures.wallet.ui.settings.help.documents.doc.impl.HelpDocument
 import com.worldventures.wallet.ui.settings.help.documents.doc.impl.HelpDocumentDetailScreenImpl;
 import com.worldventures.wallet.ui.settings.help.documents.impl.WalletHelpDocumentsPresenterImpl;
 import com.worldventures.wallet.ui.settings.help.documents.impl.WalletHelpDocumentsScreenImpl;
-import com.worldventures.wallet.ui.settings.help.feedback.SendFeedbackPresenter;
-import com.worldventures.wallet.ui.settings.help.feedback.impl.SendFeedbackPresenterImpl;
-import com.worldventures.wallet.ui.settings.help.feedback.impl.SendFeedbackScreenImpl;
+import com.worldventures.wallet.ui.settings.help.feedback.base.impl.FeedbackAttachmentsPresenterDelegateImpl;
 import com.worldventures.wallet.ui.settings.help.feedback.payment.PaymentFeedbackPresenter;
 import com.worldventures.wallet.ui.settings.help.feedback.payment.impl.PaymentFeedbackPresenterImpl;
 import com.worldventures.wallet.ui.settings.help.feedback.payment.impl.PaymentFeedbackScreenImpl;
+import com.worldventures.wallet.ui.settings.help.feedback.regular.SendFeedbackPresenter;
+import com.worldventures.wallet.ui.settings.help.feedback.regular.impl.SendFeedbackPresenterImpl;
+import com.worldventures.wallet.ui.settings.help.feedback.regular.impl.SendFeedbackScreenImpl;
 import com.worldventures.wallet.ui.settings.help.impl.WalletHelpSettingsPresenterImpl;
 import com.worldventures.wallet.ui.settings.help.impl.WalletHelpSettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.help.support.WalletCustomerSupportSettingsPresenter;
@@ -232,15 +234,11 @@ import com.worldventures.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
 import com.worldventures.wallet.util.WalletBuildConfigHelper;
 import com.worldventures.wallet.util.WalletFeatureHelper;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import io.techery.janet.Janet;
-
-import static com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET;
 
 @Module(injects = {
       WalletActivity.class,
@@ -775,7 +773,9 @@ public class WalletActivityModule {
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
          MediaPickerInteractor mediaPickerInteractor) {
       return new SendFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
+            new FeedbackAttachmentsPresenterDelegateImpl(mediaPickerInteractor, feedbackInteractor,
+                  new CancelableFeedbackAttachmentsManager(feedbackInteractor.uploadAttachmentPipe())),
+            walletSettingsInteractor);
    }
 
    @Provides
@@ -784,7 +784,9 @@ public class WalletActivityModule {
          FeedbackInteractor feedbackInteractor, WalletSettingsInteractor walletSettingsInteractor,
          MediaPickerInteractor mediaPickerInteractor) {
       return new PaymentFeedbackPresenterImpl(navigator, deviceConnectionDelegate,
-            feedbackInteractor, walletSettingsInteractor, mediaPickerInteractor);
+            new FeedbackAttachmentsPresenterDelegateImpl(mediaPickerInteractor, feedbackInteractor,
+                  new CancelableFeedbackAttachmentsManager(feedbackInteractor.uploadAttachmentPipe())),
+            walletSettingsInteractor);
    }
 
    @Provides

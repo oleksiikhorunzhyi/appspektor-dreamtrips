@@ -11,10 +11,6 @@
             type="com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel"
             />
 
-      <variable
-            name="onEditTextFocusChange"
-            type="android.view.View.OnFocusChangeListener"
-            />
    </data>
 
    <LinearLayout
@@ -23,7 +19,6 @@
          android:orientation="horizontal"
          android:paddingLeft="@dimen/spacing_normal"
          android:paddingRight="@dimen/spacing_normal"
-         android:theme="@style/WalletTheme"
          >
 
       <include

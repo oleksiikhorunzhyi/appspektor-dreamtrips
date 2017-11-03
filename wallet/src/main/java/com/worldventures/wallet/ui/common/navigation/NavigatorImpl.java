@@ -52,9 +52,9 @@ import com.worldventures.wallet.ui.settings.general.reset.success.impl.FactoryRe
 import com.worldventures.wallet.ui.settings.help.documents.doc.impl.HelpDocumentDetailScreenImpl;
 import com.worldventures.wallet.ui.settings.help.documents.impl.WalletHelpDocumentsScreenImpl;
 import com.worldventures.wallet.ui.settings.help.documents.model.WalletDocumentModel;
-import com.worldventures.wallet.ui.settings.help.feedback.FeedbackType;
-import com.worldventures.wallet.ui.settings.help.feedback.impl.SendFeedbackScreenImpl;
 import com.worldventures.wallet.ui.settings.help.feedback.payment.impl.PaymentFeedbackScreenImpl;
+import com.worldventures.wallet.ui.settings.help.feedback.regular.FeedbackType;
+import com.worldventures.wallet.ui.settings.help.feedback.regular.impl.SendFeedbackScreenImpl;
 import com.worldventures.wallet.ui.settings.help.impl.WalletHelpSettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.help.video.impl.WalletHelpVideoScreenImpl;
@@ -475,12 +475,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goSendCustomerSupportFeedback() {
-      go(SendFeedbackScreenImpl.create(FeedbackType.CustomerSupport));
+      go(SendFeedbackScreenImpl.Companion.create(FeedbackType.CustomerSupport));
    }
 
    @Override
    public void goSendSmartCardFeedback() {
-      go(SendFeedbackScreenImpl.create(FeedbackType.SmartCardFeedback));
+      go(SendFeedbackScreenImpl.Companion.create(FeedbackType.SmartCardFeedback));
    }
 
    @Override

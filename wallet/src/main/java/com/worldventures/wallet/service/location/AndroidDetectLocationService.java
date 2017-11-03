@@ -27,6 +27,7 @@ public class AndroidDetectLocationService implements WalletDetectLocationService
 
    @Override
    public boolean isPermissionGranted() {
+      // TODO: 11/2/17 check it logic
       return PermissionChecker.checkSelfPermission(context, Manifest.permission_group.LOCATION) != PackageManager.PERMISSION_GRANTED;
    }
 

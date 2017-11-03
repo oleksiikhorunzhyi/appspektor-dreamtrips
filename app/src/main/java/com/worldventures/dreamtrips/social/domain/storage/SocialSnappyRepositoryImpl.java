@@ -10,7 +10,6 @@ import com.worldventures.core.model.Circle;
 import com.worldventures.core.repository.BaseSnappyRepository;
 import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoFeedItem;
@@ -36,7 +35,7 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    private static final String FILTER_CIRCLE = "FILTER_CIRCLE";
    private static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
    private static final String PODCASTS = "PODCASTS";
-   private static final String CATEGORIES = "categories";
+
    private final DefaultSnappyOpenHelper defaultSnappyOpenHelper;
 
    public SocialSnappyRepositoryImpl(Context context, DefaultSnappyOpenHelper defaultSnappyOpenHelper) {
@@ -92,16 +91,6 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    @Override
    public String getOpenBucketTabType() {
       return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
-   }
-
-   @Override
-   public void saveBucketListCategories(List<CategoryItem> categories) {
-      putList(CATEGORIES, categories);
-   }
-
-   @Override
-   public List<CategoryItem> getBucketListCategories() {
-      return readList(CATEGORIES, CategoryItem.class);
    }
 
    ///////////////////////////////////////////////////////////////////////////

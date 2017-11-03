@@ -203,7 +203,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
       };
       spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerCategory);
       int categoryPosition = categorySelectedPosition == null ? items.indexOf(selectedItem) : categorySelectedPosition;
-      spinnerCategory.setSelection(categoryPosition);
+      if (categoryPosition != -1) spinnerCategory.setSelection(categoryPosition);
    }
 
    private void initAutoCompleteDate() {

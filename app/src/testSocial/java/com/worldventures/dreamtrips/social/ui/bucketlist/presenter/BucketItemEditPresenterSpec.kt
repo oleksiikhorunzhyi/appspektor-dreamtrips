@@ -7,9 +7,11 @@ import com.worldventures.core.model.EntityStateHolder
 import com.worldventures.dreamtrips.common.Injector
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand
 import io.techery.janet.CancelException
 import io.techery.janet.command.test.Contract
@@ -20,7 +22,7 @@ import org.jetbrains.spek.api.dsl.it
 class BucketItemEditPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemEditPresenter, BucketItemEditPresenter.View,
       BucketItemEditPresenterSpec.DetailsTestBody>(DetailsTestBody()) {
 
-   class DetailsTestBody: TestBody<BucketItemEditPresenter, BucketItemEditPresenter.View>() {
+   class DetailsTestBody : TestBody<BucketItemEditPresenter, BucketItemEditPresenter.View>() {
 
       override fun describeTest(): String = BucketItemDetailsPresenter::class.java.simpleName
 
@@ -33,12 +35,26 @@ class BucketItemEditPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemEdi
       }
 
       override fun onResumeTestSetup() {
-         whenever(socialSnappy.getBucketListCategories()).thenReturn(emptyList())
-         setup(Contract.of(MergeBucketItemPhotosWithStorageCommand::class.java).result(emptyList<EntityStateHolder<BucketPhoto>>()))
+         setup(defaultMockContracts())
       }
 
       override fun getMainTestSuite(): Spec.() -> Unit {
          return {
+            it("should load categories") {
+               setup(defaultMockContracts())
+
+               presenter.loadCategories()
+               verify(presenter).mergeBucketItemPhotosWithStorage()
+            }
+
+            it("should load categories and process error properly") {
+               setup(Contract.of(GetCategoriesCommand::class.java).exception(Exception()))
+
+               presenter.loadCategories()
+
+               verify(presenter).handleError(any(), any())
+            }
+
             it("should subscribe to new photos on take view") {
                setup()
                doNothing().whenever(presenter).subscribeToAddingPhotos()
@@ -49,7 +65,7 @@ class BucketItemEditPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemEdi
             }
 
             it("should merge bucket items with storage on sync ui") {
-               setup(Contract.of(MergeBucketItemPhotosWithStorageCommand::class.java).result(emptyList<EntityStateHolder<BucketPhoto>>()))
+               setup(defaultMockContracts())
 
                presenter.onResume()
 
@@ -132,6 +148,13 @@ class BucketItemEditPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemEdi
       private fun stubBucketPhoto(): BucketPhoto = BucketPhoto().apply {
          uid = "11"
          setUrl("")
+      }
+
+      private fun defaultMockContracts(): List<Contract> {
+         val categoriesList = listOf(CategoryItem(1, "Test"))
+
+         return listOf(Contract.of(GetCategoriesCommand::class.java).result(categoriesList),
+               Contract.of(MergeBucketItemPhotosWithStorageCommand::class.java).result(emptyList<EntityStateHolder<BucketPhoto>>()))
       }
    }
 }

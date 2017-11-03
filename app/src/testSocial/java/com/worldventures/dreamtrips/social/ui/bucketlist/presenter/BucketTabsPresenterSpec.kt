@@ -29,14 +29,12 @@ class BucketTabsPresenterSpec : PresenterBaseSpec({
          init()
 
          doNothing().whenever(presenter).setTabs()
-         doNothing().whenever(presenter).loadCategories()
          doNothing().whenever(presenter).loadBucketList()
          doNothing().whenever(presenter).subscribeToErrorUpdates()
 
          presenter.onViewTaken()
 
          verify(presenter).setTabs()
-         verify(presenter).loadCategories()
          verify(presenter).loadBucketList()
          verify(presenter).subscribeToErrorUpdates()
       }
@@ -56,23 +54,6 @@ class BucketTabsPresenterSpec : PresenterBaseSpec({
                BucketItem.BucketType.DINING)
          assertEquals(actualBucketTypesList.size, expectedList.size)
          assertTrue(actualBucketTypesList.containsAll(expectedList) && expectedList.containsAll(actualBucketTypesList))
-      }
-
-      it("should load categories") {
-         val categoriesList = listOf(CategoryItem(1, "Test"))
-         init(Contract.of(GetCategoriesCommand::class.java).result(categoriesList))
-
-         presenter.loadCategories()
-
-         verify(socialSnappy).saveBucketListCategories(categoriesList)
-      }
-
-      it("should load categories and process error properly") {
-         init(Contract.of(GetCategoriesCommand::class.java).exception(Exception()))
-
-         presenter.loadCategories()
-
-         verify(presenter).handleError(any(), any())
       }
 
       it("should load bucket list") {

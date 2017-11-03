@@ -1,0 +1,1 @@
+# place for social's proguard rules

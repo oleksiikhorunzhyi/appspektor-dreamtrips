@@ -38,7 +38,7 @@ utils.runBuild('android', notifier) {
             def outputs = utils.scripts.bash("./gradlew ${params.task}")
             def matcher = (outputs =~ /(Lint found .+\R)/)
             def message = matcher.find() ? "${matcher.group(0).trim()}." : 'Lint checks successfully passed.'
-            results << "${params.name} ${message} ${createReportLink(params.name)}."
+            results << "${params.name} ${message} ${createLintReportLink(params.name)}."
          } catch (e) {
             errors << e
             results << "${params.name} Lint checks failed."
@@ -53,6 +53,33 @@ utils.runBuild('android', notifier) {
       }
       notifier.comment(createLintComment(results))
       if (!errors.isEmpty()) throw errors[0]
+   }
+   stage('code analysis') {
+      def errors = new ArrayList()
+      runWithErrors(errors) {
+         utils.scripts.gradlew "checkstyle"
+      }
+      runWithErrors(errors) {
+         utils.scripts.gradlew "pmd"
+      }
+      runWithErrors(errors) {
+         utils.scripts.gradlew "lintKotlin"
+      }
+      runWithErrors(errors) {
+         utils.scripts.gradlew "detektCheck"
+      }
+      //checkstyle report
+      step([$class: "CheckStylePublisher", pattern: "**/reports/**/*.xml", healthy: "5", unHealthy: "10"])
+      //pmd report
+      step([$class: "PmdPublisher", pattern: "**/reports/pmd/pmd.xml"])
+      if (!errors.isEmpty()) {
+         def firstError = errors[0]
+         def sb = new StringBuilder("Code analysis failed. See reports: ")
+         sb.append(createReportLink("Checkstyle", "checkstyleResult")).append(", ")
+         sb.append(createReportLink("PMD", "pmdResult"))
+         notifier.comment(sb.toString())
+         throw firstError
+      }
    }
    stage('tests') {
       for (String task : buildParams.TEST_TASKS)
@@ -112,17 +139,22 @@ def Map generateParams() {
    buildParams.TEST_REPORT_PATTERN = '**/*.xml'
 
    buildParams.LINT_REPORT_PARAMS = [
-      [task: "core:lintDebug", folder: 'core/build/reports', fileName: 'lint-results-debug.html', name: 'Core Module'],
-      [task: "wallet:lintDebug", folder: 'wallet/build/reports', fileName: 'lint-results-debug.html', name: 'Wallet Module'],
-      [task: "app:lintExternal${buildParams.FLAVOR}StageDebug", folder: 'app/build/reports', fileName: "lint-results-${lintReportName}.html", name : 'App Module'],
+         [task: "core:lintDebug", folder: 'core/build/reports', fileName: 'lint-results-debug.html', name: 'Core Module'],
+         [task: "wallet:lintDebug", folder: 'wallet/build/reports', fileName: 'lint-results-debug.html', name: 'Wallet Module'],
+         [task: "app:lintExternal${buildParams.FLAVOR}StageDebug", folder: 'app/build/reports', fileName: "lint-results-${lintReportName}.html", name: 'App Module'],
    ]
 
    return buildParams
 }
 
 @NonCPS
-def String createReportLink(String moduleName) {
-   return "[You can see Lint Report](${BUILD_URL}${moduleName.replace(' ' as char, '_' as char)}_Lint_Result/)"
+def String createReportLink(String label, String subPath) {
+   return "[$label](${BUILD_URL}${subPath})"
+}
+
+@NonCPS
+def String createLintReportLink(String moduleName) {
+   return createReportLink("You can see Lint Report", "${moduleName.replace(' ' as char, '_' as char)}_Lint_Result")
 }
 
 @NonCPS
@@ -153,4 +185,12 @@ def String testFolderFromTask(String testTask) {
    def wrapperFolder = testTask + (testTask.contains("UnitTest") ? "" : "UnitTest")
    def taskFolder = "**"
    return "${wrapperFolder}/${taskFolder}"
+}
+
+def void runWithErrors(Collection errors, Closure<Void> job) {
+   try {
+      job()
+   } catch (Exception ignored) {
+      errors.add(ignored)
+   }
 }

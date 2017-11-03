@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 def buildParams = [:]
-def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', '')
+def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', 'android')
 def notifier = utils.notifiers.gitlab(this)
 utils.runBuild('android', notifier) {
    stage('prepare build') {

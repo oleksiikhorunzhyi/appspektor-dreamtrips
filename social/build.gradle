@@ -1,0 +1,58 @@
+apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/module-social-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/module-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+   compileSdkVersion project.ext.androidConfig.compileSdk
+   buildToolsVersion project.ext.androidConfig.buildTools
+
+   defaultConfig {
+      minSdkVersion project.ext.androidConfig.minSdk
+      targetSdkVersion project.ext.androidConfig.targetSdk
+   }
+
+   buildTypes {
+      release {
+         minifyEnabled false
+         def proConfigs = file('proguard-rules').listFiles().collect { it }
+         proConfigs << file('dagger-proguard-keepnames.cfg')
+         setProguardFiles proConfigs
+      }
+   }
+
+   lintOptions {
+      xmlReport false
+      // todo fix it
+      disable 'RestrictedApi', 'MissingPermission', 'WrongViewCast'
+   }
+
+   compileOptions {
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
+   }
+
+}
+
+def deps = project.ext.socialDependencies
+
+repositories {
+   deps.repos.each { it.call(owner) }
+}
+
+dependencies {
+   applyDependencies(owner, deps.modules)
+   applyDependencies(owner, deps.ui)
+   applyDependencies(owner, deps.networking)
+   applyDependencies(owner, deps.test)
+   applyDependencies(owner, deps.annotationProcessor)
+}
+
+generateTestHttpHelperFactory("SocialModule")

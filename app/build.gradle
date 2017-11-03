@@ -253,4 +253,6 @@ dependencies {
    devpremarshmallowImplementation provideDep(deps.util.leakcanary)
    externalImplementation provideDep(deps.util.leakcanaryNoOp)
 }
+
 bindModuleTestsToAppFlavor(":wallet", "Smartcardmock")
+bindModuleTestsToAppFlavor(":social", "Social")

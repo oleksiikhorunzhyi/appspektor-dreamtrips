@@ -3,22 +3,20 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.view.args;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 
 public class TripImagesArgs implements Parcelable {
-
    private final int userId;
    private final boolean showTimestamps;
    private final int pageSize;
-   private final Route route;
+   private final TripImageType tripImageType;
    private final CreateEntityBundle.Origin origin;
 
-   private TripImagesArgs(int userId, boolean showTimestamps, int pageSize, Route route, CreateEntityBundle.Origin origin) {
+   private TripImagesArgs(int userId, boolean showTimestamps, int pageSize, TripImageType tripImageType, CreateEntityBundle.Origin origin) {
       this.userId = userId;
       this.showTimestamps = showTimestamps;
       this.pageSize = pageSize;
-      this.route = route;
+      this.tripImageType = tripImageType;
       this.origin = origin;
    }
 
@@ -38,8 +36,8 @@ public class TripImagesArgs implements Parcelable {
       return userId;
    }
 
-   public Route getRoute() {
-      return route;
+   public TripImageType getTripImageType() {
+      return tripImageType;
    }
 
    public static Builder builder() {
@@ -66,7 +64,7 @@ public class TripImagesArgs implements Parcelable {
       if (pageSize != that.pageSize) {
          return false;
       }
-      if (route != that.route) {
+      if (tripImageType != that.tripImageType) {
          return false;
       }
       return origin == that.origin;
@@ -78,7 +76,7 @@ public class TripImagesArgs implements Parcelable {
       int result = userId;
       result = 31 * result + (showTimestamps ? 1 : 0);
       result = 31 * result + pageSize;
-      result = 31 * result + (route != null ? route.hashCode() : 0);
+      result = 31 * result + (tripImageType != null ? tripImageType.hashCode() : 0);
       result = 31 * result + (origin != null ? origin.hashCode() : 0);
       return result;
    }
@@ -89,7 +87,7 @@ public class TripImagesArgs implements Parcelable {
       private int userId;
       private boolean showTimestamps;
       private int pageSize = DEFAULT_PAGE_SIZE;
-      private Route route;
+      private TripImageType tripImageType;
       private CreateEntityBundle.Origin origin;
 
       public Builder userId(int userId) {
@@ -107,8 +105,8 @@ public class TripImagesArgs implements Parcelable {
          return this;
       }
 
-      public Builder route(Route route) {
-         this.route = route;
+      public Builder type(TripImageType tripImageType) {
+         this.tripImageType = tripImageType;
          return this;
       }
 
@@ -118,7 +116,7 @@ public class TripImagesArgs implements Parcelable {
       }
 
       public TripImagesArgs build() {
-         return new TripImagesArgs(userId, showTimestamps, pageSize, route, origin);
+         return new TripImagesArgs(userId, showTimestamps, pageSize, tripImageType, origin);
       }
    }
 
@@ -130,7 +128,7 @@ public class TripImagesArgs implements Parcelable {
       dest.writeInt(this.userId);
       dest.writeByte(this.showTimestamps ? (byte) 1 : (byte) 0);
       dest.writeInt(this.pageSize);
-      dest.writeInt(this.route == null ? -1 : this.route.ordinal());
+      dest.writeInt(this.tripImageType == null ? -1 : this.tripImageType.ordinal());
       dest.writeInt(this.origin == null ? -1 : this.origin.ordinal());
    }
 
@@ -139,7 +137,7 @@ public class TripImagesArgs implements Parcelable {
       this.showTimestamps = in.readByte() != 0;
       this.pageSize = in.readInt();
       int tmpRoute = in.readInt();
-      this.route = tmpRoute == -1 ? null : Route.values()[tmpRoute];
+      this.tripImageType = tmpRoute == -1 ? null : TripImageType.values()[tmpRoute];
       int tmpOrigin = in.readInt();
       this.origin = tmpOrigin == -1 ? null : CreateEntityBundle.Origin.values()[tmpOrigin];
    }
@@ -155,4 +153,8 @@ public class TripImagesArgs implements Parcelable {
          return new TripImagesArgs[size];
       }
    };
+
+   public enum TripImageType {
+      MEMBER_IMAGES, ACCOUNT_IMAGES
+   }
 }

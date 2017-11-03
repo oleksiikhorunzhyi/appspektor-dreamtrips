@@ -8,7 +8,6 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
@@ -17,6 +16,9 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePage
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.TripImagesTabPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.inspire_me.InspireMeFragment;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.YouShouldBeHereFragment;
+import com.worldventures.dreamtrips.social.ui.video.view.ThreeSixtyVideosFragment;
 import com.worldventures.dreamtrips.util.PageSelectionDetector;
 
 import javax.inject.Inject;
@@ -39,19 +41,19 @@ public class TripImagesTabFragment extends BaseFragment<TripImagesTabPresenter> 
       super.afterCreateView(rootView);
       if (adapter == null) {
          this.adapter = new BasePagerAdapter(getChildFragmentManager());
-         adapter.add(new FragmentItem(Route.MEMBERS_IMAGES, getString(R.string.member_images), TripImagesArgs.builder()
+         adapter.add(new FragmentItem(MemberImagesFragment.class, getString(R.string.member_images), TripImagesArgs.builder()
                .showTimestamps(true)
-               .route(Route.MEMBERS_IMAGES)
+               .type(TripImagesArgs.TripImageType.MEMBER_IMAGES)
                .origin(CreateEntityBundle.Origin.MEMBER_TRIP_IMAGES)
                .build()));
-         adapter.add(new FragmentItem(Route.ACCOUNT_IMAGES, getString(R.string.my_images), TripImagesArgs.builder()
+         adapter.add(new FragmentItem(TripImagesFragment.class, getString(R.string.my_images), TripImagesArgs.builder()
                .userId(sessionHolder.get().get().user().getId())
-               .route(Route.ACCOUNT_IMAGES)
+               .type(TripImagesArgs.TripImageType.ACCOUNT_IMAGES)
                .origin(CreateEntityBundle.Origin.MY_TRIP_IMAGES)
                .build()));
-         adapter.add(new FragmentItem(Route.THREE_SIXTY_VIDEOS, getString(R.string.three_sixty)));
-         adapter.add(new FragmentItem(Route.INSPIRE_ME_IMAGES, getString(R.string.inspire_me)));
-         adapter.add(new FragmentItem(Route.YSBH_IMAGES, getString(R.string.trip_images_you_should_be_here)));
+         adapter.add(new FragmentItem(ThreeSixtyVideosFragment.class, getString(R.string.three_sixty)));
+         adapter.add(new FragmentItem(InspireMeFragment.class, getString(R.string.inspire_me)));
+         adapter.add(new FragmentItem(YouShouldBeHereFragment.class, getString(R.string.trip_images_you_should_be_here)));
       }
 
       PageSelectionDetector.listenPageSelection(pager, pageNumber -> {

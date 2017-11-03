@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
@@ -21,11 +21,11 @@ import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
 public class FriendNotificationFactory extends NotificationFactory {
 
-   private final RouteCreator<Integer> routeCreator;
+   private final FragmentClassProvider<Integer> fragmentClassProvider;
 
-   public FriendNotificationFactory(Context context, RouteCreator<Integer> profileRouteCreator) {
+   public FriendNotificationFactory(Context context, FragmentClassProvider<Integer> profileFragmentClassProvider) {
       super(context);
-      this.routeCreator = profileRouteCreator;
+      this.fragmentClassProvider = profileFragmentClassProvider;
    }
 
    public Notification createFriendRequestAccepted(UserPushMessage data) {
@@ -69,7 +69,7 @@ public class FriendNotificationFactory extends NotificationFactory {
       Intent resultIntent = new Intent(context, SocialComponentActivity.class);
       //set args to pending intent
       Bundle args = new Bundle();
-      args.putSerializable(ComponentPresenter.ROUTE, routeCreator.createRoute(userId));
+      args.putSerializable(ComponentPresenter.FRAGMENT_CLAZZ, fragmentClassProvider.provideFragmentClass(userId));
       args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, ToolbarConfig.Builder.create()
             .visible(false)
             .build());

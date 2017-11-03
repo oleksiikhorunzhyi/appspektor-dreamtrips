@@ -5,10 +5,11 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMemberViewedAction;
 
 @Layout(R.layout.fragment_webview)
 public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
@@ -32,6 +33,6 @@ public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle
 
    @Override
    protected void trackViewFromViewPagerIfNeeded() {
-      getPresenter().track(Route.ENROLL_MEMBER);
+      analyticsInteractor.analyticsActionPipe().send(new EnrollMemberViewedAction(getUserId()));
    }
 }

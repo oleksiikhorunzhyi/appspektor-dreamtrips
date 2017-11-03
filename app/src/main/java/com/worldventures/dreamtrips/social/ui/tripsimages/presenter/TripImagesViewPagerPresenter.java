@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
@@ -20,6 +19,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.Member
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.FullscreenPhotoFragment;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.FullscreenVideoFragment;
 
 import java.util.Collections;
 import java.util.List;
@@ -121,9 +122,9 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
             .filter(element -> element.getType() != TripImageType.UNKNOWN)
             .map(entity -> {
                if (entity.getType() == TripImageType.PHOTO) {
-                  return new FragmentItem(Route.SOCIAL_IMAGE_FULLSCREEN, "", ((PhotoMediaEntity) entity).getItem());
+                  return new FragmentItem(FullscreenPhotoFragment.class, "", ((PhotoMediaEntity) entity).getItem());
                } else {
-                  return new FragmentItem(Route.SOCIAL_VIDEO_FULLSCREEN, "", ((VideoMediaEntity) entity).getItem());
+                  return new FragmentItem(FullscreenVideoFragment.class, "", ((VideoMediaEntity) entity).getItem());
                }
             })
             .toList();

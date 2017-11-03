@@ -6,13 +6,13 @@ import android.view.View;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpTabPresenter;
+import com.worldventures.dreamtrips.social.ui.video.view.HelpVideosFragment;
 
 import butterknife.InjectView;
 
@@ -36,8 +36,8 @@ public class HelpFragment extends BaseFragment<HelpTabPresenter> {
    public void afterCreateView(View rootView) {
       if (adapter == null) {
          this.adapter = new BasePagerAdapter(getChildFragmentManager());
-         this.adapter.add(new FragmentItem(Route.HELP_DOCUMENTS_LIST, getString(R.string.documents)));
-         this.adapter.add(new FragmentItem(Route.HELP_VIDEOS, getString(R.string.presentations)));
+         this.adapter.add(new FragmentItem(HelpDocumentListFragment.class, getString(R.string.documents)));
+         this.adapter.add(new FragmentItem(HelpVideosFragment.class, getString(R.string.presentations)));
       }
 
       pager.setAdapter(adapter);

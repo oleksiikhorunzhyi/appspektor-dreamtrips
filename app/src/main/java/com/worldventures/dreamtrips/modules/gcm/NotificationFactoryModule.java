@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.messenger.notification.MessengerNotificationFactory;
 import com.worldventures.core.di.qualifier.ForApplication;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.modules.gcm.delegate.MerchantNotficationFactory;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactoryHolder;
 import com.worldventures.dreamtrips.modules.gcm.delegate.PhotoNotificationFactory;
@@ -29,8 +29,8 @@ public class NotificationFactoryModule {
    }
 
    @Provides
-   FriendNotificationFactory provideFriendNotificationFactory(@ForApplication Context context, @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator) {
-      return new FriendNotificationFactory(context, routeCreator);
+   FriendNotificationFactory provideFriendNotificationFactory(@ForApplication Context context, @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider) {
+      return new FriendNotificationFactory(context, fragmentClassProvider);
    }
 
    @Provides

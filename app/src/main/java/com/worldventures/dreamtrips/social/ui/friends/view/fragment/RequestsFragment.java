@@ -20,10 +20,9 @@ import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.social.ui.friends.model.AcceptanceHeaderModel;
@@ -46,7 +45,7 @@ import javax.inject.Named;
 public class RequestsFragment extends BaseFragment<RequestsPresenter> implements RequestsPresenter.View,
       SwipeRefreshLayout.OnRefreshListener, RequestCellDelegate {
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
 
    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
    private Bundle savedInstanceState;
@@ -64,7 +63,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
       switch (item.getItemId()) {
          case R.id.add_friend:
             getPresenter().onAddFriendsPressed();
-            router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity().build());
+            router.moveTo(FriendSearchFragment.class, NavigationConfigBuilder.forActivity().build());
             break;
          default:
             break;
@@ -159,7 +158,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
    @Override
    public void openUser(UserBundle userBundle) {
       if (isVisibleOnScreen()) {
-         router.moveTo(routeCreator.createRoute(userBundle.getUser()
+         router.moveTo(fragmentClassProvider.provideFragmentClass(userBundle.getUser()
                .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
                .visible(false)
                .build()).data(userBundle).build());

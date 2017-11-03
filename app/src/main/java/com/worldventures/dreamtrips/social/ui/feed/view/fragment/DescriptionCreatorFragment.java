@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.DescriptionCreatorPresenter;
@@ -36,6 +37,7 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_description_creator)
 @MenuResource(R.menu.menu_add_post_description)
+@ComponentPresenter.ComponentTitle(R.string.add_text)
 public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<DescriptionCreatorPresenter, DescriptionBundle> implements DescriptionCreatorPresenter.View {
 
    @Inject @ForActivity Injector injector;

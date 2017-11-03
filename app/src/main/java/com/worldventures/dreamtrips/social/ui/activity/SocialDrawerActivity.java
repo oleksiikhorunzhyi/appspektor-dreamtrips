@@ -17,7 +17,6 @@ import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.component.RootComponentsProvider;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
@@ -165,7 +164,7 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
          fm.popBackStack(backStackName, 0);
          return;
       }
-      router.moveTo(Route.restoreByKey(component.getKey()), NavigationConfigBuilder.forFragment()
+      router.moveTo(component.getFragmentClass(), NavigationConfigBuilder.forFragment()
             .fragmentManager(getSupportFragmentManager())
             .containerId(R.id.container_main)
             .backStackEnabled(true)

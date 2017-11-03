@@ -15,7 +15,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
@@ -30,6 +29,7 @@ import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundl
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 import java.util.List;
@@ -93,7 +93,8 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       sweetDialogHelper = new SweetDialogHelper();
-      signUp.setMovementMethod(new TextViewLinkHandler(url -> router.moveTo(Route.ENROLL_UPGRADE)));
+      signUp.setMovementMethod(new TextViewLinkHandler(url -> router.moveTo(StaticInfoFragment.EnrollUpgradeFragment.class,
+            NavigationConfigBuilder.forActivity().build())));
 
       tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
       if (toolbar != null) {
@@ -174,7 +175,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
 
    @Override
    public void openFullscreen(TripViewPagerBundle data) {
-      router.moveTo(Route.TRIP_FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+      router.moveTo(TripViewPagerFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(data)
             .build());
@@ -182,7 +183,9 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
 
    @Override
    public void openBookIt(String url) {
-      router.moveTo(Route.BOOK_IT, NavigationConfigBuilder.forActivity().data(new UrlBundle(url)).build());
+      router.moveTo(StaticInfoFragment.BookItFragment.class, NavigationConfigBuilder.forActivity()
+            .data(new UrlBundle(url))
+            .build());
    }
 
    @Override

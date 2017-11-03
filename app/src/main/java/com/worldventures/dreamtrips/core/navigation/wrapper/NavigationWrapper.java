@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.navigation.wrapper;
 
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 
 public abstract class NavigationWrapper {
@@ -13,5 +13,5 @@ public abstract class NavigationWrapper {
       this.router = router;
    }
 
-   public abstract void navigate(Route route, Parcelable bundle);
+   public abstract void navigate(Class<? extends Fragment> clazz, Parcelable bundle);
 }

@@ -27,15 +27,14 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDec
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.utils.ui.OrientationUtil;
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
@@ -52,6 +51,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.BucketItemSta
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
 import butterknife.InjectView;
@@ -293,7 +293,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
    @Override
    public void openPopular(BucketBundle args) {
-      router.moveTo(Route.POPULAR_TAB_BUCKER, NavigationConfigBuilder.forActivity().data(args).build());
+      router.moveTo(BucketPopularTabsFragment.class, NavigationConfigBuilder.forActivity().data(args).build());
    }
 
    private void actionFilter() {
@@ -398,16 +398,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
    @Override
    public void openDetails(BucketItem bucketItem) {
-      router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forRemoval()
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.detail_container)
-            .build());
-      //
-      FeedEntityDetailsBundle.Builder bundleBuilder = new FeedEntityDetailsBundle.Builder().feedItem(FeedItem.create(bucketItem, bucketItem
-            .getOwner()));
+      removeDetails();
+      FeedEntityDetailsBundle.Builder bundleBuilder = new FeedEntityDetailsBundle.Builder()
+            .feedItem(FeedItem.create(bucketItem, bucketItem.getOwner()));
       if (isTabletLandscape()) {
          bundleBuilder.slave(true);
-         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forFragment()
+         router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .containerId(R.id.detail_container)
                .fragmentManager(getChildFragmentManager())
@@ -416,10 +412,17 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
          showDetailsContainer();
       } else {
          hideDetailContainer();
-         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+         router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forActivity()
                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                .data(bundleBuilder.build())
                .build());
       }
+   }
+
+   private void removeDetails() {
+      router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forRemoval()
+            .fragmentManager(getChildFragmentManager())
+            .containerId(R.id.detail_container)
+            .build());
    }
 }

@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDe
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
@@ -44,6 +44,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRou
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
@@ -187,7 +188,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       }
 
       activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
-            .send(ActiveFeedRouteCommand.update(Route.FEED_HASHTAG));
+            .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.TIMELINE));
    }
 
    @Override

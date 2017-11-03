@@ -15,9 +15,9 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
@@ -55,7 +55,7 @@ public class CommentCell extends BaseAbstractDelegateCell<Comment, CommentCell.C
    @InjectView(R.id.translation_dot_separator) View translationDotSeparator;
 
    @Inject SessionHolder appSessionHolder;
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject Router router;
 
@@ -155,7 +155,7 @@ public class CommentCell extends BaseAbstractDelegateCell<Comment, CommentCell.C
    }
 
    private void openUser(User user) {
-      router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(user.getId()), NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(user))
             .build());

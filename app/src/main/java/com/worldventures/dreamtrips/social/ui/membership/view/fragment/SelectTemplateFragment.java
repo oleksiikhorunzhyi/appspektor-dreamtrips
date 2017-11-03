@@ -12,7 +12,6 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -98,7 +97,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
    @Override
    public void openTemplate(TemplateBundle templateBundle) {
-      router.moveTo(Route.EDIT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity()
+      router.moveTo(EditTemplateFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .data(templateBundle)
             .build());

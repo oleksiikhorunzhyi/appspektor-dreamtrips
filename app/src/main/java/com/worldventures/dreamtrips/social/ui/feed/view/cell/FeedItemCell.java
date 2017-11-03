@@ -10,9 +10,9 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
@@ -40,7 +40,7 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
 
    @InjectView(R.id.cell_container) ViewGroup cellContainer;
    @Inject @ForActivity Provider<Injector> injectorProvider;
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject Router router;
 
    private CommentCellHelper commentCellHelper;
@@ -128,7 +128,7 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
    @OnClick(R.id.user_photo)
    void commentOwnerClicked() {
       User user = commentCellHelper.getComment().getOwner();
-      router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(user.getId()), NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(user))
             .build());

@@ -11,7 +11,6 @@ import com.crashlytics.android.Crashlytics;
 import com.worldventures.core.ui.view.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.activity.ConfigChangesAwareComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.TransparentSocialComponentActivity;
@@ -28,19 +27,19 @@ public class RouterImpl implements Router {
    }
 
    @Override
-   public void moveTo(Route route, NavigationConfig config) {
+   public void moveTo(Class<? extends Fragment> clazzName, NavigationConfig config) {
       switch (config.getNavigationType()) {
          case ACTIVITY:
-            openActivity(route, config);
+            openActivity(clazzName, config);
             break;
          case FRAGMENT:
-            openFragment(route, config);
+            openFragment(clazzName, config);
             break;
          case DIALOG:
-            showDialog(route, config);
+            showDialog(clazzName, config);
             break;
          case REMOVE:
-            remove(route, config);
+            remove(clazzName, config);
             break;
          default:
             break;
@@ -48,22 +47,17 @@ public class RouterImpl implements Router {
    }
 
    @Override
-   public void moveTo(Route route) {
-      openActivity(route, NavigationConfigBuilder.forActivity().build());
-   }
-
-   @Override
    public void back() {
       activity.onBackPressed();
    }
 
-   private void openActivity(Route route, NavigationConfig config) {
+   private void openActivity(Class<? extends Fragment> fragmentClazz, NavigationConfig config) {
       ActivityRouter activityRouter = new ActivityRouter(activity);
       Bundle args = getArgs(config);
-      args.putSerializable(ComponentPresenter.ROUTE, route);
+      args.putSerializable(ComponentPresenter.FRAGMENT_CLAZZ, fragmentClazz);
       Class<? extends InjectingActivity> clazz = config.isManualOrientationActivity()
-            ? ConfigChangesAwareComponentActivity.class
-            : config.getTransparentBackground() ? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
+             ? ConfigChangesAwareComponentActivity.class
+             : config.getTransparentBackground() ? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
 
       activityRouter.startActivityWithArgs(clazz, args, config.getFlags());
 
@@ -72,7 +66,7 @@ public class RouterImpl implements Router {
       }
    }
 
-   private void openFragment(Route route, NavigationConfig config) {
+   private void openFragment(Class<? extends Fragment> routeClazz, NavigationConfig config) {
       FragmentManager fragmentManager = config.getFragmentManager() == null ? activity.getSupportFragmentManager() : config
             .getFragmentManager();
       //
@@ -89,20 +83,19 @@ public class RouterImpl implements Router {
       fragmentCompass.setFragmentManager(fragmentManager);
       fragmentCompass.setBackStackEnabled(config.isBackStackEnabled());
       fragmentCompass.setAnimationConfig(config.getAnimationConfig());
-      fragmentCompass.replace(route, getArgs(config), config.getTargetFragment());
+      fragmentCompass.replace(routeClazz.getName(), getArgs(config), config.getTargetFragment());
    }
 
-   private void showDialog(Route route, NavigationConfig config) {
+   private void showDialog(Class<? extends Fragment> routeClazz, NavigationConfig config) {
       FragmentManager fragmentManager = config.getFragmentManager() == null ? activity.getSupportFragmentManager() : config
             .getFragmentManager();
       //
-      new DialogFragmentNavigator(fragmentManager).move(route, getArgs(config));
+      new DialogFragmentNavigator(fragmentManager).move(routeClazz, getArgs(config));
    }
 
-   private void remove(Route route, NavigationConfig config) {
+   private void remove(Class<? extends Fragment> routeClazz, NavigationConfig config) {
       if (validateState()) {
-         Fragment fragment = config.getFragmentManager().findFragmentByTag(route.getClazzName());
-         //
+         Fragment fragment = config.getFragmentManager().findFragmentByTag(routeClazz.getName());
          if (fragment != null) {
             FragmentTransaction fragmentTransaction = config.getFragmentManager().beginTransaction();
             fragmentTransaction.remove(fragment);

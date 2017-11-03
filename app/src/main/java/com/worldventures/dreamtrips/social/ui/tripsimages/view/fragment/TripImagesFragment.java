@@ -20,12 +20,12 @@ import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
@@ -48,6 +48,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_trip_list_images)
+@ComponentPresenter.ComponentTitle(R.string.trip_images)
 public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFragmentWithArgs<T, TripImagesArgs>
       implements TripImagesPresenter.View, SelectablePagerFragment {
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
@@ -141,16 +142,15 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void openFullscreen(boolean lastPageReached, int currentItemPosition) {
-      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN,
-            NavigationConfigBuilder.forActivity()
-                  .manualOrientationActivity(true)
-                  .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                  .data(TripImagesFullscreenArgs.builder()
-                        .tripImagesArgs(getArgs())
-                        .lastPageReached(lastPageReached)
-                        .currentItemPosition(currentItemPosition)
-                        .build())
-                  .build());
+      router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(TripImagesFullscreenArgs.builder()
+                  .tripImagesArgs(getArgs())
+                  .lastPageReached(lastPageReached)
+                  .currentItemPosition(currentItemPosition)
+                  .build())
+            .build());
    }
 
    @OnClick(R.id.fab_photo)
@@ -220,7 +220,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       if (isCreatePhotoAlreadyAttached()) {
          return;
       }
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateFeedPostFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .containerId(R.id.container_details_floating)

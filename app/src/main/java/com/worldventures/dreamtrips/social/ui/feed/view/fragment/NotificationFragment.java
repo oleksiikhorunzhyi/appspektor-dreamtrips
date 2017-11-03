@@ -18,7 +18,7 @@ import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.adapter.NotificationHead
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.notification.NotificationCell;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.FriendsMainFragment;
 
 import java.util.List;
 
@@ -111,7 +112,7 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
    protected void onMenuInflated(Menu menu) {
       super.onMenuInflated(menu);
       friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
-      friendsBadge.setOnClickListener(v -> router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity()
+      friendsBadge.setOnClickListener(v -> router.moveTo(FriendsMainFragment.class, NavigationConfigBuilder.forActivity()
             .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
             .build()));
       getPresenter().refreshRequestsCount();

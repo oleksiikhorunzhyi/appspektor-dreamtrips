@@ -20,7 +20,6 @@ import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
@@ -28,7 +27,10 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.Photo
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.DescriptionCreatorFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.EditPhotoTagsFragment;
 
 import java.util.List;
 
@@ -70,7 +72,7 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
       adapter.registerDelegate(PostReviewDescription.class, new PostReviewCreationTextCell.Delegate() { //desc photo
          @Override
          public void onCellClicked(PostReviewDescription model) {
-            router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
+            router.moveTo(DescriptionCreatorFragment.class, NavigationConfigBuilder.forActivity()
                   .data(new DescriptionReviewBundle(model.getDescription()))
                   .build());
          }
@@ -173,11 +175,12 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @Override
    public void cancel() {
+      //TODO this method is copy paste
       if (dialog != null && dialog.isShowing()) {
          dialog.dismiss();
       }
 
-      router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
+      router.moveTo(getClass(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
 
    @Override
@@ -237,7 +240,7 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @Override
    public void openLocation(Location location) {
-      router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder.forFragment()
+      router.moveTo(LocationFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(true)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.additional_page_container)
@@ -279,7 +282,7 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
       bundle.setPhotoTags(item.getCombinedTags());
       bundle.setSuggestions(item.getSuggestions());
       bundle.setRequestId(item.getId());
-      router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder.forFragment()
+      router.moveTo(EditPhotoTagsFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(true)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.additional_page_container)
@@ -314,7 +317,4 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    }
 
    protected abstract int getPostButtonText();
-
-   protected abstract Route getRoute();
-
 }

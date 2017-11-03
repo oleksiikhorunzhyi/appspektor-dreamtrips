@@ -19,7 +19,7 @@ import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
 
 import java.util.List;
@@ -90,7 +90,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
       holder.userEmail.setText(navigationHeader.getUserEmail());
 
       holder.userPhoto.setOnClickListener(v -> navigationDrawerListener.onNavigationDrawerItemSelected(Queryable.from(componentDescriptions)
-            .filter(element -> element.getKey().equals(Route.ACCOUNT_PROFILE.name()))
+            .filter(element -> element.getKey().equals(SocialAppModule.ACCOUNT_PROFILE))
             .first()));
    }
 

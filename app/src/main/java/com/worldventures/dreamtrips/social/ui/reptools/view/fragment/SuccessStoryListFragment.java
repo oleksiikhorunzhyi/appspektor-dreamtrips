@@ -19,7 +19,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -221,14 +220,14 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    public void openStory(Bundle bundle) {
       if (isTabletLandscape()) {
          bundle.putBoolean(SuccessStoryDetailsFragment.EXTRA_SLAVE, true);
-         router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forFragment()
+         router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(true)
                .fragmentManager(getChildFragmentManager())
                .containerId(R.id.detail_container)
                .data(bundle)
                .build());
       } else {
-         router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forActivity().data(bundle).build());
+         router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forActivity().data(bundle).build());
       }
 
    }

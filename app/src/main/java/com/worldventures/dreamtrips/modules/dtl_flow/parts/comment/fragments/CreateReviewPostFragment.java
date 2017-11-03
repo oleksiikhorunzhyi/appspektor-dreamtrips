@@ -24,7 +24,7 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPat
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 
 import javax.inject.Inject;
 
@@ -98,18 +99,13 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       setMaxLengthText(maximumCharactersAllowed());
    }
 
-   @Override
-   protected Route getRoute() {
-      return Route.POST_CREATE;
-   }
-
    protected void showMediaPicker() {
       PickerBundle pickerBundle = new PickerBundle.Builder()
             .setRequestId(0)
             .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
             .build();
 
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+      router.moveTo(MediaPickerFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)

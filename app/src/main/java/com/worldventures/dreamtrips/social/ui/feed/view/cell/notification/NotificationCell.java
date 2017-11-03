@@ -13,10 +13,9 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
@@ -27,11 +26,13 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFullscreenFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
    @Optional @InjectView(R.id.notification_time) TextView notificationTime;
    @Optional @InjectView(R.id.notification_header_image) SimpleDraweeView notificationImage;
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> profileRouteCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> profileFragmentClassProvider;
    @Inject SessionHolder appSessionHolder;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject Router router;
@@ -82,6 +83,7 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
       if (getModelObject().getType() == Type.UNDEFINED || getModelObject().getType() == Type.POST) {
          notificationImage.setVisibility(View.GONE);
       } else {
+
          notificationImage.setVisibility(View.VISIBLE);
          String url = getModelObject().previewImage(itemView.getResources());
 
@@ -137,14 +139,14 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
    }
 
    private void openProfile(User user) {
-      router.moveTo(profileRouteCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(profileFragmentClassProvider.provideFragmentClass(user.getId()), NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(user))
             .build());
    }
 
    private void openDetails() {
-      router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+      router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
@@ -153,7 +155,7 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
    private void openFullscreenPhoto() {
       List<BaseMediaEntity> items = new ArrayList<>();
       items.add(new PhotoMediaEntity((Photo) getModelObject().getItem()));
-      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+      router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()
                   .mediaEntityList(items)
                   .build())

@@ -19,11 +19,13 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
+import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.GalleryBundle;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
 
 import java.util.List;
 
@@ -156,7 +158,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
    private void openGallery() {
       post(() -> {
          if (ViewCompat.isAttachedToWindow(this)) {
-            router.moveTo(Route.GALLERY, NavigationConfigBuilder.forFragment()
+            router.moveTo(DtGalleryFragment.class, NavigationConfigBuilder.forFragment()
                   .fragmentManager(fragmentManager)
                   .backStackEnabled(true)
                   .containerId(container.getId())
@@ -167,7 +169,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
    }
 
    public void openFacebookAlbums() {
-      router.moveTo(Route.PICK_FB_ALBUM, NavigationConfigBuilder.forFragment()
+      router.moveTo(FacebookAlbumFragment.class, NavigationConfigBuilder.forFragment()
             .fragmentManager(fragmentManager)
             .backStackEnabled(true)
             .containerId(container.getId())
@@ -176,7 +178,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
    }
 
    public void openFacebookPhoto(Bundle bundle) {
-      router.moveTo(Route.PICK_FB_PHOTO, NavigationConfigBuilder.forFragment()
+      router.moveTo(FacebookPhotoFragment.class, NavigationConfigBuilder.forFragment()
             .fragmentManager(fragmentManager)
             .backStackEnabled(true)
             .containerId(container.getId())

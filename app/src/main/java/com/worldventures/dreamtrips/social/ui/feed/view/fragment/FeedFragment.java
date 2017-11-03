@@ -24,7 +24,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
@@ -52,6 +51,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
@@ -167,7 +167,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void onResume() {
       super.onResume();
       startAutoplayVideos();
-      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(Route.FEED));
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
+            .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.FEED));
    }
 
    @Override

@@ -6,10 +6,10 @@ import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand;
@@ -266,16 +266,15 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
    @Override
    public void openBucketList() {
-      view.openBucketList(Route.FOREIGN_BUCKET_TABS, new ForeignBucketTabsBundle(user));
+      view.openBucketList(ForeignBucketTabsFragment.class, new ForeignBucketTabsBundle(user));
    }
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.ACCOUNT_IMAGES, TripImagesArgs
-            .builder()
+      view.openTripImages(TripImagesArgs.builder()
             .userId(user.getId())
             .origin(CreateEntityBundle.Origin.PROFILE_TRIP_IMAGES)
-            .route(Route.ACCOUNT_IMAGES)
+            .type(TripImagesArgs.TripImageType.ACCOUNT_IMAGES)
             .build());
    }
 

@@ -20,7 +20,6 @@ import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -212,7 +211,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter>
 
    @Override
    public void openTemplateView() {
-      router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
+      router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.container_templates)
@@ -221,14 +220,14 @@ public class InviteFragment extends BaseFragment<InvitePresenter>
 
    @Override
    public void continueAction2() {
-      router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forRemoval()
+      router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forRemoval()
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.container_templates)
             .build());
       if (isTabletLandscape()) {
          openTemplateView();
       } else {
-         router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity().build());
+         router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forActivity().build());
       }
    }
 

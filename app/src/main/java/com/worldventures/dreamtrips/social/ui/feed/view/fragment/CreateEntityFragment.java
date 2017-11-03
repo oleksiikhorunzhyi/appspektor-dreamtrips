@@ -8,7 +8,6 @@ import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.DescriptionBundle;
@@ -64,7 +63,7 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
 
    @Override
    protected void openPhotoCreationDescriptionDialog(PostDescription model) {
-      router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
+      router.moveTo(DescriptionCreatorFragment.class, NavigationConfigBuilder.forActivity()
             .data(new DescriptionBundle(model.getDescription()))
             .transparentBackground(true)
             .animationConfig(new AnimationConfig(R.anim.fade_in, R.anim.fade_out))

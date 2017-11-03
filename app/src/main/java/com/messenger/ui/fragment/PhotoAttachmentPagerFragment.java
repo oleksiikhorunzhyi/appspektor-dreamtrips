@@ -6,7 +6,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.PhotoAttachment;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.BaseImageViewPagerPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.BaseImageViewPagerFragment;
@@ -33,7 +32,7 @@ public class PhotoAttachmentPagerFragment extends BaseImageViewPagerFragment<Pho
       @Override
       protected List<FragmentItem> getItems() {
          return Queryable.from(photoAttachments)
-               .map(entity -> new FragmentItem(Route.MESSAGE_IMAGE_FULLSCREEN, "", entity))
+               .map(entity -> new FragmentItem(MessageImageFullscreenFragment.class, "", entity))
                .toList();
       }
    }

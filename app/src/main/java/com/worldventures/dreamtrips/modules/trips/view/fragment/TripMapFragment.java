@@ -31,7 +31,7 @@ import com.worldventures.core.ui.view.custom.ToucheableMapView;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
@@ -297,7 +297,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    @Override
    public void moveTo(List<TripModel> trips) {
-      router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forFragment()
+      router.moveTo(TripMapListFragment.class, NavigationConfigBuilder.forFragment()
             .containerId(R.id.container_info)
             .fragmentManager(getChildFragmentManager())
             .backStackEnabled(false)
@@ -323,7 +323,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    @Override
    public void removeTripsPopupInfo() {
-      router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
+      router.moveTo(TripMapListFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_info)
             .fragmentManager(getChildFragmentManager())
             .build());

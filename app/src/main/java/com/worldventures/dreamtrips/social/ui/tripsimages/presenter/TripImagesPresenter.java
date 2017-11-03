@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
@@ -117,7 +117,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    private void trackUploadAnalyticEvent() {
-      UploadTripImageAnalyticAction action = tripImagesArgs.getRoute() == Route.ACCOUNT_IMAGES
+      UploadTripImageAnalyticAction action = tripImagesArgs.getTripImageType() == TripImagesArgs.TripImageType.ACCOUNT_IMAGES
             ? UploadTripImageAnalyticAction.fromMyImages() : UploadTripImageAnalyticAction.fromMemberImages();
 
       analyticsInteractor.analyticsActionPipe().send(action);
@@ -134,7 +134,8 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    void initCreateMediaFlow() {
-      if (tripImagesArgs.getRoute() != Route.MEMBERS_IMAGES && tripImagesArgs.getUserId() != getAccount().getId()) {
+      if (tripImagesArgs.getTripImageType() != TripImagesArgs.TripImageType.MEMBER_IMAGES
+            && tripImagesArgs.getUserId() != getAccount().getId()) {
          view.hideCreateImageButton();
       } else {
          subscribeToBackgroundUploadingOperations();

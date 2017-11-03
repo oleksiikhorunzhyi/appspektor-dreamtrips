@@ -10,7 +10,6 @@ import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDele
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.MutualFriendsBundle;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserActionDelegate;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.social.ui.friends.view.util.MutualFriendsUtil;
 
 import javax.inject.Inject;
@@ -70,7 +70,7 @@ public abstract class BaseUserCell<D extends UserActionDelegate> extends BaseAbs
          return;
       }
       //
-      createActionPanelNavigationWrapper().navigate(Route.MUTUAL_FRIENDS, new MutualFriendsBundle(getModelObject().getId()));
+      createActionPanelNavigationWrapper().navigate(MutualFriendsFragment.class, new MutualFriendsBundle(getModelObject().getId()));
    }
 
    @OnClick(R.id.sdv_avatar)

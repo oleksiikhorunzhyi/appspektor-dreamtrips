@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.settings.view.presenter;
 
 import com.worldventures.core.modules.settings.model.SettingsGroup;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.settings.service.analytics.TrackSettingsOpenedAction;
 import com.worldventures.dreamtrips.social.ui.settings.util.SettingsGroupFactory;
@@ -24,21 +23,15 @@ public class SettingsGroupPresenter extends Presenter<SettingsGroupPresenter.Vie
    }
 
    public void handleCellClick(SettingsGroup model) {
-      Route route;
       switch (model.getType()) {
          case GENERAL:
-            route = Route.SETTINGS_GENERAL;
+            view.openGeneralSettings(model);
             break;
          case NOTIFICATIONS:
-            route = Route.SETTINGS_NOTIFICATIONS;
+            view.openNotificationSettings(model);
             break;
          default:
-            route = null;
             break;
-      }
-      //
-      if (route != null) {
-         view.openSettings(route, model);
       }
    }
 
@@ -46,6 +39,8 @@ public class SettingsGroupPresenter extends Presenter<SettingsGroupPresenter.Vie
 
       void setSettings(List<SettingsGroup> settings);
 
-      void openSettings(Route route, SettingsGroup model);
+      void openGeneralSettings(SettingsGroup model);
+
+      void openNotificationSettings(SettingsGroup model);
    }
 }

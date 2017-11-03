@@ -11,7 +11,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFullscreenFragment;
 
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
    }
 
    private void openFullsreenPhoto(Photo model) {
-      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+      router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()
                   .currentItemPosition(getPositionOfPhoto(model))
                   .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())

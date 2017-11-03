@@ -11,7 +11,6 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.CirclesFilterPopupWindow;
@@ -55,7 +54,7 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
    }
 
    private void openFriendSearch(String query) {
-      router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
+      router.moveTo(FriendSearchFragment.class, NavigationConfigBuilder.forActivity()
             .data(new FriendGlobalSearchBundle(query))
             .build());
    }

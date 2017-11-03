@@ -10,10 +10,10 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedDetailsPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRouteCommand;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
@@ -105,7 +106,8 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    @Override
    public void onResume() {
       super.onResume();
-      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(getRoute()));
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
+            .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.FEED_DETAILS));
    }
 
    @Override
@@ -143,7 +145,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
          Timber.e(e, "");
       }
       if (isTabletLandscape()) {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
+         router.moveTo(BucketItemEditFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(true)
                .containerId(containerId)
                .fragmentManager(getActivity().getSupportFragmentManager())
@@ -151,7 +153,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
                .build());
          showContainer(containerId);
       } else {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
+         router.moveTo(BucketItemEditFragment.class, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
       }
    }
 
@@ -166,7 +168,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       User user = feedItem.getItem().getOwner();
       showAdditionalContainerIfNeeded();
       if (!isAdditionalInfoFragmentAttached() && isShowAdditionalInfo()) {
-         router.moveTo(Route.FEED_ITEM_ADDITIONAL_INFO, NavigationConfigBuilder.forFragment()
+         router.moveTo(FeedItemAdditionalInfoFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())
                .containerId(R.id.comments_additional_info_container)
@@ -217,6 +219,4 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    }
 
    protected abstract void registerCells();
-
-   protected abstract Route getRoute();
 }

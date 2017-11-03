@@ -11,7 +11,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -53,10 +52,23 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
    }
 
    @Override
-   public void openSettings(Route route, SettingsGroup model) {
-      router.moveTo(route, NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
-            .visible(false)
-            .build()).data(new SettingsBundle(model)).build());
+   public void openGeneralSettings(SettingsGroup model) {
+      router.moveTo(GeneralSettingsFragment.class, NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create()
+                  .visible(false)
+                  .build())
+            .data(new SettingsBundle(model))
+            .build());
+   }
+
+   @Override
+   public void openNotificationSettings(SettingsGroup model) {
+      router.moveTo(NotificationsSettingsFragment.class, NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create()
+                  .visible(false)
+                  .build())
+            .data(new SettingsBundle(model))
+            .build());
    }
 
    @Override

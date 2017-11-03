@@ -5,11 +5,11 @@ import android.os.Bundle;
 import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.Feature;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
@@ -252,9 +252,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
       void openComments(FeedItem feedItem);
 
-      void openTripImages(Route route, TripImagesArgs tripImagesBundle);
+      void openTripImages(TripImagesArgs tripImagesBundle);
 
-      void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
+      void openBucketList(Class<? extends BucketTabsFragment> clazz, ForeignBucketTabsBundle foreignBucketBundle);
 
       void startLoading();
 

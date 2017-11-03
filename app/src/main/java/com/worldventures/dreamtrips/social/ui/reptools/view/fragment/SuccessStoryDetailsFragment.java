@@ -9,7 +9,6 @@ import com.worldventures.core.model.ShareType;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
@@ -18,6 +17,7 @@ import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryDetailsPresenter;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -53,7 +53,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
       } else {
          Bundle bundle = new Bundle();
          bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, story);
-         router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forActivity().data(bundle).build());
+         router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forActivity().data(bundle).build());
       }
    }
 
@@ -120,7 +120,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
       ShareBundle data = new ShareBundle();
       data.setShareUrl(url);
       data.setShareType(type);
-      router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(data).build());
+      router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
    }
 
    @Override

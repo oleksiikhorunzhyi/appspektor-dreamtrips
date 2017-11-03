@@ -14,15 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
@@ -43,6 +42,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.custom.MediaItemAnimatio
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 
 import java.util.List;
@@ -106,7 +106,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    }
 
    protected void openPhotoCreationDescriptionDialog(PostDescription model) {
-      router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
+      router.moveTo(DescriptionCreatorFragment.class, NavigationConfigBuilder.forActivity()
             .data(new DescriptionBundle(model.getDescription()))
             .build());
    }
@@ -239,7 +239,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
          dialog.dismiss();
       }
 
-      router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
+      router.moveTo(getClass(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
 
    @Override
@@ -297,7 +297,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @Override
    public void openLocation(Location location) {
-      router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder.forFragment()
+      router.moveTo(LocationFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(true)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.additional_page_container)
@@ -345,7 +345,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
       bundle.setPhotoTags(item.getCombinedTags());
       bundle.setSuggestions(item.getSuggestions());
       bundle.setRequestId(item.getId());
-      router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder.forFragment()
+      router.moveTo(EditPhotoTagsFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(true)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.additional_page_container)
@@ -374,7 +374,4 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    protected void onTitleFocusChanged(boolean hasFocus) { }
 
    protected abstract int getPostButtonText();
-
-   protected abstract Route getRoute();
-
 }

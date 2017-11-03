@@ -32,7 +32,6 @@ import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -47,11 +46,16 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersIn
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantWorkingHoursInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -343,7 +347,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void showEstimationDialog(PointsEstimationDialogBundle data) {
       getPresenter().trackPointEstimator();
-      router.moveTo(Route.DTL_POINTS_ESTIMATION, NavigationConfigBuilder.forDialog()
+      router.moveTo(DtlPointsEstimationFragment.class, NavigationConfigBuilder.forDialog()
             .data(data)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .build());
@@ -351,19 +355,19 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void openSuggestMerchant(MerchantIdBundle data) {
-      router.moveTo(Route.ENROLL_MERCHANT, NavigationConfigBuilder.forActivity().data(data).build());
+      router.moveTo(EnrollMerchantFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
    }
 
    @Override
    public void openTransaction(Merchant merchant, DtlTransaction dtlTransaction) {
-      router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
+      router.moveTo(DtlScanReceiptFragment.class, NavigationConfigBuilder.forActivity()
             .data(new MerchantBundle(merchant))
             .build());
    }
 
    @Override
    public void showSucceed(Merchant merchant, DtlTransaction dtlTransaction) {
-      router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
+      router.moveTo(DtlTransactionSucceedFragment.class, NavigationConfigBuilder.forDialog()
             .data(new MerchantBundle(merchant))
             .build());
    }
@@ -388,7 +392,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
          getPresenter().trackSharing(type);
 
-         router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(shareBundle).build());
+         router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(shareBundle).build());
       }).show();
    }
 

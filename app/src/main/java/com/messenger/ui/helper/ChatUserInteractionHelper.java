@@ -11,9 +11,9 @@ import com.messenger.storage.dao.MediaDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.ui.fragment.PhotoAttachmentPagerArgs;
+import com.messenger.ui.fragment.PhotoAttachmentPagerFragment;
 import com.messenger.util.Utils;
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -64,7 +64,7 @@ public class ChatUserInteractionHelper {
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                   .build())
             .compose(new IoToMainComposer<>())
-            .subscribe(navigationConfig -> router.moveTo(Route.MESSENGER_FULLSCREEN_IMAGES, navigationConfig));
+            .subscribe(navigationConfig -> router.moveTo(PhotoAttachmentPagerFragment.class, navigationConfig));
    }
 
    public void copyToClipboard(Context context, String messageId) {

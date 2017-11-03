@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 
 import butterknife.InjectView;
@@ -107,7 +107,7 @@ public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragm
             .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
             .build();
 
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+      router.moveTo(MediaPickerFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
@@ -116,7 +116,7 @@ public abstract class CreateReviewEntityFragment extends ActionReviewEntityFragm
    }
 
    protected void hideMediaPicker() {
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
+      router.moveTo(MediaPickerFragment.class, NavigationConfigBuilder.forRemoval()
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
             .build());

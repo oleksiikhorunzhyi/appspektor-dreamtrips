@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -61,10 +61,5 @@ public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetails
             at android.view.View.layout(View.java:15746)
       */
       SoftInputUtil.hideSoftInputMethod(getActivity());
-   }
-
-   @Override
-   protected Route getRoute() {
-      return Route.FEED_ITEM_DETAILS;
    }
 }

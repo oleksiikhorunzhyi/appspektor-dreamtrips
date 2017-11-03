@@ -7,7 +7,6 @@ import android.view.WindowManager;
 
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class FeedCellListWidthProvider {
       configWidthMap.put(config, width);
    }
 
-   public int getFeedCellWidth(Route route) {
+   public int getFeedCellWidth(FeedCellListWidthProvider.FeedType route) {
       Config config = makeConfig(route);
       Func0<Integer> widthFunc = configWidthMap.get(config);
       if (widthFunc == null) {
@@ -78,28 +77,12 @@ public class FeedCellListWidthProvider {
       return widthFunc.call();
    }
 
-   private Config makeConfig(Route route) {
+   private Config makeConfig(FeedCellListWidthProvider.FeedType feedType) {
       Config config = new Config();
-      config.feedType = mapRouteToFeedType(route);
+      config.feedType = feedType;
       config.device = ViewUtils.isTablet(context) ? Device.TABLET : Device.PHONE;
       config.orientation = ViewUtils.isLandscapeOrientation(context) ? Orientation.LANDSCAPE : Orientation.PORTRAIT;
       return config;
-   }
-
-   private FeedType mapRouteToFeedType(Route route) {
-      switch (route) {
-         case FEED:
-            return FeedType.FEED;
-         case FEED_HASHTAG:
-         case ACCOUNT_PROFILE:
-         case FOREIGN_PROFILE:
-            return FeedType.TIMELINE;
-         case FEED_ITEM_DETAILS:
-         case FEED_ENTITY_DETAILS:
-            return FeedType.FEED_DETAILS;
-         default:
-            throw new IllegalArgumentException("Cannot map route to feed type");
-      }
    }
 
    public static class Config {

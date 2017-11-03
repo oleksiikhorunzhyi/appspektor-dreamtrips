@@ -41,7 +41,7 @@ public class BaseStatePagerAdapter<T extends FragmentItem> extends FragmentState
 
    private Fragment getFragment(int i) {
       try {
-         Fragment fragment = fragmentItems.get(i).route.getClazz().newInstance();
+         Fragment fragment = fragmentItems.get(i).getFragmentClazz().newInstance();
          if (fragment instanceof BaseFragmentWithArgs) {
             ((BaseFragmentWithArgs) fragment).setArgs(fragmentItems.get(i).getArgs());
          }

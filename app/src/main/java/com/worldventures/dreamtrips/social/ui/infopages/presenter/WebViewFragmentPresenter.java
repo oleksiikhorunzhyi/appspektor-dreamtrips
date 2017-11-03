@@ -2,13 +2,9 @@ package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
 import com.worldventures.core.service.NewDreamTripsHttpService;
 import com.worldventures.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.OtaViewedAction;
-import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMemberViewedAction;
-import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMerchantViewedAction;
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
@@ -72,22 +68,6 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
             .legacyApiToken();
       String base64 = ProjectTextUtils.convertToBase64(legacyToken);
       return "Basic " + base64;
-   }
-
-   public void track(Route route) {
-      switch (route) {
-         case OTA:
-            analyticsInteractor.analyticsActionPipe().send(new OtaViewedAction());
-            break;
-         case ENROLL_MEMBER:
-            analyticsInteractor.analyticsActionPipe().send(new EnrollMemberViewedAction(getAccountUserId()));
-            break;
-         case ENROLL_MERCHANT:
-            analyticsInteractor.analyticsActionPipe().send(new EnrollMerchantViewedAction(getAccountUserId()));
-            break;
-         default:
-            break;
-      }
    }
 
    public interface View extends RxView {

@@ -43,6 +43,7 @@ import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
@@ -501,6 +502,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    @Layout(R.layout.fragment_webview_with_overlay)
+   @ComponentPresenter.ComponentTitle(R.string.book_it)
    public static class BookItFragment extends BundleUrlFragment<WebViewFragmentPresenter> {
 
       private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";

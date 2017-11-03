@@ -12,8 +12,8 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
 import com.worldventures.dreamtrips.modules.dtl.validator.AmountValidator;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,6 +37,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.fragment_scan_receipt)
 @MenuResource(R.menu.menu_mock)
+@ComponentPresenter.ComponentTitle(R.string.dtl_scan_receipt_screen_title)
 public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceiptPresenter, MerchantBundle> implements DtlScanReceiptPresenter.View {
 
    @InjectView(R.id.verify) Button verify;
@@ -47,7 +49,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @InjectView(R.id.inputPoints) CurrencyDTEditText amountInput;
    @InjectView(R.id.currency) TextView currencyHint;
 
-   @Inject @Named(RouteCreatorModule.DTL_TRANSACTION) RouteCreator<DtlTransaction> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.DTL_TRANSACTION) FragmentClassProvider<DtlTransaction> fragmentClassProvider;
 
    protected ProgressDialogFragment progressDialog;
    private DtlEnrollWizard dtlEnrollWizard;
@@ -72,7 +74,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+      dtlEnrollWizard = new DtlEnrollWizard(router, fragmentClassProvider);
       //
       amountInput.addValidator(new AmountValidator(getString(R.string.dtl_amount_invalid)));
       progressDialog = ProgressDialogFragment.create();

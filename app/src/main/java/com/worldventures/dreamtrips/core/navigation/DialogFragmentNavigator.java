@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,30 +31,28 @@ public class DialogFragmentNavigator implements Navigator {
    }
 
    @Override
-   public void attach(Route route, Bundle bundle) {
-      move(route, bundle);
-   }
-
-   @Override
-   public void move(Route route, Bundle bundle) {
-      NavigationDialogFragment.newInstance(route, bundle, bundle.getInt(ComponentPresenter.DIALOG_GRAVITY))
-            .show(fragmentManager, route.getClazzName());
+   public void move(Class<? extends Fragment> clazz, Bundle bundle) {
+      NavigationDialogFragment.newInstance(clazz, bundle, bundle.getInt(ComponentPresenter.DIALOG_GRAVITY))
+            .show(fragmentManager, clazz.getName());
    }
 
    @Layout(R.layout.dialog_container)
    public static class NavigationDialogFragment extends BaseDialogFragment {
 
-      private Route route;
+      public static final String CLAZZ = "CLAZZ";
+      public static final String ARGS = "CLAZZ_NAME";
+
+      private Class<? extends Fragment> routeClazz;
       private Bundle bundle;
 
       @Inject Router router;
       @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
 
-      public static NavigationDialogFragment newInstance(Route route, Bundle bundle, int gravity) {
+      public static NavigationDialogFragment newInstance(Class<? extends Fragment> routeClazz, Bundle bundle, int gravity) {
          NavigationDialogFragment fragment = new NavigationDialogFragment();
          Bundle args = new Bundle();
-         args.putSerializable(Route.class.getName(), route);
-         args.putBundle(Bundle.class.getName(), bundle);
+         args.putSerializable(CLAZZ, routeClazz);
+         args.putBundle(ARGS, bundle);
          args.putInt(DIALOG_GRAVITY, gravity);
          fragment.setArguments(args);
          return fragment;
@@ -62,9 +61,8 @@ public class DialogFragmentNavigator implements Navigator {
       @Override
       public void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
-         route = (Route) getArguments().getSerializable(Route.class.getName());
-         bundle = getArguments().getBundle(Bundle.class.getName());
-         //
+         routeClazz = (Class<? extends Fragment>) getArguments().getSerializable(CLAZZ);
+         bundle = getArguments().getBundle(ARGS);
          setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 
          dialogNavigatorInteractor.closeDialogActionPipe()
@@ -85,11 +83,10 @@ public class DialogFragmentNavigator implements Navigator {
          super.onActivityCreated(savedInstanceState);
          BaseFragment currentFragment = (BaseFragment) getActivity().getSupportFragmentManager()
                .findFragmentById(getView().getId());
-         if (currentFragment != null && currentFragment.getClass().getName().equals(route.getClazzName())) {
+         if (currentFragment != null && currentFragment.getClass().getName().equals(routeClazz.getName())) {
             return;
          }
-         //
-         router.moveTo(route, NavigationConfigBuilder.forFragment()
+         router.moveTo(routeClazz, NavigationConfigBuilder.forFragment()
                .backStackEnabled(true)
                .fragmentManager(getChildFragmentManager())
                .containerId(getView().getId())

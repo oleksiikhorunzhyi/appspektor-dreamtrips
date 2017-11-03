@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.wallet.service.command.CachedValueCommand;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public final class ActiveFeedRouteCommand extends CachedValueCommand<Route> {
+public class ActiveFeedRouteCommand extends CachedValueCommand<FeedCellListWidthProvider.FeedType> {
 
-   public static ActiveFeedRouteCommand update(Route route) {
+   public static ActiveFeedRouteCommand update(FeedCellListWidthProvider.FeedType route) {
       return new ActiveFeedRouteCommand(route);
    }
 
@@ -20,7 +20,7 @@ public final class ActiveFeedRouteCommand extends CachedValueCommand<Route> {
       super(cachedRoute -> cachedRoute);
    }
 
-   private ActiveFeedRouteCommand(Route route) {
+   protected ActiveFeedRouteCommand(FeedCellListWidthProvider.FeedType route) {
       super(cachedRoute -> route);
    }
 }

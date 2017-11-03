@@ -13,13 +13,13 @@ import com.worldventures.core.ui.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.social.ui.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.cell.DocumentCell;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DocumentFragment;
 
 import java.util.List;
 
@@ -72,7 +72,7 @@ public abstract class DocumentListFragment<P extends DocumentListPresenter> exte
 
    @Override
    public void onCellClicked(Document document) {
-      router.moveTo(Route.DOCUMENT, NavigationConfigBuilder.forActivity()
+      router.moveTo(DocumentFragment.class, NavigationConfigBuilder.forActivity()
             .data(new DocumentBundle(document, getPresenter().getAnalyticsActionForOpenedItem(document))).build());
    }
 

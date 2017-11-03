@@ -397,8 +397,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public DtlMerchantsState provideViewState() {
-      return new DtlMerchantsState(delegate.getExpandedMerchants(), recyclerView.getLayoutManager()
-            .onSaveInstanceState());
+      return new DtlMerchantsState(delegate.getExpandedMerchants());
    }
 
    @Override

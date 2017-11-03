@@ -141,6 +141,7 @@
    <string name="comment_review_error_unknown_cancel">Cancel</string>
    <string name="comment_review_error_limited_reached_content">All our server are busy right now. Please try again in a minute</string>
    <string name="comment_review_unrecognized_error_content">Oops, we broke something. We\'re working on fixing it. Please try again tomorrow.</string>
+   <string name="comment_review_duplicated_review">You have a previous review for this location awaiting approval.\n Once approved you can review this location again.</string>
    <string name="comment_review_confirm_text">OK</string>
    <string name="comment_review_error_limited_reached_confirm">OK</string>
    <string name="comment_review_unrecognized_error_confirm">OK</string>

@@ -13,5 +13,11 @@ import java.io.Serializable;
 public interface InnerErrors extends Serializable {
 
     @Nullable
+    String code();
+
+    @Nullable
+    /**
+     * This field probably should be dropped after API contract clarification
+     */
     FormErrors formErrors();
 }

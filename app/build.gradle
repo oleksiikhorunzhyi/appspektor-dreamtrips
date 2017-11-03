@@ -149,6 +149,9 @@ android {
          def proConfigs = file('proguard-rules').listFiles().collect { it }
          proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
          proConfigs << file('dagger-proguard-keepnames.cfg')
+         proConfigs << file('core/dagger-proguard-keepnames.cfg')
+         proConfigs << file('social/dagger-proguard-keepnames.cfg')
+         proConfigs << file('wallet/dagger-proguard-keepnames.cfg')
          setProguardFiles proConfigs
       }
    }

@@ -22,9 +22,9 @@ android {
    buildTypes {
       release {
          minifyEnabled false
-         def proConfigs = file('proguard-rules').listFiles().collect { it }
+         def proConfigs = fileTree(dir: 'proguard-rules', include: ['*.pro']).asList()
          proConfigs << file('dagger-proguard-keepnames.cfg')
-         setProguardFiles proConfigs
+         consumerProguardFiles proConfigs.toArray()
       }
    }
 

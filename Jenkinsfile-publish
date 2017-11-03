@@ -162,7 +162,8 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
       //
       if (Boolean.valueOf(env.QA_AUTOMATION_MODE)) buildArgs << [qa_automation_mode: 'true']
    }
-   params.buildArgs = buildArgs.collect { key, value -> "-P${key}=${value}" }.join(' ')
+   params.buildArgs = buildArgs.collect { key, value -> "-P${key}=${value}" }.join(' ') + " --info --stacktrace"
+
 
 
    def targetBranch

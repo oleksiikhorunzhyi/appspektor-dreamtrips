@@ -21,7 +21,13 @@ utils.runBuild('android', notifier) {
                    shallow: true,
                    depth  : 1000,
                    noTags : true,
-                   timeout: 30]
+                   timeout: 30],
+                  [$class: 'PreBuildMerge', options:
+                        [fastForwardMode: 'FF',
+                         mergeRemote: 'origin',
+                         mergeStrategy: 'default',
+                         mergeTarget: "${env.gitlabTargetBranch}"]
+                  ]
             ]
       ])
    }

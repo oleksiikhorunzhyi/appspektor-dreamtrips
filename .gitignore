@@ -36,6 +36,11 @@ log*.txt
 *.metadata
 *.settings
 
+# VsCode
+.classpath
+.project
+.vscode
+
 # Android Studio
 .idea/*
 **/*/.idea

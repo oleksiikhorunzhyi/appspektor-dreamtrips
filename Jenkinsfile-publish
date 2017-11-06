@@ -10,6 +10,7 @@ utils.runBuild('android', getNotifier(utils)) {
    }
    stage('checkout') {
       def branches = (isPullRequest() ? scm.branches : [[name: "origin/${buildParams.branch}"]])
+      def targetBranchToMergeWith = (isPullRequest() ? buildParams.targetBranch : buildParams.branch)
       checkout([
             $class                           : 'GitSCM',
             branches                         : branches,
@@ -22,7 +23,13 @@ utils.runBuild('android', getNotifier(utils)) {
                    shallow: true,
                    depth  : 1000,
                    noTags : true,
-                   timeout: 5]
+                   timeout: 5],
+                  [$class: 'PreBuildMerge', options:
+                        [fastForwardMode: 'FF',
+                         mergeRemote    : 'origin',
+                         mergeStrategy  : 'default',
+                         mergeTarget    : targetBranchToMergeWith]
+                  ]
             ]
       ])
    }
@@ -89,10 +96,10 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
    params.comment = (isPullRequest ? env.gitlabTriggerPhrase : env.COMMENT) ?: ""
 
    switch (params.branch) {
-      case ~/^(develop)|(common\/.+)/:
+      case ~/^(core\/.+)/:
          params << [
-               streamFlavor  : "Stable",
-               serverFlavor  : params.comment.contains("-server qa") ? "Qa" : "Stage",
+               serverFlavor  : params.comment.contains("-server qa") ? "Qa" : "Preprod",
+               apkBuildType  : "Release",
                hockeyAppId   : "48de37eaf46ec363d392ae15ae521df6",
                hockeyAppTeams: [qaTeam, devTeam],
          ]
@@ -169,10 +176,7 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
    def targetBranch
    if (isPullRequest) targetBranch = env.gitlabTargetBranch
    else switch (params.branch) {
-      case ~/^common\/.+/:
-         targetBranch = 'develop'
-         break
-      case ~/^(release\/.+)|(hotfix\/.+)|(develop)/:
+      case ~/^(release\/.+)|(hotfix\/.+)|(core\/.+)/:
          targetBranch = 'master'
          break
       case ~/^smart-card\/(?!dev).+/:
@@ -188,7 +192,7 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
          targetBranch = 'dtl/dev'
          break
       default:
-         targetBranch = 'develop'
+         targetBranch = 'master'
          break
    }
    params.targetBranch = targetBranch

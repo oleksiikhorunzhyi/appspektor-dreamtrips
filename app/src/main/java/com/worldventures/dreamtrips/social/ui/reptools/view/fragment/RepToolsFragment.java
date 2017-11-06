@@ -53,7 +53,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
    }
 
    @Override
-   public void setScreens(List<FragmentItem> items) {
+   public void setScreens(List<? extends FragmentItem> items) {
       adapter.addItems(items);
       adapter.notifyDataSetChanged();
       tabs.setupWithPagerBadged(pager);

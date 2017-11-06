@@ -40,7 +40,9 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
     }
 
     private TransactionModel.PaymentStatus mapPaymentStatus(DetailTransactionThrst.PaymentStatus paymentStatus) {
-        if (paymentStatus == null) return TransactionModel.PaymentStatus.UNKNOWN;
+        // mapping server duct tape, it returns null for non thrst transactions
+        if (paymentStatus == null) return TransactionModel.PaymentStatus.SUCCESSFUL;
+
         switch (paymentStatus) {
             case INITIATED:
                 return TransactionModel.PaymentStatus.INITIATED;

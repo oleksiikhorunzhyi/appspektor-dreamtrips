@@ -37,6 +37,7 @@ public final class DateTimeUtils {
 
    public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
    public static final String FEED_DATE_FORMAT = "MMM d, yyyy  h:mm a";
+   public static final String USER_DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
    public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
    public static final String ISO_FORMAT_WITH_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
    public static final String PODCAST_DATE_FORMAT = "MMM d, yyyy";
@@ -59,6 +60,7 @@ public final class DateTimeUtils {
       return new DateFormat[]{
             new SimpleDateFormat(ISO_FORMAT_WITH_TIMEZONE, LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat(DEFAULT_ISO_FORMAT, LocaleHelper.getDefaultLocale()),
+            new SimpleDateFormat(USER_DATE_FORMAT, LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat("yyyy-MM-dd", LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", LocaleHelper.getDefaultLocale()),

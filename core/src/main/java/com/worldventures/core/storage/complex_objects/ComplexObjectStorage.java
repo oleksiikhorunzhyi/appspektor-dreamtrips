@@ -7,6 +7,7 @@ import com.worldventures.core.storage.ObjectStorage;
 import com.worldventures.core.storage.preferences.ObjectPreferenceStorage;
 import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.core.utils.DateTimeDeserializer;
+import com.worldventures.core.utils.DateTimeSerializer;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -21,6 +22,7 @@ public class ComplexObjectStorage<T> implements ObjectStorage<T> {
 
    { //NOPMD
       gson = new GsonBuilder()
+            .registerTypeAdapter(Date.class, new DateTimeSerializer())
             .registerTypeAdapter(Date.class, new DateTimeDeserializer())
             .registerTypeAdapterFactory(new GsonAdaptersUserSession())
             .create();

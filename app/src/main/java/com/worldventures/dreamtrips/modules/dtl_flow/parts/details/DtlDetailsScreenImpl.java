@@ -518,6 +518,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (!merchant.asMerchantAttributes().hasOffers()) {
          ViewUtils.setViewVisibility(this.perks, View.GONE);
          ViewUtils.setViewVisibility(this.points, View.GONE);
+         ViewUtils.setViewVisibility(this.payInApp, View.GONE);
       } else {
          ViewUtils.setViewVisibility(this.perks, View.VISIBLE);
          ViewUtils.setViewVisibility(this.points, View.VISIBLE);

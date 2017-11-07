@@ -4,7 +4,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 public interface DtlTransactionScreen extends DtlScreen {
-      void showTransaction(TransactionModel transactionModel, boolean isSuccessful);
+      void showThrstTransaction(TransactionModel transactionModel, boolean isSuccessful);
+
+      void showNonThrstTransaction(TransactionModel transactionModel);
 
       void showReceipt(String url);
 

@@ -10,288 +10,124 @@
       android:orientation="vertical"
       >
 
-   <TextView
-         android:id="@+id/tv_transaction_status_title"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:fontFamily="sans-serif"
-         android:gravity="center_horizontal"
-         android:text="@string/thank_you_thrst_pilot"
-         android:textColor="@color/transaction_text_color"
-         android:textSize="@dimen/font_extra_large"
-         android:textStyle="bold"
-         app:layout_constraintLeft_toLeftOf="parent"
-         app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintTop_toTopOf="parent"
-         />
-
-   <TextView
-         android:id="@+id/tv_transaction_status_error_secondary_title"
+   <LinearLayout
+         android:id="@+id/thrst_status_labels_container"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:fontFamily="sans-serif"
-         android:gravity="center_horizontal"
-         android:text="@string/second_failure_text_thrst_pilot"
-         android:textColor="@color/transaction_text_color"
-         android:textSize="@dimen/font_normal"
-         android:textStyle="bold"
-         android:visibility="gone"
-         app:layout_constraintLeft_toLeftOf="parent"
-         app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
-         />
-
-   <TextView
-         android:id="@+id/tv_accept_payment_status"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-         android:fontFamily="sans-serif"
-         android:gravity="center_horizontal"
-         android:text="@string/payment_success_status_pilot"
-         android:textColor="@color/transaction_text_color"
-         android:textSize="@dimen/font_normal"
-         android:textStyle="normal"
-         app:layout_constraintLeft_toLeftOf="parent"
-         app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
-         />
-
-   <TextView
-         android:id="@+id/tv_show_to_server_text"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-         android:fontFamily="sans-serif"
-         android:gravity="center_horizontal"
-         android:text="@string/payment_resume_success_pilot"
-         android:textColor="@color/transaction_text_color"
-         android:textSize="@dimen/font_normal"
-         android:textStyle="bold"
-         app:layout_constraintLeft_toLeftOf="parent"
-         app:layout_constraintRight_toRightOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/tv_transaction_status_title"
-         />
-
-   <LinearLayout
-         android:layout_width="@dimen/dtl_transaction_screen_content_width"
-         android:layout_height="match_parent"
+         android:layout_marginLeft="@dimen/dtl_transaction_screen_padding"
+         android:layout_marginRight="@dimen/dtl_transaction_screen_padding"
          android:gravity="center_horizontal"
          android:orientation="vertical"
          >
 
-      <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dtl_transaction_screen_margin_big"
-            android:layout_marginTop="@dimen/dtl_transaction_screen_margin_big"
-            app:cardCornerRadius="@dimen/dtl_transaction_screen_card_radius"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_accept_payment_status"
-            >
-
-         <LinearLayout
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:gravity="center_horizontal"
-               android:orientation="vertical"
-               android:padding="@dimen/dtl_transaction_screen_margin_extra_big"
-               >
-
-            <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:gravity="center"
-                  android:orientation="horizontal"
-                  >
-
-               <ImageView
-                     android:id="@+id/iv_status_payment"
-                     android:layout_width="@dimen/dtl_transaction_screen_icon"
-                     android:layout_height="@dimen/dtl_transaction_screen_icon"
-                     app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
-                     />
-
-               <LinearLayout
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:orientation="vertical"
-                     android:paddingLeft="@dimen/dtl_transaction_screen_margin_big"
-                     >
-
-                  <TextView
-                        android:id="@+id/tv_total"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:text="$14.75"
-                        android:textColor="@color/transaction_text_color"
-                        android:textSize="@dimen/font_extra_large"
-                        />
-
-                  <TextView
-                        android:id="@+id/tv_total_charged_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:text="@string/transaction_total_amount_paid"
-                        android:textSize="@dimen/font_medium"
-                        />
-
-               </LinearLayout>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/dtl_transaction_screen_margin_big"
-                  >
-
-               <TextView
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_alignParentStart="true"
-                     android:layout_alignParentTop="true"
-                     android:text="@string/transaction_tip_amount"
-                     android:textSize="@dimen/font_normal"
-                     />
-
-               <TextView
-                     android:id="@+id/tv_tip"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:layout_alignParentEnd="true"
-                     android:text="$3.00"
-                     android:textSize="@dimen/font_normal"
-                     />
-            </RelativeLayout>
-
-         </LinearLayout>
-      </android.support.v7.widget.CardView>
-
-      <RelativeLayout
-            android:id="@+id/layout_subtotal"
+      <TextView
+            android:id="@+id/tv_transaction_status_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            >
-
-         <TextView
-               android:id="@+id/tv_subtotal"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentEnd="true"
-               android:text="$9.75"
-               android:textSize="@dimen/font_normal"
-               />
-
-         <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentStart="true"
-               android:layout_below="@+id/tv_subtotal_amount"
-               android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-               android:text="@string/transaction_tax_amount"
-               android:textSize="@dimen/font_normal"
-               />
-
-         <TextView
-               android:id="@+id/tv_subtotal_amount"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentStart="true"
-               android:layout_alignParentTop="true"
-               android:text="@string/transaction_sub_total_amount"
-               android:textSize="@dimen/font_normal"
-               />
-
-         <TextView
-               android:id="@+id/tv_tax"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentEnd="true"
-               android:layout_below="@+id/tv_subtotal"
-               android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-               android:text="$2.00"
-               android:textSize="@dimen/font_normal"
-               />
-      </RelativeLayout>
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/thank_you_thrst_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_extra_large"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
       <TextView
-            android:id="@+id/tv_earned_points"
+            android:id="@+id/tv_transaction_status_error_secondary_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/second_failure_text_thrst_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
+            />
+
+      <TextView
+            android:id="@+id/tv_accept_payment_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-            android:drawableLeft="@drawable/dt_points_icon"
-            android:drawablePadding="@dimen/dtl_transaction_screen_margin_points_icon_margin"
-            android:text="@string/dtl_earned_points"
-            android:textSize="@dimen/font_small"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/payment_success_status_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
+            />
+
+      <TextView
+            android:id="@+id/tv_show_to_server_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/payment_resume_success_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_transaction_status_title"
+            />
+
+   </LinearLayout>
+
+   <include layout="@layout/include_transaction_details_thrst" />
+
+   <include layout="@layout/include_transaction_details_non_thrst" />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:gravity="center_horizontal"
+         >
+
+      <TextView
+            android:id="@+id/tv_receipt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ll_review_and_payment"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
+            android:text="@string/transaction_view_your_receipt"
             android:textStyle="bold"
             />
 
       <TextView
-            android:id="@+id/currentTime"
-            android:layout_width="match_parent"
+            android:id="@+id/tv_review_merchant"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="@dimen/spacing_small"
-            tools:text="26-Oct-2017 12:08:18"
+            android:layout_centerHorizontal="true"
+            android:text="@string/transaction_review_merchant"
+            android:textStyle="bold"
             />
 
-      <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-         <TextView
-               android:id="@+id/tv_receipt"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_above="@+id/ll_review_and_payment"
-               android:layout_centerHorizontal="true"
-               android:gravity="center_vertical|center_horizontal"
-               android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
-               android:text="@string/transaction_view_your_receipt"
-               android:textStyle="bold"
-               />
-
-         <LinearLayout
-               android:id="@+id/ll_review_and_payment"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_alignParentBottom="true"
-               android:layout_alignParentStart="true"
-               android:gravity="center"
-               android:orientation="vertical"
-               >
-
-            <TextView
-                  android:id="@+id/tv_review_merchant"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_centerHorizontal="true"
-                  android:text="@string/transaction_review_merchant"
-                  android:textStyle="bold"
-                  />
-
-            <Button
-                  android:id="@+id/payment_done_button"
-                  android:layout_width="@dimen/dtl_transaction_screen_content_width"
-                  android:layout_height="wrap_content"
-                  android:layout_centerHorizontal="true"
-                  android:layout_weight="1"
-                  android:text="@string/btn_payment_done_pilot"
-                  android:textColor="@android:color/white"
-                  android:textSize="@dimen/font_normal"
-                  android:visibility="gone"
-                  />
-
-         </LinearLayout>
-
-      </RelativeLayout>
+      <Button
+            android:id="@+id/payment_done_button"
+            android:layout_width="@dimen/dtl_transaction_screen_content_width"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:text="@string/btn_payment_done_pilot"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_normal"
+            android:visibility="gone"
+            />
 
    </LinearLayout>
 </LinearLayout>

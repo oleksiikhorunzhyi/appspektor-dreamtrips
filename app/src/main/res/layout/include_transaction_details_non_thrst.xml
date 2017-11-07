@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/non_thrst_billed_amount_container"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="@dimen/dtl_transaction_screen_content_width"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      android:visibility="gone"
+      tools:showIn="@layout/include_detail_transaction"
+      >
+
+   <android.support.v7.widget.CardView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/dtl_transaction_screen_margin_big"
+         android:layout_marginTop="@dimen/dtl_transaction_screen_margin_big"
+         app:cardCornerRadius="@dimen/dtl_transaction_screen_card_radius"
+         >
+
+      <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/dtl_transaction_screen_margin_extra_big"
+            >
+
+         <TextView
+               android:id="@+id/tv_non_thrst_subtotal"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="$14.75"
+               android:textColor="@color/transaction_text_color"
+               android:textSize="@dimen/font_extra_large"
+               />
+
+         <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="@string/transaction_sub_total_amount_no_semicolon"
+               android:textSize="@dimen/font_medium"
+               />
+
+
+      </LinearLayout>
+
+   </android.support.v7.widget.CardView>
+
+   <TextView
+         android:id="@+id/tv_non_thrst_earned_points"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
+         android:drawableLeft="@drawable/dt_points_icon"
+         android:drawablePadding="@dimen/dtl_transaction_screen_margin_points_icon_margin"
+         android:text="@string/dtl_earned_points"
+         android:textSize="@dimen/font_small"
+         android:textStyle="bold"
+         />
+
+</LinearLayout>
+
+<TextView
+      android:id="@+id/tv_non_thrst_currentTime"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      android:gravity="center"
+      android:padding="@dimen/spacing_small"
+      tools:text="26-Oct-2017 12:08:18"
+      />
+</merge>

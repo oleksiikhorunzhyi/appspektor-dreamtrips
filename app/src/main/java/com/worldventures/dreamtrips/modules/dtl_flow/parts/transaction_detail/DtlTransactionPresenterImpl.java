@@ -28,12 +28,16 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-      getView().showTransaction(transaction, isTransactionSuccessful());
+      if (transaction.isTrhstTransaction()) {
+         getView().showThrstTransaction(transaction, isThrstTransactionSuccessful());
+      } else {
+         getView().showNonThrstTransaction(transaction);
+      }
    }
 
-   private boolean isTransactionSuccessful() {
-      return transaction.getPaymentStatus() == TransactionModel.PaymentStatus.INITIATED ||
-            transaction.getPaymentStatus() == TransactionModel.PaymentStatus.SUCCESSFUL;
+   private boolean isThrstTransactionSuccessful() {
+      return transaction.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.INITIATED ||
+            transaction.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.SUCCESSFUL;
    }
 
    @Override

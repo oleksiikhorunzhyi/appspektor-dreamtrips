@@ -20,16 +20,17 @@ public abstract class DetailTransactionThrst implements Serializable {
    @SerializedName("MerchantId") @Nullable public abstract String merchantId();
    @SerializedName("MerchantName") @Nullable public abstract String merchantName();
    @SerializedName("Date") @Nullable public abstract Date date();
-   @SerializedName("PointsEarned")  @Nullable public abstract Double pointsEarned();
-   @SerializedName("ReceiptURL")  @Nullable public abstract String receiptUrl();
-   @SerializedName("RewardPointStatus")  @Nullable public abstract String rewardStatus();
-   @SerializedName("SubTotal")  @Nullable public abstract Double subTotalAmount();
-   @SerializedName("Total")  @Nullable public abstract Double totalAmount();
-   @SerializedName("Tax")  @Nullable public abstract Double tax();
-   @SerializedName("Tip")  @Nullable public abstract Double tip();
-   @SerializedName("PaymentStatus")  @Nullable @Value.Default public PaymentStatus paymentStatus() {
+   @SerializedName("PointsEarned") @Nullable public abstract Double pointsEarned();
+   @SerializedName("ReceiptURL") @Nullable public abstract String receiptUrl();
+   @SerializedName("RewardPointStatus") @Nullable public abstract String rewardStatus();
+   @SerializedName("SubTotal") @Nullable public abstract Double subTotalAmount();
+   @SerializedName("Total") @Nullable public abstract Double totalAmount();
+   @SerializedName("Tax") @Nullable public abstract Double tax();
+   @SerializedName("Tip") @Nullable public abstract Double tip();
+   @SerializedName("PaymentStatus") @Nullable @Value.Default public PaymentStatus paymentStatus() {
       return PaymentStatus.UNKNOWN;
    }
+   @SerializedName("IsThrstTransaction") @Nullable public abstract Boolean isThrstTransaction ();
 
    public enum PaymentStatus {
       @SerializedName("INITIATED") INITIATED,

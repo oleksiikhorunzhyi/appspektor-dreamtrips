@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import android.content.Context;
 import android.support.annotation.StringRes;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -36,7 +35,6 @@ import timber.log.Timber;
 
 public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
-   @Inject Context context;
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject @Global EventBus eventBus;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
@@ -56,24 +54,19 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       } catch (Exception ignored) {
          Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
       }
-      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> view.hideProgress()));
-      //
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, view::hideProgress));
       view.setMerchant(merchant);
-      //
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.get(merchant))
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
-                  .onFail((action, exception) -> {
-                     apiErrorViewAdapter.handleError(action, exception);
-                  })
+                  .onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(action -> {
                      DtlTransaction transaction = action.getResult();
                      if (transaction != null && transaction.isMerchantCodeScanned()) {
                         checkReceiptUploading(transaction);
                      }
                   }));
-
       bindApiJob();
    }
 
@@ -94,7 +87,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
          switch (field) {
             case DtlTransaction.BILL_TOTAL:
             case DtlTransaction.RECEIPT_PHOTO_URL:
-               view.showError(message, () -> photoUploadFailed());
+               view.showError(message, this::photoUploadFailed);
                break;
             case DtlTransaction.LOCATION:
             case DtlTransaction.CHECKIN:
@@ -153,14 +146,9 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
             .subscribe(
-                  dtlTransaction ->
-                        transactionInteractor
-                              .earnPointsActionPipe()
-                              .send(new DtlEarnPointsAction(merchant, dtlTransaction))
-                  ,
-                  apiErrorViewAdapter::handleError
-            );
-
+                  dtlTransaction -> transactionInteractor.earnPointsActionPipe()
+                        .send(new DtlEarnPointsAction(merchant, dtlTransaction)),
+                  apiErrorViewAdapter::handleError);
    }
 
    @Override
@@ -182,12 +170,9 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .send(DtlAnalyticsCommand.create(new ScanMerchantEvent(merchant.asMerchantAttributes(),
                   action.getTransaction().getMerchantToken())));
       view.hideProgress();
-
       transactionInteractor.transactionActionPipe()
             .send(DtlTransactionAction.save(action.getMerchant(), ImmutableDtlTransaction.copyOf(action.getTransaction())
                   .withDtlTransactionResult(action.getResult())));
-      ;
-
       eventBus.postSticky(new DtlTransactionSucceedEvent(action.getTransaction()));
       view.finish();
       transactionInteractor.earnPointsActionPipe().clearReplays();
@@ -211,18 +196,16 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
    private void checkReceiptUploading(DtlTransaction transaction) {
       UploadTask uploadTask = transaction.getUploadTask();
-      //
       transferObserver = photoUploadingManagerS3.getTransferById(uploadTask.getAmazonTaskId());
-      //
       switch (transferObserver.getState()) {
          case FAILED:
             //restart upload if failed
             transferObserver = photoUploadingManagerS3.upload(transaction.getUploadTask());
             uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-            setListener();
+            setUploadingListener();
             break;
          case IN_PROGRESS:
-            setListener();
+            setUploadingListener();
             break;
          case COMPLETED:
             onReceiptUploaded();
@@ -233,9 +216,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       }
    }
 
-   private void setListener() {
+   private void setUploadingListener() {
       transferObserver.setTransferListener(this);
-      //
       view.showProgress(R.string.dtl_wait_for_receipt);
    }
 
@@ -301,7 +283,5 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       void setCamera();
 
       void openScanReceipt(DtlTransaction dtlTransaction);
-
-      void openThrstFlow();
    }
 }

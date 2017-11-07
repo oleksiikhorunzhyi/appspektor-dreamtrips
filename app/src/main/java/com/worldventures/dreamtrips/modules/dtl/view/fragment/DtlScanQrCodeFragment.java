@@ -15,9 +15,7 @@ import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
@@ -83,6 +81,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
 
    void startCamera() {
       scanner.startCamera();
+      scanner.setResultHandler(this);
    }
 
    void showRationaleForCamera() {
@@ -124,11 +123,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    }
 
    @Override
-   public void openThrstFlow() {
-      router.moveTo(Route.DTL_THRST_FLOW, NavigationConfigBuilder.forActivity().build());
-   }
-
-   @Override
    public void finish() {
       getActivity().finish();
    }
@@ -137,7 +131,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    public void showProgress(@StringRes int titleText) {
       if (progressDialog == null || !progressDialog.isShowing()) {
          scanner.stopCamera();
-         //
          progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
          progressDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
          progressDialog.setTitleText(getString(titleText));
@@ -176,7 +169,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    public void noConnection() {
       showImageUploadError(sweetAlertDialog -> {
          sweetAlertDialog.dismissWithAnimation();
-         scanner.startCamera();
+         startCamera();
       });
    }
 

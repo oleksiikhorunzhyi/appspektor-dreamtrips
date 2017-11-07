@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -32,12 +33,22 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.tv_title) TextView tvTitle;
 
+   @InjectView(R.id.thrst_status_labels_container) ViewGroup thrstStatusLabelsContainer;
+   @InjectView(R.id.thrst_billed_amount_container) ViewGroup thrstBilledAmountLabelsContainer;
+   @InjectView(R.id.non_thrst_billed_amount_container) ViewGroup nonThrstBilledAmountLabelsContainer;
+
+   // non thrst views
+   @InjectView(R.id.tv_non_thrst_subtotal) TextView tvNonThrstSubTotal;
+   @InjectView(R.id.tv_non_thrst_earned_points) TextView tvNonThrstEarnedPoints;
+   @InjectView(R.id.tv_non_thrst_currentTime) TextView tvNonThrstTransactionDate;
+   // thrst views
    @InjectView(R.id.tv_total) TextView tvTotal;
    @InjectView(R.id.tv_subtotal) TextView tvSubTotal;
    @InjectView(R.id.tv_tip) TextView tvTip;
    @InjectView(R.id.tv_tax) TextView tvTax;
    @InjectView(R.id.tv_earned_points) TextView tvEarnedPoints;
    @InjectView(R.id.currentTime) TextView tvDate;
+
    @InjectView(R.id.tv_review_merchant) TextView tvReview;
    @InjectView(R.id.tv_receipt) TextView tvReceipt;
 
@@ -78,7 +89,22 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    }
 
    @Override
-   public void showTransaction(TransactionModel transactionModel, boolean isSuccessful) {
+   public void showNonThrstTransaction(TransactionModel transactionModel) {
+      thrstStatusLabelsContainer.setVisibility(GONE);
+      thrstBilledAmountLabelsContainer.setVisibility(GONE);
+      nonThrstBilledAmountLabelsContainer.setVisibility(VISIBLE);
+
+      tvNonThrstSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount()));
+      tvNonThrstEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
+      tvNonThrstTransactionDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
+   }
+
+   @Override
+   public void showThrstTransaction(TransactionModel transactionModel, boolean isSuccessful) {
+      thrstStatusLabelsContainer.setVisibility(VISIBLE);
+      thrstBilledAmountLabelsContainer.setVisibility(VISIBLE);
+      nonThrstBilledAmountLabelsContainer.setVisibility(GONE);
+
       if (isSuccessful) {
          transactionStatusInjector.showSuccessMessage();
       } else {

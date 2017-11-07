@@ -188,4 +188,5 @@
    <string name="transaction_sub_total_amount">Sub Total Amount:</string>
    <string name="transaction_view_your_receipt">View your receipt</string>
    <string name="transaction_review_merchant">Review Merchant</string>
+   <string name="transaction_sub_total_amount_no_semicolon">Sub Total Amount</string>
 </resources>

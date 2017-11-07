@@ -9,5 +9,5 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction
 class MembershipVideoDownloadedAction(@field:Attribute("video_id")
                                       internal var videoName: String) : BaseAnalyticsAction() {
 
-   @Attribute("download") internal val download = "1"
+   @field:Attribute("download") internal val download = "1"
 }

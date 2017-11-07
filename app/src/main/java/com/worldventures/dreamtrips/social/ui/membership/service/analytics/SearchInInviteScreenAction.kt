@@ -8,6 +8,6 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction
 @AnalyticsEvent(action = "membership:rep_tools:invite_share", trackers = arrayOf(AdobeTracker.TRACKER_KEY))
 class SearchInInviteScreenAction : BaseAnalyticsAction() {
 
-   @Attribute("search") internal var search = "1"
+   @field:Attribute("search") internal var search = "1"
 
 }

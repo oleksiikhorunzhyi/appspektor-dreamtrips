@@ -78,7 +78,7 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
          description.setText(podcast.getDescription());
       }
 
-      progressVideoCellHelper.setModelObject(podcast.getCacheEntity());
+      progressVideoCellHelper.setModelObject(podcast.getCachedModel());
       progressVideoCellHelper.syncUIStateWithModel();
    }
 
@@ -89,7 +89,7 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
 
    @OnClick(R.id.download_progress)
    public void onDownloadClick() {
-      progressVideoCellHelper.onDownloadClick(cellDelegate);
+      progressVideoCellHelper.onDownloadClick(cellDelegate, getModelObject());
    }
 
    @Override

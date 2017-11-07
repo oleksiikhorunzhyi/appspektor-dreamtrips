@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
@@ -54,7 +53,7 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
       statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState, linearLayoutManager);
       statePaginatedRecyclerViewManager.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-      statePaginatedRecyclerViewManager.setPaginationListener(getPresenter()::onRefresh);
+      statePaginatedRecyclerViewManager.setOnRefreshListener(getPresenter()::onRefresh);
       statePaginatedRecyclerViewManager.setPaginationListener(getPresenter()::onLoadNextPage);
 
       stateDelegate = new RecyclerViewStateDelegate();
@@ -102,21 +101,21 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
    }
 
    @Override
-   public void notifyItemChanged(CachedModel videoEntity) {
-      int position = adapter.getItems().indexOf(videoEntity);
+   public void notifyItemChanged(Podcast podcast) {
+      int position = adapter.getItems().indexOf(podcast);
       if (position != -1) adapter.notifyItemChanged(position);
    }
 
    @Override
-   public void showDeleteDialog(CachedModel cacheEntity) {
+   public void showDeleteDialog(Podcast podcast) {
       showDialog(R.string.delete_cached_podcast_title, R.string.delete_cached_podcast_text, R.string.delete_photo_positiove, R.string.delete_photo_negative, (dialog, which) -> getPresenter()
-            .onDeletePodcastAccepted(cacheEntity));
+            .onDeletePodcastAccepted(podcast));
    }
 
    @Override
-   public void onCancelDialog(CachedModel cacheEntity) {
+   public void onCancelDialog(Podcast podcast) {
       showDialog(R.string.cancel_cached_podcast_title, R.string.cancel_cached_podcast_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative, (dialog, which) -> getPresenter()
-            .onCancelPodcastAccepted(cacheEntity));
+            .onCancelPodcastAccepted(podcast));
    }
 
    @Override
@@ -124,18 +123,18 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
    }
 
    @Override
-   public void onDownloadPodcast(CachedModel entity) {
-      getPresenter().onDownloadPodcastRequired(entity);
+   public void onDownloadMedia(Podcast podcast) {
+      getPresenter().onDownloadPodcastRequired(podcast);
    }
 
    @Override
-   public void onDeletePodcast(CachedModel entity) {
-      getPresenter().onDeletePodcastRequired(entity);
+   public void onDeleteMedia(Podcast podcast) {
+      getPresenter().onDeletePodcastRequired(podcast);
    }
 
    @Override
-   public void onCancelCachingPodcast(CachedModel entity) {
-      getPresenter().onCancelPodcastRequired(entity);
+   public void onCancelCachingMedia(Podcast podcast) {
+      getPresenter().onCancelPodcastRequired(podcast);
    }
 
    @Override

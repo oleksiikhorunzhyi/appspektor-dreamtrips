@@ -8,5 +8,5 @@ import com.worldventures.core.service.analytics.BaseAnalyticsAction
 @AnalyticsEvent(action = "membership-enroll-merchant", trackers = arrayOf(AdobeTracker.TRACKER_KEY))
 class EnrollMerchantViewedAction(@field:Attribute("member_id") internal val memberId: String) : BaseAnalyticsAction() {
 
-   @Attribute("view") internal val view = "1"
+   @field:Attribute("view") internal val view = "1"
 }

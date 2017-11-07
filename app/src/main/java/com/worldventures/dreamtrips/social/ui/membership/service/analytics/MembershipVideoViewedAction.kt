@@ -6,8 +6,7 @@ import com.worldventures.core.service.analytics.Attribute
 import com.worldventures.core.service.analytics.BaseAnalyticsAction
 
 @AnalyticsEvent(action = "membership", trackers = arrayOf(AdobeTracker.TRACKER_KEY))
-class MembershipVideoViewedAction(@field:Attribute("video_id")
-                                  internal var videoName: String) : BaseAnalyticsAction() {
+class MembershipVideoViewedAction(@field:Attribute("video_id") internal var videoName: String) : BaseAnalyticsAction() {
 
-   @Attribute("view") internal val view = "1"
+   @field:Attribute("view") internal val view = "1"
 }

@@ -10,7 +10,6 @@ import com.worldventures.core.janet.dagger.InjectableAction
 import com.worldventures.core.modules.video.service.storage.MediaModelStorage
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer
 import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast
 
@@ -23,15 +22,17 @@ import io.techery.janet.command.annotations.CommandAction
 import rx.Observable
 import rx.schedulers.Schedulers
 
+private const val PAGE_SIZE = 10
+
 @CommandAction
-class GetPodcastsCommand private constructor(private val refresh: Boolean) : CommandWithError<List<Podcast>>(),
+class GetPodcastsCommand (val refresh: Boolean = false) : CommandWithError<List<Podcast>>(),
       InjectableAction, CachedAction<List<Podcast>> {
 
    @field:Inject lateinit var janet: Janet
    @field:Inject lateinit var podcastsMapper: PodcastsMapper
    @field:Inject lateinit var db: MediaModelStorage
 
-   private var cachedData: List<Podcast>? = null
+   private var cachedData = ArrayList<Podcast>()
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<List<Podcast>>) {
@@ -48,10 +49,8 @@ class GetPodcastsCommand private constructor(private val refresh: Boolean) : Com
    }
 
    private fun initialProcessCache(callback: Command.CommandCallback<List<Podcast>>) {
-      if (cachedData!!.isEmpty()) {
-         Observable.from(cachedData!!)
-               .compose(IoToMainComposer())
-               .doOnNext { connectCachedEntity(it) }
+      if (cachedData.isEmpty()) {
+         Observable.from(cachedData)
                .toList()
                .doOnNext { callback.onProgress(0) }
                .subscribe()
@@ -59,28 +58,27 @@ class GetPodcastsCommand private constructor(private val refresh: Boolean) : Com
    }
 
    private fun connectCachedEntity(podcast: Podcast) {
-      podcast.cacheEntity = db.getDownloadMediaModel(podcast.getUid())
+      val cachedModel = db.getDownloadMediaModel(podcast.fileUrl)
+      if (cachedModel != null) podcast.cachedModel = cachedModel
    }
 
    private fun clearCacheIfNeeded() {
-      if (refresh) cachedData = null
+      if (refresh) cachedData.clear()
    }
 
    fun getItems(): List<Podcast> {
       val podcasts = mutableListOf<Podcast>()
-      cachedData?.let { podcasts.addAll(it) }
+      podcasts.addAll(cachedData)
       result?.let { podcasts.addAll(it) }
       return podcasts
    }
 
-   fun hasMore(): Boolean {
-      return result.size == PAGE_SIZE
-   }
+   fun hasMore() = result.size == PAGE_SIZE
 
    private fun obtainPage(): Int {
-      return when (refresh || cachedData == null || cachedData!!.isEmpty()) {
+      return when (refresh ||  cachedData.isEmpty()) {
          true -> 1
-         false -> cachedData!!.size / PAGE_SIZE + 1
+         false -> cachedData.size / PAGE_SIZE + 1
       }
    }
 
@@ -88,9 +86,7 @@ class GetPodcastsCommand private constructor(private val refresh: Boolean) : Com
       cachedData = ArrayList(cache)
    }
 
-   override fun getCacheData(): List<Podcast> {
-      return ArrayList(result)
-   }
+   override fun getCacheData() = ArrayList(result)
 
    override fun getCacheOptions(): CacheOptions {
       val cacheBundle = CacheBundleImpl()
@@ -98,20 +94,5 @@ class GetPodcastsCommand private constructor(private val refresh: Boolean) : Com
       return ImmutableCacheOptions.builder().params(cacheBundle).build()
    }
 
-   override fun getFallbackErrorMessage(): Int {
-      return R.string.error_fail_to_load_podcast
-   }
-
-   companion object {
-
-      private val PAGE_SIZE = 10
-
-      fun refresh(): GetPodcastsCommand {
-         return GetPodcastsCommand(true)
-      }
-
-      fun loadMore(): GetPodcastsCommand {
-         return GetPodcastsCommand(false)
-      }
-   }
+   override fun getFallbackErrorMessage() = R.string.error_fail_to_load_podcast
 }

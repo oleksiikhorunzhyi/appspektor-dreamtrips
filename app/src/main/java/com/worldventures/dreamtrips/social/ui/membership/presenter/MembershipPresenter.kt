@@ -6,23 +6,14 @@ import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem
-import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate
 
 import java.util.ArrayList
 
-import javax.inject.Inject
-
 class MembershipPresenter : Presenter<MembershipPresenter.View>() {
-
-   @field:Inject lateinit var searchFocusChangedDelegate: SearchFocusChangedDelegate
 
    override fun takeView(view: View) {
       super.takeView(view)
       view.setScreens(provideScreens())
-
-      searchFocusChangedDelegate.observable
-            .compose(bindViewToMainComposer())
-            .subscribe { view.toggleTabStripVisibility(!it) }
 
       subscribeToErrorUpdates()
    }

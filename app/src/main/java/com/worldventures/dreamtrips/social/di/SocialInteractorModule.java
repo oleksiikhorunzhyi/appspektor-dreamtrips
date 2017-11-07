@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFee
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
+import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.ProgressAnalyticInteractor;
@@ -30,23 +31,23 @@ import dagger.Provides;
 import io.techery.janet.Janet;
 
 @Module(library = true, complete = false)
-public class SocialInteractorModule {
+class SocialInteractorModule {
 
    @Singleton
    @Provides
-   public CirclesInteractor provideQueryCirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+   CirclesInteractor provideQueryCirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CirclesInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   public LikesInteractor provideLikesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+    LikesInteractor provideLikesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new LikesInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   public CommentsInteractor provideCommentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+   CommentsInteractor provideCommentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CommentsInteractor(sessionActionPipeCreator);
    }
 
@@ -151,5 +152,10 @@ public class SocialInteractorModule {
    @Singleton
    InviteShareInteractor provideInviteShareInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new InviteShareInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton PodcastsInteractor providePodcastInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new PodcastsInteractor(sessionActionPipeCreator);
    }
 }

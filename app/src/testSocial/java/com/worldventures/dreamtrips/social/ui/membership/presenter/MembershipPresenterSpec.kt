@@ -8,11 +8,9 @@ import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
-import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate
 import io.techery.janet.Janet
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import rx.Observable
 import kotlin.test.assertTrue
 
 class MembershipPresenterSpec: PresenterBaseSpec({
@@ -52,7 +50,6 @@ class MembershipPresenterSpec: PresenterBaseSpec({
             assertTrue { screens.contains(Route.PODCASTS) }
          }
 
-
          it("should contain only presentation videos, enroll member screens") {
             whenever(featureManager.available(Feature.REP_SUGGEST_MERCHANT)).thenReturn(false)
             whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(true)
@@ -72,7 +69,6 @@ class MembershipPresenterSpec: PresenterBaseSpec({
    companion object {
       lateinit var presenter: MembershipPresenter
       lateinit var view: MembershipPresenter.View
-      lateinit var searchFocusChangedDelegate: SearchFocusChangedDelegate
       lateinit var offlineErrorInteractor: OfflineErrorInteractor
 
       fun init() {
@@ -83,11 +79,7 @@ class MembershipPresenterSpec: PresenterBaseSpec({
          val pipeCreator = SessionActionPipeCreator(Janet.Builder().build())
          whenever(offlineErrorInteractor.offlineErrorCommandPipe()).thenReturn(pipeCreator.createPipe(OfflineErrorCommand::class.java))
 
-         searchFocusChangedDelegate = mock()
-         whenever(searchFocusChangedDelegate.getObservable()).thenReturn(Observable.just(true))
-
          prepareInjector().apply {
-            registerProvider(SearchFocusChangedDelegate::class.java, { searchFocusChangedDelegate })
             registerProvider(OfflineErrorInteractor::class.java, { offlineErrorInteractor })
             inject(presenter)
          }

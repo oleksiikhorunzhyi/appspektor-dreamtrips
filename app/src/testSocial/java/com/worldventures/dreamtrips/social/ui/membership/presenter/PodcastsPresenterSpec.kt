@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.membership.presenter
 import android.content.pm.PackageManager
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.model.CachedModel
 import com.worldventures.core.modules.video.utils.CachedModelHelper
 import com.worldventures.core.service.CachedEntityDelegate
 import com.worldventures.core.service.CachedEntityInteractor
@@ -38,7 +37,6 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
             verify(view, times(0)).informUser(anyOrNull<String>())
          }
 
-
          it("not successfully") {
             init(fetchPodcastsContract = podcastNotSuccessContract())
             presenter.takeView(view)
@@ -55,7 +53,7 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
             init()
             val podcast = testPodcast()
 
-            presenter.onDownloadPodcastRequired(podcast.cacheEntity!!)
+            presenter.onDownloadPodcastRequired(podcast)
 
             verify(permissionDispatcher).requestPermission(any(), any())
             verify(cachedEntityDelegate).startCaching(any(), any())
@@ -65,7 +63,7 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
             init(permissionGranted = false)
             val podcast = testPodcast()
 
-            presenter.onDownloadPodcastRequired(podcast.cacheEntity!!)
+            presenter.onDownloadPodcastRequired(podcast)
 
             verify(permissionDispatcher).requestPermission(any(), any())
             verify(cachedEntityDelegate, times(0)).startCaching(any(), any())
@@ -79,20 +77,20 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
          it ("cancel download podcast") {
             presenter.takeView(view)
 
-            presenter.onCancelPodcastRequired(podcast.cacheEntity!!)
-            presenter.onCancelPodcastAccepted(podcast.cacheEntity!!)
+            presenter.onCancelPodcastRequired(podcast)
+            presenter.onCancelPodcastAccepted(podcast)
 
-            verify(view).onCancelDialog(podcast.cacheEntity!!)
+            verify(view).onCancelDialog(podcast)
             verify(cachedEntityDelegate).cancelCaching(any(), any())
          }
 
          it ("delete podcast") {
             presenter.takeView(view)
 
-            presenter.onDeletePodcastRequired(podcast.cacheEntity!!)
-            presenter.onDeletePodcastAccepted(podcast.cacheEntity!!)
+            presenter.onDeletePodcastRequired(podcast)
+            presenter.onDeletePodcastAccepted(podcast)
 
-            verify(view).showDeleteDialog(podcast.cacheEntity!!)
+            verify(view).showDeleteDialog(podcast)
             verify(cachedEntityDelegate).deleteCache(any(), any())
          }
 
@@ -129,7 +127,6 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
          podcastsInteractor = PodcastsInteractor(sessionPipeCreator)
          cachedEntityInteractor = CachedEntityInteractor(sessionPipeCreator)
 
-
          cachedModelHelper = mock()
          whenever(cachedModelHelper.isCachedPodcast(any())).thenReturn(true)
          whenever(cachedModelHelper.getPodcastPath(any())).thenReturn("testPath")
@@ -151,12 +148,7 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
          }
       }
 
-      fun testPodcast(): Podcast {
-         val cachedModel = CachedModel("testUrl", "testId", "testName")
-         val podcast = Podcast()
-         podcast.cacheEntity = cachedModel
-         return podcast
-      }
+      fun testPodcast() = Podcast(fileUrl = "testUrl", title = "testTitle")
 
       fun podcastSuccessContract() = BaseContract.of(GetPodcastsCommand::class.java).result(listOf(testPodcast()))
 

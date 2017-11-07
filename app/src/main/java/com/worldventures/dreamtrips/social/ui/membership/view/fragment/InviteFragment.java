@@ -75,7 +75,6 @@ public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, ShareB
       stateDelegate.onCreate(savedInstanceState);
    }
 
-
    @Override
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);

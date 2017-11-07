@@ -1,8 +1,8 @@
 package com.worldventures.core.modules.infopages.model.converter;
 
 import com.worldventures.core.converter.Converter;
-import com.worldventures.dreamtrips.api.documents.model.DocumentType;
 import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand;
+import com.worldventures.dreamtrips.api.documents.model.DocumentType;
 
 import io.techery.mappery.MapperyContext;
 

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.wallet.ui.settings.help.documents.impl;
 
-
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.modules.infopages.model.Document;
 import com.worldventures.core.modules.infopages.service.DocumentsInteractor;
@@ -58,7 +57,7 @@ public class WalletHelpDocumentsPresenterImpl extends WalletPresenterImpl<Wallet
                   .create());
    }
 
-   private ArrayList<WalletDocumentModel> convert(List<Document> documents) {
+   private ArrayList<WalletDocumentModel> convert(List<? extends Document> documents) {
       return (ArrayList<WalletDocumentModel>) Queryable.from(documents).map(WalletDocumentModel::new).toList();
    }
 

@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action0;
 import timber.log.Timber;
@@ -108,7 +107,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.get(merchant))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
                   .onSuccess(action -> {
                      if (action.getResult() != null) {
                         DtlTransaction dtlTransaction = action.getResult();
@@ -117,7 +116,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                               .send(DtlTransactionAction.save(merchant, dtlTransaction));
                         checkReceiptUploading(dtlTransaction);
                      }
-                  }));
+                  })
+                  .onFail(apiErrorViewAdapter::handleError));
    }
 
    private void tryLogInvalidQr(String scannedCode) {
@@ -136,19 +136,12 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                         if (view != null) view.openScanReceipt(action.getResult());
                      }
                   }));
-
    }
 
-   private void onReceiptUploaded() {
-      transactionInteractor.transactionActionPipe()
-            .createObservableResult(DtlTransactionAction.get(merchant))
-            .map(Command::getResult)
-            .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
-                  .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
-            .subscribe(
-                  dtlTransaction -> transactionInteractor.earnPointsActionPipe()
-                        .send(new DtlEarnPointsAction(merchant, dtlTransaction)),
-                  apiErrorViewAdapter::handleError);
+   private void onReceiptUploaded(DtlTransaction dtlTransaction) {
+      transactionInteractor.earnPointsActionPipe()
+            .send(new DtlEarnPointsAction(merchant, ImmutableDtlTransaction.copyOf(dtlTransaction)
+                  .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(dtlTransaction.getUploadTask()))));
    }
 
    @Override
@@ -208,7 +201,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             setUploadingListener();
             break;
          case COMPLETED:
-            onReceiptUploaded();
+            onReceiptUploaded(transaction);
             break;
          case WAITING_FOR_NETWORK:
             view.noConnection();
@@ -231,7 +224,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .subscribe(transaction -> {
                switch (state) {
                   case COMPLETED:
-                     onReceiptUploaded();
+                     onReceiptUploaded(transaction);
                      break;
                   case FAILED:
                      receiptUploadError();

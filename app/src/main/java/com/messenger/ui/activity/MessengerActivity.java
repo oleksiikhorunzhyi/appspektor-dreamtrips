@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.messenger.delegate.CropImageDelegate;
+import com.messenger.di.MessengerActivityModule;
 import com.messenger.di.MessengerModule;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatPath;
@@ -18,6 +19,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.social.ui.podcast_player.delegate.PodcastPlayerDelegate;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,6 +38,13 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
    @Inject CropImageDelegate cropImageDelegate;
 
    String conversationId;
+
+   @Override
+   protected List<Object> getModules() {
+      List<Object> modules = super.getModules();
+      modules.add(new MessengerActivityModule());
+      return modules;
+   }
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {

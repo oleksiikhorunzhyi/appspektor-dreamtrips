@@ -26,6 +26,11 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
       return this;
    }
 
+   public FragmentNavigationConfigBuilder key(String key) {
+      navigationConfig.key = key;
+      return this;
+   }
+
    public FragmentNavigationConfigBuilder data(Parcelable data) {
       super.data(data);
       return this;

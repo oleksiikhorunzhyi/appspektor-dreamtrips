@@ -165,6 +165,7 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
          return;
       }
       router.moveTo(component.getFragmentClass(), NavigationConfigBuilder.forFragment()
+            .key(component.getKey())
             .fragmentManager(getSupportFragmentManager())
             .containerId(R.id.container_main)
             .backStackEnabled(true)

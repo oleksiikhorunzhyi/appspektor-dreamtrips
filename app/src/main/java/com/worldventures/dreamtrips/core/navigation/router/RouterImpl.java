@@ -83,7 +83,7 @@ public class RouterImpl implements Router {
       fragmentCompass.setFragmentManager(fragmentManager);
       fragmentCompass.setBackStackEnabled(config.isBackStackEnabled());
       fragmentCompass.setAnimationConfig(config.getAnimationConfig());
-      fragmentCompass.replace(routeClazz.getName(), getArgs(config), config.getTargetFragment());
+      fragmentCompass.replace(config.getKey(), routeClazz.getName(), getArgs(config), config.getTargetFragment());
    }
 
    private void showDialog(Class<? extends Fragment> routeClazz, NavigationConfig config) {

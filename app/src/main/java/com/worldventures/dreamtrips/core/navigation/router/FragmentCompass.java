@@ -36,15 +36,15 @@ class FragmentCompass {
       this.animationConfig = animationConfig;
    }
 
-   public void replace(String clazzName, Bundle bundle, Fragment fragment) {
-      action(clazzName, bundle, fragment);
+   public void replace(String backstackName, String clazzName, Bundle bundle, Fragment fragment) {
+      action(backstackName, clazzName, bundle, fragment);
    }
 
    public void setFragmentManager(FragmentManager fragmentManager) {
       this.fragmentManager = fragmentManager;
    }
 
-   protected void action(String clazzName, Bundle bundle, Fragment targetFragment) {
+   protected void action(String backstackName, String clazzName, Bundle bundle, Fragment targetFragment) {
       if (!validateState()) {
          Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
       } else {
@@ -54,7 +54,7 @@ class FragmentCompass {
          FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
          fragmentTransaction.replace(containerId, fragment, clazzName);
          if (backStackEnabled) {
-            fragmentTransaction.addToBackStack(clazzName);
+            fragmentTransaction.addToBackStack(backstackName);
          }
          if (animationConfig != null) {
             fragmentTransaction.setCustomAnimations(animationConfig.getAnimationEnter(), animationConfig.getAnimationExit());

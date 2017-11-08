@@ -434,15 +434,19 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   public void enableCheckinButton() {
+   public void enableCheckinAndPayButtons() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       if (earn != null) earn.setEnabled(true);
+      View pay = ButterKnife.findById(this, R.id.merchant_details_pay);
+      if (pay != null) pay.setEnabled(true);
    }
 
    @Override
-   public void disableCheckinButton() {
+   public void disableCheckinAndPayButtons() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       if (earn != null) earn.setEnabled(false);
+      View pay = ButterKnife.findById(this, R.id.merchant_details_pay);
+      if (pay != null) pay.setEnabled(false);
    }
 
    @Override

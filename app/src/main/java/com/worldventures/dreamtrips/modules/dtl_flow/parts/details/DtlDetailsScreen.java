@@ -35,9 +35,9 @@ public interface DtlDetailsScreen extends DtlScreen {
 
    void locationResolutionRequired(Status status);
 
-   void enableCheckinButton();
+   void enableCheckinAndPayButtons();
 
-   void disableCheckinButton();
+   void disableCheckinAndPayButtons();
 
    void showMerchantMap(@Nullable Intent intent);
 

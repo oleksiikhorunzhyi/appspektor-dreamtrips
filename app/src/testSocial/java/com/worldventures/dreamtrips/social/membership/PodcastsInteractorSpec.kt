@@ -99,7 +99,7 @@ class PodcastsInteractorSpec : BaseSpec({
 
       fun loadPodcastsWithRefresh(): TestSubscriber<ActionState<GetPodcastsCommand>> {
          val testSub = TestSubscriber<ActionState<GetPodcastsCommand>>()
-         podcastsInteractor.podcastsActionPipe().createObservable(GetPodcastsCommand.refresh()).subscribe(testSub)
+         podcastsInteractor.podcastsActionPipe.createObservable(GetPodcastsCommand(true)).subscribe(testSub)
          return testSub
       }
 

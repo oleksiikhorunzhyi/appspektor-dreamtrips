@@ -30,6 +30,15 @@ import org.junit.runner.RunWith
 abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
 
    companion object {
+
+      var context: Context = mock()
+      var activityRouter: ActivityRouter = mock()
+      var featureManager: FeatureManager = mock()
+      var photoUploadingManager: PhotoUploadingManagerS3 = mock()
+      var offlineWarningDelegate: OfflineWarningDelegate = mock()
+      var connectionInfoProvider: ConnectionInfoProvider = mock()
+      var httpErrorHandlingUtil: HttpErrorHandlingUtil = mock()
+
       init {
          RxJavaSchedulerInitializer.init()
          AndroidRxJavaSchedulerInitializer.init()
@@ -44,15 +53,15 @@ abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
             val janet = Janet.Builder().addService(MockAnalyticsService()).build()
             val pipeCreator = SessionActionPipeCreator(janet)
 
-            registerProvider(Context::class.java, { mock() })
-            registerProvider(ActivityRouter::class.java, { mock() })
+            registerProvider(Context::class.java, { context })
+            registerProvider(ActivityRouter::class.java, { activityRouter })
             registerProvider(SessionHolder::class.java, { sessionHolder })
             registerProvider(AnalyticsInteractor::class.java, { AnalyticsInteractor(pipeCreator) })
-            registerProvider(FeatureManager::class.java, { mock() })
-            registerProvider(PhotoUploadingManagerS3::class.java, { mock() })
-            registerProvider(OfflineWarningDelegate::class.java, { mock() })
-            registerProvider(ConnectionInfoProvider::class.java, { mock() })
-            registerProvider(HttpErrorHandlingUtil::class.java, { mock() })
+            registerProvider(FeatureManager::class.java, { featureManager })
+            registerProvider(PhotoUploadingManagerS3::class.java, { photoUploadingManager })
+            registerProvider(OfflineWarningDelegate::class.java, { offlineWarningDelegate })
+            registerProvider(ConnectionInfoProvider::class.java, { connectionInfoProvider })
+            registerProvider(HttpErrorHandlingUtil::class.java, { httpErrorHandlingUtil })
          }
       }
    }

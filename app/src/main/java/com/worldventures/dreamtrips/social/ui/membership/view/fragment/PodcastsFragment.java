@@ -2,23 +2,17 @@ package com.worldventures.dreamtrips.social.ui.membership.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
-import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
-import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 import com.worldventures.dreamtrips.social.ui.membership.presenter.PodcastsPresenter;
@@ -26,55 +20,45 @@ import com.worldventures.dreamtrips.social.ui.membership.view.cell.PodcastCell;
 import com.worldventures.dreamtrips.social.ui.membership.view.cell.delegate.PodcastCellDelegate;
 import com.worldventures.dreamtrips.social.ui.video.cell.MediaHeaderLightCell;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.InjectView;
-
 @Layout(R.layout.fragment_podcasts)
-public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implements PodcastsPresenter.View, SwipeRefreshLayout.OnRefreshListener, PodcastCellDelegate {
-
-   @InjectView(R.id.list_items) EmptyRecyclerView recyclerView;
-   @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
-   @InjectView(R.id.empty_view) ViewGroup emptyView;
+public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implements PodcastsPresenter.View, PodcastCellDelegate {
 
    private BaseDelegateAdapter<Object> adapter;
    private RecyclerViewStateDelegate stateDelegate;
-   private WeakHandler weakHandler;
+   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private Bundle savedInstanceState;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      stateDelegate = new RecyclerViewStateDelegate();
-      stateDelegate.onCreate(savedInstanceState);
-      weakHandler = new WeakHandler();
+      this.savedInstanceState = savedInstanceState;
    }
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      stateDelegate.setRecyclerView(recyclerView);
 
-      LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-      recyclerView.setLayoutManager(layoutManager);
-      recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
       adapter = new BaseDelegateAdapter<>(getContext(), this);
-
       adapter.registerCell(Podcast.class, PodcastCell.class);
       adapter.registerDelegate(Podcast.class, this);
       adapter.registerCell(MediaHeader.class, MediaHeaderLightCell.class);
 
-      recyclerView.setAdapter(adapter);
-      recyclerView.addOnScrollListener(new OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int itemCount = recyclerView.getLayoutManager().getItemCount();
-            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-            getPresenter().scrolled(itemCount, lastVisibleItemPosition);
-         }
-      });
+      final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
-      refreshLayout.setOnRefreshListener(this);
-      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager.init(adapter, savedInstanceState, linearLayoutManager);
+      statePaginatedRecyclerViewManager.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+      statePaginatedRecyclerViewManager.setOnRefreshListener(getPresenter()::onRefresh);
+      statePaginatedRecyclerViewManager.setPaginationListener(getPresenter()::onLoadNextPage);
+
+      stateDelegate = new RecyclerViewStateDelegate();
+      stateDelegate.onCreate(savedInstanceState);
+      stateDelegate.setRecyclerView(statePaginatedRecyclerViewManager.stateRecyclerView);
    }
 
    @Override
@@ -90,7 +74,6 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
 
    @Override
    public void onDestroyView() {
-      recyclerView.setAdapter(null);
       stateDelegate.onDestroyView();
       super.onDestroyView();
    }
@@ -102,44 +85,37 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
 
    @Override
    public void startLoading() {
-      weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
-      });
+      statePaginatedRecyclerViewManager.startLoading();
    }
 
    @Override
-   public void finishLoading() {
-      weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
-      });
+   public void finishLoading(boolean noMoreElements) {
+      statePaginatedRecyclerViewManager.finishLoading();
+      statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreElements);
       stateDelegate.restoreStateIfNeeded();
    }
 
    @Override
-   public void setItems(List podcasts) {
-      adapter.setItems(podcasts);
+   public void setItems(@NotNull List podcasts) {
+      adapter.setItems(new ArrayList<Object>(podcasts));
    }
 
    @Override
-   public void onRefresh() {
-      getPresenter().onRefresh();
+   public void notifyItemChanged(Podcast podcast) {
+      int position = adapter.getItems().indexOf(podcast);
+      if (position != -1) adapter.notifyItemChanged(position);
    }
 
    @Override
-   public void notifyItemChanged(CachedModel videoEntity) {
-      adapter.notifyDataSetChanged();
-   }
-
-   @Override
-   public void onDeleteAction(CachedModel cacheEntity) {
+   public void showDeleteDialog(Podcast podcast) {
       showDialog(R.string.delete_cached_podcast_title, R.string.delete_cached_podcast_text, R.string.delete_photo_positiove, R.string.delete_photo_negative, (dialog, which) -> getPresenter()
-            .onDeleteAction(cacheEntity));
+            .onDeletePodcastAccepted(podcast));
    }
 
    @Override
-   public void onCancelCaching(CachedModel cacheEntity) {
+   public void onCancelDialog(Podcast podcast) {
       showDialog(R.string.cancel_cached_podcast_title, R.string.cancel_cached_podcast_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative, (dialog, which) -> getPresenter()
-            .onCancelAction(cacheEntity));
+            .onCancelPodcastAccepted(podcast));
    }
 
    @Override
@@ -147,18 +123,18 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
    }
 
    @Override
-   public void onDownloadPodcast(CachedModel entity) {
-      getPresenter().downloadPodcast(entity);
+   public void onDownloadMedia(Podcast podcast) {
+      getPresenter().onDownloadPodcastRequired(podcast);
    }
 
    @Override
-   public void onDeletePodcast(CachedModel entity) {
-      getPresenter().deleteCachedPodcast(entity);
+   public void onDeleteMedia(Podcast podcast) {
+      getPresenter().onDeletePodcastRequired(podcast);
    }
 
    @Override
-   public void onCancelCachingPodcast(CachedModel entity) {
-      getPresenter().cancelCachingPodcast(entity);
+   public void onCancelCachingMedia(Podcast podcast) {
+      getPresenter().onCancelPodcastRequired(podcast);
    }
 
    @Override

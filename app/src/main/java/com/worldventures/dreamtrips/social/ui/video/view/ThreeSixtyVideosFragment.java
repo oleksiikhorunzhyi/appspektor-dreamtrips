@@ -167,17 +167,17 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    }
 
    @Override
-   public void onDownloadVideo(Video video) {
+   public void onDownloadMedia(Video video) {
       getPresenter().downloadVideo(video);
    }
 
    @Override
-   public void onDeleteVideo(Video video) {
+   public void onDeleteMedia(Video video) {
       getPresenter().deleteCachedVideo(video);
    }
 
    @Override
-   public void onCancelCachingVideo(Video video) {
+   public void onCancelCachingMedia(Video video) {
       getPresenter().cancelCachingVideo(video);
    }
 

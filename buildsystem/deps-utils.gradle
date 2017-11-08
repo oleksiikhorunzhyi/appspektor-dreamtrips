@@ -20,9 +20,8 @@ ext {
             releaseImpl: 'releaseImplementation',
             testImpl   : 'testImplementation',
             p          : 'compileOnly',
-            a          : 'annotationProcessor',
-            rap        : 'releaseAnnotationProcessor',
-            tap        : 'testAnnotationProcessor',
+            a          : 'kapt',
+            rap        : 'kaptRelease',
       ]
       def CONFIG_KEY = 'config'
       deps.each {

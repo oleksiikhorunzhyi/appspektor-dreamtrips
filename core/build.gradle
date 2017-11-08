@@ -6,6 +6,7 @@ apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
 apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
@@ -16,6 +17,12 @@ android {
    defaultConfig {
       minSdkVersion project.ext.androidConfig.minSdk
       targetSdkVersion project.ext.androidConfig.targetSdk
+
+      javaCompileOptions { // fix problem with Immutable Compiler
+         annotationProcessorOptions {
+            includeCompileClasspath = false
+         }
+      }
    }
 
    dataBinding {

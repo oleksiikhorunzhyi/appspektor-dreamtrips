@@ -42,7 +42,7 @@ ext {
          googleAppcompat7         : [impl: "com.android.support:appcompat-v7:${googleLibrariesVersion}"],
          customtabs               : [impl: "com.android.support:customtabs:${googleLibrariesVersion}"], // resolve version conflicts: facebook uses v25.0.0
          constraintlayout         : [impl: 'com.android.support.constraint:constraint-layout:1.0.2'],
-         operationActionSubscriber: [api: 'com.github.techery:OperationActionSubscriber:1.0.3'],
+         operationActionSubscriber: [api: 'com.github.techery:OperationActionSubscriber:1.0.4'],
          materialDialogsCore      : [impl: 'com.github.afollestad.material-dialogs:core:0.8.6.2'],
          circleindicator          : [impl: 'me.relex:circleindicator:1.2.2@aar'],
 

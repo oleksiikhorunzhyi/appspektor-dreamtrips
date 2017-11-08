@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.membership.presenter
 import android.content.pm.PackageManager
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.model.CachedModel
 import com.worldventures.core.modules.video.utils.CachedModelHelper
 import com.worldventures.core.service.CachedEntityDelegate
 import com.worldventures.core.service.CachedEntityInteractor
@@ -148,7 +149,12 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
          }
       }
 
-      fun testPodcast() = Podcast(fileUrl = "testUrl", title = "testTitle")
+      fun testPodcast(): Podcast {
+         val cachedModel = CachedModel("testUrl", "testId", "testName")
+         val podcast = Podcast()
+         podcast.cachedModel = cachedModel
+         return podcast
+      }
 
       fun podcastSuccessContract() = BaseContract.of(GetPodcastsCommand::class.java).result(listOf(testPodcast()))
 

@@ -39,11 +39,6 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
    }
 
    @Override
-   public void toggleTabStripVisibility(boolean isVisible) {
-      tabs.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-   }
-
-   @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       adapter = new BaseStatePagerAdapter(getChildFragmentManager());

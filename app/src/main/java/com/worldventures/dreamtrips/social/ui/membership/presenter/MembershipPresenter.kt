@@ -53,8 +53,6 @@ class MembershipPresenter : Presenter<MembershipPresenter.View>() {
 
    interface View : Presenter.View {
 
-      fun toggleTabStripVisibility(isVisible: Boolean)
-
       fun setScreens(items: List<FragmentItem>?)
    }
 }

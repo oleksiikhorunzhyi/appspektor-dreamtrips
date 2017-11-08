@@ -26,10 +26,6 @@ class MembershipPresenterSpec: PresenterBaseSpec({
             verify(view).setScreens(any())
          }
 
-         it("view be should notified if focus of search is changed") {
-            verify(view).toggleTabStripVisibility(false)
-         }
-
          it ("should subscribe to offline error pipe") {
             verify(offlineErrorInteractor).offlineErrorCommandPipe()
          }

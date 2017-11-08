@@ -212,10 +212,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onCheckInClicked() {
+      getView().disableCheckinAndPayButtons();
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.get(merchant))
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
+            .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
                   .onSuccess(action -> {
                      if (action.getResult() != null) {
                         DtlTransaction dtlTransaction = action.getResult();
@@ -223,13 +224,18 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                            photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
                         }
                         transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
+
                         getView().openTransaction(merchant, dtlTransaction);
+                        getView().enableCheckinAndPayButtons();
                      } else {
-                        getView().disableCheckinAndPayButtons();
                         locationDelegate.requestLocationUpdate()
                               .compose(bindViewIoToMainComposer())
                               .subscribe(this::onLocationObtained, this::onLocationError);
                      }
+                  })
+                  .onFail((dtlTransactionAction, throwable) -> {
+                     apiErrorViewAdapter.handleError(dtlTransactionAction, throwable);
+                     getView().enableCheckinAndPayButtons();
                   }));
    }
 

@@ -220,7 +220,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                         transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
                         getView().openTransaction(merchant, dtlTransaction);
                      } else {
-                        getView().disableCheckinButton();
+                        getView().disableCheckinAndPayButtons();
                         locationDelegate.requestLocationUpdate()
                               .compose(bindViewIoToMainComposer())
                               .subscribe(this::onLocationObtained, this::onLocationError);
@@ -230,7 +230,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void locationNotGranted() {
-      getView().enableCheckinButton();
+      getView().enableCheckinAndPayButtons();
       getView().informUser(R.string.dtl_checkin_location_error);
    }
 
@@ -244,7 +244,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void onLocationObtained(Location location) {
-      getView().enableCheckinButton();
+      getView().enableCheckinAndPayButtons();
 
       DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
             .lat(location.getLatitude())

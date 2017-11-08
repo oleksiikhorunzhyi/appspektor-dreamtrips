@@ -200,6 +200,7 @@
                android:layout_alignParentRight="true"
                android:layout_marginRight="@dimen/spacing_normal"
                tools:src="@drawable/ic_arrow_down_grey"
+               android:visibility="gone"
                />
 
          <TextView

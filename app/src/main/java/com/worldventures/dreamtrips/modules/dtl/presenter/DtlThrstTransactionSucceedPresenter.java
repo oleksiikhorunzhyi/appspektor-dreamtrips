@@ -50,7 +50,7 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
       view.setTotalPoints(totalPoints);
    }
 
-   public void done() {
+   public void continueAction() {
       this.user = appSessionHolder.get().get().getUser();
       if (!ReviewStorage.exists(context, String.valueOf(user.getId()), merchant.id())) {
          view.sendToReview(merchant);

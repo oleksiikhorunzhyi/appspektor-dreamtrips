@@ -29,11 +29,11 @@ public class TransactionResponseConverter implements Converter<GetTransactionRes
             .checkinTimestamp(pilot.checkinTimestamp())
             .billImagePath(pilot.billImagePath())
             .pointsAmount(pilot.pointsAmount())
+            .totalPoints(pilot.totalPoints())
             .billTotal(pilot.billTotal())
             .transactionStatus(pilot.transactionStatus())
             .subTotal(pilot.subTotal())
             .tax(pilot.tax())
             .tip(pilot.tip())
             .build();
-   }
-}
+   }}

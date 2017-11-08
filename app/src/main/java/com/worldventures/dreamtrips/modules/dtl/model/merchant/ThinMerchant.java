@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 
+import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
+@Gson.TypeAdapters
 @Value.Immutable
 public abstract class ThinMerchant implements Serializable {
 

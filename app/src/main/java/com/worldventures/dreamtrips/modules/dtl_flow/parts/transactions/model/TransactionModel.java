@@ -17,7 +17,8 @@ public class TransactionModel implements Parcelable {
    private double tip;
    private int earnedPoints;
    private Date transactionDate;
-   private PaymentStatus paymentStatus;
+   private ThrstPaymentStatus thrstPaymentStatus;
+   private boolean isTrhstTransaction;
 
    public TransactionModel() { }
 
@@ -109,12 +110,20 @@ public class TransactionModel implements Parcelable {
       this.transactionDate = transactionDate;
    }
 
-   public void setPaymentStatus(PaymentStatus paymentStatus) {
-      this.paymentStatus = paymentStatus;
+   public void setThrstPaymentStatus(ThrstPaymentStatus thrstPaymentStatus) {
+      this.thrstPaymentStatus = thrstPaymentStatus;
    }
 
-   public PaymentStatus getPaymentStatus() {
-      return paymentStatus;
+   public ThrstPaymentStatus getThrstPaymentStatus() {
+      return thrstPaymentStatus;
+   }
+
+   public boolean isTrhstTransaction() {
+      return isTrhstTransaction;
+   }
+
+   public void setTrhstTransaction(boolean trhstTransaction) {
+      isTrhstTransaction = trhstTransaction;
    }
 
    @Override
@@ -132,7 +141,7 @@ public class TransactionModel implements Parcelable {
       return id != null ? id.hashCode() : 0;
    }
 
-   public enum PaymentStatus {
+   public enum ThrstPaymentStatus {
       INITIATED,
       SUCCESSFUL,
       UNKNOWN
@@ -151,7 +160,8 @@ public class TransactionModel implements Parcelable {
       tip = in.readDouble();
       earnedPoints = in.readInt();
       int tmpPaymentStatus = in.readInt();
-      this.paymentStatus = tmpPaymentStatus == -1 ? null : PaymentStatus.values()[tmpPaymentStatus];
+      this.thrstPaymentStatus = tmpPaymentStatus == -1 ? null : ThrstPaymentStatus.values()[tmpPaymentStatus];
+      isTrhstTransaction = in.readByte() != 0;
    }
 
    @Override
@@ -167,7 +177,8 @@ public class TransactionModel implements Parcelable {
       dest.writeDouble(tax);
       dest.writeDouble(tip);
       dest.writeInt(earnedPoints);
-      dest.writeInt(this.paymentStatus == null ? -1 : this.paymentStatus.ordinal());
+      dest.writeInt(this.thrstPaymentStatus == null ? -1 : this.thrstPaymentStatus.ordinal());
+      dest.writeByte((byte) (isTrhstTransaction ? 1 : 0));
    }
 
    @Override

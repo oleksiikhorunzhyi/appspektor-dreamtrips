@@ -150,6 +150,7 @@ ext {
    def jodaTimeVersion = '2.9.9'
    def dataBindingCompilerVersion = '2.2.3'
    moduleDependencies.util = [
+         techeryImmutables        : [a: 'com.github.techery:immutables-gson-adapters-provider:0.1'],
          androidMapsUtils         : [c: 'com.google.maps.android:android-maps-utils:0.4'],
          androidReactiveLocation  : [c: 'pl.charmas.android:android-reactive-location:0.8@aar'],
          operationActionSubscriber: [c: 'com.github.techery:OperationActionSubscriber:1.0.3'],
@@ -256,7 +257,7 @@ ext {
          // API
          mobileSdkApi             : [c: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.27-DTL-DEV-SNAPSHOT'],
+         apiMonolith              : [c: 'com.worldventures.dreamtrips:api-monolith:3.2.27-RELEASE-1.24-SNAPSHOT'],
    ]
    coreDependencies.util = [
          jodaTimeAndroidDebug     : [dc: "net.danlew:android.joda:$jodaTimeVersion"],

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.core.ui.annotations.Layout;
@@ -30,12 +29,18 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
 
    @InjectView(R.id.earned) TextView earned;
    @InjectView(R.id.total) TextView total;
+   @InjectView(R.id.done) TextView done;
    @Inject DialogNavigatorInteractor dialogNavigatorInteractor;
 
    @Override
    public void onResume() {
       super.onResume();
       getPresenter().init();
+      if (isTabletLandscape()) {
+         done.setText(R.string.done_pilot_button);
+      } else {
+         done.setText(R.string.continue_option);
+      }
    }
 
    @Override
@@ -65,7 +70,9 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
 
    @OnClick(R.id.done)
    void onDoneClicked() {
-      getPresenter().done();
+      if (!isTabletLandscape()) {
+         getPresenter().continueAction();
+      }
       dialogNavigatorInteractor.closeDialogActionPipe().send(new CloseDialogCommand());
    }
 
@@ -81,6 +88,6 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    @Override
    protected DtlThrstTransactionSucceedPresenter createPresenter(Bundle savedInstanceState) {
       return new DtlThrstTransactionSucceedPresenter(getArgs().getMerchant(), getArgs().getEarnedPoints(),
-                                                     getArgs().getTotalPoints());
+            getArgs().getTotalPoints());
    }
 }

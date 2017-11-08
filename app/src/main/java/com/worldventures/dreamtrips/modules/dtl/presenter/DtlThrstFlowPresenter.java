@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.esotericsoftware.minlog.Log;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
@@ -12,7 +11,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.javascript.J
 
 import javax.inject.Inject;
 
-import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.View> {
@@ -36,20 +34,16 @@ public class DtlThrstFlowPresenter extends JobPresenter<DtlThrstFlowPresenter.Vi
    }
 
    private void checkTransaction() {
-      ActionPipe<TransactionPilotAction> reviewActionPipe = merchantInteractor.transactionThrstHttpPipe();
-
-      reviewActionPipe
-            .observeWithReplay()
+      merchantInteractor.transactionThrstHttpPipe()
+            .createObservable(TransactionPilotAction.create(
+                  ImmutableTransactionThrstActionParams.builder()
+                        .transactionId(thrstFlowBundle.getTransactionId())
+                        .merchantId(thrstFlowBundle.getMerchant().id())
+                        .build()))
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<TransactionPilotAction>()
                   .onSuccess(this::onMerchantsLoaded)
                   .onFail(this::onMerchantsLoadingError));
-
-      reviewActionPipe.send(TransactionPilotAction.create(
-            ImmutableTransactionThrstActionParams.builder()
-                  .transactionId(thrstFlowBundle.getTransactionId())
-                  .merchantId(thrstFlowBundle.getMerchant().id())
-                  .build()));
    }
 
    private void onMerchantsLoaded(TransactionPilotAction action) {

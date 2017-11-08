@@ -31,7 +31,8 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
         transactionModel.setTip(safeConversion(detailTransactionThrst.tip()));
         transactionModel.setEarnedPoints((int)Math.round(safeConversion(detailTransactionThrst.pointsEarned())));
         transactionModel.setTransactionDate(detailTransactionThrst.date());
-        transactionModel.setPaymentStatus(mapPaymentStatus(detailTransactionThrst.paymentStatus()));
+        transactionModel.setThrstPaymentStatus(mapPaymentStatus(detailTransactionThrst.paymentStatus()));
+        transactionModel.setTrhstTransaction(detailTransactionThrst.isThrstTransaction());
         return transactionModel;
     }
 
@@ -39,16 +40,17 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
         return d == null ? 0 : d;
     }
 
-    private TransactionModel.PaymentStatus mapPaymentStatus(DetailTransactionThrst.PaymentStatus paymentStatus) {
-        if (paymentStatus == null) return TransactionModel.PaymentStatus.UNKNOWN;
+    private TransactionModel.ThrstPaymentStatus mapPaymentStatus(DetailTransactionThrst.PaymentStatus paymentStatus) {
+        if (paymentStatus == null) return TransactionModel.ThrstPaymentStatus.UNKNOWN;
+
         switch (paymentStatus) {
             case INITIATED:
-                return TransactionModel.PaymentStatus.INITIATED;
+                return TransactionModel.ThrstPaymentStatus.INITIATED;
             case SUCCESSFUL:
-                return TransactionModel.PaymentStatus.SUCCESSFUL;
+                return TransactionModel.ThrstPaymentStatus.SUCCESSFUL;
             case UNKNOWN:
             default:
-                return TransactionModel.PaymentStatus.UNKNOWN;
+                return TransactionModel.ThrstPaymentStatus.UNKNOWN;
         }
     }
 }

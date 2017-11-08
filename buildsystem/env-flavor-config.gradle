@@ -54,7 +54,7 @@ ext {
                      api      : [
                            DreamTripsApi        : [String: '"http://dtapp-qa.worldventures.biz/"'],
                            UPLOADERY_API_URL    : [String: '"http://dtapp-qa.worldventures.biz/uploadery"'],
-                           TRANSACCTIONS_API_URL: [String: '"https://dtlapi-dev.worldventures.com/v2/"'],
+                           TRANSACTIONS_API_URL: [String: '"http://dtlapi-dev.worldventures.com/v2/"'],
                      ],
                      messenger: [
                            MESSENGER_API_URL: [String: '"dtmsgapp-qa.worldventures.biz"'],
@@ -69,7 +69,7 @@ ext {
                            FORGOT_PASSWORD_URL   : [String: '"https://forgotlogin.wvhservices.com/"'],
                            UPLOADERY_API_URL     : [String: '"dtappupload-perf.wvholdings.com"'],
                            VIDEO_MICROSERVICE_URL: [String: '"http://assetuploader-perf.dreamtrips.com"'],
-                           TRANSACCTIONS_API_URL : [String: '"https://dtlapi-perf.worldventures.com/v2/"'],
+                           TRANSACTIONS_API_URL : [String: '"https://dtlapi-perf.worldventures.com/v2/"'],
                      ],
                      util: [
                            NEWRELIC_API_KEY: [String: '"AA8998d2de5c99adddd3668515e76b5d501271a04b"'],
@@ -98,7 +98,7 @@ ext {
                            VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.wvhservices.com"'],
                            API_TIMEOUT_SEC        : [long: '15'],
                            NXT_API                : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
-                           TRANSACCTIONS_API_URL  : [String: '"https://dtlapi.worldventures.com/v2/"'],
+                           TRANSACTIONS_API_URL  : [String: '"https://dtlapi.worldventures.com/v2/"'],
                      ],
                      messenger: [
                            MESSENGER_API_URL: [String: '"dtmsgapp.worldventures.biz"'],

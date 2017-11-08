@@ -46,7 +46,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
-import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
@@ -78,7 +77,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;
    @Inject SessionHolder appSessionHolder;
-   @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
 
    private final Merchant merchant;
    private final List<String> preExpandOffers;
@@ -222,7 +220,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                         transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
                         getView().openTransaction(merchant, dtlTransaction);
                      } else {
-                        getView().disableCheckinButton();
+                        getView().disableCheckinAndPayButtons();
                         locationDelegate.requestLocationUpdate()
                               .compose(bindViewIoToMainComposer())
                               .subscribe(this::onLocationObtained, this::onLocationError);
@@ -232,7 +230,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void locationNotGranted() {
-      getView().enableCheckinButton();
+      getView().enableCheckinAndPayButtons();
       getView().informUser(R.string.dtl_checkin_location_error);
    }
 
@@ -246,7 +244,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void onLocationObtained(Location location) {
-      getView().enableCheckinButton();
+      getView().enableCheckinAndPayButtons();
 
       DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
             .lat(location.getLatitude())

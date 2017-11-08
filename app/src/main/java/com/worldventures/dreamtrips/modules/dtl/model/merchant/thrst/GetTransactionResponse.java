@@ -20,6 +20,7 @@ public interface GetTransactionResponse extends Serializable {
    @Nullable String checkinTimestamp();
    @Nullable String billImagePath();
    @Nullable String pointsAmount();
+   @Nullable String totalPoints();
    @Nullable String billTotal();
    @Nullable String transactionStatus();
    @Nullable Double tax();

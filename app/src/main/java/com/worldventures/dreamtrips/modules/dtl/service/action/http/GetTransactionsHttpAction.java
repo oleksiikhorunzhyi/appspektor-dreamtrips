@@ -14,7 +14,7 @@ import io.techery.janet.http.annotations.Url;
 @HttpAction
 public class GetTransactionsHttpAction extends BaseThirdPartyHttpAction {
 
-   @Url final String url = BuildConfig.TRANSACCTIONS_API_URL.concat("merchants/transactions");
+   @Url final String url = BuildConfig.TRANSACTIONS_API_URL.concat("merchants/transactions");
 
    @RequestHeader("Authorization") String header;
 

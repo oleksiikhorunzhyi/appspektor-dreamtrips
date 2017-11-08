@@ -48,6 +48,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetai
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImageScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangeScreenImpl;
@@ -99,6 +100,7 @@ import dagger.Module;
             DtlDetailsPresenterImpl.class,
             DtlDetailsScreenImpl.class,
             DtlFullscreenImageScreenImpl.class,
+            DtlFullscreenImagePresenterImpl.class,
             ActivityPresenter.class,
             DtlFilterPresenterImpl.class,
             DtlLocationSearchHeaderCell.class,

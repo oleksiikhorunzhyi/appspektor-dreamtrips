@@ -29,7 +29,7 @@ public final class DetokenizedRecord extends NxtRecordResponse {
 
    @Override
    public Record getDetokenizedRecord() {
-      return NxtBankCardHelper.getDetokenizedRecord(this, refIdPrefix);
+      return NxtBankCardHelper.INSTANCE.getDetokenizedRecord(this, refIdPrefix);
    }
 
 }

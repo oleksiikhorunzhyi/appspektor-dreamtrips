@@ -51,11 +51,11 @@ public class AddDummyRecordCommand extends Command<Void> implements InjectableAc
       // !!!! first card should be default !!!
       if (onlyToCache) { // because synchronization of sample card is broken
          return recordInteractor.cardsListPipe()
-               .createObservableResult(RecordListCommand.add(dummyCard1))
+               .createObservableResult(RecordListCommand.Companion.add(dummyCard1))
                .flatMap(c -> recordInteractor.cardsListPipe()
-                     .createObservableResult(RecordListCommand.add(dummyCard2)))
+                     .createObservableResult(RecordListCommand.Companion.add(dummyCard2)))
                .flatMap(c -> recordInteractor.defaultRecordIdPipe()
-                     .createObservableResult(DefaultRecordIdCommand.set(DummyRecordCreator.defaultRecordId())))
+                     .createObservableResult(DefaultRecordIdCommand.set(DummyRecordCreator.INSTANCE.defaultRecordId())))
                .map(command -> (Void) null)
                .onErrorReturn(throwable -> null);
       } else {
@@ -73,16 +73,16 @@ public class AddDummyRecordCommand extends Command<Void> implements InjectableAc
    private Observable<List<Record>> createDummyCards(SmartCardFirmware firmware) {
       final String version = obtainRecordVersion(firmware.nordicAppVersion());
 
-      return just(DummyRecordCreator.createRecords(user, version));
+      return just(DummyRecordCreator.INSTANCE.createRecords(user, version));
    }
 
    private Observable<Void> addDummyCard(Record dummyCard, boolean isDefault) {
       return recordInteractor.addRecordPipe()
             .createObservableResult(new AddRecordCommand.Builder()
                   .setRecord(dummyCard)
-                  .setCvv(dummyCard.cvv())
+                  .setCvv(dummyCard.getCvv())
                   .setSetAsDefaultRecord(isDefault)
-                  .setRecordName(dummyCard.nickName())
+                  .setRecordName(dummyCard.getNickname())
                   .create()
             )
             .map(command -> (Void) null)

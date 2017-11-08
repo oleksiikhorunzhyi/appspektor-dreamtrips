@@ -68,7 +68,7 @@ class WizardInteractorSpec : BaseSpec({
          settingsInteractor = createSettingsInteractor(janet)
 
          janet.connectToSmartCardSdk()
-         mockedDebitCard = mock()
+         mockedDebitCard = Record(id = null, number = "7777 7777 7777 7777", numberLastFourDigits = "7777", expDate = "00/00")
       }
 
       context("SmartCard wizard flow") {

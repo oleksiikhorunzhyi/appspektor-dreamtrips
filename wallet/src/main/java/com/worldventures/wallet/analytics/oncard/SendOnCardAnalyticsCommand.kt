@@ -47,7 +47,7 @@ class SendOnCardAnalyticsCommand(private val analyticsLogs: List<AnalyticsLog>) 
       val paymentCardId = analyticsAction.recordId
       if (paymentCardId >= 0) {
          val storedRecordId = paymentCardId.toString()
-         analyticsAction.setRecord(recordsStorage.readRecords().find {record -> storedRecordId == record.id()} )
+         analyticsAction.setRecord(recordsStorage.readRecords().find { record -> storedRecordId == record.id })
       }
    }
 

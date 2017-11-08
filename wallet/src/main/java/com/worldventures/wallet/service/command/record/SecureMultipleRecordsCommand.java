@@ -70,7 +70,7 @@ public final class SecureMultipleRecordsCommand extends Command<List<Record>> im
 
    private Observable<List<Record>> tokenizeRecords(List<? extends Record> records) {
       return nxtInteractor.tokenizeMultipleRecordsPipe()
-            .createObservable(new TokenizeMultipleRecordsCommand(records, skipTokenizationErrors))
+            .createObservable(new TokenizeMultipleRecordsCommand((List<Record>) records, skipTokenizationErrors))
             .doOnNext(processResultForAnalytics())
             .compose(new ActionStateToActionTransformer<>())
             .map(Command::getResult);
@@ -78,7 +78,7 @@ public final class SecureMultipleRecordsCommand extends Command<List<Record>> im
 
    private Observable<List<Record>> detokenizeRecords(List<? extends Record> records) {
       return nxtInteractor.detokenizeMultipleRecordsPipe()
-            .createObservable(new DetokenizeMultipleRecordsCommand(records, skipTokenizationErrors))
+            .createObservable(new DetokenizeMultipleRecordsCommand((List<Record>) records, skipTokenizationErrors))
             .doOnNext(processResultForAnalytics())
             .compose(new ActionStateToActionTransformer<>())
             .map(Command::getResult);

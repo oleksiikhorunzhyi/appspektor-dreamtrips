@@ -123,7 +123,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
       locationTrackingManager.track();
 
-      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
+      recordInteractor.cardsListPipe().send(RecordListCommand.Companion.fetch());
       recordInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch());
       trackScreen();
    }
@@ -363,8 +363,8 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
                   .compose(new ActionStateToActionTransformer<>()),
             (cardListCommand, defaultCardIdCommand) -> Pair.create(cardListCommand.getResult(), defaultCardIdCommand.getResult()))
             .map(loadedRecords -> {
-               records = loadedRecords.first;
-               return cardListStackConverter.mapToViewModel(getView().getViewContext(), loadedRecords.first, loadedRecords.second);
+               records = (List<Record>) loadedRecords.first;
+               return cardListStackConverter.mapToViewModel(getView().getViewContext(), (List<Record>) loadedRecords.first, loadedRecords.second);
             })
             .distinctUntilChanged()
             .compose(getView().bindUntilDetach())
@@ -373,7 +373,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    }
 
    @SuppressWarnings("ConstantConditions")
-   private void cardsLoaded(ArrayList<BaseViewModel> cardModels) {
+   private void cardsLoaded(ArrayList<BaseViewModel<?>> cardModels) {
       getView().setCardsCount(null != this.records ? this.records.size() : 0);
       getView().showRecordsInfo(cardModels);
    }

@@ -13,6 +13,6 @@ class ChangeDefaultCardAction(record: Record) : BaseSetDefaultCardAction() {
    init {
       setDefaultWhere = "In-App:Card Detail"
       fillRecordDetails(record)
-      cardNickname = record.nickName()
+      cardNickname = record.nickname
    }
 }

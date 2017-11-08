@@ -22,7 +22,7 @@ class PaycardAnalyticsCommand(private val cardDetailsWithDefaultAction: BaseCard
             .observeSuccessWithReplay()
             .take(1)
             .flatMap { command ->
-               val isDefault = TextUtils.equals(record.id(), command.result)
+               val isDefault = TextUtils.equals(record.id, command.result)
                cardDetailsWithDefaultAction.fillPaycardInfo(record, isDefault)
                analyticsInteractor.walletAnalyticsPipe()
                      .createObservableResult(WalletAnalyticsCommand(cardDetailsWithDefaultAction))

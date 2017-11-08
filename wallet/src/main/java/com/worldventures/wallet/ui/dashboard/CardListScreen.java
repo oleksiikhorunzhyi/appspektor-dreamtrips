@@ -28,7 +28,7 @@ public interface CardListScreen extends WalletScreen, FactoryResetView {
    @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
    @interface ErrorDialogType {}
 
-   void showRecordsInfo(ArrayList<BaseViewModel> result);
+   void showRecordsInfo(ArrayList<BaseViewModel<?>> result);
 
    void setDefaultSmartCard();
 

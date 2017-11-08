@@ -47,7 +47,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
 
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
       smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
-      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
+      recordInteractor.cardsListPipe().send(RecordListCommand.Companion.fetch());
 
       trackScreen();
    }
@@ -102,7 +102,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
    }
 
    @SuppressWarnings("ConstantConditions")
-   private void bindCardList(List<Record> records) {
+   private void bindCardList(List<? extends Record> records) {
       getView().onProvidePayCardInfo(records.size(), WalletConstants.MAX_CARD_LIMIT - records.size());
    }
 

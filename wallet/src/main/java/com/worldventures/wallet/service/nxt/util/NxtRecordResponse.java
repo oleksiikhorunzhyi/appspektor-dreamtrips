@@ -23,7 +23,7 @@ public abstract class NxtRecordResponse implements NxtRecord {
 
    protected NxtRecordResponse(@NonNull Record record, @NonNull List<MultiResponseBody> nxtResponses) {
       this.record = record;
-      this.refIdPrefix = record.id();
+      this.refIdPrefix = record.getId();
       for (MultiResponseBody body : nxtResponses) {
          for (MultiResponseElement element : body.multiResponseElements()) {
             nxtValues.put(element.referenceId(), element.value());
@@ -35,7 +35,7 @@ public abstract class NxtRecordResponse implements NxtRecord {
    @NonNull
    @Override
    public List<MultiErrorResponse> getResponseErrors() {
-      return NxtBankCardHelper.getResponseErrors(this, refIdPrefix);
+      return NxtBankCardHelper.INSTANCE.getResponseErrors(this, refIdPrefix);
    }
 
 }

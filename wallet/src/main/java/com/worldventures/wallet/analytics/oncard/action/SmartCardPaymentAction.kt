@@ -1,9 +1,8 @@
 package com.worldventures.wallet.analytics.oncard.action
 
-import com.worldventures.janet.analytics.AnalyticsEvent
 import com.worldventures.core.service.analytics.AdobeTracker
+import com.worldventures.janet.analytics.AnalyticsEvent
 import com.worldventures.wallet.domain.entity.record.Record
-
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog
 import io.techery.janet.smartcard.model.analytics.AnalyticsLogEntryCardSwipe
 import io.techery.janet.smartcard.model.analytics.AnalyticsLogEntryPaymentMode
@@ -16,7 +15,7 @@ class SmartCardPaymentAction internal constructor(logEntry: AnalyticsLog) : Smar
 
    fun setRecord(record: Record?) {
       if (record != null) {
-         attributeMap.put("paycardnickname", record.nickName())
+         attributeMap.put("paycardnickname", record.nickname)
          fillRecordDetails(record)
       }
    }

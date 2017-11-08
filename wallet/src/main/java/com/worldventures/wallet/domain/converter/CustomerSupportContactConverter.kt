@@ -4,7 +4,7 @@ import com.worldventures.core.converter.Converter
 import com.worldventures.wallet.domain.entity.settings.customer_support.Contact
 import io.techery.mappery.MapperyContext
 
-typealias ApiContact = com.worldventures.dreamtrips.api.smart_card.documents.customer_support.model.Contact
+internal typealias ApiContact = com.worldventures.dreamtrips.api.smart_card.documents.customer_support.model.Contact
 
 class CustomerSupportContactConverter : Converter<ApiContact, Contact> {
 

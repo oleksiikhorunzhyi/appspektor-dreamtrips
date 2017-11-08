@@ -30,7 +30,7 @@ public final class DefaultRecordIdCommand extends CachedValueCommand<String> imp
    @Override
    protected void run(CommandCallback<String> callback) throws Throwable {
       if (featureHelper.isSampleCardMode()) {
-         callback.onSuccess(DummyRecordCreator.defaultRecordId());
+         callback.onSuccess(DummyRecordCreator.INSTANCE.defaultRecordId());
          return;
       }
       super.run(callback);

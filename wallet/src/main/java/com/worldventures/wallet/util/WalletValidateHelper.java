@@ -45,7 +45,7 @@ public final class WalletValidateHelper {
    }
 
    public static boolean validateCardCvv(String cvv, String cardNumber) {
-      return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(cardNumber);
+      return cvv.length() == WalletRecordUtil.Companion.obtainRequiredCvvLength(cardNumber);
    }
 
    public static boolean validateSCId(String scid) {

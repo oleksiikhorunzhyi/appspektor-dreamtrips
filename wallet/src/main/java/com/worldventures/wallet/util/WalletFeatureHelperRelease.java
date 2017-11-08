@@ -95,7 +95,7 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    @Override
    public void onUserFetchedFromServer(SmartCardUser user) {
       recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.fetch())
+            .createObservableResult(RecordListCommand.Companion.fetch())
             .map(Command::getResult)
             .subscribe(list -> {
                if (list == null || list.isEmpty()) {

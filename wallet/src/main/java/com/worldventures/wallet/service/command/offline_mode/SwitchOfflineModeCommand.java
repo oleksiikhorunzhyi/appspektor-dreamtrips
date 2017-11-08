@@ -53,13 +53,13 @@ public class SwitchOfflineModeCommand extends Command<Boolean> implements Inject
 
    private Observable<List<Record>> tokenizeRecords(List<? extends Record> records) {
       return nxtInteractor.tokenizeMultipleRecordsPipe()
-            .createObservableResult(new TokenizeMultipleRecordsCommand(records, false))
+            .createObservableResult(new TokenizeMultipleRecordsCommand((List<Record>) records, false))
             .map(Command::getResult);
    }
 
    private Observable<List<Record>> detokenizeRecords(List<? extends Record> records) {
       return nxtInteractor.detokenizeMultipleRecordsPipe()
-            .createObservableResult(new DetokenizeMultipleRecordsCommand(records, false))
+            .createObservableResult(new DetokenizeMultipleRecordsCommand((List<Record>) records, false))
             .map(Command::getResult);
    }
 

@@ -111,7 +111,7 @@ public class SmartCardSyncManager {
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
       interactor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
       interactor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));
-      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
+      recordInteractor.cardsListPipe().send(RecordListCommand.Companion.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();
    }

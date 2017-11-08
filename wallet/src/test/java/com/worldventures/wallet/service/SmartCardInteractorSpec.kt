@@ -29,7 +29,6 @@ import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.wallet.domain.storage.disk.TestRecordsStorage
 import com.worldventures.wallet.model.TestMultiResponseBody
-import com.worldventures.wallet.model.TestRecord
 import com.worldventures.wallet.service.command.RecordListCommand
 import com.worldventures.wallet.service.command.SetDefaultCardOnDeviceCommand
 import com.worldventures.wallet.service.command.SetLockStateCommand
@@ -85,7 +84,7 @@ class SmartCardInteractorSpec : BaseSpec({
       context("Default card id is fetching") {
 
          it("saves default card id locally after sending to device ") {
-            val testSmartCardId: String = "4"
+            val testSmartCardId = "4"
 
             val testSubscriber = TestSubscriber<ActionState<DefaultRecordIdCommand>>()
             janet.createPipe(DefaultRecordIdCommand::class.java)
@@ -102,12 +101,12 @@ class SmartCardInteractorSpec : BaseSpec({
 
       context("Records CRUD commands") {
 
-         val debitCard = TestRecord(null, cardType = RecordType.DEBIT)
-         val creditCard = TestRecord(null, cardType = RecordType.CREDIT)
+         val debitCard = Record(null, number = "7777 7777 7777 7777", numberLastFourDigits = "7777", expDate = "00/00", recordType = RecordType.DEBIT)
+         val creditCard = Record(null, number = "7777 7777 7777 7777", numberLastFourDigits = "7777", expDate = "00/00", recordType = RecordType.CREDIT)
 
          it("creates record with ID") {
             val testSubscriber = addRecord(debitCard)
-            assertActionSuccess(testSubscriber, { it.result.id() != null })
+            assertActionSuccess(testSubscriber, { it.result.id != null })
          }
 
          it("creates record and saves default record id") {
@@ -116,11 +115,11 @@ class SmartCardInteractorSpec : BaseSpec({
             var savedRecord: Record? = null
             assertActionSuccess(testSubscriber, {
                savedRecord = it.result
-               it.result.id() != null
+               it.result.id != null
             })
 
             val defaultIdSubscriber = loadDefaultCardId()
-            assertActionSuccess(defaultIdSubscriber, { it.result == savedRecord?.id() })
+            assertActionSuccess(defaultIdSubscriber, { it.result == savedRecord?.id })
          }
 
          it("throws FormatException when creating record with invalid data") {
@@ -143,17 +142,17 @@ class SmartCardInteractorSpec : BaseSpec({
             var savedRecord: Record? = null
             assertActionSuccess(testSubscriber, {
                savedRecord = it.result
-               it.result.id() != null
+               it.result.id != null
             })
 
             val updateRecordSubscriber = TestSubscriber<ActionState<UpdateRecordCommand>>()
             recordInteractor.updateRecordPipe()
-                  .createObservable(UpdateRecordCommand.updateNickName(savedRecord, newRecordName))
+                  .createObservable(UpdateRecordCommand.updateNickname(savedRecord!!, newRecordName))
                   .subscribe(updateRecordSubscriber)
 
             assertActionSuccess(updateRecordSubscriber, { true })
             fetchCardListOfCard { it.result.size == 1 }
-            fetchCardListOfCard { it.result[0].nickName() == newRecordName }
+            fetchCardListOfCard { it.result[0].nickname == newRecordName }
          }
 
          it("deletes record") {
@@ -162,23 +161,23 @@ class SmartCardInteractorSpec : BaseSpec({
             val testSubscriber = addRecord(debitCard)
             assertActionSuccess(testSubscriber, {
                recordToDelete = it.result
-               it.result.id() != null
+               it.result.id != null
             })
 
-            fetchCardListOfCard { it.result.find { it.id() == recordToDelete?.id() } != null }
+            fetchCardListOfCard { it.result.find { it.id == recordToDelete?.id } != null }
 
             recordInteractor.deleteRecordPipe()
-                  .createObservable(DeleteRecordCommand(recordToDelete?.id()))
+                  .createObservable(DeleteRecordCommand(recordToDelete?.id))
                   .subscribe()
 
-            fetchCardListOfCard { it.result.find { it.id() == recordToDelete?.id() } == null }
+            fetchCardListOfCard { it.result.find { it.id == recordToDelete?.id } == null }
          }
       }
 
       context("Tokenization and Offline mode") {
 
          val defaultOfflineModeState = false
-         val testRecord = TestRecord(null)
+         val testRecord = Record(null, number = "7777 7777 7777 7777", numberLastFourDigits = "7777", expDate = "00/00")
 
          it("switches state properly") {
 
@@ -224,13 +223,13 @@ class SmartCardInteractorSpec : BaseSpec({
 
             val testSubscriber = TestSubscriber<ActionState<TokenizeMultipleRecordsCommand>>()
             nxtInteractor.tokenizeMultipleRecordsPipe().createObservable(TokenizeMultipleRecordsCommand(listOf(
-                  TestRecord("0", cvv = "123"),
-                  TestRecord("1", number = "0000111122223333")),
+                  Record(id = "0", cvv = "123", number = "7777 7777 7777 7777", numberLastFourDigits = "7777", expDate = "00/00"),
+                  Record(id = "1", number = "0000111122223333", numberLastFourDigits = "7777", expDate = "00/00")),
                   true))
                   .subscribe(testSubscriber)
 
-            assertActionSuccess(testSubscriber, { it.result[0].cvv() == TestMultiResponseBody.TEST_CVV })
-            assertActionSuccess(testSubscriber, { it.result[1].number() == TestMultiResponseBody.TEST_NUMBER })
+            assertActionSuccess(testSubscriber, { it.result[0].cvv == TestMultiResponseBody.TEST_CVV })
+            assertActionSuccess(testSubscriber, { it.result[1].number == TestMultiResponseBody.TEST_NUMBER })
          }
 
          it("locally stored records processed when offline mode switches") {
@@ -260,7 +259,7 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionSuccess(stateDefaultSubscriber, { it.result == defaultOfflineModeState })
 
             // Check that the record has tokenized cvv value
-            fetchCardListOfCard { it.result[0].cvv() == TestMultiResponseBody.TEST_CVV }
+            fetchCardListOfCard { it.result[0].cvv == TestMultiResponseBody.TEST_CVV }
          }
 
          it("does not throw NetworkUnavailableException if network is unavailable and no records stored locally") {

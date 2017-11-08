@@ -63,7 +63,7 @@ public abstract class BaseRecordCommand extends Command<Record> implements Injec
             return Observable.just(tokenize ? nxtRecord.getTokenizedRecord() : nxtRecord.getDetokenizedRecord());
          } else {
             return Observable.error(new NxtMultifunctionException(
-                  NxtBankCardHelper.getResponseErrorMessage(nxtRecord.getResponseErrors())));
+                  NxtBankCardHelper.INSTANCE.getResponseErrorMessage(nxtRecord.getResponseErrors())));
          }
       };
    }

@@ -90,7 +90,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    private DashboardHolderAdapter multiAdapter;
    private ScreenWalletCardlistBinding binding;
 
-   private ArrayList<BaseViewModel> cardViewModels;
+   private ArrayList<BaseViewModel<?>> cardViewModels;
    private static final String KEY_LOADED_CARDS_LIST = "CardListScreen#KEY_CARD_LIST";
 
    public CardListScreenImpl() {
@@ -142,7 +142,7 @@ public class CardListScreenImpl extends WalletBaseController<CardListScreen, Car
    }
 
    @Override
-   public void showRecordsInfo(ArrayList<BaseViewModel> result) {
+   public void showRecordsInfo(ArrayList<BaseViewModel<?>> result) {
       if (this.cardViewModels == null) {
          bankCardList.setLayoutAnimation(AnimationUtils.loadLayoutAnimation(getContext(),
                R.anim.wallet_bottom_to_top_layout_anim));

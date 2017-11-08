@@ -157,7 +157,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
 
    @Override
    public void showChangeCardDialog(Record record) {
-      new ChangeDefaultPaymentCardDialog(getContext(), WalletRecordUtil.bankNameWithCardNumber(record))
+      new ChangeDefaultPaymentCardDialog(getContext(), WalletRecordUtil.Companion.bankNameWithCardNumber(record))
             .setOnCancelAction(() -> getPresenter().onCardToDefaultClick(false))
             .setOnConfirmAction(() -> getPresenter().onCardToDefaultClick(true))
             .show();

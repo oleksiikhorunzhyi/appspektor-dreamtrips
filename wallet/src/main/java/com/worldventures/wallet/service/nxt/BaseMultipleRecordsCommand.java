@@ -100,7 +100,7 @@ public abstract class BaseMultipleRecordsCommand extends Command<List<Record>> i
                   .map(NxtRecord::getResponseErrors)
                   .fold(Collections.emptyList(), (l, r) -> Queryable.concat(l, r).toList());
             return Observable.error(new NxtMultifunctionException(
-                  NxtBankCardHelper.getResponseErrorMessage(errorResponses)));
+                  NxtBankCardHelper.INSTANCE.getResponseErrorMessage(errorResponses)));
          }
       };
    }

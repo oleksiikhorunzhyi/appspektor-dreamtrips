@@ -24,7 +24,7 @@ public final class TokenizedRecord extends NxtRecordResponse {
 
    @Override
    public Record getTokenizedRecord() {
-      return NxtBankCardHelper.getTokenizedRecord(this, refIdPrefix);
+      return NxtBankCardHelper.INSTANCE.getTokenizedRecord(this, refIdPrefix);
    }
 
    @Override

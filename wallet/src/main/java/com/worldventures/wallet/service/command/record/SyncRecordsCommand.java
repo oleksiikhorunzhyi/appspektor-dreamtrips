@@ -52,7 +52,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
                         .map(record -> mapperyContext.convert(record, Record.class))
                         .toList()),
             recordInteractor.cardsListPipe()
-                  .createObservableResult(RecordListCommand.fetch())
+                  .createObservableResult(RecordListCommand.Companion.fetch())
                   .flatMap(action -> Observable.from(action.getResult()).toList()),
             janet.createPipe(GetDefaultRecordAction.class)
                   .createObservableResult(new GetDefaultRecordAction())
@@ -154,7 +154,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
 
    private Observable<Void> saveRecords(List<Record> records) {
       return recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.replace(records))
+            .createObservableResult(RecordListCommand.Companion.replace(records))
             .map(o -> null);
    }
 

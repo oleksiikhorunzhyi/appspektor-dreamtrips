@@ -160,7 +160,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
       fetchDefaultRecordId()
             .filter(defaultRecordId -> defaultRecordId != null)
             .flatMap(defaultRecordId -> fetchLocalRecords().map(records ->
-                  Queryable.from(records).firstOrDefault(element -> defaultRecordId.equals(element.id()))))
+                  Queryable.from(records).firstOrDefault(element -> defaultRecordId.equals(element.getId()))))
             .filter(defaultRecord -> defaultRecord != null)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
@@ -169,8 +169,8 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private Observable<List<Record>> fetchLocalRecords() {
       return recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.fetch())
-            .map(Command::getResult);
+            .createObservableResult(RecordListCommand.Companion.fetch())
+            .map(command -> (List<Record>) command.getResult());
    }
 
    private Observable<String> fetchDefaultRecordId() {
@@ -214,7 +214,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
    }
 
    private boolean checkMandatoryFields(boolean cardNameValid, String cvv) {
-      return cardNameValid && WalletRecordUtil.validationMandatoryFields(record.number(), cvv);
+      return cardNameValid && WalletRecordUtil.Companion.validationMandatoryFields(record.getNumber(), cvv);
    }
 
    private void trackScreen() {

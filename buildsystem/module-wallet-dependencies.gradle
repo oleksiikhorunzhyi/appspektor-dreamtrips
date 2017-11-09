@@ -8,8 +8,8 @@ ext {
    coreDependencies.repos.each { walletDependencies.repos << it }
 
    walletDependencies.modules = [
-         core    : [moduleImpl: ":core"],
-         coreTest: [testModule: ":core-test"],
+         core    : [impl: project(":core")],
+         coreTest: [testImpl: project(":core-test")],
    ]
 
    walletDependencies.ui = []

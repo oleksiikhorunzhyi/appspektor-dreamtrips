@@ -24,7 +24,7 @@ ext {
 
    //modules
    coreDependencies.modules = [
-         janetExt: [moduleApi: ":janet-extensions"],
+         janetExt: [api: project(":janet-extensions")],
    ]
 
    coreDependencies.lang = [
@@ -106,7 +106,9 @@ ext {
          // API
          mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.21-RELEASE-1.23-SNAPSHOT'],
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.21-RELEASE-1.23-SNAPSHOT', config: {
+            changing = true
+         }],
    ]
 
    coreDependencies.util = [
@@ -130,7 +132,7 @@ ext {
 
    coreDependencies.analytics = [
          apptentive : [impl: 'com.apptentive:apptentive-android:3.4.0@aar'],
-         crashlytics: [ct: 'com.crashlytics.sdk.android:crashlytics:2.7.0@aar'],
+         crashlytics: [api: 'com.crashlytics.sdk.android:crashlytics:2.7.0@aar', config: { transitive = true }],
          newrelic   : [api: 'com.newrelic.agent.android:android-agent:5.8.4'],
    ]
 

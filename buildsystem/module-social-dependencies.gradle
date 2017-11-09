@@ -6,8 +6,8 @@ ext {
    coreDependencies.repos.each { socialDependencies.repos << it }
 
    socialDependencies.modules = [
-         core    : [moduleImpl: ":core"],
-         coreTest: [testModule: ":core-test"],
+         core    : [impl: project(":core")],
+         coreTest: [testImpl: project(":core-test")],
    ]
 
    socialDependencies.ui = []

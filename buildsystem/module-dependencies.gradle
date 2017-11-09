@@ -101,8 +101,8 @@ ext {
          ijkPlayer     : [c: 'io.techery:ijkmediaplayer:0.4.0@aar'],
          ijkWidget     : [c: 'io.techery:ijkmediawidget:0.4.0@aar'],
          barcodescanner: [c: 'me.dm7.barcodescanner:zxing:1.9'],
-         fresco        : [c: 'com.facebook.fresco:fresco:1.1.0'],
-         frescoOkhttp  : [c: 'com.facebook.fresco:imagepipeline-okhttp:1.1.0'],
+         fresco        : [c: 'com.facebook.fresco:fresco:1.5.0'],
+         frescoOkhttp  : [c: 'com.facebook.fresco:imagepipeline-okhttp3:1.5.0'],
          picasso       : [c: 'com.squareup.picasso:picasso:2.5.2'],
    ]
    // ui (views/layouts/widgets)

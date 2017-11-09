@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.membership.view.cell;
 
-import android.net.Uri;
 import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
@@ -24,7 +25,10 @@ public class InviteTemplateCell extends BaseAbstractDelegateCell<InviteTemplate,
 
    @Override
    protected void syncUIStateWithModel() {
-      imageViewPhoto.setImageURI(Uri.parse(getModelObject().getCoverUrl()));
+      ViewUtils.runTaskAfterMeasure(imageViewPhoto,
+            () -> imageViewPhoto.setController(GraphicUtils.provideFrescoResizingController(getModelObject().getCoverUrl(),
+                  imageViewPhoto.getController(), imageViewPhoto.getWidth(), imageViewPhoto.getHeight()))
+      );
    }
 
    @OnClick(R.id.btn_select)

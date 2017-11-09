@@ -51,9 +51,8 @@ public class Video360Cell extends BaseAbstractDelegateCell<Video, Video360Cell.V
    @Override
    protected void syncUIStateWithModel() {
       ViewUtils.runTaskAfterMeasure(itemView, () -> {
-         PipelineDraweeController controller = GraphicUtils
-               .provideFrescoResizingController(Uri.parse(getModelObject().getImageUrl()), imageViewPreview.getController(),
-                     imageViewPreview.getWidth(), imageViewPreview.getHeight());
+         final PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(getModelObject().getImageUrl(),
+               imageViewPreview.getController(), imageViewPreview.getWidth(), imageViewPreview.getHeight());
          imageViewPreview.setController(controller);
       });
       this.textViewTitle.setText(getModelObject().getVideoName());

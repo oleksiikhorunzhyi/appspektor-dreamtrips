@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.profile.view.cell;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.AppCompatTextView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +14,21 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.ImageRequest;
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
-import com.worldventures.core.utils.BadgeHelper;
 import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.model.session.FeatureManager;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.custom.BadgeView;
+import com.worldventures.core.utils.BadgeHelper;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.core.utils.LocaleHelper;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -216,7 +217,7 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
 
    private void setAvatarImage(Uri uri) {
       if (uri != null) {
-         setImage(uri, userPhoto);
+         ViewUtils.runTaskAfterMeasure(userPhoto, () -> setImage(uri, userPhoto));
       }
    }
 
@@ -226,7 +227,7 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
 
    private void setCoverImage(Uri uri) {
       if (uri != null) {
-         setImage(uri, userCover);
+         ViewUtils.runTaskAfterMeasure(userCover, () -> setImage(uri, userCover));
       }
    }
 
@@ -236,10 +237,11 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
          if (uri.equals(draweeView.getTag())) {
             return;
          }
-         builder.setLowResImageRequest(ImageRequest.fromUri((Uri) draweeView.getTag()));
+         builder.setLowResImageRequest(GraphicUtils.createResizeImageRequest((Uri) draweeView.getTag(),
+               draweeView.getWidth(), draweeView.getHeight()));
       }
       builder.setOldController(draweeView.getController());
-      builder.setImageRequest(ImageRequest.fromUri(uri));
+      builder.setImageRequest(GraphicUtils.createResizeImageRequest(uri, draweeView.getWidth(), draweeView.getHeight()));
       DraweeController dc = builder.build();
       draweeView.setController(dc);
       draweeView.setTag(uri);
@@ -285,11 +287,11 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    }
 
    private void setRoviaBucks(String count) {
-      roviaBucks.setText(Html.fromHtml(context.getString(R.string.profile_rovia_bucks, count)));
+      roviaBucks.setText(ProjectTextUtils.fromHtml(context.getString(R.string.profile_rovia_bucks, count)));
    }
 
    private void setDreamTripPoints(String count) {
-      dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, count)));
+      dtPoints.setText(ProjectTextUtils.fromHtml(context.getString(R.string.profile_dt_points, count)));
    }
 
    private void setIsFriend(boolean isFriend) {

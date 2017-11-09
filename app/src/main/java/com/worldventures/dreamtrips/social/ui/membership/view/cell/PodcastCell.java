@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.ui.view.custom.PinProgressButton;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
@@ -53,8 +54,10 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
 
    @Override
    protected void syncUIStateWithModel() {
-      Podcast podcast = getModelObject();
-      image.setImageURI(Uri.parse(podcast.getImageUrl()));
+      final Podcast podcast = getModelObject();
+      final int imageSize = image.getResources().getDimensionPixelSize(R.dimen.size_huge);
+      image.setController(GraphicUtils.provideFrescoResizingController(podcast.getImageUrl(), image.getController(),
+            imageSize, imageSize));
       title.setText(podcast.getTitle());
       if (TextUtils.isEmpty(podcast.getCategory())) {
          category.setVisibility(View.GONE);

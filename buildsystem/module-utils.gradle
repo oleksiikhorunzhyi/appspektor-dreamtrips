@@ -3,7 +3,7 @@ ext {
       afterEvaluate {
          project.tasks.withType(JavaCompile) {
             if (!it.toString().contains("UnitTest")) {
-               println "Janet http.factory.class.suffix=$moduleName was added to $it"
+               logger.info "Janet http.factory.class.suffix=$moduleName was added to $it"
                options.compilerArgs << "-Ajanet.http.factory.class.suffix=$moduleName"
             }
          }
@@ -12,7 +12,7 @@ ext {
 
    addModuleTestToAppTasks = { listOfTasks, moduleName, moduleTestTask ->
       listOfTasks.all { t ->
-         println("Task " + t.name + " depends on " + moduleTestTask)
+         logger.info("Task " + t.name + " depends on " + moduleTestTask)
          t.dependsOn moduleTestTask
          t.finalizedBy tasks.create("copyTestResult${t.name}", Copy) {
             from "${project(moduleName).buildDir.absolutePath}/test-results/${(moduleTestTask =~ ":(.*):(.*)") [0][2]}/"

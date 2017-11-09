@@ -11,23 +11,31 @@ ext {
    }
 
    applyDependencies = { o, deps ->
+      def METHODS = [
+            api        : 'api',
+            debugApi   : 'debugApi',
+            releaseApi : 'releaseApi',
+            impl       : 'implementation',
+            debugImpl  : 'debugImplementation',
+            releaseImpl: 'releaseImplementation',
+            testImpl   : 'testImplementation',
+            p          : 'compileOnly',
+            a          : 'annotationProcessor',
+            rap        : 'releaseAnnotationProcessor',
+            tap        : 'testAnnotationProcessor',
+      ]
+      def CONFIG_KEY = 'config'
       deps.each {
-         def entry = it.value.entrySet().first()
-         if (entry.key == 'impl') o.implementation entry.value
-         if (entry.key == 'api') o.api entry.value
-         if (entry.key == 'moduleImpl') o.implementation o.project(entry.value)
-         if (entry.key == 'moduleApi') o.api o.project(entry.value)
-         if (entry.key == 'testModule') o.testImplementation o.project(entry.value)
-         if (entry.key == 'ct') o.api(entry.value) { transitive = true }
-         if (entry.key == 'a') o.annotationProcessor entry.value
-         if (entry.key == 'p') o.compileOnly entry.value
-         if (entry.key == 'testImpl') o.testImplementation entry.value
-         if (entry.key == 'releaseImpl') o.releaseImplementation entry.value
-         if (entry.key == 'debugImpl') o.debugImplementation entry.value
-         if (entry.key == 'releaseApi') o.releaseApi entry.value
-         if (entry.key == 'debugApi') o.debugApi entry.value
-         if (entry.key == 'rap') o.releaseAnnotationProcessor entry.value
-         if (entry.key == 'tap') o.testAnnotationProcessor entry.value
+         def dependencyEntry = it.value.entrySet().first()
+         def configMethod = METHODS.get(dependencyEntry.key)
+         def configClosure = it.value.get(CONFIG_KEY)
+         if (configClosure) {
+            configClosure.delegate = o
+            configClosure.resolveStrategy = Closure.DELEGATE_FIRST
+            o."$configMethod"(dependencyEntry.value, configClosure)
+         } else {
+            o."$configMethod"(dependencyEntry.value)
+         }
       }
    }
 }

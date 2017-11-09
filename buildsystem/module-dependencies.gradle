@@ -19,9 +19,9 @@ ext {
 
    //modules
    moduleDependencies.modules = [
-         core    : [moduleImpl: ":core"],
-         coreTest: [testModule: ":core-test"],
-         wallet  : [moduleImpl: ":wallet"],
+         core    : [impl: project(":core")],
+         coreTest: [testImpl: project(":core-test")],
+         wallet  : [impl: project(":wallet")],
    ]
 
    // domain
@@ -53,7 +53,7 @@ ext {
          googleGcm   : [impl: "com.google.android.gms:play-services-gcm:${googleServicesVersion}"],
          googleVision: [impl: "com.google.android.gms:play-services-vision:${googleServicesVersion}"],
 
-         twitter     : [ct: 'com.twitter.sdk.android:twitter:3.1.1@aar'],
+         twitter     : [impl: 'com.twitter.sdk.android:twitter:3.1.1@aar', config: { transitive = true }],
    ]
    // presentation frameworks
    def flowVersion = '0b702cdab7c639f94e37c792f0dbd7f4bf89a713'

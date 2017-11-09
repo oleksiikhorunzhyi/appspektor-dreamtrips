@@ -311,8 +311,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList,
          boolean shouldShowSuggestions) {
       List feedModels = new ArrayList();
-      processSuggestedPhotosItems(shouldShowSuggestions, feedModels);
-      processUploadsInProgressItems(new UploadingPostsList(uploadingPostsList), feedModels);
+      if (shouldShowSuggestions) {
+         feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
+      }
+      if (!uploadingPostsList.isEmpty()) {
+         feedModels.add(new UploadingPostsList(uploadingPostsList));
+      }
       processFeedItems(feedItems, feedModels);
       fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.stateRecyclerView);
       startAutoplayVideos();
@@ -323,17 +327,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.notifyDataSetChanged(recyclerViewManager.findFocusedPosition());
    }
 
-   private void processSuggestedPhotosItems(boolean shouldShowSuggestions, List feedModels) {
-      if (shouldShowSuggestions) {
-         feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
-      }
-   }
-
-   private void processUploadsInProgressItems(UploadingPostsList uploadingPostsList, List feedModels) {
-      if (!uploadingPostsList.getPhotoPosts().isEmpty()) {
-         feedModels.add(uploadingPostsList);
-      }
-   }
 
    private void processFeedItems(List<FeedItem> feedItems, List feedModels) {
       int feedItemsSize = feedItems == null ? 0 : feedItems.size();
@@ -441,7 +434,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private View getCollapseView() {
-      Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
+      Toolbar toolbar = getActivity().findViewById(R.id.toolbar_actionbar);
 
       if (toolbar == null) return null;
 

@@ -31,7 +31,7 @@ public class SuggestedPhotoCellPresenterHelper {
    private static final int SUGGESTION_ITEM_CHUNK = 20;
    private static final long DEFAULT_START_SYNC_TIMESTAMP = Long.MAX_VALUE;
 
-   private MediaPickerInteractor mediaPickerInteractor;
+   private MediaPickerInteractor pickerInteractor;
    private SessionHolder appSessionHolder;
 
    @State ArrayList<PhotoPickerModel> suggestionItems;
@@ -41,14 +41,12 @@ public class SuggestedPhotoCellPresenterHelper {
    private View view;
    private Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper;
 
-   public SuggestedPhotoCellPresenterHelper(SessionHolder appSessionHolder,
-         MediaPickerInteractor mediaPickerInteractor) {
+   public SuggestedPhotoCellPresenterHelper(SessionHolder appSessionHolder, MediaPickerInteractor pickerInteractor) {
       this.appSessionHolder = appSessionHolder;
-      this.mediaPickerInteractor = mediaPickerInteractor;
+      this.pickerInteractor = pickerInteractor;
    }
 
    public void takeView(View view, Observable.Transformer<List<PhotoPickerModel>, List<PhotoPickerModel>> stopper, Bundle bundle) {
-      checkView(view);
       this.view = view;
       this.stopper = stopper;
 
@@ -157,18 +155,10 @@ public class SuggestedPhotoCellPresenterHelper {
 
    @NonNull
    private Observable<List<PhotoPickerModel>> getSuggestionObservable(long toTimestamp) {
-      return mediaPickerInteractor.getPhotosFromGalleryPipe()
+      return pickerInteractor.getPhotosFromGalleryPipe()
             .createObservableResult(new GetPhotosFromGalleryCommand(SUGGESTION_ITEM_CHUNK, new Date(toTimestamp)))
             .map(Command::getResult)
             .compose(new IoToMainComposer<>());
-   }
-
-   private void checkView(View view) {
-      if (this.view != null) {
-         if (this.view != view) {
-            throw new AssertionError("Cannot take another view");
-         }
-      }
    }
 
    private void setSuggestionTitle() {

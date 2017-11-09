@@ -1,14 +1,4 @@
 ext {
-   generateTestHttpHelperFactory = { moduleName ->
-      afterEvaluate {
-         project.tasks.withType(JavaCompile) {
-            if (!it.toString().contains("UnitTest")) {
-               logger.info "Janet http.factory.class.suffix=$moduleName was added to $it"
-               options.compilerArgs << "-Ajanet.http.factory.class.suffix=$moduleName"
-            }
-         }
-      }
-   }
 
    addModuleTestToAppTasks = { listOfTasks, moduleName, moduleTestTask ->
       listOfTasks.all { t ->

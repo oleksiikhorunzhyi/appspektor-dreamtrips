@@ -10,7 +10,9 @@ apply from: "$rootProject.projectDir/buildsystem/module-utils.gradle"
 apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 //
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
 apply plugin: 'com.github.ben-manes.versions'
@@ -34,7 +36,7 @@ android {
       multiDexEnabled true
       javaCompileOptions {
          annotationProcessorOptions {
-            includeCompileClasspath false
+            includeCompileClasspath = false
          }
       }
    }
@@ -224,7 +226,6 @@ tasks.withType(JavaCompile) {
 
 configurations.all { // todo remove it when we drop compile dependency
    exclude group: 'xpp3', module: 'xpp3'
-   exclude group: 'org.jetbrains', module: 'annotations-java5'
    exclude group: 'com.intellij', module: 'annotations'
 }
 

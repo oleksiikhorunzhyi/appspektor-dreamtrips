@@ -40,7 +40,6 @@ ext {
    ]
 
    walletDependencies.test = [
-         mobileSdkCompiler        : [tap: "com.worldventures.dreamtrips:mobilesdk-commons-compiler:$mobileSdkVersion"],
    ]
    coreDependencies.test.each { walletDependencies.test << it }
 

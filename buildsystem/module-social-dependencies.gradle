@@ -19,7 +19,6 @@ ext {
    ]
 
    socialDependencies.test = [
-         mobileSdkCompiler: [tap: "com.worldventures.dreamtrips:mobilesdk-commons-compiler:$mobileSdkVersion"],
    ]
    coreDependencies.test.each { socialDependencies.test << it }
 

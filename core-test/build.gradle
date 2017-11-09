@@ -21,11 +21,6 @@ android {
       sourceCompatibility project.ext.pluginDependencies.versions.java
       targetCompatibility project.ext.pluginDependencies.versions.java
    }
-
-   dataBinding{
-      enabled = true
-   }
-
 }
 
 def deps = project.ext.coreDependencies

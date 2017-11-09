@@ -36,15 +36,15 @@ public abstract class RxBaseFragmentWithArgs<PM extends Presenter, P extends Par
       return observable.compose(RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW));
    }
 
-   protected <T>Observable.Transformer<T, T> bindUntilStopViewComposer() {
+   protected <T> Observable.Transformer<T, T> bindUntilStopViewComposer() {
       return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.STOP);
    }
 
-   protected <T>Observable.Transformer<T, T> bindUntilDropViewComposer() {
+   protected <T> Observable.Transformer<T, T> bindUntilDropViewComposer() {
       return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW);
    }
 
-   protected <T>Observable.Transformer<T, T> bindUntilResumeComposer() {
+   protected <T> Observable.Transformer<T, T> bindUntilResumeComposer() {
       return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.RESUME);
    }
 

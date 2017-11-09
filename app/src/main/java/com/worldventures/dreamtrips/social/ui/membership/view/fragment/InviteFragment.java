@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.membership.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -17,10 +18,8 @@ import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.core.ui.annotations.Layout;
-import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -37,7 +36,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_invite)
-public class InviteFragment extends BaseFragment<InvitePresenter> implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
+public class InviteFragment extends BaseFragment<InvitePresenter>
+      implements InvitePresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener, AdapterView.OnItemSelectedListener {
 
    @InjectView(R.id.frameContactCount) LinearLayout frameContactCount;
    @InjectView(R.id.lv_users) RecyclerView lvUsers;
@@ -81,7 +81,7 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
       stateDelegate.setRecyclerView(lvUsers);
       setUpView();
       lvUsers.setLayoutManager(new LinearLayoutManager(getActivity()));
-      lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+      lvUsers.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
       adapter = new FilterableArrayListAdapter<>(getActivity(), this);
       adapter.registerCell(Member.class, MemberCell.class);
       adapter.registerDelegate(Member.class, getPresenter()::onMemberCellSelected);
@@ -134,7 +134,9 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
          buttonContinue.setVisibility(View.GONE);
       } else {
          containerTemplates.setVisibility(View.GONE);
-         if (!tvSearch.hasFocus() && getPresenter().isVisible()) buttonContinue.setVisibility(View.VISIBLE);
+         if (!tvSearch.hasFocus() && getPresenter().isVisible()) {
+            buttonContinue.setVisibility(View.VISIBLE);
+         }
       }
    }
 
@@ -161,14 +163,18 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
       stateDelegate.restoreStateIfNeeded();
    }
@@ -196,14 +202,16 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
 
    @Override
    public void move(Member member, int to) {
-      if (to > 0) lvUsers.scrollToPosition(0);
+      if (to > 0) {
+         lvUsers.scrollToPosition(0);
+      }
       //
       adapter.moveItemSafely(member, to);
    }
 
    @Override
    public void openTemplateView() {
-      router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
+      router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.container_templates)
@@ -212,14 +220,14 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
 
    @Override
    public void continueAction2() {
-      router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forRemoval()
+      router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forRemoval()
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.container_templates)
             .build());
       if (isTabletLandscape()) {
          openTemplateView();
       } else {
-         router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity().build());
+         router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forActivity().build());
       }
    }
 
@@ -274,7 +282,8 @@ public class InviteFragment extends BaseFragment<InvitePresenter> implements Inv
    @Override
    public void showNextStepButtonVisibility(boolean isVisible) {
       frameContactCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-      if (!tvSearch.hasFocus())
+      if (!tvSearch.hasFocus()) {
          buttonContinue.setVisibility(!isTabletLandscape() && isVisible ? View.VISIBLE : View.GONE);
+      }
    }
 }

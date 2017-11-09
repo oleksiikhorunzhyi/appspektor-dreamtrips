@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 
 public class NavigationConfig {
 
+   String key;
    NavigationType navigationType;
    Parcelable data;
    FragmentManager fragmentManager;
@@ -28,6 +29,14 @@ public class NavigationConfig {
 
    NavigationConfig(NavigationType type) {
       navigationType = type;
+   }
+
+   public String getKey() {
+      return key;
+   }
+
+   public void setKey(String key) {
+      this.key = key;
    }
 
    public NavigationType getNavigationType() {

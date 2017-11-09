@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 public class EditPhotoBundle implements Parcelable {
 
-   private Photo photo;
+   private final Photo photo;
 
    public EditPhotoBundle(Photo photo) {
       this.photo = photo;

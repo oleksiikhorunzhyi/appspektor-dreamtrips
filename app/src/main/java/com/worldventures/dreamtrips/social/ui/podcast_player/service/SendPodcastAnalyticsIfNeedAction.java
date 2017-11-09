@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.podcast_player.service;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendProgressAnalyticsIfNeed;
 
@@ -22,10 +22,13 @@ public class SendPodcastAnalyticsIfNeedAction extends SendProgressAnalyticsIfNee
 
    @Override
    protected PodcastAnalyticsAction chooseAnalyticAction(int currentStep, int expectedAnalyticStep) {
-      if (expectedAnalyticStep == 0)
+      if (expectedAnalyticStep == 0) {
          return PodcastAnalyticsAction.startPodcast(podcastName);
+      }
 
-      if (currentStep < expectedAnalyticStep) return null;
+      if (currentStep < expectedAnalyticStep) {
+         return null;
+      }
 
       PodcastAnalyticsAction action = null;
       switch (currentStep) {
@@ -40,6 +43,8 @@ public class SendPodcastAnalyticsIfNeedAction extends SendProgressAnalyticsIfNee
             break;
          case 4:
             action = PodcastAnalyticsAction.progress100(podcastName);
+         default:
+            break;
       }
       return action;
    }

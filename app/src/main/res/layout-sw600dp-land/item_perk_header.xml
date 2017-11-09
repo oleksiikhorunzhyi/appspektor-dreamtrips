@@ -88,6 +88,6 @@
          android:layout_alignBottom="@+id/perk_logo"
          android:layout_alignParentRight="true"
          android:padding="@dimen/spacing_small"
-         android:src="@drawable/ic_arrow_down_grey"
+         android:src="@drawable/ic_wallet_arrow_down_grey"
          />
 </RelativeLayout>

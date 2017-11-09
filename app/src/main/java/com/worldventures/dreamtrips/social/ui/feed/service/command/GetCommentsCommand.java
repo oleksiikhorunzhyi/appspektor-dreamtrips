@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.comment.GetCommentsHttpAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;

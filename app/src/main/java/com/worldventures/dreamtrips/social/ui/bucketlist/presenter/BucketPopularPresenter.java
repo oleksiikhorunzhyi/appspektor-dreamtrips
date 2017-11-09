@@ -40,7 +40,9 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
    @Override
    public void onResume() {
       super.onResume();
-      if (view.getAdapter().getCount() == 0) reload();
+      if (view.getAdapter().getCount() == 0) {
+         reload();
+      }
    }
 
    public void onSearch(String query) {

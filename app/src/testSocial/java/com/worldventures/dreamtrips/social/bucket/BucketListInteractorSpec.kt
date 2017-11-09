@@ -1,8 +1,12 @@
 package com.worldventures.dreamtrips.social.bucket
 
 import com.google.gson.JsonObject
-import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSimple
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem

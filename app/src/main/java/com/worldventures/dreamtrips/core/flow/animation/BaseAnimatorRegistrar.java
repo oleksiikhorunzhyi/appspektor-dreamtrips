@@ -7,6 +7,7 @@ import flow.path.Path;
 
 public class BaseAnimatorRegistrar implements ScreenAnimatorRegistrar {
 
+   @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
    protected static SimpleArrayMap<Pair<Class<? extends Path>, Class<? extends Path>>, AnimatorFactory> animators;
 
    public BaseAnimatorRegistrar() {
@@ -16,7 +17,9 @@ public class BaseAnimatorRegistrar implements ScreenAnimatorRegistrar {
    @Override
    public AnimatorFactory getAnimatorFactory(Path from, Path to) {
       final Pair<Class<? extends Path>, Class<? extends Path>> key = new Pair<>(from.getClass(), to.getClass());
-      if (!animators.containsKey(key)) return new HorizontalAnimatorFactory();
+      if (!animators.containsKey(key)) {
+         return new HorizontalAnimatorFactory();
+      }
       return animators.get(key);
    }
 }

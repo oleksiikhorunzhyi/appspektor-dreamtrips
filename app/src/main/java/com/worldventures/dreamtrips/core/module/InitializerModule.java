@@ -5,6 +5,7 @@ import android.content.Context;
 import com.messenger.di.MessengerInitializerModule;
 import com.worldventures.core.di.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.AnalyticsInitializer;
+import com.worldventures.dreamtrips.core.initializer.AppConfigurationInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FacebookInitializer;
@@ -14,7 +15,7 @@ import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
-import com.worldventures.dreamtrips.core.initializer.AppConfigurationInitializer;
+import com.worldventures.dreamtrips.core.initializer.TwitterInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
@@ -36,6 +37,7 @@ import dagger.Provides;
             JodaTimeInitializer.class,
             AnalyticsInitializer.class,
             FacebookInitializer.class,
+            TwitterInitializer.class,
       },
       includes = {
             MessengerInitializerModule.class,
@@ -118,6 +120,11 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    public AppInitializer provideVersionCheckInitializer(AppConfigurationInteractor interactor) {
       return new AppConfigurationInitializer(interactor);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public AppInitializer provideTwitterInitializer() {
+      return new TwitterInitializer();
    }
 
 }

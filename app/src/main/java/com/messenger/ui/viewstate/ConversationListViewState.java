@@ -13,6 +13,7 @@ public class ConversationListViewState extends LceViewState<List<DataConversatio
    private String searchFilter;
 
    public ConversationListViewState() {
+      //do nothing
    }
 
    public

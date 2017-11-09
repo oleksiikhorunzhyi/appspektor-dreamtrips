@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.post.CreatePostHttpAction;
 import com.worldventures.dreamtrips.api.post.CreateVideoPostHttpAction;
@@ -49,8 +49,11 @@ public class CreatePostCommand extends CommandWithError<TextualPost> implements 
 
    @Override
    protected void run(CommandCallback<TextualPost> callback) throws Throwable {
-      if (videoPost) uploadVideoPost(callback);
-      else uploadPost(callback);
+      if (videoPost) {
+         uploadVideoPost(callback);
+      } else {
+         uploadPost(callback);
+      }
    }
 
    private void uploadPost(CommandCallback<TextualPost> callback) {

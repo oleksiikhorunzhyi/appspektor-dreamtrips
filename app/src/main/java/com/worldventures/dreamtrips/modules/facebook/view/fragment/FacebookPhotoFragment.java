@@ -33,7 +33,7 @@ public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPrese
    @Override
    protected void registerCells() {
       adapter.registerCell(FacebookPhoto.class, FacebookPhotoCell.class);
-      adapter.registerDelegate(FacebookPhoto.class, new CellDelegate<FacebookPhoto>(){
+      adapter.registerDelegate(FacebookPhoto.class, new CellDelegate<FacebookPhoto>() {
          @Override
          public void onCellClicked(FacebookPhoto model) {
             getPresenter().onPhotoPickerModelSelected(model);

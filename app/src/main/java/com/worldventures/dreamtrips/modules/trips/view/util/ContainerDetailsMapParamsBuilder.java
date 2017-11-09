@@ -17,6 +17,7 @@ import static com.worldventures.dreamtrips.modules.trips.view.util.ContainerDeta
 import static com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder.PointPosition.TOP_LEFT;
 import static com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder.PointPosition.TOP_RIGHT;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class ContainerDetailsMapParamsBuilder {
 
    public static final int DEFAULT_MARGIN = 20;
@@ -113,7 +114,8 @@ public class ContainerDetailsMapParamsBuilder {
                params.topMargin = DEFAULT_MARGIN;
                params.bottomMargin = DEFAULT_MARGIN;
                int calculatedTopMargin = rect.bottom - params.bottomMargin - tripsHeight;
-               anchorMargin = point.y - (isOnBottom(pointPosition) && params.topMargin + params.bottomMargin + tripsHeight < rect.bottom ? calculatedTopMargin : params.topMargin) - markerHeight / 2 - triangleWidth / 2;
+               anchorMargin = point.y - (isOnBottom(pointPosition) && params.topMargin + params.bottomMargin + tripsHeight < rect.bottom ? calculatedTopMargin : params.topMargin)
+                     - markerHeight / 2 - triangleWidth / 2;
             }
          }
          if (isOnLeft(pointPosition)) {
@@ -126,11 +128,13 @@ public class ContainerDetailsMapParamsBuilder {
          tripMapDetailsAnchor.setMargin(anchorMargin);
          //
          params.height = rect.bottom - 2 * DEFAULT_MARGIN < tripsHeight ? rect.bottom - 2 * DEFAULT_MARGIN : tripsHeight;
-         if (tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.BOTTOM)
+         if (tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.BOTTOM) {
             params.height += triangleHeight;
+         }
          params.width = tripWidth;
-         if (tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.LEFT || tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.RIGHT)
+         if (tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.LEFT || tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.RIGHT) {
             params.width += triangleHeight;
+         }
       } else {
          params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
          //
@@ -175,6 +179,8 @@ public class ContainerDetailsMapParamsBuilder {
          case BOTTOM_RIGHT:
             gravity = Gravity.BOTTOM | Gravity.RIGHT;
             break;
+         default:
+            break;
       }
 
       return gravity;
@@ -188,7 +194,7 @@ public class ContainerDetailsMapParamsBuilder {
       boolean left, top;
       left = rect.centerX() > point.x;
       top = rect.centerY() > point.y;
-      return top ? (left ? TOP_LEFT : PointPosition.TOP_RIGHT) : (left ? PointPosition.BOTTOM_LEFT : PointPosition.BOTTOM_RIGHT);
+      return top ? (left ? TOP_LEFT : TOP_RIGHT) : (left ? BOTTOM_LEFT : BOTTOM_RIGHT);
    }
 
    private boolean isOnTop(PointPosition pointPosition) {

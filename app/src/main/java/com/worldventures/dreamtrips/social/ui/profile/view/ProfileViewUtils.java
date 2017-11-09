@@ -6,13 +6,19 @@ import android.widget.TextView;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 
-public class ProfileViewUtils {
+public final class ProfileViewUtils {
 
+   private ProfileViewUtils() {
+   }
 
    public static void setUserStatus(User user, TextView userStatus, Resources resources) {
-      if (user.isGold()) ProfileViewUtils.setGold(userStatus, resources);
-      else if (user.isPlatinum()) ProfileViewUtils.setPlatinum(userStatus, resources);
-      else ProfileViewUtils.setMember(userStatus, resources);
+      if (user.isGold()) {
+         ProfileViewUtils.setGold(userStatus, resources);
+      } else if (user.isPlatinum()) {
+         ProfileViewUtils.setPlatinum(userStatus, resources);
+      } else {
+         ProfileViewUtils.setMember(userStatus, resources);
+      }
    }
 
    private static void setMember(TextView tv, Resources res) {
@@ -26,7 +32,6 @@ public class ProfileViewUtils {
    private static void setPlatinum(TextView tv, Resources res) {
       setUI(tv, R.string.profile_platinum, R.drawable.ic_profile_platinum_member, res.getColor(R.color.platinum_user));
    }
-
 
    private static void setUI(TextView textView, int title, int drawable, int color) {
       textView.setTextColor(color);

@@ -13,8 +13,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class AddFriendToCircleCommand extends ApiActionCommand<AddFriendsToCircleHttpAction, Void> {
 
-   private Circle circle;
-   private int userId;
+   private final Circle circle;
+   private final int userId;
 
    public AddFriendToCircleCommand(Circle circle, User friend) {
       this.circle = circle;

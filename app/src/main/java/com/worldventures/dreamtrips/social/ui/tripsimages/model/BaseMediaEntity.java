@@ -26,8 +26,12 @@ public abstract class BaseMediaEntity<T extends FeedEntity> implements Parcelabl
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       BaseMediaEntity that = (BaseMediaEntity) o;
 

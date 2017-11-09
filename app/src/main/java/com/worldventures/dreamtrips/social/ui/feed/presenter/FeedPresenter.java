@@ -97,7 +97,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       subscribeFriendsNotificationsCount();
       subscribeToBackgroundUploadingOperations();
       translationDelegate.onTakeView(view, feedItems, bindView());
-      if (feedItems.size() != 0) refreshFeedItems();
+      if (feedItems.size() != 0) {
+         refreshFeedItems();
+      }
       refreshFeed();
    }
 
@@ -115,12 +117,16 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    void restoreFeedItems(boolean firstCreation) {
-      if (firstCreation || feedItems == null) feedItems = new ArrayList<>();
+      if (firstCreation || feedItems == null) {
+         feedItems = new ArrayList<>();
+      }
    }
 
    void restoreCircle() {
       filterCircle = socialDb.getFilterCircle();
-      if (filterCircle == null) filterCircle = createDefaultFilterCircle();
+      if (filterCircle == null) {
+         filterCircle = createDefaultFilterCircle();
+      }
    }
 
    @Override
@@ -248,7 +254,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    public boolean loadNext() {
-      if (feedItems.isEmpty()) return false;
+      if (feedItems.isEmpty()) {
+         return false;
+      }
       Date lastFeedDate = feedItems.get(feedItems.size() - 1).getCreatedAt();
       feedInteractor.getLoadNextAccountFeedPipe()
             .send(new GetAccountFeedCommand.LoadNext(filterCircle.getId(), lastFeedDate));

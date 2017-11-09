@@ -51,7 +51,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
                   .onFail((action, exception) -> {
                      if (action.errorResponse() != null) {
                         String reason = action.errorResponse().reasonFor(BILL_TOTAL);
-                        if (reason != null) view.showError(reason);
+                        if (reason != null) {
+                           view.showError(reason);
+                        }
                      }
                      apiErrorViewAdapter.handleError(action, exception);
                   })
@@ -59,7 +61,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    }
 
    public void onCalculateClicked(String userInput) {
-      if (!validateInput(userInput)) return;
+      if (!validateInput(userInput)) {
+         return;
+      }
 
       analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant.asMerchantAttributes())));

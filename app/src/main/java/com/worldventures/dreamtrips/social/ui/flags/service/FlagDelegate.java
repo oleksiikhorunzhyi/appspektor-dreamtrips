@@ -12,7 +12,7 @@ import rx.functions.Action2;
 
 public class FlagDelegate {
 
-   private FlagsInteractor flagsInteractor;
+   private final FlagsInteractor flagsInteractor;
 
    public FlagDelegate(FlagsInteractor flagsInteractor) {
       this.flagsInteractor = flagsInteractor;

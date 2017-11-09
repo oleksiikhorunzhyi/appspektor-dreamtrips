@@ -18,7 +18,9 @@ public abstract class CompoundOperationsCommand extends Command<List<PostCompoun
 
    @Override
    public List<PostCompoundOperationModel> getCacheData() {
-      if (getResult() != null) return new ArrayList<>(getResult());
+      if (getResult() != null) {
+         return new ArrayList<>(getResult());
+      }
       return new ArrayList<>(cachedModels);
    }
 

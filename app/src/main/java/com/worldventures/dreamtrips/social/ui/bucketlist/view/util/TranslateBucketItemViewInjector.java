@@ -25,7 +25,7 @@ public class TranslateBucketItemViewInjector {
    @InjectView(R.id.translated_from) TextView translatedFrom;
    @Optional @InjectView(R.id.textViewDescription) TextView textViewDescription;
 
-   private Context context;
+   private final Context context;
    private SessionHolder appSessionHolder;
 
    public TranslateBucketItemViewInjector(View rootView, Context context, SessionHolder appSessionHolder) {
@@ -40,7 +40,7 @@ public class TranslateBucketItemViewInjector {
          hideTranslationUi(bucketItem);
          return;
       }
-      boolean ownItem = bucketItem.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownItem = bucketItem.getOwner().getId() == appSessionHolder.get().get().user().getId();
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, bucketItem.getLanguage());
       boolean emptyLanguage = TextUtils.isEmpty(bucketItem.getLanguage());
 

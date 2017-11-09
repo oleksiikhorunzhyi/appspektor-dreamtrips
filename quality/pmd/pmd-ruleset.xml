@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+
+<ruleset name="Android Application Rules" xmlns="http://pmd.sf.net/ruleset/1.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd"
+      xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+   <exclude-pattern>.*/R.java</exclude-pattern>
+   <exclude-pattern>.*/*Test.java</exclude-pattern>
+   <exclude-pattern>.*/*Module.java</exclude-pattern>
+   <exclude-pattern>.*/*Component.java</exclude-pattern>
+   <exclude-pattern>.*/gen/.*</exclude-pattern>
+
+   <rule ref="rulesets/java/android.xml" />
+   <rule ref="rulesets/java/clone.xml" />
+   <rule ref="rulesets/java/finalizers.xml" />
+   <rule ref="rulesets/java/imports.xml">
+      <!-- Espresso is designed this way !-->
+      <exclude name="TooManyStaticImports" />
+   </rule>
+   <rule ref="rulesets/java/logging-java.xml">
+      <exclude name="AvoidPrintStackTrace" />
+   </rule>
+   <rule ref="rulesets/java/braces.xml" />
+   <rule ref="rulesets/java/strings.xml">
+      <exclude name="InsufficientStringBufferDeclaration" />
+      <exclude name="ConsecutiveAppendsShouldReuse" />
+      <exclude name="InefficientEmptyStringCheck" />
+   </rule>
+   <rule ref="rulesets/java/strings.xml/ConsecutiveLiteralAppends">
+      <properties>
+         <property name="threshold" value="3" />
+      </properties>
+   </rule>
+   <rule ref="rulesets/java/strings.xml/AvoidDuplicateLiterals">
+      <properties>
+         <property name="skipAnnotations" value="true" />
+      </properties>
+   </rule>
+   <rule ref="rulesets/java/basic.xml" />
+   <rule ref="rulesets/java/naming.xml">
+      <exclude name="AbstractNaming" />
+      <exclude name="LongVariable" />
+      <exclude name="ShortMethodName" />
+      <exclude name="ShortClassName" />
+      <exclude name="ShortVariable" />
+      <exclude name="VariableNamingConventions" />
+      <exclude name="GenericsNaming" />
+      <exclude name="AvoidFieldNameMatchingMethodName" />
+      <exclude name="BooleanGetMethodName" />
+   </rule>
+   <rule ref="rulesets/java/unnecessary.xml">
+      <exclude name="UselessParentheses" />
+   </rule>
+   <rule ref="rulesets/java/unusedcode.xml">
+      <exclude name="UnusedFormalParameter" />
+   </rule>
+   <!--Controversial-->
+   <rule ref="rulesets/java/controversial.xml">
+      <exclude name="AvoidPrefixingMethodParameters" />
+      <exclude name="OnlyOneReturn" />
+      <exclude name="AtLeastOneConstructor" />
+      <exclude name="DataflowAnomalyAnalysis" />
+      <exclude name="UseConcurrentHashMap" />
+      <exclude name="CallSuperInConstructor" />
+      <exclude name="AvoidUsingVolatile" />
+      <exclude name="NullAssignment" />
+      <exclude name="AvoidFinalLocalVariable" />
+      <exclude name="AssignmentInOperand" />
+      <exclude name="OneDeclarationPerLine" />
+      <exclude name="AvoidLiteralsInIfCondition" />
+      <exclude name="UseObjectForClearerAPI" />
+   </rule>
+   <rule ref="rulesets/java/controversial.xml/DefaultPackage">
+      <properties>
+         <property name="violationSuppressXPath">
+            <value>
+               <![CDATA[//ClassOrInterfaceBodyDeclaration [
+            contains(Annotation//Name/@Image,'Inject')
+            and
+            contains(FieldDeclaration/@PackagePrivate,'true')]]
+            ]]>
+            </value>
+         </property>
+      </properties>
+   </rule>
+   <rule ref="rulesets/java/controversial.xml/UnnecessaryConstructor">
+      <properties>
+         <property name="violationSuppressXPath">
+            <value>
+               <![CDATA[//ClassOrInterfaceBodyDeclaration [contains(Annotation//Name/@Image,'Inject')]]]]>
+            </value>
+         </property>
+      </properties>
+   </rule>
+   <!--Design-->
+   <rule ref="rulesets/java/design.xml">
+      <exclude name="ConfusingTernary" />
+      <exclude name="AbstractClassWithoutAbstractMethod" />
+      <exclude name="EmptyMethodInAbstractClassShouldBeAbstract" />
+      <exclude name="AvoidSynchronizedAtMethodLevel" />
+      <exclude name="ConstantsInInterface" />
+      <exclude name="AccessorClassGeneration" />
+      <exclude name="AccessorMethodGeneration" />
+      <exclude name="AvoidReassigningParameters" />
+      <exclude name="CompareObjectsWithEquals" />
+      <exclude name="AbstractClassWithoutAnyMethod" />
+      <exclude name="UseLocaleWithCaseConversions" />
+      <exclude name="ConstructorCallsOverridableMethod" />
+      <exclude name="UseVarargs" />
+      <exclude name="MissingStaticMethodInNonInstantiatableClass" />
+   </rule>
+   <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts">
+      <properties>
+         <property name="problemDepth" value="4" />
+      </properties>
+   </rule>
+   <rule ref="rulesets/java/design.xml/GodClass">
+      <properties>
+         <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[(ends-with(@Image,'Utils'))]" />
+      </properties>
+   </rule>
+
+   <rule ref="rulesets/java/empty.xml">
+      <exclude
+            name="EmptyCatchBlock" /> <!--waiting for new release with adding rules for ignoring https://github.com/pmd/pmd/issues/413-->
+   </rule>
+</ruleset>

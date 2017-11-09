@@ -12,7 +12,7 @@ import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.facebook.FacebookHelper;
 import com.worldventures.core.modules.facebook.model.FacebookPhoto;
 import com.worldventures.core.modules.facebook.model.FacebookPhotosGraph;
@@ -61,7 +61,7 @@ public class GetPhotosCommand extends CommandWithError<List<FacebookPhoto>> impl
          }
       }
       graphResponse = graphRequest.executeAndWait();
-      callback.onSuccess(facebookHelper.processList(graphResponse, new TypeToken<List<FacebookPhoto>>(){}));
+      callback.onSuccess(facebookHelper.processList(graphResponse, new TypeToken<List<FacebookPhoto>>() {}));
    }
 
    private String getRoute() {

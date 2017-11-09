@@ -13,13 +13,18 @@ import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 
-public class TripPinFactory {
+public final class TripPinFactory {
+
+   private TripPinFactory() {
+   }
 
    public static Bitmap createPinBitmapFromMapObject(Context context, Pin pin) {
-      if (pin.getTripUids().size() > 1)
+      if (pin.getTripUids().size() > 1) {
          return createClusterBitmap(context, R.drawable.cluster_pin, String.valueOf(pin.getTripUids()
                .size() > 99 ? "99+" : pin.getTripUids().size()));
-      else return BitmapFactory.decodeResource(context.getResources(), R.drawable.dt_pin_icon);
+      } else {
+         return BitmapFactory.decodeResource(context.getResources(), R.drawable.dt_pin_icon);
+      }
    }
 
    public static Bitmap createClusterBitmap(Context context, int drawableId, String text) {
@@ -39,7 +44,9 @@ public class TripPinFactory {
 
       Canvas canvas = new Canvas(bm);
 
-      if (textRect.width() >= (canvas.getWidth() - 4)) paint.setTextSize(ViewUtils.pxFromDp(context, 7));
+      if (textRect.width() >= (canvas.getWidth() - 4)) {
+         paint.setTextSize(ViewUtils.pxFromDp(context, 7));
+      }
 
       int xPos = (canvas.getWidth() / 2) - 2;
 

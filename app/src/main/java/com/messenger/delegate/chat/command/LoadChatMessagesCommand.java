@@ -12,7 +12,7 @@ import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.messengerservers.paginations.PaginationResult;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.DecomposeMessagesHelper;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,13 +66,17 @@ public class LoadChatMessagesCommand extends BaseChatCommand<PaginationResult<Me
 
    private Observable<PaginationResult<Message>> prepareUsers(PaginationResult<Message> paginationResult) {
       List<Message> messages = paginationResult.getResult();
-      if (messages.isEmpty()) return Observable.just(paginationResult);
+      if (messages.isEmpty()) {
+         return Observable.just(paginationResult);
+      }
       List<String> usersIds = from(messages).map(Message::getFromId)
             .notNulls()
             .union(from(messages).map(Message::getToId).notNulls())
             .distinct()
             .toList();
-      if (!usersIds.isEmpty()) return usersDelegate.loadMissingUsers(usersIds).map(users -> paginationResult);
+      if (!usersIds.isEmpty()) {
+         return usersDelegate.loadMissingUsers(usersIds).map(users -> paginationResult);
+      }
       return Observable.just(paginationResult);
    }
 
@@ -83,7 +87,9 @@ public class LoadChatMessagesCommand extends BaseChatCommand<PaginationResult<Me
    }
 
    private List<Message> separateNonDeletedMessageAndRemoveDeleted(@NonNull List<Message> messages) {
-      if (messages.isEmpty()) return messages;
+      if (messages.isEmpty()) {
+         return messages;
+      }
 
       Map<Boolean, Collection<Message>> messageGroup = from(messages).groupToMap(message -> message.getDeleted() != null);
       removeDeletedMessages(messageGroup.get(Boolean.TRUE));
@@ -92,7 +98,9 @@ public class LoadChatMessagesCommand extends BaseChatCommand<PaginationResult<Me
    }
 
    private void removeDeletedMessages(@Nullable Collection<Message> messages) {
-      if (messages == null || messages.isEmpty()) return;
+      if (messages == null || messages.isEmpty()) {
+         return;
+      }
       messageDAO.deleteMessageByIds(from(messages).map(Message::getId).toList());
    }
 }

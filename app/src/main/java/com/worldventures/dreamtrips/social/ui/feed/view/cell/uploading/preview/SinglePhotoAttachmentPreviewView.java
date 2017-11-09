@@ -25,7 +25,9 @@ public class SinglePhotoAttachmentPreviewView extends BasePhotoAttachmentPreview
    @Override
    public void showPreview(List<Uri> attachments, boolean animate) {
       super.showPreview(attachments, animate);
-      if (simpleDraweeView.getParent() == null) throw new IllegalStateException("Must call attachView() first");
+      if (simpleDraweeView.getParent() == null) {
+         throw new IllegalStateException("Must call attachView() first");
+      }
       simpleDraweeView.setImageURI(attachments.get(0));
    }
 }

@@ -15,7 +15,9 @@ public class OfflineWarningDelegate {
    private boolean offlineHintShown;
 
    public boolean needToShowOfflineAlert(Context context) {
-      if (offlineHintShown) return false;
+      if (offlineHintShown) {
+         return false;
+      }
       return !NetworkUtils.isConnected(context);
    }
 

@@ -70,8 +70,9 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
             .subscribe(dtlLocation -> {
                switch (dtlLocation.locationSourceType()) {
                   case UNDEFINED:
-                     if (newGpsLocation == null) navigatePath(DtlLocationsPath.getDefault());
-                     else {
+                     if (newGpsLocation == null) {
+                        navigatePath(DtlLocationsPath.getDefault());
+                     } else {
                         DtlLocation dtlManualLocation = ImmutableDtlLocation.builder()
                               .isExternal(false)
                               .locationSourceType(NEAR_ME)
@@ -101,6 +102,8 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                   case EXTERNAL:
                      navigatePath(DtlMerchantsPath.getDefault());
                      break;
+                  default:
+                     break;
                }
             });
    }
@@ -126,9 +129,11 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                if (location.locationSourceType() != NEAR_ME) {
                   proceedNavigation(null);
                } else {
-                  if (e instanceof LocationDelegate.LocationException)
+                  if (e instanceof LocationDelegate.LocationException) {
                      getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-                  else onLocationResolutionDenied();
+                  } else {
+                     onLocationResolutionDenied();
+                  }
                }
             }, throwable -> navigatePath(DtlLocationsPath.getDefault()));
    }

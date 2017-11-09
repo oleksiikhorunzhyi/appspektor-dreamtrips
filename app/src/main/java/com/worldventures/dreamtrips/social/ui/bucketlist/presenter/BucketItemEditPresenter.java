@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteI
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketPostBody;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.wallet.util.WalletFilesUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,7 +38,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
    private Date selectedDate;
    private boolean savingItem = false;
-   private Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
+   private final Set<AddBucketItemPhotoCommand> operationList = new HashSet<>();
 
    public BucketItemEditPresenter(BucketBundle bundle) {
       super(bundle);
@@ -142,6 +142,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
          case PROGRESS:
             view.deleteImage(photoStateHolder);
             cancelUpload(photoStateHolder);
+            break;
+         default:
             break;
       }
    }

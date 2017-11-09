@@ -17,6 +17,7 @@ public class LceViewState<C> extends BaseRestorableViewState {
    private C data;
 
    public LceViewState() {
+      //do nothing
    }
 
    public LoadingState getLoadingState() {

@@ -20,6 +20,7 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
    protected boolean checked;
 
    public MediaPickerModelImpl() {
+      //do nothing
    }
 
    public MediaPickerModelImpl(String absolutePath, long dateTaken) {
@@ -28,7 +29,7 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
       this.uri = Uri.parse(isAbsolutePathUrl() ? this.absolutePath : "file://" + this.absolutePath);
    }
 
-   public boolean isAbsolutePathUrl() {
+   public final boolean isAbsolutePathUrl() {
       // TODO Remove this check outside of this model
       return ValidationUtils.isUrl(absolutePath);
    }
@@ -84,14 +85,15 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
    }
 
    public String getFileName() {
-      return absolutePath != null && absolutePath.contains(PATH_DEVIDER) ?
-            absolutePath.substring(absolutePath.lastIndexOf(PATH_DEVIDER)) : "";
+      return absolutePath != null && absolutePath.contains(PATH_DEVIDER)
+            ? absolutePath.substring(absolutePath.lastIndexOf(PATH_DEVIDER))
+            : "";
    }
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       MediaPickerModelImpl that = (MediaPickerModelImpl) o;
 
@@ -105,9 +107,9 @@ public abstract class MediaPickerModelImpl implements MediaPickerModel, Parcelab
 
    @Override
    public String toString() {
-      return "MediaPickerModelImpl{" +
-            "dateTaken=" + dateTaken +
-            ", absolutePath='" + absolutePath + '\'' +
-            '}';
+      return "MediaPickerModelImpl{"
+            + "dateTaken=" + dateTaken
+            + ", absolutePath='" + absolutePath + '\''
+            + '}';
    }
 }

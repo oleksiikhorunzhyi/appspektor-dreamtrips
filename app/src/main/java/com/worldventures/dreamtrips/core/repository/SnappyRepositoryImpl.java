@@ -194,7 +194,9 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
 
    @Override
    public void saveTrips(List<TripModel> tripModels) {
-      if (tripModels == null) tripModels = new ArrayList<>();
+      if (tripModels == null) {
+         tripModels = new ArrayList<>();
+      }
       putList(TRIPS, tripModels);
    }
 
@@ -215,7 +217,9 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
 
    @Override
    public void savePins(List<Pin> pins) {
-      if (pins == null) pins = new ArrayList<>();
+      if (pins == null) {
+         pins = new ArrayList<>();
+      }
       putList(PINS, pins);
    }
 
@@ -258,7 +262,9 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
          List<TripModel> tripModels = new ArrayList<>();
          for (String uid : uids) {
             TripModel tripModel = db.get(TRIPS_DETAILS + uid, TripModel.class);
-            if (tripModel != null) tripModels.add(tripModel);
+            if (tripModel != null) {
+               tripModels.add(tripModel);
+            }
          }
          return tripModels;
       }).or(new ArrayList<>());

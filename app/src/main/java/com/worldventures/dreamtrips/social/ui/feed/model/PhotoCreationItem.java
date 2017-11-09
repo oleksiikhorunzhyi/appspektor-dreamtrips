@@ -37,6 +37,7 @@ public class PhotoCreationItem implements Parcelable {
    private Location locationFromExif;
 
    public PhotoCreationItem() {
+      //do nothing
    }
 
    public String getFileUri() {

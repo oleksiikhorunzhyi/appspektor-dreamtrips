@@ -124,7 +124,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    public void itemClicked(BucketItem bucketItem) {
-      if (!isTypeCorrect(bucketItem.getType()) && !bucketItems.contains(bucketItem)) return;
+      if (!isTypeCorrect(bucketItem.getType()) && !bucketItems.contains(bucketItem)) {
+         return;
+      }
 
       analyticsInteractor.analyticsActionPipe().send(BucketItemAction.view(bucketItem.getUid()));
       openDetails(bucketItem);
@@ -142,10 +144,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    private void openDetailsIfNeeded(BucketItem item) {
-      if (view == null || !view.isTabletLandscape()) return;
+      if (view == null || !view.isTabletLandscape()) {
+         return;
+      }
       //
-      if (item != null) openDetails(item);
-      else {
+      if (item != null) {
+         openDetails(item);
+      } else {
          view.hideDetailContainer();
       }
    }
@@ -198,7 +203,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    public void itemMoved(int fromPosition, int toPosition) {
-      if (fromPosition == toPosition) return;
+      if (fromPosition == toPosition) {
+         return;
+      }
       bucketInteractor.bucketListActionPipe()
             .send(BucketListCommand.move(getOriginalPosition(fromPosition), getOriginalPosition(toPosition), type));
    }

@@ -10,7 +10,8 @@ import rx.functions.Action1;
 import rx.functions.Func0;
 
 public class TripsDiskStorage extends PaginatedDiskStorage<TripModel> {
-   private SnappyRepository db;
+
+   private final SnappyRepository db;
 
    public TripsDiskStorage(SnappyRepository db) {
       this.db = db;

@@ -6,10 +6,10 @@ import java.util.Formatter;
 
 public class MediaStringUtils {
 
-   private StringBuilder mFormatBuilder = new StringBuilder();
-   private Formatter mFormatter = new Formatter(mFormatBuilder, LocaleHelper.getDefaultLocale());
-
    public String stringForTime(int timeMs) {
+      StringBuilder mFormatBuilder = new StringBuilder();
+      Formatter mFormatter = new Formatter(mFormatBuilder, LocaleHelper.getDefaultLocale());
+
       int totalSeconds = timeMs / 1000;
 
       int seconds = totalSeconds % 60;

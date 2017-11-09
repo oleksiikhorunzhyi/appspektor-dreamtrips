@@ -17,16 +17,18 @@ import java.util.List;
 @Layout(R.layout.fragment_presentation_videos)
 public class TrainingVideosFragment<T extends TrainingVideosPresenter> extends PresentationVideosFragment<T> implements TrainingVideosPresenter.View {
 
-   private FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
+   private final FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
 
-   private VideoHeaderDelegate videoHeaderDelegate = new VideoHeaderDelegate() {
+   private final VideoHeaderDelegate videoHeaderDelegate = new VideoHeaderDelegate() {
       @Override
       public void onLanguageClicked() {
          showDialog();
       }
 
       @Override
-      public void onCellClicked(MediaHeader model) { }
+      public void onCellClicked(MediaHeader model) {
+         //do nothing
+      }
    };
 
    @Override

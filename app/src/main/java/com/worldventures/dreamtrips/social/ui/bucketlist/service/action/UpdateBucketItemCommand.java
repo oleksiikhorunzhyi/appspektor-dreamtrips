@@ -12,7 +12,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class UpdateBucketItemCommand extends MappableApiActionCommand<UpdateBucketItemHttpAction, BucketItem, BucketItem> {
 
-   private BucketBody bucketBody;
+   private final BucketBody bucketBody;
 
    public UpdateBucketItemCommand(BucketBody bucketBody) {
       this.bucketBody = bucketBody;

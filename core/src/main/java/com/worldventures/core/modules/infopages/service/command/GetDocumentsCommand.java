@@ -2,15 +2,15 @@ package com.worldventures.core.modules.infopages.service.command;
 
 import com.worldventures.core.R;
 import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.janet.cache.storage.KeyValueStorage;
-import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
-import com.worldventures.dreamtrips.api.documents.GetDocumentsHttpAction;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.core.modules.infopages.model.Document;
+import com.worldventures.core.service.command.api_action.MappableApiActionCommand;
+import com.worldventures.dreamtrips.api.documents.GetDocumentsHttpAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +45,8 @@ public class GetDocumentsCommand extends MappableApiActionCommand<GetDocumentsHt
 
    @Override
    protected GetDocumentsHttpAction getHttpAction() {
-      com.worldventures.dreamtrips.api.documents.model.DocumentType type =
-         mapperyContext.convert(documentType, com.worldventures.dreamtrips.api.documents.model.DocumentType.class);
+      com.worldventures.dreamtrips.api.documents.model.DocumentType type
+            = mapperyContext.convert(documentType, com.worldventures.dreamtrips.api.documents.model.DocumentType.class);
       return new GetDocumentsHttpAction(type, getPage(), PER_PAGE);
    }
 
@@ -98,7 +98,7 @@ public class GetDocumentsCommand extends MappableApiActionCommand<GetDocumentsHt
    }
 
    private void clearCacheIfNeeded() {
-      if (refresh) cachedDocuments = null;
+      if (refresh) { cachedDocuments = null; }
    }
 
    protected int getPage() {
@@ -110,8 +110,8 @@ public class GetDocumentsCommand extends MappableApiActionCommand<GetDocumentsHt
 
    public List<Document> items() {
       List<Document> documents = new ArrayList<>();
-      if (cachedDocuments != null) documents.addAll(cachedDocuments);
-      if (getResult() != null) documents.addAll(getResult());
+      if (cachedDocuments != null) { documents.addAll(cachedDocuments); }
+      if (getResult() != null) { documents.addAll(getResult()); }
       return documents;
    }
 

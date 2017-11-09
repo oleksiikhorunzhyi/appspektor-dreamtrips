@@ -14,12 +14,12 @@ import timber.log.Timber;
 
 public class PhotoPickerLayoutDelegate {
 
-   private BackStackDelegate backStackDelegate;
+   private final static String PHOTO_PICKER_CHECK_MESSAGE = "Photo picker was not initialized";
 
-   private PhotoPickerLayout photoPickerLayout;
-   private Handler handler = new Handler();
+   private final BackStackDelegate backStackDelegate;
+   private final Handler handler = new Handler();
    private final Runnable openPikerTask = this::showPicker;
-
+   private PhotoPickerLayout photoPickerLayout;
 
    public PhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
       this.backStackDelegate = backStackDelegate;
@@ -44,8 +44,11 @@ public class PhotoPickerLayoutDelegate {
    }
 
    public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener listener) {
-      if (photoPickerLayout != null) photoPickerLayout.setPhotoPickerListener(listener);
-      else Timber.d("Photo picker was not initialized");
+      if (photoPickerLayout != null) {
+         photoPickerLayout.setPhotoPickerListener(listener);
+      } else {
+         Timber.d(PHOTO_PICKER_CHECK_MESSAGE);
+      }
    }
 
    public boolean isPanelVisible() {
@@ -53,8 +56,11 @@ public class PhotoPickerLayoutDelegate {
    }
 
    public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
-      if (photoPickerLayout != null) photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
-      else Timber.d("Photo picker was not initialized");
+      if (photoPickerLayout != null) {
+         photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
+      } else {
+         Timber.d(PHOTO_PICKER_CHECK_MESSAGE);
+      }
    }
 
    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -85,14 +91,18 @@ public class PhotoPickerLayoutDelegate {
             return false;
          });
          applyWhiteScreenWorkaround();
-      } else Timber.d("Photo picker was not initialized");
+      } else {
+         Timber.d(PHOTO_PICKER_CHECK_MESSAGE);
+      }
    }
 
    public void hidePicker() {
       if (photoPickerLayout != null) {
          photoPickerLayout.hidePanel();
          backStackDelegate.setListener(null);
-      } else Timber.d("Photo picker was not initialized");
+      } else {
+         Timber.d(PHOTO_PICKER_CHECK_MESSAGE);
+      }
    }
 
    /**
@@ -112,12 +122,16 @@ public class PhotoPickerLayoutDelegate {
    }
 
    public void disableEditTextUntilPickerIsShown(EditText editText) {
-      if (photoPickerLayout == null) return;
+      if (photoPickerLayout == null) {
+         return;
+      }
 
       photoPickerLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
          @Override
          public void onPanelSlide(View panel, float slideOffset) {
-            if (!editText.hasFocus()) editText.setEnabled(false);
+            if (!editText.hasFocus()) {
+               editText.setEnabled(false);
+            }
          }
 
          @Override

@@ -73,7 +73,8 @@ public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
 
    private Observable<String> getUploadingObservable() {
       return just(photoAttachment.getLocalPath()).map(localUri -> uploadingFileManager.copyFileIfNeed(localUri))
-            .flatMap(uri -> uploaderyInteractor.uploadImageActionPipe().createObservable(new SimpleUploaderyCommand(uri)))
+            .flatMap(uri -> uploaderyInteractor.uploadImageActionPipe()
+                  .createObservable(new SimpleUploaderyCommand(uri)))
             .doOnNext(this::handleUploadStatus)
             .compose(new ActionStateToActionTransformer<>())
             .map(action -> ((SimpleUploaderyCommand) action).getResult().response().uploaderyPhoto().location());

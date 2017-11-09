@@ -16,7 +16,7 @@ import rx.functions.Action1;
 public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEntityPresenter,
       T extends FeedItem> implements BaseFeedCell.FeedCellDelegate<T> {
 
-   private P presenter;
+   private final P presenter;
    private Action1<T> onEntityShownInCellAction;
 
    public FeedCellDelegate(P presenter) {
@@ -29,7 +29,9 @@ public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEnt
 
    @Override
    public void onEntityShownInCell(T feedItem) {
-      if (onEntityShownInCellAction != null) onEntityShownInCellAction.call(feedItem);
+      if (onEntityShownInCellAction != null) {
+         onEntityShownInCellAction.call(feedItem);
+      }
    }
 
    @Override
@@ -59,7 +61,7 @@ public class FeedCellDelegate<P extends FeedActionHandlerPresenter & FeedEditEnt
 
    @Override
    public void onCellClicked(T model) {
-
+      //do nothing
    }
 
    @Override

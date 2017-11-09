@@ -14,7 +14,7 @@ import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.techery.spares.utils.ui.OrientationUtil;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.ui.util.ViewUtils;
@@ -83,6 +83,8 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
          case R.id.action_done:
             getPresenter().onDone();
             router.back();
+            break;
+         default:
             break;
       }
       return true;

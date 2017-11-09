@@ -21,8 +21,10 @@ import java.util.Collections;
 
 import rx.Observable;
 
-public class FaceRecognitionUtils {
+public final class FaceRecognitionUtils {
 
+   private FaceRecognitionUtils() {
+   }
 
    public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
       return getRecognizedFacesInternal(context, bitmapObservable).onErrorResumeNext(e -> Observable.just(new ArrayList<>()));
@@ -36,7 +38,9 @@ public class FaceRecognitionUtils {
             .build();
 
       return bitmapObservable.doOnNext(bitmap -> {
-         if (!detector.isOperational()) throw new IllegalStateException();
+         if (!detector.isOperational()) {
+            throw new IllegalStateException();
+         }
       })
             .map(bitmap -> new Frame.Builder().setBitmap(bitmap).build())
             .map(frame -> new Pair<>(detector.detect(frame), new RectF(0, 0, frame.getMetadata()

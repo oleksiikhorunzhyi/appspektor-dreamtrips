@@ -58,6 +58,7 @@ public class ShareBundle implements Parcelable {
    }
 
    public ShareBundle() {
+      //do nothing
    }
 
    protected ShareBundle(Parcel in) {

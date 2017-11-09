@@ -5,7 +5,10 @@ import android.graphics.RectF;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.Position;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.TagPosition;
 
-public class CoordinatesTransformer {
+public final class CoordinatesTransformer {
+
+   private CoordinatesTransformer() {
+   }
 
    public static Position convertToProportional(Position position, RectF imageBounds) {
       float propX = (position.getX() - imageBounds.left) / (imageBounds.right - imageBounds.left);

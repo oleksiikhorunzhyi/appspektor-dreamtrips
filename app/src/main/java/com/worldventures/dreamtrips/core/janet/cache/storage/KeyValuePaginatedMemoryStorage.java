@@ -15,7 +15,7 @@ import java.util.Map;
 public class KeyValuePaginatedMemoryStorage<T> implements Storage<List<T>>, PaginatedStorage<List<T>>,
       KeyValueStorage<List<T>> {
 
-   private Map<String, List<T>> data = new HashMap<>();
+   private final Map<String, List<T>> data = new HashMap<>();
 
    @Override
    public synchronized void save(@Nullable CacheBundle params, List<T> newData) {

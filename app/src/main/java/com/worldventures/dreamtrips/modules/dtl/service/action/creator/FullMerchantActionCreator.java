@@ -7,7 +7,10 @@ import javax.inject.Inject;
 
 public class FullMerchantActionCreator implements HttpActionCreator<GetMerchantByIdHttpAction, FullMerchantActionParams> {
 
-   @Inject public FullMerchantActionCreator() {}
+   @Inject
+   public FullMerchantActionCreator() {
+      //do nothing
+   }
 
    @Override
    public GetMerchantByIdHttpAction createAction(FullMerchantActionParams params) {

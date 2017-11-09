@@ -70,6 +70,8 @@ public class PodcastService extends Service {
          case NOTIFICATION_ACTION_STOP:
             onPlayerCleanup();
             break;
+         default:
+            break;
       }
    }
 
@@ -118,7 +120,9 @@ public class PodcastService extends Service {
       Observable<DtPlayer> playerObservable = Observable.just(player);
       if (player.getState() == DtPlayer.State.UNKNOWN) {
          playerObservable = playerObservable.subscribeOn(Schedulers.io()).doOnNext(player -> {
-            if (isPreparingPlayer) return;
+            if (isPreparingPlayer) {
+               return;
+            }
             isPreparingPlayer = true;
             player.prepare();
             isPreparingPlayer = false;
@@ -132,7 +136,9 @@ public class PodcastService extends Service {
    ///////////////////////////////////////////////////////////////////////////
 
    public void startPlayer() {
-      if (player == null) return;
+      if (player == null) {
+         return;
+      }
 
       registerHeadphonesReceiver();
       wasPausedByTemporaryAudioFocusLoss = false;
@@ -150,13 +156,17 @@ public class PodcastService extends Service {
    }
 
    public void pausePlayer() {
-      if (player == null) return;
+      if (player == null) {
+         return;
+      }
       pausePlayerInternal(true);
    }
 
    private void pausePlayerInternal(boolean abandonAudiofocusCompletely) {
       player.pause();
-      if (abandonAudiofocusCompletely) abandonAudioFocusCompletely();
+      if (abandonAudiofocusCompletely) {
+         abandonAudioFocusCompletely();
+      }
       unregisterHeadphonesReceiver();
    }
 
@@ -181,15 +191,21 @@ public class PodcastService extends Service {
          activePlayerSubscription = null;
       }
       if (player != null) {
-         if (player.getState() != DtPlayer.State.STOPPED) player.stop();
-         if (player.getState() != DtPlayer.State.RELEASED) player.release();
+         if (player.getState() != DtPlayer.State.STOPPED) {
+            player.stop();
+         }
+         if (player.getState() != DtPlayer.State.RELEASED) {
+            player.release();
+         }
          player = null;
       }
       isPreparingPlayer = false;
    }
 
    public void seekTo(int position) {
-      if (player != null) player.seekTo(position);
+      if (player != null) {
+         player.seekTo(position);
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -197,18 +213,20 @@ public class PodcastService extends Service {
    ///////////////////////////////////////////////////////////////////////////
 
    private void processAudioFocusState(AudioFocusDelegate.AudioFocusState audioFocusState) {
-      if (player == null) return;
+      if (player == null) {
+         return;
+      }
       if (audioFocusState == AudioFocusDelegate.AudioFocusState.LOSS || audioFocusState == AudioFocusDelegate.AudioFocusState.LOSS_TRANSIENT) {
-         if (!player.isPlaying()) return;
+         if (!player.isPlaying()) {
+            return;
+         }
          if (audioFocusState == AudioFocusDelegate.AudioFocusState.LOSS_TRANSIENT) {
             wasPausedByTemporaryAudioFocusLoss = true;
          }
          boolean shouldAbandonAudioFocusCompletely = !wasPausedByTemporaryAudioFocusLoss;
          pausePlayerInternal(shouldAbandonAudioFocusCompletely);
-      } else if (audioFocusState == AudioFocusDelegate.AudioFocusState.GAINED) {
-         if (wasPausedByTemporaryAudioFocusLoss) {
-            startPlayer();
-         }
+      } else if (audioFocusState == AudioFocusDelegate.AudioFocusState.GAINED && wasPausedByTemporaryAudioFocusLoss) {
+         startPlayer();
       }
    }
 
@@ -218,7 +236,9 @@ public class PodcastService extends Service {
          audioFocusSubscription.unsubscribe();
          audioFocusSubscription = null;
       }
-      if (audioFocusDelegate != null) audioFocusDelegate.abandonFocus();
+      if (audioFocusDelegate != null) {
+         audioFocusDelegate.abandonFocus();
+      }
       audioFocusDelegate = null;
    }
 
@@ -253,8 +273,8 @@ public class PodcastService extends Service {
 
    @Override
    public void onDestroy() {
-      super.onDestroy();
       releasePlayerIfNeeded();
+      super.onDestroy();
    }
 
    @Override

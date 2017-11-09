@@ -6,7 +6,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.converter.Converter
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.entity.model.BaseEntityHolder
 import com.worldventures.dreamtrips.api.feed.converter.ImmutableObjFeedItem
@@ -40,7 +40,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Date
 import kotlin.test.assertTrue
 
 class NotificationFeedInteractorTest : BaseSpec({

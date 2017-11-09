@@ -43,10 +43,13 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      if (settingsList == null)
+      if (settingsList == null) {
          settingsList = (ArrayList<Setting>) SettingsManager.merge(db.getSettings(), SettingsFactory.createSettings(group));
+      }
       //
-      if (immutableSettingsList == null) immutableSettingsList = cloneList(settingsList);
+      if (immutableSettingsList == null) {
+         immutableSettingsList = cloneList(settingsList);
+      }
       //
       view.setSettings(settingsList);
       subscribeUpdateSettings();
@@ -65,6 +68,8 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
             break;
          case NOTIFICATIONS:
             analyticsInteractor.analyticsActionPipe().send(new TrackNotificationSettingsOpened());
+            break;
+         default:
             break;
       }
    }

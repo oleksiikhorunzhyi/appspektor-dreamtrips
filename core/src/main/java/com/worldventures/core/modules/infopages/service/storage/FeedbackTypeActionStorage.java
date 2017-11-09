@@ -13,7 +13,7 @@ import java.util.List;
 
 public class FeedbackTypeActionStorage implements ActionStorage<List<FeedbackType>> {
 
-   private InfopagesStorage storage;
+   private final InfopagesStorage storage;
 
    public FeedbackTypeActionStorage(InfopagesStorage storage) {
       this.storage = storage;

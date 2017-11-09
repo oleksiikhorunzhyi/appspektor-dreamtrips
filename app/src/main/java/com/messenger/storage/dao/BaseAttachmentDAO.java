@@ -26,13 +26,17 @@ public abstract class BaseAttachmentDAO<E extends BaseProviderModel> extends Bas
    }
 
    public void save(@Nullable List<E> attachments) {
-      if (attachments == null || attachments.isEmpty()) return;
+      if (attachments == null || attachments.isEmpty()) {
+         return;
+      }
 
       bulkInsert(attachments, getModelAdapter(), getModelTableUri());
    }
 
    public void save(@Nullable E attachment) {
-      if (attachment == null) return;
+      if (attachment == null) {
+         return;
+      }
       // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
       save(Collections.singletonList(attachment));
    }
@@ -46,17 +50,17 @@ public abstract class BaseAttachmentDAO<E extends BaseProviderModel> extends Bas
    protected abstract String getIDColumnName();
 
    public Observable<E> getAttachmentById(String attachmentId) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + getModelTableName() + " " +
-            "WHERE " + getIDColumnName() + "=?").withSelectionArgs(new String[]{attachmentId}).build();
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + getModelTableName() + " "
+            + "WHERE " + getIDColumnName() + "=?").withSelectionArgs(new String[]{attachmentId}).build();
       return query(q, getModelTableUri()).compose(DaoTransformers.toEntity(clazz));
    }
 
    public Observable<E> getAttachmentByMessageId(String messageId) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT m.* " +
-            "FROM " + getModelTableName() + " m " +
-            "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
-            "ON a." + DataAttachment$Table._ID + "=m." + getIDColumnName() + " " +
-            "WHERE a." + DataAttachment$Table.MESSAGEID + "=?").withSelectionArgs(new String[]{messageId}).build();
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT m.* "
+            + "FROM " + getModelTableName() + " m "
+            + "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a "
+            + "ON a." + DataAttachment$Table._ID + "=m." + getIDColumnName() + " "
+            + "WHERE a." + DataAttachment$Table.MESSAGEID + "=?").withSelectionArgs(new String[]{messageId}).build();
       return query(q, getModelTableUri()).compose(DaoTransformers.toEntity(clazz));
    }
 

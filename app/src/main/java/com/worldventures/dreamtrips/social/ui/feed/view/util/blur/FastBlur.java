@@ -2,7 +2,10 @@ package com.worldventures.dreamtrips.social.ui.feed.view.util.blur;
 
 import android.graphics.Bitmap;
 
-public class FastBlur {
+public final class FastBlur {
+
+   private FastBlur() {
+   }
 
    public static Bitmap blur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
 
@@ -42,7 +45,7 @@ public class FastBlur {
       }
 
       if (radius < 1) {
-         return (null);
+         return null;
       }
 
       int w = bitmap.getWidth();
@@ -236,6 +239,6 @@ public class FastBlur {
 
       bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
-      return (bitmap);
+      return bitmap;
    }
 }

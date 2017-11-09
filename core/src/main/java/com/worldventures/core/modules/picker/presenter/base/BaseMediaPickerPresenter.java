@@ -1,7 +1,7 @@
 package com.worldventures.core.modules.picker.presenter.base;
 
-import com.worldventures.core.modules.picker.viewmodel.BaseMediaPickerViewModel;
 import com.worldventures.core.modules.picker.view.base.BaseMediaPickerView;
+import com.worldventures.core.modules.picker.viewmodel.BaseMediaPickerViewModel;
 
 import java.util.List;
 

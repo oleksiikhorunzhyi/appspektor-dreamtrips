@@ -78,7 +78,9 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
       view.finishLoading();
       view.refreshNotifications(items);
       //
-      if (!noMoreItems) feedInteractor.markNotificationsPipe().send(new MarkNotificationsAsReadCommand(newItems));
+      if (!noMoreItems) {
+         feedInteractor.markNotificationsPipe().send(new MarkNotificationsAsReadCommand(newItems));
+      }
    }
 
 

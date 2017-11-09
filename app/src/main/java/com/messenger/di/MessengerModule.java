@@ -15,7 +15,6 @@ import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.AppNotificationImpl;
-import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.di.qualifier.ForApplication;
@@ -34,8 +33,7 @@ import dagger.Provides;
       injects = {GroupConversationViewHolder.class, OneToOneConversationViewHolder.class, ClosedGroupConversationViewHolder.class,
             // adapters
             SwipeableContactsAdapter.class,
-
-            GroupChatEventDelegate.class,},
+            GroupChatEventDelegate.class},
       complete = false, library = true)
 public class MessengerModule {
 
@@ -69,7 +67,7 @@ public class MessengerModule {
 
    @Provides
    public AppNotification provideInAppNotification(App app) {
-      return new AppNotificationImpl(app);
+      return new AppNotificationImpl();
    }
 
    @Provides

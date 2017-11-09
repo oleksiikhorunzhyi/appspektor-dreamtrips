@@ -2,7 +2,10 @@ package com.worldventures.core.utils;
 
 import android.support.annotation.StringRes;
 
-public class QuantityHelper {
+public final class QuantityHelper {
+
+   private QuantityHelper() {
+   }
 
    public static
    @StringRes

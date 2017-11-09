@@ -76,8 +76,8 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
 
    private void trackSharing() {
       InviteTemplate.Type type = template.getType();
-      analyticsInteractor.analyticsActionPipe().send(type == InviteTemplate.Type.EMAIL ?
-            new InviteShareEmailAction() : new InviteShareSmsAction());
+      analyticsInteractor.analyticsActionPipe().send(type == InviteTemplate.Type.EMAIL
+            ? new InviteShareEmailAction() : new InviteShareSmsAction());
    }
 
    public void previewAction() {

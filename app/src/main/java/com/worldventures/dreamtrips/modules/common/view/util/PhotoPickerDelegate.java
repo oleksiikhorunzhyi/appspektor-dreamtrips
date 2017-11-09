@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 import android.os.Bundle;
 import android.view.View;
 
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import java.util.List;
 
@@ -26,7 +26,9 @@ public class PhotoPickerDelegate {
    }
 
    public void attachScrollableView(View view) {
-      if (photoPickerLayout != null) photoPickerLayout.setScrollableView(view);
+      if (photoPickerLayout != null) {
+         photoPickerLayout.setScrollableView(view);
+      }
    }
 
    public void openFacebookAlbums() {
@@ -53,11 +55,15 @@ public class PhotoPickerDelegate {
    }
 
    public void onOpened() {
-      if (photoPickerListener != null) photoPickerListener.onOpened();
+      if (photoPickerListener != null) {
+         photoPickerListener.onOpened();
+      }
    }
 
    public void onClosed() {
-      if (photoPickerListener != null) photoPickerListener.onClosed();
+      if (photoPickerListener != null) {
+         photoPickerListener.onClosed();
+      }
    }
 
    public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener photoPickerListener) {

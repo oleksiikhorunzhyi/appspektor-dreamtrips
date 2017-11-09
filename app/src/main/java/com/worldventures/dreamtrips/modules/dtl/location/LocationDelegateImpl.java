@@ -87,8 +87,9 @@ public class LocationDelegateImpl implements LocationDelegate {
 
    private Observable<Location> settingsResultObtained(LocationSettingsResult locationSettingsResult) {
       Status status = locationSettingsResult.getStatus();
-      if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED)
+      if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
          return Observable.error(new LocationException(status));
+      }
       return reactiveLocationProvider.getUpdatedLocation(provideLocationRequest());
    }
 

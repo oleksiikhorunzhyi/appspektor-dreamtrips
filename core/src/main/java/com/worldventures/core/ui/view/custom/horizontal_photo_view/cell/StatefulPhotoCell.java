@@ -20,15 +20,16 @@ import com.worldventures.core.ui.view.cell.CellDelegate;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
-public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends CellDelegate<EntityStateHolder<Photo>>>
-      extends AbstractDelegateCell<EntityStateHolder<Photo>, Delegate> {
+public class StatefulPhotoCell<P extends ImagePathHolder, D extends CellDelegate<EntityStateHolder<P>>>
+      extends AbstractDelegateCell<EntityStateHolder<P>, D> {
 
    protected SimpleDraweeView ivPhoto;
    private FabButton fabProgress;
    private CircleImageView circleView;
 
    public StatefulPhotoCell(View view) {
-      super(LayoutInflater.from(view.getContext()).inflate(R.layout.item_horizantal_photo_cell, (ViewGroup)view, false));
+      super(LayoutInflater.from(view.getContext())
+            .inflate(R.layout.item_horizantal_photo_cell, (ViewGroup) view, false));
       setUpView();
    }
 
@@ -48,7 +49,7 @@ public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends C
 
    @Override
    protected void syncUIStateWithModel() {
-      Photo model = getModelObject().entity();
+      P model = getModelObject().entity();
       EntityStateHolder.State state = getModelObject().state();
 
       final Uri uri = model.getImagePath() == null ? null : Uri.parse(model.getImagePath());
@@ -82,6 +83,8 @@ public class StatefulPhotoCell<Photo extends ImagePathHolder, Delegate extends C
             circleView.setColor(color);
          }
          break;
+         default:
+            break;
       }
    }
 

@@ -3,8 +3,8 @@ package com.worldventures.core.modules.picker.viewmodel;
 
 import android.net.Uri;
 
-import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.core.modules.picker.util.adapter.MediaPickerHolderFactory;
+import com.worldventures.core.utils.ValidationUtils;
 
 public class GalleryVideoPickerViewModel extends GalleryMediaPickerViewModel {
 

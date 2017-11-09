@@ -13,8 +13,8 @@ public class PostCompoundOperationModelComparator implements Comparator<PostComp
 
    @Override
    public int compare(PostCompoundOperationModel o1, PostCompoundOperationModel o2) {
-      int displayPriorityDiff = getDisplayPriorityByState(o2.state()) -
-            getDisplayPriorityByState(o1.state());
+      int displayPriorityDiff = getDisplayPriorityByState(o2.state())
+            - getDisplayPriorityByState(o1.state());
       if (displayPriorityDiff == 0 && o1.state().equals(o2.state())) {
          return o2.creationDate().compareTo(o1.creationDate());
       }

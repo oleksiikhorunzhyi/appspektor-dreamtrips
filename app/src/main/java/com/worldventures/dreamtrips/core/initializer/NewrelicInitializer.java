@@ -15,7 +15,9 @@ public class NewrelicInitializer implements AppInitializer {
 
    @Override
    public void initialize(Injector injector) {
-      if (BuildConfig.DEBUG || !BuildConfig.NEWRELIC_ENABLED) return;
+      if (BuildConfig.DEBUG || !BuildConfig.NEWRELIC_ENABLED) {
+         return;
+      }
       //
       injector.inject(this);
       NewRelic.withApplicationToken(BuildConfig.NEWRELIC_API_KEY).start(application);

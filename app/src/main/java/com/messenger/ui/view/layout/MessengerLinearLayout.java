@@ -19,9 +19,7 @@ import rx.subjects.PublishSubject;
 
 public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>> extends BaseViewStateLinearLayout<V, P> implements MessengerScreen {
 
-   private MessengerConnectionOverlay messengerConnectionOverlay;
-
-   private PublishSubject<Void> detachStopper = PublishSubject.create();
+   private final PublishSubject<Void> detachStopper = PublishSubject.create();
 
    private Bundle lastRestoredInstanceState;
 
@@ -45,7 +43,7 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
 
    @Override
    public void initDisconnectedOverlay(Observable<ConnectionState> syncStatus) {
-      messengerConnectionOverlay = new MessengerConnectionOverlay(new MessengerConnectionOverlayViewFactory(getContext(),
+      MessengerConnectionOverlay messengerConnectionOverlay = new MessengerConnectionOverlay(new MessengerConnectionOverlayViewFactory(getContext(),
             this));
       messengerConnectionOverlay.getRetryObservable()
             .compose(bindView())

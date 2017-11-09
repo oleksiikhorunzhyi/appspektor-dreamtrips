@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(injects = {NavigationDrawerPresenter.class,}, library = true, complete = false)
+@Module(injects = {NavigationDrawerPresenter.class}, library = true, complete = false)
 public class NavigationModule {
 
    @Provides

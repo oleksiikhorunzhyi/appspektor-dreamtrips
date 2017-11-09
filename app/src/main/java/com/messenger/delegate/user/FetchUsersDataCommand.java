@@ -2,7 +2,7 @@ package com.messenger.delegate.user;
 
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class FetchUsersDataCommand extends Command<List<DataUser>> implements InjectableAction {
+public final class FetchUsersDataCommand extends Command<List<DataUser>> implements InjectableAction {
 
    @Inject UserDataFetcher userDataFetcher;
 

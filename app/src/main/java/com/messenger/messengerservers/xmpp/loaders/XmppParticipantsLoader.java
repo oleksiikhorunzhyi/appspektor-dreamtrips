@@ -57,8 +57,10 @@ public class XmppParticipantsLoader {
          participantsPacket.setFrom(connection.getUser());
 
          try {
-            connection.sendStanzaWithResponseCallback(participantsPacket, stanza -> stanzaFilter(stanza, conversationId), packet -> processPacket((ConversationParticipantsIQ) packet, conversationId, subscriber), exception -> pushParticipantsListToSubscriber(Collections
-                  .emptyList(), subscriber));
+            connection.sendStanzaWithResponseCallback(participantsPacket,
+                  stanza -> stanzaFilter(stanza, conversationId),
+                  packet -> processPacket((ConversationParticipantsIQ) packet, conversationId, subscriber),
+                  exception -> pushParticipantsListToSubscriber(Collections.emptyList(), subscriber));
          } catch (SmackException.NotConnectedException e) {
             subscriber.onError(e);
          }
@@ -88,7 +90,9 @@ public class XmppParticipantsLoader {
    }
 
    private void pushParticipantsListToSubscriber(List<Participant> participants, Subscriber<? super List<Participant>> subscriber) {
-      if (subscriber.isUnsubscribed()) return;
+      if (subscriber.isUnsubscribed()) {
+         return;
+      }
 
       subscriber.onNext(participants);
       subscriber.onCompleted();

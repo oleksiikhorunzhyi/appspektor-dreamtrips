@@ -103,7 +103,9 @@ public class HashtagTextView extends AppCompatTextView {
       spannable.setSpan(new HashtagClickableSpan(hashtagTextColor) {
          @Override
          public void onClick(View widget) {
-            if (hashtagClickListener != null) hashtagClickListener.onHashtagClicked(callbackString);
+            if (hashtagClickListener != null) {
+               hashtagClickListener.onHashtagClicked(callbackString);
+            }
          }
       }, start, end, 0);
    }
@@ -151,7 +153,7 @@ public class HashtagTextView extends AppCompatTextView {
 
    private static class RoundedBackgroundSpan extends ReplacementSpan {
 
-      final int CORNER_RADIUS = 8;
+      private final static int CORNER_RADIUS = 8;
       @ColorInt int textColor;
       @ColorInt int backgroundColor;
 

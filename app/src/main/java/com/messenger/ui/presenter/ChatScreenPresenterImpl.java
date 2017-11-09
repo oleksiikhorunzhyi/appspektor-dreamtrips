@@ -189,7 +189,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             .skip(1)
             .compose(bindViewIoToMainComposer())
             .subscribe(changedToPresent -> {
-               if (changedToPresent) messagesPaginationDelegate.loadFirstPage();
+               if (changedToPresent) {
+                  messagesPaginationDelegate.loadFirstPage();
+               }
             });
    }
 
@@ -332,8 +334,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
    public boolean sendMessage(String message) {
       String finalMessage = message.trim();
 
-      if (TextUtils.isEmpty(finalMessage)) return false;
-      else {
+      if (TextUtils.isEmpty(finalMessage)) {
+         return false;
+      } else {
          chatMessageManager.sendMessage(conversationId, message);
          return true;
       }
@@ -421,6 +424,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                      }
                   });
             return true;
+         default:
+            break;
       }
       return false;
    }
@@ -455,6 +460,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             break;
          case AttachmentMenuItem.IMAGE:
             getView().showPicker();
+            break;
+         default:
             break;
       }
    }
@@ -556,7 +563,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
    @Override
    public void applyViewState() {
-      if (!isViewAttached()) return;
+      if (!isViewAttached()) {
+         return;
+      }
 
       ChatScreen chatScreen = getView();
       ChatLayoutViewState viewState = getViewState();
@@ -569,6 +578,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             break;
          case ERROR:
             chatScreen.showError(viewState.getError());
+            break;
+         default:
             break;
       }
    }

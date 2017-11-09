@@ -51,10 +51,11 @@ import timber.log.Timber;
  * Uses {@link PathContext} to allow customized sub-containers.
  */
 public class SimplePathContainer extends PathContainer {
+
    private static final Map<Class, Integer> PATH_LAYOUT_CACHE = new LinkedHashMap<>();
    private final PathContextFactory contextFactory;
-   private Context context;
-   private DtlAnimatorRegistrar animatorRegistrar = new DtlAnimatorRegistrar();
+   private final Context context;
+   private final DtlAnimatorRegistrar animatorRegistrar = new DtlAnimatorRegistrar();
 
    public SimplePathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
       super(tagKey);
@@ -84,7 +85,9 @@ public class SimplePathContainer extends PathContainer {
          ((InjectorHolder) newView).setInjector((Injector) context);
       }
       //
-      if (newView instanceof PathView) ((PathView) newView).setPath(to);
+      if (newView instanceof PathView) {
+         ((PathView) newView).setPath(to);
+      }
       //
       final View fromView;
       if (traversalState.fromPath() != null) {
@@ -102,7 +105,7 @@ public class SimplePathContainer extends PathContainer {
       }
       //
       containerView.addView(newView);
-      Utils.waitForMeasure(newView, ((view, width, height) -> {
+      Utils.waitForMeasure(newView, (view, width, height) -> {
 
          AnimatorFactory factory = animatorRegistrar != null ? animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to) : null;
          if (factory == null) {
@@ -118,7 +121,7 @@ public class SimplePathContainer extends PathContainer {
             }
          });
          animator.start();
-      }), view -> {
+      }, view -> {
          finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
          String logMessage = String.format(Locale.US, "Measuring new view failed: fromView = %s, newView = %s",
                fromView.getClass(), newView.getClass());
@@ -129,8 +132,11 @@ public class SimplePathContainer extends PathContainer {
    }
 
    private void finalizeViewTransition(ViewGroup containerView, @Nullable View fromView, PathContext pathContext, PathContext oldPath, Flow.TraversalCallback callback) {
-      if (fromView == null) containerView.removeAllViews();
-      else containerView.removeView(fromView);
+      if (fromView == null) {
+         containerView.removeAllViews();
+      } else {
+         containerView.removeView(fromView);
+      }
       oldPath.destroyNotIn(pathContext, contextFactory);
       callback.onTraversalCompleted();
    }

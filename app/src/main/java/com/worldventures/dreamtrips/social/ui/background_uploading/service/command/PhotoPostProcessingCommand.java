@@ -67,7 +67,9 @@ public class PhotoPostProcessingCommand extends PostProcessingCommand<PostWithPh
    @Override
    protected void cancel() {
       super.cancel();
-      if (actionPipe != null) actionPipe.cancelLatest();
+      if (actionPipe != null) {
+         actionPipe.cancelLatest();
+      }
    }
 
    private Observable<PostCompoundOperationModel<PostWithPhotoAttachmentBody>> createPhotosEntities(PostCompoundOperationModel<PostWithPhotoAttachmentBody> postOperationModel) {
@@ -90,10 +92,12 @@ public class PhotoPostProcessingCommand extends PostProcessingCommand<PostWithPh
     * (there are complications to add createdAt in feed on server as well)
     */
    private void copyCreatedAtFromUploadedPhotos(PostWithPhotoAttachmentBody body) {
-      if (body.uploadedPhotos() == null) return;
+      if (body.uploadedPhotos() == null) {
+         return;
+      }
       try {
          for (Photo photo : body.uploadedPhotos()) {
-            List<Photo> addedPhotos = Queryable.from((body.createdPost()).getAttachments())
+            List<Photo> addedPhotos = Queryable.from(body.createdPost().getAttachments())
                   .filter(holder -> holder.getItem() instanceof Photo)
                   .map(holder -> (Photo) holder.getItem())
                   .toList();

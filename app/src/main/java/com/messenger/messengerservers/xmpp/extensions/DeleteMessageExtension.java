@@ -20,7 +20,7 @@ public class DeleteMessageExtension implements ExtensionElement {
    public static final String NAMESPACE = "worldventures.com#user";
    public static final String ELEMENT = "x";
 
-   private List<DeletedMessage> deletedMessageList;
+   private final List<DeletedMessage> deletedMessageList;
 
    public DeleteMessageExtension(List<DeletedMessage> deletedMessageList) {
       this.deletedMessageList = deletedMessageList;
@@ -43,8 +43,7 @@ public class DeleteMessageExtension implements ExtensionElement {
    @Override
    public CharSequence toXML() {
       // not needed now
-      XmlStringBuilder xml = new XmlStringBuilder(this);
-      return xml;
+      return new XmlStringBuilder(this);
    }
 
    public static class Provider extends ExtensionElementProvider<DeleteMessageExtension> {

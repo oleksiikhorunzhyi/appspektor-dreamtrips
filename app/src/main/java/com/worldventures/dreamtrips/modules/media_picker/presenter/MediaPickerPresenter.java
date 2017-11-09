@@ -4,12 +4,12 @@ import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
-import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -27,8 +27,8 @@ import static com.worldventures.dreamtrips.modules.facebook.view.fragment.Facebo
 public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    private static final String THREAD_NAME_PREFIX = "MEDIA_PICKER_THREAD";
 
-   private int requestId;
-   private int videoLengthLimit;
+   private final int requestId;
+   private final int videoLengthLimit;
 
    @Inject MediaPickerEventDelegate mediaPickerEventDelegate;
    @Inject MediaPickerImagesProcessedEventDelegate mediaPickerImagesProcessedEventDelegate;
@@ -76,12 +76,16 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    private void closeMediaPicker() {
       // need to call back, because this event comes from camera and picker
       // done method isn't called and picker won't close
-      if (view != null) view.back();
+      if (view != null) {
+         view.back();
+      }
    }
 
    public void attachMedia(List<MediaPickerModel> pickedImages, VideoPickerModel pickedVideo, int type) {
       MediaPickerAttachment.Source source = MediaPickerAttachment.Source.GALLERY;
-      if (type == PHOTOS_TYPE_FACEBOOK) source = MediaPickerAttachment.Source.FACEBOOK;
+      if (type == PHOTOS_TYPE_FACEBOOK) {
+         source = MediaPickerAttachment.Source.FACEBOOK;
+      }
 
       mediaPickerImagesProcessedEventDelegate.post(true);
       getPhotosAttachmentsObservable(pickedImages, source)
@@ -98,7 +102,9 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
    }
 
    private Observable<MediaPickerAttachment> getPhotosAttachmentsObservable(List<MediaPickerModel> pickedImages, MediaPickerAttachment.Source source) {
-      if (pickedImages == null || pickedImages.isEmpty()) return Observable.empty();
+      if (pickedImages == null || pickedImages.isEmpty()) {
+         return Observable.empty();
+      }
       return Observable.from(pickedImages)
             .map(element -> capturedRowMediaHelper.processPhotoModel(element.getAbsolutePath()))
             .map(photoGalleryModel -> {

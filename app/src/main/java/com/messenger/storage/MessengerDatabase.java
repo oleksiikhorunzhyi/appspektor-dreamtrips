@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.BuildConfig;
                  databaseName = MessengerDatabase.NAME,
                  baseContentUri = ContentResolver.SCHEME_CONTENT)
 @Database(name = MessengerDatabase.NAME, version = MessengerDatabase.VERSION)
-public class MessengerDatabase {
+public class MessengerDatabase { //NOPMD
 
    public static final String AUTHORITY = BuildConfig.APPLICATION_ID;
    public static final String NAME = "MessengerDatabase";

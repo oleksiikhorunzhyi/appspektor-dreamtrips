@@ -6,13 +6,16 @@ import android.location.Location;
 
 import com.worldventures.dreamtrips.modules.picklocation.view.PickLocationActivity;
 
-public class LocationPicker {
+public final class LocationPicker {
 
    private static final int REQUEST_CODE_PICK_LOCATION = 29135;
 
    public static final String BASE_EXTRA = LocationPicker.class.getSimpleName();
    public static final String LOCATION_EXTRA = BASE_EXTRA + "ERROR_EXTRA";
    public static final String ERROR_EXTRA = BASE_EXTRA + "LOCATION_EXTRA";
+
+   private LocationPicker() {
+   }
 
    public static void start(Activity activity) {
       activity.startActivityForResult(new Intent(activity, PickLocationActivity.class), REQUEST_CODE_PICK_LOCATION);

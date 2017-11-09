@@ -30,7 +30,7 @@ public class SettingsStorageImpl extends BaseSnappyRepository implements Setting
    @Override
    public void saveSettings(List<Setting> settingsList, boolean withClear) {
       act(db -> {
-         if (withClear) internalClear(db);
+         if (withClear) { internalClear(db); }
          //
          for (Setting settings : settingsList) {
             db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);

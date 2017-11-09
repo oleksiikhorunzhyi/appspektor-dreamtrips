@@ -7,18 +7,19 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
 import javax.inject.Inject;
 
-
 public class FlaggingActionCreator implements HttpActionCreator<AddFlaggingReviewAction, FlaggingReviewActionParams> {
 
    @Inject
-   public FlaggingActionCreator(){}
+   public FlaggingActionCreator() {
+      //do nothing
+   }
 
    @Override
    public AddFlaggingReviewAction createAction(FlaggingReviewActionParams params) {
       return new AddFlaggingReviewAction("", ImmutableSdkFlaggingReviewParams.builder()
-                                          .authorIpAddress(NetworkUtils.getIpAddress(true))
-                                          .contentType(1)
-                                          .feedbackType(1)
-                                          .build());
+            .authorIpAddress(NetworkUtils.getIpAddress(true))
+            .contentType(1)
+            .feedbackType(1)
+            .build());
    }
 }

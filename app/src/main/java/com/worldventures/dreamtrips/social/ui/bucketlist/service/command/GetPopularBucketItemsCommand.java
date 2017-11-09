@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListActivitiesHttpAction;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketListDiningsHttpAction;
@@ -53,6 +53,8 @@ public class GetPopularBucketItemsCommand extends CommandWithError<List<PopularB
                   .createObservableResult(new GetBucketListDiningsHttpAction())
                   .map(GetBucketListDiningsHttpAction::response)
                   .map(items -> mapperyContext.convert(items, PopularBucketItem.class));
+         default:
+            break;
       }
       return Observable.error(new IllegalStateException("Wrong type was passed"));
    }

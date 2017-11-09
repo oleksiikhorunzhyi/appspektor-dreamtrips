@@ -113,6 +113,8 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
          case PREPARING:
             getView().setPreparing();
             break;
+         default:
+            break;
       }
    }
 
@@ -127,8 +129,11 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
          if (player.getState() == ReadOnlyPlayer.State.ERROR) {
             podcastPlayerDelegate.stop();
             startPlayback();
-         } else if (player.isPlaying()) podcastPlayerDelegate.pause();
-         else podcastPlayerDelegate.start();
+         } else if (player.isPlaying()) {
+            podcastPlayerDelegate.pause();
+         } else {
+            podcastPlayerDelegate.start();
+         }
       });
    }
 

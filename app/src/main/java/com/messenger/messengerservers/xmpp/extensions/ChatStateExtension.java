@@ -12,6 +12,7 @@ import org.xmlpull.v1.XmlPullParser;
 import timber.log.Timber;
 
 public class ChatStateExtension implements ExtensionElement {
+
    public static final String NAMESPACE = "jabber:x:event";
    public static final String ELEMENT = "x";
 
@@ -64,12 +65,16 @@ public class ChatStateExtension implements ExtensionElement {
          try {
             while (!(XmlPullParser.END_TAG == parser.next() && TextUtils.equals(ELEMENT, parser.getName()))) {
                String name = parser.getName();
-               if (name == null) continue;
+               if (name == null) {
+                  continue;
+               }
                switch (name) {
                   case ELEMENT_COMPOSING:
                      return new ChatStateExtension(ChatState.COMPOSING);
                   case ELEMENT_DISPLAYED:
                      state = ChatState.NONE;
+                     break;
+                  default:
                      break;
                }
             }

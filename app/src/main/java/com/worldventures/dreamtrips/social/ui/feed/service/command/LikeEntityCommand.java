@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class LikeEntityCommand extends ApiActionCommand<LikeHttpAction, FeedEntity> {
 
-   private FeedEntity feedEntity;
+   private final FeedEntity feedEntity;
 
    public LikeEntityCommand(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;

@@ -16,13 +16,13 @@ import com.worldventures.core.modules.infopages.service.command.SendFeedbackComm
 import com.worldventures.core.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.FeedbackImageAttachmentsFragment;
+import com.worldventures.wallet.util.WalletFilesUtils;
 
 import java.util.List;
 
@@ -132,14 +132,22 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    private boolean validateForm(FeedbackType feedbackType, CharSequence message,
          boolean photoPickerVisible, EntityStateHolder<FeedbackImageAttachment> stateHolder) {
       boolean feedbackTypeSelected = feedbackType.getId() > 0;
-      if (!feedbackTypeSelected) return false;
+      if (!feedbackTypeSelected) {
+         return false;
+      }
 
       boolean messageIsEmpty = message.toString().trim().isEmpty();
-      if (messageIsEmpty) return false;
+      if (messageIsEmpty) {
+         return false;
+      }
 
-      if (photoPickerVisible) return false;
+      if (photoPickerVisible) {
+         return false;
+      }
 
-      if (attachmentsManager.getFailedOrPendingAttachmentsCount() > 0) return false;
+      if (attachmentsManager.getFailedOrPendingAttachmentsCount() > 0) {
+         return false;
+      }
 
       return true;
    }
@@ -172,10 +180,12 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
                         getImageAttachments()))
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                   .build();
-            router.moveTo(Route.FEEDBACK_IMAGE_ATTACHMENTS, config);
+            router.moveTo(FeedbackImageAttachmentsFragment.class, config);
             break;
          case FAIL:
             view.showRetryUploadingUiForAttachment(holder);
+            break;
+         default:
             break;
       }
    }

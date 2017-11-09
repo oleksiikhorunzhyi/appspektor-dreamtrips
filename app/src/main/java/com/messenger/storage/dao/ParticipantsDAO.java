@@ -59,11 +59,11 @@ public class ParticipantsDAO extends BaseDAO {
 
    @NonNull
    private static String participantsSelection(String projection) {
-      return "SELECT " + projection + " FROM Users u " +
-            "JOIN " + DataParticipant.TABLE_NAME + " p " +
-            "ON p.userId = u._id " +
-            "WHERE p.conversationId = ? " +
-            "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'";
+      return "SELECT " + projection + " FROM Users u "
+            + "JOIN " + DataParticipant.TABLE_NAME + " p "
+            + "ON p.userId = u._id "
+            + "WHERE p.conversationId = ? "
+            + "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'";
    }
 
    @NonNull
@@ -72,33 +72,34 @@ public class ParticipantsDAO extends BaseDAO {
    }
 
    public void delete(String conversationId, String userId) {
-      getContentResolver().delete(DataParticipant.CONTENT_URI, DataParticipant$Table.CONVERSATIONID + "=? AND " +
-            DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
+      getContentResolver().delete(DataParticipant.CONTENT_URI, DataParticipant$Table.CONVERSATIONID + "=? AND "
+            + DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
    }
 
    public void save(List<DataParticipant> participants) {
       bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public void deleteBySyncTime(long time, @NonNull String conversationId) {
-      String where = DataParticipant$Table.SYNCTIME + " < " + "?" +
-            " AND " + DataParticipant$Table.CONVERSATIONID + " =? " +
-            " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
-            "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
-            " FROM " + DataConversation$Table.TABLE_NAME +
-            " WHERE " + DataParticipant$Table.CONVERSATIONID + " =? " +
-            " AND " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
-            DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
+      String where = DataParticipant$Table.SYNCTIME + " < " + "?"
+            + " AND " + DataParticipant$Table.CONVERSATIONID + " =? "
+            + " AND " + DataParticipant$Table.SYNCTIME + " NOT IN "
+            + "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME
+            + " FROM " + DataConversation$Table.TABLE_NAME
+            + " WHERE " + DataParticipant$Table.CONVERSATIONID + " =? "
+            + " AND " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = "
+            + DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
       getContentResolver().delete(DataParticipant.CONTENT_URI, where, new String[]{String.valueOf(time), conversationId, conversationId});
    }
 
    public void deleteBySyncTime(long time) {
-      String where = DataParticipant$Table.SYNCTIME + " < " + "?" +
-            " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
-            "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
-            " FROM " + DataConversation$Table.TABLE_NAME +
-            " WHERE " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
-            DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
+      String where = DataParticipant$Table.SYNCTIME + " < " + "?"
+            + " AND " + DataParticipant$Table.SYNCTIME + " NOT IN "
+            + "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME
+            + " FROM " + DataConversation$Table.TABLE_NAME
+            + " WHERE " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = "
+            + DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
       getContentResolver().delete(DataParticipant.CONTENT_URI, where, new String[]{String.valueOf(time)});
    }
 }

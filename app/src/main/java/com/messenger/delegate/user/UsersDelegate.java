@@ -47,7 +47,9 @@ public class UsersDelegate {
    private List<MessengerUser> obtainNotExistingUsers(List<String> existingUserIds, List<String> userIds) {
       return Queryable.from(userIds).filter(id -> {
          for (String existingUserId : existingUserIds) {
-            if (TextUtils.equals(existingUserId, id)) return false;
+            if (TextUtils.equals(existingUserId, id)) {
+               return false;
+            }
          }
          return true;
       }).map(MessengerUser::new).toList();

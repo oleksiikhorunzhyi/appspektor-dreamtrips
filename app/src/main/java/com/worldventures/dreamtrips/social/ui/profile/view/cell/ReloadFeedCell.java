@@ -30,7 +30,9 @@ public class ReloadFeedCell extends BaseAbstractDelegateCell<ReloadFeedModel, Ce
    @OnClick(R.id.profile_feed_reload)
    protected void onProfileFeedReload() {
       itemView.setVisibility(View.GONE);
-      if (cellDelegate != null) cellDelegate.onCellClicked(getModelObject());
+      if (cellDelegate != null) {
+         cellDelegate.onCellClicked(getModelObject());
+      }
    }
 
    @Override

@@ -4,7 +4,10 @@ import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 
 import java.util.List;
 
-public class ListStorageOperationFactory {
+public final class ListStorageOperationFactory {
+
+   private ListStorageOperationFactory() {
+   }
 
    public static ListStorageOperation refreshItemsOperation(List<FeedItem> items) {
       return new RefreshStorageOperation(items);

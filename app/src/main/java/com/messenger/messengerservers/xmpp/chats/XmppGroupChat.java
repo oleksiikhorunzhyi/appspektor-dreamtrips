@@ -53,14 +53,16 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
       String jid = JidCreatorHelper.obtainGroupJid(roomId);
       MultiUserChat chat = MultiUserChatManager.getInstanceFor(connection).getMultiUserChat(jid);
 
-      if (chat.isJoined()) return chat;
+      if (chat.isJoined()) {
+         return chat;
+      }
 
       try {
          chat.createOrJoin(userId);
       } catch (XMPPException.XMPPErrorException e) {
          XMPPError error = e.getXMPPError();
          if (error != null && error.getType() == XMPPError.Type.AUTH) {
-            throw new AccessConversationDeniedException();
+            throw new AccessConversationDeniedException(e);
          } else {
             throw new ProtocolException(e);
          }
@@ -145,9 +147,11 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
    public Observable<GroupChat> setSubject(@Nullable String subject) {
       chatPreconditions.checkUserIsOwner();
 
-      if (TextUtils.isEmpty(subject)) return Observable.just(XmppGroupChat.this);
+      if (TextUtils.isEmpty(subject)) {
+         return Observable.just(this);
+      }
 
-      return chatActionObservable(chat -> chat.changeSubject(subject)).map(aVoid -> XmppGroupChat.this);
+      return chatActionObservable(chat -> chat.changeSubject(subject)).map(aVoid -> this);
    }
 
    @Override
@@ -158,7 +162,7 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
          org.jivesoftware.smack.packet.Message message = new org.jivesoftware.smack.packet.Message();
          message.addExtension(new ChangeAvatarExtension(avatar));
          chat.sendMessage(message);
-      }).map(aVoid -> XmppGroupChat.this);
+      }).map(aVoid -> this);
    }
 
    private Observable<Void> chatActionObservable(ChatAction chatAction) {

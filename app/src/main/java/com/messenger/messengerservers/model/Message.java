@@ -18,9 +18,6 @@ public class Message {
    private int status;
    private @MessageType.Type String type;
 
-   public Message() {
-   }
-
    public String getId() {
       return id;
    }
@@ -96,7 +93,8 @@ public class Message {
    }
 
    public static final class Builder {
-      private Message message;
+
+      private final Message message;
 
       public Builder() {
          message = new Message();

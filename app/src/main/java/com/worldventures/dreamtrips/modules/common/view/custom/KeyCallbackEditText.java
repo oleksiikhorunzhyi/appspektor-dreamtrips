@@ -23,7 +23,9 @@ public class KeyCallbackEditText extends AppCompatEditText {
 
    @Override
    public boolean onKeyPreIme(int keyCode, KeyEvent event) {
-      if (onKeyPreImeListener != null) onKeyPreImeListener.onKeyPressed(keyCode, event);
+      if (onKeyPreImeListener != null) {
+         onKeyPreImeListener.onKeyPressed(keyCode, event);
+      }
       return super.onKeyPreIme(keyCode, event);
    }
 

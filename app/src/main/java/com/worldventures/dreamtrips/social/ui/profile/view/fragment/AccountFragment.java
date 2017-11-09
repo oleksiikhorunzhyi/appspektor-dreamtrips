@@ -12,7 +12,6 @@ import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.social.ui.activity.FeedActivity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -40,9 +39,8 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
       profileToolbar.inflateMenu(R.menu.profile_fragment);
 
       profileToolbar.setOnMenuItemClickListener(item -> {
-         switch (item.getItemId()) {
-            case R.id.item_logout:
-               showLogoutDialog();
+         if (item.getItemId() == R.id.item_logout) {
+            showLogoutDialog();
          }
          return true;
       });
@@ -69,7 +67,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
          newItems.add(uploadingPostsList);
       }
       newItems.addAll(items);
-      fragmentWithFeedDelegate.updateItems(newItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+      fragmentWithFeedDelegate.updateItems(newItems, statePaginatedRecyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
    }
 
@@ -142,8 +140,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
 
    @Override
    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (!getPresenter().onActivityResult(requestCode, resultCode, data))
+      if (!getPresenter().onActivityResult(requestCode, resultCode, data)) {
          super.onActivityResult(requestCode, resultCode, data);
+      }
    }
 
    @Override
@@ -154,10 +153,5 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    @Override
    public void onUserPhotoClicked() {
       getPresenter().photoClicked();
-   }
-
-   @Override
-   public Route getRoute() {
-      return Route.ACCOUNT_PROFILE;
    }
 }

@@ -81,15 +81,21 @@ public abstract class ActionReviewEntityPresenter<V extends ActionReviewEntityPr
    }
 
    public void cancelClicked() {
-      if (isChanged()) view.showCancelationDialog();
-      else view.cancel();
+      if (isChanged()) {
+         view.showCancelationDialog();
+      } else {
+         view.cancel();
+      }
    }
 
    protected abstract boolean isChanged();
 
    public void invalidateDynamicViews() {
-      if (isChanged()) view.enableButton();
-      else view.disableButton();
+      if (isChanged()) {
+         view.enableButton();
+      } else {
+         view.disableButton();
+      }
    }
 
    public abstract void post();

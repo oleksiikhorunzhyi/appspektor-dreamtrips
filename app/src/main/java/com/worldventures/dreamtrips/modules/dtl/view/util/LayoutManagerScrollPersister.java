@@ -18,7 +18,9 @@ public class LayoutManagerScrollPersister {
          View item = linearLayoutManager.findViewByPosition(position);
          bundle.putInt(STATE_SCROLL_ITEMS_COUNT, linearLayoutManager.getItemCount());
          bundle.putInt(STATE_SCROLL_POSITION, position);
-         if (item != null) bundle.putInt(STATE_SCROLL_OFFSET, item.getTop());
+         if (item != null) {
+            bundle.putInt(STATE_SCROLL_OFFSET, item.getTop());
+         }
       }
       return bundle;
    }
@@ -31,6 +33,8 @@ public class LayoutManagerScrollPersister {
       int pos = bundle.getInt(STATE_SCROLL_POSITION);
       int offset = bundle.getInt(STATE_SCROLL_OFFSET);
       int itemsCount = bundle.getInt(STATE_SCROLL_ITEMS_COUNT);
-      if (itemsCount == linearLayoutManager.getItemCount()) linearLayoutManager.scrollToPositionWithOffset(pos, offset);
+      if (itemsCount == linearLayoutManager.getItemCount()) {
+         linearLayoutManager.scrollToPositionWithOffset(pos, offset);
+      }
    }
 }

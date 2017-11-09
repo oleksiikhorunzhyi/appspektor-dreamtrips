@@ -8,10 +8,11 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 import java.util.List;
 
 public class InspireMeViewPagerArgs implements Parcelable {
-   private List<Inspiration> currentItems;
-   private double randomSeed;
-   private boolean lastPageReached;
-   private int currentItemPosition;
+
+   private final List<Inspiration> currentItems;
+   private final double randomSeed;
+   private final boolean lastPageReached;
+   private final int currentItemPosition;
 
    public InspireMeViewPagerArgs(List<Inspiration> currentItems, double randomSeed, boolean lastPageReached, int currentItemPosition) {
       this.currentItems = currentItems;

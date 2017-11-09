@@ -9,11 +9,12 @@ public final class CommandActionBaseHelper extends Command {
 
    @Override
    protected void run(CommandCallback callback) {
+      //do nothing
    }
 
-   public static class ActionCommandSubscriber<A> extends Subscriber<A> {
+   public final static class ActionCommandSubscriber<A> extends Subscriber<A> {
 
-      private CommandCallback<A> callback;
+      private final CommandCallback<A> callback;
       private volatile boolean executed;
 
       private ActionCommandSubscriber(CommandCallback<A> callback) {
@@ -38,11 +39,15 @@ public final class CommandActionBaseHelper extends Command {
 
       @Override
       public void onCompleted() {
-         if (!executed) throw new IllegalStateException("Callback has been ignored before onComplete");
+         if (!executed) {
+            throw new IllegalStateException("Callback has been ignored before onComplete");
+         }
       }
 
       private void tryMarkExecuted() throws IllegalStateException {
-         if (executed) throw new IllegalStateException("Callback has been already called once");
+         if (executed) {
+            throw new IllegalStateException("Callback has been already called once");
+         }
          executed = true;
       }
    }

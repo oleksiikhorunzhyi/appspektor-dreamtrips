@@ -6,7 +6,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class PostDescriptionCreatedCommand extends Command<String> {
 
-   private String description;
+   private final String description;
 
    public PostDescriptionCreatedCommand(String description) {
       this.description = description;

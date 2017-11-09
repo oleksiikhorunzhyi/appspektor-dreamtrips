@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.profile.service;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.core.model.session.ImmutableUserSession;
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPrivateProfileCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
@@ -16,14 +16,13 @@ import rx.schedulers.Schedulers;
 
 public class ProfileInteractor {
 
-   private ActionPipe<GetPrivateProfileCommand> privateProfilePipe;
-   private ActionPipe<UploadAvatarCommand> uploadAvatarPipe;
-   private ActionPipe<UploadBackgroundCommand> uploadBackgroundPipe;
-   private ActionPipe<GetPublicProfileCommand> publicProfilePipe;
-   private ActionPipe<AddFriendToCircleCommand> addFriendToCirclePipe;
-   private ActionPipe<RemoveFriendFromCircleCommand> removeFriendFromCirclePipe;
-
-   private SessionHolder sessionHolder;
+   private final ActionPipe<GetPrivateProfileCommand> privateProfilePipe;
+   private final ActionPipe<UploadAvatarCommand> uploadAvatarPipe;
+   private final ActionPipe<UploadBackgroundCommand> uploadBackgroundPipe;
+   private final ActionPipe<GetPublicProfileCommand> publicProfilePipe;
+   private final ActionPipe<AddFriendToCircleCommand> addFriendToCirclePipe;
+   private final ActionPipe<RemoveFriendFromCircleCommand> removeFriendFromCirclePipe;
+   private final SessionHolder sessionHolder;
 
    public ProfileInteractor(SessionActionPipeCreator sessionActionPipeCreator, SessionHolder sessionHolder) {
       privateProfilePipe = sessionActionPipeCreator.createPipe(GetPrivateProfileCommand.class, Schedulers.io());
@@ -64,11 +63,10 @@ public class ProfileInteractor {
       Observable.merge(privateProfilePipe.observeSuccess(),
             uploadAvatarPipe.observeSuccess(),
             uploadBackgroundPipe.observeSuccess())
-            .subscribe(command -> {
-               UserSession userSession = sessionHolder.get().get();
-               userSession.setUser(command.getResult());
-               sessionHolder.put(userSession);
-            });
+            .subscribe(command -> sessionHolder.put(ImmutableUserSession.builder()
+                  .from(sessionHolder.get().get())
+                  .user(command.getResult())
+                  .build()));
 
    }
 }

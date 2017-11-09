@@ -49,7 +49,9 @@ public class GetFriendsCommand extends GetUsersCommand {
             .perPage(perPage)
             .query(query);
 
-      if (circle != null) builder.circleId(circle.getId());
+      if (circle != null) {
+         builder.circleId(circle.getId());
+      }
 
       return builder.build();
    }

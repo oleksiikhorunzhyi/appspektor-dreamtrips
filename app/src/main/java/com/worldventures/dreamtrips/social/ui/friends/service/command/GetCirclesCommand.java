@@ -4,7 +4,7 @@ import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.Circle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.circles.GetCirclesHttpAction;
@@ -27,9 +27,6 @@ public class GetCirclesCommand extends CommandWithError<List<Circle>> implements
    @Inject MapperyContext mapperyContext;
 
    private List<Circle> cachedData;
-
-   public GetCirclesCommand() {
-   }
 
    @Override
    protected void run(CommandCallback<List<Circle>> callback) throws Throwable {

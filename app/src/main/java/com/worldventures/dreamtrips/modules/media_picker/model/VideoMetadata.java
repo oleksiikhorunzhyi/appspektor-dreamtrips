@@ -7,7 +7,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface VideoMetadata {
 
-   @Nullable String title();
+   @Nullable
+   String title();
    long duration();
    int width();
    int height();

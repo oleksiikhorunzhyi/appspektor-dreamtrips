@@ -14,6 +14,8 @@ public class LeakCanaryInitializer implements AppInitializer {
 
    @Override
    public void initialize(Injector injector) {
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) injector.inject(this);
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+         injector.inject(this);
+      }
    }
 }

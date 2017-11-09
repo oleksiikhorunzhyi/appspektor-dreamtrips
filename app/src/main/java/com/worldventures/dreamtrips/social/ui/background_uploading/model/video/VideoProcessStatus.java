@@ -20,9 +20,6 @@ public class VideoProcessStatus {
    @SerializedName("errorMsg")
    private String errorMessage;
 
-   public VideoProcessStatus() {
-   }
-
    public String getAssetId() {
       return assetId;
    }

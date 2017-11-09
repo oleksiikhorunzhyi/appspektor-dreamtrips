@@ -2,7 +2,7 @@ package com.messenger.command;
 
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.synchmechanism.MessengerConnector;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 

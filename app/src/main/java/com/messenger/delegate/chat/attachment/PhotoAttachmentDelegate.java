@@ -49,7 +49,7 @@ public class PhotoAttachmentDelegate {
    }
 
    public void send(@NonNull String conversationId, @NonNull String filePath) {
-      String userId = sessionHolder.get().get().getUsername();
+      String userId = sessionHolder.get().get().username();
       DataMessage emptyMessage = attachmentDelegateHelper.createEmptyMessage(userId, conversationId);
       DataAttachment dataAttachment = attachmentDelegateHelper.createDataAttachment(emptyMessage, AttachmentType.IMAGE);
       DataPhotoAttachment dataPhotoAttachment = attachmentDelegateHelper.createEmptyPhotoAttachment(dataAttachment);

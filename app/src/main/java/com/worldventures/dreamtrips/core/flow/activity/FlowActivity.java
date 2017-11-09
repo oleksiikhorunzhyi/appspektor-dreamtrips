@@ -10,9 +10,9 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.google.gson.Gson;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.component.RootComponentsProvider;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.AttributedPath;
@@ -20,13 +20,17 @@ import com.worldventures.dreamtrips.core.flow.path.FullScreenPath;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.FlowActivityHelper;
 import com.worldventures.dreamtrips.core.flow.util.GsonParceler;
+import com.worldventures.dreamtrips.core.module.FlowActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import butterknife.InjectView;
 import flow.Flow;
@@ -41,12 +45,19 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
    @InjectView(R.id.root_container) protected PathContainerView container;
 
    @Inject protected RootComponentsProvider rootComponentsProvider;
-   @Inject protected Gson gson;
    @Inject protected NavigationDrawerPresenter navigationDrawerPresenter;
    @Inject protected ActivityRouter activityRouter;
+   @Inject @Named(FlowActivityModule.LABEL) protected Gson gson;
 
    private FlowActivityHelper flowActivityHelper;
    private WeakHandler weakHandler = new WeakHandler();
+
+   @Override
+   protected List<Object> getModules() {
+      List<Object> modules = super.getModules();
+      modules.add(new FlowActivityModule());
+      return modules;
+   }
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +120,12 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
    @Override
    public Object getSystemService(@NonNull String name) {
       Object service = null;
-      if (flowActivityHelper != null) service = flowActivityHelper.getSystemService(name);
-      if (service == null) service = super.getSystemService(name);
+      if (flowActivityHelper != null) {
+         service = flowActivityHelper.getSystemService(name);
+      }
+      if (service == null) {
+         service = super.getSystemService(name);
+      }
       return service;
    }
 
@@ -207,9 +222,11 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
       }
       drawerLayout.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
       if (ViewUtils.isLandscapeOrientation(this)) {
-         if (path instanceof FullScreenPath && ((FullScreenPath) path).shouldHideDrawer())
+         if (path instanceof FullScreenPath && ((FullScreenPath) path).shouldHideDrawer()) {
             navDrawer.setVisibility(View.GONE);
-         else navDrawer.setVisibility(View.VISIBLE);
+         } else {
+            navDrawer.setVisibility(View.VISIBLE);
+         }
       }
    }
 

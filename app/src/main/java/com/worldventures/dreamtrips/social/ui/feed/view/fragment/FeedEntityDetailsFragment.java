@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
@@ -53,7 +53,7 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
    }
 
    @Override
-   public void showDetails(Route route, Parcelable extra) {
+   public void showDetails(Class<? extends Fragment> fragmentClass, Parcelable extra) {
       if (!detailViewAdded) {
          NavigationConfig config = NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
@@ -61,7 +61,7 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
                .data(extra)
                .containerId(R.id.fragment_details)
                .build();
-         router.moveTo(route, config);
+         router.moveTo(fragmentClass, config);
          detailViewAdded = true;
       }
    }
@@ -73,10 +73,5 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
          return;
       }
       super.initConnectionOverlay(connectionStateObservable, stopper);
-   }
-
-   @Override
-   protected Route getRoute() {
-      return Route.FEED_ENTITY_DETAILS;
    }
 }

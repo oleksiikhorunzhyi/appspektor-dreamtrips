@@ -10,6 +10,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
 public final class XmppPacketDetector {
+
    public static final int MESSAGE = 0x74747;
    public static final int SUBJECT = 0x74741;
    public static final int EXTENTION_STATUS = 0x74749;
@@ -17,8 +18,13 @@ public final class XmppPacketDetector {
    public static final int EXTENTION_SYSTEM_MESSAGE = 0x74751;
    public static final int UNKNOWN = -1;
 
+   private XmppPacketDetector() {
+   }
+
    public static int stanzaType(Stanza stanza) {
-      if (!(stanza instanceof Message)) return UNKNOWN;
+      if (!(stanza instanceof Message)) {
+         return UNKNOWN;
+      }
 
       Message message = (Message) stanza;
 

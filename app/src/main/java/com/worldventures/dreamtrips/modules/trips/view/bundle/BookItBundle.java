@@ -26,6 +26,7 @@ public class BookItBundle implements Parcelable {
    }
 
    public BookItBundle() {
+      //do nothing
    }
 
    protected BookItBundle(Parcel in) {

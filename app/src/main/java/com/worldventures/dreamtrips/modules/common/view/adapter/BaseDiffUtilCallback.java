@@ -6,8 +6,8 @@ import java.util.List;
 
 public class BaseDiffUtilCallback extends DiffUtil.Callback {
 
-   private List oldList;
-   private List newList;
+   private final List oldList;
+   private final List newList;
 
    public BaseDiffUtilCallback(List oldList, List newList) {
       this.oldList = oldList;

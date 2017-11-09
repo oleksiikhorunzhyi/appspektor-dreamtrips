@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 
 public class GetUserTimelineCommand extends BaseGetFeedCommand<GetUserTimelineHttpAction> {
 
-   private int userId;
+   private final int userId;
 
    public GetUserTimelineCommand(int userId, Date before) {
       super(before);

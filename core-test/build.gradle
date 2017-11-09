@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
+apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/module-core-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
+
+android {
+   compileSdkVersion project.ext.androidConfig.compileSdk
+   buildToolsVersion project.ext.androidConfig.buildTools
+
+   defaultConfig {
+      minSdkVersion project.ext.androidConfig.minSdk
+      targetSdkVersion project.ext.androidConfig.targetSdk
+   }
+
+   compileOptions {
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
+   }
+}
+
+def deps = project.ext.coreDependencies
+
+repositories {
+   deps.repos.each { it.call(owner) }
+}
+
+dependencies {
+   implementation project(':janet-extensions')
+   implementation 'javax.inject:javax.inject:1'
+   implementation provideDep(deps.rx.rxandroid)
+   implementation provideDep(deps.rx.rxjava)
+   implementation provideDep(deps.util.timber)
+   eachDependency(deps.test, { d -> implementation d})
+}

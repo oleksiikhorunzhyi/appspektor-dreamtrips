@@ -39,7 +39,9 @@ import butterknife.InjectView;
 import flow.Flow;
 import timber.log.Timber;
 
-public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath> implements DtlLocationsScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
+public class DtlLocationsScreenImpl
+      extends DtlLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath>
+      implements DtlLocationsScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlLocation> {
 
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject ActivityResultDelegate activityResultDelegate;
@@ -56,7 +58,9 @@ public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLoc
    protected void onPostAttachToWindowView() {
       initToolbar();
       //
-      if (getPath().isShowNoMerchantsCaption()) emptyMerchantsCaption.setVisibility(View.VISIBLE);
+      if (getPath().isShowNoMerchantsCaption()) {
+         emptyMerchantsCaption.setVisibility(View.VISIBLE);
+      }
       //
       recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
       recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
@@ -147,6 +151,8 @@ public class DtlLocationsScreenImpl extends DtlLayout<DtlLocationsScreen, DtlLoc
             case Activity.RESULT_CANCELED:
                // The user was asked to change settings, but chose not to
                getPresenter().onLocationResolutionDenied();
+               break;
+            default:
                break;
          }
          return true;

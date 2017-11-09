@@ -55,7 +55,9 @@ public class ProgressVideoCellHelper {
    }
 
    public <T> void onDownloadClick(ProgressVideoButtonActions<T> delegate, T entity) {
-      if (delegate == null) return;
+      if (delegate == null) {
+         return;
+      }
       //
       boolean cached = cachedModelHelper.isCached(cacheModel);
       boolean inProgress = cacheModel.getProgress() > 0 && cacheModel.getProgress() < 100;
@@ -70,7 +72,9 @@ public class ProgressVideoCellHelper {
    }
 
    public void onDownloadClick(PodcastCellDelegate delegate) {
-      if (delegate == null) return;
+      if (delegate == null) {
+         return;
+      }
       //
       boolean cached = cachedModelHelper.isCached(cacheModel);
       boolean inProgress = cacheModel.getCacheStatus() == IN_PROGRESS;

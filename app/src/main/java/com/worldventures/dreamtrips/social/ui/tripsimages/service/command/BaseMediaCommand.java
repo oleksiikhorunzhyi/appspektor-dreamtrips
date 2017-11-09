@@ -7,7 +7,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesAr
 import java.util.List;
 
 public abstract class BaseMediaCommand extends CommandWithError<List<BaseMediaEntity>> {
-   private TripImagesArgs args;
+
+   private final TripImagesArgs args;
    private boolean reload;
    private boolean loadMore;
 

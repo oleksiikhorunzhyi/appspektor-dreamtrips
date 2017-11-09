@@ -33,17 +33,17 @@ public class TripsFilterDataAnalyticsWrapper {
    public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
    public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
 
-   private int minNights;
-   private int maxNights;
-   private double minPrice;
-   private double maxPrice;
-   private String startDate;
-   private String endDate;
-   private boolean isShowFavorites;
-   private boolean isShowRecentlyAdded;
-   private boolean isShowSoldOut;
-   private List<RegionModel> allRegions;
-   private List<ActivityModel> allParentActivities;
+   private final int minNights;
+   private final int maxNights;
+   private final double minPrice;
+   private final double maxPrice;
+   private final String startDate;
+   private final String endDate;
+   private final boolean isShowFavorites;
+   private final boolean isShowRecentlyAdded;
+   private final boolean isShowSoldOut;
+   private final List<RegionModel> allRegions;
+   private final List<ActivityModel> allParentActivities;
 
    public TripsFilterDataAnalyticsWrapper(@NonNull TripsFilterData tripsFilterData) {
       this.minNights = tripsFilterData.getMinNights() == null ? TripsFilterData.MIN_NIGHTS : tripsFilterData.getMinNights();
@@ -69,13 +69,19 @@ public class TripsFilterDataAnalyticsWrapper {
       filters.add(String.format(LocaleHelper.getDefaultLocale(), PRICE_FORMAT, minPrice, maxPrice));
       filters.add(startDate);
       filters.add(endDate);
-      if (!TextUtils.isEmpty(getBooleanFieldsAnalyticString())) filters.add(getBooleanFieldsAnalyticString());
+      if (!TextUtils.isEmpty(getBooleanFieldsAnalyticString())) {
+         filters.add(getBooleanFieldsAnalyticString());
+      }
       return TextUtils.join(DEFAULT_FIELDS_DELIMITER, filters);
    }
 
    public String getAcceptedRegionsAnalyticString() {
-      if (allRegions == null || allRegions.isEmpty()) return ALL;
-      if (Queryable.from(allRegions).count(region -> !region.isChecked()) == 0) return ALL;
+      if (allRegions == null || allRegions.isEmpty()) {
+         return ALL;
+      }
+      if (Queryable.from(allRegions).count(region -> !region.isChecked()) == 0) {
+         return ALL;
+      }
       //
       return TextUtils.join(DEFAULT_FIELDS_DELIMITER, Queryable.from(allRegions)
             .filter(RegionModel::isChecked)
@@ -84,8 +90,12 @@ public class TripsFilterDataAnalyticsWrapper {
    }
 
    public String getAcceptedActivitiesAnalyticString() {
-      if (allParentActivities == null || allParentActivities.isEmpty()) return ALL;
-      if (Queryable.from(allParentActivities).count(activity -> !activity.isChecked()) == 0) return ALL;
+      if (allParentActivities == null || allParentActivities.isEmpty()) {
+         return ALL;
+      }
+      if (Queryable.from(allParentActivities).count(activity -> !activity.isChecked()) == 0) {
+         return ALL;
+      }
       //
       return TextUtils.join(DEFAULT_FIELDS_DELIMITER, Queryable.from(allParentActivities)
             .filter(ActivityModel::isChecked)
@@ -96,10 +106,16 @@ public class TripsFilterDataAnalyticsWrapper {
    @Nullable
    private String getBooleanFieldsAnalyticString() {
       List<String> booleanFields = new ArrayList<>();
-      if (isShowFavorites) booleanFields.add(SHOW_FAVORITES_ABBREVIATION);
-      if (isShowRecentlyAdded) booleanFields.add(SHOW_RECENTLY_ADDED_ABBREVIATION);
-      if (isShowSoldOut) booleanFields.add(SHOW_SOLD_OUT_ABBREVIATION);
-      return booleanFields.size() > 0 ? TextUtils.join(BOOLEAN_FIELDS_DELIMITER, booleanFields) : null;
+      if (isShowFavorites) {
+         booleanFields.add(SHOW_FAVORITES_ABBREVIATION);
+      }
+      if (isShowRecentlyAdded) {
+         booleanFields.add(SHOW_RECENTLY_ADDED_ABBREVIATION);
+      }
+      if (isShowSoldOut) {
+         booleanFields.add(SHOW_SOLD_OUT_ABBREVIATION);
+      }
+      return !booleanFields.isEmpty() ? TextUtils.join(BOOLEAN_FIELDS_DELIMITER, booleanFields) : null;
    }
 
    public Map getTrackingFilterData() {

@@ -104,7 +104,9 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
       Pin holder = Queryable.from(pins)
             .firstOrDefault(pin -> pin.getCoordinates().getLat() == marker.getPosition().latitude
                   && pin.getCoordinates().getLng() == marker.getPosition().longitude);
-      if (holder == null) return;
+      if (holder == null) {
+         return;
+      }
 
       List<String> tripUids = holder.getTripUids();
       tripMapInteractor.checkTripsByUidPipe()
@@ -208,7 +210,9 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
                   .onSuccess(action -> onTripsLoaded(action.getItems()))
                   .onFail((action, e) -> {
                      Timber.e(e, action.getErrorMessage());
-                     if (!action.hasValidCachedItems()) view.removeTripsPopupInfo();
+                     if (!action.hasValidCachedItems()) {
+                        view.removeTripsPopupInfo();
+                     }
                      handleError(action, e);
                   }));
    }

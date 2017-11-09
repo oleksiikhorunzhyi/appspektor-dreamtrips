@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-public class SdkVersionUtils {
-   private SdkVersionUtils() {
-   }
+public final class SdkVersionUtils {
 
    private static int targetSdkVersion = -1;
 
+   private SdkVersionUtils() {
+   }
+
    public static int getTargetSdkVersion(Context context) {
-      if (targetSdkVersion != -1) return targetSdkVersion;
+      if (targetSdkVersion != -1) { return targetSdkVersion; }
       try {
          PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
          targetSdkVersion = packageInfo.applicationInfo.targetSdkVersion;

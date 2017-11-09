@@ -19,7 +19,9 @@ public class RelationshipConverter implements Converter<Relationship, User.Relat
 
    @Override
    public User.Relationship convert(MapperyContext mapperyContext, Relationship relationship) {
-      if (relationship == null) return null;
+      if (relationship == null) {
+         return null;
+      }
       switch (relationship) {
          case FRIEND:
             return User.Relationship.FRIEND;

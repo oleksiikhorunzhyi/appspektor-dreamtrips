@@ -39,7 +39,7 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
       return this;
    }
 
-   public ActivityNavigationConfigBuilder transparentBackground (boolean transparentBackground) {
+   public ActivityNavigationConfigBuilder transparentBackground(boolean transparentBackground) {
       navigationConfig.transparentBackground = transparentBackground;
       return this;
    }

@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 
 public class WrapContentLinearLayoutManager extends LinearLayoutManager {
 
+   private final int[] mMeasuredDimension = new int[2];
+
    public WrapContentLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
       super(context, orientation, reverseLayout);
    }
-
-   private int[] mMeasuredDimension = new int[2];
 
    @Override
    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
@@ -41,15 +41,21 @@ public class WrapContentLinearLayoutManager extends LinearLayoutManager {
       switch (widthMode) {
          case View.MeasureSpec.EXACTLY:
             width = widthSize;
+            break;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
+         default:
+            break;
       }
 
       switch (heightMode) {
          case View.MeasureSpec.EXACTLY:
             height = heightSize;
+            break;
          case View.MeasureSpec.AT_MOST:
          case View.MeasureSpec.UNSPECIFIED:
+         default:
+            break;
       }
 
       setMeasuredDimension(width, height);

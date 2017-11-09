@@ -1,6 +1,5 @@
 package com.worldventures.core.utils;
 
-import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -33,8 +32,7 @@ public class HttpErrorHandlingUtil {
       }
       if (action instanceof ServiceLabel && exception instanceof HttpServiceException) {
          String errorReason = errorParser.parseReason((ServiceLabel) action);
-         if (TextUtils.isEmpty(errorReason)) return fallbackMessage;
-         else return errorReason;
+         if (TextUtils.isEmpty(errorReason)) { return fallbackMessage; } else { return errorReason; }
       }
       if (exception.getCause() != null) {
          return handleJanetHttpError(action, exception.getCause(), fallbackMessage, noConnectionMessage);
@@ -64,7 +62,7 @@ public class HttpErrorHandlingUtil {
    }
 
    public static String obtainHttpErrorMessage(Throwable exception) {
-      if (!isHttpExceptionWithPath(exception)) return null;
+      if (!isHttpExceptionWithPath(exception)) { return null; }
 
       HttpException httpException = (HttpException) exception.getCause();
       return httpException.getCause() != null ? httpException.getCause().getMessage()
@@ -72,7 +70,7 @@ public class HttpErrorHandlingUtil {
    }
 
    public static String obtainHttpErrorPath(Throwable exception) {
-      if (!isHttpExceptionWithPath(exception)) return null;
+      if (!isHttpExceptionWithPath(exception)) { return null; }
 
       String url = ((HttpException) exception.getCause()).getRequest().getUrl();
       return Uri.parse(url).getPath();
@@ -81,6 +79,6 @@ public class HttpErrorHandlingUtil {
    private static boolean isHttpExceptionWithPath(Throwable exception) {
       return exception != null && exception.getCause() != null
             && (exception.getCause() instanceof HttpException)
-            && ((HttpException)exception.getCause()).getRequest() == null;
+            && ((HttpException) exception.getCause()).getRequest() == null;
    }
 }

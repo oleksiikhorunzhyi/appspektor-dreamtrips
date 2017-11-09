@@ -6,7 +6,7 @@ import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
 import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;
 
@@ -35,14 +35,17 @@ public class TranslateTextCachedCommand extends Command<String> implements Cache
 
    @Override
    protected void run(CommandCallback<String> callback) throws Throwable {
-      if (cachedTranslation == null || cachedTranslation.length() == 0) translationInteractor.translatePipe()
-            .createObservableResult(new TranslateTextHttpAction(ImmutableTranslateTextBody.builder()
-                  .text(originalText)
-                  .toLanguage(languageTo)
-                  .build()))
-            .map(TranslateTextHttpAction::getTranslatedText)
-            .subscribe(callback::onSuccess, callback::onFail);
-      else callback.onSuccess(cachedTranslation);
+      if (cachedTranslation == null || cachedTranslation.length() == 0) {
+         translationInteractor.translatePipe()
+               .createObservableResult(new TranslateTextHttpAction(ImmutableTranslateTextBody.builder()
+                     .text(originalText)
+                     .toLanguage(languageTo)
+                     .build()))
+               .map(TranslateTextHttpAction::getTranslatedText)
+               .subscribe(callback::onSuccess, callback::onFail);
+      } else {
+         callback.onSuccess(cachedTranslation);
+      }
    }
 
    @Override

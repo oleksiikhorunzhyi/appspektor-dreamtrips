@@ -10,10 +10,10 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedDetailsPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRouteCommand;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
@@ -69,7 +70,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       showAdditionalContainerIfNeeded();
 
       recyclerView.post(() -> {
-         if (recyclerView != null) recyclerView.scrollBy(0, 1);
+         if (recyclerView != null) {
+            recyclerView.scrollBy(0, 1);
+         }
       });
    }
 
@@ -90,7 +93,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    }
 
    private boolean isNeedToShowInputPanel(View view) {
-      if (view == null) return false;
+      if (view == null) {
+         return false;
+      }
       //
       int[] location = new int[2];
       view.getLocationOnScreen(location);
@@ -101,7 +106,8 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    @Override
    public void onResume() {
       super.onResume();
-      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(getRoute()));
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
+            .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.FEED_DETAILS));
    }
 
    @Override
@@ -139,7 +145,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
          Timber.e(e, "");
       }
       if (isTabletLandscape()) {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
+         router.moveTo(BucketItemEditFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(true)
                .containerId(containerId)
                .fragmentManager(getActivity().getSupportFragmentManager())
@@ -147,20 +153,22 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
                .build());
          showContainer(containerId);
       } else {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
+         router.moveTo(BucketItemEditFragment.class, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
       }
    }
 
    private void showContainer(@IdRes int containerId) {
       View container = ButterKnife.findById(getActivity(), containerId);
-      if (container != null) container.setVisibility(View.VISIBLE);
+      if (container != null) {
+         container.setVisibility(View.VISIBLE);
+      }
    }
 
    private void showAdditionalInfoIfNeeded() {
       User user = feedItem.getItem().getOwner();
       showAdditionalContainerIfNeeded();
       if (!isAdditionalInfoFragmentAttached() && isShowAdditionalInfo()) {
-         router.moveTo(Route.FEED_ITEM_ADDITIONAL_INFO, NavigationConfigBuilder.forFragment()
+         router.moveTo(FeedItemAdditionalInfoFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())
                .containerId(R.id.comments_additional_info_container)
@@ -170,7 +178,9 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    }
 
    private void showAdditionalContainerIfNeeded() {
-      if (additionalContainer == null) return;
+      if (additionalContainer == null) {
+         return;
+      }
       if (isShowAdditionalInfo()) {
          additionalContainer.setVisibility(View.VISIBLE);
       } else {
@@ -209,6 +219,4 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    }
 
    protected abstract void registerCells();
-
-   protected abstract Route getRoute();
 }

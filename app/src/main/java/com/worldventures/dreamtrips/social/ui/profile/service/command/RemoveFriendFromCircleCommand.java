@@ -14,8 +14,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class RemoveFriendFromCircleCommand extends ApiActionCommand<RemoveFriendsFromCircleHttpAction, Void> {
 
-   private Circle circle;
-   private int userId;
+   private final Circle circle;
+   private final int userId;
 
    public RemoveFriendFromCircleCommand(Circle circle, User friend) {
       this.circle = circle;

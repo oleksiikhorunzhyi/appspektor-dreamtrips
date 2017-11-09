@@ -54,7 +54,7 @@ public class NavigationDrawerPresenter {
       //
       navigationDrawerView.setNavigationDrawerPresenter(this);
       navigationDrawerView.setData(components);
-      navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
+      navigationDrawerView.setUser(appSessionHolder.get().get().user());
 
       notificationCountEventDelegate.getObservable()
             .observeOn(AndroidSchedulers.mainThread())
@@ -100,7 +100,9 @@ public class NavigationDrawerPresenter {
    }
 
    public void openDrawer() {
-      if (drawerLayout != null) drawerLayout.openDrawer(GravityCompat.START);
+      if (drawerLayout != null) {
+         drawerLayout.openDrawer(GravityCompat.START);
+      }
    }
 
    public void setOnLogout(Action0 onLogout) {
@@ -108,15 +110,21 @@ public class NavigationDrawerPresenter {
    }
 
    void onItemSelected(ComponentDescription componentDescription) {
-      if (onItemSelected != null) onItemSelected.call(componentDescription);
+      if (onItemSelected != null) {
+         onItemSelected.call(componentDescription);
+      }
    }
 
    void onItemReselected(ComponentDescription componentDescription) {
-      if (onItemReselected != null) onItemReselected.call(componentDescription);
+      if (onItemReselected != null) {
+         onItemReselected.call(componentDescription);
+      }
    }
 
    void onLogout() {
-      if (onLogout != null) onLogout.call();
+      if (onLogout != null) {
+         onLogout.call();
+      }
    }
 
    protected <T> Observable.Transformer<T, T> bindView() {

@@ -93,7 +93,9 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    public void expandOffers(List<String> offers) {
       Preconditions.checkNotNull(merchantAttributes, "MerchantAttributes not set");
       //
-      if (offers == null || cashedViewMap.size() == 0) return;
+      if (offers == null || cashedViewMap.size() == 0) {
+         return;
+      }
       //
       Queryable.from(offers).filter(id -> cashedViewMap.get(id) != null).filter(id -> cashedViewMap.get(id)
             .get() != null).forEachR(entry -> cashedViewMap.get(entry).get().showWithoutAnimation());
@@ -108,14 +110,17 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    }
 
    private void setType() {
-      ViewUtils.setViewVisibility(earnWrapper, merchantAttributes.hasOffers()  ? View.VISIBLE : View.GONE);
+      ViewUtils.setViewVisibility(earnWrapper, merchantAttributes.hasOffers() ? View.VISIBLE : View.GONE);
       ViewUtils.setViewVisibility(merchantWrapper, !merchantAttributes.hasOffers() ? View.VISIBLE : View.GONE);
       ViewUtils.setViewVisibility(perkDivider, !merchantAttributes.hasOffers() ? View.GONE : View.VISIBLE);
    }
 
    private void setImage() {
-      MerchantMedia media = Queryable.from(merchantAttributes.images() != null ? merchantAttributes.images() : Queryable.empty()).firstOrDefault();
-      if (media == null) return;
+      MerchantMedia media = Queryable.from(merchantAttributes.images() != null ? merchantAttributes.images() : Queryable
+            .empty()).firstOrDefault();
+      if (media == null) {
+         return;
+      }
       //
       RxView.layoutChangeEvents(cover)
             .compose(RxLifecycleAndroid.bindView(rootView))
@@ -123,7 +128,9 @@ public class MerchantOffersInflater extends MerchantDataInflater {
    }
 
    private void onLayoutImage(ViewLayoutChangeEvent event, MerchantMedia media) {
-      if (event.view().getWidth() == 0) return;
+      if (event.view().getWidth() == 0) {
+         return;
+      }
       //
       cover.setController(GraphicUtils.provideFrescoResizingController(Uri.parse(media.getImagePath()), cover.getController(), cover
             .getWidth(), cover.getHeight()));
@@ -136,15 +143,21 @@ public class MerchantOffersInflater extends MerchantDataInflater {
       ViewUtils.setViewVisibility(descriptionHeader, TextUtils.isEmpty(merchantAttributes.description()) ? View.GONE : View.VISIBLE);
       ViewUtils.setViewVisibility(disclaimer, merchantAttributes.disclaimers() != null ? View.VISIBLE : View.GONE);
       //
-      if (disclaimer.getVisibility() == View.GONE) return;
+      if (disclaimer.getVisibility() == View.GONE) {
+         return;
+      }
       disclaimer.setFullText(TextUtils.join("\n\n", merchantAttributes.disclaimers()));
       disclaimer.setSimpleListener((view, collapsed) -> {
-         if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
+         if (!collapsed) {
+            scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
+         }
       });
    }
 
    private void setOffers() {
-      if (!merchantAttributes.hasOffers()) return;
+      if (!merchantAttributes.hasOffers()) {
+         return;
+      }
       //
       List<Offer> offers = merchantAttributes.offers();
       for (Offer offer : offers) {
@@ -200,19 +213,27 @@ public class MerchantOffersInflater extends MerchantDataInflater {
 
    private void bindImage(SimpleDraweeView image, Offer perk) {
       MerchantMedia media = Queryable.from(perk.images()).firstOrDefault();
-      if (media == null) return;
+      if (media == null) {
+         return;
+      }
       //
       image.setImageURI(Uri.parse(media.getImagePath()));
-      RxView.clicks(image).compose(RxLifecycleAndroid.bindView(image)).subscribe(aVoid -> notifyOfferClickListeners(perk));
+      RxView.clicks(image)
+            .compose(RxLifecycleAndroid.bindView(image))
+            .subscribe(aVoid -> notifyOfferClickListeners(perk));
    }
 
    private static void bindInfo(TextView view, String description) {
-      if (description != null) view.setText(description);
+      if (description != null) {
+         view.setText(description);
+      }
    }
 
    private static void bindOperationDays(TextView operationDays, Offer perk, Resources resources) {
       List<OperationDay> operDays = perk.operationDays();
-      if (operationDays == null) return;
+      if (operationDays == null) {
+         return;
+      }
       //
       String concatDays = OperationalHoursUtils.concatOperationDays(operDays, resources.getString(R.string.everyday));
       operationDays.setText(concatDays);

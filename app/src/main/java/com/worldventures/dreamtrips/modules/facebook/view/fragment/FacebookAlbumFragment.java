@@ -46,7 +46,7 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
       lvItems.setAdapter(adapter);
 
       lvItems.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), (view1, position) -> {
-               String facebookId = (adapter.getItem(position)).getId();
+               String facebookId = adapter.getItem(position).getId();
                Bundle b = new Bundle();
                b.putString(FacebookPhotoFragment.BUNDLE_ALBUM_ID, facebookId);
                photoPickerDelegate.openFacebookPhoto(b);

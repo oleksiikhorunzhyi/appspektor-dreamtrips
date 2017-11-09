@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 import android.text.TextUtils;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -40,7 +40,9 @@ public class TranslateBucketItemCommand extends CommandWithError<BucketItem> imp
    }
 
    private Observable<BucketItem> translateDescription(BucketItem translatedBucketItem) {
-      if (TextUtils.isEmpty(translatedBucketItem.getDescription())) return Observable.just(bucketItem);
+      if (TextUtils.isEmpty(translatedBucketItem.getDescription())) {
+         return Observable.just(bucketItem);
+      }
       return janet.createPipe(TranslateTextCachedCommand.class, Schedulers.io())
             .createObservableResult(new TranslateTextCachedCommand(translatedBucketItem.getDescription(),
                   LocaleHelper.getDefaultLocaleFormatted()))

@@ -78,7 +78,10 @@ public class ImageryDraweeView extends SimpleDraweeView {
     * {@link ViewGroup.LayoutParams#WRAP_CONTENT WRAP_CONTENT}
     */
    protected boolean cannotSizeView() {
-      return getLayoutParams().height == ViewGroup.LayoutParams.MATCH_PARENT || getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT || getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT || getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT;
+      return getLayoutParams().height == ViewGroup.LayoutParams.MATCH_PARENT
+            || getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT
+            || getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT
+            || getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT;
    }
 
    protected String formatImageUri(String url, int width, int height) {

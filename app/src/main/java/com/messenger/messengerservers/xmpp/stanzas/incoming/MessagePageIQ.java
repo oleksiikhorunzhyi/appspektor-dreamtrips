@@ -11,8 +11,8 @@ public class MessagePageIQ extends IQ {
    public static final String NAMESPACE = "urn:xmpp:archive";
    public static final String ELEMENT_CHAT = "chat";
 
-   private List<Message> messages;
-   private int loadedCount;
+   private final List<Message> messages;
+   private final int loadedCount;
 
    public MessagePageIQ(List<Message> messages, int loadedCount) {
       super(ELEMENT_CHAT, NAMESPACE);

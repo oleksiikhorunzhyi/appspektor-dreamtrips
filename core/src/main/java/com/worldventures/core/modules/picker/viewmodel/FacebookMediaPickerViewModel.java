@@ -5,7 +5,7 @@ import android.net.Uri;
 
 public abstract class FacebookMediaPickerViewModel<S> extends BaseMediaPickerViewModel {
 
-   private Uri uri;
+   private final Uri uri;
 
    public FacebookMediaPickerViewModel(S source) {
       this.uri = getUriFromSource(source);

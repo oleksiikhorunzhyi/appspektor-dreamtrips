@@ -24,11 +24,14 @@ import javax.inject.Inject;
 public class MerchantsActionCreator implements HttpActionCreator<CategoryMerchantsHttpAction, MerchantsActionParams> {
 
    @Inject
-   public MerchantsActionCreator(){}
+   public MerchantsActionCreator() {
+      //do nothing
+   }
 
    @Override
    public CategoryMerchantsHttpAction createAction(MerchantsActionParams params) {
-      return new CategoryMerchantsHttpAction(createMerchantsActionParams(params), params.filterData().getMerchantType());
+      return new CategoryMerchantsHttpAction(createMerchantsActionParams(params), params.filterData()
+            .getMerchantType());
    }
 
    private static ThinMerchantsActionParams createMerchantsActionParams(MerchantsActionParams bundle) {
@@ -53,10 +56,13 @@ public class MerchantsActionCreator implements HttpActionCreator<CategoryMerchan
    }
 
    private static List<String> provideAmenitiesParameter(FilterData filterData) {
-      if (filterData.selectedAmenities().isEmpty()) return null;
+      if (filterData.selectedAmenities().isEmpty()) {
+         return null;
+      }
 
-      final String parameter = "amenity:" +
-            Queryable.from(filterData.selectedAmenities()).map(Attribute::id).joinStrings(";");
+      final String parameter = "amenity:" + Queryable.from(filterData.selectedAmenities())
+            .map(Attribute::id)
+            .joinStrings(";");
       return new ArrayList<>(Arrays.asList(parameter));
    }
 

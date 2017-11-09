@@ -47,8 +47,7 @@ public class OfferWithReviewView extends LinearLayout {
    private boolean firstPageLoading = true;
    private boolean isLoading = false;
 
-   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-   private RecyclerView.OnItemTouchListener onItemTouchListener;
+   private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
    private RecyclerView.OnScrollListener scrollingListener;
    private IMyEventListener mEventListener;
 
@@ -77,7 +76,9 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    public void loadFirstPage() {
-      if (mEventListener != null) mEventListener.onStartFistPageLoading();
+      if (mEventListener != null) {
+         mEventListener.onStartFistPageLoading();
+      }
       resetViewData();
       getMoreReviewItems();
    }
@@ -85,7 +86,9 @@ public class OfferWithReviewView extends LinearLayout {
    private void loadPage(Bundle bundle) {
       if (firstPageLoading) {
          firstPageLoading = false;
-         if (mEventListener != null) mEventListener.onFinishFistPageLoading();
+         if (mEventListener != null) {
+            mEventListener.onFinishFistPageLoading();
+         }
       }
 
       List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
@@ -143,12 +146,16 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView.postDelayed(new Runnable() {
          @Override
          public void run() {
-            if (mEventListener != null) mEventListener.onEventOccurred(lastIndex);
+            if (mEventListener != null) {
+               mEventListener.onEventOccurred(lastIndex);
+            }
          }
       }, 1000);
    }
 
-   private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;}
+   private int getNextItemValue() {
+      return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;
+   }
 
    public interface IMyEventListener {
       void onStartFistPageLoading();
@@ -161,7 +168,9 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    public void removeLoadingActions() {
-      if (isLoading) mAdapter.removeLoadingFooter();
+      if (isLoading) {
+         mAdapter.removeLoadingFooter();
+      }
       recyclerView.removeOnScrollListener(scrollingListener);
    }
 
@@ -170,7 +179,9 @@ public class OfferWithReviewView extends LinearLayout {
       if (!currentItems.isEmpty() && !reviewObjects.isEmpty()) {
          ReviewObject lastItem = currentItems.get(currentItems.size() - 1);
          ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size() - 1);
-         if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) return false;
+         if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) {
+            return false;
+         }
       }
 
       return true;
@@ -178,10 +189,10 @@ public class OfferWithReviewView extends LinearLayout {
 
    private void initRecycler() {
       recyclerView.setLayoutManager(linearLayoutManager);
-      recyclerView.addItemDecoration(new MarginDecoration(getContext()));
+      recyclerView.addItemDecoration(new MarginDecoration());
       recyclerView.setHasFixedSize(false);
 
-      onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
+      RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
             new RecyclerClickListener() {
                @Override
                public void onClick(View view, int position) {
@@ -195,7 +206,7 @@ public class OfferWithReviewView extends LinearLayout {
 
                @Override
                public void onLongClick(View view, int position) {
-
+                  //do nothing
                }
             });
       recyclerView.addOnItemTouchListener(onItemTouchListener);

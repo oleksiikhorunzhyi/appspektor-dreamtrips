@@ -23,10 +23,10 @@ import timber.log.Timber;
 @Singleton
 public class MessageTranslationDelegate {
 
-   private TranslationsDAO translationsDAO;
-   private SessionHolder sessionHolder;
-   private TranslationInteractor translationInteractor;
-   private AnalyticsInteractor analyticsInteractor;
+   private final TranslationsDAO translationsDAO;
+   private final SessionHolder sessionHolder;
+   private final TranslationInteractor translationInteractor;
+   private final AnalyticsInteractor analyticsInteractor;
 
    @Inject
    public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO,

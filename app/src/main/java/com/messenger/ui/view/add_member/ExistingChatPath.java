@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 @Layout(R.layout.screen_exisiting_chat)
 public class ExistingChatPath extends StyledPath {
 
-   private String conversationId;
+   private final String conversationId;
 
    public ExistingChatPath(String conversationId) {
       this.conversationId = conversationId;

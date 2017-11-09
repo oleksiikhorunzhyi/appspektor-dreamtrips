@@ -8,7 +8,7 @@ import rx.schedulers.Schedulers;
 
 public class ConfigurationInteractor {
 
-   private ActionPipe<ConfigurationCommand> configurationActionPipe;
+   private final ActionPipe<ConfigurationCommand> configurationActionPipe;
 
    public ConfigurationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this.configurationActionPipe = sessionActionPipeCreator.createPipe(ConfigurationCommand.class, Schedulers.immediate());

@@ -16,7 +16,9 @@ public class ViewServerInitializer implements AppInitializer {
 
    @Override
    public void initialize(Injector injector) {
-      if (!BuildConfig.DEBUG) return;
+      if (!BuildConfig.DEBUG) {
+         return;
+      }
       //
       injector.inject(this);
       app.registerActivityLifecycleCallbacks(new ViewServer.ViewServerLifecycleDelegate());

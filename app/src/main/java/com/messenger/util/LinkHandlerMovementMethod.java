@@ -6,13 +6,15 @@ import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-public class LinkHandlerMovementMethod extends LinkMovementMethod {
+public final class LinkHandlerMovementMethod extends LinkMovementMethod {
    private static final int MOVEMENT_TIMEOUT = 650;
-   private static LinkHandlerMovementMethod sInstance;
+
+   private static class LazyHolder {
+      private static final LinkHandlerMovementMethod INSTANCE = new LinkHandlerMovementMethod();
+   }
 
    public static LinkHandlerMovementMethod getInstance() {
-      if (sInstance == null) sInstance = new LinkHandlerMovementMethod();
-      return sInstance;
+      return LazyHolder.INSTANCE;
    }
 
    private LinkHandlerMovementMethod() {}

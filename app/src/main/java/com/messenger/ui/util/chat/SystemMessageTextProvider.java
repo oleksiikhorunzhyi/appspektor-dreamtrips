@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.helper.ConversationHelper;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.core.utils.ProjectTextUtils;
+import com.worldventures.dreamtrips.R;
 
 import static com.messenger.messengerservers.constant.MessageType.SYSTEM_JOIN;
 import static com.messenger.messengerservers.constant.MessageType.SYSTEM_KICK;
@@ -18,8 +18,8 @@ import static com.messenger.messengerservers.constant.MessageType.SYSTEM_LEAVE;
 
 public class SystemMessageTextProvider {
 
-   private Resources resources;
-   private String currentUserId;
+   private final Resources resources;
+   private final String currentUserId;
 
    public SystemMessageTextProvider(Context context, String currentUserId) {
       resources = context.getResources();
@@ -64,8 +64,9 @@ public class SystemMessageTextProvider {
    }
 
    private Spanned obtainLeftSystemMessage(DataUser sender) {
-      return ProjectTextUtils.fromHtml(isItMe(sender) ? resources.getString(R.string.system_message_you_left_the_chat) : resources.getString(R.string.system_message_left, sender
-            .getDisplayedName()));
+      return ProjectTextUtils.fromHtml(isItMe(sender) ? resources.getString(R.string.system_message_you_left_the_chat) : resources
+            .getString(R.string.system_message_left, sender
+                  .getDisplayedName()));
    }
 
    private String obtainUserTextWithoutCapitalLetter(DataUser recipient) {

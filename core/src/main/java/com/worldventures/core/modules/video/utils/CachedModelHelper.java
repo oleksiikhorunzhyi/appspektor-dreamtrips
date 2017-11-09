@@ -10,7 +10,7 @@ import java.io.File;
 
 public class CachedModelHelper {
 
-   private FilePathProvider filePathProvider;
+   private final FilePathProvider filePathProvider;
 
    public CachedModelHelper(FilePathProvider filePathProvider) {
       this.filePathProvider = filePathProvider;
@@ -39,7 +39,7 @@ public class CachedModelHelper {
    }
 
    public String getFileName(String url) {
-      return url.substring(url.lastIndexOf("/") + 1);
+      return url.substring(url.lastIndexOf('/') + 1);
    }
 
 }

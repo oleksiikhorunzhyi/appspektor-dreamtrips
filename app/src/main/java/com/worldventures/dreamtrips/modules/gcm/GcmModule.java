@@ -2,11 +2,16 @@ package com.worldventures.dreamtrips.modules.gcm;
 
 import android.content.Context;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
+import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
+import com.worldventures.core.utils.DateTimeDeserializer;
+import com.worldventures.core.utils.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
@@ -16,6 +21,9 @@ import com.worldventures.dreamtrips.modules.gcm.service.PushListenerService;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 import com.worldventures.dreamtrips.modules.gcm.service.SubscribeToPushNotificationsInteractor;
 
+import java.util.Date;
+
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -28,6 +36,8 @@ import dagger.Provides;
       library = true)
 public class GcmModule {
 
+   private static final String GCM_ONLY = "GcmModule";
+
    @Provides
    @Singleton
    SubscribeToPushNotificationsInteractor subscribeToPushNotificationsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
@@ -35,13 +45,25 @@ public class GcmModule {
    }
 
    @Provides
-   NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationCountEventDelegate notificationCountEventDelegate, SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
+   NotificationDelegate provideNotificationDelegate(@ForApplication Context context, NotificationCountEventDelegate notificationCountEventDelegate,
+         SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
       return new NotificationDelegate(context, notificationCountEventDelegate, repository, notificationFactoryHolder);
    }
 
    @Provides
-   NotificationDataParser provideDataParser(Gson gson) {
+   NotificationDataParser provideDataParser(@Named(GCM_ONLY) Gson gson) {
       return new NotificationDataParser(gson);
+   }
+
+   @Provides
+   @Named(GCM_ONLY)
+   Gson provideGson() {
+      return new GsonBuilder().serializeNulls()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .registerTypeAdapterFactory(new LowercaseEnumTypeAdapterFactory("unknown"))
+            .registerTypeAdapter(Date.class, new DateTimeDeserializer())
+            .registerTypeAdapter(Date.class, new DateTimeSerializer())
+            .create();
    }
 
 

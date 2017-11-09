@@ -6,14 +6,12 @@ import android.os.Message;
 import android.support.v7.widget.SearchView;
 import android.util.AttributeSet;
 
-
 public class DelaySearchView extends SearchView {
-
 
    private static final int TRIGGER_ONQUERYTEXT_CHANGE = 1;
    private static final int TRIGGER_ONQUERYTEXT_SUBMIT = 2;
 
-   private final long SEARCH_TRIGGER_DELAY_IN_MS = 1000;
+   private final static long SEARCH_TRIGGER_DELAY_IN_MS = 1000;
 
    InnerHandler handler = new InnerHandler();
 
@@ -22,13 +20,13 @@ public class DelaySearchView extends SearchView {
 
       @Override
       public void handleMessage(Message msg) {
-         if (msg.what == TRIGGER_ONQUERYTEXT_CHANGE) {
-            if (listener != null) {
+         if (listener != null) {
+            if (msg.what == TRIGGER_ONQUERYTEXT_CHANGE) {
                listener.onQueryTextChange((String) msg.obj);
             }
-         }
-         if (msg.what == TRIGGER_ONQUERYTEXT_SUBMIT) {
-            if (listener != null) listener.onQueryTextSubmit((String) msg.obj);
+            if (msg.what == TRIGGER_ONQUERYTEXT_SUBMIT) {
+               listener.onQueryTextSubmit((String) msg.obj);
+            }
          }
       }
    }
@@ -46,7 +44,6 @@ public class DelaySearchView extends SearchView {
    public DelaySearchView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
    }
-
 
    @Override
    public void setOnQueryTextListener(OnQueryTextListener listener) {

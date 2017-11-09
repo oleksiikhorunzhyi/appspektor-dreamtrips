@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Offer View", trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantsListingExpandEvent extends MerchantAnalyticsAction {

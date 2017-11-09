@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.layoutmanager;
 
-public class LayoutManagerFactory {
+public final class LayoutManagerFactory {
+
+   private LayoutManagerFactory() {
+   }
+
    public static LayoutManager getManager(int count) {
       switch (count) {
          case 1:

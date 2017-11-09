@@ -12,12 +12,11 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.component.RootComponentsProvider;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
@@ -146,7 +145,9 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
       Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
       // check if current
       boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
-      if (theSame) return;
+      if (theSame) {
+         return;
+      }
       //
       navigationDrawerPresenter.setCurrentComponent(component);
       // check if in stack
@@ -163,7 +164,8 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
          fm.popBackStack(backStackName, 0);
          return;
       }
-      router.moveTo(Route.restoreByKey(component.getKey()), NavigationConfigBuilder.forFragment()
+      router.moveTo(component.getFragmentClass(), NavigationConfigBuilder.forFragment()
+            .key(component.getKey())
             .fragmentManager(getSupportFragmentManager())
             .containerId(R.id.container_main)
             .backStackEnabled(true)

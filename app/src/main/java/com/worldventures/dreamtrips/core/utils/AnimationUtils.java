@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
-public class AnimationUtils {
+public final class AnimationUtils {
    private AnimationUtils() {
    }
 
@@ -77,8 +77,9 @@ public class AnimationUtils {
       Animation animation = new Animation() {
          @Override
          protected void applyTransformation(float interpolatedTime, Transformation t) {
-            if (interpolatedTime == 1) view.setVisibility(View.GONE);
-            else {
+            if (interpolatedTime == 1) {
+               view.setVisibility(View.GONE);
+            } else {
                view.getLayoutParams().height = viewHeight - (int) (viewHeight * interpolatedTime);
                view.requestLayout();
             }

@@ -10,9 +10,8 @@ import rx.Scheduler;
 
 public class SessionActionPipeCreator {
 
-   private Set<ActionPipe> actionPipes = Collections.synchronizedSet(new HashSet<ActionPipe>());
-
-   private Janet janet;
+   private final Set<ActionPipe> actionPipes = Collections.synchronizedSet(new HashSet<ActionPipe>());
+   private final Janet janet;
 
    public SessionActionPipeCreator(Janet janet) {
       this.janet = janet;

@@ -47,6 +47,7 @@ public abstract class BasePhotoAttachmentsPreviewView extends BasePhotoAttachmen
 
 
    protected void onViewCreated() {
+      //do nothing
    }
 
    protected abstract int[] getPreviewViewsIds();

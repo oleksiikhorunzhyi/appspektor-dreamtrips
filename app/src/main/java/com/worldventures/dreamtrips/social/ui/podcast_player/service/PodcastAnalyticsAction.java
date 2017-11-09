@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.podcast_player.service;
 
 import com.worldventures.core.service.analytics.ActionPart;
 import com.worldventures.core.service.analytics.AdobeTracker;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 @AnalyticsEvent(action = "membership:podcasts:podcast ${progressStatus}",
                 trackers = AdobeTracker.TRACKER_KEY)
-public class PodcastAnalyticsAction extends BaseAnalyticsAction {
+public final class PodcastAnalyticsAction extends BaseAnalyticsAction {
 
    @ActionPart String progressStatus;
 

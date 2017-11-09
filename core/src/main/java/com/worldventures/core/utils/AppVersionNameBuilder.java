@@ -33,11 +33,10 @@ public class AppVersionNameBuilder {
          boolean release = isCurrentBuildType("release");
          boolean debug = isCurrentBuildType("debug");
          if (isCurrentFlavor("stage")) {
-            if (debug) name = "alpha";
-            else if (release) name = "beta";
+            if (debug) { name = "alpha"; } else if (release) { name = "beta"; }
 
-         } else if (isCurrentFlavor("prod")) {
-            if (release) name = "prod";
+         } else if (isCurrentFlavor("prod") && release) {
+            name = "prod";
          }
       }
       return generateName(name);

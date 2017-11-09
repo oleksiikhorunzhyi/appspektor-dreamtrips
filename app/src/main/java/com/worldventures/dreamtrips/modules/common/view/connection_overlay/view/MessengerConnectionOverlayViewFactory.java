@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 
 public class MessengerConnectionOverlayViewFactory implements ConnectionOverlayViewFactory<MessengerConnectionOverlayView> {
 
-   private Context context;
+   private final Context context;
    private View rootView;
    private int layoutId;
 

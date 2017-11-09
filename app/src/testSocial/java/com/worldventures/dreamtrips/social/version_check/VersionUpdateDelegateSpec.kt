@@ -5,10 +5,10 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.core.service.analytics.AnalyticsInteractor
+import com.worldventures.core.test.janet.MockAnalyticsService
 import com.worldventures.dreamtrips.modules.common.delegate.system.AppInfoProvider
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegate
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegate

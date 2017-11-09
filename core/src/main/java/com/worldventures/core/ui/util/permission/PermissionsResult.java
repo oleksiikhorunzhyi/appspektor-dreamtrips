@@ -8,7 +8,7 @@ public class PermissionsResult {
    public final int[] grantResults;
    public final boolean shouldShowRequestPermissionRationale;
 
-   public PermissionsResult(int requestCode, @Nullable String[] permissions, int[] grantResults) {
+   public PermissionsResult(int requestCode, @Nullable String[] permissions, int... grantResults) {
       this(requestCode, permissions, grantResults, false);
    }
 

@@ -19,6 +19,7 @@ public class BucketFeedItem extends FeedItem<BucketItem> {
    }
 
    public BucketFeedItem() {
+      //do nothing
    }
 
    public BucketFeedItem(Parcel in) {

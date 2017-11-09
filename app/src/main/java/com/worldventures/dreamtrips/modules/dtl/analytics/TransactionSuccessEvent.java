@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 
 import android.location.Location;
 
-import com.worldventures.core.service.analytics.AnalyticsEvent;
-import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.AdobeTracker;
+import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 import java.util.Locale;
 

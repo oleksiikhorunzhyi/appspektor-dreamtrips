@@ -22,6 +22,8 @@ public class SocialConnectionOverlay extends ConnectionOverlay<SocialConnectionO
          case CONNECTED:
             overlayView.hide();
             break;
+         default:
+            break;
       }
    }
 

@@ -42,7 +42,7 @@ public class XmppServerFacade implements MessengerServerFacade {
    private static final int TIME_PING_INTERVAL = 45; // secs
    private static final String WV_API_PROTOCOL_VERSION = "4.0";
 
-   private XmppServerParams serverParams;
+   private final XmppServerParams serverParams;
    // TODO: 4/28/16 not rx way
    private AbstractXMPPConnection connection;
    private volatile boolean active;

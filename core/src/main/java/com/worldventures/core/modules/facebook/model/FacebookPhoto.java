@@ -10,9 +10,8 @@ import java.util.List;
 
 public class FacebookPhoto implements MediaPickerModel, Serializable {
 
-   private String id;
-   private List<ImageSource> images;
-
+   private final String id;
+   private final List<ImageSource> images;
    private boolean checked;
    private long pickedTime;
 
@@ -46,6 +45,7 @@ public class FacebookPhoto implements MediaPickerModel, Serializable {
       return Uri.parse(getStringUri());
    }
 
+   @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
    private String getStringUri() {
       if (images.size() > 2) {
          return images.get(images.size() / 2 + 1).getSource();

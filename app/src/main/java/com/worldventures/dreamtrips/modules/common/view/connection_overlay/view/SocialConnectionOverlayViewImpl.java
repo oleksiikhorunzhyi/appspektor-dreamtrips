@@ -13,11 +13,10 @@ import rx.subjects.PublishSubject;
 
 public class SocialConnectionOverlayViewImpl implements SocialConnectionOverlayView {
 
-   private Context context;
-   private ViewGroup parentView;
+   private final Context context;
+   private final ViewGroup parentView;
+   private final PublishSubject<Void> closeClickObservable = PublishSubject.create();
    private View overlayView;
-
-   private PublishSubject<Void> closeClickObservable = PublishSubject.create();
 
    public SocialConnectionOverlayViewImpl(Context context, @Nullable ViewGroup parentView) {
       this.context = context;
@@ -25,8 +24,12 @@ public class SocialConnectionOverlayViewImpl implements SocialConnectionOverlayV
    }
 
    private boolean attachOverlayIfNeeded() {
-      if (parentView == null) return false;
-      if (overlayView != null) return true;
+      if (parentView == null) {
+         return false;
+      }
+      if (overlayView != null) {
+         return true;
+      }
       overlayView = LayoutInflater.from(context)
             .inflate(R.layout.view_social_offline_indicator, parentView, false);
       overlayView.findViewById(R.id.offline_indicator_close)

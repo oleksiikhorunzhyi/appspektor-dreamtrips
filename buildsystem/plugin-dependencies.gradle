@@ -36,7 +36,7 @@ ext {
             androidPluginVersion = props.androidPluginVersion
          }
       }
-      logger.lifecycle("Android Plugin version: $androidPluginVersion")
+      logger.info("Android Plugin version: $androidPluginVersion")
       return "com.android.tools.build:gradle:$androidPluginVersion"
    }()
 }

@@ -199,10 +199,10 @@ task('disableNR') {
          newRelicInstrumentTask.enabled = false
          newRelicDeinstrumentTask.enabled = false
       } catch (Exception e) {
-         logger.log(LogLevel.ERROR, "[newrelic] an error occured attempting to disable New Relic instrumentation." + "\n" + e.printStackTrace())
+         logger.error("[newrelic] an error occured attempting to disable New Relic instrumentation." + "\n" + e.printStackTrace())
       }
       if (newRelicInstrumentTask.enabled == true) {
-         logger.log(LogLevel.ERROR, "[newrelic] an error occured attempting to disable New Relic instrumentation.")
+         logger.error("[newrelic] an error occured attempting to disable New Relic instrumentation.")
       } else {
          logger.info("[newrelic] newrelicInstrumentTask has been disabled")
       }

@@ -35,7 +35,7 @@ public class WalletPuckConnectionPresenterImpl extends WalletPresenterImpl<Walle
             .subscribe(new ActionStateSubscriber<SmartCardUserCommand>()
                   .onSuccess(command -> {
                      if (command.getResult() != null) {
-                        getView().userPhoto(command.getResult().userPhoto());
+                        getView().userPhoto(command.getResult().getUserPhoto());
                      }
                   })
             );

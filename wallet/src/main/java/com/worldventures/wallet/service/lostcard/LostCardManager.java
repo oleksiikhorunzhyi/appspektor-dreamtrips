@@ -84,7 +84,7 @@ class LostCardManager {
    private void observeBeacon() {
       subscriptions.add(smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
-            .map(command -> command.getResult().smartCardId())
+            .map(command -> command.getResult().getSmartCardId())
             .flatMap(activeSmartCardId -> beaconClient.observeEvents()
                   .filter(beaconEvent -> beaconEvent.getSmartCardId() != null)
                   .doOnNext(beaconEvent -> beaconLogger.logBeacon("Beacon %s :: SmartCard ID - %s",

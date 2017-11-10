@@ -1,7 +1,6 @@
 package com.worldventures.wallet.service.lostcard
 
 import android.content.Context
-import android.location.Address
 import android.location.Location
 import android.test.mock.MockContext
 import com.nhaarman.mockito_kotlin.mock
@@ -25,6 +24,7 @@ import com.worldventures.wallet.domain.converter.SmartCardLocationTypeToWalletLo
 import com.worldventures.wallet.domain.converter.WalletCoordinatesToSmartCardCoordinatesConverter
 import com.worldventures.wallet.domain.converter.WalletLocationToSmartCardLocationConverter
 import com.worldventures.wallet.domain.converter.WalletLocationTypeToSmartCardLocationTypeConverter
+import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
@@ -39,6 +39,9 @@ import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.SmartCardLocationInteractor
 import com.worldventures.wallet.service.SmartCardSyncManager
 import com.worldventures.wallet.service.TestSchedulerProvider
+import com.worldventures.wallet.service.beacon.StubWalletBeaconLogger
+import com.worldventures.wallet.service.beacon.WalletBeaconLogger
+import com.worldventures.wallet.service.impl.MockWalletLocationService
 import com.worldventures.wallet.service.location.WalletDetectLocationService
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand
 import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesCommand
@@ -70,15 +73,12 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.mockito.ArgumentMatchers.anyList
-import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 import java.util.Calendar
 import java.util.regex.Pattern
-import kotlin.test.CollectionAssertionSession
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.sizeShouldBe
 
 class SmartCardLocationInteractorSpec : BaseSpec({
 
@@ -106,13 +106,14 @@ class SmartCardLocationInteractorSpec : BaseSpec({
             whenever(mockDb.smartCard).thenReturn(smartCard)
             val initialLocationsSize = locationStorage.walletLocations.size
             val testSubscriber: TestSubscriber<ActionState<WalletLocationCommand>> = TestSubscriber()
+
             smartCardLocationInteractor.walletLocationCommandPipe()
                   .createObservable(WalletLocationCommand(WalletLocationType.CONNECT))
                   .subscribe(testSubscriber)
 
             assertActionSuccess(testSubscriber, { true })
             verify(locationStorage, times(1)).saveWalletLocations(any())
-            CollectionAssertionSession(locationStorage.walletLocations).sizeShouldBe(initialLocationsSize + 1)
+            assert(locationStorage.walletLocations.size == initialLocationsSize + 1)
          }
          it("post location") {
             val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
@@ -132,7 +133,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
             assertActionSuccess(testSubscriber, { true })
             verify(locationStorage, times(1)).saveWalletLocations(any())
-            CollectionAssertionSession(locationStorage.walletLocations).sizeShouldBe(1)
+            assert(locationStorage.walletLocations.size == 1)
             assertNotNull(WalletLocationsUtil.getLatestLocation(locationList)?.postedAt)
          }
          it("get location") {
@@ -161,7 +162,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                   .createObservable(FetchAddressWithPlacesCommand(createWalletCoordinates()))
                   .subscribe(testSubscriber)
 
-            AssertUtil.assertActionSuccess(testSubscriber, { it.result != null && it.result.places != null })
+            AssertUtil.assertActionSuccess(testSubscriber, { it.result != null })
          }
          it("try to change status on -> off and get toggle state") {
             testTrackingStatusCommand(true, false)
@@ -184,13 +185,13 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var smartCardSyncManager: SmartCardSyncManager
       lateinit var locationStorage: LostCardRepository
       lateinit var settingsInteractor: SettingsInteractor
-      val featureHelper: WalletFeatureHelper = WalletFeatureHelperFull()
+      private val featureHelper: WalletFeatureHelper = WalletFeatureHelperFull()
 
-      val deviceStore: DeviceStorage = SimpleDeviceStorage()
-      val cardClient: SmartCardClient
+      private val deviceStore: DeviceStorage = SimpleDeviceStorage()
+      private val cardClient: SmartCardClient
 
-      val TEST_LAT = 50.448479
-      val TEST_LNG = 30.527267
+      private val TEST_LAT = 50.448479
+      private val TEST_LNG = 30.527267
       val SMART_CARD_ID = "111"
 
       init {
@@ -221,6 +222,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
          daggerCommandActionService.registerProvider(RecordInteractor::class.java, { recordInteractor })
          daggerCommandActionService.registerProvider(SettingsInteractor::class.java, { settingsInteractor })
+         daggerCommandActionService.registerProvider(WalletBeaconLogger::class.java) { StubWalletBeaconLogger() }
 
          return janet
       }
@@ -253,9 +255,9 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          return lostCardRepository
       }
 
-      fun mockHttpService(): MockHttpActionService {
-         val placesResponse: NearbyResponse = mockPlacesResponse()
-         val addressResponse: AddressRestResponse = mock()
+      private fun mockHttpService(): MockHttpActionService {
+         val placesResponse = mockPlacesResponse()
+         val addressResponse = mockAddressRestResponse()
          val scLocations: List<SmartCardLocation> = mutableListOf()
          return MockHttpActionService.Builder()
                .bind(MockHttpActionService.Response(200).body(scLocations)) { request ->
@@ -274,40 +276,17 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                .build()
       }
 
-      fun mockSmartCard(cardId: String): SmartCard {
-         val mockedSmartCard: SmartCard = mock()
-         whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
-         whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
+      private fun mockAddressRestResponse() = AddressRestResponse(results = emptyList(), placeId = null, status = "unknown")
 
-         return mockedSmartCard
-      }
+      fun mockSmartCard(cardId: String) = SmartCard(cardId, CardStatus.ACTIVE, "deviceId")
 
       fun createMockDb(): WalletStorage = spy()
 
       fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
 
-      fun createWalletDetectLocationService(): WalletDetectLocationService {
-         val location = mockLocation()
-         val address = mockAddress()
-         val walletDetectLocationService: WalletDetectLocationService = mock()
-         whenever(walletDetectLocationService.isPermissionGranted).thenReturn(true)
-         whenever(walletDetectLocationService.detectLastKnownLocation()).thenReturn(Observable.just(location))
-         return walletDetectLocationService
-      }
+      fun createWalletDetectLocationService(): WalletDetectLocationService = MockWalletLocationService(mockLocation())
 
-      fun mockAddress(): Address {
-         val address: Address = mock()
-         whenever(address.getAddressLine(0)).thenReturn("Test address")
-         whenever(address.getAddressLine(1)).thenReturn("Test address 2")
-         whenever(address.countryName).thenReturn("USA")
-         whenever(address.adminArea).thenReturn("New-York")
-         whenever(address.latitude).thenReturn(TEST_LAT)
-         whenever(address.longitude).thenReturn(TEST_LNG)
-         whenever(address.postalCode).thenReturn("10001")
-         return address
-      }
-
-      fun mockLocation(): Location {
+      private fun mockLocation(): Location {
          val location: Location = mock()
          whenever(location.latitude).thenReturn(TEST_LAT)
          whenever(location.longitude).thenReturn(TEST_LNG)
@@ -320,18 +299,9 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                   coordinates = createWalletCoordinates(),
                   createdAt = Calendar.getInstance().time)
 
-      fun mockPlacesResponse(): NearbyResponse {
-         val apiPlace = mockApiPlace()
-         val placesResponse: NearbyResponse = mock()
-         whenever(placesResponse.locationPlaces()).thenReturn(mutableListOf(apiPlace))
-         return placesResponse
-      }
+      private fun mockPlacesResponse() = NearbyResponse(listOf(mockApiPlace()))
 
-      fun mockApiPlace(): ApiPlace {
-         val apiPlace: ApiPlace = mock()
-         whenever(apiPlace.name()).thenReturn("Test Place Name")
-         return apiPlace
-      }
+      private fun mockApiPlace() = ApiPlace("placeId", "Test Place Name", "WTF")
 
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1)))

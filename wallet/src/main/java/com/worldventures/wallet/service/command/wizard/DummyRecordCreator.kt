@@ -22,9 +22,9 @@ object DummyRecordCreator {
              track1 = "B1234567890123445^FLYE/TEST CARD^23045211000000827000000",
              track2 = "1234567890123445=230452110000827",
              nickname = "Credit Card",
-             cardHolderLastName = user.lastName(),
-             cardHolderMiddleName = user.middleName(),
-             cardHolderFirstName = user.firstName())
+             cardHolderLastName = user.lastName,
+             cardHolderMiddleName = user.middleName,
+             cardHolderFirstName = user.firstName)
 
       val dummyCard2 = Record(
             id = "1",
@@ -36,9 +36,9 @@ object DummyRecordCreator {
             track1 = "B1234567890123445^FLYE/TEST CARD^23045211000000827000000",
             track2 = "1234567890123445=230452110000827",
             financialService = GENERIC,
-            cardHolderLastName = user.lastName(),
-            cardHolderMiddleName = user.middleName(),
-            cardHolderFirstName = user.firstName(),
+            cardHolderLastName = user.lastName,
+            cardHolderMiddleName = user.middleName,
+            cardHolderFirstName = user.firstName,
             nickname = "Credit Card")
 
       return listOf(dummyCard1, dummyCard2)

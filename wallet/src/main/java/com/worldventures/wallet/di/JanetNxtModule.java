@@ -19,11 +19,6 @@ import com.worldventures.wallet.service.nxt.NxtHttpService;
 import com.worldventures.wallet.service.nxt.NxtIdConfigsProvider;
 import com.worldventures.wallet.service.nxt.TokenizeMultipleRecordsCommand;
 import com.worldventures.wallet.service.nxt.TokenizeRecordCommand;
-import com.worldventures.wallet.service.nxt.model.GsonAdaptersMultiErrorResponse;
-import com.worldventures.wallet.service.nxt.model.GsonAdaptersMultiRequestBody;
-import com.worldventures.wallet.service.nxt.model.GsonAdaptersMultiRequestElement;
-import com.worldventures.wallet.service.nxt.model.GsonAdaptersMultiResponseBody;
-import com.worldventures.wallet.service.nxt.model.GsonAdaptersMultiResponseElement;
 import com.worldventures.wallet.util.WalletBuildConfigHelper;
 
 import java.util.Set;
@@ -117,11 +112,11 @@ public class JanetNxtModule {
       return new NxtHttpService(nxtSessionHolder, appVersionNameBuilder, socialInfoProvider, mapperyContext,
             nxtIdConfigsProvider.nxtidApi(), httpClient, new GsonConverter(
             new GsonProvider().provideBuilder()
-                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestBody())
-                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestElement())
-                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseBody())
-                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseElement())
-                  .registerTypeAdapterFactory(new GsonAdaptersMultiErrorResponse())
+//                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestBody())
+//                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestElement())
+//                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseBody())
+//                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseElement())
+//                  .registerTypeAdapterFactory(new GsonAdaptersMultiErrorResponse())
                   .create()),
             nxtIdConfigsProvider);
    }

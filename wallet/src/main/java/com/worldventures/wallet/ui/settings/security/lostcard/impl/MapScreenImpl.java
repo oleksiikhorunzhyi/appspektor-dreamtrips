@@ -140,14 +140,14 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
 
    @Override
    public void addPin(@NonNull LostCardPin pinData) {
-      clearMapAndAttachMarker(pinData.position());
-      lastLocationViewModel.setPlace(obtainPlace(pinData.places()));
-      lastLocationViewModel.setAddress(obtainAddress(pinData.address()));
+      clearMapAndAttachMarker(pinData.getPosition());
+      lastLocationViewModel.setPlace(obtainPlace(pinData.getPlaces()));
+      lastLocationViewModel.setAddress(obtainAddress(pinData.getAddress()));
       setVisibleMsgEmptyLastLocation(false);
 
       popupInfoViewBinding.setLastLocation(lastLocationViewModel);
       popupInfoViewBinding.setDirectionClick(view -> {
-         openExternalMap(pinData.position());
+         openExternalMap(pinData.getPosition());
          getPresenter().trackDirectionsClick();
       });
    }

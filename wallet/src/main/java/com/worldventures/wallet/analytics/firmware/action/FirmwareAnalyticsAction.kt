@@ -12,6 +12,6 @@ abstract class FirmwareAnalyticsAction : BaseAnalyticsAction() {
 
    @CallSuper
    open fun setFirmwareData(data: FirmwareUpdateData) {
-      cid = data.smartCardId()
+      cid = data.smartCardId
    }
 }

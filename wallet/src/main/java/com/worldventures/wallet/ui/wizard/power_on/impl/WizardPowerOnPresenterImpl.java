@@ -63,7 +63,7 @@ public class WizardPowerOnPresenterImpl extends WalletPresenterImpl<WizardPowerO
    }
 
    private void bindResult(WizardCheckCommand.Checks result) {
-      getView().setButtonAction(result.internetIsAvailable() && result.bluetoothIsEnabled());
+      getView().setButtonAction(result.getInternetIsAvailable() && result.getBluetoothIsEnabled());
    }
 
    @Override

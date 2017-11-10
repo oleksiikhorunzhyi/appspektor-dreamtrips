@@ -89,7 +89,7 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
 
    @Override
    public void currentFirmwareInfo(@Nullable SmartCardFirmware version, FirmwareInfo firmwareInfo, boolean isCompatible) {
-      currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.nordicAppVersion()));
+      currentVersion.setText(version == null ? "" : getString(R.string.wallet_settings_version_current, version.getNordicAppVersion()));
 
       availableFirmwareInfo(firmwareInfo);
       requiredLatestDtAppVersion(isCompatible);

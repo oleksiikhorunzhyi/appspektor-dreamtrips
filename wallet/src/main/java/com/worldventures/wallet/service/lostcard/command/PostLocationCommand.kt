@@ -22,7 +22,6 @@ import rx.subjects.PublishSubject
 import java.util.Calendar
 import java.util.Collections
 import javax.inject.Inject
-import kotlin.Comparator
 
 @CommandAction
 class PostLocationCommand : Command<Void>(), InjectableAction {
@@ -61,7 +60,7 @@ class PostLocationCommand : Command<Void>(), InjectableAction {
 
    private fun observeLocationsPost(locations: List<WalletLocation>, smartCard: SmartCard): Observable<CreateSmartCardLocationHttpAction> {
       return janet.createPipe(CreateSmartCardLocationHttpAction::class.java, Schedulers.io())
-            .createObservableResult(CreateSmartCardLocationHttpAction(java.lang.Long.parseLong(smartCard.smartCardId()),
+            .createObservableResult(CreateSmartCardLocationHttpAction(java.lang.Long.parseLong(smartCard.smartCardId),
                   prepareRequestBody(locations)))
    }
 

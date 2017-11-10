@@ -26,8 +26,8 @@ public class RestoreDefaultDisplayTypeCommand extends Command<Void> implements I
    private final boolean hasPhone;
 
    public RestoreDefaultDisplayTypeCommand(SmartCardUser user) {
-      hasPhoto = user.userPhoto() != null;
-      hasPhone = user.phoneNumber() != null;
+      hasPhoto = user.getUserPhoto() != null;
+      hasPhone = user.getPhoneNumber() != null;
    }
 
    @Override

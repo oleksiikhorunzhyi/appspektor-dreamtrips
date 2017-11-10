@@ -49,7 +49,7 @@ class WizardChargingPresenterImpl(navigator: Navigator,
             .compose(view!!.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess { command -> view!!.userPhoto(command.result.userPhoto()) }
+                  .onSuccess { command -> view!!.userPhoto(command.result.userPhoto) }
             )
    }
 

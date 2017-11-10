@@ -8,15 +8,15 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.api.smart_card.status.model.SmartCardStatus
-import com.worldventures.wallet.model.TestLocalSmartCardDetails
-import com.worldventures.wallet.model.TestSmartCard
-import com.worldventures.wallet.model.TestSmartCardUser
+import com.worldventures.wallet.domain.entity.CardStatus
+import com.worldventures.wallet.domain.entity.SmartCard
+import com.worldventures.wallet.domain.entity.SmartCardDetails
+import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.SmartCardUserCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand
-import com.worldventures.wallet.service.command.wizard.ImmutableAssociatedCard
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.wallet.ui.common.BaseTest
 import com.worldventures.wallet.ui.common.InteractorBuilder
@@ -26,16 +26,17 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.ProgressView
 import org.junit.Before
 import org.junit.Test
+import java.util.Date
 
 class TestInputBarcodeDelegate : BaseTest() {
 
    private val contractGetSmartCardStatus = Contract.of(GetSmartCardStatusCommand::class.java)
-   private val contractSmartCardUser = Contract.of(SmartCardUserCommand::class.java).result(TestSmartCardUser())
+   private val contractSmartCardUser = Contract.of(SmartCardUserCommand::class.java).result(SmartCardUser("First Name"))
    private val contractFetchAssociatedSmartCard = Contract.of(FetchAssociatedSmartCardCommand::class.java)
-         .result(ImmutableAssociatedCard.builder()
-               .smartCard(TestSmartCard("00000044"))
-               .smartCardDetails(TestLocalSmartCardDetails(44))
-               .exist(true).build())
+         .result(FetchAssociatedSmartCardCommand.AssociatedCard(
+               smartCard = SmartCard("00000044", CardStatus.ACTIVE, "deviceId"),
+               smartCardDetails = SmartCardDetails("0000044", 0, "BLE address", "wvOrder", "unknown", "unknown", Date()),
+               exist = true))
 
    private val interactorBuilder = InteractorBuilder.configJanet {
       addMockCommandActionService {

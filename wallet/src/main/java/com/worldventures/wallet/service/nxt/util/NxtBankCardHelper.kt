@@ -2,7 +2,6 @@ package com.worldventures.wallet.service.nxt.util
 
 import android.util.Base64
 import com.worldventures.wallet.domain.entity.record.Record
-import com.worldventures.wallet.service.nxt.model.ImmutableMultiRequestElement
 import com.worldventures.wallet.service.nxt.model.MultiErrorResponse
 import com.worldventures.wallet.service.nxt.model.MultiRequestElement
 import java.util.ArrayList
@@ -25,14 +24,18 @@ object NxtBankCardHelper {
    fun getDataForTokenization(record: Record, refIdPrefix: String? = record.id): List<MultiRequestElement> {
       val elements = ArrayList<MultiRequestElement>()
 
-      elements.add(ImmutableMultiRequestElement.builder()
-            .operation(OPERATION_TOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(record.number).referenceId(prefixRefId(PAN, refIdPrefix))
-            .build())
-      elements.add(ImmutableMultiRequestElement.builder()
-            .operation(OPERATION_TOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(record.cvv).referenceId(prefixRefId(CVV, refIdPrefix))
-            .build())
+      elements.add(
+            MultiRequestElement(
+                  operation = OPERATION_TOKENIZE,
+                  tokenName = TOKEN_NAME_GENERIC,
+                  value = record.number,
+                  referenceId = prefixRefId(PAN, refIdPrefix)))
+
+      elements.add(MultiRequestElement(
+            operation = OPERATION_TOKENIZE,
+            tokenName = TOKEN_NAME_GENERIC,
+            value = record.cvv,
+            referenceId = prefixRefId(CVV, refIdPrefix)))
 
       safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, record.track1, prefixRefId(TRACK_1, refIdPrefix))
       safelyAddEncodedElement(elements, OPERATION_TOKENIZE, TOKEN_NAME_GENERIC, record.track2, prefixRefId(TRACK_2, refIdPrefix))
@@ -45,14 +48,16 @@ object NxtBankCardHelper {
    fun getDataForDetokenization(record: Record, refIdPrefix: String? = record.id): List<MultiRequestElement> {
       val elements = ArrayList<MultiRequestElement>()
 
-      elements.add(ImmutableMultiRequestElement.builder()
-            .operation(OPERATION_DETOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(record.number).referenceId(prefixRefId(PAN, refIdPrefix))
-            .build())
-      elements.add(ImmutableMultiRequestElement.builder()
-            .operation(OPERATION_DETOKENIZE).tokenName(TOKEN_NAME_GENERIC)
-            .value(record.cvv).referenceId(prefixRefId(CVV, refIdPrefix))
-            .build())
+      elements.add(MultiRequestElement(
+            operation = OPERATION_DETOKENIZE,
+            tokenName = TOKEN_NAME_GENERIC,
+            value = record.number,
+            referenceId = prefixRefId(PAN, refIdPrefix)))
+      elements.add(MultiRequestElement(
+            operation = OPERATION_DETOKENIZE,
+            tokenName = TOKEN_NAME_GENERIC,
+            value = record.cvv,
+            referenceId = prefixRefId(CVV, refIdPrefix)))
 
       safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, record.track1, prefixRefId(TRACK_1, refIdPrefix))
       safelyAddElement(elements, OPERATION_DETOKENIZE, TOKEN_NAME_GENERIC, record.track2, prefixRefId(TRACK_2, refIdPrefix))
@@ -89,10 +94,11 @@ object NxtBankCardHelper {
    private fun safelyAddElement(list: MutableList<MultiRequestElement>,
                                 operation: String, tokenName: String, value: String?, refId: String) {
       if (!value.isNullOrEmpty()) {
-         list.add(ImmutableMultiRequestElement.builder()
-               .operation(operation).tokenName(tokenName)
-               .value(value!!).referenceId(refId)
-               .build())
+         list.add(MultiRequestElement(
+               operation = operation,
+               tokenName = tokenName,
+               value = value!!,
+               referenceId = refId))
       }
    }
 
@@ -100,10 +106,11 @@ object NxtBankCardHelper {
                                        operation: String, tokenName: String, value: String?, refId: String) {
       if (!value.isNullOrEmpty()) {
          val encodedValue = Base64.encode(value!!.toByteArray(), Base64.DEFAULT)
-         list.add(ImmutableMultiRequestElement.builder()
-               .operation(operation).tokenName(tokenName)
-               .value(String(encodedValue)).referenceId(refId)
-               .build())
+         list.add(MultiRequestElement(
+               operation = operation,
+               tokenName = tokenName,
+               value = String(encodedValue),
+               referenceId = refId))
       }
    }
 
@@ -125,7 +132,7 @@ object NxtBankCardHelper {
             sb.append(", ")
          }
          val errorResponse = errorResponseList[i]
-         sb.append(String.format("\"%s\" : \"%s\"", errorResponse.code(), errorResponse.message()))
+         sb.append(String.format("\"%s\" : \"%s\"", errorResponse.code, errorResponse.message))
       }
       sb.append(']')
 

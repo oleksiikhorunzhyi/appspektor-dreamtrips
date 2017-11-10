@@ -68,11 +68,11 @@ public class WizardCheckingPresenterImpl extends WalletPresenterImpl<WizardCheck
    private void bindResult(WizardCheckCommand.Checks result) {
       final WizardCheckingScreen view = getView();
       //noinspection all
-      view.networkAvailable(result.internetIsAvailable());
-      view.bluetoothEnable(result.bluetoothIsEnabled());
-      if (!result.bleIsSupported()) {
+      view.networkAvailable(result.getInternetIsAvailable());
+      view.bluetoothEnable(result.getBluetoothIsEnabled());
+      if (!result.getBleIsSupported()) {
          view.bluetoothDoesNotSupported();
       }
-      view.buttonEnable(result.internetIsAvailable() && result.bluetoothIsEnabled());
+      view.buttonEnable(result.getInternetIsAvailable() && result.getBluetoothIsEnabled());
    }
 }

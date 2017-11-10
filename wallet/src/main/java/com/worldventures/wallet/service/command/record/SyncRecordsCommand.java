@@ -132,7 +132,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
 
    private Observable<Record> prepareRecordsForLocalStorage(List<Record> records) {
       return recordInteractor.secureMultipleRecordsPipe()
-            .createObservableResult(SecureMultipleRecordsCommand.Builder.prepareRecordForLocalStorage(records)
+            .createObservableResult(SecureMultipleRecordsCommand.Builder.Companion.prepareRecordForLocalStorage(records)
                   .skipTokenizationErrors(true)
                   .create())
             .map(Command::getResult)
@@ -141,7 +141,7 @@ public class SyncRecordsCommand extends Command<Void> implements InjectableActio
 
    private Observable<Pair<Integer, io.techery.janet.smartcard.model.Record>> prepareRecordsForSmartCard(List<Record> records) {
       return recordInteractor.secureMultipleRecordsPipe().createObservableResult(
-            SecureMultipleRecordsCommand.Builder.prepareRecordForSmartCard(records)
+            SecureMultipleRecordsCommand.Builder.Companion.prepareRecordForSmartCard(records)
                   .withAnalyticsActionType(ActionType.RESTORE)
                   .create())
             .map(Command::getResult)

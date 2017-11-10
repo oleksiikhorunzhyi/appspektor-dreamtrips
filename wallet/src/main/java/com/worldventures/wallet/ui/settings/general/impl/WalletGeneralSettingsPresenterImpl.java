@@ -162,8 +162,8 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    }
 
    private void bindSmartCardUser(SmartCardUser it) {
-      getView().setPreviewPhoto(it.userPhoto());
-      getView().setUserName(it.firstName(), it.middleName(), it.lastName());
+      getView().setPreviewPhoto(it.getUserPhoto());
+      getView().setUserName(it.getFirstName(), it.getMiddleName(), it.getLastName());
    }
 
    private void observeFirmwareUpdates() {
@@ -176,7 +176,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    }
 
    private void toggleFirmwareBargeOrVersion(@Nullable FirmwareUpdateData firmwareUpdateData) {
-      if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
+      if (firmwareUpdateData != null && firmwareUpdateData.isUpdateAvailable()) {
          getView().firmwareUpdateCount(1);
          getView().showFirmwareBadge();
          firmwareUpdateNavigatorAction = () -> getNavigator().goStartFirmwareInstall();

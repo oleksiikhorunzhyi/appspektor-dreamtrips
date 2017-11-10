@@ -44,14 +44,14 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
    private Observable<Void> revertUpdating(SmartCard smartCard, SmartCardUser user) {
       final ChangedFields changedFields = updateDataHolder.getChangedFields();
       updateDataHolder.clear();
-      return revertName(changedFields, user, smartCard.smartCardId())
+      return revertName(changedFields, user, smartCard.getSmartCardId())
             .flatMap(aVoid -> revertPhoto(changedFields, user));
    }
 
    private Observable<Void> revertName(ChangedFields changedFields, SmartCardUser user, String smartCardId) {
-      final boolean nameChanged = changedFields.firstName().equals(user.firstName())
-            && changedFields.middleName().equals(user.middleName())
-            && changedFields.lastName().equals(user.lastName());
+      final boolean nameChanged = changedFields.getFirstName().equals(user.getFirstName())
+            && changedFields.getMiddleName().equals(user.getMiddleName())
+            && changedFields.getLastName().equals(user.getLastName());
       if (nameChanged) {
          return janet.createPipe(UpdateUserAction.class)
                .createObservableResult(new UpdateUserAction(createUser(user, smartCardId)))
@@ -62,8 +62,8 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
    }
 
    private Observable<Void> revertPhoto(ChangedFields changedFields, SmartCardUser user) {
-      final SmartCardUserPhoto userPhoto = user.userPhoto();
-      if (changedFields.photo() == null || userPhoto == null) {
+      final SmartCardUserPhoto userPhoto = user.getUserPhoto();
+      if (changedFields.getPhoto() == null || userPhoto == null) {
          return Observable.just(null);
       }
       return janet.createPipe(UpdateSmartCardUserPhotoCommand.class)
@@ -73,9 +73,9 @@ public class RevertSmartCardUserUpdatingCommand extends Command<Void> {
 
    private User createUser(SmartCardUser user, String smartCardId) {
       return ImmutableUser.builder()
-            .firstName(user.firstName())
-            .middleName(user.middleName())
-            .lastName(user.lastName())
+            .firstName(user.getFirstName())
+            .middleName(user.getMiddleName())
+            .lastName(user.getLastName())
             .isUserAssigned(true)
             .memberId(socialInfoProvider.userId())
             .barcodeId(Long.parseLong(smartCardId))

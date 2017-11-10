@@ -8,7 +8,6 @@ import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
 import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
-import com.worldventures.wallet.service.location.WalletDetectLocationService
 import com.worldventures.wallet.service.lostcard.command.http.AddressHttpAction
 import com.worldventures.wallet.service.lostcard.command.http.PlacesNearbyHttpAction
 import io.techery.janet.ActionHolder
@@ -23,7 +22,6 @@ import javax.inject.Inject
 class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Command<FetchAddressWithPlacesCommand.PlacesWithAddress>(), InjectableAction, CachedAction<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
 
    @Inject lateinit var janet: Janet
-   @Inject lateinit var locationService: WalletDetectLocationService
    @Inject lateinit var mapperyContext: MapperyContext
 
    private var cachedResult: PlacesWithAddress? = null
@@ -37,7 +35,7 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Comman
       zip(
             janet.createPipe(PlacesNearbyHttpAction::class.java)
                   .createObservableResult(PlacesNearbyHttpAction(coordinates))
-                  .map { httpAction -> mapperyContext.convert(httpAction.response().locationPlaces(), WalletPlace::class.java) },
+                  .map { httpAction -> mapperyContext.convert(httpAction.response().locationPlaces, WalletPlace::class.java) },
             janet.createPipe(AddressHttpAction::class.java)
                   .createObservableResult(AddressHttpAction(coordinates))
                   .map { addressAction -> mapperyContext.convert(addressAction.response(), WalletAddress::class.java) }

@@ -91,7 +91,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
-                  .onSuccess(command -> getView().showAddCardContinueDialog(command.getResult().smartCardId()))
+                  .onSuccess(command -> getView().showAddCardContinueDialog(command.getResult().getSmartCardId()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
             );
    }

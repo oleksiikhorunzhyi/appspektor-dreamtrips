@@ -13,7 +13,7 @@ import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesC
 import com.worldventures.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.wallet.ui.settings.security.lostcard.MapPresenter;
 import com.worldventures.wallet.ui.settings.security.lostcard.MapScreen;
-import com.worldventures.wallet.ui.settings.security.lostcard.model.ImmutableLostCardPin;
+import com.worldventures.wallet.ui.settings.security.lostcard.model.LostCardPin;
 import com.worldventures.wallet.util.WalletLocationsUtil;
 
 import java.util.List;
@@ -53,11 +53,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
    }
 
    private void setupLocationAndAddress(WalletCoordinates coordinates, WalletAddress address, List<WalletPlace> places) {
-      getView().addPin(ImmutableLostCardPin.builder()
-            .position(WalletLocationsUtil.INSTANCE.toLatLng(coordinates))
-            .address(address)
-            .places(places)
-            .build());
+      getView().addPin(new LostCardPin(places, address, WalletLocationsUtil.INSTANCE.toLatLng(coordinates)));
    }
 
    private void fetchLastSmartCardLocation() {

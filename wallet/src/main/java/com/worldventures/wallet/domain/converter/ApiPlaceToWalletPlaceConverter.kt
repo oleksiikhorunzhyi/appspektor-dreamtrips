@@ -8,7 +8,7 @@ import io.techery.mappery.MapperyContext
 
 class ApiPlaceToWalletPlaceConverter : Converter<ApiPlace, WalletPlace> {
 
-   override fun convert(context: MapperyContext, source: ApiPlace): WalletPlace = WalletPlace(source.name())
+   override fun convert(context: MapperyContext, source: ApiPlace): WalletPlace = WalletPlace(source.name)
 
    override fun sourceClass(): Class<ApiPlace> = ApiPlace::class.java
 

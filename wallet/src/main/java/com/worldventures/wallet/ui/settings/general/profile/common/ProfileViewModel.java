@@ -60,7 +60,7 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
       //      if (getSuffix().isEmpty()) {
       return lastName;
       //      } else {
-      //         String[] parts = lastName.split(" ");
+      //         String[] parts = getLastName.split(" ");
       //         if (parts.length > 1) {
       //            String suffix = parts[parts.length - 1];
       //            if (suffix.length() < 4) {
@@ -71,7 +71,7 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
       //               return name.substring(0, name.length() - 1);
       //            }
       //         }
-      //         return lastName;
+      //         return getLastName;
       //      }
    }
 
@@ -176,7 +176,7 @@ public class ProfileViewModel extends BaseObservable implements Parcelable {
    @Bindable
    public String getSuffix() {
       //      if (suffix.isEmpty()) {
-      //         String[] parts = lastName.split(" ");
+      //         String[] parts = getLastName.split(" ");
       //         if (parts.length > 1) {
       //            String suffix = parts[parts.length - 1];
       //            if (suffix.length() < 4) {

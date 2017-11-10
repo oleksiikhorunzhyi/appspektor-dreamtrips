@@ -2,6 +2,7 @@ package com.worldventures.wallet.domain.converter
 
 import com.worldventures.core.converter.Converter
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
+import com.worldventures.wallet.service.lostcard.command.http.model.AddressComponent
 import com.worldventures.wallet.service.lostcard.command.http.model.AddressRestResponse
 import io.techery.mappery.MapperyContext
 
@@ -25,24 +26,25 @@ class HttpAddressToWalletAddressConverter : Converter<AddressRestResponse, Walle
             postalCode = getFieldFromAddressResponse(addComponents, POSTAL_CODE))
    }
 
-   private fun getListOfAddressComponents(addressRestResponse: AddressRestResponse): ArrayList<AddressRestResponse.AddComponent> {
-      return addressRestResponse.results()
+   private fun getListOfAddressComponents(addressRestResponse: AddressRestResponse): ArrayList<AddressComponent> {
+      return addressRestResponse.results
             .fold(ArrayList()) { addComponents, addressComponents ->
-               addComponents.addAll(addressComponents.components())
+               addComponents.addAll(addressComponents.components)
                addComponents
             }
    }
 
    private fun isResponseInvalid(addressRestResponse: AddressRestResponse): Boolean {
-      return (addressRestResponse.status() == null
-            || addressRestResponse.status() != null && addressRestResponse.status() != "OK"
-            || addressRestResponse.results() == null
-            || addressRestResponse.results().isEmpty())
+      //todo
+      return (addressRestResponse.status == null
+            || addressRestResponse.status != null && addressRestResponse.status != "OK"
+            || addressRestResponse.results == null
+            || addressRestResponse.results.isEmpty())
    }
 
-   private fun getAddress(addComponents: ArrayList<AddressRestResponse.AddComponent>): String {
-      val number = getFieldFromAddressResponse(addComponents, STREET_NUMBER)
-      val street = getFieldFromAddressResponse(addComponents, ROUTE)
+   private fun getAddress(addressComponents: ArrayList<AddressComponent>): String {
+      val number = getFieldFromAddressResponse(addressComponents, STREET_NUMBER)
+      val street = getFieldFromAddressResponse(addressComponents, ROUTE)
       val addressBuilder = StringBuilder()
       if (number != null) {
          addressBuilder.append(number).append(", ")
@@ -51,9 +53,9 @@ class HttpAddressToWalletAddressConverter : Converter<AddressRestResponse, Walle
       return addressBuilder.toString()
    }
 
-   private fun getFieldFromAddressResponse(components: List<AddressRestResponse.AddComponent>, fieldName: String): String? =
-         components.filter { element -> element.types().contains(fieldName) }
-               .map { element -> element.longName() }
+   private fun getFieldFromAddressResponse(components: List<AddressComponent>, fieldName: String): String? =
+         components.filter { element -> element.types.contains(fieldName) }
+               .map { element -> element.longName }
                .firstOrNull()
 
    companion object {

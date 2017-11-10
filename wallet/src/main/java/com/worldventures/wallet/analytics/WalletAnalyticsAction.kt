@@ -2,6 +2,7 @@ package com.worldventures.wallet.analytics
 
 import com.worldventures.core.service.analytics.Attribute
 import com.worldventures.core.service.analytics.BaseAnalyticsAction
+import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.ConnectionStatus
 import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.SmartCardFirmware
@@ -31,13 +32,13 @@ abstract class WalletAnalyticsAction : BaseAnalyticsAction {
             fetchBatteryLevel(smartCardStatus))
 
       if (smartCardFirmware != null) {
-         setCurrentVersion(smartCardFirmware.nordicAppVersion())
+         setCurrentVersion(smartCardFirmware.nordicAppVersion)
       }
    }
 
-   private fun fetchScId(smartCard: SmartCard?) = smartCard?.smartCardId()
+   private fun fetchScId(smartCard: SmartCard?) = smartCard?.smartCardId
 
-   private fun fetchScStatus(smartCard: SmartCard?) = smartCard?.cardStatus()
+   private fun fetchScStatus(smartCard: SmartCard?) = smartCard?.cardStatus
 
    private fun fetchConnectionStatus(smartCardStatus: SmartCardStatus) = smartCardStatus.connectionStatus
 
@@ -45,7 +46,7 @@ abstract class WalletAnalyticsAction : BaseAnalyticsAction {
 
    private fun fetchBatteryLevel(smartCardStatus: SmartCardStatus) = smartCardStatus.batteryLevel
 
-   private fun setSmartCardData(scId: String?, cardState: SmartCard.CardStatus?,
+   private fun setSmartCardData(scId: String?, cardState: CardStatus?,
                                 connectionStatus: ConnectionStatus, lockStatus: Boolean, batteryLevel: Int) {
 
       setSmartCardId(scId)

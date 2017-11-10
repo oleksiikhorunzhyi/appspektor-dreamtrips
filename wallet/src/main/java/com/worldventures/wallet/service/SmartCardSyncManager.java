@@ -4,6 +4,7 @@ import android.support.v4.util.Pair;
 
 import com.worldventures.wallet.domain.WalletConstants;
 import com.worldventures.wallet.domain.entity.AboutSmartCardData;
+import com.worldventures.wallet.domain.entity.CardStatus;
 import com.worldventures.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.wallet.domain.entity.SmartCard;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
@@ -98,7 +99,7 @@ public class SmartCardSyncManager {
             .observeSuccessWithReplay()
             .map(Command::getResult)
             .filter(smartCard -> connectionStatus == CONNECTED
-                  && smartCard.cardStatus() == SmartCard.CardStatus.ACTIVE)
+                  && smartCard.getCardStatus() == CardStatus.ACTIVE)
             .takeUntil(interactor.disconnectPipe().observeSuccess())
             .take(1)
             .subscribe(aVoid -> activeCardConnected(),
@@ -163,7 +164,7 @@ public class SmartCardSyncManager {
             .distinctUntilChanged()
             .subscribe(firmware -> {
                      saveFirmwareDataForAboutScreen(firmware);
-                     interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.save(firmware));
+                     interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.Companion.save(firmware));
                      firmwareInteractor.fetchFirmwareInfoPipe().send(new FetchFirmwareInfoCommand(firmware));
                   }
             );
@@ -191,7 +192,7 @@ public class SmartCardSyncManager {
    private void saveFirmwareDataForAboutScreen(SmartCardFirmware firmware) {
       if (!firmware.isEmpty()) {
          interactor.aboutSmartCardDataCommandPipe()
-               .send(AboutSmartCardDataCommand.save(AboutSmartCardData.of(firmware)));
+               .send(AboutSmartCardDataCommand.save(new AboutSmartCardData(firmware)));
       }
    }
 
@@ -252,7 +253,7 @@ public class SmartCardSyncManager {
                            .createObservableResult(DeviceStateCommand.Companion.fetch()),
                      (activeCommand, cardStateCommand) -> Pair.create(activeCommand.getResult(), cardStateCommand.getResult()))
                      .filter(pair -> pair.second.getConnectionStatus() == CONNECTED
-                           && pair.first.cardStatus() == SmartCard.CardStatus.ACTIVE)
+                           && pair.first.getCardStatus() == CardStatus.ACTIVE)
                      .map(pair -> pair.first));
       }
    }

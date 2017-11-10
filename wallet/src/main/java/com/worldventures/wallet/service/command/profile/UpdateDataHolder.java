@@ -1,6 +1,6 @@
 package com.worldventures.wallet.service.command.profile;
 
-class UpdateDataHolder {
+public class UpdateDataHolder {
 
    private ChangedFields changedFields;
 

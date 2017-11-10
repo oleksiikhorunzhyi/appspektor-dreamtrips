@@ -28,7 +28,7 @@ import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.wallet.domain.storage.disk.TestRecordsStorage
-import com.worldventures.wallet.model.TestMultiResponseBody
+import com.worldventures.wallet.model.createTestMultiResponseBody
 import com.worldventures.wallet.service.command.RecordListCommand
 import com.worldventures.wallet.service.command.SetDefaultCardOnDeviceCommand
 import com.worldventures.wallet.service.command.SetLockStateCommand
@@ -228,8 +228,8 @@ class SmartCardInteractorSpec : BaseSpec({
                   true))
                   .subscribe(testSubscriber)
 
-            assertActionSuccess(testSubscriber, { it.result[0].cvv == TestMultiResponseBody.TEST_CVV })
-            assertActionSuccess(testSubscriber, { it.result[1].number == TestMultiResponseBody.TEST_NUMBER })
+            assertActionSuccess(testSubscriber, { it.result[0].cvv == TEST_CVV })
+            assertActionSuccess(testSubscriber, { it.result[1].number == TEST_NUMBER })
          }
 
          it("locally stored records processed when offline mode switches") {
@@ -259,7 +259,7 @@ class SmartCardInteractorSpec : BaseSpec({
             assertActionSuccess(stateDefaultSubscriber, { it.result == defaultOfflineModeState })
 
             // Check that the record has tokenized cvv value
-            fetchCardListOfCard { it.result[0].cvv == TestMultiResponseBody.TEST_CVV }
+            fetchCardListOfCard { it.result[0].cvv == TEST_CVV }
          }
 
          it("does not throw NetworkUnavailableException if network is unavailable and no records stored locally") {
@@ -303,8 +303,15 @@ class SmartCardInteractorSpec : BaseSpec({
          }
       }
    }
+
+
 }) {
+
    private companion object {
+      val TEST_NUMBER: String = "9876987698769876"
+      val TEST_CVV: String = "987"
+      val TEST_MAG_STRIPE_DATA: String = "mag_stripe_data"
+
       lateinit var mockDb: WalletStorage
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
@@ -413,7 +420,8 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun mockHttpService(): MockHttpActionService {
          return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200).body(TestMultiResponseBody(listOf(null, "0", "1", "2"))), { request ->
+               .bind(MockHttpActionService.Response(200)
+                     .body(createTestMultiResponseBody(listOf(null, "0", "1", "2"), TEST_NUMBER, TEST_CVV, TEST_MAG_STRIPE_DATA)), { request ->
                   request.url.contains("multifunction") && request.method.equals("post", true)
                })
                .build()

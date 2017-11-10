@@ -23,7 +23,7 @@ class GetLocationCommand : Command<List<WalletLocation>>(), InjectableAction {
 
    fun historicalLocationObservable(): Observable<List<WalletLocation>> {
       return observeActiveSmartCard()
-            .flatMap { command -> observeGetSmartCardLocations(command.result.smartCardId()) }
+            .flatMap { command -> observeGetSmartCardLocations(command.result.smartCardId) }
             .map { it.response() }
             .map { locations -> mapperyContext.convert(locations, WalletLocation::class.java) }
             .onErrorReturn { emptyList() }

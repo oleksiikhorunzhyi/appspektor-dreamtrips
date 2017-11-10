@@ -10,7 +10,6 @@ import com.worldventures.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.wallet.service.command.profile.ChangedFields;
-import com.worldventures.wallet.service.command.profile.ImmutableChangedFields;
 import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
@@ -124,13 +123,12 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
          getView().setDoneButtonEnabled(false);
          final ProfileViewModel profile = getView().getUser();
 
-         final ChangedFields changedFields = ImmutableChangedFields.builder()
-               .firstName(profile.getFirstName())
-               .middleName(profile.getMiddleName())
-               .lastName(profile.getLastNameWithSuffix())
-               .phone(delegate.createPhone(profile))
-               .photo(delegate.createPhoto(profile))
-               .build();
+         final ChangedFields changedFields = new ChangedFields(
+               profile.getFirstName(),
+               profile.getMiddleName(),
+               profile.getLastNameWithSuffix(),
+               delegate.createPhoto(profile),
+               delegate.createPhone(profile));
 
          smartCardUserDataInteractor.updateSmartCardUserPipe()
                .send(new UpdateSmartCardUserCommand(changedFields, forceUpdateDisplayType));
@@ -142,11 +140,11 @@ public class WalletSettingsProfilePresenterImpl extends WalletPresenterImpl<Wall
    public boolean isDataChanged() {
       final ProfileViewModel profile = getView().getUser();
       return user != null
-            && !(equalsPhoto(user.userPhoto(), profile.getChosenPhotoUri())
-            && profile.getFirstName().equals(user.firstName())
-            && profile.getMiddleName().equals(user.middleName())
-            && profile.getLastNameWithSuffix().equals(user.lastName())
-            && equalsPhone(user.phoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
+            && !(equalsPhoto(user.getUserPhoto(), profile.getChosenPhotoUri())
+            && profile.getFirstName().equals(user.getFirstName())
+            && profile.getMiddleName().equals(user.getMiddleName())
+            && profile.getLastNameWithSuffix().equals(user.getLastName())
+            && equalsPhone(user.getPhoneNumber(), profile.getPhoneCode(), profile.getPhoneNumber()));
    }
 
    @Override

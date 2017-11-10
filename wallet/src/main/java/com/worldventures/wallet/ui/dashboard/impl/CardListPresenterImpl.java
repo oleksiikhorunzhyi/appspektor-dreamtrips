@@ -227,7 +227,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             firmwareInteractor.firmwareInfoCachedPipe().observeSuccess().map(Command::getResult),
             smartCardInteractor.smartCardFirmwarePipe().observeSuccess().map(Command::getResult),
             (firmwareUpdate, scFirmware) -> {
-               if (!ProjectTextUtils.isEmpty(scFirmware.nordicAppVersion()) || scFirmware.firmwareBundleVersion() != null) {
+               if (!ProjectTextUtils.isEmpty(scFirmware.getNordicAppVersion()) || scFirmware.getFirmwareBundleVersion() != null) {
                   return firmwareUpdate;
                }
                return null;
@@ -238,13 +238,13 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::firmwareLoaded, throwable -> Timber.e(throwable, ""));
 
-      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
+      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.Companion.fetch());
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
    }
 
    private void firmwareLoaded(FirmwareUpdateData firmwareUpdateData) {
-      if (firmwareUpdateData.updateAvailable()) {
-         if (firmwareUpdateData.updateCritical()) {
+      if (firmwareUpdateData.isUpdateAvailable()) {
+         if (firmwareUpdateData.isUpdateCritical()) {
             getView().showForceFirmwareUpdateDialog();
          }
          getView().showFirmwareUpdateBtn();
@@ -442,7 +442,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<FirmwareInfoCachedCommand>()
                   .onSuccess(command -> {
-                     if (command.getResult().factoryResetRequired()) {
+                     if (command.getResult().isFactoryResetRequired()) {
                         getView().showFactoryResetConfirmationDialog();
                      } else {
                         navigateToFirmwareUpdate();

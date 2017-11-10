@@ -7,7 +7,7 @@ import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.WalletNetworkService;
 import com.worldventures.wallet.service.beacon.BeaconClient;
 import com.worldventures.wallet.service.beacon.RegionBundle;
-import com.worldventures.wallet.service.beacon.WalletBeaconClient;
+import com.worldventures.wallet.service.beacon.WalletBeaconLogger;
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.wallet.service.lostcard.command.WalletLocationCommand;
@@ -18,23 +18,26 @@ import timber.log.Timber;
 class LostCardManager {
 
    private static final String UUID_MOTION = "92812fda-67b3-4e31-8c65-a3c6aa2bed37";
-   private static final String UUID_PAYMENT = "1ff0917c-61e3-49dc-90c0-3202b6b71ec3"; //NOPMD
+//   private static final String UUID_PAYMENT = "1ff0917c-61e3-49dc-90c0-3202b6b71ec3"; //NOPMD
 
    private final SmartCardInteractor smartCardInteractor;
    private final SmartCardLocationInteractor locationInteractor;
    private final LocationSyncManager locationSyncManager;
    private final WalletNetworkService networkService;
    private final BeaconClient beaconClient;
+   private final WalletBeaconLogger beaconLogger;
 
    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
    LostCardManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         LocationSyncManager locationSyncManager, WalletNetworkService networkService, BeaconClient beaconClient) {
+         LocationSyncManager locationSyncManager, WalletNetworkService networkService, BeaconClient beaconClient,
+         WalletBeaconLogger beaconLogger) {
       this.smartCardInteractor = smartCardInteractor;
       this.locationInteractor = locationInteractor;
       this.locationSyncManager = locationSyncManager;
       this.networkService = networkService;
       this.beaconClient = beaconClient;
+      this.beaconLogger = beaconLogger;
    }
 
    public void connect() {
@@ -69,12 +72,12 @@ class LostCardManager {
 
       subscriptions.add(locationInteractor.connectActionPipe()
             .observeSuccess()
-            .doOnNext(connectAction -> WalletBeaconClient.logBeacon("SmartCard connected"))
+            .doOnNext(connectAction -> beaconLogger.logBeacon("SmartCard connected"))
             .subscribe(connectAction -> triggerLocation(WalletLocationType.CONNECT)));
 
       subscriptions.add(locationInteractor.disconnectPipe()
             .observeSuccess()
-            .doOnNext(connectAction -> WalletBeaconClient.logBeacon("SmartCard disconnected"))
+            .doOnNext(connectAction -> beaconLogger.logBeacon("SmartCard disconnected"))
             .subscribe(disconnectAction -> triggerLocation(WalletLocationType.DISCONNECT)));
    }
 
@@ -84,7 +87,7 @@ class LostCardManager {
             .map(command -> command.getResult().smartCardId())
             .flatMap(activeSmartCardId -> beaconClient.observeEvents()
                   .filter(beaconEvent -> beaconEvent.getSmartCardId() != null)
-                  .doOnNext(beaconEvent -> WalletBeaconClient.logBeacon("Beacon %s :: SmartCard ID - %s",
+                  .doOnNext(beaconEvent -> beaconLogger.logBeacon("Beacon %s :: SmartCard ID - %s",
                         beaconEvent.enteredRegion() ? "detected" : "lost", beaconEvent.getSmartCardId()))
                   .doOnSubscribe(() -> beaconClient.startScan(
                         new RegionBundle("Motion region", UUID_MOTION, null, activeSmartCardId)))

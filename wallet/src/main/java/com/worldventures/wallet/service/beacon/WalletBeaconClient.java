@@ -12,23 +12,19 @@ import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-@SuppressWarnings("FieldCanBeLocal")
 public class WalletBeaconClient implements BeaconClient, BeaconConsumer, BootstrapNotifier {
 
-   public static final String TAG = "Beacon client";
-   private static final Logger FILE_LOGGER = LoggerFactory.getLogger(TAG);
    private static final String BEACON_LAYOUT = "m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24";
 
    private final PublishSubject<BeaconEvent> beaconEventPipe = PublishSubject.create();
 
    private final Context context;
+   private final WalletBeaconLogger logger;
    private final BeaconManager beaconManager;
 
    @SuppressWarnings("unused")
@@ -38,17 +34,9 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
 
    private Region scanRegion;
 
-   public static void logBeacon(String s, Object... args) {
-      if (args.length > 0) {
-         s = String.format(s, args);
-      }
-      Timber.d("%s :: %s", TAG, s);
-      FILE_LOGGER.debug(s);
-   }
-
-
-   public WalletBeaconClient(Context context) {
+   public WalletBeaconClient(Context context, WalletBeaconLogger logger) {
       this.context = context;
+      this.logger = logger;
 
       beaconManager = BeaconManager.getInstanceForApplication(context);
       beaconManager.setBackgroundMode(true);
@@ -69,7 +57,7 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
       }
 
       try {
-         WalletBeaconClient.logBeacon("Start service :: SmartCard ID - %s", bundle.getMajor());
+         logger.logBeacon("Start service :: SmartCard ID - %s", bundle.getMajor());
          prepareRegion(bundle);
          beaconManager.bind(this);
       } catch (BeaconManager.ServiceNotDeclaredException e) {
@@ -87,14 +75,14 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
 
    @Override
    public void onBeaconServiceConnect() {
-      WalletBeaconClient.logBeacon("Service connected");
+      logger.logBeacon("Service connected");
       regionBootstrap = new RegionBootstrap(this, scanRegion);
       backgroundPowerSaver = new BackgroundPowerSaver(context);
    }
 
    @Override
    public void stopScan() {
-      WalletBeaconClient.logBeacon("Stop scan");
+      logger.logBeacon("Stop scan");
       if (regionBootstrap != null) {
          regionBootstrap.disable();
          regionBootstrap = null;

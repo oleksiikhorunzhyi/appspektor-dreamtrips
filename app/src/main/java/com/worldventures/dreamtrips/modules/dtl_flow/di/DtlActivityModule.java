@@ -7,6 +7,10 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersIn
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstScanReceiptPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
@@ -24,6 +28,9 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsA
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstFlowFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
@@ -41,6 +48,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetai
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImageScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangeScreenImpl;
@@ -56,11 +64,16 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.Master
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlThankYouScreenFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListScreenImpl;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
 import dagger.Module;
@@ -87,6 +100,7 @@ import dagger.Module;
             DtlDetailsPresenterImpl.class,
             DtlDetailsScreenImpl.class,
             DtlFullscreenImageScreenImpl.class,
+            DtlFullscreenImagePresenterImpl.class,
             ActivityPresenter.class,
             DtlFilterPresenterImpl.class,
             DtlLocationSearchHeaderCell.class,
@@ -105,14 +119,22 @@ import dagger.Module;
             WorkingHoursCell.class,
             DtlScanReceiptFragment.class,
             DtlScanReceiptPresenter.class,
+            DtlThrstScanReceiptFragment.class,
+            DtlThrstScanReceiptPresenter.class,
             DtlPointsEstimationFragment.class,
             DtlPointsEstimationPresenter.class,
             DtlScanQrCodeFragment.class,
             DtlScanQrCodePresenter.class,
             DtlTransactionSucceedFragment.class,
             DtlTransactionSucceedPresenter.class,
+            DtlThrstTransactionSucceedFragment.class,
+            DtlThrstTransactionSucceedPresenter.class,
             DtlVerifyAmountFragment.class,
             DtlVerifyAmountPresenter.class,
+            DtlThrstFlowFragment.class,
+            DtlThrstFlowPresenter.class,
+            DtlThankYouScreenFragment.class,
+            DtlThrstThankYouScreenPresenter.class,
             MerchantWorkingHoursAdapter.class,
             ThinMerchantsAdapter.class,
             DtlReviewsPresenterImpl.class,
@@ -128,7 +150,11 @@ import dagger.Module;
             ActionReviewEntityFragment.class,
             CreateReviewPostFragment.class,
             CreateReviewEntityFragment.class,
-            OfferWithReviewView.class
+            OfferWithReviewView.class,
+            DtlTransactionListScreenImpl.class,
+            DtlTransactionListPresenterImpl.class,
+            DtlTransactionScreenImpl.class,
+            DtlTransactionPresenterImpl.class,
       },
       complete = false, library = true)
 public class DtlActivityModule {

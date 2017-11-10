@@ -88,7 +88,7 @@ public class FactoryResetOperationView extends ComposableOperationView<ResetSmar
                .progress(true, 0)
                .content(contentResId)
                .cancelable(cancelable)
-               .canceledOnTouchOutside(cancelable)
+               .canceledOnTouchOutside(false)
                .cancelListener(dialogInterface -> cancelAction.call())
                .build();
       }

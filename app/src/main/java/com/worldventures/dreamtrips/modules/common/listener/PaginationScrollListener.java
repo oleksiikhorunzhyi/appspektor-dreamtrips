@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler;
+package com.worldventures.dreamtrips.modules.common.listener;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

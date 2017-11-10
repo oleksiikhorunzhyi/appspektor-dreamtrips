@@ -34,6 +34,15 @@ public class DtlTransactionAction extends Command<DtlTransaction> implements Cac
       this.updateFunc = updateFunc;
    }
 
+   private DtlTransactionAction(String id, Func1<DtlTransaction, DtlTransaction> updateFunc) {
+      this.id = id;
+      this.updateFunc = updateFunc;
+   }
+
+   public static DtlTransactionAction get(String id) {
+      return new DtlTransactionAction(id, null);
+   }
+
    public static DtlTransactionAction get(Merchant merchant) {
       return new DtlTransactionAction(merchant, null);
    }

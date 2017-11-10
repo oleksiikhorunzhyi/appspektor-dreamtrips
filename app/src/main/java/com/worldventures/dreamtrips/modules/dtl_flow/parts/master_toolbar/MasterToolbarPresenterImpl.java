@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
@@ -156,6 +157,20 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void offersOnlySwitched(boolean isOffersOnly) {
       filterDataInteractor.applyOffersOnly(isOffersOnly);
+   }
+
+   @Override
+   public void onTransactionClicked() {
+      merchantInteractor.getTransactionsPipe()
+            .createObservableResult(GetTransactionsCommand.readCurrentTransactionsCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getTransactionsCommand -> {
+               if (getTransactionsCommand.getResult() == null || getTransactionsCommand.getResult().size() == 0) {
+                  getView().showNoTransactionMessage();
+               } else {
+                  getView().goToTransactionPage();
+               }
+            });
    }
 
    @Override

@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -16,9 +19,9 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.model.session.FeatureManager;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
@@ -29,6 +32,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -97,6 +101,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    protected void validateTablet() {
+      //TODO Check and resolve this
       if(getView().isTablet()){
          getView().hideReviewViewsOnTablets();
       }
@@ -173,7 +178,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                         checkSucceedEvent(transaction);
                         checkTransactionOutOfDate(transaction);
                      }
-                     getView().setTransaction(transaction);
+                     getView().setTransaction(transaction, merchant.useThrstFlow());
                   }));
    }
 
@@ -183,6 +188,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          EventBus.getDefault().removeStickyEvent(event);
          getView().showSucceed(merchant, transaction);
       }
+      DtlThrstTransactionSucceedEvent dtlThrstTransactionSucceedEvent = EventBus.getDefault().getStickyEvent(DtlThrstTransactionSucceedEvent.class);
+      if (dtlThrstTransactionSucceedEvent != null) {
+         EventBus.getDefault().removeStickyEvent(dtlThrstTransactionSucceedEvent);
+         getView().showThrstSucceed(merchant, dtlThrstTransactionSucceedEvent.earnedPoints, dtlThrstTransactionSucceedEvent.totalPoints);
+      }
    }
 
    private void checkTransactionOutOfDate(DtlTransaction transaction) {
@@ -191,7 +201,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                .createObservable(DtlTransactionAction.delete(merchant))
                .compose(bindViewIoToMainComposer())
                .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
-                     .onSuccess(action -> getView().setTransaction(action.getResult())));
+                     .onSuccess(action -> getView().setTransaction(action.getResult(), merchant.useThrstFlow())));
       }
    }
 
@@ -210,7 +220,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                         transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
                         getView().openTransaction(merchant, dtlTransaction);
                      } else {
-                        getView().disableCheckinButton();
+                        getView().disableCheckinAndPayButtons();
                         locationDelegate.requestLocationUpdate()
                               .compose(bindViewIoToMainComposer())
                               .subscribe(this::onLocationObtained, this::onLocationError);
@@ -220,7 +230,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void locationNotGranted() {
-      getView().enableCheckinButton();
+      getView().enableCheckinAndPayButtons();
       getView().informUser(R.string.dtl_checkin_location_error);
    }
 
@@ -234,7 +244,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void onLocationObtained(Location location) {
-      getView().enableCheckinButton();
+      getView().enableCheckinAndPayButtons();
 
       DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
             .lat(location.getLatitude())
@@ -242,7 +252,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
             .build();
       transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
 
-      getView().setTransaction(dtlTransaction);
+      getView().setTransaction(dtlTransaction, merchant.useThrstFlow());
 
       analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));
@@ -348,10 +358,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void goToReviewList(){
-      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
+      // TODO Resolve null here
+      Flow.get(getContext()).set(new DtlReviewsPath(null, merchant, ""));
    }
 
-   private void goToCommentReview(){
+   private void goToCommentReview() {
       Path path = new DtlCommentReviewPath(merchant);
       History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
       historyBuilder.push(path);
@@ -365,6 +376,41 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          getView().userHasPendingReview();
       } else {
          Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+      }
+   }
+
+   @Override
+   public void setThrstFlow() {
+      if (merchant.useThrstFlow()){
+         getView().showThrstFlowButton();
+         getView().hideEarnFlowButton();
+      } else {
+         getView().showEarnFlowButton();
+      }
+   }
+
+   @Override
+   public void onClickPay() {
+      onCheckInClicked();
+   }
+
+   @Override
+   public void orderFromMenu() {
+      Activity activity = getView().getActivity();
+      if (activity == null) {
+         return;
+      }
+      Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+      browserIntent.setData(Uri.parse(merchant.thrstFullCapabilityUrl()));
+      activity.startActivity(browserIntent);
+   }
+
+   @Override
+   public void setupFullThrstBtn() {
+      if (TextUtils.isEmpty(merchant.thrstFullCapabilityUrl())) {
+         getView().hideOrderFromMenu();
+      } else {
+         getView().showOrderFromMenu();
       }
    }
 

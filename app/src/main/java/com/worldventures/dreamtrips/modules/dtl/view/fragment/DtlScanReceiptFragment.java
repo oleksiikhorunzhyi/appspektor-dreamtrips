@@ -63,8 +63,6 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    public void onActivityCreated(Bundle savedInstanceState) {
       super.onActivityCreated(savedInstanceState);
       ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setNavigationIcon(R.drawable.ic_close_light);
-      ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setNavigationOnClickListener(v -> getActivity()
-            .onBackPressed());
    }
 
    @Override
@@ -128,7 +126,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @Override
    public void showCurrency(Currency currency) {
       final int padding = amountInput.getPaddingForCurrency(currency.prefix());
-      currencyHint.setPadding(0, padding, 0, 0);
+      currencyHint.setPadding(8, padding, 0, 0);
       currencyHint.setText(currency.getCurrencyHint());
       amountInput.setCurrencySymbol(currency.prefix());
    }

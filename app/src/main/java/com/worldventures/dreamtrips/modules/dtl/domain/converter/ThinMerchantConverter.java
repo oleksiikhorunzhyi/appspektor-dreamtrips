@@ -34,6 +34,8 @@ public class ThinMerchantConverter implements Converter<com.worldventures.dreamt
             .categories(thinMerchant.categories() != null ? mapperyContext.convert(thinMerchant.categories(), ThinAttribute.class) : null)
             .operationDays(thinMerchant.operationDays() != null ? mapperyContext.convert(thinMerchant.operationDays(), OperationDay.class) : null)
             .reviewSummary(thinMerchant.reviewSummary() != null ? mapperyContext.convert(thinMerchant.reviewSummary(), ReviewSummary.class) : null)
+            .useThrstFlow(thinMerchant.useThrstFlow())
+            .thrstFullCapabilityUrl(thinMerchant.thrstFullCapabilityUrl())
             .build();
    }
 

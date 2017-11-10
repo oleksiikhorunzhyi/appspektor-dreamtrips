@@ -164,6 +164,21 @@
                />
 
          <TextView
+               android:id="@+id/view_pay_in_app"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textColor="@color/white"
+               android:textSize="@dimen/font_small"
+               android:layout_marginLeft="@dimen/spacing_small"
+               android:background="@drawable/background_badge_pay_in_app"
+               android:layout_toRightOf="@+id/view_points"
+               android:drawableLeft="@drawable/ic_points_dtl"
+               android:layout_centerVertical="true"
+               android:drawablePadding="5dp"
+               android:text="@string/dtl_thrst_text_button"
+               />
+
+         <TextView
                android:id="@+id/view_perks"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -171,7 +186,7 @@
                android:textSize="@dimen/font_small"
                android:layout_margin="@dimen/spacing_small"
                android:layout_centerVertical="true"
-               android:layout_toRightOf="@+id/view_points"
+               android:layout_toRightOf="@+id/view_pay_in_app"
                android:background="@drawable/background_badge_perk"
                android:drawableLeft="@drawable/ic_perk_dtl"
                android:drawablePadding="5dp"
@@ -185,6 +200,7 @@
                android:layout_centerVertical="true"
                android:layout_alignParentRight="true"
                android:layout_marginRight="@dimen/spacing_small"
+               android:visibility="gone"
                tools:src="@drawable/ic_arrow_down_grey"
                />
 

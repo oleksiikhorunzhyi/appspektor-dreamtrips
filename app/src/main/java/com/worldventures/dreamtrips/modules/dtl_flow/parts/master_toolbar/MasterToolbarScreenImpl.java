@@ -32,6 +32,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeade
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
@@ -44,6 +46,10 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -89,6 +95,37 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       RxDtlToolbar.offersOnlyToggleChanges(toolbar)
             .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(getPresenter()::offersOnlySwitched);
+      RxDtlToolbar.transactionButtonClicks(toolbar)
+            .compose(RxLifecycleAndroid.bindView(this))
+            .subscribe(aVoid -> onClickTransaction());
+   }
+
+   private void onClickTransaction() {
+      getPresenter().onTransactionClicked();
+   }
+
+   @Override
+   public void showNoTransactionMessage() {
+      SweetAlertDialog errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.dtl_no_transaction_message));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
+   @Override
+   public void goToTransactionPage() {
+      Path path = new DtlTransactionListPath(FlowUtil.currentMaster(getContext()));
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      Path asd = FlowUtil.currentMaster(getContext());
+      if (!asd.equals(path)) {
+         historyBuilder.push(path);
+         Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+      }
+
+
    }
 
    @Override
@@ -147,7 +184,9 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       Observable<Boolean> clicks = RxView.clicks(toolbar.getLocationSearchInput())
             .flatMap(aVoid -> Observable.just(Boolean.TRUE));
 
-      Observable.merge(clicks, focus).compose(RxLifecycleAndroid.bindView(this)).subscribe(this::onPopupVisibilityChange);
+      Observable.merge(clicks, focus)
+            .compose(RxLifecycleAndroid.bindView(this))
+            .subscribe(this::onPopupVisibilityChange);
    }
 
    protected void onPopupVisibilityChange(boolean visible) {
@@ -241,7 +280,6 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
       }
       return false;
    }
-
 
 
    @Override

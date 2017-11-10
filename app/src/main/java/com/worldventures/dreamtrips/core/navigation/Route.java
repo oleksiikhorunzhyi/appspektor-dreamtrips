@@ -10,8 +10,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstFlowFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlThankYouScreenFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
@@ -186,11 +190,15 @@ public enum Route {
 
    // <dtl_legasy_routes>
    // TODO :: 4/24/16 re-write the rest of DTL to Flow-powered views
+   DTL_THRST_FLOW(DtlThrstFlowFragment.class, R.string.dtl_thrst_flow_title),
    DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
+   DTL_THRST_TRANSACTION_SUCCEED(DtlThrstTransactionSucceedFragment.class, R.string.dtl_success_title),
    DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
    DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_scan_receipt_screen_title),
+   DTL_THRST_SCAN_RECEIPT(DtlThrstScanReceiptFragment.class, R.string.dtl_thrst_scan_receipt_screen_title),
    DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
    DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
+   DTL_THRST_THANK_YOU_SCREEN(DtlThankYouScreenFragment.class, R.string.empty),
    // </dtl_legasy_routes>
 
    GALLERY(DtGalleryFragment.class),

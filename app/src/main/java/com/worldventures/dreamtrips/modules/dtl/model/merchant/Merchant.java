@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 
+import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +20,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
+@Gson.TypeAdapters
 @Value.Immutable
 public abstract class Merchant implements Serializable {
 
@@ -48,6 +50,8 @@ public abstract class Merchant implements Serializable {
    @Nullable public abstract List<OperationDay> operationDays();
    @Nullable public abstract List<Disclaimer> disclaimers();
    @Nullable public abstract Reviews reviews();
+   @Nullable public abstract Boolean useThrstFlow();
+   @Nullable public abstract String thrstFullCapabilityUrl();
 
    @Value.Derived public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);

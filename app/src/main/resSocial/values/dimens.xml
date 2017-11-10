@@ -78,4 +78,6 @@
 
    <dimen name="video_player_mute_button_size">25dp</dimen>
    <dimen name="default_video_height">200dp</dimen>
+
+   <dimen name="avatar_size">48dp</dimen>
 </resources>

@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
    private Context context;
@@ -38,12 +37,9 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
    public void addFriends(List<User> friendList) {
       List<User> uniqueElements = new ArrayList<>(friendList);
       uniqueElements.removeAll(cachedFriendList);
-
       this.friendList.addAll(uniqueElements);
       this.cachedFriendList.addAll(uniqueElements);
-
       notifyDataSetChanged();
-
    }
 
    private void applyFilter() {

@@ -72,7 +72,8 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
       setupTranslationState();
       subscribeToTranslation();
       feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
-      view.setPhoto(photo);
+      // we have null image path when getting photo from push notification, wait until entity is loaded by UID then
+      if (photo.getImagePath() != null) view.setPhoto(photo);
       loadEntity();
    }
 

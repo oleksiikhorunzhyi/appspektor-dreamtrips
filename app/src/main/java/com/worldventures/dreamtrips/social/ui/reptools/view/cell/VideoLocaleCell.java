@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.reptools.view.cell;
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.modules.video.model.VideoLocale;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
@@ -26,7 +26,10 @@ public class VideoLocaleCell extends BaseAbstractDelegateCell<VideoLocale, CellD
    @Override
    protected void syncUIStateWithModel() {
       if (getModelObject().getImage() != null) {
-         flagImage.setImageURI(Uri.parse(getModelObject().getImage()));
+         final int imageWidth = flagImage.getResources().getDimensionPixelSize(R.dimen.locale_flag_size_width);
+         final int imageHeight = flagImage.getResources().getDimensionPixelSize(R.dimen.locale_flag_size_height);
+         flagImage.setController(GraphicUtils.provideFrescoResizingController(getModelObject().getImage(),
+               flagImage.getController(), imageWidth, imageHeight));
       }
       countryName.setText(getModelObject().getTitle());
       itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));

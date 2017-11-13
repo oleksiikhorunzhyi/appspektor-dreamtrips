@@ -38,7 +38,6 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
    protected void registerCells() {
       adapter.registerCell(BucketFeedItem.class, BucketFeedEntityDetailsCell.class);
       adapter.registerCell(TripFeedItem.class, FeedEntityDetailsCell.class);
-
       FeedCellDelegate<FeedEntityDetailsPresenter, FeedItem> delegate = new FeedCellDelegate<>(getPresenter());
       delegate.setOnEntityShownInCellAction(getPresenter()::onEntityShownInCell);
       adapter.registerDelegate(BucketFeedItem.class, delegate);
@@ -48,13 +47,12 @@ public class FeedEntityDetailsFragment extends FeedDetailsFragment<FeedEntityDet
    @Override
    public void onDestroyView() {
       FragmentHelper.resetChildFragmentManagerField(this);
-
       super.onDestroyView();
    }
 
    @Override
    public void showDetails(Route route, Parcelable extra) {
-      if (!detailViewAdded) {
+      if (!detailViewAdded && isVisibleOnScreen()) {
          NavigationConfig config = NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())

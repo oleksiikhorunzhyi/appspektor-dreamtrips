@@ -10,6 +10,7 @@ import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -60,7 +61,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
 
    @Override
    public void setupView(User user) {
-      userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+      userPhoto.post(() -> setUserPhotoAndCover(user));
       userPhoto.setup(user, injectorProvider.get());
       userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
       userName.setText(user.getFullName());
@@ -76,4 +77,12 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
             .data(new UserBundle(getArgs().getUser()))
             .build());
    }
+
+   private void setUserPhotoAndCover(User user) {
+      userPhoto.setController(GraphicUtils.provideFrescoResizingController(user.getAvatar().getThumb(),
+            userPhoto.getController(), userPhoto.getWidth(), userPhoto.getHeight()));
+      userCover.setController(GraphicUtils.provideFrescoResizingController(user.getBackgroundPhotoUrl(),
+            userCover.getController(), userCover.getWidth(), userCover.getHeight()));
+   }
+
 }

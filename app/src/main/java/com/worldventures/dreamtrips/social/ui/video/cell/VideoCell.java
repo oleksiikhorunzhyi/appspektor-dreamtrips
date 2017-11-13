@@ -5,12 +5,15 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.video.model.Video;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
@@ -24,7 +27,7 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_video)
 public class VideoCell extends BaseAbstractDelegateCell<Video, VideoCellDelegate> {
 
-   @InjectView(R.id.iv_bg) protected SimpleDraweeView ivBg;
+   @InjectView(R.id.iv_bg) protected SimpleDraweeView thumbnail;
    @InjectView(R.id.tv_title) protected TextView tvTitle;
    @InjectView(R.id.download_progress) protected PinProgressButton downloadProgress;
 
@@ -32,7 +35,7 @@ public class VideoCell extends BaseAbstractDelegateCell<Video, VideoCellDelegate
    @Inject protected SessionHolder appSessionHolder;
    @Inject CachedModelHelper cachedModelHelper;
 
-   protected ProgressVideoCellHelper progressVideoCellHelper;
+   private ProgressVideoCellHelper progressVideoCellHelper;
 
    public VideoCell(View view) {
       super(view);
@@ -46,7 +49,11 @@ public class VideoCell extends BaseAbstractDelegateCell<Video, VideoCellDelegate
 
    @Override
    protected void syncUIStateWithModel() {
-      ivBg.setImageURI(Uri.parse(getModelObject().getImageUrl()));
+      ViewUtils.runTaskAfterMeasure(itemView, () -> {
+         final PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(getModelObject().getImageUrl(),
+               thumbnail.getController(), thumbnail.getWidth(), thumbnail.getHeight());
+         thumbnail.setController(controller);
+      });
       tvTitle.setText(getModelObject().getVideoName());
 
       progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
@@ -69,7 +76,7 @@ public class VideoCell extends BaseAbstractDelegateCell<Video, VideoCellDelegate
 
    @Override
    public void prepareForReuse() {
-      ivBg.setImageResource(0);
+      thumbnail.setImageResource(0);
    }
 
 }

@@ -326,15 +326,17 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
 
    public void imageSelected(MediaPickerAttachment mediaAttachment) {
       PhotoPickerModel image = mediaAttachment.getChosenImages().get(0);
-      if (image != null) {
-         switch (pickerMode) {
-            case AVATAR:
-               onAvatarChosen(image);
-               break;
-            case COVER:
-               onCoverChosen(image);
-               break;
-         }
+      if (mediaAttachment.getChosenImages().size() > 0 || image == null) {
+         return;
+      }
+
+      switch (pickerMode) {
+         case AVATAR:
+            onAvatarChosen(image);
+            break;
+         case COVER:
+            onCoverChosen(image);
+            break;
       }
    }
 

@@ -24,9 +24,7 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
 
    public void onEntityShownInCell(FeedItem feedItem) {
       Pair<Route, Parcelable> entityData = fragmentFactory.create(feedItem);
-      /**
-       * for bucket list tablet landscape orientation (slave mode)
-       */
+      // for bucket list tablet landscape orientation (slave mode)
       if (feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
          ((BucketBundle) entityData.second).setSlave(isSlave);
       }

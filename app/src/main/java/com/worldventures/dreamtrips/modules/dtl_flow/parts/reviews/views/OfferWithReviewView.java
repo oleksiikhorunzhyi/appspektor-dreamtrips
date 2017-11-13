@@ -13,21 +13,21 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
 import com.worldventures.dreamtrips.modules.common.listener.PaginationScrollListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerClickListener;
 import com.worldventures.dreamtrips.modules.common.listener.RecyclerTouchListener;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import flow.Flow;
 
+@SuppressWarnings("PMD.SingularField")
 public class OfferWithReviewView extends LinearLayout {
 
    private RecyclerView recyclerView;
@@ -42,8 +42,6 @@ public class OfferWithReviewView extends LinearLayout {
    public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
    public static final String IS_TABLET = "isTablet";
 
-   private List<ReviewObject> mArrayInfo = new ArrayList<>();
-
    private float mRatingMerchant;
    private int mCountReview;
    private String mMerchantName;
@@ -51,7 +49,7 @@ public class OfferWithReviewView extends LinearLayout {
 
    private boolean isLoading = false;
 
-   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
    private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
    private ScrollEventListener scrollEventListener;
@@ -186,7 +184,7 @@ public class OfferWithReviewView extends LinearLayout {
 
                @Override
                public void onLongClick(View view, int position) {
-
+                  // do nothing
                }
             });
       recyclerView.addOnItemTouchListener(onItemTouchListener);

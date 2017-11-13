@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review;
 
 import android.content.Context;
 import android.graphics.Color;

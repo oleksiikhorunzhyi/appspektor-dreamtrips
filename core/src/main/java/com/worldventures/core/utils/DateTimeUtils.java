@@ -297,11 +297,11 @@ public final class DateTimeUtils {
 
    public static String getStringDateFromStringUTC(String utcString) {
       try {
-         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT, LocaleHelper.getDefaultLocale());
          utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
          Date utcDate = utcFormatter.parse(utcString);
 
-         SimpleDateFormat dateFormatter = new SimpleDateFormat(TRANSACTION_DATE_FORMAT);
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(TRANSACTION_DATE_FORMAT, LocaleHelper.getDefaultLocale());
          dateFormatter.setTimeZone(TimeZone.getDefault());
          return dateFormatter.format(utcDate);
       } catch (ParseException parseException) {

@@ -417,10 +417,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (earn != null) {
          earn.setText(dtlTransaction != null ? thrstFlow(earn) : getTextNormalFlow(earn));
       }
-      if (!isThrstTransaction) {
-         if (checkedIn != null) {
-            ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
-         }
+      if (!isThrstTransaction && checkedIn != null) {
+         ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
       }
    }
 

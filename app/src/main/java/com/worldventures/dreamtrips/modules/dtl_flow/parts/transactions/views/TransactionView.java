@@ -25,21 +25,21 @@ import java.util.List;
 
 import flow.Flow;
 
+@SuppressWarnings("PMD.SingularField")
 public class TransactionView extends LinearLayout {
 
    private RecyclerView recyclerView;
    private SearchableTransactionsAdapter searchableTransactionsAdapter;
    private PageableTransactionAdapter pageableTransactionAdapter;
-   private Context context;
+   private final Context context;
    private boolean isLoading = false;
-   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
    private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
    private ScrollEventListener scrollEventListener;
 
    public TransactionView(Context context) {
       this(context, null);
-      this.context = context;
    }
 
    public TransactionView(Context context, @Nullable AttributeSet attrs) {
@@ -110,6 +110,7 @@ public class TransactionView extends LinearLayout {
 
                @Override
                public void onLongClick(View view, int position) {
+                  // do nothing
                }
             });
       recyclerView.addOnItemTouchListener(onItemTouchListener);

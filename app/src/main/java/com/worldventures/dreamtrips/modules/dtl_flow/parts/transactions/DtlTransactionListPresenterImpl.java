@@ -52,11 +52,13 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
             .observe()
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTransactionsCommand>()
-               .onProgress((command, integer) -> refreshTransactions(command.getCacheData(), true))
-               .onSuccess(command -> refreshTransactions(command.getResult(), false))
-               .onFail((getTransactionsCommand, throwable) -> loadingFinished()));
+                  .onProgress((command, integer) -> refreshTransactions(command.getCacheData(), true))
+                  .onSuccess(command -> refreshTransactions(command.getResult(), false))
+                  .onFail((getTransactionsCommand, throwable) -> loadingFinished()));
       merchantsInteractor.getTransactionsPipe().send(GetTransactionsCommand.readCurrentTransactionsCommand());
-      if (transactionModels.isEmpty()) loadTransactions();
+      if (transactionModels.isEmpty()) {
+         loadTransactions();
+      }
    }
 
    private void refreshTransactions(List<TransactionModel> transactions, boolean fromCache) {
@@ -117,7 +119,9 @@ public class DtlTransactionListPresenterImpl extends DtlPresenterImpl<DtlTransac
 
    @Override
    public void loadMoreTransactions(int indexOf) {
-      if (isLoading || paginationFinished) return;
+      if (isLoading || paginationFinished) {
+         return;
+      }
       page++;
       loadTransactions();
    }

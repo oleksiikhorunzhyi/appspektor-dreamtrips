@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview; //NOPMD TODO: Resolve naming
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review; //NOPMD TODO: Resolve naming
 
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 

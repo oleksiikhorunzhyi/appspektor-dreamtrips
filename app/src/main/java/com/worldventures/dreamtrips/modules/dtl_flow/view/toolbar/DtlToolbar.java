@@ -220,7 +220,9 @@ public class DtlToolbar extends LinearLayout {
    }
 
    public void addTransactionButtonListener(@NonNull TransactionButtonListener listener) {
-      if (checkListenerNull(listener)) return;
+      if (checkListenerNull(listener)) {
+         return;
+      }
       transactionButtonListeners.add(listener);
    }
 

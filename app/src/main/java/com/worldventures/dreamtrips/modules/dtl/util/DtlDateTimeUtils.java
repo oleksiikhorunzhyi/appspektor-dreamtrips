@@ -18,11 +18,11 @@ import java.util.TimeZone;
 
 public final class DtlDateTimeUtils {
 
-   private DtlDateTimeUtils() {
-   }
-
    private static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
    public static final String THANK_YOU_SCREEN_FORMAT = "MM-dd-yyyy HH:mm:ss";
+
+   private DtlDateTimeUtils() {
+   }
 
    public static String concatOperationDays(Resources res, List<OperationDay> operationDays) {
       return concatOperationDays(res, operationDays, LocaleHelper.getDefaultLocale());

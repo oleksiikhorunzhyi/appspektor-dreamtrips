@@ -48,9 +48,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.Cre
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewCreationTextCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewDescription;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;

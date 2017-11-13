@@ -19,7 +19,7 @@ import java.util.List;
 
 public class SearchableTransactionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
 
-   private Context context;
+   private final Context context;
    private List<TransactionModel> transactionsList = new ArrayList<>();
    protected List<TransactionModel> originalList = new ArrayList<>();
 

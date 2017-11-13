@@ -20,7 +20,9 @@ public class TransactionModel implements Parcelable {
    private ThrstPaymentStatus thrstPaymentStatus;
    private boolean isTrhstTransaction;
 
-   public TransactionModel() { }
+   public TransactionModel() {
+      // empty
+   }
 
    public void setId(String id) {
       this.id = id;
@@ -128,8 +130,12 @@ public class TransactionModel implements Parcelable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       TransactionModel that = (TransactionModel) o;
 

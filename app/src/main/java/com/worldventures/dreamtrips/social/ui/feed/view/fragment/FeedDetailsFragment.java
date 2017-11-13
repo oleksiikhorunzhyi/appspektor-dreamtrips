@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import icepick.State;
 import timber.log.Timber;
 
 public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter, P extends FeedDetailsBundle>
@@ -43,7 +44,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
 
-   private FeedItem feedItem;
+   @State FeedItem feedItem;
 
    @Override
    public void afterCreateView(View rootView) {

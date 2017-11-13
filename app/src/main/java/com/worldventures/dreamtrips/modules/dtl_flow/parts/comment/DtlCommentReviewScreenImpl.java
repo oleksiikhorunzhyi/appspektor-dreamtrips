@@ -20,9 +20,12 @@ import android.widget.TextView;
 
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -57,6 +60,8 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
    TextView mTvPost;
    @InjectView(R.id.container_details_floating)
    FrameLayout mFlContainerReview;
+
+   @Inject BackStackDelegate backStackDelegate;
 
    private CreateReviewPostFragment fragment;
 
@@ -104,23 +109,24 @@ public class DtlCommentReviewScreenImpl extends DtlLayout<DtlCommentReviewScreen
       transaction.replace(R.id.container_details_floating, fragment);
       transaction.commit();
       toolbar.setNavigationOnClickListener(view -> onBackPressed());
+      backStackDelegate.setListener(() -> onBackPressed());
    }
 
    @Override
    protected void onDetachedFromWindow() {
       //FIXME: Is not the best solution to block the orientation due to a large request
       OrientationUtil.unlockOrientation(getActivity());
+      backStackDelegate.setListener(null);
       super.onDetachedFromWindow();
    }
 
-   public void onBackPressed() {
-      if (fragment.isAvailableToPost()) {
-         if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
-            showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
-         } else {
-            goBack();
-         }
+   public boolean onBackPressed() {
+      if (fragment.getRatingBar() > 0 || fragment.getSizeComment() > 0) {
+         showDialogMessage(getContext().getString(R.string.review_comment_discard_changes));
+      } else {
+         goBack();
       }
+      return fragment.isAvailableToPost();
    }
 
    private void validateComingFrom(String message) {

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginBottom="@dimen/dtl_transaction_screen_padding"
+      android:layout_marginTop="@dimen/dtl_transaction_screen_padding"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      >
+
+   <LinearLayout
+         android:id="@+id/thrst_status_labels_container"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="@dimen/dtl_transaction_screen_padding"
+         android:layout_marginRight="@dimen/dtl_transaction_screen_padding"
+         android:gravity="center_horizontal"
+         android:orientation="vertical"
+         >
+
+      <TextView
+            android:id="@+id/tv_transaction_status_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/thank_you_thrst_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_extra_large"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+      <TextView
+            android:id="@+id/tv_transaction_status_error_secondary_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/second_failure_text_thrst_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
+            />
+
+      <TextView
+            android:id="@+id/tv_accept_payment_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/payment_success_status_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="normal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
+            />
+
+      <TextView
+            android:id="@+id/tv_show_to_server_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/payment_resume_success_pilot"
+            android:textColor="@color/transaction_text_color"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_transaction_status_title"
+            />
+
+   </LinearLayout>
+
+   <include layout="@layout/include_transaction_details_thrst" />
+
+   <include layout="@layout/include_transaction_details_non_thrst" />
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:gravity="center_horizontal"
+         >
+
+      <TextView
+            android:id="@+id/tv_receipt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ll_review_and_payment"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
+            android:text="@string/transaction_view_your_receipt"
+            android:textStyle="bold"
+            />
+
+      <TextView
+            android:id="@+id/tv_review_merchant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/transaction_review_merchant"
+            android:textStyle="bold"
+            />
+
+      <Button
+            android:id="@+id/payment_done_button"
+            android:layout_width="@dimen/dtl_transaction_screen_content_width"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:text="@string/btn_payment_done_pilot"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_normal"
+            android:visibility="gone"
+            />
+
+   </LinearLayout>
+</LinearLayout>

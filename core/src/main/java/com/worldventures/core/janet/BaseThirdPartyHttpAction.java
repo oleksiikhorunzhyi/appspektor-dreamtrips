@@ -1,4 +1,4 @@
-package com.worldventures.wallet.service.lostcard.command.http;
+package com.worldventures.core.janet;
 
 
 import com.worldventures.dreamtrips.mobilesdk.service.ServiceLabel;

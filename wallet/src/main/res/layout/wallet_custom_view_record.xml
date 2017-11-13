@@ -28,10 +28,10 @@
    <RelativeLayout
          android:layout_width="wrap_content"
          android:layout_height="@dimen/wallet_bank_card_default_bank_info_container_height"
-         android:layout_alignParentStart="true"
-         android:layout_alignParentTop="true"
          android:gravity="center_vertical"
          tools:ignore="RelativeOverlap"
+         android:layout_alignParentTop="true"
+         android:layout_alignParentStart="true"
          >
 
       <!--todo use start drawable-->
@@ -106,12 +106,12 @@
          android:id="@+id/tv_owner_name"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_above="@+id/tv_card_number"
-         android:layout_alignParentStart="true"
          android:importantForAccessibility="no"
          android:textColor="@android:color/white"
          android:textSize="@dimen/font_normal"
          tools:text="Shirly A template"
+         android:layout_above="@+id/tv_card_number"
+         android:layout_alignParentStart="true"
          />
 
    <TextView

@@ -3,10 +3,12 @@ package com.worldventures.wallet.util;
 import android.content.Context;
 
 import com.worldventures.wallet.domain.entity.SmartCardUser;
+import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsScreen;
 import com.worldventures.wallet.ui.settings.security.WalletSecuritySettingsScreen;
+import com.worldventures.wallet.ui.wizard.pin.proposal.PinProposalAction;
 
 import rx.Observable;
 import rx.functions.Action0;
@@ -66,5 +68,15 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    @Override
    public boolean isSampleCardMode() {
       return false;
+   }
+
+   @Override
+   public void finishRegularProvisioning(Navigator navigator) {
+      navigator.goPinProposalUserSetup(PinProposalAction.WIZARD);
+   }
+
+   @Override
+   public boolean pinFunctionalityAvailable() {
+      return true;
    }
 }

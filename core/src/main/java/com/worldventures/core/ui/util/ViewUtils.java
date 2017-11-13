@@ -11,6 +11,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.annotation.StyleRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -106,6 +107,10 @@ public final class ViewUtils {
       }
    }
 
+   public static boolean isTabletLandscape(Context context) {
+      return ViewUtils.isTablet(context) && ViewUtils.isLandscapeOrientation(context);
+   }
+
    public static boolean isPhoneLandscape(Context context) {
       return !ViewUtils.isTablet(context) && ViewUtils.isLandscapeOrientation(context);
    }
@@ -195,5 +200,13 @@ public final class ViewUtils {
 
    public static String getStringById(Context context, @StringRes int text) {
       return context.getResources().getString(text);
+   }
+
+   public static void setTextAppearance(Context context, TextView textView, @StyleRes int textAppearanceStyle) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+         textView.setTextAppearance(textAppearanceStyle);
+      } else {
+         textView.setTextAppearance(context, textAppearanceStyle);
+      }
    }
 }

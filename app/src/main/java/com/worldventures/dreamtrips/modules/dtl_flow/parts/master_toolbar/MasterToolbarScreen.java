@@ -35,4 +35,8 @@ public interface MasterToolbarScreen extends DtlScreen {
    boolean isSearchPopupShowing();
 
    Observable<String> provideLocationSearchObservable();
+
+   void showNoTransactionMessage();
+
+   void goToTransactionPage();
 }

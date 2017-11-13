@@ -71,6 +71,8 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    private boolean showNavigation;
    private boolean showFilterBar;
 
+   private TransactionsButtonListener transactionsButtonListener;
+
    public ExpandableDtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
    }
@@ -361,5 +363,18 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    @Override
    public void onRestoreInstanceState(Parcelable state) {
       super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+   }
+
+   @OnClick(R.id.transaction_container)
+   public void onTransactionsButtonClick() {
+      transactionsButtonListener.onClickTransactions();
+   }
+
+   public void setTransactionsButtonListener(TransactionsButtonListener transactionsButtonListener) {
+      this.transactionsButtonListener = transactionsButtonListener;
+   }
+
+   public interface TransactionsButtonListener {
+      void onClickTransactions();
    }
 }

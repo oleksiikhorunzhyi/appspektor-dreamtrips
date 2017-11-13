@@ -13,15 +13,17 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.adapter.ReviewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.MarginDecoration;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.PaginationScrollListener;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerClickListener;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.recycler.RecyclerTouchListener;
+import com.worldventures.dreamtrips.modules.common.listener.PaginationScrollListener;
+import com.worldventures.dreamtrips.modules.common.listener.RecyclerClickListener;
+import com.worldventures.dreamtrips.modules.common.listener.RecyclerTouchListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import flow.Flow;
@@ -38,18 +40,21 @@ public class OfferWithReviewView extends LinearLayout {
    public static final String COUNT_REVIEW = "countReview";
    public static final String MERCHANT_NAME = "merchantName";
    public static final String IS_FROM_LIST_REVIEW = "isFromListReview";
+   public static final String IS_TABLET = "isTablet";
+
+   private List<ReviewObject> mArrayInfo = new ArrayList<>();
 
    private float mRatingMerchant;
    private int mCountReview;
    private String mMerchantName;
    private boolean mIsFromListReview = false;
 
-   private boolean firstPageLoading = true;
    private boolean isLoading = false;
 
-   private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
-   private IMyEventListener mEventListener;
+   private ScrollEventListener scrollEventListener;
 
    public OfferWithReviewView(Context context) {
       this(context, null);
@@ -61,42 +66,26 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    private void init() {
-      mAdapter = new ReviewAdapter(getContext());
       final View v = LayoutInflater.from(getContext()).inflate(R.layout.activity_offer_with_review, this, true);
       recyclerView = (RecyclerView) v.findViewById(R.id.recycler_adapter);
       ratingBar2 = (RatingBar) v.findViewById(R.id.ratingBar2);
       tvReviewCount = (TextView) v.findViewById(R.id.tv_review_count);
 
       initRecycler();
-   }
-
-   public void loadData(Bundle bundle) {
-      mAdapter.removeLoadingFooter();
-      loadPage(bundle);
+      resetViewData();
    }
 
    public void loadFirstPage() {
-      if (mEventListener != null) {
-         mEventListener.onStartFistPageLoading();
-      }
       resetViewData();
       getMoreReviewItems();
    }
 
+   public void loadData(Bundle bundle) {
+      loadPage(bundle);
+   }
+
    private void loadPage(Bundle bundle) {
-      if (firstPageLoading) {
-         firstPageLoading = false;
-         if (mEventListener != null) {
-            mEventListener.onFinishFistPageLoading();
-         }
-      }
-
       List<ReviewObject> reviewObjects = bundle.getParcelableArrayList(ARRAY);
-
-      if (!validReceivedData(reviewObjects)) {
-         return;
-      }
-
       mAdapter.addItems(reviewObjects);
 
       setUpInfo(bundle);
@@ -106,8 +95,8 @@ public class OfferWithReviewView extends LinearLayout {
    }
 
    public void resetViewData() {
-      mAdapter.getAllItems().clear();
-      mAdapter.notifyDataSetChanged();
+      mAdapter = new ReviewAdapter(getContext());
+      recyclerView.setAdapter(mAdapter);
    }
 
    public void showNoComments() {
@@ -146,25 +135,21 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView.postDelayed(new Runnable() {
          @Override
          public void run() {
-            if (mEventListener != null) {
-               mEventListener.onEventOccurred(lastIndex);
+            if (scrollEventListener != null) {
+               scrollEventListener.onScrollBottomReached(lastIndex);
             }
          }
       }, 1000);
    }
 
-   private int getNextItemValue() {
-      return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1;
+   private int getNextItemValue() { return mAdapter.isEmpty() ? 0 : mAdapter.getItemCount() - 1; }
+
+   public void setEventListener(ScrollEventListener mEventListener) {
+      this.scrollEventListener = mEventListener;
    }
 
-   public interface IMyEventListener {
-      void onStartFistPageLoading();
-      void onFinishFistPageLoading();
-      void onEventOccurred(int indexOf);
-   }
-
-   public void setEventListener(IMyEventListener mEventListener) {
-      this.mEventListener = mEventListener;
+   public List<ReviewObject> getCurrentReviews() {
+      return mAdapter.getAllItems();
    }
 
    public void removeLoadingActions() {
@@ -174,17 +159,12 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView.removeOnScrollListener(scrollingListener);
    }
 
-   private boolean validReceivedData(List<ReviewObject> reviewObjects) {
-      List<ReviewObject> currentItems = mAdapter.getAllItems();
-      if (!currentItems.isEmpty() && !reviewObjects.isEmpty()) {
-         ReviewObject lastItem = currentItems.get(currentItems.size() - 1);
-         ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size() - 1);
-         if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) {
-            return false;
-         }
+   public void showLoadingFooter(boolean show) {
+      if (show) {
+         mAdapter.addLoadingFooter();
+      } else {
+         mAdapter.removeLoadingFooter();
       }
-
-      return true;
    }
 
    private void initRecycler() {
@@ -192,7 +172,7 @@ public class OfferWithReviewView extends LinearLayout {
       recyclerView.addItemDecoration(new MarginDecoration());
       recyclerView.setHasFixedSize(false);
 
-      RecyclerView.OnItemTouchListener onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
+      onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
             new RecyclerClickListener() {
                @Override
                public void onClick(View view, int position) {
@@ -206,7 +186,7 @@ public class OfferWithReviewView extends LinearLayout {
 
                @Override
                public void onLongClick(View view, int position) {
-                  //do nothing
+
                }
             });
       recyclerView.addOnItemTouchListener(onItemTouchListener);
@@ -214,7 +194,7 @@ public class OfferWithReviewView extends LinearLayout {
       scrollingListener = new PaginationScrollListener(linearLayoutManager) {
          @Override
          protected void loadMoreItems() {
-            mAdapter.addLoadingFooter();
+            showLoadingFooter(true);
             isLoading = true;
             getMoreReviewItems();
          }
@@ -227,8 +207,10 @@ public class OfferWithReviewView extends LinearLayout {
 
       recyclerView.addOnScrollListener(scrollingListener);
 
-      recyclerView.setAdapter(mAdapter);
+   }
 
+   public boolean hasReviews() {
+      return !mAdapter.getAllItems().isEmpty();
    }
 
 }

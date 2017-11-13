@@ -1,6 +1,7 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview; //NOPMD TODO: Resolve naming
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -33,6 +35,8 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
 
    @InjectView(R.id.toolbar_actionbar)
    Toolbar toolbar;
+   @InjectView(R.id.tv_title)
+   TextView tvTitle;
    @InjectView(R.id.emptyView)
    View emptyView;
    @InjectView(R.id.errorView)
@@ -81,10 +85,17 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
    @Override
    protected void onPostAttachToWindowView() {
       inflateToolbarMenu(toolbar);
-      toolbar.setNavigationIcon(R.drawable.back_icon);
+      toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view ->
             Flow.get(getContext()).goBack());
-      toolbar.setTitle(getPath().getMerchant());
+
+      if (ViewUtils.isTabletLandscape(getContext())) {
+         toolbar.setBackgroundColor(Color.WHITE);
+         tvTitle.setVisibility(View.VISIBLE);
+         tvTitle.setText(getPath().getMerchant());
+      } else {
+         toolbar.setTitle(getPath().getMerchant());
+      }
 
       mTlMenuOption.inflateMenu(getPresenter().getMenuFlag());
       mTlMenuOption.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);

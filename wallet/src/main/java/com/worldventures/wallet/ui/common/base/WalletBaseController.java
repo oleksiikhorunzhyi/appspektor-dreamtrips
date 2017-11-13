@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
@@ -19,11 +18,10 @@ import rx.Observable;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public abstract class WalletBaseController<V extends WalletScreen, P extends WalletPresenter> extends PresentableController<V, P> implements WalletScreen {
-
+   private ObjectGraph objectGraph;
    private WalletScreenDelegate walletScreenDelegate;
 
    public WalletBaseController() {
-      //do nothing
    }
 
    public WalletBaseController(Bundle args) {
@@ -39,7 +37,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    protected void onFinishInflate(View view) {
       //noinspection all
-      ObjectGraph objectGraph = (ObjectGraph) view.getContext().getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
+      objectGraph = (ObjectGraph) view.getContext().getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
       this.walletScreenDelegate = WalletScreenDelegate.create(view, supportConnectionStatusLabel(), supportHttpConnectionStatusLabel());
    }
@@ -72,7 +70,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    @Override
    public <T> Observable.Transformer<T, T> bindUntilDetach() {
-      return bindUntilEvent(ControllerEvent.DETACH);
+      return bindToLifecycle();
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

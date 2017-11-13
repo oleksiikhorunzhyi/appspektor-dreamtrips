@@ -26,6 +26,11 @@ import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewTextConve
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ReviewsConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinAttributeConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThinMerchantConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.ThrstTransactionConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.TransactionResponseConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.TransactionThrstConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.TransactionTokenConverter;
+import com.worldventures.dreamtrips.modules.dtl.domain.converter.UrlTokenConverter;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.UserImageConverter;
 
 import javax.inject.Singleton;
@@ -185,4 +190,24 @@ public class DtlMappingModule {
    Converter provideReviewImageConverter() {
       return new ReviewImagesConverter();
    }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideThrstPilotConverter() { return new UrlTokenConverter(); }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTransactionThrstPilotConverter() { return new TransactionThrstConverter(); }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTokenThrstPilotConverter() { return new TransactionTokenConverter(); }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideTransactionResponsePilotConverter() { return new TransactionResponseConverter(); }
+
+   @Provides(type = Provides.Type.SET)
+   @Singleton
+   Converter provideThrstTransactionConverter() { return new ThrstTransactionConverter(); }
 }

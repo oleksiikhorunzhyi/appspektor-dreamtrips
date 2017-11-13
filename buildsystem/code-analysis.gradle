@@ -1,32 +1,37 @@
-apply plugin: "checkstyle"
-apply plugin: "pmd"
-apply plugin: "io.gitlab.arturbosch.detekt"
-apply plugin: "org.jmailen.kotlinter"
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+apply plugin: 'findbugs'
+apply plugin: 'io.gitlab.arturbosch.detekt'
+apply plugin: 'org.jmailen.kotlinter'
 
 afterEvaluate {
-   it.task("analyzeCode") {
-      def tasks = []
-      if (project.plugins.hasPlugin("java")
-            || project.plugins.hasPlugin("java-library")
-            || project.plugins.hasPlugin("com.android.application")
-            || project.plugins.hasPlugin("com.android.library")) {
-         tasks.add('checkstyle')
-         tasks.add('pmd')
-      }
-      if (project.plugins.hasPlugin("kotlin")
-            || project.plugins.hasPlugin("kotlin-android")) {
-         tasks.add('lintKotlin')
-         tasks.add('detektCheck')
-      }
+   def tasks = []
+   if (project.plugins.hasPlugin('java') || project.plugins.hasPlugin('java-library')) {
+      tasks.add('checkstyle')
+      tasks.add('pmd')
+      tasks.add('findbugsMain')
+   }
+   if (project.plugins.hasPlugin('com.android.application') || project.plugins.hasPlugin('com.android.library')) {
+      tasks.add('checkstyle')
+      tasks.add('pmd')
+   }
+   if (project.plugins.hasPlugin('kotlin') || project.plugins.hasPlugin('kotlin-android')) {
+      tasks.add('lintKotlin')
+      tasks.add('detektCheck')
+   }
+   task('analyzeCode') {
       dependsOn tasks
    }
 }
 
 checkstyle {
-   toolVersion = "8.3"
+   toolVersion = '8.3'
 }
 
 task checkstyle(type: Checkstyle) {
+   description 'Check code standard'
+   group 'code quality'
+
    configFile file("${project.rootDir}/quality/checkstyle/checkstyle.xml")
    configProperties.checkstyleSuppressionsPath = file("${project.rootDir}/quality/checkstyle/suppressions.xml").absolutePath
    source 'src'
@@ -41,53 +46,55 @@ task checkstyle(type: Checkstyle) {
    }
 }
 
+pmd {
+   toolVersion = '5.8.1'
+}
+
 task pmd(type: Pmd) {
+   description 'Identifying potential problems mainly dead code, duplicated code, cyclomatic complexity and overcomplicated expressions'
+   group 'code quality'
+
    ignoreFailures = false
    ruleSetFiles = files("${project.rootDir}/quality/pmd/pmd-ruleset.xml")
    ruleSets = []
 
-   source 'src'
+   source = fileTree('src/main/java')
+   include '**/*.java'
+   exclude '**/gen/**', 'test*/**'
+   classpath = files()
+
+   reports {
+      xml.enabled = true
+      html.enabled = true
+   }
+}
+
+findbugs {
+   toolVersion = '3.0.1'
+}
+
+/* Non-Working for Android */
+tasks.withType(FindBugs) {
+   description 'Find bugs mainly design flaws, bad practices, multithreaded correctness and code vulnerabilities.'
+   group 'code quality'
+
+   ignoreFailures = false
+   effort = "max"
+   reportLevel = "high"
+   excludeFilter = file("${project.rootDir}/quality/findbugs/findbugs-filter.xml")
+
    include '**/*.java'
    exclude '**/gen/**'
 
    reports {
       xml.enabled = true
-      html.enabled = true
-      xml {
-         destination file("$project.buildDir/reports/pmd/pmd.xml")
-      }
-      html {
-         destination file("$project.buildDir/reports/pmd/pmd.html")
-      }
+      html.enabled = !xml.enabled
    }
-}
-
-task findbugs(type: FindBugs) {
-   ignoreFailures = false
-   effort = "max"
-   reportLevel = "high"
-   excludeFilter = new File("${project.rootDir}/quality/findbugs/findbugs-filter.xml")
-   classes = files("${project.rootDir}/build/intermediates/classes")
-
-   source 'src'
-   include '**/*.java'
-   exclude '**/gen/**'
-
-   reports {
-      xml.enabled = false
-      html.enabled = true
-      xml {
-         destination file("$project.buildDir/reports/findbugs/findbugs.xml")
-      }
-      html {
-         destination file("$project.buildDir/reports/findbugs/findbugs.html")
-      }
-   }
-
-   classpath = files()
 }
 
 detekt {
+   group 'code quality'
+
    version = pluginDependencies.versions.detekt
    profile("main") {
       config = "$project.rootDir/quality/detekt/detekt.yml"
@@ -102,6 +109,8 @@ detekt {
 
 // gradle plugin for https://ktlint.github.io/
 kotlinter {
+   group 'code quality'
+
    ignoreFailures = false
    indentSize = 3
    reporter = 'checkstyle'

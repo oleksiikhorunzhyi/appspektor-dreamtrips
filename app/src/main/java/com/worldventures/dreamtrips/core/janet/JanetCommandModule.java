@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotifi
 import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlJanetCommandModule;
 import com.worldventures.dreamtrips.social.di.SocialJanetCommandModule;
-import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
 
 import dagger.Module;
 

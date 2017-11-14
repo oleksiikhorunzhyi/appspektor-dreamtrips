@@ -33,6 +33,7 @@ public class Photo extends BaseFeedEntity implements ImagePathHolder, Parcelable
    private int height;
 
    public Photo() {
+      //do nothing
    }
 
    public Photo(String uid) {
@@ -66,7 +67,9 @@ public class Photo extends BaseFeedEntity implements ImagePathHolder, Parcelable
    }
 
    public List<String> getTags() {
-      if (tags == null) tags = new ArrayList<>();
+      if (tags == null) {
+         tags = new ArrayList<>();
+      }
       return tags;
    }
 
@@ -96,7 +99,9 @@ public class Photo extends BaseFeedEntity implements ImagePathHolder, Parcelable
    }
 
    public List<PhotoTag> getPhotoTags() {
-      if (photoTags == null) photoTags = new ArrayList<>();
+      if (photoTags == null) {
+         photoTags = new ArrayList<>();
+      }
       return photoTags;
    }
 

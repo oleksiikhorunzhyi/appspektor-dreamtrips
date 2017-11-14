@@ -11,7 +11,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import rx.Observable;
 import rx.Subscriber;
 
-public class XmppSendWithResponseObservable implements Observable.OnSubscribe<Stanza> {
+public final class XmppSendWithResponseObservable implements Observable.OnSubscribe<Stanza> {
 
    private final XMPPConnection connection;
    private final IQ iq;

@@ -23,10 +23,10 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -46,6 +46,7 @@ import icepick.State;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
+@ComponentPresenter.ComponentTitle(R.string.bucket_list_edit_header)
 public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle> implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
 
    @Optional @InjectView(R.id.done) ImageView imageViewDone;
@@ -65,7 +66,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-      if (isTabletLandscape()) return;
+      if (isTabletLandscape()) {
+         return;
+      }
       //
       if (menu != null) {
          menu.clear();
@@ -79,7 +82,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
       if (getArgs().isLock()) {
          OrientationUtil.lockOrientation(getActivity());
       }
-      if (bucketHeader != null) bucketHeader.getBackground().mutate().setAlpha(255);
+      if (bucketHeader != null) {
+         bucketHeader.getBackground().mutate().setAlpha(255);
+      }
       initAutoCompleteDate();
    }
 
@@ -314,7 +319,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void openFullscreen(BucketViewPagerBundle data) {
-      router.moveTo(Route.BUCKET_FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+      router.moveTo(BucketPhotoViewPagerFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(data)
             .build());

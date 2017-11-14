@@ -12,13 +12,13 @@ import java.util.Set;
 
 public class RootComponentsProvider {
 
+   private final List<ComponentDescription> activeComponents;
+
    public static class ComponentKeyDuplicateException extends RuntimeException {
       public ComponentKeyDuplicateException(String key) {
          super("Duplicate key for key:" + key);
       }
    }
-
-   private final List<ComponentDescription> activeComponents;
 
    public RootComponentsProvider(Set<ComponentDescription> descriptions, ComponentsConfig componentConfig) {
       this.activeComponents = buildActiveComponents(descriptions, componentConfig);

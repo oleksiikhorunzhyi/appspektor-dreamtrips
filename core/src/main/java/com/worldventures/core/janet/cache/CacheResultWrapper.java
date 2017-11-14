@@ -13,7 +13,7 @@ import io.techery.janet.JanetException;
 
 public class CacheResultWrapper extends ActionServiceWrapper {
 
-   private Map<Class<? extends CachedAction>, Storage> storageMap = new HashMap<>();
+   private final Map<Class<? extends CachedAction>, Storage> storageMap = new HashMap<>();
 
    public CacheResultWrapper(ActionService actionService) {
       super(actionService);
@@ -49,14 +49,17 @@ public class CacheResultWrapper extends ActionServiceWrapper {
 
    @Override
    protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptStart(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+      //do nothing
    }
 
    @SuppressWarnings("unchecked")

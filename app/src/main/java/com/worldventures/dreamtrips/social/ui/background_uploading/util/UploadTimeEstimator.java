@@ -34,7 +34,9 @@ public class UploadTimeEstimator {
     * @return the value of remaining upload time in milliseconds
     */
    public long estimate(int progress, long currentUploadingTime) {
-      if (progress == 0) return 0;
+      if (progress == 0) {
+         return 0;
+      }
 
       long currentUploadedSize = calculateCurrentUploadedSize(progress);
 

@@ -54,7 +54,9 @@ public class DtlLocationInteractor implements Initializable {
 
    public void search(String query) {
       searchLocationPipe.cancelLatest();
-      searchLocationPipe.send(SearchLocationAction.create(ImmutableLocationsActionParams.builder().query(query).build()));
+      searchLocationPipe.send(SearchLocationAction.create(ImmutableLocationsActionParams.builder()
+            .query(query)
+            .build()));
    }
 
    public void clear() {
@@ -70,7 +72,9 @@ public class DtlLocationInteractor implements Initializable {
    }
 
    public void requestNearbyLocations(Location location) {
-      nearbyLocationPipe.send(NearbyLocationAction.create(ImmutableLocationsActionParams.builder().location(location).build()));
+      nearbyLocationPipe.send(NearbyLocationAction.create(ImmutableLocationsActionParams.builder()
+            .location(location)
+            .build()));
    }
 
    private void connectSearchCancelLatest() {

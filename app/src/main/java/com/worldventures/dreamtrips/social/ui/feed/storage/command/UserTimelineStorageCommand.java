@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class UserTimelineStorageCommand extends FeedItemsStorageBaseCommand {
 
-   private int userId;
+   private final int userId;
 
    public UserTimelineStorageCommand(int userId, ListStorageOperation<FeedItem> operation) {
       super(operation);

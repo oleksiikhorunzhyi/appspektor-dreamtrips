@@ -1,18 +1,26 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter
 
 import com.messenger.util.UnreadConversationObservable
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
 import com.worldventures.core.modules.picker.model.PhotoPickerModel
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec.Companion.anyString
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.*
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutableTextPostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
@@ -46,7 +54,8 @@ import org.mockito.internal.verification.VerificationModeFactory
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
 
 class FeedPresenterSpek : PresenterBaseSpec({
    describe("Feed Presenter") {

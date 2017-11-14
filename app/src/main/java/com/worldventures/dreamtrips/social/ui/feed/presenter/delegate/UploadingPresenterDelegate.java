@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.UploadingListenerPr
 
 public class UploadingPresenterDelegate implements UploadingListenerPresenter {
 
-   private BackgroundUploadingInteractor uploadingInteractor;
+   private final BackgroundUploadingInteractor uploadingInteractor;
 
    public UploadingPresenterDelegate(BackgroundUploadingInteractor uploadingInteractor) {
       this.uploadingInteractor = uploadingInteractor;

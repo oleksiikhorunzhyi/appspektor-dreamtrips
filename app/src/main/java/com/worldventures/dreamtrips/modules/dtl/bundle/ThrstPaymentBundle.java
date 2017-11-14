@@ -17,7 +17,8 @@ public class ThrstPaymentBundle implements Parcelable {
    private final double taxAmount;
    private final double tipAmount;
 
-   public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount, String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount, double taxAmount, double tipAmount) {
+   public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount,
+         String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount, double taxAmount, double tipAmount) {
       this.merchant = merchant;
       this.isPaid = isPaid;
       this.totalAmount = totalAmount;
@@ -77,8 +78,8 @@ public class ThrstPaymentBundle implements Parcelable {
       totalPoints = in.readString();
       receiptURL = in.readString();
       subTotalAmount = in.readDouble();
-      taxAmount = in.readDouble();;
-      tipAmount = in.readDouble();;
+      taxAmount = in.readDouble();
+      tipAmount = in.readDouble();
    }
 
    @Override

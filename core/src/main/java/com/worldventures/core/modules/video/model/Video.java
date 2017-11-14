@@ -26,6 +26,7 @@ public class Video {
    }
 
    public Video() {
+      //do nothing
    }
 
    public void setCategory(String category) {

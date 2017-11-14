@@ -66,6 +66,8 @@ public class DtlStartScreenImpl extends DtlLayout<DtlStartScreen, DtlStartPresen
                // The user was asked to change settings, but chose not to
                getPresenter().onLocationResolutionDenied();
                break;
+            default:
+               break;
          }
          return true;
       }

@@ -10,10 +10,11 @@ import org.xmlpull.v1.XmlPullParser;
 import timber.log.Timber;
 
 public class ChangeAvatarExtension implements ExtensionElement {
+
    public static final String NAMESPACE = "jabber:icon";
    public static final String ELEMENT = "icon";
 
-   private String avatarUrl;
+   private final String avatarUrl;
 
    public ChangeAvatarExtension(String avatarUrl) {
       this.avatarUrl = avatarUrl;

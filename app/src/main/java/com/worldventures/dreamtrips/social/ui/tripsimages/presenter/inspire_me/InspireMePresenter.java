@@ -28,8 +28,12 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
    @Override
    public void onViewTaken() {
       super.onViewTaken();
-      if (randomSeed != 0) randomSeed = Math.random() * 2 - 1;
-      if (currentItems == null) currentItems = new ArrayList<>();
+      if (randomSeed != 0) {
+         randomSeed = Math.random() * 2 - 1;
+      }
+      if (currentItems == null) {
+         currentItems = new ArrayList<>();
+      }
       view.updatePhotos(new ArrayList<>(currentItems), true);
       subscribeToNewItems();
       reload();
@@ -55,7 +59,9 @@ public class InspireMePresenter extends Presenter<InspireMePresenter.View> {
                      view.finishLoading();
 
                      boolean forceUpdate = inspireMePhotosCommand.getPage() == 1;
-                     if (forceUpdate) currentItems.clear();
+                     if (forceUpdate) {
+                        currentItems.clear();
+                     }
                      currentItems.addAll(inspireMePhotosCommand.getResult());
                      view.updatePhotos(new ArrayList<>(currentItems), forceUpdate);
                   }));

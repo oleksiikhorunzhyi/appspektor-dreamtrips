@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips;
 
-import android.content.Context;
-import android.support.multidex.MultiDex;
-
 import com.worldventures.core.di.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.core.module.AppModule;
 
@@ -13,9 +10,4 @@ public class App extends BaseApplicationWithInjector {
       return new AppModule(this);
    }
 
-   @Override
-   protected void attachBaseContext(Context base) {
-      super.attachBaseContext(base);
-      MultiDex.install(this);
-   }
 }

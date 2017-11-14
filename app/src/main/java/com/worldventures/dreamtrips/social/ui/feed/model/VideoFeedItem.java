@@ -10,7 +10,9 @@ import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class VideoFeedItem extends FeedItem<Video> {
 
-   public VideoFeedItem() { }
+   public VideoFeedItem() {
+      //do nothing
+   }
 
    public VideoFeedItem(Parcel in) {
       super(in);

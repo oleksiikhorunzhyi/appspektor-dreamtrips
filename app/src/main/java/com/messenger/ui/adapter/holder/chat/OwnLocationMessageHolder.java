@@ -23,6 +23,8 @@ public class OwnLocationMessageHolder extends LocationMessageHolder {
          case MessageStatus.ERROR:
             mapView.setAlpha(ALPHA_MESSAGE_NORMAL);
             break;
+         default:
+            break;
       }
 
       boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;

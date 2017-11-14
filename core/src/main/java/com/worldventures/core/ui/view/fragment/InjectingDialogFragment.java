@@ -60,5 +60,6 @@ public abstract class InjectingDialogFragment extends DialogFragment implements 
    }
 
    public void afterCreateView(View rootView) {
+      //do nothing
    }
 }

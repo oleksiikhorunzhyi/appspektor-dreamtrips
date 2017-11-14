@@ -62,8 +62,8 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
    private void loadPodcasts(boolean refresh) {
       loading = true;
       view.startLoading();
-      podcastsInteractor.podcastsActionPipe().send(refresh ?
-            GetPodcastsCommand.refresh() : GetPodcastsCommand.loadMore());
+      podcastsInteractor.podcastsActionPipe().send(refresh
+            ? GetPodcastsCommand.refresh() : GetPodcastsCommand.loadMore());
    }
 
    private void subscribeToApiUpdates() {

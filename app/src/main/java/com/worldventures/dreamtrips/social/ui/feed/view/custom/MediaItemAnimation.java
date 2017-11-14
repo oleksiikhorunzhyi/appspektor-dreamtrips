@@ -26,8 +26,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
    private ArrayList<ChangeInfo> mPendingChanges = new ArrayList<ChangeInfo>();
 
 
-   private ArrayList<ArrayList<ViewHolder>> mAdditionsList =
-         new ArrayList<ArrayList<ViewHolder>>();
+   private ArrayList<ArrayList<ViewHolder>> mAdditionsList = new ArrayList<ArrayList<ViewHolder>>();
    private ArrayList<ArrayList<MoveInfo>> mMovesList = new ArrayList<ArrayList<MoveInfo>>();
    private ArrayList<ArrayList<ChangeInfo>> mChangesList = new ArrayList<ArrayList<ChangeInfo>>();
 
@@ -42,7 +41,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    volatile Map<ViewHolder, ChangeInfo> notYetAnimated = new HashMap<>();
 
-   private static class MoveInfo {
+   private final static class MoveInfo {
       public ViewHolder holder;
       public int fromX, fromY, toX, toY;
 
@@ -55,7 +54,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       }
    }
 
-   private static class ChangeInfo {
+   private final static class ChangeInfo {
       public ViewHolder oldHolder, newHolder;
       public int fromX, fromY, toX, toY;
 
@@ -327,7 +326,9 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       final float prevTranslationX = ViewCompat.getTranslationX(oldHolder.itemView);
       final float prevTranslationY = ViewCompat.getTranslationY(oldHolder.itemView);
       final float prevAlpha = ViewCompat.getAlpha(oldHolder.itemView);
-      if (!mAddAnimations.contains(oldHolder)) endAnimation(oldHolder);
+      if (!mAddAnimations.contains(oldHolder)) {
+         endAnimation(oldHolder);
+      }
       int deltaX = (int) (toX - fromX - prevTranslationX);
       int deltaY = (int) (toY - fromY - prevTranslationY);
       // recover prev translation state after ending animation
@@ -336,7 +337,9 @@ public class MediaItemAnimation extends SimpleItemAnimator {
       ViewCompat.setAlpha(oldHolder.itemView, prevAlpha);
       if (newHolder != null && newHolder.itemView != null) {
          // carry over translation values
-         if (!mAddAnimations.contains(newHolder)) endAnimation(newHolder);
+         if (!mAddAnimations.contains(newHolder)) {
+            endAnimation(newHolder);
+         }
          ViewCompat.setTranslationX(newHolder.itemView, -deltaX);
          ViewCompat.setTranslationY(newHolder.itemView, -deltaY);
          ViewCompat.setAlpha(newHolder.itemView, 0);
@@ -415,10 +418,9 @@ public class MediaItemAnimation extends SimpleItemAnimator {
    private void endChangeAnimation(List<ChangeInfo> infoList, ViewHolder item) {
       for (int i = infoList.size() - 1; i >= 0; i--) {
          ChangeInfo changeInfo = infoList.get(i);
-         if (endChangeAnimationIfNecessary(changeInfo, item)) {
-            if (changeInfo.oldHolder == null && changeInfo.newHolder == null) {
-               infoList.remove(changeInfo);
-            }
+         if (endChangeAnimationIfNecessary(changeInfo, item)
+               && changeInfo.oldHolder == null && changeInfo.newHolder == null) {
+            infoList.remove(changeInfo);
          }
       }
    }
@@ -513,17 +515,17 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    @Override
    public boolean isRunning() {
-      return (!mPendingAdditions.isEmpty() ||
-            !mPendingChanges.isEmpty() ||
-            !mPendingMoves.isEmpty() ||
-            !mPendingRemovals.isEmpty() ||
-            !mMoveAnimations.isEmpty() ||
-            !mRemoveAnimations.isEmpty() ||
-            !mAddAnimations.isEmpty() ||
-            !mChangeAnimations.isEmpty() ||
-            !mMovesList.isEmpty() ||
-            !mAdditionsList.isEmpty() ||
-            !mChangesList.isEmpty());
+      return (!mPendingAdditions.isEmpty()
+            || !mPendingChanges.isEmpty()
+            || !mPendingMoves.isEmpty()
+            || !mPendingRemovals.isEmpty()
+            || !mMoveAnimations.isEmpty()
+            || !mRemoveAnimations.isEmpty()
+            || !mAddAnimations.isEmpty()
+            || !mChangeAnimations.isEmpty()
+            || !mMovesList.isEmpty()
+            || !mAdditionsList.isEmpty()
+            || !mChangesList.isEmpty());
    }
 
    private void dispatchFinishedWhenDone() {
@@ -625,27 +627,32 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    private static class VpaListenerAdapter implements ViewPropertyAnimatorListener {
       @Override
-      public void onAnimationStart(View view) {}
+      public void onAnimationStart(View view) {
+         //do nothing
+      }
 
       @Override
-      public void onAnimationEnd(View view) {}
+      public void onAnimationEnd(View view) {
+         //do nothing
+      }
 
       @Override
-      public void onAnimationCancel(View view) {}
+      public void onAnimationCancel(View view) {
+         //do nothing
+      }
    }
 
-   ;
 
-   private static final int AnimDuration = 500;
+   private static final int ANIM_DURATION = 500;
 
    @Override
    public long getAddDuration() {
-      return AnimDuration;
+      return ANIM_DURATION;
    }
 
    @Override
    public long getRemoveDuration() {
-      return AnimDuration;
+      return ANIM_DURATION;
    }
 
    @Override
@@ -655,7 +662,7 @@ public class MediaItemAnimation extends SimpleItemAnimator {
 
    @Override
    public long getMoveDuration() {
-      return AnimDuration;
+      return ANIM_DURATION;
    }
 
 }

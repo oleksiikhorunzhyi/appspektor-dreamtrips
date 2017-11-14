@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.TimberServiceWrapper;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.service.AuthRetryPolicy;
 import com.worldventures.core.service.NewDreamTripsHttpService;
 import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -80,9 +81,9 @@ public class JanetUploaderyModule {
    @Provides
    @Named(JANET_UPLOADERY)
    ActionService provideUploaderyActionService(SessionHolder appSessionHolder, AppVersionNameBuilder appVersionNameBuilder,
-         MapperyContext mapperyContext, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource,
+         MapperyContext mapperyContext, AuthRetryPolicy retryPolicy, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource,
          @Named(JANET_UPLOADERY) HttpClient httpClient) {
-      return new NewDreamTripsHttpService(appSessionHolder, appVersionNameBuilder, mapperyContext, reLoginInteractor,
+      return new NewDreamTripsHttpService(appSessionHolder, appVersionNameBuilder, mapperyContext, retryPolicy, reLoginInteractor,
             deviceSource, BuildConfig.DreamTripsApi, httpClient, new GsonConverter(new GsonProvider().provideGson()),
             BuildConfig.API_VERSION);
    }

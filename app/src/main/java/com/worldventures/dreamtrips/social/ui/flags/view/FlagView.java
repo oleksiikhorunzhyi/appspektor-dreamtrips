@@ -38,7 +38,9 @@ public class FlagView extends FrameLayout {
 
       TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlagView);
       Drawable drawable = a.getDrawable(R.styleable.FlagView_icon);
-      if (drawable != null) ivFlag.setImageDrawable(drawable);
+      if (drawable != null) {
+         ivFlag.setImageDrawable(drawable);
+      }
       a.recycle();
    }
 

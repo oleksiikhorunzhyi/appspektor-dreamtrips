@@ -6,8 +6,9 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class SentInvite implements Parcelable {
-   private String contact;
-   private Date date;
+
+   private final String contact;
+   private final Date date;
 
    public SentInvite(String contact, Date date) {
       this.contact = contact;

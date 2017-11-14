@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Value.Immutable
 public interface UserImage extends Serializable {
 
-    String original();
-    String medium();
-    String thumb();
+   String original();
+   String medium();
+   String thumb();
 }

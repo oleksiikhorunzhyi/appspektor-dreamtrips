@@ -16,26 +16,35 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class DtlDateTimeUtils {
+public final class DtlDateTimeUtils {
 
    private static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
    public static final String THANK_YOU_SCREEN_FORMAT = "MM-dd-yyyy HH:mm:ss";
+
+   private DtlDateTimeUtils() {
+   }
 
    public static String concatOperationDays(Resources res, List<OperationDay> operationDays) {
       return concatOperationDays(res, operationDays, LocaleHelper.getDefaultLocale());
    }
 
    public static String concatOperationDays(Resources res, List<OperationDay> operationDays, Locale locale) {
-      if (operationDays == null || operationDays.isEmpty()) return "";
+      if (operationDays == null || operationDays.isEmpty()) {
+         return "";
+      }
       //
       List<OperationDay> days = Queryable.from(operationDays)
             .filter(OperationDay::isHaveOperationHours)
             .filter(operationDay -> operationDay.dayOfWeek() != null)
             .toList();
       //
-      if (days.isEmpty()) return "";
+      if (days.isEmpty()) {
+         return "";
+      }
       //
-      if (days.size() == Calendar.DAY_OF_WEEK) return res.getString(R.string.everyday);
+      if (days.size() == Calendar.DAY_OF_WEEK) {
+         return res.getString(R.string.everyday);
+      }
       //
       String delimiter = days.size() == 2 ? " & " : " "; // TODO need translations??
       List<String> names = Queryable.from(days).map(day -> DateTimeUtils.getDisplayWeekDay(day.dayOfWeek()
@@ -76,16 +85,16 @@ public class DtlDateTimeUtils {
       }
    }
 
-   public static String getStringDateFromStringUTC(String utcString){
+   public static String getStringDateFromStringUTC(String utcString) {
       try {
-         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT, LocaleHelper.getDefaultLocale());
          utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
          Date utcDate = utcFormatter.parse(utcString);
 
-         SimpleDateFormat dateFormatter = new SimpleDateFormat(TRANSACTION_DATE_FORMAT);
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(TRANSACTION_DATE_FORMAT, LocaleHelper.getDefaultLocale());
          dateFormatter.setTimeZone(TimeZone.getDefault());
          return dateFormatter.format(utcDate);
-      } catch(ParseException parseException) {
+      } catch (ParseException parseException) {
          parseException.printStackTrace();
       }
       return "";

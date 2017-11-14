@@ -11,11 +11,11 @@ import com.worldventures.core.service.analytics.AdobeTracker
 import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.service.analytics.ApptentiveTracker
 import com.worldventures.core.service.analytics.Tracker
+import com.worldventures.core.test.common.AndroidRxJavaSchedulerInitializer
+import com.worldventures.core.test.common.Injector
+import com.worldventures.core.test.common.RxJavaSchedulerInitializer
+import com.worldventures.core.test.janet.MockAnalyticsService
 import com.worldventures.core.utils.HttpErrorHandlingUtil
-import com.worldventures.dreamtrips.common.AndroidRxJavaSchedulerInitializer
-import com.worldventures.dreamtrips.common.Injector
-import com.worldventures.dreamtrips.common.RxJavaSchedulerInitializer
-import com.worldventures.dreamtrips.common.janet.service.MockAnalyticsService
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate

@@ -7,7 +7,7 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils;
 import com.worldventures.dreamtrips.social.ui.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.social.ui.membership.model.Member;
@@ -51,7 +51,14 @@ public class GetPhoneContactsCommand extends Command<List<Member>> implements In
             break;
          case SMS:
             contentURI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            projection = new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE};
+            projection = new String[]{
+                  ContactsContract.Contacts._ID,
+                  ContactsContract.Contacts.DISPLAY_NAME,
+                  ContactsContract.CommonDataKinds.Phone.NUMBER,
+                  ContactsContract.CommonDataKinds.Phone.TYPE
+            };
+            break;
+         default:
             break;
       }
       Cursor cur = context.getContentResolver().query(contentURI, projection, selection, selectionArgs, order);
@@ -63,25 +70,38 @@ public class GetPhoneContactsCommand extends Command<List<Member>> implements In
          member.setId(id);
 
          String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-         if (TextUtils.isEmpty(name)) continue;
-         else member.setName(name);
+         if (TextUtils.isEmpty(name)) {
+            continue;
+         } else {
+            member.setName(name);
+         }
 
          switch (type) {
             case EMAIL:
                String email = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                member.setEmail(email);
-               if (TextUtils.isEmpty(member.getEmail())) break;
-               if (TextUtils.isEmpty(member.getName())) break;
+               if (TextUtils.isEmpty(member.getEmail())) {
+                  break;
+               }
+               if (TextUtils.isEmpty(member.getName())) {
+                  break;
+               }
                member.setEmailIsMain(true);
                result.add(member);
                break;
             case SMS:
                String phone = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                member.setPhone(ProjectPhoneNumberUtils.normalizeNumber(phone));
-               if (TextUtils.isEmpty(phone)) break;
-               if (TextUtils.isEmpty(member.getName())) break;
+               if (TextUtils.isEmpty(phone)) {
+                  break;
+               }
+               if (TextUtils.isEmpty(member.getName())) {
+                  break;
+               }
                member.setEmailIsMain(false);
                result.add(member);
+               break;
+            default:
                break;
          }
       }

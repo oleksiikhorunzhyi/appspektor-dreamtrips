@@ -39,7 +39,9 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
 
    @Override
    public void onResume() {
-      if (view.getItemsCount() == 0) reload();
+      if (view.getItemsCount() == 0) {
+         reload();
+      }
    }
 
    public void reload() {
@@ -84,6 +86,8 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
          case R.id.action_show_favorites:
             onlyFavorites = true;
             analyticsInteractor.analyticsActionPipe().send(new FilterSuccessStoriesShowFavoriteAction());
+            break;
+         default:
             break;
       }
       reload();

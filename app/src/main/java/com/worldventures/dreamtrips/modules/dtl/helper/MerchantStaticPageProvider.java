@@ -20,11 +20,11 @@ public class MerchantStaticPageProvider {
       UserSession userSession = appSessionHolder.get().get();
       builder.append("/gateway/dtl/enroll_merchant")
             .append("?username=")
-            .append(userSession.getUser().getUsername())
+            .append(userSession.user().getUsername())
             .append("&sso=")
-            .append(userSession.getLegacyApiToken())
+            .append(userSession.legacyApiToken())
             .append("&locale=")
-            .append(userSession.getLocale());
+            .append(userSession.locale());
       //
       if (args != null) {
          builder.append("&intent=suggestProspect").append("&prospectId=").append(args.getMerchantId());

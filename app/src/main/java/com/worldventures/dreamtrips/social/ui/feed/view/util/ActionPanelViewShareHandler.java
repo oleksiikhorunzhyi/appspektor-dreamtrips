@@ -5,7 +5,6 @@ import android.content.Context;
 import com.worldventures.core.model.ShareType;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
@@ -16,15 +15,16 @@ import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import rx.functions.Action1;
 
 public class ActionPanelViewShareHandler {
 
-   private Router router;
+   private final Router router;
+   private final AnalyticsInteractor analyticsInteractor;
    private Action1<String> downloadPhotoAction;
-   private AnalyticsInteractor analyticsInteractor;
 
    public ActionPanelViewShareHandler(Router router, AnalyticsInteractor analyticsInteractor) {
       this.router = router;
@@ -70,6 +70,8 @@ public class ActionPanelViewShareHandler {
             text = context.getString(R.string.bucketlist_share, bucketItem.getName());
             analyticsInteractor.analyticsActionPipe().send(BucketItemAction.share(bucketItem.getUid()));
             break;
+         default:
+            break;
       }
 
       ShareBundle data = new ShareBundle();
@@ -77,6 +79,6 @@ public class ActionPanelViewShareHandler {
       data.setShareUrl(shareUrl);
       data.setText(text == null ? "" : text);
       data.setShareType(shareType);
-      router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(data).build());
+      router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
    }
 }

@@ -71,10 +71,10 @@ public abstract class FilterData {
 
    @Value.Derived
    public boolean isDefault() {
-      return budgetMin() == BUDGET_MIN &&
-            budgetMax() == BUDGET_MAX &&
-            distanceMaxIndex() == DISTANCE_MAX_INDEX &&
-            selectedAmenities().isEmpty();
+      return budgetMin() == BUDGET_MIN
+            && budgetMax() == BUDGET_MAX
+            && distanceMaxIndex() == DISTANCE_MAX_INDEX
+            && selectedAmenities().isEmpty();
    }
 
    @Value.Default

@@ -9,7 +9,7 @@ import rx.subjects.ReplaySubject;
 
 public class AudioFocusDelegate implements AudioManager.OnAudioFocusChangeListener {
 
-   private AudioManager audioManager;
+   private final AudioManager audioManager;
 
    private ReplaySubject<AudioFocusState> replaySubject;
 
@@ -62,6 +62,8 @@ public class AudioFocusDelegate implements AudioManager.OnAudioFocusChangeListen
          case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
          case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
             replaySubject.onNext(AudioFocusState.LOSS_TRANSIENT);
+            break;
+         default:
             break;
       }
    }

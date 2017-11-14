@@ -5,13 +5,20 @@ apply from: "$rootProject.projectDir/buildsystem/env-flavor-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/env-flavor-utils.gradle"
 apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/module-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 //
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
-apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
 apply plugin: 'com.github.ben-manes.versions'
+
+def deps = project.ext.moduleDependencies
+def coreDeps = project.ext.coreDependencies
 
 android {
    compileSdkVersion project.ext.androidConfig.compileSdk
@@ -27,6 +34,11 @@ android {
       targetSdkVersion project.ext.androidConfig.targetSdk
       //
       multiDexEnabled true
+      javaCompileOptions {
+         annotationProcessorOptions {
+            includeCompileClasspath = false
+         }
+      }
    }
 
    flavorDimensions "build", "stream", "config"
@@ -98,6 +110,13 @@ android {
    android.applicationVariants.all { variant ->
       project.ext.flavors.applyConfig(variant)
       project.ext.flavors.applyVersionName(variant)
+
+      variant.getCompileConfiguration().resolutionStrategy {
+         cacheChangingModulesFor 0, 'seconds'
+         force provideDep(coreDeps.rx.rxjava)
+         force provideDep(coreDeps.domain.mappery)
+         force provideDep(coreDeps.util.jetbrainsAnnotations)
+      }
    }
 
    signingConfigs {
@@ -132,13 +151,16 @@ android {
          def proConfigs = file('proguard-rules').listFiles().collect { it }
          proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
          proConfigs << file('dagger-proguard-keepnames.cfg')
+         proConfigs << file('core/dagger-proguard-keepnames.cfg')
+         proConfigs << file('social/dagger-proguard-keepnames.cfg')
+         proConfigs << file('wallet/dagger-proguard-keepnames.cfg')
          setProguardFiles proConfigs
       }
    }
 
    compileOptions {
-      sourceCompatibility project.ext.pluginDependencies.languages.java
-      targetCompatibility project.ext.pluginDependencies.languages.java
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
    }
    testOptions {
       unitTests.returnDefaultValues = true
@@ -148,7 +170,8 @@ android {
       preDexLibraries = project.ext.androidConfig.preDex
    }
    lintOptions {
-      disable 'MissingTranslation', 'RestrictedApi', 'GradleCompatible'
+      xmlReport false
+      disable 'MissingTranslation', 'RestrictedApi', 'ExtraTranslation'
    }
    packagingOptions {
       exclude 'LICENSE.txt'
@@ -158,26 +181,15 @@ android {
    }
    useLibrary 'org.apache.http.legacy'
 
-   dataBinding{
+   dataBinding {
       enabled = true
    }
 
    sourceSets {
-      smartcardnxtid {
-         test.java.srcDirs += 'src/testSmartCardMock/java'
-      }
-      smartcardmock {
-         test.java.srcDirs += 'src/testSmartCardMock/java'
-      }
-      social {
-         test.java.srcDirs += 'src/testSocial/java'
-      }
       main.res.srcDirs += 'src/main/resSocial'
       main.res.srcDirs += 'src/main/resMessenger'
       main.res.srcDirs += 'src/main/resSession'
-      main.res.srcDirs += 'src/main/resWallet'
    }
-
 }
 
 // disable new relic for non-release tasks
@@ -189,10 +201,10 @@ task('disableNR') {
          newRelicInstrumentTask.enabled = false
          newRelicDeinstrumentTask.enabled = false
       } catch (Exception e) {
-         logger.log(LogLevel.ERROR, "[newrelic] an error occured attempting to disable New Relic instrumentation." + "\n" + e.printStackTrace())
+         logger.error("[newrelic] an error occured attempting to disable New Relic instrumentation." + "\n" + e.printStackTrace())
       }
       if (newRelicInstrumentTask.enabled == true) {
-         logger.log(LogLevel.ERROR, "[newrelic] an error occured attempting to disable New Relic instrumentation.")
+         logger.error("[newrelic] an error occured attempting to disable New Relic instrumentation.")
       } else {
          logger.info("[newrelic] newrelicInstrumentTask has been disabled")
       }
@@ -212,43 +224,26 @@ tasks.withType(JavaCompile) {
 }
 // configuration & dependencies
 
-def deps = project.ext.moduleDependencies
-def coreDeps = project.ext.coreDependencies
-
-configurations.all {
-   resolutionStrategy {
-      cacheChangingModulesFor 0, 'seconds'
-      force provideDep(coreDeps.rx.rxjava)
-      force provideDep(coreDeps.domain.mappery)
-      force provideDep(coreDeps.util.jetbrainsAnnotations)
-   }
+configurations.all { // todo remove it when we drop compile dependency
    exclude group: 'xpp3', module: 'xpp3'
-   exclude group: 'org.jetbrains', module: 'annotations-java5'
    exclude group: 'com.intellij', module: 'annotations'
 }
 
 repositories {
    deps.repos.each { it.call(owner) }
-   coreDeps.repos.each { it.call(owner) }
 }
 
 dependencies {
-   compile fileTree(dir: 'libs', include: ['*.jar'])
-
+   implementation fileTree(dir: 'libs', include: ['*.jar'])
    applyDependencies(owner, deps.modules)
-   applyDependencies(owner, deps.lang)
    applyDependencies(owner, deps.domain)
-   applyDependencies(owner, coreDeps.di)
-   applyDependencies(owner, coreDeps.ui)
    applyDependencies(owner, deps.data)
-   applyDependencies(owner, coreDeps.immutables)
    applyDependencies(owner, deps.networking)
    applyDependencies(owner, deps.smartcard)
    applyDependencies(owner, deps.services)
    applyDependencies(owner, deps.media)
    applyDependencies(owner, deps.presentation)
    applyDependencies(owner, deps.ui)
-   applyDependencies(owner, coreDeps.util)
    applyDependencies(owner, deps.util.findAll {
       ![
             deps.util.leakcanary,
@@ -256,8 +251,12 @@ dependencies {
       ].contains(it.value)
    })
    applyDependencies(owner, deps.test)
+   applyDependencies(owner, deps.annotationProcesssor)
 
-   devCompile                 provideDep(deps.util.leakcanary)
-   devpremarshmallowCompile   provideDep(deps.util.leakcanary)
-   externalCompile            provideDep(deps.util.leakcanaryNoOp)
+   devImplementation provideDep(deps.util.leakcanary)
+   devpremarshmallowImplementation provideDep(deps.util.leakcanary)
+   externalImplementation provideDep(deps.util.leakcanaryNoOp)
 }
+
+bindModuleTestsToAppFlavor(":wallet", "Smartcardmock")
+bindModuleTestsToAppFlavor(":social", "Social")

@@ -14,9 +14,9 @@ public class LineBreakViewGroup extends ViewGroup {
 
    public static final int DEFAULT_HORIZONTAL_SPACING = 5;
    public static final int DEFAULT_VERTICAL_SPACING = 5;
+   private static final int HORIZONTAL_SPACING = 10;
+   private static final int VERTICAL_SPACING = 10;
 
-   private int horizontalSpacing = 10;
-   private int verticalSpacing = 10;
    private List<RowMeasurement> currentRows = Collections.emptyList();
 
 
@@ -53,7 +53,7 @@ public class LineBreakViewGroup extends ViewGroup {
          RowMeasurement row = rows.get(index);
          totalRowHeight += row.getHeight();
          if (index < rows.size() - 1) {
-            totalRowHeight += verticalSpacing;
+            totalRowHeight += VERTICAL_SPACING;
          }
          longestRowWidth = Math.max(longestRowWidth, row.getWidth());
       }
@@ -87,13 +87,13 @@ public class LineBreakViewGroup extends ViewGroup {
          final int childHeight = child.getMeasuredHeight();
          if (x + childWidth > widthOffset) {
             x = getPaddingLeft();
-            y += currentRow.height + verticalSpacing;
+            y += currentRow.height + VERTICAL_SPACING;
             if (rowIterator.hasNext()) {
                currentRow = rowIterator.next();
             }
          }
          child.layout(x, y, x + childWidth, y + childHeight);
-         x += childWidth + horizontalSpacing;
+         x += childWidth + HORIZONTAL_SPACING;
       }
    }
 
@@ -117,6 +117,7 @@ public class LineBreakViewGroup extends ViewGroup {
    }
 
    private final class RowMeasurement {
+
       private final int maxWidth;
       private final int widthMode;
       private int width;
@@ -145,7 +146,7 @@ public class LineBreakViewGroup extends ViewGroup {
       }
 
       private int getNewWidth(int childWidth) {
-         return width == 0 ? childWidth : width + horizontalSpacing + childWidth;
+         return width == 0 ? childWidth : width + HORIZONTAL_SPACING + childWidth;
       }
    }
 

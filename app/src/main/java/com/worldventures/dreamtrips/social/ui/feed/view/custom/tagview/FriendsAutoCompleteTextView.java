@@ -61,8 +61,7 @@ public class FriendsAutoCompleteTextView extends AppCompatAutoCompleteTextView {
       try {
          Field privateStringField = AutoCompleteTextView.class.getDeclaredField("mObserver");
          privateStringField.setAccessible(true);
-         Object fieldValue = privateStringField.get(this);
-         return (DataSetObserver) fieldValue;
+         return (DataSetObserver) privateStringField.get(this);
       } catch (Exception e) {
          return null;
       }

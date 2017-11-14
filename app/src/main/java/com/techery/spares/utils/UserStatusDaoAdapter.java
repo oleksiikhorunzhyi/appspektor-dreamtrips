@@ -5,7 +5,8 @@ import com.messenger.storage.dao.UsersDAO;
 import rx.Observable;
 
 public class UserStatusDaoAdapter implements UserStatusAdapter {
-   private UsersDAO usersDao;
+
+   private final UsersDAO usersDao;
 
    public UserStatusDaoAdapter(UsersDAO usersDAO) {
       this.usersDao = usersDAO;

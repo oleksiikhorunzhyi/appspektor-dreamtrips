@@ -6,9 +6,9 @@ import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.modules.dtl.event.MapInfoReadyAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ShowMapInfoAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
@@ -86,7 +86,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    @Override
    public void onVisibilityChanged(int visibility) {
       super.onVisibilityChanged(visibility);
-      if (visibility == View.VISIBLE) getView().prepareMap();
+      if (visibility == View.VISIBLE) {
+         getView().prepareMap();
+      }
    }
 
    private void connectInteractors() {
@@ -147,7 +149,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    private void onStartMerchantsLoad(MerchantsAction action) {
-      if (action.isRefresh()) getView().clearMap();
+      if (action.isRefresh()) {
+         getView().clearMap();
+      }
    }
 
    private void onProgressMerchantsLoad(MerchantsAction action, Integer progress) {
@@ -181,7 +185,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
       if (!command.getFromRating()) {
          navigateToDetails(command.getResult());
       } else {
-         if (!command.getResult().reviews().total().isEmpty() && Integer.parseInt(command.getResult().reviews().total()) > 0) {
+         if (!command.getResult().reviews().total().isEmpty() && Integer.parseInt(command.getResult()
+               .reviews()
+               .total()) > 0) {
             navigateToRatingList(command.getResult());
          } else {
             navigateToCommentRating(command.getResult());
@@ -198,7 +204,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    private boolean isNeedShowBlockingProgress(MerchantsAction action) {
-      if (!getView().isTabletLandscape()) return true;
+      if (!getView().isTabletLandscape()) {
+         return true;
+      }
       return action.bundle().requestSource() == RequestSourceType.MAP;
    }
 
@@ -286,12 +294,16 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    @Override
    public void retryLoadMerchant() {
-      if (actionParamsHolder == null) return;
+      if (actionParamsHolder == null) {
+         return;
+      }
       fullMerchantInteractor.load(actionParamsHolder);
    }
 
    private void updateMapZoom(List<ThinMerchant> merchants) {
-      if (merchants.isEmpty()) return;
+      if (merchants.isEmpty()) {
+         return;
+      }
       getView().zoomBounds(buildBounds(merchants));
    }
 
@@ -309,10 +321,13 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    private void updateMap(DtlLocation location) {
       if (location.locationSourceType() == LocationSourceType.FROM_MAP && getView().getMap()
-            .getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM) getView().zoom(MapViewUtils.DEFAULT_ZOOM);
+            .getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM) {
+         getView().zoom(MapViewUtils.DEFAULT_ZOOM);
+      }
 
-      if (location.locationSourceType() != LocationSourceType.NEAR_ME)
+      if (location.locationSourceType() != LocationSourceType.NEAR_ME) {
          getView().addLocationMarker(location.coordinates());
+      }
    }
 
    @Override
@@ -428,9 +443,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
    private final Func2<ActionState<MerchantsAction>, Boolean, Pair<Boolean, Boolean>> updateButtonsFunc = (state, isCenterOutOfLimit) -> {
       switch (state.status) {
-         case SUCCESS: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit && isNeedShowLoadMoreButton(state.action));
-         case FAIL: return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit);
-         default: return new Pair<>(false, false);
+         case SUCCESS:
+            return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit && isNeedShowLoadMoreButton(state.action));
+         case FAIL:
+            return new Pair<>(isCenterOutOfLimit, !isCenterOutOfLimit);
+         default:
+            return new Pair<>(false, false);
       }
    };
 }

@@ -95,8 +95,11 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
    private void trackConversations() {
       conversationsDAO.conversationsCount().take(1).compose(bindView()).subscribe(count -> {
-         if (count == 0) waitForSyncAndTrack();
-         else analyticsInteractor.analyticsActionPipe().send(new ConversationsCountAction(count));
+         if (count == 0) {
+            waitForSyncAndTrack();
+         } else {
+            analyticsInteractor.analyticsActionPipe().send(new ConversationsCountAction(count));
+         }
       });
    }
 
@@ -131,8 +134,9 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
    }
 
    private void connectToConversations(@ConversationType.Type String type, String searchQuery) {
-      if (conversationSubscription != null && !conversationSubscription.isUnsubscribed())
+      if (conversationSubscription != null && !conversationSubscription.isUnsubscribed()) {
          conversationSubscription.unsubscribe();
+      }
       conversationSubscription = conversationsDAO.selectConversationsList(type, searchQuery)
             .compose(bindViewIoToMainComposer())
             .subscribe(this::applyViewState, throwable -> Timber.e(throwable, "ConversationsDAO error"));
@@ -160,6 +164,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
             break;
          case ERROR:
             getView().showError(getViewState().getError());
+            break;
+         default:
             break;
       }
    }
@@ -262,6 +268,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
          case R.id.action_add:
             openRoster();
             return true;
+         default:
+            break;
       }
       return false;
    }
@@ -271,7 +279,9 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
       //
       Object oldPath = historyBuilder.pop();
 
-      if (oldPath instanceof NewChatPath) return;
+      if (oldPath instanceof NewChatPath) {
+         return;
+      }
 
       historyBuilder.push(oldPath);
       historyBuilder.push(new NewChatPath());

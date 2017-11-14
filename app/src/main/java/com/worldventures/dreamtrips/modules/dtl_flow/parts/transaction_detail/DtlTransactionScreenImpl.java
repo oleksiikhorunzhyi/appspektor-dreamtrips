@@ -71,7 +71,9 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    protected void onPostAttachToWindowView() {
       inflateToolbarMenu(toolbar);
       transaction = getPath().getTransaction();
-      if (transaction == null) return;
+      if (transaction == null) {
+         return;
+      }
 
       if (ViewUtils.isTabletLandscape(getContext())) {
          toolbar.setBackgroundColor(Color.WHITE);
@@ -151,7 +153,9 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
 
    @Override
    public void hideLoadingMerchantDialog() {
-      if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
+      if (progressDialog != null && progressDialog.isShowing()) {
+         progressDialog.dismiss();
+      }
    }
 
    @Override

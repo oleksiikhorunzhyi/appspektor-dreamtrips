@@ -17,9 +17,9 @@ public class PodcastServiceNotificationFactory {
 
    private static final int REQUEST_CODE_OPEN_PODCAST_NOTIFICATION = 33;
 
-   private Context context;
-   private Resources res;
-   private Uri uri;
+   private final Context context;
+   private final Resources res;
+   private final Uri uri;
 
    public PodcastServiceNotificationFactory(Context context, Uri uri) {
       this.context = context;

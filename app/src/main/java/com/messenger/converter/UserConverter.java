@@ -6,6 +6,9 @@ import com.worldventures.core.model.User.Relationship;
 
 public final class UserConverter {
 
+   private UserConverter() {
+   }
+
    public static DataUser convert(User user) {
       DataUser messengerUser = new DataUser(user.getUsername());
       messengerUser.setSocialId(user.getId());

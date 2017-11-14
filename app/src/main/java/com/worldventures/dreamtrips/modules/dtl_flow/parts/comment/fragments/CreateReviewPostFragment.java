@@ -25,7 +25,7 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Errors;
@@ -38,6 +38,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPat
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
 
 import java.util.List;
 
@@ -85,9 +86,6 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    private CreateReviewEntityBundle bundle;
 
-   public CreateReviewPostFragment() {
-   }
-
    public static CreateReviewPostFragment newInstance(Bundle arguments) {
       CreateReviewPostFragment f = new CreateReviewPostFragment();
       if (arguments != null) {
@@ -108,18 +106,13 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       setMaxLengthText(maximumCharactersAllowed());
    }
 
-   @Override
-   protected Route getRoute() {
-      return Route.POST_CREATE;
-   }
-
    protected void showMediaPicker() {
       PickerBundle pickerBundle = new PickerBundle.Builder()
             .setRequestId(0)
             .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
             .build();
 
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+      router.moveTo(MediaPickerFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
@@ -129,10 +122,8 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @OnClick(R.id.container_add_photos_and_videos)
    void onImage() {
-      if (isAvailableToPost()) {
-         if (getPresenter().getRemainingPhotosCount() > 0) {
-            showMediaPicker();
-         }
+      if (isAvailableToPost() && getPresenter().getRemainingPhotosCount() > 0) {
+         showMediaPicker();
       }
    }
 
@@ -189,7 +180,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    public void handleStringReview(String stringReview) {
-      if (stringReview == null)  return;
+      if (stringReview == null) {
+         return;
+      }
       // Character \n should not be part of the counting at any place. (beginning, middle or end)
       stringReviewLength = stringReview.replaceAll("\n", " ").trim().length();
 
@@ -212,7 +205,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public int getSizeComment() {
-      if (mComment == null) throw new IllegalStateException("Comment must exist.");
+      if (mComment == null) {
+         throw new IllegalStateException("Comment must exist.");
+      }
       String review = mComment.getText().toString();
       int lineJumpOccurrences = 0;
       for (int i = 0; i < review.length(); i++) {
@@ -449,7 +444,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public void sendPostReview() {
-      this.user = appSessionHolder.get().get().getUser();
+      this.user = appSessionHolder.get().get().user();
 
       ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
       addReviewActionActionPipe.createObservable(
@@ -517,7 +512,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
             e.printStackTrace();
          }
       } else {
-         this.user = appSessionHolder.get().get().getUser();
+         this.user = appSessionHolder.get().get().user();
          try {
             ReviewStorage.saveReviewsPosted(getActivity(), String.valueOf(user.getId()), getMerchantId());
          } catch (Exception e) {
@@ -530,13 +525,17 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       enableInputs();
    }
 
-   private @Nullable String getReviewPostingErrorCode(List<Errors> errors) {
+   private @Nullable
+   String getReviewPostingErrorCode(List<Errors> errors) {
       String errorCode = parseErrorCode(errors);
-      if (errorCode == null) errorCode = parseErrorCodeFallback(errors);
+      if (errorCode == null) {
+         errorCode = parseErrorCodeFallback(errors);
+      }
       return errorCode;
    }
 
-   private @Nullable String parseErrorCode(List<Errors> errors) {
+   private @Nullable
+   String parseErrorCode(List<Errors> errors) {
       if (errors != null && !errors.isEmpty()) {
          Errors error = errors.get(0);
          if (error.innerError() != null && !error.innerError().isEmpty()) {
@@ -550,7 +549,8 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    /**
     * This method should probably be deleted after clarifying API contract
     */
-   private @Nullable String parseErrorCodeFallback(List<Errors> errors) {
+   private @Nullable
+   String parseErrorCodeFallback(List<Errors> errors) {
       try {
          return errors.get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code();
       } catch (Exception e) {
@@ -568,7 +568,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       if (merchant.reviews().total().equals("") || merchant.reviews().total().equals("0")) {
          navigateToDetail(getContext().getString(R.string.snack_review_success));
       } else {
-         Path path = new DtlReviewsPath(Flow.get(getContext()).getHistory().top(), merchant, getContext().getString(R.string.snack_review_success));
+         Path path = new DtlReviewsPath(Flow.get(getContext())
+               .getHistory()
+               .top(), merchant, getContext().getString(R.string.snack_review_success));
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
          historyBuilder.pop();
          historyBuilder.pop();

@@ -49,7 +49,9 @@ public abstract class DocumentListPresenter extends Presenter<DocumentListPresen
          view.showProgress();
 
          List<Document> items = command.items();
-         if (view.isAdapterEmpty() && items != null && !items.isEmpty()) view.setDocumentList(items);
+         if (view.isAdapterEmpty() && items != null && !items.isEmpty()) {
+            view.setDocumentList(items);
+         }
       }
    }
 

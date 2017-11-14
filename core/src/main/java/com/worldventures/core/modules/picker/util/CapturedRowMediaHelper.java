@@ -2,11 +2,11 @@ package com.worldventures.core.modules.picker.util;
 
 import android.util.Pair;
 
+import com.worldventures.core.modules.picker.command.GetVideoDurationCommand;
+import com.worldventures.core.modules.picker.command.VideoCapturedCommand;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
-import com.worldventures.core.modules.picker.command.GetVideoDurationCommand;
-import com.worldventures.core.modules.picker.command.VideoCapturedCommand;
 import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.core.utils.Size;
@@ -17,8 +17,8 @@ import rx.Observable;
 
 public final class CapturedRowMediaHelper {
 
-   private MediaPickerInteractor mediaPickerInteractor;
-   private DrawableUtil drawableUtil;
+   private final MediaPickerInteractor mediaPickerInteractor;
+   private final DrawableUtil drawableUtil;
 
    public CapturedRowMediaHelper(MediaPickerInteractor mediaPickerInteractor, DrawableUtil drawableUtil) {
       this.mediaPickerInteractor = mediaPickerInteractor;

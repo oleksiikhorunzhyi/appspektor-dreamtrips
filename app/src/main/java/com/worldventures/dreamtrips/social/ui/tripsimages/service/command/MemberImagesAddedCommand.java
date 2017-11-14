@@ -37,7 +37,9 @@ public class MemberImagesAddedCommand extends Command<List<BaseMediaEntity>> imp
    }
 
    @Override
-   public void onRestore(ActionHolder holder, List<BaseMediaEntity> cache) {}
+   public void onRestore(ActionHolder holder, List<BaseMediaEntity> cache) {
+      //do nothing
+   }
 
    @Override
    public CacheOptions getCacheOptions() {

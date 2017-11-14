@@ -2,8 +2,8 @@ package com.worldventures.core.modules.picker.view.gallery;
 
 
 import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
-import com.worldventures.core.modules.picker.viewmodel.GalleryMediaPickerViewModel;
 import com.worldventures.core.modules.picker.view.base.BaseMediaPickerView;
+import com.worldventures.core.modules.picker.viewmodel.GalleryMediaPickerViewModel;
 
 import java.util.List;
 

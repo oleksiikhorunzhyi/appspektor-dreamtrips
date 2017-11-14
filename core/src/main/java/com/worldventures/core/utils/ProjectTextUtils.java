@@ -14,14 +14,17 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class ProjectTextUtils {
+public final class ProjectTextUtils {
 
-   public static String joinWithFirstUpperCase(Object[] groups) {
+   private ProjectTextUtils() {
+   }
+
+   public static String joinWithFirstUpperCase(Object... groups) {
       String result = "";
       for (Object group : groups) {
          result = result + ", " + convertToFirstUpperCase(group.toString());
       }
-      return result.substring(result.indexOf(",") + 1);
+      return result.substring(result.indexOf(',') + 1);
    }
 
    public static String convertToFirstUpperCase(String text) {
@@ -62,7 +65,7 @@ public class ProjectTextUtils {
       String superLowerCase = superString.toLowerCase();
       String subLowerCase = subString.toLowerCase();
 
-      if (!superLowerCase.contains(subLowerCase)) return Integer.MAX_VALUE;
+      if (!superLowerCase.contains(subLowerCase)) { return Integer.MAX_VALUE; }
 
       return superLowerCase.indexOf(subLowerCase);
    }

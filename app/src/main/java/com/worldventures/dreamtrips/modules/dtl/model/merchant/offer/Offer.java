@@ -25,9 +25,13 @@ public interface Offer extends Serializable {
    String title();
    String description();
    String disclaimer();
-   @Nullable Date startDate();
-   @Nullable Date endDate();
-   @Nullable List<OperationDay> operationDays();
-   @Nullable List<MerchantMedia> images();
+   @Nullable
+   Date startDate();
+   @Nullable
+   Date endDate();
+   @Nullable
+   List<OperationDay> operationDays();
+   @Nullable
+   List<MerchantMedia> images();
 
 }

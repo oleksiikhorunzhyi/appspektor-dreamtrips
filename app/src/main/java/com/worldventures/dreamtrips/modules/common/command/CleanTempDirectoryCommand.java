@@ -6,7 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.storage.dao.PhotoDAO;
 import com.worldventures.core.di.qualifier.ForApplication;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.core.utils.FileUtils;
@@ -42,12 +42,12 @@ public class CleanTempDirectoryCommand extends Command implements InjectableActi
             compoundOperationsInteractor.compoundOperationsPipe()
                   .createObservableResult(new QueryCompoundOperationsCommand()),
             photoDAO.getErrorAttachments().take(1),
-            ((queryCompoundOperationsCommand, dataPhotoAttachments) -> {
+            (queryCompoundOperationsCommand, dataPhotoAttachments) -> {
                List<String> exceptFilePaths = new ArrayList<>();
                exceptFilePaths.addAll(Queryable.from(dataPhotoAttachments).map(DataPhotoAttachment::getUrl).toList());
                exceptFilePaths.addAll(obtainMediaFilesPaths(queryCompoundOperationsCommand.getResult()));
                return exceptFilePaths;
-            }))
+            })
             .subscribe(exceptFilePaths -> {
                File directory = new File(FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
                if (!directory.exists()) {

@@ -10,10 +10,13 @@ import com.crashlytics.android.Crashlytics;
 
 import timber.log.Timber;
 
-public class MapViewUtils {
+public final class MapViewUtils {
 
    public static final int MAP_ANIMATION_DURATION = 400;
    public static final float DEFAULT_ZOOM = 10f;
+
+   private MapViewUtils() {
+   }
 
    /**
     * Move location button with custom direction
@@ -25,7 +28,9 @@ public class MapViewUtils {
    @SuppressLint("ResourceType")
    @SuppressWarnings("ResourceType")
    public static void setLocationButtonGravity(@Nullable View mapView, int margin, int... relativeDirections) {
-      if (mapView == null) return;
+      if (mapView == null) {
+         return;
+      }
 
       View locationButton;
       try {

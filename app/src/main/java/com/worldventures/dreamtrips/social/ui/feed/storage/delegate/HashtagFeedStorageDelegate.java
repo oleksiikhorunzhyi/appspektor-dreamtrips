@@ -17,7 +17,7 @@ import rx.Observable;
 
 public class HashtagFeedStorageDelegate extends BaseFeedStorageDelegate<HashtagFeedStorageCommand> {
 
-   private HashtagInteractor hashtagInteractor;
+   private final HashtagInteractor hashtagInteractor;
 
    private String hashtag;
 

@@ -36,8 +36,8 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
    }
 
    private boolean isThrstTransactionSuccessful() {
-      return transaction.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.INITIATED ||
-            transaction.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.SUCCESSFUL;
+      return transaction.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.INITIATED
+            || transaction.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.SUCCESSFUL;
    }
 
    @Override
@@ -52,7 +52,9 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
 
    @Override
    public void showReceipt() {
-      if (transaction.getReceiptUrl() != null) getView().showReceipt(transaction.getReceiptUrl());
+      if (transaction.getReceiptUrl() != null) {
+         getView().showReceipt(transaction.getReceiptUrl());
+      }
    }
 
    @Override

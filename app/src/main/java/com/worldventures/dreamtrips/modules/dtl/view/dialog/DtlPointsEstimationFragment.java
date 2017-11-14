@@ -111,7 +111,9 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
 
    @OnClick(R.id.calculateButton)
    void calculateClicked() {
-      if (inputPoints.getText().length() > 0 && inputPoints.validate()) tryHideSoftInput();
+      if (inputPoints.getText().length() > 0 && inputPoints.validate()) {
+         tryHideSoftInput();
+      }
       getPresenter().onCalculateClicked(inputPoints.getText().toString());
    }
 

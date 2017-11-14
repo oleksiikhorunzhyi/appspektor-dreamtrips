@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.model.video;
 
 public class ResponseContent {
-   private String assetId;
+
+   private final String assetId;
 
    public ResponseContent(String assetId) {
       this.assetId = assetId;

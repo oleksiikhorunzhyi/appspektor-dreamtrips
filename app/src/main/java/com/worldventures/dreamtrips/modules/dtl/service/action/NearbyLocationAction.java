@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.locations.LocationsHttpAction;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.LocationsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.LocationsActionCreator;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 

@@ -15,4 +15,11 @@
 
    <color name="horizontal_photo_view_fab_color">#ff6e9cff</color>
    <color name="horizontal_photo_view_fab_color_error">#fe5353</color>
+
+
+   <color name="crop_toolbar_color">#335d91</color>
+   <color name="crop_selected_button">#41A4FD</color>
+   <color name="crop_status_bar_color">#76b2fe</color>
+
+   <color name="paginated_recycler_view_swipe_color">#76b2fe</color>
 </resources>

@@ -7,7 +7,7 @@ import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class VersionComparatorSpec : BaseSpec ({
+class VersionComparatorSpec : BaseSpec({
 
    describe("Compare versions of app tests") {
       it("check if comparing is calculated normally") {

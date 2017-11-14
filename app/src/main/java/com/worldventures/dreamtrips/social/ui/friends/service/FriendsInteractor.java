@@ -21,17 +21,17 @@ import rx.schedulers.Schedulers;
 @Singleton
 public class FriendsInteractor {
 
-   private ActionPipe<DeleteFriendRequestCommand> deleteRequestPipe;
-   private ActionPipe<ActOnFriendRequestCommand.Accept> acceptRequestPipe;
-   private ActionPipe<ActOnFriendRequestCommand.Reject> rejectRequestPipe;
-   private ActionPipe<AcceptAllFriendRequestsCommand> acceptAllPipe;
-   private ActionPipe<RemoveFriendCommand> removeFriendPipe;
-   private ActionPipe<AddFriendCommand> addFriendPipe;
-   private ActionPipe<GetFriendsCommand> getFriendsPipe;
-   private ActionPipe<GetLikersCommand> getLikersPipe;
-   private ActionPipe<GetMutualFriendsCommand> getMutualFriendsPipe;
-   private ActionPipe<GetSearchUsersCommand> getSearchUsersPipe;
-   private ActionPipe<GetRequestsCommand> getRequestsPipe;
+   private final ActionPipe<DeleteFriendRequestCommand> deleteRequestPipe;
+   private final ActionPipe<ActOnFriendRequestCommand.Accept> acceptRequestPipe;
+   private final ActionPipe<ActOnFriendRequestCommand.Reject> rejectRequestPipe;
+   private final ActionPipe<AcceptAllFriendRequestsCommand> acceptAllPipe;
+   private final ActionPipe<RemoveFriendCommand> removeFriendPipe;
+   private final ActionPipe<AddFriendCommand> addFriendPipe;
+   private final ActionPipe<GetFriendsCommand> getFriendsPipe;
+   private final ActionPipe<GetLikersCommand> getLikersPipe;
+   private final ActionPipe<GetMutualFriendsCommand> getMutualFriendsPipe;
+   private final ActionPipe<GetSearchUsersCommand> getSearchUsersPipe;
+   private final ActionPipe<GetRequestsCommand> getRequestsPipe;
 
    @Inject
    public FriendsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {

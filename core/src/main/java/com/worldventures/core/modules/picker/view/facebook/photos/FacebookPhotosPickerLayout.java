@@ -10,11 +10,11 @@ import android.widget.Toast;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.R;
 import com.worldventures.core.modules.facebook.service.command.GetPhotosCommand;
-import com.worldventures.core.modules.picker.viewmodel.FacebookPhotoPickerViewModel;
 import com.worldventures.core.modules.picker.presenter.facebook.photos.FacebookPhotosPickerPresenter;
 import com.worldventures.core.modules.picker.util.MediaPickerStep;
 import com.worldventures.core.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.core.modules.picker.view.facebook.FacebookMediaPickerLayout;
+import com.worldventures.core.modules.picker.viewmodel.FacebookPhotoPickerViewModel;
 
 import java.util.List;
 
@@ -107,9 +107,8 @@ public class FacebookPhotosPickerLayout extends FacebookMediaPickerLayout<Facebo
                   String.valueOf(photoPickLimitStrategy.photoPickLimit())), Toast.LENGTH_SHORT).show();
             getAdapter().updateItem(position);
          } else {
-            FacebookPhotoPickerViewModel modelToRevert =
-                  Queryable.from(getChosenPhotos())
-                        .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
+            FacebookPhotoPickerViewModel modelToRevert = Queryable.from(getChosenPhotos())
+                  .filter(element -> getAdapter().getPositionFromItem(element) != position).firstOrDefault();
             int modelToRevertPosition = getAdapter().getPositionFromItem(modelToRevert);
             getAdapter().updateItem(modelToRevertPosition);
          }

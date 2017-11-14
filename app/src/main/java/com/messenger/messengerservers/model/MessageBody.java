@@ -7,9 +7,6 @@ public class MessageBody {
    private String locale; // we should send locale to support release/1.6.0
    private List<AttachmentHolder> attachments;
 
-   public MessageBody() {
-   }
-
    private MessageBody(Builder builder) {
       this.text = builder.text;
       this.locale = builder.locale;
@@ -48,11 +45,7 @@ public class MessageBody {
    public static final class Builder {
       private String text;
       private String locale; // we should send locale to support release/1.6.0
-      private int version;
       private List<AttachmentHolder> attachments;
-
-      public Builder() {
-      }
 
       public Builder text(String text) {
          this.text = text;

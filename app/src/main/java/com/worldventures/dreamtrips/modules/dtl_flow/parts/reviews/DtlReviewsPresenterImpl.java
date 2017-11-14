@@ -26,7 +26,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
-import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, ViewState.EMPTY> implements DtlReviewsPresenter {
@@ -75,7 +74,9 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public boolean onToolbarMenuItemClick(MenuItem item) {
-      if (item.getItemId() == R.id.action_add_review) onAddClick();
+      if (item.getItemId() == R.id.action_add_review) {
+         onAddClick();
+      }
       return super.onToolbarMenuItemClick(item);
    }
 
@@ -86,7 +87,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public void onAddClick() {
-      user = appSessionHolder.get().get().getUser();
+      user = appSessionHolder.get().get().user();
       if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
          getView().userHasPendingReview();
       } else {
@@ -144,7 +145,9 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
       ArrayList<ReviewObject> reviewObjects = ReviewObject.getReviewList(action.getResult().reviews());
       List<ReviewObject> currentReviews = getView().getCurrentReviews();
       boolean validReceivedData = isValidReceivedData(currentReviews, reviewObjects);
-      if (!validReceivedData) return;
+      if (!validReceivedData) {
+         return;
+      }
 
       getView().addCommentsAndReviews(Float.parseFloat(action.getResult()
                   .ratingAverage()), Integer.parseInt(action.getResult().total()),
@@ -160,12 +163,16 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
    }
 
    public boolean isValidReceivedData(List<ReviewObject> currentItems, List<ReviewObject> reviewObjects) {
-      if (reviewObjects.isEmpty()) return false;
+      if (reviewObjects.isEmpty()) {
+         return false;
+      }
 
       if (!currentItems.isEmpty() && !reviewObjects.isEmpty()) {
          ReviewObject lastItem = currentItems.get(currentItems.size() - 1);
          ReviewObject lastReceivedItem = reviewObjects.get(reviewObjects.size() - 1);
-         if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) return false;
+         if (lastItem.getReviewId().equals(lastReceivedItem.getReviewId())) {
+            return false;
+         }
       }
       return true;
    }

@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Value.Immutable
 public interface ReviewSummary extends Serializable {
 
-    String total();
-    String ratingAverage();
-    boolean userHasPendingReview();
+   String total();
+   String ratingAverage();
+   boolean userHasPendingReview();
 }

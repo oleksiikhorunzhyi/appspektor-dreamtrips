@@ -36,6 +36,7 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, C
    @Column Boolean friend;
 
    public DataUser() {
+      //do nothing
    }
 
    public DataUser(MessengerUser messengerUser) {
@@ -106,7 +107,7 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, C
    }
 
    public boolean isFriend() {
-      return friend != null ? friend : false;
+      return friend != null && friend;
    }
 
    public void setFriend(Boolean friend) {
@@ -132,8 +133,12 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, C
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       DataUser user = (DataUser) o;
 
@@ -147,9 +152,9 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, C
 
    @Override
    public String toString() {
-      return "User{" +
-            "_id='" + id + '\'' +
-            '}';
+      return "User{"
+            + "_id='" + id + '\''
+            + '}';
    }
 
    @Override

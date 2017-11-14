@@ -7,14 +7,15 @@ import org.jetbrains.annotations.Nullable;
 
 import io.techery.janet.command.annotations.CommandAction;
 
+@SuppressWarnings("PMD.UseUtilityClass")
 @CommandAction
-public class FeedStorageCommand extends FeedItemsStorageBaseCommand {
-
-   public FeedStorageCommand(@Nullable ListStorageOperation<FeedItem> operation) {
-      super(operation);
-   }
+public final class FeedStorageCommand extends FeedItemsStorageBaseCommand {
 
    public static FeedStorageCommand dummyCommand() {
       return new FeedStorageCommand(null);
+   }
+
+   public FeedStorageCommand(@Nullable ListStorageOperation<FeedItem> operation) {
+      super(operation);
    }
 }

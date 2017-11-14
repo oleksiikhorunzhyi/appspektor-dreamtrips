@@ -24,7 +24,8 @@ public abstract class AttributesActionParams implements HttpActionParams {
       merchantTypeList.add(FilterData.BAR);
    }
 
-   @Value.Default public List<String> attributeTypes() {
+   @Value.Default
+   public List<String> attributeTypes() {
       return Arrays.asList(AttributeType.AMENITY.toString().toLowerCase(Locale.US));
    }
 

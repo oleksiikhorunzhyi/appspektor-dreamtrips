@@ -29,7 +29,9 @@ public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresen
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      if (isTabletLandscape()) header.setVisibility(View.VISIBLE);
+      if (isTabletLandscape()) {
+         header.setVisibility(View.VISIBLE);
+      }
       caption.setText(R.string.no_mutual_friends);
       adapter.registerCell(User.class, MutualFriendCell.class);
       adapter.registerDelegate(User.class, this);

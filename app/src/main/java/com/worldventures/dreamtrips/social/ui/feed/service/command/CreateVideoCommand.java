@@ -9,7 +9,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CreateVideoCommand extends ApiActionCommand<CreateVideoHttpAction, String> {
 
-   private String uploadId;
+   private final String uploadId;
 
    public CreateVideoCommand(String uploadId) {
       this.uploadId = uploadId;

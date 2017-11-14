@@ -27,7 +27,7 @@ public class FullMerchantInteractor {
    }
 
    public void load(String merchantId) {
-      load(merchantId, null, null,false);
+      load(merchantId, null, null, false);
    }
 
    public void load(String merchantId, ReviewSummary review, boolean fromRating) {

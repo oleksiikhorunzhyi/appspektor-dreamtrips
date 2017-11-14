@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -23,7 +23,7 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
    }
 
    public void onEntityShownInCell(FeedItem feedItem) {
-      Pair<Route, Parcelable> entityData = fragmentFactory.create(feedItem);
+      Pair<Class<? extends Fragment>, Parcelable> entityData = fragmentFactory.create(feedItem);
       /**
        * for bucket list tablet landscape orientation (slave mode)
        */
@@ -35,11 +35,13 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
 
    @Override
    protected void back() {
-      if (!isSlave) view.back();
+      if (!isSlave) {
+         view.back();
+      }
    }
 
    public interface View extends FeedDetailsPresenter.View {
 
-      void showDetails(Route route, Parcelable extra);
+      void showDetails(Class<? extends Fragment> fragmentClass, Parcelable extra);
    }
 }

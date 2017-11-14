@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.api.feed.GetFeedHttpAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -16,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> extends CommandWithError<List<FeedItem>> implements InjectableAction {
+public abstract class BaseGetFeedCommand<A extends GetFeedHttpAction> extends CommandWithError<List<FeedItem>> implements InjectableAction {
 
    protected static final int FEED_LIMIT = 20;
    protected static final int TIMELINE_LIMIT = 10;
@@ -28,6 +28,7 @@ public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> e
    protected Date before;
 
    public BaseGetFeedCommand() {
+      //do nothing
    }
 
    public BaseGetFeedCommand(Date before) {
@@ -46,7 +47,7 @@ public abstract class BaseGetFeedCommand<HttpAction extends GetFeedHttpAction> e
       callback.onSuccess(items);
    }
 
-   protected abstract HttpAction provideRequest();
+   protected abstract A provideRequest();
 
-   protected abstract Class<HttpAction> provideHttpActionClass();
+   protected abstract Class<A> provideHttpActionClass();
 }

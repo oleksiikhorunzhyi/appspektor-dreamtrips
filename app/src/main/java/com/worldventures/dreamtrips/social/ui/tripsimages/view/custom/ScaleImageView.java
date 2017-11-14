@@ -20,9 +20,8 @@ import icepick.State;
 
 public class ScaleImageView extends SimpleDraweeView {
 
-   String TAG = "ScaleImageView";
-   private Context context;
-   private float MAX_SCALE = 3f;
+   private final Context context;
+   private final static float MAX_SCALE = 3f;
    private Matrix matrix;
    // display width height.
    private int width;
@@ -83,8 +82,12 @@ public class ScaleImageView extends SimpleDraweeView {
       detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
          @Override
          public boolean onDoubleTap(MotionEvent e) {
-            if (doubleTapListener != null) doubleTapListener.onDoubleTap();
-            if (!scaleEnabled) return true;
+            if (doubleTapListener != null) {
+               doubleTapListener.onDoubleTap();
+            }
+            if (!scaleEnabled) {
+               return true;
+            }
             //
             maxZoomTo((int) e.getX(), (int) e.getY());
             cutting();
@@ -93,7 +96,9 @@ public class ScaleImageView extends SimpleDraweeView {
 
          @Override
          public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (singleTapListener != null) singleTapListener.onTap();
+            if (singleTapListener != null) {
+               singleTapListener.onTap();
+            }
             return true;
          }
       });
@@ -118,8 +123,8 @@ public class ScaleImageView extends SimpleDraweeView {
       height = b - t;
 
       matrix.reset();
-      int r_norm = r - l;
-      scale = (float) r_norm / (float) intrinsicWidth;
+      int rNorm = r - l;
+      scale = (float) rNorm / (float) intrinsicWidth;
 
       int paddingHeight = 0;
       int paddingWidth = 0;
@@ -229,7 +234,9 @@ public class ScaleImageView extends SimpleDraweeView {
       if (detector.onTouchEvent(event)) {
          return true;
       }
-      if (!scaleEnabled) return false;
+      if (!scaleEnabled) {
+         return false;
+      }
       //
       int touchCount = event.getPointerCount();
       switch (event.getAction()) {
@@ -268,7 +275,8 @@ public class ScaleImageView extends SimpleDraweeView {
             if (event.getPointerCount() <= 1) {
                isScaling = false;
             }
-
+            break;
+         default:
             break;
       }
       return true;

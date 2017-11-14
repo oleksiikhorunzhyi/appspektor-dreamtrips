@@ -5,9 +5,13 @@ import android.support.annotation.NonNull;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.worldventures.core.model.session.Feature;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMemberFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
+import com.worldventures.dreamtrips.social.ui.membership.view.fragment.InviteFragment;
+import com.worldventures.dreamtrips.social.ui.membership.view.fragment.PodcastsFragment;
+import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,16 +53,16 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
    @NonNull
    private List<FragmentItem> provideScreens() {
       List<FragmentItem> screens = new ArrayList<>();
-      screens.add(new FragmentItem(Route.PRESENTATION_VIDEOS, context.getString(R.string.presentations)));
-      screens.add(new FragmentItem(Route.ENROLL_MEMBER, context.getString(R.string.enroll_member)));
+      screens.add(new FragmentItem(PresentationVideosFragment.class, context.getString(R.string.presentations)));
+      screens.add(new FragmentItem(EnrollMemberFragment.class, context.getString(R.string.enroll_member)));
       if (showEnrollMerchant()) {
-         screens.add(new FragmentItem(Route.ENROLL_MERCHANT, context.getString(R.string.dt_local_tools)));
+         screens.add(new FragmentItem(EnrollMerchantFragment.class, context.getString(R.string.dt_local_tools)));
       }
       if (showInvite()) {
-         screens.add(new FragmentItem(Route.INVITE, context.getString(R.string.invite_and_share)));
+         screens.add(new FragmentItem(InviteFragment.class, context.getString(R.string.invite_and_share)));
       }
       if (showPodcasts()) {
-         screens.add(new FragmentItem(Route.PODCASTS, context.getString(R.string.podcasts)));
+         screens.add(new FragmentItem(PodcastsFragment.class, context.getString(R.string.podcasts)));
       }
       return screens;
    }

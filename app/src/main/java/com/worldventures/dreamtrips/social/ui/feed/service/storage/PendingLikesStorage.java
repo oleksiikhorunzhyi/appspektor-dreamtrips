@@ -5,10 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class PendingLikesStorage {
-   private List<String> pendingLikes = Collections.synchronizedList(new ArrayList<>());
 
-   public PendingLikesStorage() {
-   }
+   private final List<String> pendingLikes = Collections.synchronizedList(new ArrayList<>());
 
    public void add(String uid) {
       pendingLikes.add(uid);

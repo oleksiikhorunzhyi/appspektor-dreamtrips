@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePhotoAttachment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PhotoAttachment;
@@ -84,6 +84,8 @@ public class PhotoAttachmentUploadingCommand extends Command<PostCompoundOperati
                   case FAIL:
                      Timber.e(actionState.exception, "[New Photo Attachment Creation] Upload failed");
                      builder.state(PostBody.State.FAILED);
+                     break;
+                  default:
                      break;
                }
                photoAttachmentUpdated(builder.build());

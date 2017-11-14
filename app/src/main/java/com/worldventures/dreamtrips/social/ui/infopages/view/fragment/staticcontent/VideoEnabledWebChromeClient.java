@@ -46,6 +46,7 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements OnPr
     */
    @SuppressWarnings("unused")
    public VideoEnabledWebChromeClient() {
+      //do nothing
    }
 
    /**

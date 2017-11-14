@@ -57,8 +57,9 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
          toolbar.setBackgroundColor(Color.WHITE);
          tvTitle.setVisibility(View.VISIBLE);
          tvTitle.setText(getContext().getResources().getString(R.string.reviews_text));
-      } else
+      } else {
          toolbar.setTitle(getContext().getResources().getString(R.string.reviews_text));
+      }
 
       toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
       toolbar.setNavigationOnClickListener(view -> {
@@ -91,7 +92,7 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    public void onRefreshSuccess() {
-      if(mContainerDetail.hasReviews()) {
+      if (mContainerDetail.hasReviews()) {
          mContainerDetail.showLoadingFooter(false);
          return;
       }
@@ -104,7 +105,9 @@ public class DtlReviewsScreenImpl extends DtlLayout<DtlReviewsScreen, DtlReviews
 
    @Override
    public void onRefreshProgress() {
-      if(mContainerDetail.hasReviews()) return;
+      if (mContainerDetail.hasReviews()) {
+         return;
+      }
 
       this.hideRefreshMerchantsError();
       this.showEmpty(false);

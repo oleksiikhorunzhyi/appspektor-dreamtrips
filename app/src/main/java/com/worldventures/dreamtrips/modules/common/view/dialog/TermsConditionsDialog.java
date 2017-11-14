@@ -59,7 +59,9 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
       termsContent.setWebViewClient(new WebViewClient() {
          @Override
          public void onPageFinished(WebView view, String url) {
-            if (termsContent == null || btnRetry == null || onErrorReceived) return;
+            if (termsContent == null || btnRetry == null || onErrorReceived) {
+               return;
+            }
 
             onPageShown = true;
             termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
@@ -82,7 +84,9 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          @Override
          public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
-            if (onPageShown) return;
+            if (onPageShown) {
+               return;
+            }
             onErrorReceived = true;
             if (termsContent != null && btnRetry != null) {
                termsContent.setVisibility(View.GONE);

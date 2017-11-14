@@ -74,7 +74,9 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void onRestoreInstanceState(Bundle instanceState) {
       super.onRestoreInstanceState(instanceState);
-      if (state.isPopupShowing()) getView().toggleSearchPopupVisibility(true);
+      if (state.isPopupShowing()) {
+         getView().toggleSearchPopupVisibility(true);
+      }
       this.screenMode = state.getScreenMode();
    }
 
@@ -234,6 +236,8 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
                   .build();
             locationInteractor.changeSourceLocation(dtlLocation);
             break;
+         default:
+            break;
       }
    }
 
@@ -241,8 +245,9 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    public void loadNearMeRequested() {
       screenMode = DtlLocationChangePresenterImpl.ScreenMode.AUTO_NEAR_ME;
 
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
+      }
 
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
@@ -312,9 +317,11 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void onLocationError(Throwable e) {
-      if (e instanceof LocationDelegate.LocationException)
+      if (e instanceof LocationDelegate.LocationException) {
          getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-      else onLocationResolutionDenied();
+      } else {
+         onLocationResolutionDenied();
+      }
    }
 
    private void connectNearbyLocations() {
@@ -328,7 +335,9 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
-      if (throwable instanceof CancelException) return;
+      if (throwable instanceof CancelException) {
+         return;
+      }
       getView().informUser(action.getErrorMessage());
       getView().hideProgress();
    }

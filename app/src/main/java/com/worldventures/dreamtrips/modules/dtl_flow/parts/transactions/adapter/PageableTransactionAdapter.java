@@ -50,6 +50,8 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
             View viewLoading = inflater.inflate(R.layout.view_dtl_item_loading, parent, false);
             viewHolder = new PageableTransactionAdapter.LoadingVH(viewLoading);
             break;
+         default:
+            break;
       }
       return viewHolder;
    }
@@ -60,6 +62,8 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          case ITEM:
             final PageableTransactionAdapter.ViewHolder recyclerViewHolder = (PageableTransactionAdapter.ViewHolder) holder;
             recyclerViewHolder.bind(items.get(position).transactionModel);
+            break;
+         default:
             break;
       }
    }
@@ -79,7 +83,9 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       for (TransactionModel model : transactionsList) {
          this.items.add(AdapterItem.forTransaction(model));
       }
-      if (loaderIsShowing) items.add(loader);
+      if (loaderIsShowing) {
+         items.add(loader);
+      }
       notifyDataSetChanged();
    }
 
@@ -95,13 +101,17 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    }
 
    public void addLoadingFooter() {
-      if (!items.contains(loader)) items.add(loader);
+      if (!items.contains(loader)) {
+         items.add(loader);
+      }
       loaderIsShowing = true;
       notifyDataSetChanged();
    }
 
    public void removeLoadingFooter() {
-      if (items.contains(loader)) items.remove(loader);
+      if (items.contains(loader)) {
+         items.remove(loader);
+      }
       loaderIsShowing = false;
       notifyDataSetChanged();
    }

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class UrlBundle implements Parcelable {
 
-   private String url;
+   private final String url;
 
    public UrlBundle(String url) {
       this.url = url;

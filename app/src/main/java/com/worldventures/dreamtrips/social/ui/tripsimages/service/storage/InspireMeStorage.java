@@ -12,10 +12,11 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetIns
 import java.util.List;
 
 public class InspireMeStorage implements ActionStorage<List<Inspiration>> {
+
    public static final String RELOAD = "RELOAD";
    public static final String LOAD_MORE = "LOAD_MORE";
 
-   private MemoryStorage<List<Inspiration>> storage = new MemoryStorage<>();
+   private final MemoryStorage<List<Inspiration>> storage = new MemoryStorage<>();
 
    @Override
    public Class<? extends CachedAction> getActionClass() {

@@ -4,9 +4,6 @@ public class FeedListWidth {
    private int widthInPortrait;
    private int widthInLandscape;
 
-   public FeedListWidth() {
-   }
-
    public int getWidthInPortrait() {
       return widthInPortrait;
    }

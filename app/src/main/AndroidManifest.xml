@@ -27,9 +27,10 @@
          android:name="${applicationId}.permission.C2D_MESSAGE"
          android:protectionLevel="signature"
          />
+
    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
-   <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+   <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
    <uses-feature
          android:glEsVersion="0x00020000"
@@ -162,6 +163,7 @@
             android:name="JW_LICENSE_KEY"
             android:value="k/oXE6R4JCQeSPhvZ4qNjiNOqL49dRMASkD4MEOLWVb3BeGX"
             />
+
       <activity
             android:name=".social.ui.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
@@ -172,8 +174,7 @@
             android:name=".social.ui.activity.FeedActivity"
             android:launchMode="singleTop"
             android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
-            >
-      </activity>
+            ></activity>
 
       <!--Chat activities-->
       <activity
@@ -199,7 +200,7 @@
 
       <!-- Wallet activities -->
       <activity
-            android:name=".wallet.ui.WalletActivity"
+            android:name="com.worldventures.dreamtrips.wallet.DTWalletActivity"
             android:launchMode="singleTop"
             android:theme="@style/WalletTheme"
             android:screenOrientation="portrait"
@@ -250,7 +251,8 @@
       <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="${applicationId}.com.facebook.app.FacebookContentProvider761062457321921"
-            android:exported="false"/>
+            android:exported="false"
+            />
 
       <activity
             android:name="com.yalantis.ucrop.UCropActivity"

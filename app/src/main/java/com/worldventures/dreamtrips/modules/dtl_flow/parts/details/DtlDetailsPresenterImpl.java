@@ -102,7 +102,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    protected void validateTablet() {
       //TODO Check and resolve this
-      if(getView().isTablet()){
+      if (getView().isTablet()) {
          getView().hideReviewViewsOnTablets();
       }
    }
@@ -143,7 +143,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public boolean onToolbarMenuItemClick(MenuItem item) {
-      if (item.getItemId() == R.id.action_share) onShareClick();
+      if (item.getItemId() == R.id.action_share) {
+         onShareClick();
+      }
       return super.onToolbarMenuItemClick(item);
    }
 
@@ -164,7 +166,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
       if (!merchant.asMerchantAttributes().hasOffers()) {
          getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
-      } else processTransaction();
+      } else {
+         processTransaction();
+      }
    }
 
    private void processTransaction() {
@@ -188,7 +192,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
          EventBus.getDefault().removeStickyEvent(event);
          getView().showSucceed(merchant, transaction);
       }
-      DtlThrstTransactionSucceedEvent dtlThrstTransactionSucceedEvent = EventBus.getDefault().getStickyEvent(DtlThrstTransactionSucceedEvent.class);
+      DtlThrstTransactionSucceedEvent dtlThrstTransactionSucceedEvent = EventBus.getDefault()
+            .getStickyEvent(DtlThrstTransactionSucceedEvent.class);
       if (dtlThrstTransactionSucceedEvent != null) {
          EventBus.getDefault().removeStickyEvent(dtlThrstTransactionSucceedEvent);
          getView().showThrstSucceed(merchant, dtlThrstTransactionSucceedEvent.earnedPoints, dtlThrstTransactionSucceedEvent.totalPoints);
@@ -235,9 +240,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void onLocationError(Throwable e) {
-      if (e instanceof LocationDelegate.LocationException)
+      if (e instanceof LocationDelegate.LocationException) {
          getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-      else {
+      } else {
          locationNotGranted();
          Timber.e(e, "Something went wrong while location update");
       }
@@ -273,7 +278,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Override
    public void onOfferClick(Offer offer) {
       MerchantMedia imageUrl = Queryable.from(offer.images()).firstOrDefault();
-      if (imageUrl == null) return;
+      if (imageUrl == null) {
+         return;
+      }
       Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getImagePath()));
    }
 
@@ -284,7 +291,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void showAllReviews() {
-      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()),merchant, ""));
+      Flow.get(getContext()).set(new DtlReviewsPath(FlowUtil.currentMaster(getContext()), merchant, ""));
    }
 
    @Override
@@ -350,14 +357,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
 
    private User getUser() {
-      return appSessionHolder.get().get().getUser();
+      return appSessionHolder.get().get().user();
    }
 
    protected boolean isReviewCached() {
       return ReviewStorage.exists(getContext(), String.valueOf(getUser().getId()), merchant.id());
    }
 
-   private void goToReviewList(){
+   private void goToReviewList() {
       // TODO Resolve null here
       Flow.get(getContext()).set(new DtlReviewsPath(null, merchant, ""));
    }
@@ -371,7 +378,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickRateView() {
-      User user = appSessionHolder.get().get().getUser();
+      User user = appSessionHolder.get().get().user();
       if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
          getView().userHasPendingReview();
       } else {
@@ -381,7 +388,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void setThrstFlow() {
-      if (merchant.useThrstFlow()){
+      if (merchant.useThrstFlow()) {
          getView().showThrstFlowButton();
          getView().hideEarnFlowButton();
       } else {

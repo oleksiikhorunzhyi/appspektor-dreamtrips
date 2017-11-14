@@ -19,15 +19,19 @@ public abstract class Tracker {
    public abstract void onCreate(@Nullable Activity activity);
 
    public void onStart(@Nullable Activity activity) {
+      //do nothing
    }
 
    public void onStop(@Nullable Activity activity) {
+      //do nothing
    }
 
    public void onResume(@Nullable Activity activity) {
+      //do nothing
    }
 
    public void onPause(@Nullable Activity activity) {
+      //do nothing
    }
 
    public void setHeaderData(HashMap<String, Object> data) {

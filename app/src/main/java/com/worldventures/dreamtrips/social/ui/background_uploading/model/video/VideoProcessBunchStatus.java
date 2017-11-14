@@ -15,9 +15,6 @@ public class VideoProcessBunchStatus {
    @SerializedName("content")
    private List<VideoProcessStatus> videoProcessStatuses;
 
-   public VideoProcessBunchStatus() {
-   }
-
    public int getVideoStatusCount() {
       return videoStatusCount;
    }

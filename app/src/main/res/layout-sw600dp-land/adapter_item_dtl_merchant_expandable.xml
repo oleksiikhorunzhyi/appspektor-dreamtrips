@@ -199,8 +199,8 @@
                android:layout_centerVertical="true"
                android:layout_alignParentRight="true"
                android:layout_marginRight="@dimen/spacing_normal"
-               tools:src="@drawable/ic_arrow_down_grey"
                android:visibility="gone"
+               tools:src="@drawable/ic_wallet_arrow_down_grey"
                />
 
          <TextView

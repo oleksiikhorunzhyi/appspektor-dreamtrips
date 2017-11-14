@@ -12,13 +12,11 @@ import rx.Observable;
 
 public class SendChatStateDelegate {
 
-   public static final int START_TYPING_DELAY = 1000;
-   public static final int STOP_TYPING_DELAY = 2000;
+   private static final int START_TYPING_DELAY = 1000;
+   private static final int STOP_TYPING_DELAY = 2000;
 
-   private ActionPipe<SendChatStateCommand> chatStateActionPipe;
-
+   private final ActionPipe<SendChatStateCommand> chatStateActionPipe;
    private String conversationId;
-
    private boolean typing;
 
    @Inject

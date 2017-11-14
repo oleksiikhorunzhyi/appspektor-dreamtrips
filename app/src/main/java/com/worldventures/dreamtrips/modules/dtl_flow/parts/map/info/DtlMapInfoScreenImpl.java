@@ -6,8 +6,8 @@ import android.view.View;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.core.service.DeviceInfoProvider;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantSingleImageDataInflater;
@@ -51,8 +51,12 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
 
    @Override
    protected void onDetachedFromWindow() {
-      if (commonDataInflater != null) commonDataInflater.release();
-      if (categoryDataInflater != null) categoryDataInflater.release();
+      if (commonDataInflater != null) {
+         commonDataInflater.release();
+      }
+      if (categoryDataInflater != null) {
+         categoryDataInflater.release();
+      }
       super.onDetachedFromWindow();
    }
 

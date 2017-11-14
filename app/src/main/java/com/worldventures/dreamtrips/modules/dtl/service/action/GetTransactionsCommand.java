@@ -7,13 +7,13 @@ import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.transactions.ThrstTransactionResponse;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.TransactionDetailActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.http.GetTransactionsHttpAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
 @CommandAction
-public class GetTransactionsCommand extends CommandWithError<List<TransactionModel>>
+public final class GetTransactionsCommand extends CommandWithError<List<TransactionModel>>
       implements InjectableAction, CachedAction<List<TransactionModel>> {
 
    @Inject Janet janet;
@@ -62,15 +62,17 @@ public class GetTransactionsCommand extends CommandWithError<List<TransactionMod
 
    @Override
    protected void run(CommandCallback<List<TransactionModel>> callback) throws Throwable {
-      if (readFromCache) callback.onSuccess(cachedItems);
-      else {
+      if (readFromCache) {
+         callback.onSuccess(cachedItems);
+      } else {
          if (cachedItems != null && cachedItems.isEmpty()) {
             callback.onProgress(0);
          }
          janet.createPipe(GetTransactionsHttpAction.class)
-               .createObservableResult(new GetTransactionsHttpAction(reviewParams.take(), reviewParams.skip(), reviewParams.excludeInAppPaymentStatusInitiated(),
-                     reviewParams.localeId(), sessionHolder.get().get().getUsername(),
-                     sessionHolder.get().get().getLegacyApiToken()))
+               .createObservableResult(new GetTransactionsHttpAction(reviewParams.take(), reviewParams.skip(), reviewParams
+                     .excludeInAppPaymentStatusInitiated(),
+                     reviewParams.localeId(), sessionHolder.get().get().username(),
+                     sessionHolder.get().get().legacyApiToken()))
                .map(GetTransactionsHttpAction::getResponse)
                .map(ThrstTransactionResponse::results)
                .map(detailTransactionThrsts -> mapperyContext.convert(detailTransactionThrsts, TransactionModel.class))

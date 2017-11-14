@@ -2,11 +2,12 @@ package com.worldventures.dreamtrips.social.ui.activity;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.activity.ToolbarActivity;
@@ -49,8 +50,8 @@ public class SocialComponentActivity extends ToolbarActivity<ComponentPresenter>
    }
 
    @Override
-   public void moveTo(Route route, Parcelable args) {
-      router.moveTo(route, NavigationConfigBuilder.forFragment()
+   public void moveTo(Class<? extends Fragment> fragmentClazz, Parcelable args) {
+      router.moveTo(fragmentClazz, NavigationConfigBuilder.forFragment()
             .fragmentManager(getSupportFragmentManager())
             .containerId(R.id.container_main)
             .backStackEnabled(true)

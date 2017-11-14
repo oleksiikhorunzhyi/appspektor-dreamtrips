@@ -14,7 +14,6 @@ import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -27,6 +26,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFullscreenFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +85,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
          hideTranslations();
          return;
       }
-      boolean own = photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean own = photo.getOwner().getId() == appSessionHolder.get().get().user().getId();
       boolean emptyText = TextUtils.isEmpty(photo.getTitle());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, photo.getLanguage());
       boolean emptyLanguage = TextUtils.isEmpty(photo.getLanguage());
@@ -138,7 +138,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
                   .build())
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build();
-      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, config);
+      router.moveTo(TripImagesFullscreenFragment.class, config);
       analyticsInteractor.analyticsActionPipe().send(ViewFeedEntityAction.view(getModelObject().getType(),
             getModelObject().getItem().getUid()));
    }

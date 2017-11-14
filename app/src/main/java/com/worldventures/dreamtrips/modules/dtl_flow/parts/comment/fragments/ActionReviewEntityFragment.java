@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,15 +12,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
@@ -29,7 +27,10 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.Photo
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.DescriptionCreatorFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.EditPhotoTagsFragment;
 
 import java.util.List;
 
@@ -43,7 +44,8 @@ import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle.PhotoEntity;
 
-public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P> implements ActionReviewEntityPresenter.View, PhotoReviewPostCreationDelegate {
+public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P>
+      implements ActionReviewEntityPresenter.View, PhotoReviewPostCreationDelegate {
 
    @Inject BackStackDelegate backStackDelegate;
    @Inject @ForActivity Provider<Injector> injectorProvider;
@@ -65,12 +67,12 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
       postButton.setText(getPostButtonText());
       //
       adapter = new BaseDelegateAdapter(getContext(), this);
-      adapter.registerCell(PhotoReviewCreationItem.class, PhotoReviewPostCreationCell.class);//Tag
-      adapter.registerCell(PostReviewDescription.class, PostReviewCreationTextCell.class);//hashtag
-      adapter.registerDelegate(PostReviewDescription.class, new PostReviewCreationTextCell.Delegate() {//desc photo
+      adapter.registerCell(PhotoReviewCreationItem.class, PhotoReviewPostCreationCell.class); //Tag
+      adapter.registerCell(PostReviewDescription.class, PostReviewCreationTextCell.class); //hashtag
+      adapter.registerDelegate(PostReviewDescription.class, new PostReviewCreationTextCell.Delegate() { //desc photo
          @Override
          public void onCellClicked(PostReviewDescription model) {
-            router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
+            router.moveTo(DescriptionCreatorFragment.class, NavigationConfigBuilder.forActivity()
                   .data(new DescriptionReviewBundle(model.getDescription()))
                   .build());
          }
@@ -171,8 +173,10 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @Override
    public void cancel() {
-      if (dialog != null && dialog.isShowing()) dialog.dismiss();
-      router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
+      if (dialog != null && dialog.isShowing()) {
+         dialog.dismiss();
+      }
+      router.moveTo(getClass(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
 
    @Override
@@ -202,7 +206,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    protected boolean onBack() {
       try {
-         if (getChildFragmentManager().popBackStackImmediate()) return true;
+         if (getChildFragmentManager().popBackStackImmediate()) {
+            return true;
+         }
       } catch (Exception e) {
          Timber.e(e, "OnBack error"); //for avoid application crash
       }
@@ -223,12 +229,14 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @OnClick(R.id.content_layout)
    void onSpaceClicked() {
-      if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
+      if (ViewUtils.isTablet(getActivity())) {
+         getPresenter().cancelClicked();
+      }
    }
 
    @Override
    public void openLocation(Location location) {
-      router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder.forFragment()
+      router.moveTo(LocationFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(true)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.additional_page_container)
@@ -270,7 +278,7 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
       bundle.setPhotoTags(item.getCombinedTags());
       bundle.setSuggestions(item.getSuggestions());
       bundle.setRequestId(item.getId());
-      router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder.forFragment()
+      router.moveTo(EditPhotoTagsFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(true)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.additional_page_container)
@@ -305,7 +313,4 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    }
 
    protected abstract int getPostButtonText();
-
-   protected abstract Route getRoute();
-
 }

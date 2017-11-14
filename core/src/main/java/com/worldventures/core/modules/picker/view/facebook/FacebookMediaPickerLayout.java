@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.worldventures.core.modules.picker.viewmodel.FacebookMediaPickerViewModel;
 import com.worldventures.core.modules.picker.presenter.facebook.FacebookMediaPickerPresenter;
 import com.worldventures.core.modules.picker.view.base.BaseMediaPickerLayout;
+import com.worldventures.core.modules.picker.viewmodel.FacebookMediaPickerViewModel;
 
 
 public abstract class FacebookMediaPickerLayout<P extends FacebookMediaPickerPresenter, M extends FacebookMediaPickerViewModel> extends BaseMediaPickerLayout<P, M> {

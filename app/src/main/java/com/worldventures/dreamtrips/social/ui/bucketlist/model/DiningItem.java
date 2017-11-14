@@ -13,6 +13,7 @@ public class DiningItem extends BaseEntity {
    private String country;
    private String city;
    private String address;
+   @SuppressWarnings("MemberName")
    private String phone_number;
    private String url;
    private String description;

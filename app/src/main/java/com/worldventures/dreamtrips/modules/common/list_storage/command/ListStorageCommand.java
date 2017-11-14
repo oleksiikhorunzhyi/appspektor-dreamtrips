@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.list_storage.command;
 
+import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class ListStorageCommand<T> extends Command<List<T>> implements CachedAction<List<T>> {
 
-   private List<T> items = new ArrayList<>();
-   private ListStorageOperation<T> operation;
+   private final List<T> items = new ArrayList<>();
+   private final ListStorageOperation<T> operation;
 
    protected ListStorageCommand(ListStorageOperation<T> operation) {
       this.operation = operation;

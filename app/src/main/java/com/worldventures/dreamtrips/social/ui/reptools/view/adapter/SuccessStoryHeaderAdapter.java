@@ -17,8 +17,8 @@ import butterknife.InjectView;
 
 public class SuccessStoryHeaderAdapter implements StickyHeadersAdapter<SuccessStoryHeaderAdapter.SuccessHeaderViewHolder> {
 
-   private List<? extends HeaderItem> items;
-   private int layout;
+   private final List<? extends HeaderItem> items;
+   private final int layout;
 
    public SuccessStoryHeaderAdapter(List<? extends HeaderItem> items, int layout) {
       this.items = items;

@@ -30,7 +30,7 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
    private PhotoTag suggestionTagView;
    private boolean loading = true;
    private int page = 1;
-   private WeakHandler weakHandler = new WeakHandler();
+   private final WeakHandler weakHandler = new WeakHandler();
 
    public CreationTagView(Context context) {
       this(context, null);
@@ -47,7 +47,9 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
    public void setUserFriends(@Nullable List<User> userFriends) {
       adapter.addFriends(userFriends);
       inputFriendName.post(() -> {
-         if (!inputFriendName.isPopupShowing()) inputFriendName.showDropDown();
+         if (!inputFriendName.isPopupShowing()) {
+            inputFriendName.showDropDown();
+         }
          loading = false;
       });
    }
@@ -87,16 +89,15 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
       inputFriendName.addTextChangedListener(new TextWatcherAdapter() {
          @Override
          public void afterTextChanged(Editable s) {
-            if (s.toString().length() == 0) {
-               if (!inputFriendName.isPopupShowing()) {
-                  inputFriendName.showDropDown();
-               }
+            if (s.toString().length() == 0 && !inputFriendName.isPopupShowing()) {
+               inputFriendName.showDropDown();
             }
          }
       });
       inputFriendName.setOnScrollListener(new AbsListView.OnScrollListener() {
          @Override
          public void onScrollStateChanged(AbsListView view, int scrollState) {
+            //do nothing
          }
 
          @Override

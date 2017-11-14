@@ -76,7 +76,8 @@ public class GroupChatEventDelegate {
             .flatMap(dataParticipant -> loadConversationDelegate.getSyncConversationPipe()
                   .createObservableResult(new SyncConversationCommand(conversationId)))
             .subscribeOn(Schedulers.io())
-            .subscribe(p -> {}, e -> Timber.e(e, ""));
+            .subscribe(p -> {
+            }, e -> Timber.e(e, ""));
    }
 
    private DataParticipant removeFromConversation(String conversationId, String userId) {
@@ -84,7 +85,7 @@ public class GroupChatEventDelegate {
       DataParticipant participant = new DataParticipant(conversationId, userId, Affiliation.NONE);
       participantsDAO.save(Collections.singletonList(participant));
 
-      if (TextUtils.equals(userId, currentUserSession.get().get().getUsername())) {
+      if (TextUtils.equals(userId, currentUserSession.get().get().username())) {
          conversationsDAO.markAsLeft(conversationId);
       }
       return participant;

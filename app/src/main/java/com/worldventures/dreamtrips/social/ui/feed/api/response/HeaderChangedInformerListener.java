@@ -11,7 +11,8 @@ import rx.Observable;
 public class HeaderChangedInformerListener implements ResponseListener {
 
    private static final long DELAY = 1000L;
-   private NotificationCountEventDelegate notificationCountEventDelegate;
+
+   private final NotificationCountEventDelegate notificationCountEventDelegate;
 
    public HeaderChangedInformerListener(NotificationCountEventDelegate notificationCountEventDelegate) {
       this.notificationCountEventDelegate = notificationCountEventDelegate;

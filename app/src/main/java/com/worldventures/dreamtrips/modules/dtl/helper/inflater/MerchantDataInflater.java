@@ -46,7 +46,7 @@ public abstract class MerchantDataInflater implements MerchantInflater {
 
    public void notifyRatingsClickListeners() {
       Queryable.from(ratingsReviewClickListener)
-              .filter(listener -> listener != null)
-              .forEachR(listener -> listener.onRatingsReviewClick());
+            .filter(listener -> listener != null)
+            .forEachR(listener -> listener.onRatingsReviewClick());
    }
 }

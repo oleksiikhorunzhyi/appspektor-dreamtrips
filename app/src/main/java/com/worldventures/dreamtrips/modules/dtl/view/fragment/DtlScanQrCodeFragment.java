@@ -14,8 +14,8 @@ import com.worldventures.core.ui.util.permission.PermissionConstants;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,9 +36,10 @@ import rx.functions.Action0;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
+@ComponentPresenter.ComponentTitle(R.string.dtl_barcode_title)
 public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantBundle> implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
-   @Inject @Named(RouteCreatorModule.DTL_TRANSACTION) RouteCreator<DtlTransaction> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.DTL_TRANSACTION) FragmentClassProvider<DtlTransaction> fragmentClassProvider;
    @Inject PermissionDispatcher permissionDispatcher;
 
    //
@@ -59,7 +61,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+      dtlEnrollWizard = new DtlEnrollWizard(router, fragmentClassProvider);
    }
 
    @Override
@@ -136,12 +138,16 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
          progressDialog.setTitleText(getString(titleText));
          progressDialog.setCancelable(false);
          progressDialog.show();
-      } else progressDialog.setTitle(getString(titleText));
+      } else {
+         progressDialog.setTitle(getString(titleText));
+      }
    }
 
    @Override
    public void hideProgress() {
-      if (progressDialog != null) progressDialog.dismissWithAnimation();
+      if (progressDialog != null) {
+         progressDialog.dismissWithAnimation();
+      }
    }
 
    @Override
@@ -174,7 +180,9 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    }
 
    private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
-      if (alertDialog != null && alertDialog.isShowing()) return;
+      if (alertDialog != null && alertDialog.isShowing()) {
+         return;
+      }
       //
       alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getString(R.string.alert))
             .setContentText(getString(R.string.dtl_photo_upload_error))

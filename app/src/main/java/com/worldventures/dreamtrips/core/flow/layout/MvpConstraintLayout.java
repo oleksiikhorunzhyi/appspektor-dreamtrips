@@ -73,13 +73,17 @@ public abstract class MvpConstraintLayout<V extends MvpView, P extends MvpPresen
    @Override
    protected void onAttachedToWindow() {
       super.onAttachedToWindow();
-      if (!isInEditMode()) getMvpDelegate().onAttachedToWindow();
+      if (!isInEditMode()) {
+         getMvpDelegate().onAttachedToWindow();
+      }
    }
 
    @Override
    protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
-      if (!isInEditMode()) getMvpDelegate().onDetachedFromWindow();
+      if (!isInEditMode()) {
+         getMvpDelegate().onDetachedFromWindow();
+      }
    }
 
    /**

@@ -11,9 +11,9 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
@@ -41,7 +41,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
    @InjectView(R.id.company_name) TextView companyName;
    @InjectView(R.id.view_profile) TextView viewProfile;
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
    DecimalFormat df = new DecimalFormat("#0.00");
@@ -71,7 +71,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
    @Optional
    @OnClick({R.id.user_cover, R.id.view_profile})
    protected void onUserClick() {
-      router.moveTo(routeCreator.createRoute(getArgs().getUser()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(getArgs().getUser()
             .getId()), forActivity().toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(getArgs().getUser()))
             .build());

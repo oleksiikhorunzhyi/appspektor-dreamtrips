@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
-import com.worldventures.dreamtrips.core.navigation.Route;
+import android.support.v4.app.Fragment;
+
 
 public interface Router {
-   void moveTo(Route route, NavigationConfig navigationConfig);
-   void moveTo(Route route);
+   void moveTo(Class<? extends Fragment> routeClazz, NavigationConfig navigationConfig);
    void back();
 }

@@ -7,10 +7,11 @@ import java.io.Serializable;
 import java.util.List;
 
 public class VideoLocale implements Serializable, Filterable {
-   private String title;
-   private String country;
-   private String icon;
-   private List<VideoLanguage> languages;
+
+   private final String title;
+   private final String country;
+   private final String icon;
+   private final List<VideoLanguage> languages;
 
    public VideoLocale(String title, String country, String icon, List<VideoLanguage> languages) {
       this.title = title;
@@ -38,12 +39,12 @@ public class VideoLocale implements Serializable, Filterable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       VideoLocale that = (VideoLocale) o;
 
-      if (title != null ? !title.equals(that.title) : that.title != null) return false;
+      if (title != null ? !title.equals(that.title) : that.title != null) { return false; }
       return !(country != null ? !country.equals(that.country) : that.country != null);
    }
 

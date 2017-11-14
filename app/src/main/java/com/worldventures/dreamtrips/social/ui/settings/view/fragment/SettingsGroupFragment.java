@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.social.ui.settings.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.worldventures.core.modules.settings.model.SettingsGroup;
 import com.worldventures.core.ui.annotations.Layout;
-import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -34,7 +33,7 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-      recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
+      recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
       adapter = new BaseDelegateAdapter(getContext(), this);
       adapter.registerCell(SettingsGroup.class, SettingsGroupCell.class);
       adapter.registerDelegate(SettingsGroup.class, this);
@@ -53,10 +52,23 @@ public class SettingsGroupFragment extends BaseFragment<SettingsGroupPresenter> 
    }
 
    @Override
-   public void openSettings(Route route, SettingsGroup model) {
-      router.moveTo(route, NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
-            .visible(false)
-            .build()).data(new SettingsBundle(model)).build());
+   public void openGeneralSettings(SettingsGroup model) {
+      router.moveTo(GeneralSettingsFragment.class, NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create()
+                  .visible(false)
+                  .build())
+            .data(new SettingsBundle(model))
+            .build());
+   }
+
+   @Override
+   public void openNotificationSettings(SettingsGroup model) {
+      router.moveTo(NotificationsSettingsFragment.class, NavigationConfigBuilder.forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create()
+                  .visible(false)
+                  .build())
+            .data(new SettingsBundle(model))
+            .build());
    }
 
    @Override

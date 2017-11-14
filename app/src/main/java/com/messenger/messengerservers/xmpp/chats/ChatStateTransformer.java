@@ -10,6 +10,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 class ChatStateTransformer implements Observable.Transformer<String, Void> {
+
    private final Func1<Message, Observable<Void>> sendAction;
 
    ChatStateTransformer(@NonNull Func1<Message, Observable<Void>> sendAction) {
@@ -19,7 +20,7 @@ class ChatStateTransformer implements Observable.Transformer<String, Void> {
    @Override
    public Observable<Void> call(Observable<String> stringObservable) {
       return stringObservable.map(chatState -> {
-         Message message = new org.jivesoftware.smack.packet.Message();
+         Message message = new Message();
          message.addExtension(new ChatStateExtension(chatState));
          return message;
       }).flatMap(sendAction::call);

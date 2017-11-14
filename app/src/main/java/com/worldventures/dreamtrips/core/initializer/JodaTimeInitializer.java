@@ -9,7 +9,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 public class JodaTimeInitializer implements AppInitializer {
 
-   private Context context;
+   private final Context context;
 
    public JodaTimeInitializer(Context context) {
       this.context = context;

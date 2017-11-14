@@ -4,7 +4,7 @@ import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.synchmechanism.SyncStatus;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 

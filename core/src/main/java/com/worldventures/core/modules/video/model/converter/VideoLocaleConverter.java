@@ -2,8 +2,8 @@ package com.worldventures.core.modules.video.model.converter;
 
 
 import com.worldventures.core.converter.Converter;
-import com.worldventures.dreamtrips.api.member_videos.model.VideoLocale;
 import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.dreamtrips.api.member_videos.model.VideoLocale;
 
 import io.techery.mappery.MapperyContext;
 

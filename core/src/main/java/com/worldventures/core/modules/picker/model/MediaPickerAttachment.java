@@ -100,12 +100,12 @@ public class MediaPickerAttachment implements Parcelable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       MediaPickerAttachment that = (MediaPickerAttachment) o;
 
-      if (requestId != that.requestId) return false;
+      if (requestId != that.requestId) { return false; }
       return chosenMedia.isEmpty() != that.chosenMedia.isEmpty() && compareMedia(that.chosenMedia);
    }
 

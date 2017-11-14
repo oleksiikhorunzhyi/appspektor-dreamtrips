@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.social.ui.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.EditPostPresenter;
@@ -27,11 +27,6 @@ public class EditPostFragment extends ActionEntityFragment<EditPostPresenter, Ed
    @Override
    protected int getPostButtonText() {
       return R.string.update;
-   }
-
-   @Override
-   protected Route getRoute() {
-      return Route.EDIT_POST;
    }
 
    @Override

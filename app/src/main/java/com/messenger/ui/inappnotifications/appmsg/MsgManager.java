@@ -45,7 +45,7 @@ import static com.messenger.ui.inappnotifications.appmsg.AppMsg.LENGTH_STICKY;
 /**
  * @author Evgeny Shishkin
  */
-class MsgManager extends Handler implements Comparator<AppMsg> {
+final class MsgManager extends Handler implements Comparator<AppMsg> {
 
    private static final int MESSAGE_DISPLAY = 0xc2007;
    private static final int MESSAGE_ADD_VIEW = 0xc20074dd;
@@ -270,7 +270,7 @@ class MsgManager extends Handler implements Comparator<AppMsg> {
       return lhs < rhs ? 1 : (lhs == rhs ? 0 : -1);
    }
 
-   private static class OutAnimationListener implements Animation.AnimationListener {
+   private final static class OutAnimationListener implements Animation.AnimationListener {
 
       private final AppMsg appMsg;
 

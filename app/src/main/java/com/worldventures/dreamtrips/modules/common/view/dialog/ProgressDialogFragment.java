@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.R;
 
 public class ProgressDialogFragment extends BaseDialogFragment {
 
-   @StringRes private final int DEFAULT_MESSAGE_RES = R.string.loading;
+   @StringRes private final static int DEFAULT_MESSAGE_RES = R.string.loading;
 
    @StringRes private int messageRes = -1;
 

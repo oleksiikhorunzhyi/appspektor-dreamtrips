@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public class DtlFullscreenImagePresenterImpl extends DtlPresenterImpl<DtlFullscreenImageScreen, ViewState.EMPTY> implements DtlFullscreenImagePresenter {
 
-   private String imageUrl;
+   private final String imageUrl;
 
    public DtlFullscreenImagePresenterImpl(Context context, Injector injector, String imageUrl) {
       super(context);

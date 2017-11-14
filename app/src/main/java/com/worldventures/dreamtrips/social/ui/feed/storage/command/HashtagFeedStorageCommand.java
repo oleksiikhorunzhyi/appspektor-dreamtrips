@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class HashtagFeedStorageCommand extends FeedItemsStorageBaseCommand {
 
-   private String hashtag;
+   private final String hashtag;
 
    public HashtagFeedStorageCommand(String hashtag, ListStorageOperation<FeedItem> operation) {
       super(operation);

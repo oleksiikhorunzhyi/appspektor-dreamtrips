@@ -1,0 +1,28 @@
+apply from: "$rootProject.projectDir/buildsystem/module-core-dependencies.gradle"
+ext {
+   socialDependencies = [:]
+
+   socialDependencies.repos = []
+   coreDependencies.repos.each { socialDependencies.repos << it }
+
+   socialDependencies.modules = [
+         core    : [impl: project(":core")],
+         coreTest: [testImpl: project(":core-test")],
+   ]
+
+   socialDependencies.ui = []
+   coreDependencies.ui.each { socialDependencies.ui << it }
+
+   socialDependencies.networking = [
+         //generate factory for custom requests
+         janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
+   ]
+
+   socialDependencies.test = [
+   ]
+   coreDependencies.test.each { socialDependencies.test << it }
+
+   socialDependencies.annotationProcessor = []
+   coreDependencies.di.each { socialDependencies.annotationProcessor << it }
+   coreDependencies.immutables.each { socialDependencies.annotationProcessor << it }
+}

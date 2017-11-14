@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 
 import timber.log.Timber;
 
-public class FragmentUtil {
+public final class FragmentUtil {
 
    private FragmentUtil() {
    }

@@ -35,6 +35,7 @@ public class UploadTask implements Parcelable, Serializable {
    private long id;
 
    public UploadTask() {
+      //do nothing
    }
 
    public String getFilePath() {
@@ -179,8 +180,12 @@ public class UploadTask implements Parcelable, Serializable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       UploadTask that = (UploadTask) o;
 

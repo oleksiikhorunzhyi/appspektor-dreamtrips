@@ -49,7 +49,9 @@ public class MediaActionPanelInfoInjector {
    }
 
    public void setOwner(User user) {
-      if (user == null) return;
+      if (user == null) {
+         return;
+      }
 
       String photo = user.getAvatar().getMedium();
       userPhoto.setVisibility(TextUtils.isEmpty(photo) ? View.GONE : View.VISIBLE);
@@ -61,7 +63,9 @@ public class MediaActionPanelInfoInjector {
    }
 
    public void setPublishedAtDate(Date photoDate) {
-      if (photoDate == null) return;
+      if (photoDate == null) {
+         return;
+      }
       String dateString = DateTimeUtils.convertDateToString(photoDate, DateTimeUtils.FULL_SCREEN_PHOTO_DATE_FORMAT);
       date.setVisibility(TextUtils.isEmpty(dateString) ? View.GONE : View.VISIBLE);
       date.setText(dateString);

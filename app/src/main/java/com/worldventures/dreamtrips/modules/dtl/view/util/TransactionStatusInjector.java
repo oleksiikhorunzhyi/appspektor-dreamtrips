@@ -46,8 +46,8 @@ public class TransactionStatusInjector {
       showToServerTextView.setVisibility(View.VISIBLE);
    }
 
-   private String getTextFromResource(int id) { return context.getString(id);}
+   private String getTextFromResource(int id) { return context.getString(id); }
 
-   private Drawable getDrawableFromResource(int id) { return ContextCompat.getDrawable(context, id);}
+   private Drawable getDrawableFromResource(int id) { return ContextCompat.getDrawable(context, id); }
 
 }

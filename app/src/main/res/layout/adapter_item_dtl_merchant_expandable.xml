@@ -201,7 +201,7 @@
                android:layout_alignParentRight="true"
                android:layout_marginRight="@dimen/spacing_small"
                android:visibility="gone"
-               tools:src="@drawable/ic_arrow_down_grey"
+               tools:src="@drawable/ic_wallet_arrow_down_grey"
                />
 
       </RelativeLayout>

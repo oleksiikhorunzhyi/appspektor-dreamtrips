@@ -2,7 +2,7 @@ package com.messenger.ui.util.recyclerview;
 
 public class Header {
 
-   private String name;
+   private final String name;
 
    public Header(String name) {
       this.name = name;

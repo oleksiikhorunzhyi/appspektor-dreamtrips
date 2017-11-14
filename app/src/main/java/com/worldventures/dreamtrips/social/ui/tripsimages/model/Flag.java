@@ -13,6 +13,7 @@ public class Flag implements Parcelable {
    @SerializedName("require_description") private boolean requireDescription;
 
    Flag() {
+      //do nothing
    }
 
    public Flag(int id, String name, boolean requireDescription) {

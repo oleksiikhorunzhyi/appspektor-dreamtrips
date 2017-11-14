@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', '')
+def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', 'android')
 def buildParams = [:]
 
 utils.runBuild('android', getNotifier(utils)) {
@@ -10,6 +10,7 @@ utils.runBuild('android', getNotifier(utils)) {
    }
    stage('checkout') {
       def branches = (isPullRequest() ? scm.branches : [[name: "origin/${buildParams.branch}"]])
+      def targetBranchToMergeWith = (isPullRequest() ? buildParams.targetBranch : buildParams.branch)
       checkout([
             $class                           : 'GitSCM',
             branches                         : branches,
@@ -22,7 +23,13 @@ utils.runBuild('android', getNotifier(utils)) {
                    shallow: true,
                    depth  : 1000,
                    noTags : true,
-                   timeout: 5]
+                   timeout: 5],
+                  [$class: 'PreBuildMerge', options:
+                        [fastForwardMode: 'FF',
+                         mergeRemote    : 'origin',
+                         mergeStrategy  : 'default',
+                         mergeTarget    : targetBranchToMergeWith]
+                  ]
             ]
       ])
    }
@@ -37,12 +44,13 @@ utils.runBuild('android', getNotifier(utils)) {
       }
    }
    stage('publish') {
+      def apkDir = "app/build/outputs/apk/external${buildParams.streamFlavor}${buildParams.serverFlavor}/${buildParams.apkBuildType.toLowerCase()}"
       if (isInternalOnly()) {
-         archiveArtifacts artifacts: 'app/build/outputs/apk/*.apk', caseSensitive: false, onlyIfSuccessful: true
+         archiveArtifacts artifacts: "$apkDir/*.apk", caseSensitive: false, onlyIfSuccessful: true
       } else {
          def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
          echo releaseNotes
-         def apkPath = "app/build/outputs/apk/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+         def apkPath = "$apkDir/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
          step([$class   : 'HockeyappRecorder', applications:
                [[apiToken          : params.hockeyApiToken,
                  filePath          : apkPath,
@@ -88,10 +96,10 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
    params.comment = (isPullRequest ? env.gitlabTriggerPhrase : env.COMMENT) ?: ""
 
    switch (params.branch) {
-      case ~/^(develop)|(common\/.+)/:
+      case ~/^(core\/.+)/:
          params << [
-               streamFlavor  : "Stable",
-               serverFlavor  : params.comment.contains("-server qa") ? "Qa" : "Stage",
+               serverFlavor  : params.comment.contains("-server qa") ? "Qa" : "Preprod",
+               apkBuildType  : "Release",
                hockeyAppId   : "48de37eaf46ec363d392ae15ae521df6",
                hockeyAppTeams: [qaTeam, devTeam],
          ]
@@ -140,7 +148,7 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
          break
       case ~/^smart-card\/.+/:
          params << [
-               streamFlavor  : params.comment.contains("-smartcard mocked") ? "SmartCardMock" : "SmartCardNxtid",
+               streamFlavor  : params.comment.contains("-smartcard mocked") ? "Smartcardmock" : "Smartcardnxtid",
                hockeyAppId   : "427d6a383bcf44e698227ea31c778d3b",
                hockeyAppTeams: [qaTeam, "77191"]
          ]
@@ -161,16 +169,14 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
       //
       if (Boolean.valueOf(env.QA_AUTOMATION_MODE)) buildArgs << [qa_automation_mode: 'true']
    }
-   params.buildArgs = buildArgs.collect { key, value -> "-P${key}=${value}" }.join(' ')
+   params.buildArgs = buildArgs.collect { key, value -> "-P${key}=${value}" }.join(' ') + " --info --stacktrace"
+
 
 
    def targetBranch
    if (isPullRequest) targetBranch = env.gitlabTargetBranch
    else switch (params.branch) {
-      case ~/^common\/.+/:
-         targetBranch = 'develop'
-         break
-      case ~/^(release\/.+)|(hotfix\/.+)|(develop)/:
+      case ~/^(release\/.+)|(hotfix\/.+)|(core\/.+)/:
          targetBranch = 'master'
          break
       case ~/^smart-card\/(?!dev).+/:
@@ -186,7 +192,7 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
          targetBranch = 'dtl/dev'
          break
       default:
-         targetBranch = 'develop'
+         targetBranch = 'master'
          break
    }
    params.targetBranch = targetBranch

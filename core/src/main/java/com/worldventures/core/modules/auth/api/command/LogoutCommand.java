@@ -3,7 +3,7 @@ package com.worldventures.core.modules.auth.api.command;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.worldventures.core.janet.SessionActionPipeCreator;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.service.NewDreamTripsHttpService;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
@@ -49,7 +49,8 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private void logoutComplete(CommandCallback<Void> callback) {
-      analyticsInteractor.analyticsActionPipe().send(new com.worldventures.core.modules.auth.service.analytics.LogoutAction());
+      analyticsInteractor.analyticsActionPipe()
+            .send(new com.worldventures.core.modules.auth.service.analytics.LogoutAction());
       callback.onSuccess(null);
    }
 
@@ -72,7 +73,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private Observable clearSession() {
-      String apiToken = appSessionHolder.get().get().getApiToken();
+      String apiToken = appSessionHolder.get().get().apiToken();
       //
       return Observable.create(subscriber -> {
          appSessionHolder.destroy();

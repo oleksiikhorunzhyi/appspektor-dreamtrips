@@ -1,7 +1,7 @@
 package com.worldventures.core.modules.picker.command;
 
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.core.modules.picker.service.delegate.VideosProvider;
 

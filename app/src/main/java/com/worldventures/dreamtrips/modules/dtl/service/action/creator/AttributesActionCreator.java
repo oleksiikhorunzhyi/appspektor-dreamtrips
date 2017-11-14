@@ -10,7 +10,10 @@ import javax.inject.Inject;
 
 public class AttributesActionCreator implements CategoryHttpActionCreator<CategoryAttributesHttpAction, AttributesActionParams> {
 
-   @Inject public AttributesActionCreator(){}
+   @Inject
+   public AttributesActionCreator() {
+      //do nothing
+   }
 
    @Override
    public CategoryAttributesHttpAction createAction(AttributesActionParams params, List<String> merchantTypes) {

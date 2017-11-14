@@ -7,17 +7,17 @@ import com.worldventures.core.converter.Converter
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment
 import com.worldventures.core.modules.infopages.model.FeedbackType
+import com.worldventures.core.modules.infopages.model.converter.FeedbackImageAttachmentConverter
 import com.worldventures.core.modules.infopages.model.converter.FeedbackTypeConverter
 import com.worldventures.core.modules.infopages.service.FeedbackInteractor
 import com.worldventures.core.modules.infopages.service.command.GetFeedbackCommand
 import com.worldventures.core.modules.infopages.service.storage.FeedbackTypeActionStorage
 import com.worldventures.core.modules.infopages.service.storage.InfopagesStorage
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackAttachment
 import com.worldventures.dreamtrips.api.feedback.model.FeedbackReason
 import com.worldventures.dreamtrips.api.feedback.model.ImmutableFeedbackReason
-import com.worldventures.core.modules.infopages.model.converter.FeedbackImageAttachmentConverter
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -30,7 +30,8 @@ import org.jetbrains.spek.api.dsl.it
 import org.junit.Assert
 import org.mockito.ArgumentMatchers.anyList
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.ArrayList
+import java.util.Random
 import kotlin.test.assertEquals
 
 class FeedbackInteractorSpec : BaseSpec({

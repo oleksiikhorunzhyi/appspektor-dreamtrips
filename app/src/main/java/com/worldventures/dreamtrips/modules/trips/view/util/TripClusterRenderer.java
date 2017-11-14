@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
 
 public class TripClusterRenderer extends DefaultClusterRenderer<TripClusterItem> {
 
-   private Context context;
+   private final Context context;
 
    public TripClusterRenderer(Context context, GoogleMap map, ClusterManager<TripClusterItem> clusterManager) {
       super(context, map, clusterManager);

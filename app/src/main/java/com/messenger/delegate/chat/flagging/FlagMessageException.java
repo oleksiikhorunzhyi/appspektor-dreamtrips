@@ -1,8 +1,9 @@
 package com.messenger.delegate.chat.flagging;
 
 public class FlagMessageException extends Exception {
-   private String messageId;
-   private String reason;
+
+   private final String messageId;
+   private final String reason;
 
    public FlagMessageException(String messageId, String reason) {
       this.messageId = messageId;

@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
@@ -37,7 +36,7 @@ public class TripViewPagerFragment extends BaseFragmentWithArgs<Presenter, TripV
 
       pager.setAdapter(adapter = new BasePagerAdapter<>(getActivity().getSupportFragmentManager()));
       for (TripImage tripImage : getArgs().getTripImages()) {
-         adapter.add(new FragmentItem(Route.TRIP_PHOTO_FULLSCREEN, "", tripImage));
+         adapter.add(new FragmentItem(TripPhotoFullscreenFragment.class, "", tripImage));
       }
       pager.setCurrentItem(getArgs().getPosition());
       adapter.notifyDataSetChanged();

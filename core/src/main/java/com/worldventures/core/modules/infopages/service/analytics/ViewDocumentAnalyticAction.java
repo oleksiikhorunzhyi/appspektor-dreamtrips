@@ -1,11 +1,11 @@
 package com.worldventures.core.modules.infopages.service.analytics;
 
 import com.worldventures.core.service.analytics.ActionPart;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
-import com.worldventures.core.service.analytics.Attribute;
-import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.core.service.analytics.ApptentiveTracker;
+import com.worldventures.core.service.analytics.Attribute;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 
 @AnalyticsEvent(action = "${action}",
                 category = "nav_menu",

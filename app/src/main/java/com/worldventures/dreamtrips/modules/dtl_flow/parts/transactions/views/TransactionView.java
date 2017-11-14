@@ -25,21 +25,21 @@ import java.util.List;
 
 import flow.Flow;
 
+@SuppressWarnings("PMD.SingularField")
 public class TransactionView extends LinearLayout {
 
    private RecyclerView recyclerView;
    private SearchableTransactionsAdapter searchableTransactionsAdapter;
    private PageableTransactionAdapter pageableTransactionAdapter;
-   private Context context;
+   private final Context context;
    private boolean isLoading = false;
-   private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+   private final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
    private RecyclerView.OnItemTouchListener onItemTouchListener;
    private RecyclerView.OnScrollListener scrollingListener;
    private ScrollEventListener scrollEventListener;
 
    public TransactionView(Context context) {
       this(context, null);
-      this.context = context;
    }
 
    public TransactionView(Context context, @Nullable AttributeSet attrs) {
@@ -64,29 +64,31 @@ public class TransactionView extends LinearLayout {
       isLoading = false;
    }
 
-   public void setAllTransactionsList(List<TransactionModel> transactions){
+   public void setAllTransactionsList(List<TransactionModel> transactions) {
       setPageableAdapter();
       pageableTransactionAdapter.setTransactions(transactions);
    }
 
-   public void setSearchableAdapter(){
-      if(recyclerView.getAdapter()!=searchableTransactionsAdapter) {
+   public void setSearchableAdapter() {
+      if (recyclerView.getAdapter() != searchableTransactionsAdapter) {
          recyclerView.setAdapter(searchableTransactionsAdapter);
          searchableTransactionsAdapter.setTransactionsList(pageableTransactionAdapter.getCurrentItems());
       }
    }
 
-   public void setPageableAdapter(){
-      if(recyclerView.getAdapter() != pageableTransactionAdapter) recyclerView.setAdapter(pageableTransactionAdapter);
+   public void setPageableAdapter() {
+      if (recyclerView.getAdapter() != pageableTransactionAdapter) {
+         recyclerView.setAdapter(pageableTransactionAdapter);
+      }
    }
 
-   public void filterByMerchantName(String searchString){
+   public void filterByMerchantName(String searchString) {
       searchableTransactionsAdapter.getFilter().filter(searchString);
    }
 
    private void initRecycler() {
       recyclerView.setLayoutManager(linearLayoutManager);
-      recyclerView.addItemDecoration(new MarginDecoration(getContext()));
+      recyclerView.addItemDecoration(new MarginDecoration());
       recyclerView.setHasFixedSize(false);
 
       onItemTouchListener = new RecyclerTouchListener(getContext(), recyclerView,
@@ -94,10 +96,13 @@ public class TransactionView extends LinearLayout {
                @Override
                public void onClick(View view, int position) {
                   TransactionModel transaction;
-                  if(recyclerView.getAdapter() instanceof PageableTransactionAdapter)
-                     transaction = ((PageableTransactionAdapter) recyclerView.getAdapter()).getCurrentItems().get(position);
-                  else
-                     transaction = ((SearchableTransactionsAdapter) recyclerView.getAdapter()).getCurrentItems().get(position);
+                  if (recyclerView.getAdapter() instanceof PageableTransactionAdapter) {
+                     transaction = ((PageableTransactionAdapter) recyclerView.getAdapter()).getCurrentItems()
+                           .get(position);
+                  } else {
+                     transaction = ((SearchableTransactionsAdapter) recyclerView.getAdapter()).getCurrentItems()
+                           .get(position);
+                  }
 
                   DtlTransactionPath path = new DtlTransactionPath(FlowUtil.currentMaster(getContext()), transaction);
                   Flow.get(getContext()).set(path);
@@ -105,6 +110,7 @@ public class TransactionView extends LinearLayout {
 
                @Override
                public void onLongClick(View view, int position) {
+                  // do nothing
                }
             });
       recyclerView.addOnItemTouchListener(onItemTouchListener);
@@ -132,10 +138,11 @@ public class TransactionView extends LinearLayout {
    }
 
    public void showLoadingFooter(boolean show) {
-      if (show)
+      if (show) {
          pageableTransactionAdapter.addLoadingFooter();
-      else
+      } else {
          pageableTransactionAdapter.removeLoadingFooter();
+      }
    }
 
    private void getMoreTransactions() {

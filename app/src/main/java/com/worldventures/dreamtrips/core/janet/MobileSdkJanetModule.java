@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.core.janet;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapterFactory;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.Session;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.service.ReLoginInteractor;
+import com.worldventures.core.service.AuthRetryPolicy;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.api.api_common.converter.DateTimeDeserializer;
@@ -14,7 +16,7 @@ import com.worldventures.dreamtrips.api.api_common.converter.SerializedNameExclu
 import com.worldventures.dreamtrips.api.api_common.converter.SmartEnumTypeAdapterFactory;
 import com.worldventures.dreamtrips.api.api_common.service.MonolithHttpService;
 import com.worldventures.dreamtrips.api.session.model.Device;
-import com.worldventures.dreamtrips.core.janet.api_lib.AuthStorage;
+import com.worldventures.core.service.AuthStorage;
 import com.worldventures.dreamtrips.core.janet.api_lib.CredentialsProvider;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthRefresher;
 import com.worldventures.dreamtrips.core.janet.api_lib.DreamTripsAuthStorage;
@@ -128,7 +130,7 @@ public class MobileSdkJanetModule {
    @Singleton
    @Provides
    AuthRefresher provideDreamTripsAuthRefresher(ReLoginInteractor reLoginInteractor,
-         CredentialsProvider credentialsProvider, AuthStorage authStorage, MapperyContext mapperyContext) {
+         CredentialsProvider credentialsProvider, AuthStorage<Session> authStorage, MapperyContext mapperyContext) {
       return new DreamTripsAuthRefresher(reLoginInteractor, credentialsProvider, authStorage, mapperyContext);
    }
 
@@ -143,7 +145,13 @@ public class MobileSdkJanetModule {
 
    @Singleton
    @Provides
-   AuthStorage provideDreamTripsAuthStorage(SessionHolder sessionHolder) {
+   AuthRetryPolicy provideAuthRetryPolicy(SessionHolder sessionHolder, AuthStorage<Session> authStorage) {
+      return new AuthRetryPolicy(sessionHolder, authStorage);
+   }
+
+   @Singleton
+   @Provides
+   AuthStorage<Session> provideDreamTripsAuthStorage(SessionHolder sessionHolder) {
       return new DreamTripsAuthStorage(sessionHolder);
    }
 

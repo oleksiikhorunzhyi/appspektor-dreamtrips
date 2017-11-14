@@ -31,7 +31,7 @@ public class PermissionDispatcher {
     * @param permissions list required permissions
     * @return request permission observable
     */
-   public Observable<PermissionsResult> requestPermission(String[] permissions) {
+   public Observable<PermissionsResult> requestPermission(String... permissions) {
       return requestPermission(permissions, true);
    }
 
@@ -44,7 +44,7 @@ public class PermissionDispatcher {
     */
    public Observable<PermissionsResult> requestPermission(String[] permissions, boolean shouldShowRequestRationale) {
       Activity activity = activityReference.get();
-      if (activity == null) return Observable.empty();
+      if (activity == null) { return Observable.empty(); }
 
       // Use 2 lower bytes, this ensures the uniqueness.
       int requestCode = (char) System.currentTimeMillis();
@@ -70,7 +70,7 @@ public class PermissionDispatcher {
    /**
     * Should be called in {@link Activity#onRequestPermissionsResult}
     */
-   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int... grantResults) {
       Activity activity = activityReference.get();
       if (SdkVersionUtils.getTargetSdkVersion(activity) < Build.VERSION_CODES.M && !hasSelfPermissions(activity, permissions)) {
          permissionResultBus.onNext(createDenyResult(permissions, requestCode));
@@ -79,7 +79,7 @@ public class PermissionDispatcher {
       permissionResultBus.onNext(new PermissionsResult(requestCode, permissions, grantResults));
    }
 
-   private boolean hasSelfPermissions(Activity activity, String[] permissions) {
+   private boolean hasSelfPermissions(Activity activity, String... permissions) {
       for (String permission : permissions) {
          if (!hasSelfPermission(activity, permission)) {
             return false;
@@ -91,7 +91,8 @@ public class PermissionDispatcher {
    private boolean hasSelfPermission(Context context, String permission) {
       try {
          return checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
-      } catch (RuntimeException t) {
+      } catch (Exception e) {
+         e.printStackTrace();
          return false;
       }
    }
@@ -107,13 +108,17 @@ public class PermissionDispatcher {
 
    private PermissionsResult createSuccessResult(String[] permissions, int requestCode) {
       int[] grantResults = new int[permissions.length];
-      for (int i = 0; i < grantResults.length; i++) grantResults[i] = PackageManager.PERMISSION_GRANTED;
+      for (int i = 0; i < grantResults.length; i++) {
+         grantResults[i] = PackageManager.PERMISSION_GRANTED;
+      }
       return new PermissionsResult(requestCode, permissions, grantResults);
    }
 
    private PermissionsResult createDenyResult(String[] permissions, int requestCode) {
       int[] grantResults = new int[permissions.length];
-      for (int i = 0; i < grantResults.length; i++) grantResults[i] = PackageManager.PERMISSION_DENIED;
+      for (int i = 0; i < grantResults.length; i++) {
+         grantResults[i] = PackageManager.PERMISSION_DENIED;
+      }
       return new PermissionsResult(requestCode, permissions, grantResults);
    }
 

@@ -16,8 +16,8 @@ import java.util.List;
 
 public class InfopagesStorageImpl extends BaseSnappyRepository implements InfopagesStorage {
 
-   String FEEDBACK_TYPES = "FEEDBACK_TYPES";
-   String DOCUMENTS = "DOCUMENTS";
+   final static String FEEDBACK_TYPES = "FEEDBACK_TYPES";
+   final static String DOCUMENTS = "DOCUMENTS";
 
    private final DefaultSnappyOpenHelper defaultSnappyOpenHelper;
 

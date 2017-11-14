@@ -87,7 +87,6 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBack
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CreatePhotoCreationItemCommand;

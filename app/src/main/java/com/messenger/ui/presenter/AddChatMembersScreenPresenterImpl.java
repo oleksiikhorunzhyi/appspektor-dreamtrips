@@ -121,6 +121,8 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
          case R.id.action_done:
             tryCreateChat(item);
             return true;
+         default:
+            break;
       }
       return false;
    }

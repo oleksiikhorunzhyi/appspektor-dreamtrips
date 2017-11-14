@@ -7,7 +7,8 @@ import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
 
 public class DownloadFileInteractor {
-   private ActionPipe<DownloadFileCommand> downloadFileCommandPipe;
+
+   private final ActionPipe<DownloadFileCommand> downloadFileCommandPipe;
 
    public DownloadFileInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this.downloadFileCommandPipe = sessionActionPipeCreator.createPipe(DownloadFileCommand.class, Schedulers.io());

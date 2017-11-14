@@ -9,7 +9,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapListBundle;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripMapCell;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class TripMapListFragment extends BaseFragmentWithArgs<TripMapListPresent
 
    @Override
    public void onCellClicked(TripModel model) {
-      router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+      router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create()
                   .visible(false)
                   .build())

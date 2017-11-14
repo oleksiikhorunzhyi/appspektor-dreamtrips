@@ -7,7 +7,7 @@ import android.widget.PopupMenu;
 
 import com.worldventures.dreamtrips.R;
 
-public class FeedItemMenuBuilder {
+public final class FeedItemMenuBuilder {
 
    private Context context;
    private View anchor;
@@ -48,10 +48,16 @@ public class FeedItemMenuBuilder {
       popup.setOnMenuItemClickListener(item -> {
          switch (item.getItemId()) {
             case R.id.action_delete:
-               if (onDeleteAction != null) onDeleteAction.action();
+               if (onDeleteAction != null) {
+                  onDeleteAction.action();
+               }
                break;
             case R.id.action_edit:
-               if (onEditAction != null) onEditAction.action();
+               if (onEditAction != null) {
+                  onEditAction.action();
+               }
+               break;
+            default:
                break;
          }
 

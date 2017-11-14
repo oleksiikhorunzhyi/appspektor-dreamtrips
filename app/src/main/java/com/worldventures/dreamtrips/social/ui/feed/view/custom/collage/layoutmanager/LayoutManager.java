@@ -26,10 +26,6 @@ public abstract class LayoutManager {
    protected static final int PORTRAIT = 1;
    protected static final int SQUARE = 2;
 
-   @Retention(RetentionPolicy.SOURCE)
-   @IntDef({LANDSCAPE, PORTRAIT, SQUARE})
-   private @interface PhotoType {}
-
    protected Context context;
    protected List<CollageItem> items;
 
@@ -90,8 +86,14 @@ public abstract class LayoutManager {
       view.setPadding(paddings.left, paddings.top, paddings.right, paddings.bottom);
       view.setLayoutParams(params);
       view.setOnClickListener(v -> {
-         if (itemClickListener != null) itemClickListener.itemClicked(position);
+         if (itemClickListener != null) {
+            itemClickListener.itemClicked(position);
+         }
       });
       return view;
    }
+
+   @Retention(RetentionPolicy.SOURCE)
+   @IntDef({LANDSCAPE, PORTRAIT, SQUARE})
+   private @interface PhotoType {}
 }

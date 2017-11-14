@@ -9,23 +9,24 @@ import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 public class ChatTimestampFormatter {
 
-   private Context context;
+   private final Context context;
 
-   private SimpleDateFormat timeDateFormatter;
-   private SimpleDateFormat dayOfTheWeekDateFormatter;
-   private SimpleDateFormat dayOfTheMonthDateFormatter;
+   private final SimpleDateFormat timeDateFormatter;
+   private final SimpleDateFormat dayOfTheWeekDateFormatter;
+   private final SimpleDateFormat dayOfTheMonthDateFormatter;
 
    @Inject
    public ChatTimestampFormatter(@ForApplication Context context) {
       this.context = context;
-      this.timeDateFormatter = new SimpleDateFormat("h:mm aa");
-      this.dayOfTheWeekDateFormatter = new SimpleDateFormat("EEEE");
-      this.dayOfTheMonthDateFormatter = new SimpleDateFormat("MMM dd");
+      this.timeDateFormatter = new SimpleDateFormat("h:mm aa", Locale.getDefault());
+      this.dayOfTheWeekDateFormatter = new SimpleDateFormat("EEEE", Locale.getDefault());
+      this.dayOfTheMonthDateFormatter = new SimpleDateFormat("MMM dd", Locale.getDefault());
    }
 
    public String getMessageTimestamp(long currentDate) {

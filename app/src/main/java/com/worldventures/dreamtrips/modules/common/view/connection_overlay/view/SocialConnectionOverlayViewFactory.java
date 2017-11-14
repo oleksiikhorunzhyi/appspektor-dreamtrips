@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 
 public class SocialConnectionOverlayViewFactory implements ConnectionOverlayViewFactory<SocialConnectionOverlayView> {
 
-   private Context context;
+   private final Context context;
    private View rootView;
    private int layoutId;
 

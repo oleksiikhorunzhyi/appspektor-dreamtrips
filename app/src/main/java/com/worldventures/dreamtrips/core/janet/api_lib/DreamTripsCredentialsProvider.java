@@ -19,7 +19,7 @@ public class DreamTripsCredentialsProvider implements CredentialsProvider {
    @Override
    public CredentialsStorage provideCredentials() {
       UserSession userSession = sessionHolder.get().get();
-      return new CredentialsStorage(userSession.getUsername(),
-            userSession.getUserPassword(), deviceSource.toBlocking().first());
+      return new CredentialsStorage(userSession.username(),
+            userSession.userPassword(), deviceSource.toBlocking().first());
    }
 }

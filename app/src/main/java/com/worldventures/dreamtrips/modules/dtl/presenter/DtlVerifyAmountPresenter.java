@@ -28,7 +28,8 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> {}));
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> {
+      }));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)

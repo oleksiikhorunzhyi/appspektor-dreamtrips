@@ -26,7 +26,9 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
    private void checkGoogleServices() {
       int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
       if (code != ConnectionResult.SUCCESS) {
-         if (!BuildConfig.QA_AUTOMATION_MODE_ENABLED) GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
+         if (!BuildConfig.QA_AUTOMATION_MODE_ENABLED) {
+            GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
+         }
       } else {
          activityRouter.startService(RegistrationIntentService.class);
       }

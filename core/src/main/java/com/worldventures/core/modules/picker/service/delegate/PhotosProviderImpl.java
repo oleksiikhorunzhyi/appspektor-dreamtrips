@@ -15,7 +15,7 @@ import timber.log.Timber;
 
 public class PhotosProviderImpl implements PhotosProvider {
 
-   private Context context;
+   private final Context context;
 
    public PhotosProviderImpl(Context context) {
       this.context = context;
@@ -52,7 +52,7 @@ public class PhotosProviderImpl implements PhotosProvider {
    }
 
    private String selectionArgs() {
-      return MediaStore.Images.Media.DATE_TAKEN + " < " +
-            " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
+      return MediaStore.Images.Media.DATE_TAKEN + " < "
+            + " ? AND " + MediaStore.Images.Media.MIME_TYPE + " != ?";
    }
 }

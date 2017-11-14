@@ -21,7 +21,7 @@ public class FacebookHelper {
 
    public final static List<String> LOGIN_PERMISSIONS = Collections.singletonList("user_photos");
 
-   private Gson gson;
+   private final Gson gson;
 
    public FacebookHelper(Gson gson) {
       this.gson = gson;
@@ -52,7 +52,7 @@ public class FacebookHelper {
    public Throwable getThrowableFromGraphError(FacebookRequestError error) {
       FacebookRequestErrorClassification errorClassification
             = FacebookRequestErrorClassification.getDefaultErrorClassification();
-      if(errorClassification.classify(error.getErrorCode(), error.getSubErrorCode(), false) == FacebookRequestError.Category.LOGIN_RECOVERABLE) {
+      if (errorClassification.classify(error.getErrorCode(), error.getSubErrorCode(), false) == FacebookRequestError.Category.LOGIN_RECOVERABLE) {
          return new FacebookAccessTokenException("Access token is invalid", error.getException());
       } else {
          return error.getException();

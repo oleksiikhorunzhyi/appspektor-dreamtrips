@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
@@ -19,7 +19,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 
 import javax.inject.Inject;
 
@@ -28,6 +30,7 @@ import butterknife.OnClick;
 import flow.Flow;
 
 @Layout(R.layout.fragment_transaction_succeed)
+@ComponentPresenter.ComponentTitle(R.string.dtl_success_title)
 public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTransactionSucceedPresenter, MerchantBundle> implements DtlTransactionSucceedPresenter.View {
 
    @InjectView(R.id.total) TextView total;
@@ -69,7 +72,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
       new ShareDialog(getContext(), type -> {
          getPresenter().trackSharing(type);
          ShareBundle shareBundle = MerchantHelper.buildShareBundle(getContext(), merchant, type);
-         router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(shareBundle).build());
+         router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(shareBundle).build());
       }).show();
    }
 

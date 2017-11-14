@@ -12,11 +12,11 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_dtl_load_error)
 public class MerchantsErrorCell extends BaseAbstractDelegateCell<MerchantsErrorCell.Model, CellDelegate<MerchantsErrorCell.Model>> {
 
+   public static final MerchantsErrorCell.Model INSTANCE = new MerchantsErrorCell.Model();
+
    public MerchantsErrorCell(View view) {
       super(view);
    }
-
-   public static final MerchantsErrorCell.Model INSTANCE = new MerchantsErrorCell.Model();
 
    @OnClick(R.id.retry)
    protected void onRetryClick() {
@@ -30,11 +30,12 @@ public class MerchantsErrorCell extends BaseAbstractDelegateCell<MerchantsErrorC
 
    @Override
    protected void syncUIStateWithModel() {
-
+      //do nothing
    }
 
    @Override
    public void prepareForReuse() {
+      //do nothing
    }
 
    public static final class Model {

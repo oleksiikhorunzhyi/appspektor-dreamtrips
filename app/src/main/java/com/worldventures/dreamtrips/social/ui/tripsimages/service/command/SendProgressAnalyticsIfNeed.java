@@ -8,7 +8,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public abstract class SendProgressAnalyticsIfNeed<E extends BaseAnalyticsAction> extends Command<Integer> {
 
-   private int expectedAnalyticStep;
+   private final int expectedAnalyticStep;
    private final long currentProgress;
    private final long totalLength;
 
@@ -26,8 +26,9 @@ public abstract class SendProgressAnalyticsIfNeed<E extends BaseAnalyticsAction>
       if (action != null) {
          sendAnalyticAction(action);
          callback.onSuccess(expectedAnalyticStep + 1);
-      } else
+      } else {
          callback.onSuccess(expectedAnalyticStep);
+      }
    }
 
    protected abstract E chooseAnalyticAction(int currentStep, int expectedAnalyticStep);

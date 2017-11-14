@@ -7,7 +7,7 @@ import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction;
@@ -28,7 +28,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implements InjectableAction,
+public final class GetPodcastsCommand extends CommandWithError<List<Podcast>> implements InjectableAction,
       CachedAction<List<Podcast>> {
 
    public static final int PAGE_SIZE = 10;
@@ -71,7 +71,9 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
    }
 
    private void clearCacheIfNeeded() {
-      if (refresh) cachedData = null;
+      if (refresh) {
+         cachedData = null;
+      }
    }
 
    private int getPage() {
@@ -104,8 +106,12 @@ public class GetPodcastsCommand extends CommandWithError<List<Podcast>> implemen
 
    public List<Podcast> getItems() {
       List<Podcast> podcasts = new ArrayList<>();
-      if (cachedData != null) podcasts.addAll(cachedData);
-      if (getResult() != null) podcasts.addAll(getResult());
+      if (cachedData != null) {
+         podcasts.addAll(cachedData);
+      }
+      if (getResult() != null) {
+         podcasts.addAll(getResult());
+      }
       return podcasts;
    }
 

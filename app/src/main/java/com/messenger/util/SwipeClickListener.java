@@ -10,9 +10,9 @@ public class SwipeClickListener implements SwipeLayout.SwipeListener {
 
    private static final int DELAY_ENABLE_CLICK_LISTENER = 200;
 
-   private View itemView;
-   private View.OnClickListener listener;
-   private Handler handler = new Handler(Looper.getMainLooper());
+   private final View itemView;
+   private final View.OnClickListener listener;
+   private final Handler handler = new Handler(Looper.getMainLooper());
 
    public SwipeClickListener(View itemView, View.OnClickListener listener) {
       this.itemView = itemView;
@@ -27,12 +27,12 @@ public class SwipeClickListener implements SwipeLayout.SwipeListener {
 
    @Override
    public void onOpen(SwipeLayout layout) {
-
+      //do nothing
    }
 
    @Override
    public void onStartClose(SwipeLayout layout) {
-
+      //do nothing
    }
 
    @Override
@@ -42,12 +42,12 @@ public class SwipeClickListener implements SwipeLayout.SwipeListener {
 
    @Override
    public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-
+      //do nothing
    }
 
    @Override
    public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-
+      //do nothing
    }
 
 }

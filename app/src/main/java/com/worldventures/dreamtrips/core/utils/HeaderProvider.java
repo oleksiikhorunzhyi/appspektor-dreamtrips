@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.core.utils;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.core.utils.AppVersionNameBuilder;
+import com.worldventures.core.utils.LocaleHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +19,7 @@ public class HeaderProvider {
    public static final String DT_APP_VERSION = "DT-App-Version";
    public static final String APPLICATION_IDENTIFIER = "X-ApplicationIdentifier";
 
-   private AppVersionNameBuilder appVersionNameBuilder;
+   private final AppVersionNameBuilder appVersionNameBuilder;
 
    public HeaderProvider(AppVersionNameBuilder appVersionNameBuilder) {
       this.appVersionNameBuilder = appVersionNameBuilder;
@@ -56,8 +56,9 @@ public class HeaderProvider {
    }
 
    public static class Header {
-      private String name;
-      private String value;
+
+      private final String name;
+      private final String value;
 
       public Header(String name, String value) {
          this.name = name;

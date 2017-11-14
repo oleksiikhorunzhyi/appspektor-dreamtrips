@@ -140,10 +140,7 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       public TextView transactionDate;
       public TextView subtotal;
       public Context context;
-<<<<<<< 7bbefed16431a58de8471c840c995c1e5e8eb12f
       public ImageView statusImageView;
-=======
->>>>>>> Added subtotal to be displayed in transactions list.
 
       public ViewHolder(View itemView) {
          super(itemView);
@@ -152,11 +149,8 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          earnedPoints = itemView.findViewById(R.id.earned_points);
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
-         subtotal = itemView.findViewById(R.id.subtotal);
-<<<<<<< 7bbefed16431a58de8471c840c995c1e5e8eb12f
          statusImageView = itemView.findViewById(R.id.imageViewStatus);
-=======
->>>>>>> Added subtotal to be displayed in transactions list.
+         subtotal = itemView.findViewById(R.id.subtotal);
       }
 
       public void bind(TransactionModel transactionModel) {
@@ -168,7 +162,6 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
          subtotal.setText(context.getString(R.string.dtl_subtotal, transactionModel.getSubTotalAmount()));
-<<<<<<< 7bbefed16431a58de8471c840c995c1e5e8eb12f
       }
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {
@@ -178,8 +171,6 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          } else {
             statusImageView.setImageBitmap(null);
          }
-=======
->>>>>>> Added subtotal to be displayed in transactions list.
       }
 
       private String getEarnedPointText(int earnedPoints) {

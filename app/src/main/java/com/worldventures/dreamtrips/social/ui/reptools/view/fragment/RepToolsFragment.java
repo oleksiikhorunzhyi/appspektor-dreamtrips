@@ -5,16 +5,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.RepToolsPresenter;
+import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
 
 import java.util.List;
 

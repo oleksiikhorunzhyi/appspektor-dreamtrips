@@ -6,7 +6,8 @@ import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInter
 import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigurationCommand;
 
 public class AppConfigurationInitializer implements AppInitializer {
-   private AppConfigurationInteractor appConfigurationInteractor;
+
+   private final AppConfigurationInteractor appConfigurationInteractor;
 
    public AppConfigurationInitializer(AppConfigurationInteractor appConfigurationInteractor) {
       this.appConfigurationInteractor = appConfigurationInteractor;

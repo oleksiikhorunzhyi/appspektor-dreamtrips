@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 
-public class MerchantAttributesFactory {
+public final class MerchantAttributesFactory {
 
-   private MerchantAttributesFactory(){}
+   private MerchantAttributesFactory() {}
 
    public static MerchantAttributes create(Merchant merchant) {
       return ImmutableMerchantAttributes.builder()
@@ -34,6 +34,8 @@ public class MerchantAttributesFactory {
             .currencies(merchant.currencies())
             .categories(merchant.categories())
             .amenities(merchant.amenities())
+            .useThrstFlow(merchant.useThrstFlow())
+            .thrstFullCapabilityUrl(merchant.thrstFullCapabilityUrl())
             .build();
    }
 
@@ -56,6 +58,8 @@ public class MerchantAttributesFactory {
             .operationDays(merchant.operationDays())
             .categories(merchant.categories())
             .reviewSummary(merchant.reviewSummary())
+            .useThrstFlow(merchant.useThrstFlow())
+            .thrstFullCapabilityUrl(merchant.thrstFullCapabilityUrl())
             .build();
    }
 }

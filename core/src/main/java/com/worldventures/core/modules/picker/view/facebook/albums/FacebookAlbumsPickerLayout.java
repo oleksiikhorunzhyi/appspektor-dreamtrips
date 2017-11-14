@@ -10,11 +10,11 @@ import android.util.AttributeSet;
 import com.worldventures.core.R;
 import com.worldventures.core.modules.facebook.exception.FacebookAccessTokenException;
 import com.worldventures.core.modules.facebook.service.command.GetAlbumsCommand;
-import com.worldventures.core.modules.picker.viewmodel.FacebookAlbumPickerViewModel;
 import com.worldventures.core.modules.picker.presenter.facebook.albums.FacebookAlbumsPickerPresenter;
 import com.worldventures.core.modules.picker.util.MediaPickerStep;
 import com.worldventures.core.modules.picker.view.facebook.FacebookMediaPickerLayout;
 import com.worldventures.core.modules.picker.view.facebook.photos.FacebookPhotosPickerLayout;
+import com.worldventures.core.modules.picker.viewmodel.FacebookAlbumPickerViewModel;
 
 import java.util.List;
 

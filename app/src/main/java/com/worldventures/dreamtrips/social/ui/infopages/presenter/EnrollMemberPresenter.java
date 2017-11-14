@@ -44,7 +44,9 @@ public class EnrollMemberPresenter extends AuthorizedStaticInfoPresenter<EnrollM
    }
 
    private void updateUrlWithLocation(@Nullable Location location) {
-      if (location == null) return;
+      if (location == null) {
+         return;
+      }
       url = staticPageProvider.getEnrollWithLocation(location.getLatitude(), location.getLongitude());
    }
 

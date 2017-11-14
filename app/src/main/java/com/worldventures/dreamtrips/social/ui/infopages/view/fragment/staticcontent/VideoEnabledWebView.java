@@ -73,6 +73,7 @@ public class VideoEnabledWebView extends WebView {
       super.loadData(data, mimeType, encoding);
    }
 
+   @SuppressWarnings("PMD.UseObjectForClearerAPI")
    @Override
    public void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String historyUrl) {
       addJavascriptInterface();

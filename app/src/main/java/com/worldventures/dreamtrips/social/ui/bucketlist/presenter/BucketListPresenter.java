@@ -119,7 +119,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
       }
 
       view.setItems(filteredItems);
-      if (!filteredItems.isEmpty()) view.hideEmptyView();
+      if (!filteredItems.isEmpty()) {
+         view.hideEmptyView();
+      }
    }
 
    public void itemClicked(BucketItem bucketItem) {
@@ -133,10 +135,13 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    private void openDetailsIfNeeded(BucketItem item) {
-      if (view == null || !view.isTabletLandscape()) return;
+      if (view == null || !view.isTabletLandscape()) {
+         return;
+      }
       //
-      if (item != null) openDetails(item);
-      else {
+      if (item != null) {
+         openDetails(item);
+      } else {
          view.hideDetailContainer();
       }
    }
@@ -189,7 +194,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    }
 
    public void itemMoved(int fromPosition, int toPosition) {
-      if (fromPosition == toPosition) return;
+      if (fromPosition == toPosition) {
+         return;
+      }
       bucketInteractor.bucketListActionPipe()
             .send(BucketListCommand.move(getOriginalPosition(fromPosition), getOriginalPosition(toPosition), type));
    }

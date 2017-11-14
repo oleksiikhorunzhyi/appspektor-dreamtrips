@@ -37,8 +37,7 @@ import timber.log.Timber;
       injects = {GroupConversationViewHolder.class, OneToOneConversationViewHolder.class, ClosedGroupConversationViewHolder.class,
             // adapters
             SwipeableContactsAdapter.class,
-
-            GroupChatEventDelegate.class,},
+            GroupChatEventDelegate.class},
       complete = false, library = true)
 public class MessengerModule {
 
@@ -72,7 +71,7 @@ public class MessengerModule {
 
    @Provides
    public AppNotification provideInAppNotification(App app) {
-      return new AppNotificationImpl(app);
+      return new AppNotificationImpl();
    }
 
    @Provides

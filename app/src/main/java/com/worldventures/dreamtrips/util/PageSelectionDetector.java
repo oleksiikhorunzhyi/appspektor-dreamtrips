@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.util;
 
 import android.support.v4.view.ViewPager;
 
-public class PageSelectionDetector {
+public final class PageSelectionDetector {
 
    private PageSelectionDetector() {
    }

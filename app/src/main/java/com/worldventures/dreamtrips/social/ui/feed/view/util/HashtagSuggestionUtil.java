@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.util;
 
-public class HashtagSuggestionUtil {
+public final class HashtagSuggestionUtil {
+
+   private HashtagSuggestionUtil() {
+   }
 
    public static String generateText(String descriptionText, String suggestion, int cursorPos) {
       int startReplace = calcStartPosBeforeReplace(descriptionText, cursorPos);
@@ -11,20 +14,24 @@ public class HashtagSuggestionUtil {
 
    public static int calcStartPosBeforeReplace(String descriptionText, int cursorPos) {
       String replaceableText = descriptionText.substring(0, cursorPos);
-      int hashPosition = replaceableText.lastIndexOf("#");
-      int spacePosition = replaceableText.lastIndexOf(" ");
+      int hashPosition = replaceableText.lastIndexOf('#');
+      int spacePosition = replaceableText.lastIndexOf(' ');
       if (hashPosition != -1 && spacePosition != -1) {
          return hashPosition > spacePosition ? hashPosition : spacePosition + 1;
       } else {
-         if (hashPosition != -1) return hashPosition;
-         else if (spacePosition != -1) return spacePosition + 1;
-         else return 0;
+         if (hashPosition != -1) {
+            return hashPosition;
+         } else if (spacePosition != -1) {
+            return spacePosition + 1;
+         } else {
+            return 0;
+         }
       }
    }
 
    public static int calEndPosBeforeReplace(String descriptionText, int cursorPos) {
       String replaceableText = descriptionText.substring(cursorPos);
-      int spacePosition = replaceableText.indexOf(" ");
+      int spacePosition = replaceableText.indexOf(' ');
       if (spacePosition != -1) {
          return cursorPos + spacePosition;
       } else {
@@ -34,7 +41,6 @@ public class HashtagSuggestionUtil {
 
    public static String replaceableText(String suggestion) {
       suggestion = suggestion.contains("#") ? suggestion : "#" + suggestion;
-      String toReplace = String.format("%s ", suggestion);
-      return toReplace;
+      return String.format("%s ", suggestion);
    }
 }

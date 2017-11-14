@@ -3,15 +3,16 @@ package com.messenger.ui.model;
 import android.support.annotation.StringDef;
 
 public class AttachmentMenuItem {
+
    public static final String LOCATION = "location";
    public static final String IMAGE = "image";
    public static final String CANCEL = "cancel";
 
+   private final String title;
+   private final String type;
+
    @StringDef({LOCATION, IMAGE, CANCEL})
    public @interface AttachmentType {}
-
-   private String title;
-   private String type;
 
    public AttachmentMenuItem(@AttachmentType String type, String title) {
       this.title = title;

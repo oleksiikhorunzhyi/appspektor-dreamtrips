@@ -7,7 +7,6 @@ import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -18,6 +17,7 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundl
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 
 import javax.inject.Inject;
 
@@ -78,7 +78,7 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
 
    @OnClick(R.id.bucket_main)
    void openBucketEntityDetails() {
-      router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+      router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create()
                   .visible(false)
                   .build())

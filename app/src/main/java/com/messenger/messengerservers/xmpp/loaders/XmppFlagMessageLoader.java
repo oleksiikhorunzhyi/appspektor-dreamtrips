@@ -53,7 +53,9 @@ public class XmppFlagMessageLoader implements FlagMessageLoader {
 
    private void processResponse(Stanza packet, Subscriber<? super FlagMessageDTO> subscriber, FlagMessageDTO flagMessageDTO) {
       FlagMessageIQ responseIq = (FlagMessageIQ) packet;
-      if (subscriber.isUnsubscribed()) return;
+      if (subscriber.isUnsubscribed()) {
+         return;
+      }
       if (TextUtils.equals(responseIq.getResult(), "success")) {
          subscriber.onNext(ImmutableFlagMessageDTO.copyOf(flagMessageDTO)
                .withMessageId(responseIq.getMessageId())

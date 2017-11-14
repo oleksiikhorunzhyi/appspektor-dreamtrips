@@ -5,11 +5,11 @@ import android.os.Bundle;
 import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.Feature;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
@@ -45,6 +45,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
 
    public ProfilePresenter() {
+      //do nothing
    }
 
    public ProfilePresenter(User user) {
@@ -54,7 +55,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    @Override
    public void restoreInstanceState(Bundle savedState) {
       super.restoreInstanceState(savedState);
-      if (savedState == null || feedItems == null) feedItems = new ArrayList<>();
+      if (savedState == null || feedItems == null) {
+         feedItems = new ArrayList<>();
+      }
    }
 
    @Override
@@ -74,7 +77,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    }
 
    void restoreItemsInView() {
-      if (!feedItems.isEmpty()) refreshFeedItems();
+      if (!feedItems.isEmpty()) {
+         refreshFeedItems();
+      }
    }
 
    @Override
@@ -161,7 +166,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
    }
 
    public boolean onLoadNext() {
-      if (feedItems.isEmpty()) return false;
+      if (feedItems.isEmpty()) {
+         return false;
+      }
       loadNext(feedItems.get(feedItems.size() - 1).getCreatedAt());
       return true;
    }
@@ -245,9 +252,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
 
       void openComments(FeedItem feedItem);
 
-      void openTripImages(Route route, TripImagesArgs tripImagesBundle);
+      void openTripImages(TripImagesArgs tripImagesBundle);
 
-      void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle);
+      void openBucketList(Class<? extends BucketTabsFragment> clazz, ForeignBucketTabsBundle foreignBucketBundle);
 
       void startLoading();
 

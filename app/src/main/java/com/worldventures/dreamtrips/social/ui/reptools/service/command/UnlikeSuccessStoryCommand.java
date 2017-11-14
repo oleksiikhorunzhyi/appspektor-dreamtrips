@@ -9,7 +9,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class UnlikeSuccessStoryCommand extends ApiActionCommand<UnlikeSuccessStoryHttpAction, Void> {
 
-   private int id;
+   private final int id;
 
    public UnlikeSuccessStoryCommand(int id) {
       this.id = id;

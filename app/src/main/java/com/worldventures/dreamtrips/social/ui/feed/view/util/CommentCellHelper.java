@@ -26,7 +26,7 @@ public class CommentCellHelper {
    @InjectView(R.id.date) TextView date;
    @InjectView(R.id.text) TextView text;
 
-   private Context context;
+   private final Context context;
    private Comment comment;
 
    public CommentCellHelper(Context context) {

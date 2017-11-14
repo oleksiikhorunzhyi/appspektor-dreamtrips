@@ -18,42 +18,62 @@ public abstract class DtlLocation {
 
    public abstract LocationSourceType locationSourceType();
 
-   @Nullable public abstract String id();
+   @Nullable
+   public abstract String id();
 
-   @Nullable public abstract String longName();
+   @Nullable
+   public abstract String longName();
 
-   @Nullable public abstract LatLng coordinates();
+   @Nullable
+   public abstract LatLng coordinates();
 
-   @Nullable public abstract List<DtlLocation> locatedIn();
+   @Nullable
+   public abstract List<DtlLocation> locatedIn();
 
-   @Nullable public abstract LocationType type();
+   @Nullable
+   public abstract LocationType type();
 
-   @Value.Default public boolean isExternal() {
+   @Value.Default
+   public boolean isExternal() {
       return true;
    }
 
-   @Value.Default public String analyticsName() {
-      if(isExternal() && locatedIn() != null) return String.format("%s:%s:%s", longName(), getLongNameFor(LocationType.STATE), getLongNameFor(LocationType.COUNTRY));
-      else return "-:-:-";
+   @Value.Default
+   public String analyticsName() {
+      if (isExternal() && locatedIn() != null) {
+         return String.format("%s:%s:%s", longName(), getLongNameFor(LocationType.STATE), getLongNameFor(LocationType.COUNTRY));
+      } else {
+         return "-:-:-";
+      }
    }
 
-   @Value.Derived public String provideFormattedLocation() {
-      if(coordinates() == null) return "";
+   @Value.Derived
+   public String provideFormattedLocation() {
+      if (coordinates() == null) {
+         return "";
+      }
       return String.format(Locale.US, "%1$f,%2$f", coordinates().latitude, coordinates().longitude);
    }
 
-   @Value.Derived public boolean isOutOfMinDistance(android.location.Location location) {
-      if (coordinates() == null) return false;
+   @Value.Derived
+   public boolean isOutOfMinDistance(android.location.Location location) {
+      if (coordinates() == null) {
+         return false;
+      }
       LatLng coordinates = DtlLocationHelper.asLatLng(location);
       return !DtlLocationHelper.checkMinDistance(coordinates(), coordinates);
    }
 
-   @Value.Derived public boolean isOutOfMaxDistance(LatLng location) {
-      if (coordinates() == null) return false;
+   @Value.Derived
+   public boolean isOutOfMaxDistance(LatLng location) {
+      if (coordinates() == null) {
+         return false;
+      }
       return !DtlLocationHelper.checkMaxDistance(coordinates(), location);
    }
 
-   @Value.Derived protected String getLongNameFor(LocationType type) {
+   @Value.Derived
+   protected String getLongNameFor(LocationType type) {
       DtlLocation location = Queryable.from(locatedIn())
             .firstOrDefault(tempLocation -> tempLocation.type() == type);
       return location == null ? "-" : location.longName();

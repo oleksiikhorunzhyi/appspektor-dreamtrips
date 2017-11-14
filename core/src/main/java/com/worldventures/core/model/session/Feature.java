@@ -7,17 +7,6 @@ import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class Feature {
-   @FeatureName public final String name;
-
-   public Feature(String name) {
-      this.name = name;
-   }
-
-   @Retention(SOURCE)
-   @StringDef({TRIPS, REP_TOOLS, SOCIAL, DTL, REP_SUGGEST_MERCHANT, BOOK_TRAVEL, BOOK_TRIP, MEMBERSHIP, WALLET, WALLET_PROVISIONING,
-                    BUCKET_LIST, TRIP_IMAGES})
-   public @interface FeatureName {}
-
    public static final String TRIPS = "trips";
    public static final String REP_TOOLS = "repTools";
    public static final String SOCIAL = "social";
@@ -32,4 +21,13 @@ public class Feature {
    public static final String TRIP_IMAGES = "tripImages";
    public static final String UNKNOWN = "unknown";
 
+   @FeatureName public final String name;
+
+   public Feature(String name) {
+      this.name = name;
+   }
+
+   @Retention(SOURCE)
+   @StringDef({TRIPS, REP_TOOLS, SOCIAL, DTL, REP_SUGGEST_MERCHANT, BOOK_TRAVEL, BOOK_TRIP, MEMBERSHIP, WALLET, WALLET_PROVISIONING})
+   public @interface FeatureName {}
 }

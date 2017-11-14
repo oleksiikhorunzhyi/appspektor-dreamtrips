@@ -14,14 +14,14 @@ import rx.schedulers.Schedulers;
 
 public class BackgroundUploadingInteractor {
 
-   private ActionPipe<PostProcessingCommand> postProcessingPipe;
-   private ActionPipe<ScheduleCompoundOperationCommand> scheduleOperationPipe;
-   private ActionPipe<StartNextCompoundOperationCommand> startNextCompoundPipe;
-   private ActionPipe<PauseCompoundOperationCommand> pauseCompoundOperationPipe;
-   private ActionPipe<RestoreCompoundOperationsCommand> restoreCompoundOperationsPipe;
-   private ActionPipe<ResumeCompoundOperationCommand> resumeCompoundOperationPipe;
-   private ActionPipe<CancelCompoundOperationCommand> cancelCompoundOperationPipe;
-   private ActionPipe<CancelAllCompoundOperationsCommand> cancelAllCompoundOperationsPipe;
+   private final ActionPipe<PostProcessingCommand> postProcessingPipe;
+   private final ActionPipe<ScheduleCompoundOperationCommand> scheduleOperationPipe;
+   private final ActionPipe<StartNextCompoundOperationCommand> startNextCompoundPipe;
+   private final ActionPipe<PauseCompoundOperationCommand> pauseCompoundOperationPipe;
+   private final ActionPipe<RestoreCompoundOperationsCommand> restoreCompoundOperationsPipe;
+   private final ActionPipe<ResumeCompoundOperationCommand> resumeCompoundOperationPipe;
+   private final ActionPipe<CancelCompoundOperationCommand> cancelCompoundOperationPipe;
+   private final ActionPipe<CancelAllCompoundOperationsCommand> cancelAllCompoundOperationsPipe;
 
    public BackgroundUploadingInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       postProcessingPipe = sessionActionPipeCreator.createPipe(PostProcessingCommand.class, Schedulers.io());

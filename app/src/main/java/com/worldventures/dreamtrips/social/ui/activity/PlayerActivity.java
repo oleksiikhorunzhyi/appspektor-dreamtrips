@@ -93,7 +93,9 @@ public class PlayerActivity extends ActivityWithPresenter<PlayerPresenter> imple
    }
 
    private void pausePlayer() {
-      if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
+      if (subscription != null && !subscription.isUnsubscribed()) {
+         subscription.unsubscribe();
+      }
       videoView.pause();
    }
 
@@ -137,15 +139,21 @@ public class PlayerActivity extends ActivityWithPresenter<PlayerPresenter> imple
             .subscribe(o -> {
                long duration = videoView.getDuration();
                long currentPosition = videoView.getCurrentPosition();
-               if (duration < 0) return;
+               if (duration < 0) {
+                  return;
+               }
                videoProgressStream.onNext(new Pair<>(currentPosition, duration));
 
-               if (duration - currentPosition <= ANALYTIC_CHECKING_INTERVAL) stopListenProgress();
+               if (duration - currentPosition <= ANALYTIC_CHECKING_INTERVAL) {
+                  stopListenProgress();
+               }
             });
    }
 
    private void stopListenProgress() {
-      if (!subscription.isUnsubscribed()) subscription.unsubscribe();
+      if (!subscription.isUnsubscribed()) {
+         subscription.unsubscribe();
+      }
       videoView.setOnCompletionListener(iMediaPlayer ->
             videoProgressStream.onNext(new Pair<>(iMediaPlayer.getDuration(), iMediaPlayer.getDuration())));
    }

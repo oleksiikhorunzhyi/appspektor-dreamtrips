@@ -3,11 +3,15 @@ package com.worldventures.dreamtrips.social.ui.membership.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.session.Feature
-import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMemberFragment
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment
+import com.worldventures.dreamtrips.social.ui.membership.view.fragment.InviteFragment
+import com.worldventures.dreamtrips.social.ui.membership.view.fragment.PodcastsFragment
+import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment
 import io.techery.janet.Janet
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -39,11 +43,11 @@ class MembershipPresenterSpec: PresenterBaseSpec({
             whenever(featureManager.available(Feature.MEMBERSHIP)).thenReturn(true)
 
             val screens = presenter.provideScreens()
-            assertTrue { screens.contains(Route.PRESENTATION_VIDEOS) }
-            assertTrue { screens.contains(Route.ENROLL_MEMBER) }
-            assertTrue { screens.contains(Route.ENROLL_MERCHANT) }
-            assertTrue { screens.contains(Route.INVITE) }
-            assertTrue { screens.contains(Route.PODCASTS) }
+            assertTrue { screens.contains(PresentationVideosFragment::class.java) }
+            assertTrue { screens.contains(EnrollMemberFragment::class.java) }
+            assertTrue { screens.contains(EnrollMerchantFragment::class.java ) }
+            assertTrue { screens.contains(InviteFragment::class.java) }
+            assertTrue { screens.contains(PodcastsFragment::class.java) }
          }
 
          it("should contain only presentation videos, enroll member screens") {
@@ -52,11 +56,12 @@ class MembershipPresenterSpec: PresenterBaseSpec({
             whenever(featureManager.available(Feature.MEMBERSHIP)).thenReturn(false)
 
             val screens = presenter.provideScreens()
-            assertTrue { screens.contains(Route.PRESENTATION_VIDEOS) }
-            assertTrue { screens.contains(Route.ENROLL_MEMBER) }
-            assertTrue { !screens.contains(Route.ENROLL_MERCHANT) }
-            assertTrue { !screens.contains(Route.INVITE) }
-            assertTrue { !screens.contains(Route.PODCASTS) }
+            assertTrue { screens.contains(PresentationVideosFragment::class.java) }
+            assertTrue { screens.contains(EnrollMemberFragment::class.java) }
+            assertTrue { !screens.contains(EnrollMerchantFragment::class.java ) }
+            assertTrue { !screens.contains(InviteFragment::class.java) }
+            assertTrue { !screens.contains(PodcastsFragment::class.java) }
+
          }
       }
    }
@@ -81,6 +86,6 @@ class MembershipPresenterSpec: PresenterBaseSpec({
          }
       }
 
-      fun List<FragmentItem>.contains(route: Route) = this.any{ it.route == route }
+      fun <T> List<FragmentItem>.contains(clazz: Class<T>) = this.any{ it.fragmentClazz == clazz }
    }
 }

@@ -41,11 +41,11 @@ import static com.worldventures.dreamtrips.social.ui.background_uploading.model.
 @CommandAction
 public class CreatePostCompoundOperationCommand extends Command<PostCompoundOperationModel<PostBody>> {
 
-   private @Nullable String text;
-   private @Nullable List<SelectedPhoto> selectedPhotos;
-   private @Nullable String selectedVideoPath;
-   private @Nullable Location location;
+   private final @Nullable String text;
+   private final @Nullable List<SelectedPhoto> selectedPhotos;
+   private final @Nullable Location location;
    private final CreateEntityBundle.Origin origin;
+   private @Nullable String selectedVideoPath;
 
    public CreatePostCompoundOperationCommand(@Nullable String text, @Nullable List<SelectedPhoto> selectedPhotos,
          CreateEntityBundle.Origin origin, @Nullable Location location) {
@@ -89,14 +89,22 @@ public class CreatePostCompoundOperationCommand extends Command<PostCompoundOper
    }
 
    private PostBody.Type obtainType() {
-      if (selectedVideoPath != null) return VIDEO;
-      if (selectedPhotos != null && !selectedPhotos.isEmpty()) return PHOTO;
+      if (selectedVideoPath != null) {
+         return VIDEO;
+      }
+      if (selectedPhotos != null && !selectedPhotos.isEmpty()) {
+         return PHOTO;
+      }
       return TEXT;
    }
 
    private PostBody createBody(PostBody.Type type) {
-      if (type == PHOTO) return createPostPhotoBody();
-      if (type == VIDEO) return createPostVideoBody();
+      if (type == PHOTO) {
+         return createPostPhotoBody();
+      }
+      if (type == VIDEO) {
+         return createPostVideoBody();
+      }
       return createPostBody();
    }
 

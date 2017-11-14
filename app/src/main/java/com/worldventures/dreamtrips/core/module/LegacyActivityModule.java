@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerActivityModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
-import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
+import com.worldventures.wallet.di.SmartCardModule;
 
 import java.util.ArrayList;
 import java.util.List;

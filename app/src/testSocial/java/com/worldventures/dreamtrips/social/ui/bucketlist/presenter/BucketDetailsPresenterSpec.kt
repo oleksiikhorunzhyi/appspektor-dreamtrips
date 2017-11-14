@@ -5,7 +5,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.common.Injector
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.DiningItem

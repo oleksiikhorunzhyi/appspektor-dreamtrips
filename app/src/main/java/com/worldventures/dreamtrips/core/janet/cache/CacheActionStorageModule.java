@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.common.service.storage.NotificationC
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.TransactionsStorage;
 
 import javax.inject.Singleton;
 
@@ -50,5 +51,11 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideNotificationCounterStorage(SnappyRepository socialSnappyRepository) {
       return new NotificationCounterStorage(socialSnappyRepository);
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideTransactionsStorage() {
+      return new TransactionsStorage();
    }
 }

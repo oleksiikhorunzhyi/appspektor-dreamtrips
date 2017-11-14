@@ -30,8 +30,12 @@ public abstract class PhotoConverter<T extends com.worldventures.dreamtrips.api.
       photo.setLocation(mapperyContext.convert(apiPhoto.location(), Location.class));
       photo.setTags(new ArrayList<>(apiPhoto.tags()));
 
-      if (apiPhoto.width() != null) photo.setWidth(apiPhoto.width());
-      if (apiPhoto.height() != null) photo.setHeight(apiPhoto.height());
+      if (apiPhoto.width() != null) {
+         photo.setWidth(apiPhoto.width());
+      }
+      if (apiPhoto.height() != null) {
+         photo.setHeight(apiPhoto.height());
+      }
 
       photo.setPhotoTagsCount(apiPhoto.photoTagsCount());
       photo.setPhotoTags(mapperyContext.convert(apiPhoto.photoTags(), PhotoTag.class));

@@ -13,7 +13,7 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.api.Status;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
@@ -85,7 +85,9 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
    }
 
    private void fetchAndSetLocation() {
-      if (!TextUtils.isEmpty(input.getText())) return;
+      if (!TextUtils.isEmpty(input.getText())) {
+         return;
+      }
       showProgress();
       bind(getPresenter().getLocation()).subscribe((Action1<Location>) location -> {
          if (location != null) {
@@ -115,6 +117,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
             SoftInputUtil.hideSoftInputMethod(getActivity());
             getPresenter().onDone(composeLocation());
             router.back();
+         default:
+            break;
       }
       return true;
    }
@@ -141,13 +145,16 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
 
    @OnTextChanged(value = R.id.input_location, callback = OnTextChanged.Callback.BEFORE_TEXT_CHANGED)
    void onBeforeTextChanged(CharSequence text) {
-      if (input.getText().length() == getResources().getInteger(R.integer.social_location_name_max_length))
+      if (input.getText().length() == getResources().getInteger(R.integer.social_location_name_max_length)) {
          informUser(R.string.location_name_length_message);
+      }
    }
 
    @OnTextChanged(R.id.input_location)
    void onTextChanged(CharSequence text) {
-      if (text.length() == 1) getPresenter().stopDetectLocation();
+      if (text.length() == 1) {
+         getPresenter().stopDetectLocation();
+      }
    }
 
    @OnClick(R.id.clear_location)
@@ -185,6 +192,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
                   break;
             }
             activityResultDelegate.clear();
+            break;
+         default:
             break;
       }
    }

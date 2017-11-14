@@ -5,21 +5,21 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlCommentReviewsPresenter extends DtlPresenter<DtlCommentReviewScreen, ViewState.EMPTY> {
 
-    void onBackPressed();
+   void onBackPressed();
 
-    void navigateToDetail(String message);
+   void navigateToDetail(String message);
 
-    boolean validateComment();
+   boolean validateComment();
 
-    void sendAddReview(String description, Integer rating, boolean verified);
+   void sendAddReview(String description, Integer rating, boolean verified);
 
-    int maximumCharactersAllowed();
+   int maximumCharactersAllowed();
 
-    int minimumCharactersAllowed();
+   int minimumCharactersAllowed();
 
-    void onPostClick();
+   void onPostClick();
 
-    void handleStringReview(String stringReview);
+   void handleStringReview(String stringReview);
 
-    void navigateToListReview(String message);
+   void navigateToListReview(String message);
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.android.gms.iid.InstanceID;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.service.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.api.push_notifications.UnsubscribeFromPushNotificationsHttpAction;
@@ -30,10 +30,11 @@ public class UnsubscribeFromPushCommand extends Command<Void> implements Injecta
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      final String pushToken = snappyRepository.getGcmRegToken();
-      final String sessionToken = appSessionHolder.get().get().getApiToken();
-      if (TextUtils.isEmpty(pushToken)) callback.onSuccess(null);
-      else {
+      String pushToken = snappyRepository.getGcmRegToken();
+      if (TextUtils.isEmpty(pushToken)) {
+         callback.onSuccess(null);
+      } else {
+         String sessionToken = appSessionHolder.get().get().apiToken();
          UnsubscribeFromPushNotificationsHttpAction unsubscribeFromPushAction = new UnsubscribeFromPushNotificationsHttpAction(pushToken);
          unsubscribeFromPushAction.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(sessionToken));
          janet.createPipe(UnsubscribeFromPushNotificationsHttpAction.class, Schedulers.io())

@@ -11,10 +11,9 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.ShareType;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
@@ -23,10 +22,12 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.EditPhotoFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.FullScreenPhotoActionPanelDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
@@ -52,7 +53,7 @@ public class FullscreenPhotoFragment extends BaseFragmentWithArgs<FullscreenPhot
 
    @Inject Router router;
    @Inject @ForActivity Injector injector;
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject SocialViewPagerState socialViewPagerState;
 
    @InjectView(R.id.tag) ImageView tag;
@@ -98,11 +99,11 @@ public class FullscreenPhotoFragment extends BaseFragmentWithArgs<FullscreenPhot
 
    @Override
    public void editPhoto(EditPhotoBundle bundle) {
-      router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
+      router.moveTo(EditPhotoFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_details_floating)
             .fragmentManager(getFragmentManager())
             .build());
-      router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forFragment()
+      router.moveTo(EditPhotoFragment.class, NavigationConfigBuilder.forFragment()
             .containerId(R.id.container_details_floating)
             .backStackEnabled(false)
             .fragmentManager(getFragmentManager())
@@ -276,12 +277,12 @@ public class FullscreenPhotoFragment extends BaseFragmentWithArgs<FullscreenPhot
       data.setImageUrl(imageUrl);
       data.setText(text == null ? "" : text);
       data.setShareType(type);
-      router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(data).build());
+      router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
    }
 
    @Override
    public void openUser(UserBundle bundle) {
-      router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
             .data(bundle)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build());

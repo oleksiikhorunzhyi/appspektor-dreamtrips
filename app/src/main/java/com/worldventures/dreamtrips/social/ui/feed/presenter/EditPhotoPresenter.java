@@ -33,11 +33,15 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
 
    @Override
    public void takeView(View view) {
-      if (cachedCreationItems.size() == 0) cachedCreationItems.add(createItemFromPhoto(photo));
+      if (cachedCreationItems.size() == 0) {
+         cachedCreationItems.add(createItemFromPhoto(photo));
+      }
       //
       super.takeView(view);
       //
-      if (location == null) updateLocation(photo.getLocation());
+      if (location == null) {
+         updateLocation(photo.getLocation());
+      }
    }
 
    @Override

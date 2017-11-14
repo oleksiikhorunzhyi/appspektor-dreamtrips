@@ -35,6 +35,8 @@ public class RemovingTransactionConfigBuilder extends NavigationConfigBuilder {
          reasonBuilder.append("fragmentManager is null\n");
          corrupted = true;
       }
-      if (corrupted) throw new IllegalStateException(reasonBuilder.toString());
+      if (corrupted) {
+         throw new IllegalStateException(reasonBuilder.toString());
+      }
    }
 }

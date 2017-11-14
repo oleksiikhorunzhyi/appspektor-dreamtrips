@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
@@ -73,7 +74,9 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    @Override
    public void onRestoreInstanceState(Bundle instanceState) {
       super.onRestoreInstanceState(instanceState);
-      if (state.isPopupShowing()) getView().toggleSearchPopupVisibility(true);
+      if (state.isPopupShowing()) {
+         getView().toggleSearchPopupVisibility(true);
+      }
       this.screenMode = state.getScreenMode();
    }
 
@@ -159,6 +162,20 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    @Override
+   public void onTransactionClicked() {
+      merchantInteractor.getTransactionsPipe()
+            .createObservableResult(GetTransactionsCommand.readCurrentTransactionsCommand())
+            .compose(bindViewIoToMainComposer())
+            .subscribe(getTransactionsCommand -> {
+               if (getTransactionsCommand.getResult() == null || getTransactionsCommand.getResult().size() == 0) {
+                  getView().showNoTransactionMessage();
+               } else {
+                  getView().goToTransactionPage();
+               }
+            });
+   }
+
+   @Override
    public void applySearch(String query) {
       filterDataInteractor.applySearch(query);
    }
@@ -219,6 +236,8 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
                   .build();
             locationInteractor.changeSourceLocation(dtlLocation);
             break;
+         default:
+            break;
       }
    }
 
@@ -226,8 +245,9 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    public void loadNearMeRequested() {
       screenMode = DtlLocationChangePresenterImpl.ScreenMode.AUTO_NEAR_ME;
 
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
+      }
 
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
@@ -297,9 +317,11 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void onLocationError(Throwable e) {
-      if (e instanceof LocationDelegate.LocationException)
+      if (e instanceof LocationDelegate.LocationException) {
          getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-      else onLocationResolutionDenied();
+      } else {
+         onLocationResolutionDenied();
+      }
    }
 
    private void connectNearbyLocations() {
@@ -313,7 +335,9 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
-      if (throwable instanceof CancelException) return;
+      if (throwable instanceof CancelException) {
+         return;
+      }
       getView().informUser(action.getErrorMessage());
       getView().hideProgress();
    }

@@ -4,7 +4,7 @@ import android.support.v4.util.Pair
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.EntityStateHolder
-import com.worldventures.dreamtrips.common.Injector
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem
@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBuck
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand
-import io.techery.janet.CancelException
 import io.techery.janet.command.test.Contract
 import junit.framework.Assert.assertFalse
 import org.jetbrains.spek.api.dsl.Spec

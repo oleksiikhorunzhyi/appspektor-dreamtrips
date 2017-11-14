@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
-   private String fallbackKey;
+public final class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
+
+   private final String fallbackKey;
 
    public LowercaseEnumTypeAdapterFactory(String fallbackKey) {
       this.fallbackKey = LowercaseEnumTypeAdapter.toLowercase(fallbackKey);

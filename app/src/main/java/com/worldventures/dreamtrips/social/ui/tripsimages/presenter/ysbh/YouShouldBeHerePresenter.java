@@ -28,7 +28,9 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
    @Override
    public void onViewTaken() {
       super.onViewTaken();
-      if (currentItems == null) currentItems = new ArrayList<>();
+      if (currentItems == null) {
+         currentItems = new ArrayList<>();
+      }
       view.updatePhotos(currentItems);
       subscribeToNewItems();
       reload();
@@ -53,7 +55,9 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
                      view.finishLoading();
                      loading = false;
                      lastPageReached = getYSBHPhotosCommand.lastPageReached();
-                     if (getYSBHPhotosCommand.getPage() == 1) currentItems.clear();
+                     if (getYSBHPhotosCommand.getPage() == 1) {
+                        currentItems.clear();
+                     }
                      currentItems.addAll(getYSBHPhotosCommand.getResult());
                      view.updatePhotos(currentItems);
                   }));

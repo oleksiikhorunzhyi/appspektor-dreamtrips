@@ -25,7 +25,9 @@ public abstract class BasePhotoAttachmentPreviewView implements PhotoAttachmentP
    protected Animator.AnimatorListener pulseListener = new SimpleAnimatorListener() {
       @Override
       public void onAnimationEnd(Animator animator) {
-         if (pulseAnimationSet != null) pulseAnimationSet.start();
+         if (pulseAnimationSet != null) {
+            pulseAnimationSet.start();
+         }
       }
    };
 
@@ -36,7 +38,9 @@ public abstract class BasePhotoAttachmentPreviewView implements PhotoAttachmentP
    @Override
    public void showPreview(List<Uri> attachments, boolean animate) {
       if (animate) {
-         if (pulseAnimationSet != null) return;
+         if (pulseAnimationSet != null) {
+            return;
+         }
          showPulseAnimation();
       } else {
          if (pulseAnimationSet != null) {

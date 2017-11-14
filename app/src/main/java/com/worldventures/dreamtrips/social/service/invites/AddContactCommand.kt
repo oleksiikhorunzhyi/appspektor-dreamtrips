@@ -4,9 +4,9 @@ import android.accounts.AccountManager
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.provider.ContactsContract
-import com.worldventures.core.janet.dagger.InjectableAction
 import com.worldventures.dreamtrips.social.domain.entity.Contact
 import com.worldventures.dreamtrips.social.domain.entity.InviteType
+import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
 import java.util.*

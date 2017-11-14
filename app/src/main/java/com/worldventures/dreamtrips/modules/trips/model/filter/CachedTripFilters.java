@@ -16,6 +16,7 @@ public class CachedTripFilters implements Serializable {
    private List<RegionModel> regions = new ArrayList<>();
 
    public CachedTripFilters() {
+      //do nothing
    }
 
    public CachedTripFilters(List<RegionModel> regions, List<ActivityModel> activities) {

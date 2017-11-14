@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <!-- Common -->
+   <string name="wallet_next_label">Siguiente</string>
+   <string name="wallet_done_label">Listo</string>
+   <string name="wallet_continue_label">Continuar</string>
+   <string name="wallet_got_it_label">¡Entendido!</string>
+
+   <string name="wallet">flye SmartCard</string>
+   <string name="wallet_dashboard_title">Mi tarjeta flye SmartCard</string>
+   <string name="wallet_wizard_title">flye SmartCard</string>
+   <string name="wallet_input_data_is_incorrect">Los datos introducidos son incorrectos</string>
+   <string name="wallet_bank_card_good_thru">VENCIMIENTO</string>
+   <string name="wallet_smart_card_is_disconnected">La SmartCard está desconectada</string>
+   <string name="wallet_no_internet_connection">No hay conexión a internet</string>
+
+   <!--card alias-->
+   <string name="wallet_wizard_card_alias_subtitle"> Escribe un nombre para tu smart card </string>
+   <string name="wallet_wizard_card_alias_hint">Por ejemplo: Smart Card de Laura</string>
+   <string name="wallet_wizard_card_alias_format_error">El nombre de la tarjeta solo puede contener letras y más de 2 caracteres</string>
+   <string name="wallet_wizard_card_alias_was_setup">Se ha agregado el nombre de la tarjeta</string>
+   <string name="wallet_wizard_card_alias_setup">Establecer nombre de tarjeta</string>
+
+   <!--edit profile-->
+   <string name="wallet_wizard__welcom_screen_title">Configurar la tarjeta SmartCard flye</string>
+   <string name="wallet_edit_profile_subtitle">Establece la foto y el nombre que te gustaría que figure en tu tarjeta.</string>
+   <string name="wallet_edit_profile_name_hint">Ingresa tu nombre</string>
+   <string name="wallet_edit_profile_progress_dialog">Cargar información a la tarjeta Smart Card</string>
+   <string name="wallet_edit_profile_success_dialog">La información fue cargada</string>
+   <string name="wallet_edit_profile_name_format_title">¡Formato de nombre equivocado!</string>
+   <string name="wallet_edit_profile_name_format_detail">Debes introducir tu nombre y apellido (el segundo nombre es opcional) Cada parte puede contener de 2 a 21 letras</string>
+   <string name="wallet_edit_profile_avatar_not_chosen">Selecciona una foto para la Smart Card</string>
+
+   <!--pin setup-->
+   <string name="wallet_wizard_setup_pin_title">Definir PIN</string>
+   <string name="wallet_wizard_setup_pin_header">Establece tu PIN en el panel táctil\nen 4 movimientos.</string>
+   <string name="wallet_wizard_setup_new_pin_header">Define el nuevo PIN en el panel táctil de la smart card con 4 movimientos: pulsando y deslizando.</string>
+   <string name="wallet_wizard_setup_progress">Establece tu PIN en el panel táctil de la smart card...</string>
+   <string name="wallet_wizard_setup_error">Ocurrió un error. Inténtalo de nuevo. </string>
+   <string name="wallet_wizard_setup_new_pin_success">¡Nuevo PIN establecido!</string>
+
+   <!--pin is set-->
+   <string name="wallet_wizard_pin_is_set">¡Nuevo PIN establecido!</string>
+   <string name="wallet_wizard_pin_is_set_suggestion">Ahora empieza a cargar tarjetas de crédito y débito.</string>
+
+   <!--splash-->
+   <string name="wallet_wizard_splash_title1">Prepárate para volar alto</string>
+   <string name="wallet_wizard_splash_title2">Ahora, debes aceptar las Condiciones de uso.</string>
+   <string name="wallet_wizard_splash_review_btn">Términos y Condiciones</string>
+
+   <string name="wallet_wizard_scan_proposal">Lee el reverso de tu SmartCard flye™ para configurarla</string>
+   <string name="wallet_wizard_scan_start_btn">Leer tarjeta</string>
+   <string name="wallet_wizard_scan_title">Leer SmartCard flye</string>
+
+   <string name="wallet_wizard_scan_barcode_header">Coloca el código de la tarjeta SmartCard flye™ en el cuadro de visión.</string>
+   <string name="wallet_wizard_scan_barcode_footer_title">¿No se lee?</string>
+   <string name="wallet_wizard_scan_barcode_footer_btn">Introduce la ID manualmente</string>
+   <string name="waller_wizard_scan_barcode_progress_label">Conéctate a la SmartCard... </string>
+
+   <string name="wallet_add_credit_card">Agregar tarjeta de crédito</string>
+   <string name="wallet_add_debit_card">Agregar tarjeta de débito</string>
+   <string name="wallet_payment_cards_title">Tarjetas de pago</string>
+
+   <!--bar code manual-->
+   <string name="wallet_wizard_manual_input_header">Introduce el número de 10 dígitos ubicado debajo del código de barras.</string>
+   <string name="wallet_wizard_manual_input_title">Número de SmartCard flye™ </string>
+   <string name="wallet_wizard_bar_code_validation_error">Número de código de barras incorrecto</string>
+   <string name="wallet_bank_name_text_holder">Nombre del banco</string>
+
+   <!--details-->
+   <string name="wallet_card_details_label_billing_address">Dirección de facturación</string>
+   <string name="wallet_card_details_button_edit_billing_address">Editar la dirección de facturación</string>
+   <string name="wallet_card_details_button_delete_card">Eliminar tarjeta</string>
+   <string name="wallet_card_details_progress_delete">Eliminando %1$s…</string>
+   <string name="wallet_card_details_delete_card_dialog_title">Eliminar tarjeta de pago</string>
+   <string name="wallet_card_details_delete_card_dialog_content">¿Estás seguro?</string>
+
+   <!--settings-->
+   <string name="wallet_card_settings_title">Configuraciones</string>
+   <string name="wallet_card_settings_device_section_header">Estos ajustes se pueden cambiar para ahorrar batería y optimizar el desempeño de la tarjeta inteligente flye™.</string>
+   <string name="wallet_card_settings_stealth_mode">Mantén mi identidad en privado</string>
+   <string name="wallet_card_settings_lock">Bloquear tarjeta</string>
+   <string name="wallet_card_settings_firmware_update">Actualizar SmartCard flye</string>
+   <string name="wallet_card_settings_reset_pin">Restablecer PIN</string>
+   <string name="wallet_card_settings_factory_reset">Restablecer SmartCard flye a valores de fábrica</string>
+   <string name="wallet_card_settings_disable_default_payment_card">Desactivar la tarjeta de pago por omisión después de</string>
+   <string name="wallet_card_settings_auto_delete_cards">Borrar automáticamente la tarjeta SmartCard flye después de</string>
+   <string name="wallet_card_settings_stealth_mode_off">Se ha desactivado el modo de robo </string>
+   <string name="wallet_card_settings_stealth_mode_on">Se ha activado el modo de robo</string>
+   <string name="wallet_card_settings_unlock_error">No se admite el desbloqueo </string>
+
+   <!--card list-->
+   <string name="wallet_card_list_title">Mi tarjeta flye SmartCard</string>
+   <string name="dashboard_default_card_stack_title">Por omisión</string>
+   <string name="wallet_wizard_default_card_label">POR OMISIÓN</string>
+   <string name="wallet_wizard_empty_card_list_label">Agrega tarjetas de crédito y débito a tu SmartCard flye™</string>
+   <string name="wallet_wizard_full_card_list_error_message">Has alcanzado el nivel máximo de 10 tarjetas.  Elimina una o más tarjetas para continuar.</string>
+   <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
+   <string name="wallet_wizard_no_connection_to_card_title">tarjeta flye no vinculada</string>
+   <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
+
+   <!--add card details-->
+   <string name="wallet_add_card_details_title">Detalles de tarjeta</string>
+   <string name="wallet_add_card_details_hint_enter_cvv">Introducir CVV </string>
+   <string name="wallet_add_card_details_hint_nickname_card">Alias de tarjeta (opcional)</string>
+   <string name="wallet_add_card_details_hint_address1">Dirección 1</string>
+   <string name="wallet_add_card_details_hint_address2">Dirección 2 (opcional)</string>
+   <string name="wallet_add_card_details_hint_city">Ciudad</string>
+   <string name="wallet_add_card_details_hint_state">Estado</string>
+   <string name="wallet_add_card_details_hint_zip">Código postal</string>
+   <string name="wallet_add_card_details_button_confirm">Confirmar</string>
+   <string name="wallet_add_card_details_cvv_label">Número CVV</string>
+   <string name="wallet_add_card_details_billing_address_label">Dirección de facturación</string>
+   <string name="wallet_add_card_details_option_set_as_default_card">Establecer como tarjeta de pago por omisión</string>
+   <string name="wallet_add_card_details_error_message">Algunos de los campos obligatorios están vacíos o contienen datos incorrectos</string>
+   <string name="wallet_add_card_details_default_card_exist_dialog_text">Tu tarjeta por omisión %1$s será reemplazada con esta tarjeta.  ¿Deseas continuar?</string>
+
+   <!--card type-->
+   <string name="wallet_card_financial_service_master_card">Master Card</string>
+   <string name="wallet_card_financial_service_visa">Visa</string>
+   <string name="wallet_card_financial_service_discover">Descubrir</string>
+   <string name="wallet_card_financial_service_amex">Amex</string>
+
+   <string name="wallet_card_list_records_connected">%1$d tarjetas cargadas</string>
+   <string name="wallet_card_list_record_connected">%1$d tarjeta cargada</string>
+   <string name="wallet_dashboard_unlock_error">No se admite el desbloqueo </string>
+   <string name="wallet_dashboard_flye_firmware_update">Actualizar SmartCard flye</string>
+
+   <!--charging-->
+   <string name="wallet_charging_swiping_screen_title">Agregar tarjeta de pago</string>
+   <string name="wallet_charging_swiping_screen_instruction">Conecta la tarjeta flye™ al cargador y desliza las tarjetas de crédito o débito.</string>
+   <string name="wallet_charging_swiping_screen_notes">Asegúrate de que la tarjeta flye™ esté activada y que las dos luces LED del cargador estén encendidas.</string>
+   <string name="wallet_wizard_charging_swipe_error">Lectura de tarjeta incorrecta.  Inténtalo otra vez</string>
+   <string name="wallet_terms_and_conditions_header">Términos y Condiciones</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">Aceptar</string>
+   <string name="wallet_terms_and_conditions_try_again">Intentarlo de nuevo</string>
+   <string name="wallet_terms_and_conditions_load_failed">No se pudieron obtener las condiciones de uso</string>
+   <string name="wallet_terms_and_conditions_accept_failed">Error al aceptar los términos y condiciones</string>
+
+   <!--set up smart card-->
+   <string name="wallet_wizard_welcome_title">flye SmartCard</string>
+   <string name="wallet_wizard_welcome_greeting">¡Hola %1$s !</string>
+   <string name="wallet_wizard_welcome_platinum_user">Lleva tu membresía platino a nuevos niveles con flye™.</string>
+   <string name="wallet_wizard_welcome_gold_user">Lleva tu membresía oro a nuevos niveles con flye™.</string>
+   <string name="wallet_wizard_welcome_button_text">Configurar</string>
+
+   <string name="wallet_record_type_credit">Crédito</string>
+   <string name="wallet_record_type_debit">Débito</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_disable_default_card_title">Desactivar el pago por omisión después de</string>
+   <string name="wallet_settings_disable_default_card_description">Establece un temporizador para desactivar tu tarjeta de pago después de un periodo de no conectividad</string>
+   <string name="wallet_settings_disable_default_card_2_hours">2 horas</string>
+   <string name="wallet_settings_disable_default_card_4_hours">4 horas</string>
+   <string name="wallet_settings_disable_default_card_6_hours">6 horas</string>
+   <string name="wallet_settings_disable_default_card_8_hours">8 horas</string>
+   <string name="wallet_settings_disable_default_card_12_hours">12 horas</string>
+   <string name="wallet_settings_disable_default_card_24_hours">24 horas</string>
+   <string name="wallet_settings_disable_default_card_48_hours">48 horas</string>
+   <string name="wallet_settings_disable_default_card_1_week">1 semana</string>
+   <string name="wallet_settings_disable_default_card_1_month">1 mes</string>
+   <string name="wallet_settings_disable_default_card_never">Nunca</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_clear_flye_card_title">Borrar automáticamente la tarjeta SmartCard flye después de</string>
+   <string name="wallet_settings_clear_flye_card_description">Establece un temporizador para borrar todo el contenido de tu tarjeta inteligente flye después de un periodo de inactividad.</string>
+   <string name="wallet_settings_clear_flye_card_2_hours">2 horas</string>
+   <string name="wallet_settings_clear_flye_card_4_hours">4 horas</string>
+   <string name="wallet_settings_clear_flye_card_6_hours">6 horas</string>
+   <string name="wallet_settings_clear_flye_card_8_hours">8 horas</string>
+   <string name="wallet_settings_clear_flye_card_12_hours">12 horas</string>
+   <string name="wallet_settings_clear_flye_card_24_hours">24 horas</string>
+   <string name="wallet_settings_clear_flye_card_48_hours">48 horas</string>
+   <string name="wallet_settings_clear_flye_card_1_week">1 semana</string>
+   <string name="wallet_settings_clear_flye_card_1_month">1 mes</string>
+   <string name="wallet_settings_clear_flye_card_never">Nunca</string>
+
+   <!--firmware-->
+   <string name="wallet_settings_last_version_title">Actualizar SmartCard flye</string>
+   <string name="wallet_settings_version">Versión %1$s</string>
+   <string name="wallet_settings_last_version">Tu SmartCard flye está actualizada con la última versión</string>
+   <string name="wallet_settings_latest_dt_version_required">Se requiere la última versión de DreamTrips para esta actualización.</string>
+   <string name="wallet_settings_update_dt_app">Actualizar DreamTrips</string>
+   <string name="wallet_settings_update_size">%1$s</string>
+   <string name="wallet_settings_version_latest">Ultima versión %1$s</string>
+   <string name="wallet_settings_version_current">Versión actual %1$s</string>
+   <string name="wallet_settings_version_whats_new">Novedades</string>
+   <string name="wallet_settings_download_install">Descargar e instalar</string>
+
+   <!-- firmware settings-->
+   <string name="wallet_firmware_space_alert_title">Espacio insuficiente para descargar</string>
+   <string name="wallet_firmware_space_alert_description">Necesitas liberar %1$s para descargar la actualización.  Puedes administrar el almacenamiento en los ajustes.</string>
+   <string name="wallet_firmware_space_alert_cancel_action">Cancelar</string>
+   <string name="wallet_firmware_space_alert_settings_action">Configuraciones</string>
+
+   <!--factory reset-->
+   <string name="wallet_factory_reset_title">Restablecer SmartCard flye a valores de fábrica</string>
+   <string name="wallet_factory_reset_enter_pin_text">Introduce tu PIN en la SmartCard flye™ para restablecer los valores de fábrica.</string>
+   <string name="wallet_factory_reset_card_reset_text">Tu tarjeta SmartCard flye™ fue restablecida a los valores de fábrica.</string>
+
+   <!--firmware download-->
+   <string name="wallet_firmware_download_header">Actualizar SmartCard flye</string>
+   <string name="wallet_firmware_download_text">Descargando actualización</string>
+   <string name="wallet_firmware_download_cancel_action">Cancelar</string>
+
+   <!-- firmware install-->
+   <string name="wallet_firmware_install_header">Actualizar SmartCard flye</string>
+   <string name="wallet_firmware_install_text">Instalando actualización</string>
+   <string name="wallet_firmware_install_sub_text">No desactivar la tarjeta SmartCard flye</string>
+   <string name="wallet_firmware_install_error_alert_title">Error de instalación</string>
+   <string name="wallet_firmware_install_error_alert_content"> No se pudo completar la instalación de la actualización.  ¿Deseas intentarlo de nuevo? </string>
+   <string name="wallet_firmware_install_error_alert_content_customer_support">Para recibir asistencia, ponte en contacto con la Asistencia al cliente llamando al</string>
+   <string name="wallet_firmware_install_customer_support_phone_number">(855) 999–3593</string>
+   <string name="wallet_firmware_install_error_retry_action">Volver a intentarlo</string>
+   <string name="wallet_firmware_install_error_cancel_action">Cancelar</string>
+
+   <!-- firmware success install-->
+   <string name="wallet_firmware_install_success_header">Actualizar SmartCard flye</string>
+   <string name="wallet_firmware_install_success_sub_title">SmartCard flye actualizada correctamente a la versión %1$s</string>
+   <string name="wallet_firmware_install_success_title">Actualización exitosa</string>
+   <string name="wallet_firmware_install_success_action_button">Listo</string>
+
+   <!--wizard checks-->
+   <string name="wallet_wizard_checks_header">¡Te damos la bienvenida a la actualización de la tarjeta SmartCard flye™! </string>
+   <string name="wallet_wizard_checks_header2">Antes de empezar, verifica si se cumplen las siguientes condiciones:</string>
+   <string name="wallet_wizard_checks_title">flye SmartCard</string>
+   <string name="wallet_wizard_checks_bluetooth_is_not_supported">Este dispositivo no admite Bluetooth Bajo Consumo.</string>
+   <string name="wallet_wizard_checks_bluetooth_not_enable">Bluetooth no activado</string>
+   <string name="wallet_wizard_checks_bluetooth_enable">Bluetooth activado</string>
+   <string name="wallet_wizard_checks_network_not_available">No hay conexión a Internet</string>
+   <string name="wallet_wizard_checks_network_available">Conectado a Internet</string>
+
+   <!--pre installation check-->
+   <string name="wallet_firmware_pre_installation_title">Actualizar SmartCard flye</string>
+   <string name="wallet_firmware_pre_installation_header">Para instalar la actualización, realiza lo siguiente:</string>
+   <string name="wallet_firmware_pre_installation_bluetooth">Activar Bluetooth y conectar a la tarjeta SmartCard flye</string>
+   <string name="wallet_firmware_pre_installation_connection">Activa la tarjeta SmartCard flye</string>
+   <string name="wallet_firmware_pre_installation_charging">Asegúrate de que tu SmartCard flye™ esté cargada un 50%</string>
+   <string name="wallet_firmware_pre_installation_button">Instalar</string>
+   <string name="wallet_firmware_pre_installation_install_later">Instalar después</string>
+
+   <!--smart card connection-->
+   <string name="wallet_smartcard_connected_label">SmartCard conectada</string>
+   <string name="wallet_smartcard_disconnected_label">SmartCard no conectada </string>
+   <string name="wallet_smartcard_connection_try_description"> Conecta la SmartCard e inténtalo de nuevo. </string>
+
+   <!-- Power On -->
+   <string name="wallet_wizard_power_on_title">flye SmartCard</string>
+   <string name="wallet_wizard_power_on_header">Enciende tu SmartCard flye™ deslizando sobre el chip.</string>
+
+   <!--puck connection screen-->
+   <string name="wallet_puck_connection_title">Actualización de Smart Card</string>
+   <string name="wallet_puck_connection_comment">Asegúrate de que tu tarjeta inteligente flye esté conectada al cargador.</string>
+</resources>

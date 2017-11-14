@@ -27,9 +27,13 @@ public class VideoMediaEntity extends BaseMediaEntity<Video> {
 
    public static final Creator<VideoMediaEntity> CREATOR = new Creator<VideoMediaEntity>() {
       @Override
-      public VideoMediaEntity createFromParcel(Parcel source) {return new VideoMediaEntity(source);}
+      public VideoMediaEntity createFromParcel(Parcel source) {
+         return new VideoMediaEntity(source);
+      }
 
       @Override
-      public VideoMediaEntity[] newArray(int size) {return new VideoMediaEntity[size];}
+      public VideoMediaEntity[] newArray(int size) {
+         return new VideoMediaEntity[size];
+      }
    };
 }

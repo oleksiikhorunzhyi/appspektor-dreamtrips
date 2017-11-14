@@ -1,0 +1,40 @@
+ext {
+   provideDep = { bundle ->
+      return bundle.entrySet().first().value
+   }
+
+   eachDependency = { deps, Closure c ->
+      deps.each {
+         def entry = it.value.entrySet().first()
+         c(entry.value)
+      }
+   }
+
+   applyDependencies = { o, deps ->
+      def METHODS = [
+            api        : 'api',
+            debugApi   : 'debugApi',
+            releaseApi : 'releaseApi',
+            impl       : 'implementation',
+            debugImpl  : 'debugImplementation',
+            releaseImpl: 'releaseImplementation',
+            testImpl   : 'testImplementation',
+            p          : 'compileOnly',
+            a          : 'kapt',
+            rap        : 'kaptRelease',
+      ]
+      def CONFIG_KEY = 'config'
+      deps.each {
+         def dependencyEntry = it.value.entrySet().first()
+         def configMethod = METHODS.get(dependencyEntry.key)
+         def configClosure = it.value.get(CONFIG_KEY)
+         if (configClosure) {
+            configClosure.delegate = o
+            configClosure.resolveStrategy = Closure.DELEGATE_FIRST
+            o."$configMethod"(dependencyEntry.value, configClosure)
+         } else {
+            o."$configMethod"(dependencyEntry.value)
+         }
+      }
+   }
+}

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.VideoMicroserviceModule;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostWithVideoAttachmentBody;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody;
@@ -75,6 +75,8 @@ public class UploadVideoFileCommand extends Command<PostCompoundOperationModel<P
                   case FAIL:
                      Timber.e(actionState.exception, "[New Photo Attachment Creation] Upload failed");
                      builder.state(PostBody.State.FAILED);
+                     break;
+                  default:
                      break;
                }
                long remainingTimeInMillis = uploadTimeEstimator.estimate(progress, System.currentTimeMillis());

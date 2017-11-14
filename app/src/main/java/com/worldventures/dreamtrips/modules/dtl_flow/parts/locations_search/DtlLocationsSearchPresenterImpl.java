@@ -56,7 +56,9 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
       List<DtlLocation> locations = action.getResult();
       getView().hideProgress();
       getView().setItems(locations);
-      if (TextUtils.isEmpty(action.getQuery()) && !locations.isEmpty()) getView().toggleDefaultCaptionVisibility(false);
+      if (TextUtils.isEmpty(action.getQuery()) && !locations.isEmpty()) {
+         getView().toggleDefaultCaptionVisibility(false);
+      }
    }
 
    @Override

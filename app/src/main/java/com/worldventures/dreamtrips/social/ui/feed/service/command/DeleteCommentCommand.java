@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.command.api_action.ApiActionCommand;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.comment.DeleteCommentHttpAction;
@@ -12,8 +12,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DeleteCommentCommand extends ApiActionCommand<DeleteCommentHttpAction, Comment> implements InjectableAction {
 
-   private FeedEntity feedEntity;
-   private Comment comment;
+   private final FeedEntity feedEntity;
+   private final Comment comment;
 
    public DeleteCommentCommand(FeedEntity feedEntity, Comment comment) {
       this.feedEntity = feedEntity;

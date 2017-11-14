@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.service.analytics.MonitoringHelper;
 import com.worldventures.core.ui.util.ViewUtils;
@@ -131,7 +131,9 @@ public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override

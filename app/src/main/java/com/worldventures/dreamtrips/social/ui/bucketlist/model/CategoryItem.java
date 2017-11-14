@@ -9,6 +9,7 @@ public class CategoryItem extends BaseEntity {
    private String name;
 
    public CategoryItem() {
+      //do nothing
    }
 
    public CategoryItem(int id, String name) {

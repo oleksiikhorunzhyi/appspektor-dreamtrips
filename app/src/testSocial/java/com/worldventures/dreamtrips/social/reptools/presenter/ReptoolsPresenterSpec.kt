@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.social.reptools.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.ui.membership.view.fragment.InviteFragment
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.RepToolsPresenter
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -36,7 +36,7 @@ class ReptoolsPresenterSpec: PresenterBaseSpec({
          doReturn(true).whenever(presenter).showInvite()
          val screens = presenter.provideScreens()
          assertEquals(presenter.provideScreens().size, 5)
-         assert(screens.filter{ it.route == Route.INVITE }.count() == 1)
+         assert(screens.filter{ it.fragmentClazz == InviteFragment::class.java }.count() == 1)
       }
 
       it ("should provide 4 screens without Invite screen") {
@@ -44,7 +44,7 @@ class ReptoolsPresenterSpec: PresenterBaseSpec({
          doReturn(false).whenever(presenter).showInvite()
          val screens = presenter.provideScreens()
          assertEquals(presenter.provideScreens().size, 4)
-         assert(screens.filter{ it.route == Route.INVITE }.count() == 0)
+         assert(screens.filter{ it.fragmentClazz == InviteFragment::class.java }.count() == 0)
       }
    }
 

@@ -10,7 +10,7 @@ import rx.functions.Func1;
 
 public class DocumentsDiskStorage extends KeyValuePaginatedDiskStorage<Document> {
 
-   private InfopagesStorage db;
+   private final InfopagesStorage db;
 
    public DocumentsDiskStorage(InfopagesStorage db) {
       this.db = db;

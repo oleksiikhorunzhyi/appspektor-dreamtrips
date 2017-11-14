@@ -117,7 +117,9 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
    }
 
    public void onVideoLanguageSelected(VideoLanguage videoLanguage) {
-      if (selectionListener != null) selectionListener.onSelected(selectedLocale, videoLanguage);
+      if (selectionListener != null) {
+         selectionListener.onSelected(selectedLocale, videoLanguage);
+      }
       dismiss();
    }
 

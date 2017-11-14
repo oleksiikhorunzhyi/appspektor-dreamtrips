@@ -5,12 +5,14 @@ import android.support.annotation.Nullable;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 
+import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Gson.TypeAdapters
 @Value.Immutable
 public abstract class FilterData {
 
@@ -69,10 +71,10 @@ public abstract class FilterData {
 
    @Value.Derived
    public boolean isDefault() {
-      return budgetMin() == BUDGET_MIN &&
-            budgetMax() == BUDGET_MAX &&
-            distanceMaxIndex() == DISTANCE_MAX_INDEX &&
-            selectedAmenities().isEmpty();
+      return budgetMin() == BUDGET_MIN
+            && budgetMax() == BUDGET_MAX
+            && distanceMaxIndex() == DISTANCE_MAX_INDEX
+            && selectedAmenities().isEmpty();
    }
 
    @Value.Default

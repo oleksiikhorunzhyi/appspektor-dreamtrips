@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.membership.view.cell;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;

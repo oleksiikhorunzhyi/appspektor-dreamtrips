@@ -12,7 +12,7 @@ public class PickerPermissionChecker {
 
    public static final String[] PERMISSIONS = PermissionConstants.READ_STORAGE_PERMISSION;
 
-   private PermissionDispatcher permissionDispatcher;
+   private final PermissionDispatcher permissionDispatcher;
 
    private Action0 actionRational;
    private Action0 actionDenied;
@@ -22,7 +22,7 @@ public class PickerPermissionChecker {
       this.permissionDispatcher = permissionDispatcher;
    }
 
-   public void registerCallback (Action0 actionGranted, Action0 actionDenied, Action0 actionRational) {
+   public void registerCallback(Action0 actionGranted, Action0 actionDenied, Action0 actionRational) {
       this.actionGranted = actionGranted;
       this.actionDenied = actionDenied;
       this.actionRational = actionRational;
@@ -48,7 +48,9 @@ public class PickerPermissionChecker {
                   .onPermissionGrantedAction(actionGranted::call)
                   .onPermissionDeniedAction(actionDenied::call)
                   .onPermissionRationaleAction(() -> {
-                     if (actionRational != null) actionRational.call();
+                     if (actionRational != null) {
+                        actionRational.call();
+                     }
                   }));
    }
 

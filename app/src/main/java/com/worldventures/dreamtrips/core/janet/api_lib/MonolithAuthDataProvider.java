@@ -15,7 +15,7 @@ public class MonolithAuthDataProvider implements AuthDataProvider<MonolithAuthDa
    public MonolithAuthData data() {
 
       return ImmutableMonolithAuthData.builder()
-            .token(sessionHolder.get().get().getApiToken())
+            .token(sessionHolder.get().get().apiToken())
             .build();
    }
 }

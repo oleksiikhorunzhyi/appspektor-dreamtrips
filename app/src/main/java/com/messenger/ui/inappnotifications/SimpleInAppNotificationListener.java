@@ -4,9 +4,11 @@ public class SimpleInAppNotificationListener implements InAppNotificationEventLi
 
    @Override
    public void onClick() {
+      //do nothing
    }
 
    @Override
    public void onClose() {
+      //do nothing
    }
 }

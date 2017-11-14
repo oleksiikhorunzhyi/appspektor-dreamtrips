@@ -13,8 +13,7 @@ public class NotificationCountChangedCommand extends Command<NotificationCountCh
       implements CachedAction<NotificationCountChangedCommand.NotificationCounterResult> {
 
    private NotificationCountChangedCommand.NotificationCounterResult notificationCounterResult;
-
-   private boolean restoreFromCache;
+   private final boolean restoreFromCache;
 
    public NotificationCountChangedCommand() {
       restoreFromCache = true;
@@ -62,9 +61,9 @@ public class NotificationCountChangedCommand extends Command<NotificationCountCh
    }
 
    public static class NotificationCounterResult {
-      private int friendNotificationCount;
-      private int exclusiveNotificationCount;
-      private int badgeNotificationsCount;
+      private final int friendNotificationCount;
+      private final int exclusiveNotificationCount;
+      private final int badgeNotificationsCount;
 
       public NotificationCounterResult(int friendNotificationCount, int exclusiveNotificationCount, int badgeNotificationsCount) {
          this.friendNotificationCount = friendNotificationCount;

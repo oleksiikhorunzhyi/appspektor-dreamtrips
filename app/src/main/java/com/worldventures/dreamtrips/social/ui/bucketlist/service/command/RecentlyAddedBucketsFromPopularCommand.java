@@ -19,13 +19,13 @@ import rx.functions.Func1;
 import static com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.BucketType;
 
 @CommandAction
-public class RecentlyAddedBucketsFromPopularCommand extends Command<Pair<BucketType, List<BucketItem>>> implements CachedAction<List<BucketItem>> {
+public final class RecentlyAddedBucketsFromPopularCommand extends Command<Pair<BucketType, List<BucketItem>>> implements CachedAction<List<BucketItem>> {
+
    public static final String BUCKET_TYPE_EXTRA = "bucket_type_extra";
 
+   private final BucketType bucketType;
+   private final Func1<List<BucketItem>, List<BucketItem>> func;
    private List<BucketItem> recentPopularBucketListByType;
-   private BucketType bucketType;
-
-   private Func1<List<BucketItem>, List<BucketItem>> func;
 
    public static RecentlyAddedBucketsFromPopularCommand add(BucketItem item) {
       return new RecentlyAddedBucketsFromPopularCommand(new AddFunc(item), BucketType.valueOf(item.getType()
@@ -73,7 +73,8 @@ public class RecentlyAddedBucketsFromPopularCommand extends Command<Pair<BucketT
    }
 
    private static final class AddFunc implements Func1<List<BucketItem>, List<BucketItem>> {
-      private BucketItem item;
+
+      private final BucketItem item;
 
       public AddFunc(BucketItem item) {
          this.item = item;

@@ -20,11 +20,9 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
-import com.worldventures.core.ui.view.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -35,6 +33,7 @@ import com.worldventures.dreamtrips.social.ui.membership.presenter.InvitePresent
 import com.worldventures.dreamtrips.social.ui.membership.view.adapter.SimpleImageArrayAdapter;
 import com.worldventures.dreamtrips.social.ui.membership.view.cell.ContactCell;
 import com.worldventures.dreamtrips.social.ui.membership.view.dialog.AddContactDialog;
+import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
 
@@ -122,7 +121,7 @@ public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, ShareB
       search.setOnClickListener(v -> getPresenter().onSearchStart());
 
       if (isTabletLandscape()) {
-         router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
+         router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())
                .containerId(R.id.containerTemplates)
@@ -162,7 +161,7 @@ public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, ShareB
 
    @Override
    public void openTemplateView() {
-      router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forActivity().build());
+      router.moveTo(SelectTemplateFragment.class, NavigationConfigBuilder.forActivity().build());
    }
 
    @Override
@@ -191,8 +190,9 @@ public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, ShareB
 
    @Override
    public void showPermissionDenied(String[] permissions) {
-      Snackbar.make(getView(), permissionUtils.equals(permissions, READ_PHONE_CONTACTS) ?
-            R.string.no_permission_to_read_contacts : R.string.no_permission_to_write_contacts, Snackbar.LENGTH_SHORT)
+      Snackbar.make(getView(), permissionUtils.equals(permissions, READ_PHONE_CONTACTS)
+            ? R.string.no_permission_to_read_contacts
+            : R.string.no_permission_to_write_contacts, Snackbar.LENGTH_SHORT)
             .show();
    }
 

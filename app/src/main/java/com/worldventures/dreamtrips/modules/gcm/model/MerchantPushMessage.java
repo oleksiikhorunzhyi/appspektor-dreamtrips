@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.gcm.model;
 
 public class MerchantPushMessage extends PushMessage {
 
-   private String points;
-   private String merchantName;
-   private String city;
-   private String transactionDate;
+   private final String points;
+   private final String merchantName;
+   private final String city;
+   private final String transactionDate;
 
    public MerchantPushMessage(AlertWrapper alertWrapper, PushType type, int notificationId, int notificationsCount,
          int requestsCount, String points, String merchantName, String city, String transactionDate) {

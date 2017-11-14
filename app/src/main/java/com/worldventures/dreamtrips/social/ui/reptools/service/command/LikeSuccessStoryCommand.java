@@ -9,7 +9,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class LikeSuccessStoryCommand extends ApiActionCommand<LikeSuccessStoryHttpAction, Void> {
 
-   private int id;
+   private final int id;
 
    public LikeSuccessStoryCommand(int id) {
       this.id = id;

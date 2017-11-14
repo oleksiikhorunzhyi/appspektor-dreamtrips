@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters
 
 public class TripsFiltersStorage implements ActionStorage<CachedTripFilters> {
 
-   private SnappyRepository snappyRepository;
+   private final SnappyRepository snappyRepository;
 
    public TripsFiltersStorage(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;

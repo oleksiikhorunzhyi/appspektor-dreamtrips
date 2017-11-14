@@ -11,14 +11,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import timber.log.Timber;
 
 public class CSTConverter {
-
-   public CSTConverter() {
-   }
 
    public String getCorrectTimeWrote(Context context, String timeWrote) throws ParseException {
 
@@ -50,7 +48,7 @@ public class CSTConverter {
                //Week
                time = getDifferenceTime(localCalendar, calendar, Calendar.DAY_OF_WEEK_IN_MONTH);
                if (time > 0) {
-                  if(time == 1){
+                  if (time == 1) {
                      info = String.format(res.getString(R.string.week_ago_text), time);
                   } else {
                      info = String.format(res.getString(R.string.weeks_ago_text), time);
@@ -95,7 +93,7 @@ public class CSTConverter {
    }
 
    private Calendar getCorrectTime(@NonNull String dateToConvert) {
-      SimpleDateFormat df = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT);
+      SimpleDateFormat df = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT, Locale.getDefault());
       df.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
       Date date = null;
       Calendar calendar = null;

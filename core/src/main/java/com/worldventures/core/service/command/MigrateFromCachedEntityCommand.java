@@ -1,7 +1,7 @@
 package com.worldventures.core.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.CachedEntity;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
@@ -39,7 +39,7 @@ public class MigrateFromCachedEntityCommand extends Command<Void> implements Inj
 
    private CachedModel convert(CachedEntity entity) {
       CachedModel cachedModel = new CachedModel(entity.getUrl(), entity.getUuid(), entity.getName());
-      @CacheStatus int status = entity.getProgress() == 100? SUCCESS : entity.isFailed()? FAILED : IN_PROGRESS;
+      @CacheStatus int status = entity.getProgress() == 100 ? SUCCESS : entity.isFailed() ? FAILED : IN_PROGRESS;
       cachedModel.setCacheStatus(status);
       cachedModel.setProgress(entity.getProgress());
       return cachedModel;

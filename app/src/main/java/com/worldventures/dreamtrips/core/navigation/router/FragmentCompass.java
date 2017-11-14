@@ -2,21 +2,18 @@ package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
-import com.worldventures.dreamtrips.core.navigation.Route;
 
 import timber.log.Timber;
 
 class FragmentCompass {
 
-   private FragmentActivity activity;
+   private final FragmentActivity activity;
 
    @IdRes private int containerId;
    private boolean backStackEnabled = true;
@@ -27,7 +24,7 @@ class FragmentCompass {
     * This constructor is to be used with {@link com.worldventures.dreamtrips.core.navigation.router.Router Router}
     * and {@link com.worldventures.dreamtrips.core.navigation.router.NavigationConfig NavigationConfig} only!
     */
-   public FragmentCompass(FragmentActivity activity) {
+   FragmentCompass(FragmentActivity activity) {
       this.activity = activity;
    }
 
@@ -35,79 +32,29 @@ class FragmentCompass {
       this.containerId = containerId;
    }
 
-   public void setAnimationConfig(AnimationConfig animationConfig) {
+   void setAnimationConfig(AnimationConfig animationConfig) {
       this.animationConfig = animationConfig;
    }
 
-   public void add(Route route) {
-      add(route, null);
-   }
-
-   public void add(Route route, Bundle bundle) {
-      action(Action.ADD, route, bundle, null);
-   }
-
-   public void replace(ComponentDescription componentDescription) {
-      replace(componentDescription, null);
-   }
-
-   public void replace(ComponentDescription componentDescription, Bundle args) {
-      replace(Route.restoreByKey(componentDescription.getKey()), args, null);
-   }
-
-   public void replace(Route route) {
-      replace(route, null, null);
-   }
-
-   public void replace(Route route, Bundle bundle, Fragment fragment) {
-      action(Action.REPLACE, route, bundle, fragment);
-   }
-
-   public void remove(Route route) {
-      remove(route.getClazzName());
-   }
-
-   public void remove(String name) {
-      if (validateState()) {
-         Fragment fragment = fragmentManager.findFragmentByTag(name);
-         //
-         if (fragment != null) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.remove(fragment);
-            fragmentTransaction.commit();
-         }
-      }
+   public void replace(String backstackName, String clazzName, Bundle bundle, Fragment fragment) {
+      action(backstackName, clazzName, bundle, fragment);
    }
 
    public void setFragmentManager(FragmentManager fragmentManager) {
       this.fragmentManager = fragmentManager;
    }
 
-   public FragmentManager getFragmentManager() {
-      return fragmentManager;
-   }
-
-   protected void action(Action action, Route route, Bundle bundle, Fragment targetFragment) {
+   protected void action(String backstackName, String clazzName, Bundle bundle, Fragment targetFragment) {
       if (!validateState()) {
          Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
       } else {
-         String clazzName = route.getClazzName();
-         //
          Fragment fragment = Fragment.instantiate(activity, clazzName);
          setArgsToFragment(fragment, bundle);
-         fragment.setTargetFragment(targetFragment, 1);
+         fragment.setTargetFragment(targetFragment, 0);
          FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-         //
-         switch (action) {
-            case REPLACE:
-               fragmentTransaction.replace(containerId, fragment, clazzName);
-               break;
-            case ADD:
-               fragmentTransaction.add(containerId, fragment, clazzName);
-               break;
-         }
+         fragmentTransaction.replace(containerId, fragment, clazzName);
          if (backStackEnabled) {
-            fragmentTransaction.addToBackStack(route.name());
+            fragmentTransaction.addToBackStack(backstackName);
          }
          if (animationConfig != null) {
             fragmentTransaction.setCustomAnimations(animationConfig.getAnimationEnter(), animationConfig.getAnimationExit());
@@ -116,33 +63,8 @@ class FragmentCompass {
       }
    }
 
-   public void show(DialogFragment dialogFragment, String tag) {
-      if (validateState()) {
-         FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
-         dialogFragment.show(supportFragmentManager, tag);
-      }
-   }
-
    public void setBackStackEnabled(boolean enabled) {
       this.backStackEnabled = enabled;
-   }
-
-   @Deprecated
-   public void disableBackStack() {
-      backStackEnabled = false;
-   }
-
-   @Deprecated
-   public void enableBackStack() {
-      backStackEnabled = true;
-   }
-
-   protected void clearBackStack() {
-      try {
-         fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-      } catch (IllegalStateException e) {
-         Timber.e(e, "TransitionManager error"); //for avoid application crash when called at runtime
-      }
    }
 
    private void setArgsToFragment(Fragment fragment, Bundle bundle) {
@@ -151,17 +73,5 @@ class FragmentCompass {
 
    private boolean validateState() {
       return activity != null && !activity.isFinishing();
-   }
-
-   public Fragment getCurrentFragment() {
-      return activity.getSupportFragmentManager().findFragmentById(containerId);
-   }
-
-   public boolean empty() {
-      return getCurrentFragment() == null;
-   }
-
-   public enum Action {
-      ADD, REPLACE, POP
    }
 }

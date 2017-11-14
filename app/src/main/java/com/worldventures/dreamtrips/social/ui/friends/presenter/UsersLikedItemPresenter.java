@@ -12,7 +12,7 @@ import rx.functions.Action1;
 
 public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListPresenter.View> {
 
-   private FeedEntity feedEntity;
+   private final FeedEntity feedEntity;
 
    public UsersLikedItemPresenter(UsersLikedEntityBundle bundle) {
       feedEntity = bundle.getFeedEntity();
@@ -39,10 +39,6 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListP
          users.add(index, user);
          view.refreshUsers(users);
       }
-   }
-
-   public void acceptRequest(User user) {
-      super.acceptRequest(user);
    }
 
    public void addUserRequest(User user) {

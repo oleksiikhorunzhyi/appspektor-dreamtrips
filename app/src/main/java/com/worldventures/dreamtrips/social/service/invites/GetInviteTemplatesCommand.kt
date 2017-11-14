@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.social.service.invites
 
 
 import com.worldventures.core.janet.CommandWithError
-import com.worldventures.core.janet.dagger.InjectableAction
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.invitation.GetInvitationTemplatesHttpAction
 import com.worldventures.dreamtrips.social.domain.entity.InviteTemplate
+import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.Command
 import io.techery.janet.Janet
 import io.techery.janet.command.annotations.CommandAction

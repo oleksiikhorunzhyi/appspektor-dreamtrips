@@ -12,6 +12,8 @@ public abstract class BaseReverseBucketBodyConverter<T extends BucketBody, S> im
             return BucketStatus.COMPLETED;
          case com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.NEW:
             return BucketStatus.NEW;
+         default:
+            break;
       }
       throw new IllegalArgumentException("No such status");
    }

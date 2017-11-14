@@ -44,6 +44,7 @@ public class EnrollRepFragment extends AuthorizedStaticInfoFragment<EnrollRepPre
 
    @Override
    public void showPermissionDenied(String[] permissions) {
+      //do nothing
    }
 
    @Override

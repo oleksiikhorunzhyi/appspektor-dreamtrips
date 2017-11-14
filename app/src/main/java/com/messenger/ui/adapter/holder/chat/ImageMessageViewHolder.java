@@ -59,6 +59,8 @@ public abstract class ImageMessageViewHolder extends UserMessageViewHolder {
             progressBar.setVisibility(View.GONE);
             imagePostView.setAlpha(ALPHA_MESSAGE_NORMAL);
             break;
+         default:
+            break;
       }
    }
 

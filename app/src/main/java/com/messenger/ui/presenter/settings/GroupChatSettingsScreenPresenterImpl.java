@@ -94,7 +94,8 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
          case R.id.action_edit_chat_name:
             onEditChatName();
             return true;
-
+         default:
+            break;
       }
       return super.onToolbarMenuItemClick(item);
    }
@@ -104,7 +105,9 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
       super.applyViewState();
       ChatSettingsViewState viewState = getViewState();
       ChatSettingsViewState.UploadingState uploadingState = getViewState().getUploadAvatar();
-      if (uploadingState == null) return;
+      if (uploadingState == null) {
+         return;
+      }
       if (uploadingState == ChatSettingsViewState.UploadingState.UPLOADING) {
          getView().showChangingAvatarProgressBar();
       } else {
@@ -182,11 +185,17 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
    private void registerPermissionCallbacks() {
       pickerPermissionChecker.registerCallback(
             () -> {
-               if (getView() != null) getView().openPicker();
+               if (getView() != null) {
+                  getView().openPicker();
+               }
             }, () -> {
-               if (getView() != null) getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS);
+               if (getView() != null) {
+                  getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS);
+               }
             }, () -> {
-               if (getView() != null) getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS);
+               if (getView() != null) {
+                  getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS);
+               }
             });
    }
 

@@ -6,11 +6,13 @@ import android.os.Looper;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.worldventures.core.di.qualifier.ForActivity;
+import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -19,6 +21,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.popup.FeedItemMenuBuilde
 import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
+import com.worldventures.dreamtrips.social.ui.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.FullscreenVideoPresenter;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
@@ -36,7 +39,9 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
       implements FullscreenVideoPresenter.View {
 
    @Inject Router router;
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @ForActivity Injector injector;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
+   @Inject SocialViewPagerState socialViewPagerState;
 
    @InjectView(R.id.videoView) VideoView videoView;
    @InjectView(R.id.flag) FlagView flag;
@@ -80,7 +85,7 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
 
    @Override
    public void openUser(UserBundle bundle) {
-      router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
             .data(bundle)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build());

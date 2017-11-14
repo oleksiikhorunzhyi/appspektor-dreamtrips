@@ -40,6 +40,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
    @Column long syncTime;
 
    public DataMessage() {
+      //do nothing
    }
 
    public DataMessage(Message message) {

@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 
 public class BucketItemInfoHelperImpl implements BucketItemInfoHelper {
 
-   private Context context;
+   private final Context context;
 
    public BucketItemInfoHelperImpl(Context context) {
       this.context = context;

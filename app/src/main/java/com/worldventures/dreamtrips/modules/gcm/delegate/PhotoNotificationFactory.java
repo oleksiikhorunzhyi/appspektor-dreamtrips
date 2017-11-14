@@ -11,7 +11,7 @@ import android.text.TextUtils;
 
 import com.worldventures.core.ui.view.routing.BaseRouter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFullscreenFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class PhotoNotificationFactory extends NotificationFactory {
       Intent resultIntent = new Intent(context, SocialComponentActivity.class);
       //set args to pending intent
       Bundle args = new Bundle();
-      args.putSerializable(ComponentPresenter.ROUTE, Route.TRIP_IMAGES_FULLSCREEN);
+      args.putSerializable(ComponentPresenter.FRAGMENT_CLAZZ, TripImagesFullscreenFragment.class);
       args.putSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG, ToolbarConfig.Builder.create()
             .visible(false)
             .build());

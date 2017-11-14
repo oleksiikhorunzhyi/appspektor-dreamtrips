@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics;
 
 import com.worldventures.core.service.analytics.ActionPart;
 import com.worldventures.core.service.analytics.AdobeTracker;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
@@ -17,7 +17,7 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction {
    }
 
    public static TripImagesTabViewAnalyticsEvent forTripImages(TripImagesArgs tripImagesArgs) {
-/*
+      /*
       switch (tripImagesType) {
          case MEMBERS_IMAGES:
             return new TripImagesTabViewAnalyticsEvent("member_images");
@@ -28,7 +28,7 @@ public class TripImagesTabViewAnalyticsEvent extends BaseAnalyticsAction {
          default:
             return new TripImagesTabViewAnalyticsEvent("my_images");
       }
-*/
+      */
       return new TripImagesTabViewAnalyticsEvent("member_images");
    }
 

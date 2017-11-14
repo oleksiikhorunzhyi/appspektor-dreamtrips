@@ -195,9 +195,9 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
 
    private void configureMultiPhotoPick(int photoPickLimit) {
       this.mediaPickerStaticItemsStrategy = new SimpleStaticItemsStrategy();
-      this.photoPickLimitStrategy = photoPickLimit != 0 ?
-            new AdjustablePhotoPickStrategy(photoPickLimit) :
-            new AdjustablePhotoPickStrategy();
+      this.photoPickLimitStrategy = photoPickLimit != 0
+            ? new AdjustablePhotoPickStrategy(photoPickLimit)
+            : new AdjustablePhotoPickStrategy();
    }
 
 

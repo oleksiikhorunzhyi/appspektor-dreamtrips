@@ -11,7 +11,12 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.social.domain.entity.Contact
 import com.worldventures.dreamtrips.social.domain.entity.InviteType
 import com.worldventures.dreamtrips.social.service.InviteShareInteractor
-import com.worldventures.dreamtrips.social.service.invites.*
+import com.worldventures.dreamtrips.social.service.invites.AddContactCommand
+import com.worldventures.dreamtrips.social.service.invites.DeselectAllContactsCommand
+import com.worldventures.dreamtrips.social.service.invites.ReadMembersCommand
+import com.worldventures.dreamtrips.social.service.invites.SelectContactCommand
+import com.worldventures.dreamtrips.social.service.invites.UpdateContactsCommand
+import com.worldventures.dreamtrips.social.service.invites.selectedMemberAddresses
 import com.worldventures.dreamtrips.social.ui.membership.bundle.ShareBundle
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.AddContactInviteScreenAction
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.InviteShareContactsAction
@@ -23,12 +28,12 @@ import javax.inject.Inject
 
 class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InvitePresenter.View>() {
 
-   @field:Inject lateinit var inviteShareInteractor: InviteShareInteractor
-   @field:Inject lateinit var permissionDispatcher: PermissionDispatcher
-   @field:Inject lateinit var permissionUtils: PermissionUtils
+   @Inject lateinit var inviteShareInteractor: InviteShareInteractor
+   @Inject lateinit var permissionDispatcher: PermissionDispatcher
+   @Inject lateinit var permissionUtils: PermissionUtils
 
-   @field:State internal var type = InviteType.EMAIL
-   @field:State internal var query = ""
+   @JvmField @State var type = InviteType.EMAIL
+   @JvmField @State var query = ""
 
    override fun onViewTaken() {
       super.onViewTaken()

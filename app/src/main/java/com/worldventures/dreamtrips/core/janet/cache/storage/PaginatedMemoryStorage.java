@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PaginatedMemoryStorage<T> implements PaginatedStorage<List<T>>, ClearableStorage {
 
-   private List<T> cache = new ArrayList<>();
+   private final List<T> cache = new ArrayList<>();
 
    @Override
    public synchronized void save(@Nullable CacheBundle params, List<T> data) {

@@ -1,28 +1,34 @@
 package com.worldventures.dreamtrips.social.ui.reptools.service.analytics;
 
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.ApptentiveTracker;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
-@AnalyticsEvent(action = "success_stories",
-                category = "nav_menu",
+import static com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ApptentiveSuccessStoryAction.ACTION;
+import static com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ApptentiveSuccessStoryAction.CATEGORY;
+
+@AnalyticsEvent(action = ACTION,
+                category = CATEGORY,
                 trackers = ApptentiveTracker.TRACKER_KEY)
 public abstract class ApptentiveSuccessStoryAction extends BaseAnalyticsAction {
 
-   @AnalyticsEvent(action = "success_stories",
-                   category = "nav_menu",
+   final static String ACTION = "success_stories";
+   final static String CATEGORY = "nav_menu";
+
+   @AnalyticsEvent(action = ACTION,
+                   category = CATEGORY,
                    trackers = ApptentiveTracker.TRACKER_KEY)
    public static class ViewSuccessStoryAction extends ApptentiveSuccessStoryAction {
    }
 
-   @AnalyticsEvent(action = "success_stories",
-                   category = "nav_menu",
+   @AnalyticsEvent(action = ACTION,
+                   category = CATEGORY,
                    trackers = ApptentiveTracker.TRACKER_KEY)
    public static class LikeSuccessStoryAction extends ApptentiveSuccessStoryAction {
    }
 
-   @AnalyticsEvent(action = "success_stories",
-                   category = "nav_menu",
+   @AnalyticsEvent(action = ACTION,
+                   category = CATEGORY,
                    trackers = ApptentiveTracker.TRACKER_KEY)
    public static class UnlikeSuccessStoryAction extends ApptentiveSuccessStoryAction {
    }

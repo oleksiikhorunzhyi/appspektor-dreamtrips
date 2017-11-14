@@ -31,6 +31,7 @@ public class BucketPhoto implements Serializable, Parcelable, ImagePathHolder {
    private boolean isCover;
 
    public BucketPhoto() {
+      //do nothing
    }
 
    private BucketPhoto(Parcel in) {
@@ -86,8 +87,12 @@ public class BucketPhoto implements Serializable, Parcelable, ImagePathHolder {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       BucketPhoto that = (BucketPhoto) o;
 

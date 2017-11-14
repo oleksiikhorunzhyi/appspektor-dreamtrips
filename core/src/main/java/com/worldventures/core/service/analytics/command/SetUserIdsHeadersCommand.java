@@ -1,6 +1,6 @@
 package com.worldventures.core.service.analytics.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.analytics.Tracker;
 import com.worldventures.core.service.analytics.TrackerQualifier;
 

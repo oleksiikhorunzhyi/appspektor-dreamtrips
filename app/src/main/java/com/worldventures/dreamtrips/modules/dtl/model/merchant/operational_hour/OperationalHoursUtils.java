@@ -13,7 +13,7 @@ import java.util.Locale;
 
 import static com.worldventures.core.utils.DateTimeUtils.getDisplayWeekDay;
 
-public class OperationalHoursUtils {
+public final class OperationalHoursUtils {
 
    private OperationalHoursUtils() {
    }
@@ -23,16 +23,22 @@ public class OperationalHoursUtils {
    }
 
    public static String concatOperationDays(List<OperationDay> operationDays, Locale locale, String everyday) {
-      if (operationDays == null || operationDays.isEmpty()) return "";
+      if (operationDays == null || operationDays.isEmpty()) {
+         return "";
+      }
       //
       List<OperationDay> days = Queryable.from(operationDays)
             .filter(OperationDay::isHaveOperationHours)
             .filter(operationDay -> operationDay.dayOfWeek() != null)
             .toList();
       //
-      if (days.isEmpty()) return "";
+      if (days.isEmpty()) {
+         return "";
+      }
       //
-      if (days.size() == Calendar.DAY_OF_WEEK) return everyday;
+      if (days.size() == Calendar.DAY_OF_WEEK) {
+         return everyday;
+      }
       //
       String delimiter = days.size() == 2 ? " & " : " "; // TODO need translations??
       List<String> names = Queryable.from(days).map(day -> getDisplayWeekDay(day.dayOfWeek()

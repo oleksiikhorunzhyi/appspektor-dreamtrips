@@ -21,6 +21,7 @@ import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
+import org.mockito.ArgumentMatchers.anyBoolean
 import rx.Observable
 
 class PodcastsPresenterSpec : PresenterBaseSpec({
@@ -56,7 +57,7 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
 
             presenter.onDownloadPodcastRequired(podcast)
 
-            verify(permissionDispatcher).requestPermission(any(), any())
+            verify(permissionDispatcher).requestPermission(any(), anyBoolean())
             verify(cachedEntityDelegate).startCaching(any(), any())
          }
 
@@ -66,7 +67,7 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
 
             presenter.onDownloadPodcastRequired(podcast)
 
-            verify(permissionDispatcher).requestPermission(any(), any())
+            verify(permissionDispatcher).requestPermission(any(), anyBoolean())
             verify(cachedEntityDelegate, times(0)).startCaching(any(), any())
          }
       }
@@ -134,8 +135,8 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
 
          permissionDispatcher = mock()
          val grantResult = if (permissionGranted) PackageManager.PERMISSION_GRANTED else PackageManager.PERMISSION_DENIED
-         val permissionResult = PermissionsResult(-1, PermissionConstants.WRITE_EXTERNAL_STORAGE, intArrayOf(grantResult))
-         whenever(permissionDispatcher.requestPermission(any(), any())).thenReturn(Observable.just(permissionResult))
+         val permissionResult = PermissionsResult(-1, PermissionConstants.WRITE_EXTERNAL_STORAGE, grantResult)
+         whenever(permissionDispatcher.requestPermission(any(), anyBoolean())).thenReturn(Observable.just(permissionResult))
 
          whenever(context.getString(any())).thenReturn("test")
 

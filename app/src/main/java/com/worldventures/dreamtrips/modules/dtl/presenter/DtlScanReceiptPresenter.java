@@ -3,13 +3,13 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.net.Uri;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.api.dtl.merchants.EstimatePointsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.core.modules.picker.command.CopyFileCommand;
-import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
@@ -31,6 +31,7 @@ import icepick.State;
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
@@ -136,7 +137,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                   .withPoints(points)))
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
-                  .onSuccess(action -> view.openVerify(action.getResult())));
+                  .onSuccess(
+                        action -> view.openVerify(action.getResult())
+                  )
+            );
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -177,6 +181,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withUploadTask(uploadTask)))
+            .subscribeOn(Schedulers.io())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onSuccess(action -> checkVerification(action.getResult()))
                   .onFail(apiErrorViewAdapter::handleError));
    }

@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 import flow.path.Path;
 
-public class FlowUtil {
+public final class FlowUtil {
 
    private FlowUtil() {
    }

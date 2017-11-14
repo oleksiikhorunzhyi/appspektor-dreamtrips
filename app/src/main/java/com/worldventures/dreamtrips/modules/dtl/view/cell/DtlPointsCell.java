@@ -24,9 +24,11 @@ public class DtlPointsCell extends BaseAbstractDelegateCell<Offer, CellDelegate<
 
    @Override
    protected void syncUIStateWithModel() {
+      //do nothing
    }
 
    @Override
    public void prepareForReuse() {
+      //do nothing
    }
 }

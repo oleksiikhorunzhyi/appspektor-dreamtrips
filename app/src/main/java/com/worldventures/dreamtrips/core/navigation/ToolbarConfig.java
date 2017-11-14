@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import java.io.Serializable;
 
-public class ToolbarConfig implements Serializable {
+public final class ToolbarConfig implements Serializable {
 
    private boolean visible = true;
    private float alpha = 1.0f;
@@ -18,7 +18,7 @@ public class ToolbarConfig implements Serializable {
       return alpha;
    }
 
-   public static class Builder {
+   public final static class Builder {
 
       private ToolbarConfig toolbarConfig;
 

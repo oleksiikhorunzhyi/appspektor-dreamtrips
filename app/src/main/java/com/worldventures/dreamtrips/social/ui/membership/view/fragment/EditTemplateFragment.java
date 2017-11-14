@@ -14,9 +14,9 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.TemplateBundle;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.social.ui.membership.presenter.EditTemplatePresenter;
@@ -28,7 +28,9 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_edit_template)
 @MenuResource(R.menu.menu_edit_template)
-public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePresenter, TemplateBundle> implements EditTemplatePresenter.View {
+@ComponentPresenter.ComponentTitle(R.string.title_edit_template)
+public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePresenter, TemplateBundle>
+      implements EditTemplatePresenter.View {
 
    public static final int REQUEST_CODE = 228;
 
@@ -63,6 +65,8 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
             break;
          case R.id.action_send:
             getPresenter().shareRequest(message.getText().toString());
+            break;
+         default:
             break;
       }
       return super.onOptionsItemSelected(item);
@@ -107,7 +111,7 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
 
    @Override
    public void openPreviewTemplate(@NonNull UrlBundle bundle) {
-      router.moveTo(Route.PREVIEW_TEMPLATE, NavigationConfigBuilder.forActivity().data(bundle).build());
+      router.moveTo(PreviewTemplateFragment.class, NavigationConfigBuilder.forActivity().data(bundle).build());
    }
 
    @Override
@@ -127,7 +131,7 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
       preview.onPause();
    }
 
-@Override
+   @Override
    public void onDestroy() {
       super.onDestroy();
       if (preview != null) {
@@ -135,5 +139,4 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
          preview = null;
       }
    }
-
 }

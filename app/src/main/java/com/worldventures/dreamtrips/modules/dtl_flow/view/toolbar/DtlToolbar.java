@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
@@ -30,8 +30,10 @@ public class DtlToolbar extends LinearLayout {
    @InjectView(R.id.filterDiningsSwitch) protected SwitchCompat filterDiningsSwitch;
    @InjectView(R.id.dtlToolbarMerchantSearchInput) protected AppCompatEditText merchantSearchInput;
    @InjectView(R.id.dtlToolbarLocationSearchInput) protected AppCompatEditText locationSearchInput;
+   @InjectView(R.id.transaction_container) protected LinearLayout transactionContainer;
 
    protected List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
+   protected List<TransactionButtonListener> transactionButtonListeners = new ArrayList<>();
 
    protected String searchQuery;
    protected FocusedMode focusedMode;
@@ -65,10 +67,11 @@ public class DtlToolbar extends LinearLayout {
    @CallSuper
    protected void initAttributes(AttributeSet attrs) {
       String selectedMerchantFilter = DtlMerchantsScreenImpl.currentSelectedFilter;
-      if (selectedMerchantFilter == null)
+      if (selectedMerchantFilter == null) {
          defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
-      else
+      } else {
          defaultEmptySearchCaption = selectedMerchantFilter;
+      }
    }
 
    protected void bindSearchQueryPersisting() {
@@ -137,6 +140,11 @@ public class DtlToolbar extends LinearLayout {
       Queryable.from(filterButtonListeners).forEachR(listener -> listener.onFilterButtonClicked());
    }
 
+   @OnClick(R.id.transaction_container)
+   protected void transactionButtonClicked(View view) {
+      Queryable.from(transactionButtonListeners).forEachR(listener -> listener.onTransactionButtonClicked());
+   }
+
    @OnClick(R.id.dtlToolbarMerchantSearchInput)
    protected void merchantSearchInputClicked(View view) {
       focusedMode = FocusedMode.SEARCH;
@@ -158,6 +166,8 @@ public class DtlToolbar extends LinearLayout {
             case LOCATION:
                SoftInputUtil.showSoftInputMethod(getContext());
                locationSearchInput.requestFocus();
+               break;
+            default:
                break;
          }
       }
@@ -189,7 +199,9 @@ public class DtlToolbar extends LinearLayout {
    ///////////////////////////////////////////////////////////////////////////
 
    public void addFilterButtonListener(@NonNull FilterButtonListener listener) {
-      if (checkListenerNull(listener)) return;
+      if (checkListenerNull(listener)) {
+         return;
+      }
       filterButtonListeners.add(listener);
    }
 
@@ -200,6 +212,22 @@ public class DtlToolbar extends LinearLayout {
    public interface FilterButtonListener {
 
       void onFilterButtonClicked();
+   }
+
+   public interface TransactionButtonListener {
+
+      void onTransactionButtonClicked();
+   }
+
+   public void addTransactionButtonListener(@NonNull TransactionButtonListener listener) {
+      if (checkListenerNull(listener)) {
+         return;
+      }
+      transactionButtonListeners.add(listener);
+   }
+
+   public void removeTransactionButtonListener(TransactionButtonListener listener) {
+      transactionButtonListeners.remove(listener);
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -218,11 +246,13 @@ public class DtlToolbar extends LinearLayout {
 
       public static FocusedMode fromAttribute(int attributeId) {
          for (FocusedMode value : values()) {
-            if (value.id == attributeId) return value;
+            if (value.id == attributeId) {
+               return value;
+            }
          }
-         throw new IllegalArgumentException("DtlToolbar: wrong argument provided for focused" +
-               " mode attribute: must be one of " +
-               Queryable.from(values()).joinStrings(" ", element -> element.name()));
+         throw new IllegalArgumentException("DtlToolbar: wrong argument provided for focused"
+               + " mode attribute: must be one of "
+               + Queryable.from(values()).joinStrings(" ", element -> element.name()));
       }
    }
 }

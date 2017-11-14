@@ -37,10 +37,14 @@ public class TempSessionIdProviderImpl implements TempSessionIdProvider {
       File sdcard = Environment.getExternalStorageDirectory();
 
       File configDir = new File(sdcard, ".dt_qa_configs");
-      if (!configDir.exists()) configDir.mkdir();
+      if (!configDir.exists()) {
+         configDir.mkdir();
+      }
 
       File configFile = new File(configDir, name);
-      if (!configFile.exists()) configFile.createNewFile();
+      if (!configFile.exists()) {
+         configFile.createNewFile();
+      }
 
       return configFile;
    }

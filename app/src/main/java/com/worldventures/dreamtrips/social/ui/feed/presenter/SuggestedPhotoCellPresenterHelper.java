@@ -98,7 +98,7 @@ public class SuggestedPhotoCellPresenterHelper {
    public void sync() {
       Optional<UserSession> userSessionOptional = appSessionHolder.get();
       if (userSessionOptional.isPresent()) {
-         view.setUser(userSessionOptional.get().getUser());
+         view.setUser(userSessionOptional.get().user());
       }
       setSuggestionTitle();
    }
@@ -131,7 +131,9 @@ public class SuggestedPhotoCellPresenterHelper {
    }
 
    public MediaPickerAttachment getSelectedAttachments() {
-      if (selectedPhotosPaths.isEmpty()) return null;
+      if (selectedPhotosPaths.isEmpty()) {
+         return null;
+      }
 
       List<PhotoPickerModel> photoPickerModels = Queryable.from(selectedPhotosPaths)
             .map(path -> {
@@ -145,7 +147,9 @@ public class SuggestedPhotoCellPresenterHelper {
    void saveInstanceState(Bundle bundle) {
       Icepick.saveInstanceState(this, bundle);
       // can happen if it hasn't taken view yet
-      if (view != null) view.saveInstanceState(bundle);
+      if (view != null) {
+         view.saveInstanceState(bundle);
+      }
    }
 
    private void restoreInstanceState(Bundle bundle) {

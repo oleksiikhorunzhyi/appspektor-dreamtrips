@@ -77,7 +77,7 @@ abstract class BucketInteractorBaseSpec(speckBody: SpecBody.() -> Unit) : BaseSp
          val mockUser = mock<User>()
 
          whenever(mockUser.id).thenReturn(MOCK_USER_ID)
-         whenever(userSession.user).thenReturn(mockUser)
+         whenever(userSession.user()).thenReturn(mockUser)
          whenever(mockSessionHolder.get()).thenReturn(Optional.of(userSession))
          whenever(staticPageProvider.uploaderyUrl).thenReturn("http://test-uploadery")
       }

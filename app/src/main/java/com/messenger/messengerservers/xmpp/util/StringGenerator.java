@@ -7,6 +7,9 @@ public final class StringGenerator {
 
    private static final String ALLOWED_CHARACTERS = "0123456789qwertyuiopasdfghjklzxcvbnm";
 
+   private StringGenerator() {
+   }
+
    public static String getRandomString(final int sizeOfRandomString) {
       Random random = new Random();
       int length = ALLOWED_CHARACTERS.length();

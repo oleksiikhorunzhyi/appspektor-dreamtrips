@@ -6,9 +6,9 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMemberViewedAction;
 
 @Layout(R.layout.fragment_webview)
 public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<EnrollMemberPresenter, UrlBundle>
@@ -45,11 +45,11 @@ public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<EnrollMem
 
    @Override
    public void showPermissionDenied(String[] permissions) {
-
+      //do nothing
    }
 
    @Override
    protected void trackViewFromViewPagerIfNeeded() {
-      getPresenter().track(Route.ENROLL_MEMBER);
+      analyticsInteractor.analyticsActionPipe().send(new EnrollMemberViewedAction(getUserId()));
    }
 }

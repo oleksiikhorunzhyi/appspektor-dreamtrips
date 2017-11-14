@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 
-public class ComponentDescription implements Parcelable{
+public class ComponentDescription implements Parcelable {
    private final String key;
    private final int toolbarTitle;
    private final int toolbarLogo;
@@ -107,8 +107,12 @@ public class ComponentDescription implements Parcelable{
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       ComponentDescription that = (ComponentDescription) o;
 

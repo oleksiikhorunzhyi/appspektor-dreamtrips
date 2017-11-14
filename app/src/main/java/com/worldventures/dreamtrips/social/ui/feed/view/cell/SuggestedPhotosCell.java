@@ -37,7 +37,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_suggested_photos)
-public class SuggestedPhotosCell extends BaseAbstractDelegateCell<SuggestedPhotosCell.SuggestedPhotoModel, SuggestedPhotosDelegate> implements CellDelegate<PhotoPickerModel>, SuggestedPhotoCellPresenterHelper.View {
+public class SuggestedPhotosCell extends BaseAbstractDelegateCell<SuggestedPhotosCell.SuggestedPhotoModel, SuggestedPhotosDelegate>
+      implements CellDelegate<PhotoPickerModel>, SuggestedPhotoCellPresenterHelper.View {
 
    private static final int OFFSET = 5;
    private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";

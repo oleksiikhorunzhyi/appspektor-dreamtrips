@@ -14,8 +14,8 @@ import static com.worldventures.core.ui.util.permission.PermissionConstants.WRIT
 
 public class DownloadImageDelegate {
 
-   private TripImagesInteractor tripImagesInteractor;
-   private PermissionDispatcher permissionDispatcher;
+   private final TripImagesInteractor tripImagesInteractor;
+   private final PermissionDispatcher permissionDispatcher;
 
    public DownloadImageDelegate(TripImagesInteractor tripImagesInteractor, PermissionDispatcher permissionDispatcher) {
       this.tripImagesInteractor = tripImagesInteractor;

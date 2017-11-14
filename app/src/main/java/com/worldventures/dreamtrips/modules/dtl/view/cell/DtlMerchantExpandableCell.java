@@ -57,8 +57,10 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
    @InjectView(R.id.merchantOpenClosedStatus) TextView merchantOperationalStatus;
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
+   @InjectView(R.id.view_pay_in_app) TextView payInApp;
    @InjectView(R.id.merchantDistance) TextView merchantDistance;
    @InjectView(R.id.offers_container) View offersContainer;
+   // TODO Expandable cells functionality is disabled, delete it from the code completely
    @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
    @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
@@ -113,7 +115,9 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
 
    private void setImage(List<MerchantMedia> mediaList) {
       MerchantMedia media = Queryable.from(mediaList).firstOrDefault();
-      if (media == null) return;
+      if (media == null) {
+         return;
+      }
       //
       merchantCoverImage.setImageUrl(media.getImagePath());
    }
@@ -137,12 +141,15 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
                .provideFormattedOperationalTime(itemView.getContext(), false))
                .compose(RxLifecycleAndroid.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
-      } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
+      } else {
+         ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
+      }
    }
 
    private void setOffersSection() {
-      if (!getModelObject().asMerchantAttributes().hasOffers()) ViewUtils.setViewVisibility(offersContainer, View.GONE);
-      else {
+      if (!getModelObject().asMerchantAttributes().hasOffers()) {
+         ViewUtils.setViewVisibility(offersContainer, View.GONE);
+      } else {
          ViewUtils.setViewVisibility(offersContainer, View.VISIBLE);
          int perksNumber = getModelObject().asMerchantAttributes().offersCount(OfferType.PERK);
          setOfferBadges(perksNumber, getModelObject().offers().size() - perksNumber);
@@ -156,8 +163,17 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
       ViewUtils.setViewVisibility(this.perks, perkVisibility);
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
-      if (perkVisibility == View.VISIBLE) this.perks.setText(itemView.getContext()
-            .getString(R.string.perks_formatted, perks));
+      if (getModelObject().useThrstFlow()) {
+         ViewUtils.setViewVisibility(this.payInApp, View.VISIBLE);
+         ViewUtils.setViewVisibility(this.points, View.GONE);
+      } else {
+         ViewUtils.setViewVisibility(this.payInApp, View.GONE);
+         ViewUtils.setViewVisibility(this.points, View.VISIBLE);
+      }
+
+      if (perkVisibility == View.VISIBLE) {
+         this.perks.setText(itemView.getContext().getString(R.string.perks_formatted, perks));
+      }
    }
 
    private void setToggleView() {
@@ -174,8 +190,11 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
          expandedContainer.setVisibility(View.VISIBLE);
          expandedContainer.removeAllViews();
          Queryable.from(getModelObject().offers()).forEachR(offer -> {
-            if (offer.type() == OfferType.PERK) bindPerkCell(offer, expandedContainer);
-            else bindPointsCell(offer, expandedContainer);
+            if (offer.type() == OfferType.PERK) {
+               bindPerkCell(offer, expandedContainer);
+            } else {
+               bindPointsCell(offer, expandedContainer);
+            }
          });
       } else {
          expandedContainer.setVisibility(View.GONE);
@@ -219,13 +238,18 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
       if (MerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
          ViewUtils.setTextOrHideView(expirationBar, MerchantHelper.
                getOfferExpiringCaption(itemView.getContext(), offer, LocaleHelper.getDefaultLocale()));
-      } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
+      } else {
+         ViewUtils.setViewVisibility(View.GONE, expirationBar);
+      }
       //
       title.setText(offer.title()); // description
       //
       List<OperationDay> operationDays = offer.operationDays(); // operation days
-      if (operationDays == null) return;
-      String concatDays = OperationalHoursUtils.concatOperationDays(operationDays, itemView.getResources().getString(R.string.everyday));
+      if (operationDays == null) {
+         return;
+      }
+      String concatDays = OperationalHoursUtils.concatOperationDays(operationDays, itemView.getResources()
+            .getString(R.string.everyday));
       operationDaysCaption.setText(concatDays);
       //
       setSelection(cellView);
@@ -257,7 +281,7 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
    }
 
    private User getUser() {
-      return appSessionHolder.get().get().getUser();
+      return appSessionHolder.get().get().user();
    }
 
    private boolean isReviewCached() {

@@ -6,7 +6,7 @@ import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.modules.infopages.model.Document
 import com.worldventures.core.modules.infopages.service.DocumentsInteractor
 import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand
-import com.worldventures.dreamtrips.common.Injector
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter
 import io.techery.janet.CommandActionService

@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
+import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
+@Gson.TypeAdapters
 @Value.Immutable
 public interface Offer extends Serializable {
 
@@ -23,9 +25,13 @@ public interface Offer extends Serializable {
    String title();
    String description();
    String disclaimer();
-   @Nullable Date startDate();
-   @Nullable Date endDate();
-   @Nullable List<OperationDay> operationDays();
-   @Nullable List<MerchantMedia> images();
+   @Nullable
+   Date startDate();
+   @Nullable
+   Date endDate();
+   @Nullable
+   List<OperationDay> operationDays();
+   @Nullable
+   List<MerchantMedia> images();
 
 }

@@ -1,21 +1,31 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter
 
 import com.messenger.util.UnreadConversationObservable
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.anyArray
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
 import com.worldventures.core.modules.picker.model.PhotoPickerModel
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.core.ui.util.permission.PermissionDispatcher
 import com.worldventures.core.ui.util.permission.PermissionsResult
-import com.worldventures.dreamtrips.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec.Companion.anyString
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
-import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor
-import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.*
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutableTextPostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
@@ -49,7 +59,8 @@ import org.mockito.internal.verification.VerificationModeFactory
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
 
 class FeedPresenterSpek : PresenterBaseSpec({
    describe("Feed Presenter") {
@@ -147,7 +158,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
       describe("Refresh feed") {
          it("Refresh feed succeeds, view should update loading status and finishLoading and check permission to suggest user's photos") {
-            var permissionObservable = Observable.just(PermissionsResult(-1, null, IntArray(1)))
+            var permissionObservable = Observable.just(PermissionsResult(-1, null, 1))
             whenever(permissionDispatcher.requestPermission(anyArray(), ArgumentMatchers.anyBoolean())).thenReturn(permissionObservable)
 
             presenter.subscribeRefreshFeeds()

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter
 
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.common.Injector
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor

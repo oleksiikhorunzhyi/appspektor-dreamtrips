@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <!-- Common -->
+   <string name="wallet_next_label">下一个</string>
+   <string name="wallet_done_label">完成</string>
+   <string name="wallet_continue_label">继续</string>
+   <string name="wallet_got_it_label">好了！</string>
+
+   <string name="wallet">flye智能卡</string>
+   <string name="wallet_dashboard_title">我的flye智能卡</string>
+   <string name="wallet_wizard_title">flye智能卡</string>
+   <string name="wallet_input_data_is_incorrect">输入数据不正确</string>
+   <string name="wallet_bank_card_good_thru">到期时间</string>
+   <string name="wallet_smart_card_is_disconnected">智能卡已断开连接</string>
+   <string name="wallet_no_internet_connection">无互联网连接</string>
+
+   <!--card alias-->
+   <string name="wallet_wizard_card_alias_subtitle">命名您的智能卡</string>
+   <string name="wallet_wizard_card_alias_hint">例如：Shirley的智能卡</string>
+   <string name="wallet_wizard_card_alias_format_error">卡的名称只能包含字母，并且长度超过2个字符</string>
+   <string name="wallet_wizard_card_alias_was_setup">卡的名称已添加</string>
+   <string name="wallet_wizard_card_alias_setup">设置卡的名称</string>
+
+   <!--edit profile-->
+   <string name="wallet_wizard__welcom_screen_title">设置flye智能卡</string>
+   <string name="wallet_edit_profile_subtitle">设置您想在卡片上显示的照片和名字。</string>
+   <string name="wallet_edit_profile_name_hint">输入您的姓名</string>
+   <string name="wallet_edit_profile_progress_dialog">上传信息到智能卡</string>
+   <string name="wallet_edit_profile_success_dialog">资料已上传</string>
+   <string name="wallet_edit_profile_name_format_title">姓名格式错误！</string>
+   <string name="wallet_edit_profile_name_format_detail">您应输入您的姓氏和名字（中间名选填）\n每部分包含2至21个字母</string>
+   <string name="wallet_edit_profile_avatar_not_chosen">请您选择智能卡的照片</string>
+
+   <!--pin setup-->
+   <string name="wallet_wizard_setup_pin_title">设置PIN码</string>
+   <string name="wallet_wizard_setup_pin_header">在触摸板上设置您的PIN码\n按4次。</string>
+   <string name="wallet_wizard_setup_new_pin_header">在智能卡的触摸板上设置新的PIN码，滑动或点击4次</string>
+   <string name="wallet_wizard_setup_progress">在智能卡的触摸板上设置您的PIN码…</string>
+   <string name="wallet_wizard_setup_error">出现问题…\n请重试！</string>
+   <string name="wallet_wizard_setup_new_pin_success">新的PIN码已设置！</string>
+
+   <!--pin is set-->
+   <string name="wallet_wizard_pin_is_set">您的PIN码已设置！</string>
+   <string name="wallet_wizard_pin_is_set_suggestion">您现在可以开始加载信用卡和借记卡</string>
+
+   <!--splash-->
+   <string name="wallet_wizard_splash_title1">准备好翱翔</string>
+   <string name="wallet_wizard_splash_title2">接下来，您必须同意\n条款和条件。</string>
+   <string name="wallet_wizard_splash_review_btn">条款和条件</string>
+
+   <string name="wallet_wizard_scan_proposal">扫描您flye™智能卡的\n背面开始设置</string>
+   <string name="wallet_wizard_scan_start_btn">扫描卡片</string>
+   <string name="wallet_wizard_scan_title">扫描flye智能卡</string>
+
+   <string name="wallet_wizard_scan_barcode_header">将flye™智能卡的条形码置于取景框中。</string>
+   <string name="wallet_wizard_scan_barcode_footer_title">没有在扫描？</string>
+   <string name="wallet_wizard_scan_barcode_footer_btn">手动输入ID</string>
+   <string name="waller_wizard_scan_barcode_progress_label">智能卡连接中...</string>
+
+   <string name="wallet_add_credit_card">添加信用卡</string>
+   <string name="wallet_add_debit_card">添加借记卡</string>
+   <string name="wallet_payment_cards_title">支付卡</string>
+
+   <!--bar code manual-->
+   <string name="wallet_wizard_manual_input_header">输入位于条形码\n下方的10位数字</string>
+   <string name="wallet_wizard_manual_input_title">flye智能卡号码</string>
+   <string name="wallet_wizard_bar_code_validation_error">条码号错误</string>
+   <string name="wallet_bank_name_text_holder">银行名称</string>
+
+   <!--details-->
+   <string name="wallet_card_details_label_billing_address">帐单地址</string>
+   <string name="wallet_card_details_button_edit_billing_address">编辑帐单地址</string>
+   <string name="wallet_card_details_button_delete_card">删除卡片</string>
+   <string name="wallet_card_details_progress_delete">删除%1$s ...</string>
+   <string name="wallet_card_details_delete_card_dialog_title">删除支付卡</string>
+   <string name="wallet_card_details_delete_card_dialog_content">您确定吗？</string>
+
+   <!--settings-->
+   <string name="wallet_card_settings_title">设置</string>
+   <string name="wallet_card_settings_device_section_header">您可以更改这些设置以节省电量和优化flye™智能卡的性能。</string>
+   <string name="wallet_card_settings_stealth_mode">保持我的身份不被泄露</string>
+   <string name="wallet_card_settings_lock">锁卡</string>
+   <string name="wallet_card_settings_firmware_update">flye智能卡更新</string>
+   <string name="wallet_card_settings_reset_pin">重新设置PIN码</string>
+   <string name="wallet_card_settings_factory_reset">flye智能卡恢复出厂设置</string>
+   <string name="wallet_card_settings_disable_default_payment_card">禁用默认支付卡</string>
+   <string name="wallet_card_settings_auto_delete_cards">自动清除flye智能卡</string>
+   <string name="wallet_card_settings_stealth_mode_off">隐身模式已关闭</string>
+   <string name="wallet_card_settings_stealth_mode_on">隐身模式已开启</string>
+   <string name="wallet_card_settings_unlock_error">不支持解锁</string>
+
+   <!--card list-->
+   <string name="wallet_card_list_title">我的flye智能卡</string>
+   <string name="dashboard_default_card_stack_title">默认</string>
+   <string name="wallet_wizard_default_card_label">默认</string>
+   <string name="wallet_wizard_empty_card_list_label">添加信用卡和借记卡\n到您的flye™智能卡</string>
+   <string name="wallet_wizard_full_card_list_error_message">您已达到10张卡的限制。请删除一张或多张卡来继续操作。</string>
+   <string name="wallet_wizard_no_internet_connection_title">@string/offline_warning_dialog_title</string>
+   <string name="wallet_wizard_no_connection_to_card_title">flye卡没有连接</string>
+   <string name="wallet_wizard_limited_access">@string/offline_warning_dialog_message</string>
+
+   <!--add card details-->
+   <string name="wallet_add_card_details_title">卡详细信息</string>
+   <string name="wallet_add_card_details_hint_enter_cvv">输入CVV码</string>
+   <string name="wallet_add_card_details_hint_nickname_card">卡片昵称（可选）</string>
+   <string name="wallet_add_card_details_hint_address1">地址1</string>
+   <string name="wallet_add_card_details_hint_address2">地址2（可选）</string>
+   <string name="wallet_add_card_details_hint_city">市</string>
+   <string name="wallet_add_card_details_hint_state">州/省</string>
+   <string name="wallet_add_card_details_hint_zip">邮编</string>
+   <string name="wallet_add_card_details_button_confirm">确认</string>
+   <string name="wallet_add_card_details_cvv_label">CVV码</string>
+   <string name="wallet_add_card_details_billing_address_label">帐单地址</string>
+   <string name="wallet_add_card_details_option_set_as_default_card">设置为默认支付卡</string>
+   <string name="wallet_add_card_details_error_message">有些必填字段为空或包含不正确的数据</string>
+   <string name="wallet_add_card_details_default_card_exist_dialog_text">您的默认卡%1$s将被替换成此卡。您想继续码？</string>
+
+   <!--card type-->
+   <string name="wallet_card_financial_service_master_card">万事达卡</string>
+   <string name="wallet_card_financial_service_visa">Visa卡</string>
+   <string name="wallet_card_financial_service_discover">发现</string>
+   <string name="wallet_card_financial_service_amex">美国运通卡</string>
+
+   <string name="wallet_card_list_records_connected">%1$d张卡已上传</string>
+   <string name="wallet_card_list_record_connected">%1$d张卡已上传</string>
+   <string name="wallet_dashboard_unlock_error">不支持解锁</string>
+   <string name="wallet_dashboard_flye_firmware_update">flye智能卡更新</string>
+
+   <!--charging-->
+   <string name="wallet_charging_swiping_screen_title">添加支付卡</string>
+   <string name="wallet_charging_swiping_screen_instruction">将flye™插入充电器，并刷信用卡或借记卡。</string>
+   <string name="wallet_charging_swiping_screen_notes">确认您的flye™卡已打开，并且两个电源LED灯是亮着的。</string>
+   <string name="wallet_wizard_charging_swipe_error">读卡错误。请重试</string>
+   <string name="wallet_terms_and_conditions_header">条款和条件</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">同意</string>
+   <string name="wallet_terms_and_conditions_try_again">再试一次</string>
+   <string name="wallet_terms_and_conditions_load_failed">无法检索条款和条件</string>
+   <string name="wallet_terms_and_conditions_accept_failed">无法接受条款和条件</string>
+
+   <!--set up smart card-->
+   <string name="wallet_wizard_welcome_title">flye智能卡</string>
+   <string name="wallet_wizard_welcome_greeting">%1$s你好！</string>
+   <string name="wallet_wizard_welcome_platinum_user">有了flye™，将您的白金会员提升至新高度。</string>
+   <string name="wallet_wizard_welcome_gold_user">有了flye™，将您的黄金会员提升至新高度。</string>
+   <string name="wallet_wizard_welcome_button_text">设置</string>
+
+   <string name="wallet_record_type_credit">信用</string>
+   <string name="wallet_record_type_debit">借记</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_disable_default_card_title">禁用默认支付卡</string>
+   <string name="wallet_settings_disable_default_card_description">设置一个计时器，在断开连接一定时间后禁用您的支付卡</string>
+   <string name="wallet_settings_disable_default_card_2_hours">2小时</string>
+   <string name="wallet_settings_disable_default_card_4_hours">4小时</string>
+   <string name="wallet_settings_disable_default_card_6_hours">6小时</string>
+   <string name="wallet_settings_disable_default_card_8_hours">8小时</string>
+   <string name="wallet_settings_disable_default_card_12_hours">12小时</string>
+   <string name="wallet_settings_disable_default_card_24_hours">24小时</string>
+   <string name="wallet_settings_disable_default_card_48_hours">48小时</string>
+   <string name="wallet_settings_disable_default_card_1_week">1周</string>
+   <string name="wallet_settings_disable_default_card_1_month">1个月</string>
+   <string name="wallet_settings_disable_default_card_never">从不</string>
+
+   <!--disable default card-->
+   <string name="wallet_settings_clear_flye_card_title">自动清除flye智能卡</string>
+   <string name="wallet_settings_clear_flye_card_description">设置一个计时器，在您的flye智能卡处于不活跃状态一定时间后，擦除卡上所有內容。</string>
+   <string name="wallet_settings_clear_flye_card_2_hours">2小时</string>
+   <string name="wallet_settings_clear_flye_card_4_hours">4小时</string>
+   <string name="wallet_settings_clear_flye_card_6_hours">6小时</string>
+   <string name="wallet_settings_clear_flye_card_8_hours">8小时</string>
+   <string name="wallet_settings_clear_flye_card_12_hours">12小时</string>
+   <string name="wallet_settings_clear_flye_card_24_hours">24小时</string>
+   <string name="wallet_settings_clear_flye_card_48_hours">48小时</string>
+   <string name="wallet_settings_clear_flye_card_1_week">1周</string>
+   <string name="wallet_settings_clear_flye_card_1_month">1个月</string>
+   <string name="wallet_settings_clear_flye_card_never">从不</string>
+
+   <!--firmware-->
+   <string name="wallet_settings_last_version_title">flye智能卡更新</string>
+   <string name="wallet_settings_version">%1$s版本</string>
+   <string name="wallet_settings_last_version">您flye智能卡已更新至最新版本</string>
+   <string name="wallet_settings_latest_dt_version_required">此次更新需要最新版本的DreamTrips</string>
+   <string name="wallet_settings_update_dt_app">更新DreamTrips</string>
+   <string name="wallet_settings_update_size">%1$s</string>
+   <string name="wallet_settings_version_latest">最新%1$s版本</string>
+   <string name="wallet_settings_version_current">当前%1$s版本</string>
+   <string name="wallet_settings_version_whats_new">新内容</string>
+   <string name="wallet_settings_download_install">下载并安装</string>
+
+   <!-- firmware settings-->
+   <string name="wallet_firmware_space_alert_title">下载空间不足</string>
+   <string name="wallet_firmware_space_alert_description">为下载更新，您需要释放%1$s空间。您可以在设置中管理储存空间。</string>
+   <string name="wallet_firmware_space_alert_cancel_action">取消</string>
+   <string name="wallet_firmware_space_alert_settings_action">设置</string>
+
+   <!--factory reset-->
+   <string name="wallet_factory_reset_title">flye智能卡恢复出厂设置</string>
+   <string name="wallet_factory_reset_enter_pin_text">在flye™智能卡上输入您的PIN码恢复出厂设置。</string>
+   <string name="wallet_factory_reset_card_reset_text">您的flye™智能卡已恢复出厂设置。</string>
+
+   <!--firmware download-->
+   <string name="wallet_firmware_download_header">flye智能卡更新</string>
+   <string name="wallet_firmware_download_text">下载更新</string>
+   <string name="wallet_firmware_download_cancel_action">取消</string>
+
+   <!-- firmware install-->
+   <string name="wallet_firmware_install_header">flye智能卡更新</string>
+   <string name="wallet_firmware_install_text">安装更新</string>
+   <string name="wallet_firmware_install_sub_text">请勿关闭flye智能卡</string>
+   <string name="wallet_firmware_install_error_alert_title">安装错误</string>
+   <string name="wallet_firmware_install_error_alert_content">更新未能完成安装。您想重试吗？</string>
+   <string name="wallet_firmware_install_error_alert_content_customer_support">如需帮助，请联系客服：</string>
+   <string name="wallet_firmware_install_customer_support_phone_number">(855) 999–3593</string>
+   <string name="wallet_firmware_install_error_retry_action">重试</string>
+   <string name="wallet_firmware_install_error_cancel_action">取消</string>
+
+   <!-- firmware success install-->
+   <string name="wallet_firmware_install_success_header">flye智能卡更新</string>
+   <string name="wallet_firmware_install_success_sub_title">flye智能卡已成功更新至%1$s版本</string>
+   <string name="wallet_firmware_install_success_title">更新成功</string>
+   <string name="wallet_firmware_install_success_action_button">完成</string>
+
+   <!--wizard checks-->
+   <string name="wallet_wizard_checks_header">欢迎来到flye™智能卡设置！</string>
+   <string name="wallet_wizard_checks_header2">在我们开始之前，检查是否满足以下条件：</string>
+   <string name="wallet_wizard_checks_title">flye智能卡</string>
+   <string name="wallet_wizard_checks_bluetooth_is_not_supported">此设备不支持低功耗蓝牙</string>
+   <string name="wallet_wizard_checks_bluetooth_not_enable">蓝牙未启用</string>
+   <string name="wallet_wizard_checks_bluetooth_enable">蓝牙已启用</string>
+   <string name="wallet_wizard_checks_network_not_available">您没有连接到网络</string>
+   <string name="wallet_wizard_checks_network_available">您已连接网络</string>
+
+   <!--pre installation check-->
+   <string name="wallet_firmware_pre_installation_title">flye智能卡更新</string>
+   <string name="wallet_firmware_pre_installation_header">要安装此更新\n请执行以下操作：</string>
+   <string name="wallet_firmware_pre_installation_bluetooth">启用蓝牙，并连接到flye智能卡</string>
+   <string name="wallet_firmware_pre_installation_connection">打开flye智能卡</string>
+   <string name="wallet_firmware_pre_installation_charging">确保您的flye智能卡有50%的电量</string>
+   <string name="wallet_firmware_pre_installation_button">安装</string>
+   <string name="wallet_firmware_pre_installation_install_later">稍后安装</string>
+
+   <!--smart card connection-->
+   <string name="wallet_smartcard_connected_label">智能卡已连接</string>
+   <string name="wallet_smartcard_disconnected_label">智能卡已断开连接</string>
+   <string name="wallet_smartcard_connection_try_description">连接智能卡，然后重试。</string>
+
+   <!-- Power On -->
+   <string name="wallet_wizard_power_on_title">flye智能卡</string>
+   <string name="wallet_wizard_power_on_header">刷卡上的芯片启用您的flye™智能卡。</string>
+
+   <!--puck connection screen-->
+   <string name="wallet_puck_connection_title">智能卡更新</string>
+   <string name="wallet_puck_connection_comment">确保您的flye智能卡已连接到充电器。</string>
+</resources>

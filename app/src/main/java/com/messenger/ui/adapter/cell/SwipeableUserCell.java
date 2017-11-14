@@ -33,12 +33,16 @@ public class SwipeableUserCell extends UserCell<SwipeDataUser, SwipeableUserCell
       swipeLayout.setSwipeEnabled(swipeDataUser.swipeAvailable);
       tickImageView.setVisibility(View.GONE);
       View.OnClickListener clickListener = view -> {
-         if (cellDelegate != null) cellDelegate.onCellClicked(getModelObject());
+         if (cellDelegate != null) {
+            cellDelegate.onCellClicked(getModelObject());
+         }
       };
       swipeLayout.addSwipeListener(new SwipeClickListener(itemView, clickListener));
       itemView.setOnClickListener(clickListener);
       deleteButton.setOnClickListener(view -> {
-         if (cellDelegate != null) cellDelegate.onDeleteUserRequired(getModelObject());
+         if (cellDelegate != null) {
+            cellDelegate.onDeleteUserRequired(getModelObject());
+         }
       });
    }
 

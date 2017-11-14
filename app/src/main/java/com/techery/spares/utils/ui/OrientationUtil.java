@@ -11,7 +11,7 @@ import android.view.WindowManager;
 /**
  * Static methods related to device orientation.
  */
-public class OrientationUtil {
+public final class OrientationUtil {
    private OrientationUtil() {
    }
 

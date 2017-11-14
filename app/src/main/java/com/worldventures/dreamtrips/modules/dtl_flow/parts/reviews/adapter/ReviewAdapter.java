@@ -25,16 +25,16 @@ import timber.log.Timber;
 
 public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-   private ArrayList<ReviewObject> mItems = new ArrayList<>();
-   private Context context;
+   // View Types
+   private static final int ITEM = 0;
+   private static final int LOADING = 1;
+
+   private final ArrayList<ReviewObject> mItems = new ArrayList<>();
+   private final Context context;
 
    public ReviewAdapter(Context context) {
       this.context = context;
    }
-
-   // View Types
-   private static final int ITEM = 0;
-   private static final int LOADING = 1;
 
    @Override
    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,17 +50,17 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             View viewLoading = inflater.inflate(R.layout.view_dtl_item_loading, parent, false);
             viewHolder = new LoadingVH(viewLoading);
             break;
+         default:
+            break;
       }
       return viewHolder;
    }
 
    @Override
    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-      switch (getItemViewType(position)) {
-         case ITEM:
-            final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
-            recyclerViewHolder.bind(position);
-            break;
+      if (getItemViewType(position) == ITEM) {
+         final RecyclerViewHolder recyclerViewHolder = (RecyclerViewHolder) holder;
+         recyclerViewHolder.bind(position);
       }
    }
 
@@ -75,10 +75,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
       return reviewId == null || reviewId.length() == 0 ? LOADING : ITEM;
    }
 
-     /*
+   /*
         Helpers - Pagination
    _________________________________________________________________________________________________
-    */
+   */
 
    public void add(ReviewObject r) {
       mItems.add(r);
@@ -118,11 +118,15 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
    }
 
    public void removeLoadingFooter() {
-      if (mItems == null || mItems.isEmpty()) return;
+      if (mItems == null || mItems.isEmpty()) {
+         return;
+      }
 
       int position = mItems.size() - 1;
 
-      if (getItemViewType(position) == ITEM) return;
+      if (getItemViewType(position) == ITEM) {
+         return;
+      }
 
       ReviewObject reviewObject = getItem(position);
 
@@ -140,15 +144,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     * Main list's content ViewHolder
     */
    protected class RecyclerViewHolder extends RecyclerView.ViewHolder {
-      private SimpleDraweeView mAvatar;
-      private TextView mUserName;
-      private TextView mCommentWrote;
-      private RatingBar mRating;
-      private TextView mComment;
-      private TextView mTvVerifiedReview;
-      private ImageView mIvVerifiedReview;
-      private LinearLayout mPhotosIndicatorLayout;
-      private TextView mPhotosNumber;
+
+      private final SimpleDraweeView mAvatar;
+      private final TextView mUserName;
+      private final TextView mCommentWrote;
+      private final RatingBar mRating;
+      private final TextView mComment;
+      private final TextView mTvVerifiedReview;
+      private final ImageView mIvVerifiedReview;
+      private final LinearLayout mPhotosIndicatorLayout;
+      private final TextView mPhotosNumber;
 
       public RecyclerViewHolder(View itemView) {
          super(itemView);
@@ -176,7 +181,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Timber.e(e.getMessage());
          }
          mComment.setText(mItems.get(position).getComment());
-         mRating.setRating((mItems.get(position).getRatingCommentUser()));
+         mRating.setRating(mItems.get(position).getRatingCommentUser());
 
          setVerifiedReview(mItems.get(position).isVerifiedReview());
 

@@ -17,10 +17,10 @@ import java.util.HashMap;
 
 public class TimestampItemAnimator extends SimpleItemAnimator {
 
-   private ChatTimestampInflater chatTimestampInflater;
+   private final ChatTimestampInflater chatTimestampInflater;
 
-   private HashMap<RecyclerView.ViewHolder, ValueAnimator> pendingAnimations = new HashMap<>();
-   private HashMap<RecyclerView.ViewHolder, ValueAnimator> runningAnimations = new HashMap<>();
+   private final HashMap<RecyclerView.ViewHolder, ValueAnimator> pendingAnimations = new HashMap<>();
+   private final HashMap<RecyclerView.ViewHolder, ValueAnimator> runningAnimations = new HashMap<>();
 
    public TimestampItemAnimator(ChatTimestampInflater chatTimestampInflater) {
       this.chatTimestampInflater = chatTimestampInflater;
@@ -127,7 +127,9 @@ public class TimestampItemAnimator extends SimpleItemAnimator {
    @Override
    public void endAnimation(RecyclerView.ViewHolder item) {
       ValueAnimator animator = runningAnimations.remove(item);
-      if (animator != null) animator.cancel();
+      if (animator != null) {
+         animator.cancel();
+      }
    }
 
    @Override
@@ -141,16 +143,18 @@ public class TimestampItemAnimator extends SimpleItemAnimator {
    @Override
    public boolean isRunning() {
       for (ValueAnimator animator : runningAnimations.values()) {
-         if (animator.isRunning()) return true;
+         if (animator.isRunning()) {
+            return true;
+         }
       }
       return false;
    }
 
    protected static class BottomMarginAnimationListener implements ValueAnimator.AnimatorUpdateListener {
 
-      private View view;
+      private final View view;
 
-      public BottomMarginAnimationListener(View view) {
+      BottomMarginAnimationListener(View view) {
          this.view = view;
       }
 

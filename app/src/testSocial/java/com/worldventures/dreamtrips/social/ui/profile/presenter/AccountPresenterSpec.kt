@@ -6,7 +6,7 @@ import com.worldventures.core.model.User
 import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.modules.video.utils.CachedModelHelper
 import com.worldventures.core.service.DownloadFileInteractor
-import com.worldventures.dreamtrips.common.Injector
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.util.SocialCropImageManager
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate

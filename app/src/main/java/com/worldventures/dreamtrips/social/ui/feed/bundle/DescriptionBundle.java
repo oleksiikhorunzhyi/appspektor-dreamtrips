@@ -26,6 +26,7 @@ public class DescriptionBundle implements Parcelable {
    }
 
    public DescriptionBundle() {
+      //do nothing
    }
 
    protected DescriptionBundle(Parcel in) {

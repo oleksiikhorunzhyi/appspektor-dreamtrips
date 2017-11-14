@@ -1,13 +1,13 @@
 package com.worldventures.core.service.command.api_action;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Janet;
 
-public abstract class BaseApiActionCommand<HttpAction extends com.worldventures.dreamtrips.api.api_common.BaseHttpAction, T, R>
+public abstract class BaseApiActionCommand<A extends com.worldventures.dreamtrips.api.api_common.BaseHttpAction, T, R>
       extends CommandWithError<T> implements InjectableAction {
 
    @Inject Janet janet;
@@ -25,13 +25,13 @@ public abstract class BaseApiActionCommand<HttpAction extends com.worldventures.
       callback.onSuccess(t);
    }
 
-   protected abstract R mapHttpActionResult(HttpAction httpAction);
+   protected abstract R mapHttpActionResult(A httpAction);
 
    protected T mapCommandResult(R httpCommandResult) {
       return (T) httpCommandResult;
    }
 
-   protected abstract HttpAction getHttpAction();
+   protected abstract A getHttpAction();
 
-   protected abstract Class<HttpAction> getHttpActionClass();
+   protected abstract Class<A> getHttpActionClass();
 }

@@ -16,19 +16,22 @@ public interface GlobalMessageListener {
 
       @Override
       public void onReceiveMessage(Message message) {
+         //do nothing
       }
 
       @Override
       public void onPreSendMessage(Message message) {
-
+         //do nothing
       }
 
       @Override
       public void onSendMessage(Message message) {
+         //do nothing
       }
 
       @Override
       public void onErrorMessage(Message message) {
+         //do nothing
       }
    }
 }

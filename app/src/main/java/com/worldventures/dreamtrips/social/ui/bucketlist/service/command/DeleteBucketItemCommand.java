@@ -11,7 +11,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DeleteBucketItemCommand extends ApiActionCommand<DeleteBucketItemHttpAction, FeedEntity> {
 
-   private BucketItem bucketItem;
+   private final BucketItem bucketItem;
 
    public DeleteBucketItemCommand(BucketItem bucketItem) {
       this.bucketItem = bucketItem;

@@ -15,7 +15,9 @@ public abstract class ConnectionOverlay<V extends ConnectionOverlayView> {
    }
 
    public void startProcessingState(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
-      if (!hasContentLayout()) return;
+      if (!hasContentLayout()) {
+         return;
+      }
       processStateInternally(connectionStateObservable, stopper);
    }
 

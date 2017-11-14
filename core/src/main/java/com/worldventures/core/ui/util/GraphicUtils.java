@@ -16,7 +16,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import static android.text.TextUtils.isEmpty;
 
 //todo rename to FrescoUtils
-public class GraphicUtils {
+public final class GraphicUtils {
 
    private static final String IMAGERY_URL_PATTERN = "%s?width=%d&height=%d";
 
@@ -25,6 +25,9 @@ public class GraphicUtils {
 
    public static PipelineDraweeController provideFrescoResizingController(String strUri, DraweeController oldController) {
       return provideFrescoResizingController(parseUri(strUri), oldController);
+   }
+
+   private GraphicUtils() {
    }
 
    public static PipelineDraweeController provideFrescoResizingController(Uri uri, DraweeController oldController) {

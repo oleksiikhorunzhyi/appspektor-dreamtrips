@@ -9,20 +9,21 @@ import io.techery.mappery.MapperyContext;
 
 public class InnerErrorConverter implements Converter<com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError, InnerErrors> {
 
-    @Override
-    public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError> sourceClass() {
-        return com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError.class;
-    }
+   @Override
+   public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError> sourceClass() {
+      return com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError.class;
+   }
 
-    @Override
-    public Class<InnerErrors> targetClass() {
-        return InnerErrors.class;
-    }
+   @Override
+   public Class<InnerErrors> targetClass() {
+      return InnerErrors.class;
+   }
 
-    @Override
-    public InnerErrors convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError errors) {
-        return ImmutableInnerErrors.builder()
-                .formErrors(errors.formErrors() != null ? mapperyContext.convert(errors.formErrors(), FormErrors.class) : null)
-                .build();
-    }
+   @Override
+   public InnerErrors convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError errors) {
+      return ImmutableInnerErrors.builder()
+            .code(errors.code())
+            .formErrors(errors.formErrors() != null ? mapperyContext.convert(errors.formErrors(), FormErrors.class) : null)
+            .build();
+   }
 }

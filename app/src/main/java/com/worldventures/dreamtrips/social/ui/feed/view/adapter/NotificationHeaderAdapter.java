@@ -17,8 +17,8 @@ import butterknife.InjectView;
 
 public class NotificationHeaderAdapter<T> implements StickyHeadersAdapter<NotificationHeaderAdapter.NotificationHeaderViewHolder> {
 
-   private List<T> items;
-   private int layout;
+   private final List<T> items;
+   private final int layout;
    private final HeaderConverter<T> converter;
 
    public NotificationHeaderAdapter(List<T> items, int layout, HeaderConverter<T> converter) {
@@ -43,18 +43,24 @@ public class NotificationHeaderAdapter<T> implements StickyHeadersAdapter<Notifi
       HeaderItem header = converter.createHeader(items.get(i));
       String headerTitle = header.getHeaderTitle();
       headerViewHolder.itemView.setVisibility(headerTitle == null ? View.GONE : View.VISIBLE);
-      if (headerTitle != null) headerViewHolder.letter.setText(headerTitle.toUpperCase());
+      if (headerTitle != null) {
+         headerViewHolder.letter.setText(headerTitle.toUpperCase());
+      }
    }
 
    @Override
    public long getHeaderId(int i) {
-      if (items.isEmpty() || items.size() < i) return RecyclerView.NO_ID;
+      if (items.isEmpty() || items.size() < i) {
+         return RecyclerView.NO_ID;
+      }
       //
       HeaderItem header = converter.createHeader(items.get(i));
       String categoryTitle = header.getHeaderTitle();
       int headerId = 0;
 
-      if (categoryTitle == null) return headerId;
+      if (categoryTitle == null) {
+         return headerId;
+      }
 
       for (int cursor = 0; cursor < categoryTitle.length(); cursor++) {
          headerId += categoryTitle.charAt(cursor);

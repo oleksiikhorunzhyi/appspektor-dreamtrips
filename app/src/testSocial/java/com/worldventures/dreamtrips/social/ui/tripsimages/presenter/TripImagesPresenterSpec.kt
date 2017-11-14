@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.User
-import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor
@@ -351,9 +350,9 @@ class TripImagesPresenterSpec : PresenterBaseSpec({
          presenter.takeView(view)
       }
 
-      private fun memberImagesTripImagesArgs() = TripImagesArgs.builder().route(Route.MEMBERS_IMAGES).build()
+      private fun memberImagesTripImagesArgs() = TripImagesArgs.builder().type(TripImagesArgs.TripImageType.MEMBER_IMAGES).build()
 
-      private fun userTripImagesArgs(userId: Int) = TripImagesArgs.builder().route(Route.ACCOUNT_IMAGES).userId(userId).build()
+      private fun userTripImagesArgs(userId: Int) = TripImagesArgs.builder().type(TripImagesArgs.TripImageType.ACCOUNT_IMAGES).userId(userId).build()
 
       private fun stubMemberImagesResponse(): List<PhotoMediaEntity> {
          return listOf(stubPhotoMediaEntity)

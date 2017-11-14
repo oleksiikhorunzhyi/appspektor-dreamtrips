@@ -16,13 +16,13 @@ import com.worldventures.core.service.DownloadFileInteractor;
 import com.worldventures.core.service.command.DownloadFileCommand;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.ValidationUtils;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
@@ -76,10 +76,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    @State PickerMode pickerMode;
 
    List<PostCompoundOperationModel> postUploads;
-
-   public AccountPresenter() {
-      super();
-   }
 
    @Override
    public void onViewTaken() {
@@ -213,7 +209,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    void onAvatarUploadSuccess() {
       analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
       UserSession userSession = appSessionHolder.get().get();
-      User currentUser = userSession.getUser();
+      User currentUser = userSession.user();
 
       this.user.setAvatar(currentUser.getAvatar());
       this.user.setAvatarUploadInProgress(false);
@@ -225,7 +221,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    void onCoverUploadSuccess() {
       analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
       UserSession userSession = appSessionHolder.get().get();
-      User currentUser = userSession.getUser();
+      User currentUser = userSession.user();
 
       this.user.setBackgroundPhotoUrl(currentUser.getBackgroundPhotoUrl());
       this.user.setCoverUploadInProgress(false);
@@ -255,13 +251,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    @Override
    public void openBucketList() {
       shouldReload = true;
-      view.openBucketList(Route.BUCKET_TABS, null);
+      view.openBucketList(BucketTabsFragment.class, null);
    }
 
    @Override
    public void openTripImages() {
-      view.openTripImages(Route.ACCOUNT_IMAGES, TripImagesArgs.builder()
-            .route(Route.ACCOUNT_IMAGES)
+      view.openTripImages(TripImagesArgs.builder()
+            .type(TripImagesArgs.TripImageType.ACCOUNT_IMAGES)
             .origin(CreateEntityBundle.Origin.PROFILE_TRIP_IMAGES)
             .userId(getAccount().getId())
             .build());
@@ -336,6 +332,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
             break;
          case COVER:
             onCoverChosen(image);
+            break;
+         default:
             break;
       }
    }

@@ -43,7 +43,9 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
    }
 
    public void query(String fullQueryText, int cursorPosition) {
-      if (fullQueryText.equals(query)) return;//for restore state after rotation
+      if (fullQueryText.equals(query)) {
+         return; //for restore state after rotation
+      }
       query = fullQueryText;
       String subStr = fullQueryText.substring(0, cursorPosition);
       int lastDashIndex = subStr.lastIndexOf("#");

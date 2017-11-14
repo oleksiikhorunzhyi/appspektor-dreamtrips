@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.AttributesSortTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.AttributesActionParams;

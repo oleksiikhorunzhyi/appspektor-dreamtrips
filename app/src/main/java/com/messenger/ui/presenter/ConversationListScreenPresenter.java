@@ -30,12 +30,11 @@ public interface ConversationListScreenPresenter extends MessengerPresenter<Conv
       public static final String ALL_CHATS = "all";
       public static final String GROUP_CHATS = "group";
 
+      private final String title;
+      private final String type;
+
       @StringDef({ALL_CHATS, GROUP_CHATS})
       public @interface ChatsType {}
-
-      private String title;
-      private String type;
-
 
       public ChatTypeItem(@ChatsType String type, String title) {
          this.title = title;

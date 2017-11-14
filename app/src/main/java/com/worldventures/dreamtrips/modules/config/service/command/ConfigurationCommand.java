@@ -15,6 +15,7 @@ public class ConfigurationCommand extends Command<Configuration> implements Cach
    private Configuration configuration;
 
    public ConfigurationCommand() {
+      //do nothing
    }
 
    public ConfigurationCommand(Configuration configuration) {

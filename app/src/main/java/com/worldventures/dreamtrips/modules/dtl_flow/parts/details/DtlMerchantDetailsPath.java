@@ -21,17 +21,16 @@ public class DtlMerchantDetailsPath extends DtlDetailPath {
 
    private final Merchant merchant;
    private final List<String> preExpandOfferPositions;
-   private String message;
+   private final String message;
 
    public DtlMerchantDetailsPath(MasterDetailPath path,
-                                 @NonNull Merchant merchant,
-                                 @Nullable List<String> preExpandOfferPositions,
-                                 String message) {
+         @NonNull Merchant merchant,
+         @Nullable List<String> preExpandOfferPositions,
+         String message) {
       super(path);
       this.merchant = merchant;
       this.preExpandOfferPositions = preExpandOfferPositions != null ? preExpandOfferPositions : Collections.emptyList();
       this.message = message;
-
    }
 
    public Merchant getMerchant() {

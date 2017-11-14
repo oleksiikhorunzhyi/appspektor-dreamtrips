@@ -4,8 +4,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-public class ChatDateUtils {
+public final class ChatDateUtils {
+
    private final static int MAX_YEAR = Calendar.getInstance().getMaximum(Calendar.YEAR);
+
+   private ChatDateUtils() {
+   }
 
    public static Calendar getToday() {
       Calendar today = Calendar.getInstance();

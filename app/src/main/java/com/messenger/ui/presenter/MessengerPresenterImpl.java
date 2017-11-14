@@ -23,7 +23,7 @@ import rx.Observable;
 public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extends Parcelable> extends BaseViewStateMvpPresenter<V, S> implements MessengerPresenter<V, S> {
 
    protected Context context;
-   private Injector injector;
+   private final Injector injector;
 
    protected Observable<SyncStatus> connectionStatusStream;
    protected SyncStatus currentConnectivityStatus = SyncStatus.DISCONNECTED;
@@ -91,7 +91,7 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
 
    @Override
    public void onToolbarMenuPrepared(Menu menu) {
-
+      //do nothing
    }
 
    @Override

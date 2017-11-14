@@ -11,7 +11,8 @@ import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class CreateBucketItemCommand extends MappableApiActionCommand<CreateBucketItemHttpAction, BucketItem, BucketItem> {
-   private BucketBody bucketBody;
+
+   private final BucketBody bucketBody;
 
    public CreateBucketItemCommand(BucketBody bucketBody) {
       this.bucketBody = bucketBody;

@@ -43,10 +43,10 @@ import com.messenger.ui.util.chat.anim.TimestampItemAnimator;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 
@@ -130,7 +130,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
       recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
          @Override
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (adapter == null || adapter.getCursor() == null) return;
+            if (adapter == null || adapter.getCursor() == null) {
+               return;
+            }
 
             int headersCount = adapter.getHeaderViewCount();
             int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
@@ -138,7 +140,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             int totalItem = linearLayoutManager.getItemCount();
             onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem - headersCount);
 
-            if (dy > 0) return;
+            if (dy > 0) {
+               return;
+            }
 
             if (firstVisibleItem <= THRESHOLD + headersCount && totalItem > headersCount) {
                getPresenter().onNextPageReached();
@@ -257,7 +261,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
    private void onLastVisibleMessageChanged(Cursor cursor, int position) {
       DataMessage message = cursor.isClosed() || !cursor.moveToPosition(position) ? null : MessageDAO.fromCursor(cursor, false);
-      if (message != null) lastVisibleItemStream.onNext(message);
+      if (message != null) {
+         lastVisibleItemStream.onNext(message);
+      }
    }
 
 
@@ -303,17 +309,21 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
    @Override
    public void dismissProgressDialog() {
-      if (progressDialog != null) progressDialog.dismiss();
+      if (progressDialog != null) {
+         progressDialog.dismiss();
+      }
    }
 
    @Override
-   public void showErrorMessage(@StringRes int error_no_connection) {
-      Snackbar.make(this, error_no_connection, Snackbar.LENGTH_SHORT).show();
+   public void showErrorMessage(@StringRes int errorNoConnectionRes) {
+      Snackbar.make(this, errorNoConnectionRes, Snackbar.LENGTH_SHORT).show();
    }
 
    @Override
    public void setShowMarkUnreadMessage(boolean needShow) {
-      if (adapter != null) adapter.setNeedMarkUnreadMessages(needShow);
+      if (adapter != null) {
+         adapter.setNeedMarkUnreadMessages(needShow);
+      }
    }
 
    @Override
@@ -360,7 +370,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
       for (int i = 0; i < menu.size(); i++) {
          menuItems[i] = menu.getItem(i).getTitle();
       }
-      new AlertDialog.Builder(getContext()).setItems(menuItems, ((dialogInterface, i) -> {
+      new AlertDialog.Builder(getContext()).setItems(menuItems, (dialogInterface, i) -> {
          switch (menu.getItem(i).getItemId()) {
             case R.id.action_copy_message:
                getPresenter().onCopyMessageTextToClipboard(message);
@@ -377,8 +387,10 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             case R.id.action_flag:
                getPresenter().onFlagMessage(message);
                break;
+            default:
+               break;
          }
-      })).show();
+      }).show();
    }
 
    ///////////////////////////////////////////////////////////////////////////

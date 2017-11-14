@@ -57,7 +57,9 @@ public class PhotoUploadingManagerS3 {
          e.printStackTrace();
       }
 
-      if (path == null) return null;
+      if (path == null) {
+         return null;
+      }
 
       File file = new File(path);
       String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
@@ -71,12 +73,6 @@ public class PhotoUploadingManagerS3 {
 
    public String getResultUrl(UploadTask uploadTask) {
       return uploadTask == null ? null : "https://" + uploadTask.getBucketName() + ".s3.amazonaws.com/" + uploadTask.getKey();
-   }
-
-   public String getResultUrl(String filePath) {
-      String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
-      String key = BuildConfig.BUCKET_ROOT_PATH + new File(filePath).getName();
-      return "https://" + bucketName + ".s3.amazonaws.com/" + key;
    }
 
 
@@ -115,11 +111,11 @@ public class PhotoUploadingManagerS3 {
          Cursor cursor = null;
          try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             if (cursor.moveToFirst()) {
-               return cursor.getString(column_index);
+               return cursor.getString(columnIndex);
             }
-         } catch (Exception e) {
+         } catch (Exception ignored) {
          }
       } else if ("file".equalsIgnoreCase(uri.getScheme())) {
          return uri.getPath();

@@ -10,7 +10,7 @@ public class BadgeHelper {
    private static final String WV_PROSPECT = "WVProspect";
    private static final String TRIP_CHAT_HOST = "DreamTrips Host";
 
-   private SessionHolder sessionHolder;
+   private final SessionHolder sessionHolder;
 
    public BadgeHelper(SessionHolder sessionHolder) {
       this.sessionHolder = sessionHolder;
@@ -19,8 +19,8 @@ public class BadgeHelper {
    public boolean isWVProspect() {
       UserSession userSession = sessionHolder.get().orNull();
 
-      return !(userSession == null || userSession.getUser() == null || userSession.getUser().getBadges() == null)
-            && Queryable.from(userSession.getUser().getBadges()).any(userBadge -> userBadge.equals(WV_PROSPECT));
+      return !(userSession == null || userSession.user() == null || userSession.user().getBadges() == null)
+            && Queryable.from(userSession.user().getBadges()).any(userBadge -> userBadge.equals(WV_PROSPECT));
    }
 
    public boolean hasTripChatHost(User user) {

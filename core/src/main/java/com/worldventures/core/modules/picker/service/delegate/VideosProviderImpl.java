@@ -26,8 +26,9 @@ public class VideosProviderImpl implements VideosProvider {
          String[] projection = {MediaStore.Video.Media.DATA, MediaStore.Video.Media.DATE_TAKEN,
                MediaStore.Video.Media.DURATION, MediaStore.Video.Media.MINI_THUMB_MAGIC};
 
-         cursor = context.getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null, null,
-               MediaStore.Images.Media.DATE_TAKEN + " DESC");
+         cursor = context.getContentResolver()
+               .query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null, null,
+                     MediaStore.Images.Media.DATE_TAKEN + " DESC");
 
          int dataColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATA);
          int dateColumn = cursor.getColumnIndex(MediaStore.Video.Media.DATE_TAKEN);

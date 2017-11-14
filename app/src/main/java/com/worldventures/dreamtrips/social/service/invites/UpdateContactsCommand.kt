@@ -4,10 +4,10 @@ import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
 import android.text.TextUtils
-import com.worldventures.core.janet.dagger.InjectableAction
 import com.worldventures.dreamtrips.core.utils.ProjectPhoneNumberUtils
 import com.worldventures.dreamtrips.social.domain.entity.Contact
 import com.worldventures.dreamtrips.social.domain.entity.InviteType
+import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
 import rx.Observable

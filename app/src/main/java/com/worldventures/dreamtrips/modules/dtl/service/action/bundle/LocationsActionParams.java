@@ -8,8 +8,10 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface LocationsActionParams extends HttpActionParams {
 
-   @Nullable String query();
+   @Nullable
+   String query();
 
-   @Nullable Location location();
+   @Nullable
+   Location location();
 
 }

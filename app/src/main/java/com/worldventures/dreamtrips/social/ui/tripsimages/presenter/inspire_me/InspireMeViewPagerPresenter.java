@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.BaseImageViewPagerPresenter;
@@ -9,6 +8,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInte
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetInspireMePhotosCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.InspireMeViewPagerArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.inspire_me.FullscreenInspireMeFragment;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class InspireMeViewPagerPresenter extends BaseImageViewPagerPresenter<Bas
    @Override
    protected List<FragmentItem> getItems() {
       return Queryable.from(currentItems)
-            .map(entity -> new FragmentItem(Route.INSPIRE_ME_FULLSCREEN_IMAGES, "", entity))
+            .map(entity -> new FragmentItem(FullscreenInspireMeFragment.class, "", entity))
             .toList();
    }
 

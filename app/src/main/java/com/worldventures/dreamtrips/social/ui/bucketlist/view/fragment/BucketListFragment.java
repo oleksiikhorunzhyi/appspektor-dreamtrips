@@ -27,15 +27,13 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDec
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.utils.ui.OrientationUtil;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
-import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
@@ -52,6 +50,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.BucketItemSta
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CollapsibleAutoCompleteTextView;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
 import java.util.List;
@@ -112,8 +111,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       // setup empty view
       BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
 
-      if (textViewEmptyAdd != null)
+      if (textViewEmptyAdd != null) {
          textViewEmptyAdd.setText(String.format(getString(R.string.bucket_list_add), getString(type.getRes())));
+      }
       recyclerView.setEmptyView(emptyView);
       // setup drag&drop with adapter
       dragDropManager = new RecyclerViewDragDropManager();
@@ -147,7 +147,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
       wrappedAdapter = dragDropManager.createWrappedAdapter(adapter);
       recyclerView.setAdapter(wrappedAdapter);  // requires *wrapped* adapter
-      if (isDragEnabled()) dragDropManager.attachRecyclerView(recyclerView);
+      if (isDragEnabled()) {
+         dragDropManager.attachRecyclerView(recyclerView);
+      }
       // set state delegate
       stateDelegate.setRecyclerView(recyclerView);
    }
@@ -216,7 +218,9 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       super.onMenuInflated(menu);
       menuItemAdd = menu.findItem(R.id.action_quick);
 
-      if (menuItemAdd != null) setupQuickTypeInput(menuItemAdd);
+      if (menuItemAdd != null) {
+         setupQuickTypeInput(menuItemAdd);
+      }
    }
 
    private void setupQuickTypeInput(MenuItem item) {
@@ -282,13 +286,15 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
          case R.id.action_popular:
             getPresenter().popularClicked();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
 
    @Override
    public void openPopular(BucketBundle args) {
-      router.moveTo(Route.POPULAR_TAB_BUCKER, NavigationConfigBuilder.forActivity().data(args).build());
+      router.moveTo(BucketPopularTabsFragment.class, NavigationConfigBuilder.forActivity().data(args).build());
    }
 
    private void actionFilter() {
@@ -301,9 +307,13 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       boolean showCompleted = getPresenter().isShowCompleted();
       boolean showToDO = getPresenter().isShowToDO();
 
-      if (showCompleted && showToDO) popupMenu.getMenu().getItem(0).setChecked(true);
-      else if (showCompleted) popupMenu.getMenu().getItem(1).setChecked(true);
-      else popupMenu.getMenu().getItem(2).setChecked(true);
+      if (showCompleted && showToDO) {
+         popupMenu.getMenu().getItem(0).setChecked(true);
+      } else if (showCompleted) {
+         popupMenu.getMenu().getItem(1).setChecked(true);
+      } else {
+         popupMenu.getMenu().getItem(2).setChecked(true);
+      }
 
       popupMenu.setOnMenuItemClickListener((menuItem) -> {
          getPresenter().reloadWithFilter(menuItem.getItemId());
@@ -318,14 +328,18 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    @Override
    public void showDetailsContainer() {
       handler.post(() -> {
-         if (detailsContainer != null) detailsContainer.setVisibility(View.VISIBLE);
+         if (detailsContainer != null) {
+            detailsContainer.setVisibility(View.VISIBLE);
+         }
       });
    }
 
    @Override
    public void hideDetailContainer() {
       handler.post(() -> {
-         if (detailsContainer != null) detailsContainer.setVisibility(View.GONE);
+         if (detailsContainer != null) {
+            detailsContainer.setVisibility(View.GONE);
+         }
       });
    }
 
@@ -358,12 +372,16 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
    @Override
    public void startLoading() {
-      if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+      if (progressBar != null) {
+         progressBar.setVisibility(View.VISIBLE);
+      }
    }
 
    @Override
    public void finishLoading() {
-      if (progressBar != null) progressBar.setVisibility(View.GONE);
+      if (progressBar != null) {
+         progressBar.setVisibility(View.GONE);
+      }
       stateDelegate.restoreStateIfNeeded();
    }
 
@@ -384,16 +402,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
    @Override
    public void openDetails(BucketItem bucketItem) {
-      router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forRemoval()
-            .fragmentManager(getChildFragmentManager())
-            .containerId(R.id.detail_container)
-            .build());
-      //
-      FeedEntityDetailsBundle.Builder bundleBuilder = new FeedEntityDetailsBundle.Builder().feedItem(FeedItem.create(bucketItem, bucketItem
-            .getOwner()));
+      removeDetails();
+      FeedEntityDetailsBundle.Builder bundleBuilder = new FeedEntityDetailsBundle.Builder()
+            .feedItem(FeedItem.create(bucketItem, bucketItem.getOwner()));
       if (isTabletLandscape()) {
          bundleBuilder.slave(true);
-         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forFragment()
+         router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .containerId(R.id.detail_container)
                .fragmentManager(getChildFragmentManager())
@@ -402,10 +416,17 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
          showDetailsContainer();
       } else {
          hideDetailContainer();
-         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+         router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forActivity()
                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                .data(bundleBuilder.build())
                .build());
       }
+   }
+
+   private void removeDetails() {
+      router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forRemoval()
+            .fragmentManager(getChildFragmentManager())
+            .containerId(R.id.detail_container)
+            .build());
    }
 }

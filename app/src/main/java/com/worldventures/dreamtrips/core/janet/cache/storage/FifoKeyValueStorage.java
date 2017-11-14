@@ -14,7 +14,7 @@ public class FifoKeyValueStorage<K, T> implements Storage<T>, KeyValueStorage<T>
 
    private static final int SIZE_DEFAULT = 3;
 
-   private Map<K, T> map = new LinkedHashMap<K, T>();
+   private final Map<K, T> map = new LinkedHashMap<K, T>();
    private int maxSize = SIZE_DEFAULT;
 
    @Override

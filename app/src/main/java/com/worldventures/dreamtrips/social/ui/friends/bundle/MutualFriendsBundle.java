@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 public class MutualFriendsBundle extends BaseUsersBundle {
 
-   private int id;
+   private final int id;
 
    public MutualFriendsBundle(int id) {
       this.id = id;

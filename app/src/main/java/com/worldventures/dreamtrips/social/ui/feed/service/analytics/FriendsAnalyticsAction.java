@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.analytics;
 
 import com.worldventures.core.service.analytics.AdobeTracker;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.AttributeMap;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 import java.util.HashMap;
 
 @AnalyticsEvent(action = "friends_activity", trackers = AdobeTracker.TRACKER_KEY)
-public class FriendsAnalyticsAction extends BaseAnalyticsAction {
+public final class FriendsAnalyticsAction extends BaseAnalyticsAction {
 
    @AttributeMap
    HashMap<String, String> map = new HashMap<>();

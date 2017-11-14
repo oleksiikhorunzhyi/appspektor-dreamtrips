@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.social.di;
 
 import com.worldventures.core.converter.Converter;
-import com.worldventures.core.modules.infopages.model.converter.FeedbackTypeConverter;
 import com.worldventures.core.modules.infopages.model.converter.DocumentTypeReverseConverter;
+import com.worldventures.core.modules.infopages.model.converter.DocumentsConverter;
+import com.worldventures.core.modules.infopages.model.converter.FeedbackImageAttachmentConverter;
+import com.worldventures.core.modules.infopages.model.converter.FeedbackTypeConverter;
 import com.worldventures.core.modules.video.model.converter.CategoryConverter;
 import com.worldventures.core.modules.video.model.converter.VideoConverter;
 import com.worldventures.core.modules.video.model.converter.VideoLanguageConverter;
@@ -19,9 +21,7 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinCo
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.CircleConverter;
-import com.worldventures.core.modules.infopages.model.converter.DocumentsConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FeedMetaDataConverter;
-import com.worldventures.core.modules.infopages.model.converter.FeedbackImageAttachmentConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.ImageConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.InspirationModelsConverter;
@@ -201,9 +201,9 @@ public class SocialMappingModule {
       return new VideoLanguageConverter();
    }
 
+   //todo move to core
    @Provides(type = Provides.Type.SET)
    @Singleton
-      //todo move to core
    Converter provideVideoLocaleConverter() {
       return new VideoLocaleConverter();
    }

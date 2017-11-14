@@ -62,7 +62,9 @@ public class MessagesPaginationDelegate {
    }
 
    public void loadNextPage() {
-      if (!hasMoreElements || loading.get()) return;
+      if (!hasMoreElements || loading.get()) {
+         return;
+      }
 
       loading.set(true);
 
@@ -105,7 +107,7 @@ public class MessagesPaginationDelegate {
       ListIterator<Message> iterator = loadedMessages.listIterator(loadedMessages.size());
       while (iterator.hasPrevious()) {
          Message message = iterator.previous();
-         String username = sessionHolder.get().get().getUsername();
+         String username = sessionHolder.get().get().username();
          if (!TextUtils.equals(message.getFromId(), username)) {
             return message.getStatus() == MessageStatus.READ;
          }
@@ -126,7 +128,9 @@ public class MessagesPaginationDelegate {
    }
 
    private void handleConnectionState(SyncStatus state) {
-      if (state == SyncStatus.CONNECTED && page == 0) loadNextPage();
+      if (state == SyncStatus.CONNECTED && page == 0) {
+         loadNextPage();
+      }
    }
 
    public boolean hasMoreElements() {

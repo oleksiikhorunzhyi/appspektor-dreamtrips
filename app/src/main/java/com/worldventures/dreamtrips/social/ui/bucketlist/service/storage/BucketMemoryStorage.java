@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BucketMemoryStorage extends MemoryStorage<List<BucketItem>> {
-   private Map<Integer, List<BucketItem>> cache = new ConcurrentHashMap<>();
+
+   private final Map<Integer, List<BucketItem>> cache = new ConcurrentHashMap<>();
 
    @Override
    public void save(@Nullable CacheBundle bundle, List<BucketItem> data) {

@@ -42,42 +42,47 @@ public class VideoHttpService extends ActionServiceWrapper {
 
    public VideoHttpService(String baseUrl, HttpClient client, Converter converter, SessionHolder appSessionHolder,
          MapperyContext mapperyContext, AppVersionNameBuilder appVersionNameBuilder,
-         ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
+         AuthRetryPolicy retryPolicy, ReLoginInteractor reLoginInteractor, Observable<Device> deviceSource) {
       super(new HttpActionService(baseUrl, client, converter));
       this.appSessionHolder = appSessionHolder;
       this.mapperyContext = mapperyContext;
       this.appVersionNameBuilder = appVersionNameBuilder;
       this.reLoginInteractor = reLoginInteractor;
       this.deviceSource = deviceSource;
-      retryPolicy = new AuthRetryPolicy(this.appSessionHolder);
+      this.retryPolicy = retryPolicy;
    }
 
    @Override
    protected <A> boolean onInterceptSend(ActionHolder<A> holder) {
       A action = holder.action();
-      if (action instanceof BaseVideoHttpAction) prepareNewHttpAction((BaseVideoHttpAction) action);
+      if (action instanceof BaseVideoHttpAction) {
+         prepareNewHttpAction((BaseVideoHttpAction) action);
+      }
       return false;
    }
 
    private void prepareNewHttpAction(BaseVideoHttpAction action) {
       if (appSessionHolder.get().isPresent()) {
          UserSession userSession = appSessionHolder.get().get();
-         action.setMemberId(userSession.getUsername());
-         action.setSsoToken(userSession.getLegacyApiToken());
+         action.setMemberId(userSession.username());
+         action.setSsoToken(userSession.legacyApiToken());
          action.setIdentifier("DTApp-Android-" + appVersionNameBuilder.getReleaseSemanticVersionName());
       }
    }
 
    @Override
    protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptStart(ActionHolder<A> holder) {
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+      //do nothing
    }
 
    @Override
@@ -92,7 +97,7 @@ public class VideoHttpService extends ActionServiceWrapper {
          BaseVideoHttpAction action = (BaseVideoHttpAction) holder.action();
          synchronized (this) {
             boolean shouldRetry = retryPolicy.handle(e, this::createSession);
-            if (!action.getSsoToken().endsWith(appSessionHolder.get().get().getLegacyApiToken())) {
+            if (!action.getSsoToken().endsWith(appSessionHolder.get().get().legacyApiToken())) {
                prepareNewHttpAction(action);
                Timber.d("Action %s will be sent again because of invalid token", action);
                return true;
@@ -111,8 +116,8 @@ public class VideoHttpService extends ActionServiceWrapper {
    @Nullable
    private Session createSession() {
       UserSession userSession = appSessionHolder.get().get();
-      String username = userSession.getUsername();
-      String userPassword = userSession.getUserPassword();
+      String username = userSession.username();
+      String userPassword = userSession.userPassword();
       Device device = deviceSource.toBlocking().first();
       LoginHttpAction loginAction = new LoginHttpAction(username, userPassword, device);
 

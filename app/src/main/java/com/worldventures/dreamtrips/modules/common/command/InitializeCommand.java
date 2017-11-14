@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.service.Initializable;
 
 import java.util.Set;

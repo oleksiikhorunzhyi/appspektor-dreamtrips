@@ -9,7 +9,7 @@ import com.worldventures.core.utils.NetworkUtils;
 
 public class ConnectionInfoProviderImpl implements ConnectionInfoProvider {
 
-   private Context context;
+   private final Context context;
 
    public ConnectionInfoProviderImpl(Context context) {
       this.context = context;

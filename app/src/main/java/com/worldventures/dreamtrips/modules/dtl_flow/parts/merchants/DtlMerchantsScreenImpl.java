@@ -33,6 +33,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.ClearableSelectionMana
 import com.worldventures.dreamtrips.modules.dtl.view.util.LayoutManagerScrollPersister;
 import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.DtlTransactionListPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
@@ -46,6 +48,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import flow.Flow;
+import flow.History;
+import flow.path.Path;
 
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
       implements DtlMerchantsScreen, MerchantCellDelegate {
@@ -109,10 +114,18 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
       refreshLayout.setOnRefreshListener(() -> getPresenter().refresh());
       refreshLayout.setEnabled(true);
+
+      if (dtlToolbar == null) {
+         return;
+      }
+      dtlToolbar.setTransactionsButtonListener(() -> onClickTransaction());
+
    }
 
    private void initDtlToolbar() {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
 
       RxDtlToolbar.actionViewClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
@@ -195,6 +208,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       }
    }
 
+   @Override
+   public void onClickTransaction() {
+      getPresenter().onTransactionClick();
+   }
+
    @OnClick(R.id.btn_filter_merchant_entertainment)
    @Override
    public void onClickEntertainment() {
@@ -240,8 +258,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void showhMerchantsError() {
-      if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
-      else loadNextMerchantsError(true);
+      if (!delegate.isItemsPresent()) {
+         errorView.setVisibility(VISIBLE);
+      } else {
+         loadNextMerchantsError(true);
+      }
    }
 
    private void hideRefreshMerchantsError() {
@@ -253,8 +274,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void loadNextMerchantsError(boolean show) {
-      if (show) delegate.addItem(MerchantsErrorCell.INSTANCE);
-      else delegate.removeItem(MerchantsErrorCell.INSTANCE);
+      if (show) {
+         delegate.addItem(MerchantsErrorCell.INSTANCE);
+      } else {
+         delegate.removeItem(MerchantsErrorCell.INSTANCE);
+      }
    }
 
    private void refreshProgress(boolean isShow) {
@@ -262,24 +286,33 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void loadNextProgress(boolean isLoading) {
-      if (isLoading) delegate.addItem(ProgressCell.INSTANCE);
-      else delegate.removeItem(ProgressCell.INSTANCE);
+      if (isLoading) {
+         delegate.addItem(ProgressCell.INSTANCE);
+      } else {
+         delegate.removeItem(ProgressCell.INSTANCE);
+      }
    }
 
    @Override
    public void setFilterButtonState(boolean isDefault) {
-      if (dtlToolbar != null) dtlToolbar.setFilterEnabled(!isDefault);
+      if (dtlToolbar != null) {
+         dtlToolbar.setFilterEnabled(!isDefault);
+      }
    }
 
    @Override
    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.setLocationCaption(DtlToolbarHelper.provideLocationCaption(getResources(), dtlLocation));
    }
 
    @Override
    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.setSearchCaption(searchCaption);
    }
 
@@ -291,7 +324,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void connectToggleUpdate() {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
 
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
             .compose(RxLifecycleAndroid.bindView(this))
@@ -309,8 +344,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!isFilterDefault) {
          captionId = R.string.merchants_no_results;
       } else {
-         captionId =
-               isOffersOnly ? R.string.merchants_no_results_offers_only : R.string.dtl_location_no_merchants_caption;
+         captionId = isOffersOnly ? R.string.merchants_no_results_offers_only : R.string.dtl_location_no_merchants_caption;
       }
       noMerchantsCaption.setText(captionId);
    }
@@ -343,7 +377,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.toggleOffersOnly(enabled);
    }
 
@@ -366,7 +402,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void toggleSelection(ThinMerchant merchant) {
       int index = delegate.getItems().indexOf(merchant);
-      if (index != -1) selectionManager.toggleSelection(index);
+      if (index != -1) {
+         selectionManager.toggleSelection(index);
+      }
       scrollingManager.scrollToPosition(index);
    }
 
@@ -377,14 +415,15 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void applyViewState(DtlMerchantsState state) {
-      if (state == null) return;
+      if (state == null) {
+         return;
+      }
       delegate.setExpandedMerchants(state.getExpandedMerchantIds());
    }
 
    @Override
    public DtlMerchantsState provideViewState() {
-      return new DtlMerchantsState(delegate.getExpandedMerchants(), recyclerView.getLayoutManager()
-            .onSaveInstanceState());
+      return new DtlMerchantsState(delegate.getExpandedMerchants());
    }
 
    @Override
@@ -406,7 +445,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void hideErrorIfNeed() {
-      if (errorDialog != null && errorDialog.isShowing()) errorDialog.dismiss();
+      if (errorDialog != null && errorDialog.isShowing()) {
+         errorDialog.dismiss();
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -456,7 +497,26 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       getPresenter().loadAmenities(merchantType);
    }
 
-   private void setCurrentSearchFilter(int stringResource){
+   private void setCurrentSearchFilter(int stringResource) {
       currentSelectedFilter = getContext().getString(stringResource);
+   }
+
+   @Override
+   public void showNoTransactionMessage() {
+      SweetAlertDialog errorDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getContext().getString(R.string.dtl_no_transaction_message));
+      errorDialog.setConfirmText(getActivity().getString(R.string.apptentive_ok));
+      errorDialog.showCancelButton(true);
+      errorDialog.setConfirmClickListener(listener -> listener.dismissWithAnimation());
+      errorDialog.show();
+   }
+
+   @Override
+   public void goToTransactionPage() {
+      Path path = new DtlTransactionListPath(FlowUtil.currentMaster(getContext()));
+      History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+      historyBuilder.push(path);
+      Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
    }
 }

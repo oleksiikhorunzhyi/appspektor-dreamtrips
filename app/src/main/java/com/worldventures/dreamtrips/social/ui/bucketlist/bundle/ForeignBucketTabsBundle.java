@@ -7,12 +7,11 @@ import com.worldventures.core.model.User;
 
 public class ForeignBucketTabsBundle implements Parcelable {
 
-   private User user;
+   private final User user;
 
    public ForeignBucketTabsBundle(User user) {
       this.user = user;
    }
-
 
    public User getUser() {
       return user;

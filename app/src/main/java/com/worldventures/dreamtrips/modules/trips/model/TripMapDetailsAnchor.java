@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class TripMapDetailsAnchor implements Parcelable {
 
-   private Position pointerPosition;
+   private final Position pointerPosition;
    private int margin;
 
    public TripMapDetailsAnchor(Position pointerPosition) {

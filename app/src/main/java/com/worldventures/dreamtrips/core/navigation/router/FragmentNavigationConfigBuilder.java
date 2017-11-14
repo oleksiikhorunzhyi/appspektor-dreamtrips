@@ -26,6 +26,11 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
       return this;
    }
 
+   public FragmentNavigationConfigBuilder key(String key) {
+      navigationConfig.key = key;
+      return this;
+   }
+
    public FragmentNavigationConfigBuilder data(Parcelable data) {
       super.data(data);
       return this;
@@ -88,6 +93,8 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
          reasonBuilder.append("clearBackStack is null\n");
          corrupted = true;
       }
-      if (corrupted) throw new IllegalStateException(reasonBuilder.toString());
+      if (corrupted) {
+         throw new IllegalStateException(reasonBuilder.toString());
+      }
    }
 }

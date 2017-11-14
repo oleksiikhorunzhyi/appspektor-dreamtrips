@@ -34,6 +34,7 @@ public abstract class FilterHelper {
       return filterData.distanceType() == DistanceType.KMS ? 80 : 50;
    }
 
+   @SuppressWarnings("PMD.AvoidDecimalLiteralsInBigDecimalConstructor")
    public static double provideMaxDistance(FilterData filterData) {
       double value = MILES_VALUES[filterData.distanceMaxIndex()] * MILES_MULTIPLIER;
       return new BigDecimal(value).setScale(1, RoundingMode.DOWN).doubleValue();

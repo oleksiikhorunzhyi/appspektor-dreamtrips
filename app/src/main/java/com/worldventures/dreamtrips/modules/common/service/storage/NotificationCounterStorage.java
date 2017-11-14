@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.modules.common.command.NotificationCountChan
 
 public class NotificationCounterStorage implements ActionStorage<NotificationCountChangedCommand.NotificationCounterResult> {
 
-   private SnappyRepository snappyRepository;
-   private MemoryStorage<NotificationCountChangedCommand.NotificationCounterResult> memoryStorage;
+   private final SnappyRepository snappyRepository;
+   private final MemoryStorage<NotificationCountChangedCommand.NotificationCounterResult> memoryStorage;
 
    public NotificationCounterStorage(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;

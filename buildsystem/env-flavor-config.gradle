@@ -1,10 +1,10 @@
 ext {
    flavors = [:]
    flavors.codes = [
-         dev   : 'dev', devpremarshmallow: 'devpremarshmallow', external: 'external',
-         stable: 'stable', social: 'social', messenger: 'messenger', dtl: 'dtl',
+         dev          : 'dev', devpremarshmallow: 'devpremarshmallow', external: 'external',
+         stable       : 'stable', social: 'social', messenger: 'messenger', dtl: 'dtl',
          smartcardmock: 'smartcardmock', smartcardemulmode: 'smartcardemulmode', smartcardnxtid: 'smartcardnxtid',
-         stage : 'stage', preprod: 'preprod', perf: 'perf', integration: 'integration', prod: 'prod'
+         stage        : 'stage', preprod: 'preprod', perf: 'perf', integration: 'integration', prod: 'prod'
    ]
    flavors.types = [
          build : [flavors.codes.dev, flavors.codes.devpremarshmallow, flavors.codes.external],
@@ -33,11 +33,11 @@ ext {
                      ]
                ]
          ],
-         "$flavors.codes.smartcardemulmode"                                         : [
+         "$flavors.codes.smartcardemulmode"                                     : [
                appParams: [
                      feature: [
                            SMART_CARD_SDK_CLIENT: [String: '"mock"'],
-                           WALLET_EMULATOR_MODE: [boolean: 'true']
+                           WALLET_EMULATOR_MODE : [boolean: 'true']
                      ]
                ]
          ],
@@ -52,8 +52,9 @@ ext {
          "$flavors.codes.preprod"                                               : [
                appParams: [
                      api      : [
-                           DreamTripsApi    : [String: '"http://dtapp-qa.worldventures.biz/"'],
-                           UPLOADERY_API_URL: [String: '"http://dtapp-qa.worldventures.biz/uploadery"'],
+                           DreamTripsApi       : [String: '"http://dtapp-qa.worldventures.biz/"'],
+                           UPLOADERY_API_URL   : [String: '"http://dtapp-qa.worldventures.biz/uploadery"'],
+                           TRANSACTIONS_API_URL: [String: '"http://dtlapi-dev.worldventures.com/v2/"'],
                      ],
                      messenger: [
                            MESSENGER_API_URL: [String: '"dtmsgapp-qa.worldventures.biz"'],
@@ -68,6 +69,7 @@ ext {
                            FORGOT_PASSWORD_URL   : [String: '"https://forgotlogin.wvhservices.com/"'],
                            UPLOADERY_API_URL     : [String: '"dtappupload-perf.wvholdings.com"'],
                            VIDEO_MICROSERVICE_URL: [String: '"http://assetuploader-perf.dreamtrips.com"'],
+                           TRANSACTIONS_API_URL  : [String: '"https://dtlapi-perf.worldventures.com/v2/"'],
                      ],
                      util: [
                            NEWRELIC_API_KEY: [String: '"AA8998d2de5c99adddd3668515e76b5d501271a04b"'],
@@ -89,13 +91,14 @@ ext {
          "$flavors.codes.prod"                                                  : [
                appParams: [
                      api      : [
-                           DreamTripsApi          : [String: '"https://dtapp.worldventures.biz"'],
-                           BACKOFFICE_URL         : [String: '"https://backoffice.worldventures.biz"'],
-                           FORGOT_PASSWORD_URL    : [String: '"https://forgotlogin.wvhservices.com/"'],
-                           UPLOADERY_API_URL      : [String: '"http://dtappuploads.wvholdings.com"'],
-                           VIDEO_MICROSERVICE_URL : [String: '"http://assetuploader.wvhservices.com"'],
-                           API_TIMEOUT_SEC        : [long: '15'],
-                           NXT_API                : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
+                           DreamTripsApi         : [String: '"https://dtapp.worldventures.biz"'],
+                           BACKOFFICE_URL        : [String: '"https://backoffice.worldventures.biz"'],
+                           FORGOT_PASSWORD_URL   : [String: '"https://forgotlogin.wvhservices.com/"'],
+                           UPLOADERY_API_URL     : [String: '"http://dtappuploads.wvholdings.com"'],
+                           VIDEO_MICROSERVICE_URL: [String: '"http://assetuploader.wvhservices.com"'],
+                           API_TIMEOUT_SEC       : [long: '15'],
+                           NXT_API               : [String: '"https://api.nxt-security.com/api/services/evtservice/v2"'],
+                           TRANSACTIONS_API_URL  : [String: '"https://dtlapi.worldventures.com/v2/"'],
                      ],
                      messenger: [
                            MESSENGER_API_URL: [String: '"dtmsgapp.worldventures.biz"'],

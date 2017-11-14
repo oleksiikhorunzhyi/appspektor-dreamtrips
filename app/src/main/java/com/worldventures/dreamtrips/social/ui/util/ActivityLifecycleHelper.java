@@ -8,7 +8,10 @@ import com.worldventures.dreamtrips.social.ui.activity.ShowableComponent;
 
 import rx.functions.Action0;
 
-public class ActivityLifecycleHelper {
+public final class ActivityLifecycleHelper {
+
+   private ActivityLifecycleHelper() {
+   }
 
    public static void runTaskAfterShown(Application application, ShowableComponent component, Action0 task) {
       if (component.isVisibleOnScreen()) {

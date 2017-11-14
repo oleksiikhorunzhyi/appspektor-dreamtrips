@@ -5,10 +5,11 @@ import android.os.Parcelable;
 
 public class EditChatMembersViewState extends LceViewState<Parcelable> {
 
-   public EditChatMembersViewState() {
-   }
-
    private String searchFilter;
+
+   public EditChatMembersViewState() {
+      //do nothing
+   }
 
    public String getSearchFilter() {
       return searchFilter;
@@ -29,9 +30,13 @@ public class EditChatMembersViewState extends LceViewState<Parcelable> {
    }
 
    public static final Creator<EditChatMembersViewState> CREATOR = new Creator<EditChatMembersViewState>() {
-      public EditChatMembersViewState createFromParcel(Parcel source) {return new EditChatMembersViewState(source);}
+      public EditChatMembersViewState createFromParcel(Parcel source) {
+         return new EditChatMembersViewState(source);
+      }
 
-      public EditChatMembersViewState[] newArray(int size) {return new EditChatMembersViewState[size];}
+      public EditChatMembersViewState[] newArray(int size) {
+         return new EditChatMembersViewState[size];
+      }
    };
 
    public EditChatMembersViewState(Parcel in) {

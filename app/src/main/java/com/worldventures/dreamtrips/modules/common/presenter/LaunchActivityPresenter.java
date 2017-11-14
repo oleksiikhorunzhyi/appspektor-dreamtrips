@@ -124,7 +124,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    private void onAuthSuccess() {
       backgroundUploadingInteractor.restoreCompoundOperationsPipe().send(new RestoreCompoundOperationsCommand());
       analyticsInteractor.analyticsActionPipe().send(new LoginAction(appSessionHolder.get()
-            .get().getUser().getUsername(), userAlreadyLoggedIn));
+            .get().user().getUsername(), userAlreadyLoggedIn));
       analyticsInteractor.setUserIdsPipe().send(new SetUserIdsHeadersCommand(getAccount().getUsername(),
             Integer.toString(getAccount().getId())));
       messengerConnector.connect();

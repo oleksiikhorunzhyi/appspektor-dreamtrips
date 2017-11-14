@@ -64,17 +64,20 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
 
    private void loadFullEventInfo() {
       //TODO trip details is requested from other place, all this hierarchy should be refactored
-      if (!isTrip())
+      if (!isTrip()) {
          feedInteractor.getFeedEntityPipe()
                .createObservable(new GetFeedEntityCommand(feedEntity.getUid(), feedItem.getType()))
                .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<GetFeedEntityCommand>()
                      .onSuccess(getFeedEntityCommand -> updateFullEventInfo(getFeedEntityCommand.getResult()))
                      .onFail(this::handleError));
+      }
    }
 
    protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {
-      if (!feedEntity.equals(updatedFeedEntity)) return;
+      if (!feedEntity.equals(updatedFeedEntity)) {
+         return;
+      }
       feedEntity = updatedFeedEntity;
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);

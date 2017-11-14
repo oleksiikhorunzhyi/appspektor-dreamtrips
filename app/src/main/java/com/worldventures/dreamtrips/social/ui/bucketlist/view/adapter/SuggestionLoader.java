@@ -13,9 +13,8 @@ import io.techery.janet.Janet;
 
 public class SuggestionLoader extends AutoCompleteAdapter.Loader<Suggestion> {
 
-   private Janet apiJanet;
-
-   private BucketItem.BucketType type;
+   private final Janet apiJanet;
+   private final BucketItem.BucketType type;
 
    public SuggestionLoader(BucketItem.BucketType type, Janet apiJanet) {
       this.type = type;

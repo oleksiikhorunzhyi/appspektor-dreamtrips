@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.worldventures.core.model.ShareType;
 import com.worldventures.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEnt
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
@@ -73,13 +74,15 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
       subscribeToTranslation();
       feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
       // we have null image path when getting photo from push notification, wait until entity is loaded by UID then
-      if (photo.getImagePath() != null) view.setPhoto(photo);
+      if (photo.getImagePath() != null) {
+         view.setPhoto(photo);
+      }
       loadEntity();
    }
 
    private void setupTranslationState() {
-      boolean ownPost = photo.getOwner() != null &&
-            photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownPost = photo.getOwner() != null
+            && photo.getOwner().getId() == appSessionHolder.get().get().user().getId();
       boolean emptyPostText = TextUtils.isEmpty(photo.getTitle());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, photo.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(photo.getLanguage());
@@ -130,7 +133,7 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
 
    public void onCommentsAction() {
       new NavigationWrapperFactory().componentOrDialogNavigationWrapper(router, fm, view)
-            .navigate(Route.COMMENTS, new CommentsBundle(photo, false, true));
+            .navigate(CommentableFragment.class, new CommentsBundle(photo, false, true));
    }
 
    public void onLikeAction() {
@@ -177,7 +180,9 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
 
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      if (!photo.equals(updatedFeedEntity)) return;
+      if (!photo.equals(updatedFeedEntity)) {
+         return;
+      }
       photo = (Photo) updatedFeedEntity;
       view.setPhoto(photo);
       setupTranslationState();

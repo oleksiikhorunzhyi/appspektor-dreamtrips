@@ -4,7 +4,7 @@ import com.messenger.delegate.StartChatDelegate
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
-import com.worldventures.dreamtrips.common.Injector
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate
 import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand

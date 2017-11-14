@@ -36,6 +36,8 @@ public class MediaEntityConverter implements Converter<EntityHolder, BaseMediaEn
          case VIDEO:
             targetClass = Video.class;
             break;
+         default:
+            break;
       }
 
       BaseMediaEntity baseMediaEntity = new UndefinedMediaEntity();
@@ -45,6 +47,8 @@ public class MediaEntityConverter implements Converter<EntityHolder, BaseMediaEn
             break;
          case VIDEO:
             baseMediaEntity = new VideoMediaEntity();
+            break;
+         default:
             break;
       }
       baseMediaEntity.setItem(mapperyContext.convert(entityHolder.entity(), targetClass));

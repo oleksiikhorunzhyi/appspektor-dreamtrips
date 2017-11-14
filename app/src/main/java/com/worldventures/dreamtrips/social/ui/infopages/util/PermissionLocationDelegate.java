@@ -16,8 +16,8 @@ import static com.worldventures.core.ui.util.permission.PermissionConstants.LOCA
 
 public class PermissionLocationDelegate {
 
-   private LocationDelegate locationDelegate;
-   private PermissionDispatcher permissionDispatcher;
+   private final LocationDelegate locationDelegate;
+   private final PermissionDispatcher permissionDispatcher;
 
    private Action1<String[]> needRationalAction;
    private Action1<Location> locationObtainedAction;
@@ -45,13 +45,19 @@ public class PermissionLocationDelegate {
    }
 
    public void recheckPermissionAccepted(boolean recheckPermission, Observable.Transformer viewStopper) {
-      if (recheckPermission) requestPermission(false, viewStopper);
-      else locationObtainedAction.call(null);
+      if (recheckPermission) {
+         requestPermission(false, viewStopper);
+      } else {
+         locationObtainedAction.call(null);
+      }
    }
 
    private void onPermissionRational(boolean needShowExplanation) {
-      if (needShowExplanation) needRationalAction.call(LOCATION_PERMISSIONS);
-      else locationObtainedAction.call(null);
+      if (needShowExplanation) {
+         needRationalAction.call(LOCATION_PERMISSIONS);
+      } else {
+         locationObtainedAction.call(null);
+      }
    }
 
    private void onPermissionGranted(Observable.Transformer stopper) {

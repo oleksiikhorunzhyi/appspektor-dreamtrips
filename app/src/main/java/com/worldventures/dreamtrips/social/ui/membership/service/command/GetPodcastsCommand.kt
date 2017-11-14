@@ -6,21 +6,19 @@ import com.worldventures.core.janet.cache.CacheOptions
 import com.worldventures.core.janet.cache.CachedAction
 import com.worldventures.core.janet.cache.ImmutableCacheOptions
 import com.worldventures.core.janet.cache.storage.PaginatedStorage
-import com.worldventures.core.janet.dagger.InjectableAction
 import com.worldventures.core.modules.video.service.storage.MediaModelStorage
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction
 import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast
-
-import javax.inject.Inject
-
+import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
 import io.techery.janet.Janet
 import io.techery.janet.command.annotations.CommandAction
 import rx.Observable
 import rx.schedulers.Schedulers
+import javax.inject.Inject
 
 private const val PAGE_SIZE = 10
 

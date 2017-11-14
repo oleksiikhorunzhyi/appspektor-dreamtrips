@@ -32,7 +32,7 @@ public interface ChatScreen extends MessengerScreen, PermissionUIComponent {
 
    void showMessages(Cursor cursor);
 
-   void showAttachmentMenu(AttachmentMenuItem[] items);
+   void showAttachmentMenu(AttachmentMenuItem... items);
 
    void showRetrySendMessageDialog(DataMessage dataMessage);
 
@@ -62,7 +62,7 @@ public interface ChatScreen extends MessengerScreen, PermissionUIComponent {
 
    void dismissProgressDialog();
 
-   void showErrorMessage(@StringRes int error_no_connection);
+   void showErrorMessage(@StringRes int errorNoConnectionRes);
 
    void showPicker();
 }

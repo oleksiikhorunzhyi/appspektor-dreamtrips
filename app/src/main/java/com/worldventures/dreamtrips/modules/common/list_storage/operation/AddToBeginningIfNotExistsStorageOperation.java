@@ -4,7 +4,7 @@ import java.util.List;
 
 public class AddToBeginningIfNotExistsStorageOperation<T> implements ListStorageOperation<T> {
 
-   private T item;
+   private final T item;
 
    public AddToBeginningIfNotExistsStorageOperation(T item) {
       this.item = item;

@@ -12,7 +12,7 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
@@ -121,6 +121,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
                getPresenter().sendFeedback(id, message.getText().toString());
             }
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -167,7 +169,9 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
 
    @Override
    public void changeDoneButtonState(boolean enable) {
-      if (doneButtonMenuItem != null) doneButtonMenuItem.setEnabled(enable);
+      if (doneButtonMenuItem != null) {
+         doneButtonMenuItem.setEnabled(enable);
+      }
    }
 
    @Override
@@ -253,6 +257,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
                      break;
                   case 1:
                      getPresenter().onRemoveAttachment(attachmentHolder);
+                     break;
+                  default:
                      break;
                }
             }).show();

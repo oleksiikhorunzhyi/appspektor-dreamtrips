@@ -87,7 +87,8 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   MerchantsFacadeInteractor provideMerchantsFacadeInteractor(MerchantsRequestSourceInteractor merchantsRequestSourceInteractor, FilterDataInteractor filterDataInteractor, MerchantsInteractor merchantsInteractor, DtlLocationInteractor locationInteractor) {
+   MerchantsFacadeInteractor provideMerchantsFacadeInteractor(MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
+         FilterDataInteractor filterDataInteractor, MerchantsInteractor merchantsInteractor, DtlLocationInteractor locationInteractor) {
       return new MerchantsFacadeInteractor(merchantsRequestSourceInteractor, filterDataInteractor, merchantsInteractor, locationInteractor);
    }
 

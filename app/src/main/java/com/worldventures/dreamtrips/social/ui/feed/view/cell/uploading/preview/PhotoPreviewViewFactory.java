@@ -2,7 +2,10 @@ package com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.preview;
 
 import android.content.Context;
 
-public class PhotoPreviewViewFactory {
+public final class PhotoPreviewViewFactory {
+
+   private PhotoPreviewViewFactory() {
+   }
 
    public static PhotoAttachmentPreviewView provideView(Context context, int attachmentsCount) {
       switch (attachmentsCount) {

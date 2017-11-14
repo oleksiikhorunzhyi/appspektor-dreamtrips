@@ -38,8 +38,11 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter {
    }
 
    public void toggle(boolean expand, ThinMerchant merchant) {
-      if (expand) expandedMerchantIds.add(merchant.id());
-      else expandedMerchantIds.remove(merchant.id());
+      if (expand) {
+         expandedMerchantIds.add(merchant.id());
+      } else {
+         expandedMerchantIds.remove(merchant.id());
+      }
 
       updateItem(merchant);
    }
@@ -49,7 +52,7 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter {
       if (cell instanceof DtlMerchantExpandableCell) {
          DtlMerchantExpandableCell holder = (DtlMerchantExpandableCell) cell;
          holder.setDistanceType(distanceType);
-         holder.setExpanded(expandedMerchantIds.contains(((ThinMerchant) getItem(position)).id()));
+         holder.setExpanded(false);
       }
       super.onBindViewHolder(cell, position);
    }

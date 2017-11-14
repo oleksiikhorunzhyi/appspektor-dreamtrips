@@ -19,7 +19,7 @@ import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
    private NavigationHeader navigationHeader;
    private int headerSize = 0;
 
-   private List<ComponentDescription> componentDescriptions;
+   private final List<ComponentDescription> componentDescriptions;
    private NavigationDrawerListener navigationDrawerListener;
    private int selectedComponent;
    private int notificationCount;
@@ -63,6 +63,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
                   .inflate(R.layout.header_navigation_drawer, viewGroup, false);
             return new HeaderHolder(v);
          }
+         default:
+            break;
       }
       return null;
    }
@@ -71,22 +73,24 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
       switch (getItemViewType(i)) {
          case TYPE_HEADER:
-            bindHeaderViewHolder((HeaderHolder) viewHolder, i);
+            bindHeaderViewHolder((HeaderHolder) viewHolder);
             break;
          case TYPE_ITEM:
             bindItemViewHolder((ItemHolder) viewHolder, i);
             break;
+         default:
+            break;
       }
    }
 
-   private void bindHeaderViewHolder(HeaderHolder holder, int i) {
+   private void bindHeaderViewHolder(HeaderHolder holder) {
       holder.userPhoto.setImageURI(navigationHeader.getUserPhoto());
       holder.userCover.setImageURI(navigationHeader.getUserCover());
       holder.userName.setText(navigationHeader.getUserName());
       holder.userEmail.setText(navigationHeader.getUserEmail());
 
       holder.userPhoto.setOnClickListener(v -> navigationDrawerListener.onNavigationDrawerItemSelected(Queryable.from(componentDescriptions)
-            .filter(element -> element.getKey().equals(Route.ACCOUNT_PROFILE.name()))
+            .filter(element -> element.getKey().equals(SocialAppModule.ACCOUNT_PROFILE))
             .first()));
    }
 
@@ -188,6 +192,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
             return 0;
          case TYPE_ITEM:
             return getItem(position).hashCode();
+         default:
+            break;
       }
       return super.getItemId(position);
    }

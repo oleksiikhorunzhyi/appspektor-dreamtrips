@@ -96,7 +96,9 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
    @Nullable
    private Location getLocationFromAndroidLocation(android.location.Location location) {
       view.hideProgress();
-      if (isCanceled) return null;
+      if (isCanceled) {
+         return null;
+      }
 
       Geocoder coder = new Geocoder(view.getContext(), Locale.ENGLISH);
       Location newLocation = new Location();

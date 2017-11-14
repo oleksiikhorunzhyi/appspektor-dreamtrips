@@ -14,14 +14,17 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class ProjectTextUtils {
+public final class ProjectTextUtils {
 
-   public static String joinWithFirstUpperCase(Object[] groups) {
+   private ProjectTextUtils() {
+   }
+
+   public static String joinWithFirstUpperCase(Object... groups) {
       String result = "";
       for (Object group : groups) {
          result = result + ", " + convertToFirstUpperCase(group.toString());
       }
-      return result.substring(result.indexOf(",") + 1);
+      return result.substring(result.indexOf(',') + 1);
    }
 
    public static String convertToFirstUpperCase(String text) {
@@ -62,7 +65,7 @@ public class ProjectTextUtils {
       String superLowerCase = superString.toLowerCase();
       String subLowerCase = subString.toLowerCase();
 
-      if (!superLowerCase.contains(subLowerCase)) return Integer.MAX_VALUE;
+      if (!superLowerCase.contains(subLowerCase)) { return Integer.MAX_VALUE; }
 
       return superLowerCase.indexOf(subLowerCase);
    }
@@ -83,9 +86,13 @@ public class ProjectTextUtils {
       }
    }
 
-   public static boolean isEmpty(String s) {
-      // do not use Android TextUtils as they fail in unit tests
-      return s == null || s.length() == 0;
+   public static String convertToBase64NoWrap(String s) {
+      try {
+         return Base64.encodeToString(s.getBytes("UTF-8"), Base64.NO_WRAP);
+      } catch (UnsupportedEncodingException e) {
+         Timber.e(e, "Failed to convert string");
+      }
+      return "";
    }
 
    public static String convertToBase64(String s) {

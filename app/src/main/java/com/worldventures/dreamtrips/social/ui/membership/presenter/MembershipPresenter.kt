@@ -2,11 +2,14 @@ package com.worldventures.dreamtrips.social.ui.membership.presenter
 
 import com.worldventures.core.model.session.Feature
 import com.worldventures.dreamtrips.R
-import com.worldventures.dreamtrips.core.navigation.Route
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem
-
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMemberFragment
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment
+import com.worldventures.dreamtrips.social.ui.membership.view.fragment.InviteFragment
+import com.worldventures.dreamtrips.social.ui.membership.view.fragment.PodcastsFragment
+import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment
 import java.util.ArrayList
 
 class MembershipPresenter : Presenter<MembershipPresenter.View>() {
@@ -31,16 +34,16 @@ class MembershipPresenter : Presenter<MembershipPresenter.View>() {
 
    fun provideScreens(): List<FragmentItem> {
       val screens = ArrayList<FragmentItem>()
-      screens.add(FragmentItem(Route.PRESENTATION_VIDEOS, context.getString(R.string.presentations)))
-      screens.add(FragmentItem(Route.ENROLL_MEMBER, context.getString(R.string.enroll_member)))
+      screens.add(FragmentItem(PresentationVideosFragment::class.java, context.getString(R.string.presentations)))
+      screens.add(FragmentItem(EnrollMemberFragment::class.java, context.getString(R.string.enroll_member)))
       if (enrollMerchantAvailable()) {
-         screens.add(FragmentItem(Route.ENROLL_MERCHANT, context.getString(R.string.dt_local_tools)))
+         screens.add(FragmentItem(EnrollMerchantFragment::class.java, context.getString(R.string.dt_local_tools)))
       }
       if (inviteAvailable()) {
-         screens.add(FragmentItem(Route.INVITE, context.getString(R.string.invite_and_share)))
+         screens.add(FragmentItem(InviteFragment::class.java, context.getString(R.string.invite_and_share)))
       }
       if (podcastsAvailable()) {
-         screens.add(FragmentItem(Route.PODCASTS, context.getString(R.string.podcasts)))
+         screens.add(FragmentItem(PodcastsFragment::class.java, context.getString(R.string.podcasts)))
       }
       return screens
    }

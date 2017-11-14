@@ -2,14 +2,12 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.service.model;
 
 import android.support.annotation.Nullable;
 
-import org.immutables.gson.Gson;
 import org.immutables.value.Value;
 
 import java.util.Date;
 import java.util.List;
 
 @Value.Immutable
-@Gson.TypeAdapters
 public abstract class BucketPostBody extends BucketBody {
    @Nullable
    public abstract Integer categoryId();

@@ -38,6 +38,8 @@ public abstract class LocationMessageHolder extends UserMessageViewHolder {
          case MessageStatus.READ:
             mapView.setAlpha(ALPHA_MESSAGE_NORMAL);
             break;
+         default:
+            break;
       }
    }
 

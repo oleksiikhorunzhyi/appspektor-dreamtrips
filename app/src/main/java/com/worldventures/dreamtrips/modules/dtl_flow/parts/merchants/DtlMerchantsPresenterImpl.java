@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.service.DeviceInfoProvider;
+import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsAction;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
@@ -30,8 +31,10 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableTransactionDetailActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
@@ -54,6 +57,8 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
+
+   public static final boolean EXCLUDE_INITIADED_TRANSACTIONS = true;
 
    @Inject FilterDataInteractor filterDataInteractor;
    @Inject MerchantsInteractor merchantInteractor;
@@ -88,12 +93,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
-
       connectMerchants();
       connectAnalytics();
       connectToolbarUpdates();
       connectFullMerchantLoading();
       connectSelections();
+      connectTransactions();
+      getUserTransactions();
    }
 
    private void connectAnalytics() {
@@ -168,26 +174,58 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                   .onFail(this::onMerchantsLoadingError));
    }
 
+   private void connectTransactions() {
+      merchantInteractor.getTransactionsPipe()
+            .observe()
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<GetTransactionsCommand>()
+                  .onFail((getTransactionsCommand, throwable) ->
+                        getView().informUser(getTransactionsCommand.getFallbackErrorMessage())));
+   }
+
    void onStartMerchantsLoad(MerchantsAction action) {
-      if (action.isRefresh()) getView().clearMerchants();
+      if (action.isRefresh()) {
+         getView().clearMerchants();
+      }
    }
 
    void onMerchantsLoaded(MerchantsAction action) {
-      if (action.isRefresh()) getView().onRefreshSuccess();
-      else getView().onLoadNextSuccess();
+      if (action.isRefresh()) {
+         getView().onRefreshSuccess();
+      } else {
+         getView().onLoadNextSuccess();
+      }
 
       setItemsOrRedirect(action.merchants());
    }
 
-   void onMerchantsLoading(MerchantsAction action, Integer progress){
-      if (action.isRefresh()) getView().onRefreshProgress();
-      else getView().onLoadNextProgress();
+   void getUserTransactions() {
+      merchantInteractor.getTransactionsPipe().send(GetTransactionsCommand.loadFromNetworkCommand(
+            ImmutableTransactionDetailActionParams.builder()
+                  .localeId(LocaleHelper.getDefaultLocale().getLanguage())
+                  .skip(0)
+                  .take(15)
+                  .excludeInAppPaymentStatusInitiated(EXCLUDE_INITIADED_TRANSACTIONS)
+                  .build()));
+   }
+
+   void onMerchantsLoading(MerchantsAction action, Integer progress) {
+      if (action.isRefresh()) {
+         getView().onRefreshProgress();
+      } else {
+         getView().onLoadNextProgress();
+      }
    }
 
    void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
-      if (!action.isRefresh()) getView().setRefreshedItems(action.merchants());
-      if (action.isRefresh()) getView().onRefreshError(action.getErrorMessage());
-      else getView().onLoadNextError();
+      if (!action.isRefresh()) {
+         getView().setRefreshedItems(action.merchants());
+      }
+      if (action.isRefresh()) {
+         getView().onRefreshError(action.getErrorMessage());
+      } else {
+         getView().onLoadNextError();
+      }
    }
 
    private void connectSelections() {
@@ -198,20 +236,25 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void setItemsOrRedirect(List<ThinMerchant> items) {
-      if (items.isEmpty()) onEmptyMerchantsLoaded();
-      else getView().setRefreshedItems(items);
+      if (items.isEmpty()) {
+         onEmptyMerchantsLoaded();
+      } else {
+         getView().setRefreshedItems(items);
+      }
    }
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
       getView().hideBlockingProgress();
       ReviewStorage.updateReviewsPosted(getContext(),
-            String.valueOf(appSessionHolder.get().get().getUser().getId()),
+            String.valueOf(appSessionHolder.get().get().user().getId()),
             action.getMerchantId(),
             action.getResult().reviews().userHasPendingReview());
       if (!action.getFromRating()) {
          navigateToDetails(action.getResult(), action.getOfferId());
       } else {
-         if (!action.getResult().reviews().total().isEmpty() && Integer.parseInt(action.getResult().reviews().total()) > 0) {
+         if (!action.getResult().reviews().total().isEmpty() && Integer.parseInt(action.getResult()
+               .reviews()
+               .total()) > 0) {
             navigateToRatingList(action.getResult());
          } else {
             navigateToCommentRating(action.getResult());
@@ -256,6 +299,21 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
+   public void onTransactionClick() {
+      merchantInteractor.getTransactionsPipe()
+            .createObservableResult(GetTransactionsCommand.readCurrentTransactionsCommand())
+            .compose(bindViewIoToMainComposer())
+            .map(Command::getResult)
+            .subscribe(items -> {
+               if (items == null || items.size() == 0) {
+                  getView().showNoTransactionMessage();
+               } else {
+                  getView().goToTransactionPage();
+               }
+            });
+   }
+
+   @Override
    public void mapClicked() {
       navigateToPath(new DtlMapPath(FlowUtil.currentMaster(getContext())));
    }
@@ -297,13 +355,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    @Override
    public void onToggleExpand(boolean expand, ThinMerchant merchant) {
-      if (!expand) return;
+      if (!expand) {
+         return;
+      }
       sendAnalyticsAction(new MerchantsListingExpandEvent(merchant.asMerchantAttributes()));
    }
 
    @Override
    public void onRetryMerchantClick() {
-      if (actionParamsHolder == null) return;
+      if (actionParamsHolder == null) {
+         return;
+      }
 
       fullMerchantInteractor.load(actionParamsHolder);
    }
@@ -340,7 +402,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
          getView().clearMerchants();
          getView().showEmpty(true);
          getView().showNoMerchantsCaption(isFilterDefault, isOffersOnly);
-      } else navigateToPath(new DtlLocationChangePath());
+      } else {
+         navigateToPath(new DtlLocationChangePath());
+      }
    }
 
    private boolean isAllowRedirect(boolean isFilterDefault) {
@@ -378,7 +442,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    protected void onToggleSelection(ToggleMerchantSelectionAction action) {
-      if (action.isClearSelection()) getView().clearSelection();
-      else getView().toggleSelection(action.getResult());
+      if (action.isClearSelection()) {
+         getView().clearSelection();
+      } else {
+         getView().toggleSelection(action.getResult());
+      }
    }
 }

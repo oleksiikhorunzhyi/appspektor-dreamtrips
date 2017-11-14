@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -24,9 +25,11 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Errors;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.InnerErrors;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.bundle.CreateReviewEntityBundle;
@@ -35,6 +38,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPat
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 import com.worldventures.dreamtrips.modules.media_picker.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.media_picker.view.fragment.MediaPickerFragment;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -53,6 +59,11 @@ import static com.iovation.mobile.android.DevicePrint.getBlackbox;
 @Layout(R.layout.layout_review_post)
 public class CreateReviewPostFragment extends CreateReviewEntityFragment implements DtlFragmentReviewScreen {
 
+   private static final String ERROR_FORM_PROFANITY = "ERROR_FORM_PROFANITY";
+   private static final String ERROR_UNKNOWN = "ERROR_UNKNOWN";
+   private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
+   private static final String ERROR_DUPLICATED_REVIEW = "DuplicatedReview";
+
    @InjectView(R.id.rbRating) RatingBar mRatingBar;
    @InjectView(R.id.etCommentReview) EditText mComment;
    @InjectView(R.id.tv_char_counter) TextView mCharCounter;
@@ -68,18 +79,12 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    private static final String BRAND_ID = "1";
    private User user;
    private int stringReviewLength = 0;
-   private static final String ERROR_FORM_PROFANITY = "ERROR_FORM_PROFANITY";
-   private static final String ERROR_UNKNOWN = "ERROR_UNKNOWN";
-   private static final String ERROR_REQUEST_LIMIT_REACHED = "ERROR_REQUEST_LIMIT_REACHED";
    private Merchant merchant;
    private boolean mAvailableToPost = true;
 
    private SweetAlertDialog errorDialog;
 
    private CreateReviewEntityBundle bundle;
-
-   public CreateReviewPostFragment() {
-   }
 
    public static CreateReviewPostFragment newInstance(Bundle arguments) {
       CreateReviewPostFragment f = new CreateReviewPostFragment();
@@ -101,18 +106,13 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       setMaxLengthText(maximumCharactersAllowed());
    }
 
-   @Override
-   protected Route getRoute() {
-      return Route.POST_CREATE;
-   }
-
    protected void showMediaPicker() {
       PickerBundle pickerBundle = new PickerBundle.Builder()
             .setRequestId(0)
             .setPhotoPickLimit(getPresenter().getRemainingPhotosCount())
             .build();
 
-      router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+      router.moveTo(MediaPickerFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getChildFragmentManager())
             .containerId(R.id.picker_container)
@@ -122,10 +122,8 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @OnClick(R.id.container_add_photos_and_videos)
    void onImage() {
-      if (isAvailableToPost()) {
-         if (getPresenter().getRemainingPhotosCount() > 0) {
-            showMediaPicker();
-         }
+      if (isAvailableToPost() && getPresenter().getRemainingPhotosCount() > 0) {
+         showMediaPicker();
       }
    }
 
@@ -182,8 +180,11 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
    }
 
    public void handleStringReview(String stringReview) {
+      if (stringReview == null) {
+         return;
+      }
       // Character \n should not be part of the counting at any place. (beginning, middle or end)
-      stringReviewLength = stringReview.replaceAll("\n", "").trim().length();
+      stringReviewLength = stringReview.replaceAll("\n", " ").trim().length();
 
       setInputChars(stringReviewLength);
 
@@ -204,7 +205,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public int getSizeComment() {
-      if (mComment == null) throw new IllegalStateException("Comment must exist.");
+      if (mComment == null) {
+         throw new IllegalStateException("Comment must exist.");
+      }
       String review = mComment.getText().toString();
       int lineJumpOccurrences = 0;
       for (int i = 0; i < review.length(); i++) {
@@ -335,6 +338,19 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       });
    }
 
+   private void showReviewDuplicatedError() {
+      errorDialog = new SweetAlertDialog(getActivity(),
+            SweetAlertDialog.ERROR_TYPE);
+      errorDialog.setTitleText(getActivity().getString(R.string.app_name));
+      errorDialog.setContentText(getTextResource(R.string.comment_review_duplicated_review));
+      errorDialog.setConfirmText(getTextResource(R.string.comment_review_confirm_text));
+      errorDialog.showCancelButton(false);
+      errorDialog.setConfirmClickListener(listener -> {
+         listener.dismissWithAnimation();
+      });
+      errorDialog.show();
+   }
+
    @Override
    public void unrecognizedError() {
       getActivity().runOnUiThread(() -> {
@@ -428,7 +444,7 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public void sendPostReview() {
-      this.user = appSessionHolder.get().get().getUser();
+      this.user = appSessionHolder.get().get().user();
 
       ActionPipe<AddReviewAction> addReviewActionActionPipe = merchantInteractor.addReviewsHttpPipe();
       addReviewActionActionPipe.createObservable(
@@ -442,11 +458,11 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
                   isVerified(),
                   getFingerprintId(),
                   getIpAddress(), getPresenter().getSelectedImagesList()))
+            .compose(bindUntilDropViewComposer())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<AddReviewAction>()
-                  .onSuccess(this::onMerchantsLoaded)
-                  .onProgress(this::onMerchantsLoading)
-                  .onFail(this::onMerchantsLoadingError));
+                  .onSuccess(this::onReviewPostingSuccess)
+                  .onFail(this::onReviewPostingError));
    }
 
    @Override
@@ -487,24 +503,16 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       return NetworkUtils.getIpAddress(true);
    }
 
-   private void onMerchantsLoaded(AddReviewAction action) {
+   private void onReviewPostingSuccess(AddReviewAction action) {
       if (action.getResult().errors() != null) {
          try {
-            validateCodeMessage(action.getResult()
-                  .errors()
-                  .get(0)
-                  .innerError()
-                  .get(0)
-                  .formErrors()
-                  .fieldErrors()
-                  .reviewText()
-                  .code());
+            validateCodeMessage(getReviewPostingErrorCode(action.getResult().errors()));
          } catch (Exception e) {
             showErrorUnknown();
             e.printStackTrace();
          }
       } else {
-         this.user = appSessionHolder.get().get().getUser();
+         this.user = appSessionHolder.get().get().user();
          try {
             ReviewStorage.saveReviewsPosted(getActivity(), String.valueOf(user.getId()), getMerchantId());
          } catch (Exception e) {
@@ -517,10 +525,40 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       enableInputs();
    }
 
-   private void onMerchantsLoading(AddReviewAction action, Integer progress) {
+   private @Nullable
+   String getReviewPostingErrorCode(List<Errors> errors) {
+      String errorCode = parseErrorCode(errors);
+      if (errorCode == null) {
+         errorCode = parseErrorCodeFallback(errors);
+      }
+      return errorCode;
    }
 
-   private void onMerchantsLoadingError(AddReviewAction action, Throwable throwable) {
+   private @Nullable
+   String parseErrorCode(List<Errors> errors) {
+      if (errors != null && !errors.isEmpty()) {
+         Errors error = errors.get(0);
+         if (error.innerError() != null && !error.innerError().isEmpty()) {
+            InnerErrors innerErrors = error.innerError().get(0);
+            return innerErrors.code();
+         }
+      }
+      return null;
+   }
+
+   /**
+    * This method should probably be deleted after clarifying API contract
+    */
+   private @Nullable
+   String parseErrorCodeFallback(List<Errors> errors) {
+      try {
+         return errors.get(0).innerError().get(0).formErrors().fieldErrors().reviewText().code();
+      } catch (Exception e) {
+         return null;
+      }
+   }
+
+   private void onReviewPostingError(AddReviewAction action, Throwable throwable) {
       onRefreshSuccess();
       onRefreshError(throwable.getMessage());
       enableInputs();
@@ -530,7 +568,9 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       if (merchant.reviews().total().equals("") || merchant.reviews().total().equals("0")) {
          navigateToDetail(getContext().getString(R.string.snack_review_success));
       } else {
-         Path path = new DtlReviewsPath(Flow.get(getContext()).getHistory().top(), merchant, getContext().getString(R.string.snack_review_success));
+         Path path = new DtlReviewsPath(Flow.get(getContext())
+               .getHistory()
+               .top(), merchant, getContext().getString(R.string.snack_review_success));
          History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
          historyBuilder.pop();
          historyBuilder.pop();
@@ -542,19 +582,23 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
 
    @Override
    public void validateCodeMessage(String message) {
+      if (message == null) {
+         unrecognizedError();
+         return;
+      }
       switch (message) {
          case ERROR_FORM_PROFANITY:
             showProfanityError();
             break;
-
          case ERROR_UNKNOWN:
             showErrorUnknown();
             break;
-
          case ERROR_REQUEST_LIMIT_REACHED:
             showErrorLimitReached();
             break;
-
+         case ERROR_DUPLICATED_REVIEW:
+            showReviewDuplicatedError();
+            break;
          default:
             unrecognizedError();
             break;

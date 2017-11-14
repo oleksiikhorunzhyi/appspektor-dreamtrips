@@ -71,7 +71,7 @@ public class MediaPickerContainer extends FrameLayout {
    }
 
    private void animateScreen(Bundle args, boolean isForward) {
-      if (navigationAnimatorSet.isStarted() || navigationAnimatorSet.isRunning()) return;
+      if (navigationAnimatorSet.isStarted() || navigationAnimatorSet.isRunning()) { return; }
 
       final List<Animator> animators = new ArrayList<>();
       final int deltaX = isForward ? -getWidth() : getWidth();

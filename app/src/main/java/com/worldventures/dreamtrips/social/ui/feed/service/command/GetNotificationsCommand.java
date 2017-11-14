@@ -23,7 +23,7 @@ public class GetNotificationsCommand extends BaseGetFeedCommand<GetFeedNotificat
 
    private List<FeedItem> cachedData;
 
-   private boolean refresh;
+   private final boolean refresh;
 
    public GetNotificationsCommand(boolean refresh) {
       this.refresh = refresh;
@@ -31,10 +31,12 @@ public class GetNotificationsCommand extends BaseGetFeedCommand<GetFeedNotificat
 
    @Override
    protected void run(CommandCallback<List<FeedItem>> callback) throws Throwable {
-      if (!refresh && cachedData != null && cachedData.size() > 0) {
+      if (!refresh && cachedData != null && !cachedData.isEmpty()) {
          before = cachedData.get(cachedData.size() - 1).getCreatedAt();
       }
-      if (cachedData != null && !cachedData.isEmpty()) callback.onProgress(0);
+      if (cachedData != null && !cachedData.isEmpty()) {
+         callback.onProgress(0);
+      }
       //
       super.run(callback);
    }
@@ -46,13 +48,19 @@ public class GetNotificationsCommand extends BaseGetFeedCommand<GetFeedNotificat
    }
 
    private void clearCachedDataIfNeeded() {
-      if (refresh) cachedData = null;
+      if (refresh) {
+         cachedData = null;
+      }
    }
 
    public List<FeedItem> getItems() {
       List<FeedItem> items = new ArrayList<>();
-      if (cachedData != null) items.addAll(cachedData);
-      if (getResult() != null) items.addAll(getResult());
+      if (cachedData != null) {
+         items.addAll(cachedData);
+      }
+      if (getResult() != null) {
+         items.addAll(getResult());
+      }
       return items;
    }
 

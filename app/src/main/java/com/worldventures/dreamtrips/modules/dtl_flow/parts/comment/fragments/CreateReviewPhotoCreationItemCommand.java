@@ -4,7 +4,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments;
 import android.content.Context;
 import android.support.v4.util.Pair;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.core.utils.Size;

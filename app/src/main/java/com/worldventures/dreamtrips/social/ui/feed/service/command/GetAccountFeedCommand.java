@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 
 public class GetAccountFeedCommand extends BaseGetFeedCommand<GetAccountFeedHttpAction> {
 
-   private String circleId;
+   private final String circleId;
 
    public GetAccountFeedCommand(String circleId, Date before) {
       super(before);

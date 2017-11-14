@@ -1,10 +1,14 @@
-apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildsystem/android-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/app-config.gradle"
 apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
-apply from: "$rootProject.projectDir/buildsystem/module-dependencies.gradle"
-apply plugin: 'me.tatarka.retrolambda'
+apply from: "$rootProject.projectDir/buildsystem/module-core-dependencies.gradle"
+apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
+apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
    compileSdkVersion project.ext.androidConfig.compileSdk
@@ -13,53 +17,47 @@ android {
    defaultConfig {
       minSdkVersion project.ext.androidConfig.minSdk
       targetSdkVersion project.ext.androidConfig.targetSdk
-      //
-      multiDexEnabled true
+
+      javaCompileOptions { // fix problem with Immutable Compiler
+         annotationProcessorOptions {
+            includeCompileClasspath = false
+         }
+      }
    }
 
-   dataBinding{
+   dataBinding {
       enabled = true
    }
 
+   lintOptions {
+      xmlReport false
+      disable 'MissingTranslation'
+   }
+
    buildTypes {
-      debug {
-         minifyEnabled false
-      }
       release {
          minifyEnabled false
-         def proConfigs = file('proguard-rules').listFiles().collect { it }
-         proConfigs << getDefaultProguardFile('proguard-android.txt')
-         proConfigs << getDefaultProguardFile('proguard-android-optimize.txt')
-         proConfigs << file('dagger-proguard-keepnames.cfg')
-         setConsumerProguardFiles proConfigs
+         def proConfigs = fileTree(dir: 'proguard-rules', include: ['*.pro']).asList()
+         consumerProguardFiles proConfigs.toArray()
       }
    }
 
    compileOptions {
-      sourceCompatibility project.ext.pluginDependencies.languages.java
-      targetCompatibility project.ext.pluginDependencies.languages.java
+      sourceCompatibility project.ext.pluginDependencies.versions.java
+      targetCompatibility project.ext.pluginDependencies.versions.java
    }
 
 }
 
 def deps = project.ext.coreDependencies
 
-configurations.all {
-   resolutionStrategy {
-      force provideDep(deps.rx.rxjava)
-      force provideDep(deps.domain.mappery)
-      force provideDep(deps.util.jetbrainsAnnotations)
-   }
-   exclude group: 'org.jetbrains', module: 'annotations-java5'
-   exclude group: 'com.intellij', module: 'annotations'
-}
-
 repositories {
    deps.repos.each { it.call(owner) }
 }
 
 dependencies {
-   compile fileTree(dir: 'libs', include: ['*.jar'])
+   implementation fileTree(dir: 'libs', include: ['*.jar'])
+   applyDependencies(owner, deps.modules)
    applyDependencies(owner, deps.di)
    applyDependencies(owner, deps.ui)
    applyDependencies(owner, deps.domain)
@@ -68,4 +66,5 @@ dependencies {
    applyDependencies(owner, deps.analytics)
    applyDependencies(owner, deps.util)
    applyDependencies(owner, deps.rx)
+   applyDependencies(owner, deps.lang)
 }

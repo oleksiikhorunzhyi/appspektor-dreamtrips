@@ -17,14 +17,18 @@ public class SimpleSelectionManager implements SelectionManager {
 
    @Override
    public void toggleSelection(int position) {
-      if (!enabled) return;
+      if (!enabled) {
+         return;
+      }
       //
       toggleSelectionImpl(position);
    }
 
    @Override
    public void setSelection(int position, boolean isSelected) {
-      if (!enabled) return;
+      if (!enabled) {
+         return;
+      }
       //
       setSelectionImpl(position, isSelected);
    }

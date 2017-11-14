@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripHttpAction;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
@@ -39,7 +39,9 @@ public class GetTripDetailsCommand extends CommandWithError<TripModel> implement
 
    @Override
    protected void run(CommandCallback<TripModel> callback) throws Throwable {
-      if (cachedModel != null) callback.onProgress(0);
+      if (cachedModel != null) {
+         callback.onProgress(0);
+      }
       janet.createPipe(GetTripHttpAction.class)
             .createObservableResult(new GetTripHttpAction(uid))
             .map(GetTripHttpAction::response)

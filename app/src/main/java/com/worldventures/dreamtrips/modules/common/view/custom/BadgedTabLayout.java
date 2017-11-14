@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.R;
 import butterknife.ButterKnife;
 
 public class BadgedTabLayout extends TabLayout {
+
    WeakHandler handler = new WeakHandler();
 
    public BadgedTabLayout(Context context) {
@@ -58,9 +59,9 @@ public class BadgedTabLayout extends TabLayout {
       ButterKnife.findById(viewWithBadge, R.id.psts_tab_title).setOnClickListener((v) -> viewWithBadge.performClick());
       ButterKnife.<TextView>findById(viewWithBadge, R.id.psts_tab_title).setText(title);
       ButterKnife.findById(viewWithBadge, R.id.psts_tab_badge).setAlpha(0f);
-      viewWithBadge.setOnClickListener((view -> {
+      viewWithBadge.setOnClickListener(view -> {
          getTabAt(index).select();
-      }));
+      });
 
       return viewWithBadge;
    }

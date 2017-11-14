@@ -21,10 +21,9 @@ import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.BaseUsersBundle;
@@ -48,7 +47,7 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.caption) protected TextView caption;
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
 
    private RecyclerViewStateDelegate stateDelegate;
 
@@ -118,14 +117,18 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
       // timeout was set according to the issue:
       // https://code.google.com/p/android/issues/detail?id=77712
       weakHandler.postDelayed(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       }, 100);
    }
 
    @Override
    public void finishLoading() {
       weakHandler.postDelayed(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       }, 100);
       stateDelegate.restoreStateIfNeeded();
    }
@@ -141,7 +144,9 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override
@@ -158,32 +163,29 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    public void openFriendPrefs(UserBundle userBundle) {
-      if (isVisibleOnScreen()) router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity()
+      router.moveTo(FriendPreferenceFragment.class, NavigationConfigBuilder.forActivity()
             .data(userBundle)
             .build());
    }
 
    @Override
    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
-      if (isVisibleOnScreen()) {
-         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-         builder.title(getString(R.string.profile_add_friend))
-               .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles), (materialDialog, view, i, charSequence) -> {
-                  selectedAction.apply(i);
-                  materialDialog.dismiss();
-               })
-               .negativeText(R.string.action_cancel)
-               .show();
-      }
+      MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+      builder.title(getString(R.string.profile_add_friend))
+            .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles), (materialDialog, view, i, charSequence) -> {
+               selectedAction.apply(i);
+               materialDialog.dismiss();
+            })
+            .negativeText(R.string.action_cancel)
+            .show();
    }
 
    @Override
    public void openUser(UserBundle userBundle) {
-      if (isVisibleOnScreen()) router.moveTo(routeCreator.createRoute(userBundle.getUser()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(userBundle.getUser()
             .getId()), NavigationConfigBuilder.forActivity().toolbarConfig(ToolbarConfig.Builder.create()
             .visible(false)
             .build()).data(userBundle).build());
-
    }
 
    @Override

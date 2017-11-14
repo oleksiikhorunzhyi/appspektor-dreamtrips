@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.R;
 
 public class LocationPickerToolbarPresenter {
 
-   private Toolbar toolbar;
-   private Context context;
+   private final Toolbar toolbar;
+   private final Context context;
 
    public LocationPickerToolbarPresenter(Toolbar toolbar, Context context) {
       this.context = context;

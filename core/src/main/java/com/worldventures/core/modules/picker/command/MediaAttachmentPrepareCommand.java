@@ -3,7 +3,7 @@ package com.worldventures.core.modules.picker.command;
 import android.net.Uri;
 import android.util.Pair;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.core.utils.ImageUtils;

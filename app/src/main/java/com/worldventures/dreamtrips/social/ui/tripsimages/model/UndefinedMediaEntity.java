@@ -12,7 +12,9 @@ public class UndefinedMediaEntity extends BaseMediaEntity<Photo> {
       dest.writeInt(this.type == null ? -1 : this.type.ordinal());
    }
 
-   public UndefinedMediaEntity() {}
+   public UndefinedMediaEntity() {
+      //do nothing
+   }
 
    protected UndefinedMediaEntity(Parcel in) {
       int tmpType = in.readInt();
@@ -21,9 +23,13 @@ public class UndefinedMediaEntity extends BaseMediaEntity<Photo> {
 
    public static final Creator<UndefinedMediaEntity> CREATOR = new Creator<UndefinedMediaEntity>() {
       @Override
-      public UndefinedMediaEntity createFromParcel(Parcel source) {return new UndefinedMediaEntity(source);}
+      public UndefinedMediaEntity createFromParcel(Parcel source) {
+         return new UndefinedMediaEntity(source);
+      }
 
       @Override
-      public UndefinedMediaEntity[] newArray(int size) {return new UndefinedMediaEntity[size];}
+      public UndefinedMediaEntity[] newArray(int size) {
+         return new UndefinedMediaEntity[size];
+      }
    };
 }

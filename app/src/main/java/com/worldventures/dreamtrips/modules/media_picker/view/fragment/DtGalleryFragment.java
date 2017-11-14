@@ -63,6 +63,8 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter, Gall
                case PickerIrregularPhotoModel.FACEBOOK:
                   getPresenter().openFacebook();
                   break;
+               default:
+                  break;
             }
          }
       });
@@ -84,6 +86,8 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter, Gall
                      break;
                   case 1:
                      getPresenter().tryOpenCameraForVideo();
+                     break;
+                  default:
                      break;
                }
             }).show();

@@ -31,7 +31,7 @@ import com.worldventures.core.ui.view.custom.ToucheableMapView;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
@@ -139,7 +139,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    @Override
    public void onStart() {
       super.onStart();
-      if (googleMap != null) subscribeToMapUpdates();
+      if (googleMap != null) {
+         subscribeToMapUpdates();
+      }
    }
 
    @Override
@@ -242,7 +244,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    protected void onMenuInflated(Menu menu) {
       super.onMenuInflated(menu);
       MenuItem searchItem = menu.findItem(R.id.action_search);
-      if (searchOpened) searchItem.expandActionView();
+      if (searchOpened) {
+         searchItem.expandActionView();
+      }
       MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
          @Override
          public boolean onMenuItemActionExpand(MenuItem item) {
@@ -281,6 +285,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
          case R.id.action_list:
             moveToListView();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -291,7 +297,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    @Override
    public void moveTo(List<TripModel> trips) {
-      router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forFragment()
+      router.moveTo(TripMapListFragment.class, NavigationConfigBuilder.forFragment()
             .containerId(R.id.container_info)
             .fragmentManager(getChildFragmentManager())
             .backStackEnabled(false)
@@ -317,7 +323,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    @Override
    public void removeTripsPopupInfo() {
-      router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
+      router.moveTo(TripMapListFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_info)
             .fragmentManager(getChildFragmentManager())
             .build());
@@ -431,6 +437,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                params.rightMargin = margin;
                params.bottomMargin = 0;
                params.leftMargin = 0;
+               break;
+            default:
                break;
          }
       }

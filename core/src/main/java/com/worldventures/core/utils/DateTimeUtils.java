@@ -15,10 +15,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
-public class DateTimeUtils {
+public final class DateTimeUtils {
+
    private static final String FILTER_PATTERN = "dd MMM yyyy";
    public static final int TOMORROW = 1;
    public static final int THIS_WEEK = 2;
@@ -36,11 +38,13 @@ public class DateTimeUtils {
 
    public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
    public static final String FEED_DATE_FORMAT = "MMM d, yyyy  h:mm a";
+   public static final String USER_DATE_FORMAT = "MMM d, yyyy hh:mm:ss a";
    public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
    public static final String ISO_FORMAT_WITH_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
    public static final String PODCAST_DATE_FORMAT = "MMM d, yyyy";
    public static final String TRIP_FILTER_ANALYTIC_DATE_FORMAT = "MM-dd-yyyy";
    public static final String REVIEWS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+   public static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
    public static final String UTC = "UTC";
 
    private DateTimeUtils() {
@@ -55,12 +59,15 @@ public class DateTimeUtils {
    }
 
    public static DateFormat[] getISO1DateFormats() {
-      return new DateFormat[]{new SimpleDateFormat(ISO_FORMAT_WITH_TIMEZONE, LocaleHelper.getDefaultLocale()),
+      return new DateFormat[]{
+            new SimpleDateFormat(ISO_FORMAT_WITH_TIMEZONE, LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat(DEFAULT_ISO_FORMAT, LocaleHelper.getDefaultLocale()),
+            new SimpleDateFormat(USER_DATE_FORMAT, LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat("yyyy-MM-dd", LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", LocaleHelper.getDefaultLocale()),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", LocaleHelper.getDefaultLocale()),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSS'Z'", LocaleHelper.getDefaultLocale()),};
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm.ss.SSS'Z'", LocaleHelper.getDefaultLocale())
+      };
    }
 
    public static String convertDateToString(Date date, DateFormat format) {
@@ -287,4 +294,35 @@ public class DateTimeUtils {
       calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
       return calendar.getDisplayName(Calendar.DAY_OF_WEEK, style, locale);
    }
+
+   public static String getStringDateFromStringUTC(String utcString) {
+      try {
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT, LocaleHelper.getDefaultLocale());
+         utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
+         Date utcDate = utcFormatter.parse(utcString);
+
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(TRANSACTION_DATE_FORMAT, LocaleHelper.getDefaultLocale());
+         dateFormatter.setTimeZone(TimeZone.getDefault());
+         return dateFormatter.format(utcDate);
+      } catch (ParseException parseException) {
+         parseException.printStackTrace();
+      }
+      return "";
+   }
+
+   public static String getISODateFromStringUTC(String utcString) {
+      try {
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT, LocaleHelper.getDefaultLocale());
+         utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
+         Date utcDate = utcFormatter.parse(utcString);
+
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(DEFAULT_ISO_FORMAT, LocaleHelper.getDefaultLocale());
+         dateFormatter.setTimeZone(TimeZone.getDefault());
+         return dateFormatter.format(utcDate);
+      } catch (ParseException parseException) {
+         parseException.printStackTrace();
+      }
+      return "";
+   }
 }
+

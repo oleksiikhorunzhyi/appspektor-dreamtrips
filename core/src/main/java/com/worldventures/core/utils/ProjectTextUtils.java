@@ -86,6 +86,15 @@ public final class ProjectTextUtils {
       }
    }
 
+   public static String convertToBase64NoWrap(String s) {
+      try {
+         return Base64.encodeToString(s.getBytes("UTF-8"), Base64.NO_WRAP);
+      } catch (UnsupportedEncodingException e) {
+         Timber.e(e, "Failed to convert string");
+      }
+      return "";
+   }
+
    public static String convertToBase64(String s) {
       try {
          return Base64.encodeToString(s.getBytes("UTF-8"), Base64.DEFAULT);

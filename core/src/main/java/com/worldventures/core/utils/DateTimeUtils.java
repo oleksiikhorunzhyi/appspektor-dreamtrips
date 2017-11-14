@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
@@ -43,6 +44,7 @@ public final class DateTimeUtils {
    public static final String PODCAST_DATE_FORMAT = "MMM d, yyyy";
    public static final String TRIP_FILTER_ANALYTIC_DATE_FORMAT = "MM-dd-yyyy";
    public static final String REVIEWS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+   public static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
    public static final String UTC = "UTC";
 
    private DateTimeUtils() {
@@ -292,4 +294,35 @@ public final class DateTimeUtils {
       calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
       return calendar.getDisplayName(Calendar.DAY_OF_WEEK, style, locale);
    }
+
+   public static String getStringDateFromStringUTC(String utcString) {
+      try {
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT, LocaleHelper.getDefaultLocale());
+         utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
+         Date utcDate = utcFormatter.parse(utcString);
+
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(TRANSACTION_DATE_FORMAT, LocaleHelper.getDefaultLocale());
+         dateFormatter.setTimeZone(TimeZone.getDefault());
+         return dateFormatter.format(utcDate);
+      } catch (ParseException parseException) {
+         parseException.printStackTrace();
+      }
+      return "";
+   }
+
+   public static String getISODateFromStringUTC(String utcString) {
+      try {
+         SimpleDateFormat utcFormatter = new SimpleDateFormat(DateTimeUtils.REVIEWS_DATE_FORMAT, LocaleHelper.getDefaultLocale());
+         utcFormatter.setTimeZone(TimeZone.getTimeZone(DateTimeUtils.UTC));
+         Date utcDate = utcFormatter.parse(utcString);
+
+         SimpleDateFormat dateFormatter = new SimpleDateFormat(DEFAULT_ISO_FORMAT, LocaleHelper.getDefaultLocale());
+         dateFormatter.setTimeZone(TimeZone.getDefault());
+         return dateFormatter.format(utcDate);
+      } catch (ParseException parseException) {
+         parseException.printStackTrace();
+      }
+      return "";
+   }
 }
+

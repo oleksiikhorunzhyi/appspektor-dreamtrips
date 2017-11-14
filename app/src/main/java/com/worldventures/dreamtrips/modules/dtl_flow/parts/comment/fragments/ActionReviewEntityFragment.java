@@ -12,10 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
@@ -103,7 +103,6 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    @Override
    public void onResume() {
       super.onResume();
-      backStackDelegate.setListener(this::onBack);
       updateLocationButtonState();
       getPresenter().invalidateDynamicViews();
    }
@@ -131,7 +130,6 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
    @Override
    public void onPause() {
       super.onPause();
-      backStackDelegate.setListener(null);
       SoftInputUtil.hideSoftInputMethod(getActivity());
    }
 
@@ -175,11 +173,9 @@ public abstract class ActionReviewEntityFragment<PM extends ActionReviewEntityPr
 
    @Override
    public void cancel() {
-      //TODO this method is copy paste
       if (dialog != null && dialog.isShowing()) {
          dialog.dismiss();
       }
-
       router.moveTo(getClass(), NavigationConfigBuilder.forRemoval().fragmentManager(getFragmentManager()).build());
    }
 

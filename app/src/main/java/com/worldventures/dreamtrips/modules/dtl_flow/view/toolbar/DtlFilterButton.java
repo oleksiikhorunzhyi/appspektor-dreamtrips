@@ -80,11 +80,11 @@ public class DtlFilterButton extends FrameLayout {
       if (filterEnabled) {
          rootView.setBackgroundColor(enabledBackgroundColor);
          caption.setTextColor(enabledCaptionColor);
-         caption.setCompoundDrawablesRelativeWithIntrinsicBounds(enabledIconDrawableRes, 0, 0, 0);
+         caption.setCompoundDrawablesRelativeWithIntrinsicBounds(0, enabledIconDrawableRes, 0, 0);
       } else {
          rootView.setBackgroundColor(disabledBackgroundColor);
          caption.setTextColor(disabledCaptionColor);
-         caption.setCompoundDrawablesRelativeWithIntrinsicBounds(disabledIconDrawableRes, 0, 0, 0);
+         caption.setCompoundDrawablesRelativeWithIntrinsicBounds(0, disabledIconDrawableRes, 0, 0);
       }
       separator.setVisibility(!filterEnabled && showSeparator ? VISIBLE : GONE);
    }

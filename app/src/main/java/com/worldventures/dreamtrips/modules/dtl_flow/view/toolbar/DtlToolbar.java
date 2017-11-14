@@ -30,8 +30,10 @@ public class DtlToolbar extends LinearLayout {
    @InjectView(R.id.filterDiningsSwitch) protected SwitchCompat filterDiningsSwitch;
    @InjectView(R.id.dtlToolbarMerchantSearchInput) protected AppCompatEditText merchantSearchInput;
    @InjectView(R.id.dtlToolbarLocationSearchInput) protected AppCompatEditText locationSearchInput;
+   @InjectView(R.id.transaction_container) protected LinearLayout transactionContainer;
 
    protected List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
+   protected List<TransactionButtonListener> transactionButtonListeners = new ArrayList<>();
 
    protected String searchQuery;
    protected FocusedMode focusedMode;
@@ -138,6 +140,11 @@ public class DtlToolbar extends LinearLayout {
       Queryable.from(filterButtonListeners).forEachR(listener -> listener.onFilterButtonClicked());
    }
 
+   @OnClick(R.id.transaction_container)
+   protected void transactionButtonClicked(View view) {
+      Queryable.from(transactionButtonListeners).forEachR(listener -> listener.onTransactionButtonClicked());
+   }
+
    @OnClick(R.id.dtlToolbarMerchantSearchInput)
    protected void merchantSearchInputClicked(View view) {
       focusedMode = FocusedMode.SEARCH;
@@ -205,6 +212,22 @@ public class DtlToolbar extends LinearLayout {
    public interface FilterButtonListener {
 
       void onFilterButtonClicked();
+   }
+
+   public interface TransactionButtonListener {
+
+      void onTransactionButtonClicked();
+   }
+
+   public void addTransactionButtonListener(@NonNull TransactionButtonListener listener) {
+      if (checkListenerNull(listener)) {
+         return;
+      }
+      transactionButtonListeners.add(listener);
+   }
+
+   public void removeTransactionButtonListener(TransactionButtonListener listener) {
+      transactionButtonListeners.remove(listener);
    }
 
    ///////////////////////////////////////////////////////////////////////////

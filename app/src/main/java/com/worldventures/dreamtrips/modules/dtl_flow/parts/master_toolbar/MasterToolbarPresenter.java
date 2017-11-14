@@ -20,4 +20,6 @@ public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen
    boolean needShowAutodetectButton();
 
    void offersOnlySwitched(boolean isOffersOnly);
+
+   void onTransactionClicked();
 }

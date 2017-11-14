@@ -56,6 +56,12 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    @Inject WizardEditProfilePresenter presenter;
 
+   public static WizardEditProfileScreenImpl create(@NonNull ProvisioningMode provisioningMode) {
+      final Bundle args = new Bundle();
+      args.putSerializable(KEY_PROVISION_MODE, provisioningMode);
+      return new WizardEditProfileScreenImpl(args);
+   }
+
    private ScreenWalletWizardPersonalInfoBinding binding;
    private ProfileViewModel viewModel = new ProfileViewModel();
    private WalletCropImageService cropImageService;
@@ -68,12 +74,6 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    public WizardEditProfileScreenImpl(Bundle args) {
       super(args);
-   }
-
-   public static WizardEditProfileScreenImpl create(@NonNull ProvisioningMode provisioningMode) {
-      final Bundle args = new Bundle();
-      args.putSerializable(KEY_PROVISION_MODE, provisioningMode);
-      return new WizardEditProfileScreenImpl(args);
    }
 
    @Override

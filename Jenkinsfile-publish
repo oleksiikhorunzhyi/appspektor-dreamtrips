@@ -44,13 +44,13 @@ utils.runBuild('android', getNotifier(utils)) {
       }
    }
    stage('publish') {
+      def apkDir = "app/build/outputs/apk/external${buildParams.streamFlavor}${buildParams.serverFlavor}/${buildParams.apkBuildType.toLowerCase()}"
       if (isInternalOnly()) {
-         archiveArtifacts artifacts: "app/build/outputs/apk/external${buildParams.streamFlavor}${buildParams.serverFlavor}/*.apk", caseSensitive: false, onlyIfSuccessful: true
+         archiveArtifacts artifacts: "$apkDir/*.apk", caseSensitive: false, onlyIfSuccessful: true
       } else {
          def releaseNotes = generateReleaseNotes(buildParams, changelog(utils, buildParams.targetBranch, buildParams.branch), isPullRequest())
          echo releaseNotes
-         def buildTypeSubDir = buildParams.apkBuildType == 'Debug' ? 'debug' : 'release'
-         def apkPath = "app/build/outputs/apk/external${buildParams.streamFlavor}${buildParams.serverFlavor}/${buildTypeSubDir}/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
+         def apkPath = "$apkDir/DreamTrips-external-${buildParams.streamFlavor.toLowerCase()}-${buildParams.serverFlavor.toLowerCase()}-${buildParams.apkBuildType.toLowerCase()}.apk"
          step([$class   : 'HockeyappRecorder', applications:
                [[apiToken          : params.hockeyApiToken,
                  filePath          : apkPath,

@@ -15,8 +15,8 @@ import com.worldventures.wallet.service.command.offline_mode.RestoreOfflineModeD
 import com.worldventures.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.wallet.service.provisioning.ProvisioningModeCommand;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
-import com.worldventures.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.wallet.ui.wizard.records.SyncAction;
+import com.worldventures.wallet.util.WalletFeatureHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,23 +31,29 @@ public abstract class WizardAssignDelegate {
    protected final RecordInteractor recordInteractor;
    protected final WalletAnalyticsInteractor analyticsInteractor;
    protected final SmartCardInteractor smartCardInteractor;
+   protected final WalletFeatureHelper walletFeatureHelper;
    protected final Navigator navigator;
 
-   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         SmartCardInteractor smartCardInteractor, Navigator navigator) {
+   private WizardAssignDelegate(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
+         WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor,
+         WalletFeatureHelper walletFeatureHelper, Navigator navigator) {
       this.wizardInteractor = wizardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.smartCardInteractor = smartCardInteractor;
+      this.walletFeatureHelper = walletFeatureHelper;
       this.navigator = navigator;
    }
 
    public static WizardAssignDelegate create(ProvisioningMode mode, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
+         WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor,
+         WalletFeatureHelper walletFeatureHelper, Navigator navigator) {
       if (mode == ProvisioningMode.STANDARD) {
-         return new WizardAssignDelegateStandard(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
+         return new WizardAssignDelegateStandard(wizardInteractor, recordInteractor, analyticsInteractor,
+               smartCardInteractor, walletFeatureHelper, navigator);
       } else {
-         return new WizardAssignDelegateNewCard(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
+         return new WizardAssignDelegateNewCard(wizardInteractor, recordInteractor, analyticsInteractor,
+               smartCardInteractor, walletFeatureHelper, navigator);
       }
    }
 
@@ -71,21 +77,26 @@ public abstract class WizardAssignDelegate {
    private static final class WizardAssignDelegateStandard extends WizardAssignDelegate {
 
       private WizardAssignDelegateStandard(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-            WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
-         super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
+            WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor,
+            WalletFeatureHelper walletFeatureHelper, Navigator navigator) {
+         super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor,
+               walletFeatureHelper, navigator);
       }
 
       @Override
       protected void toNextScreen(WizardAssignUserScreen view) {
-         navigator.goPinProposalUserSetup(PinProposalAction.WIZARD);
+         activateSmartCard();
+         walletFeatureHelper.finishRegularProvisioning(navigator);
       }
    }
 
    private static final class WizardAssignDelegateNewCard extends WizardAssignDelegate {
 
       private WizardAssignDelegateNewCard(WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-            WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor, Navigator navigator) {
-         super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor, navigator);
+            WalletAnalyticsInteractor analyticsInteractor, SmartCardInteractor smartCardInteractor,
+            WalletFeatureHelper walletFeatureHelper, Navigator navigator) {
+         super(wizardInteractor, recordInteractor, analyticsInteractor, smartCardInteractor,
+               walletFeatureHelper, navigator);
       }
 
       @Override

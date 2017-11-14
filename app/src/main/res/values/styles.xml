@@ -13,6 +13,27 @@
       <item name="android:background">?attr/colorPrimary</item>
    </style>
 
+   <style name="ToolBarStyleWhite" parent="Widget.AppCompat.ActionBar">
+      <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+      <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">?attr/actionBarSize</item>
+      <item name="titleTextColor">@color/merchant_landscape_home_text_color</item>
+   </style>
+
+   <style name="ToolBarStyleFeed" parent="Widget.AppCompat.ActionBar">
+      <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+      <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+      <item name="android:layout_width">match_parent</item>
+      <item name="android:layout_height">?attr/actionBarSize</item>
+      <item name="android:background">?attr/colorPrimary</item>
+      <item name="android:textSize">18sp</item>
+   </style>
+
+   <style name="ToolBarStyle.Transient">
+      <item name="android:background">@android:color/transparent</item>
+   </style>
+
    <style name="myRecyclerViewStyle">
       <item name="android:clipChildren">false</item>
       <item name="android:clipToPadding">false</item>
@@ -87,6 +108,18 @@
       <item name="android:textColorPrimary">@android:color/white</item>
    </style>
 
+   <style name="Theme.DreamTripsTheme.TransactionButton" parent="Base.Widget.AppCompat.Button">
+      <item name="colorButtonNormal">@color/thrst_merchant_button_unpressed</item>
+      <item name="colorControlHighlight">@color/thrst_merchant_button_pressed</item>
+      <item name="android:textColorPrimary">@android:color/white</item>
+   </style>
+
+   <style name="ThemeThrstButton" parent="Base.Widget.AppCompat.Button">
+      <item name="colorButtonNormal">@color/thrst_merchant_button_unpressed</item>
+      <item name="colorControlHighlight">@color/thrst_merchant_button_pressed</item>
+      <item name="android:textColorPrimary">@android:color/white</item>
+   </style>
+
    <style name="SuggestMerchantInput">
       <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
       <item name="met_baseColor">@color/suggest_merchant_input_text</item>
@@ -100,6 +133,11 @@
    </style>
 
    <style name="DtlButtonGreenTheme" parent="Theme.DreamTripsTheme.TripButton">
+      <item name="android:textSize">@dimen/font_small</item>
+      <item name="android:textColorPrimary">@android:color/white</item>
+   </style>
+
+   <style name="DtlButtonPurpleTheme" parent="Theme.DreamTripsTheme.TransactionButton">
       <item name="android:textSize">@dimen/font_small</item>
       <item name="android:textColorPrimary">@android:color/white</item>
    </style>

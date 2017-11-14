@@ -96,6 +96,21 @@
                   />
 
             <TextView
+                  android:id="@+id/view_pay_in_app"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/white"
+                  android:textSize="@dimen/font_small"
+                  android:layout_marginLeft="@dimen/spacing_small"
+                  android:background="@drawable/background_badge_pay_in_app"
+                  android:layout_toRightOf="@+id/view_points"
+                  android:drawableLeft="@drawable/ic_points_dtl"
+                  android:layout_centerVertical="true"
+                  android:drawablePadding="5dp"
+                  android:text="@string/dtl_thrst_text_button"
+                  />
+
+            <TextView
                   android:id="@+id/view_perks"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
@@ -274,6 +289,20 @@
                   android:showDividers="middle"
                   />
          </LinearLayout>
+
+         <View
+               android:id="@+id/order_from_menu_divider"
+               android:layout_width="match_parent"
+               android:layout_height="1dp"
+               android:background="@drawable/list_divider_with_right_padding"
+               />
+
+         <TextView
+               android:id="@+id/order_from_menu"
+               style="@style/DtlRateButton"
+               android:text="@string/order_from_menu"
+               android:layout_margin="@dimen/dtl_all_reviews_margin"
+               />
 
          <View
                android:layout_width="match_parent"

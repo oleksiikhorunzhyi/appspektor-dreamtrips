@@ -49,7 +49,7 @@ public final class FileUtils {
          try {
             forceDelete(context, file, exceptFilePaths);
          } catch (IOException e) {
-            Timber.e("Unable to delete file: " + file, e);
+            Timber.e(e, "Unable to delete file: " + file);
          }
       });
 

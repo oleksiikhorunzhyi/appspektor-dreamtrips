@@ -96,6 +96,13 @@ public final class RxDtlToolbar {
       return Observable.create(new DtlToolbarFilterClicksOnSubscribe(dtlToolbar));
    }
 
+   @CheckResult
+   @NonNull
+   public static Observable<Void> transactionButtonClicks(@NonNull DtlToolbar dtlToolbar) {
+      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      return Observable.create(new DtlToolbarTransactinoClicksOnSubscribe(dtlToolbar));
+   }
+
    /**
     * Create an observable of character sequences for text changes on {@code view}.
     * <p>
@@ -233,4 +240,5 @@ public final class RxDtlToolbar {
       checkNotNull(dtlToolbar.getLocationSearchView(), VIEW_NULL_MESSAGE);
       return RxCompoundButton.checkedChanges(dtlToolbar.getDiningFilterToggle()).skip(1);
    }
+
 }

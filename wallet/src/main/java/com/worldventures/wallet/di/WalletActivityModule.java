@@ -444,9 +444,10 @@ public class WalletActivityModule {
    @Provides
    WizardAssignUserPresenter provideWizardAssignUserPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         WalletAnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil,
+         WalletFeatureHelper walletFeatureHelper) {
       return new WizardAssignUserPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
-            wizardInteractor, recordInteractor, analyticsInteractor, httpErrorHandlingUtil);
+            wizardInteractor, recordInteractor, analyticsInteractor, httpErrorHandlingUtil, walletFeatureHelper);
    }
 
    @Provides

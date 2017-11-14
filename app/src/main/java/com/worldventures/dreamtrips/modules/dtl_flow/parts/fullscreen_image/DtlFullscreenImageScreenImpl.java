@@ -73,6 +73,6 @@ public class DtlFullscreenImageScreenImpl extends DtlLayout<DtlFullscreenImageSc
 
    @Override
    public DtlFullscreenImagePresenter createPresenter() {
-      return new DtlFullscreenImagePresenterImpl(getContext(), getPath().getUrl());
+      return new DtlFullscreenImagePresenterImpl(getContext(), injector, getPath().getUrl());
    }
 }

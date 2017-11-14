@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/white" >
+      android:background="@color/white"
+      android:orientation="vertical"
+      >
 
    <LinearLayout
          android:layout_width="match_parent"
          android:layout_height="@dimen/dtl_transaction_screen_item_line_separator_height"
-         android:background="@color/gray_btn_bg_color">
+         android:background="@color/gray_btn_bg_color"
+         >
 
    </LinearLayout>
 
@@ -27,8 +28,11 @@
 
          <TextView
                android:id="@+id/merchant_name"
-               android:layout_width="match_parent"
+               android:layout_width="200dp"
                android:layout_height="wrap_content"
+               android:ellipsize="end"
+               android:maxLines="1"
+               android:singleLine="true"
                android:text="Merchant name"
                android:textColor="@color/black"
                android:textSize="@dimen/dtl_transaction_screen_item_title_text_size"
@@ -65,21 +69,10 @@
                >
 
             <TextView
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center_vertical"
-                  android:text="@string/dtl_transaction_screen_earned_points_text"
-                  android:textColor="@color/black"
-                  android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
-                  android:textStyle="bold"
-                  />
-
-            <TextView
                   android:id="@+id/earned_points"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_vertical"
-                  android:layout_marginLeft="@dimen/left_transaction_space"
                   android:text="20"
                   android:textColor="@color/earned_point_transaction"
                   android:textSize="@dimen/dtl_transaction_screen_item_items_text_size"
@@ -96,6 +89,18 @@
                   />
 
          </LinearLayout>
+
+         <TextView
+               android:id="@+id/subtotal"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignBottom="@id/earned_points_layout"
+               android:layout_alignParentRight="true"
+               android:layout_marginBottom="5dp"
+               android:text="@string/dtl_subtotal"
+               android:textSize="@dimen/dtl_transaction_screen_item_title_text_size"
+               android:textStyle="bold"
+               />
 
       </RelativeLayout>
 

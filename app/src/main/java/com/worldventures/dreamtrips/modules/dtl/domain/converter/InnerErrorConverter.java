@@ -22,6 +22,7 @@ public class InnerErrorConverter implements Converter<com.worldventures.dreamtri
    @Override
    public InnerErrors convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.InnerError errors) {
       return ImmutableInnerErrors.builder()
+            .code(errors.code())
             .formErrors(errors.formErrors() != null ? mapperyContext.convert(errors.formErrors(), FormErrors.class) : null)
             .build();
    }

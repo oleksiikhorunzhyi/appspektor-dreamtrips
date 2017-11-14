@@ -81,6 +81,10 @@ public abstract class MerchantAttributes implements Serializable {
    public abstract List<Disclaimer> disclaimers();
    @Nullable
    public abstract ReviewSummary reviewSummary();
+   @Nullable
+   public abstract Boolean useThrstFlow();
+   @Nullable
+   public abstract String thrstFullCapabilityUrl();
 
    @Value.Derived
    public boolean hasPoints() {

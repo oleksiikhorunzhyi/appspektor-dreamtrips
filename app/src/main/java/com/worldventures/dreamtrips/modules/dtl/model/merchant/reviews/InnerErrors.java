@@ -12,6 +12,12 @@ import java.io.Serializable;
 @Value.Immutable
 public interface InnerErrors extends Serializable {
 
-   @Nullable
-   FormErrors formErrors();
+    @Nullable
+    String code();
+
+    @Nullable
+    /**
+     * This field probably should be dropped after API contract clarification
+     */
+    FormErrors formErrors();
 }

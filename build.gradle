@@ -21,7 +21,5 @@ allprojects { // <-- it's needed for plugin detekt. there is specific condition 
          classpath project.ext.pluginDependencies.detekt
          classpath project.ext.pluginDependencies.ktlint
       }
-
-      configurations.classpath.exclude group: 'com.android.tools.external.lombok'
    }
 }

@@ -57,8 +57,10 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
    @InjectView(R.id.merchantOpenClosedStatus) TextView merchantOperationalStatus;
    @InjectView(R.id.view_points) TextView points;
    @InjectView(R.id.view_perks) TextView perks;
+   @InjectView(R.id.view_pay_in_app) TextView payInApp;
    @InjectView(R.id.merchantDistance) TextView merchantDistance;
    @InjectView(R.id.offers_container) View offersContainer;
+   // TODO Expandable cells functionality is disabled, delete it from the code completely
    @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
    @InjectView(R.id.ratingBarReviews) RatingBar mRatingBar;
@@ -161,9 +163,16 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
       ViewUtils.setViewVisibility(this.perks, perkVisibility);
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
+      if (getModelObject().useThrstFlow()) {
+         ViewUtils.setViewVisibility(this.payInApp, View.VISIBLE);
+         ViewUtils.setViewVisibility(this.points, View.GONE);
+      } else {
+         ViewUtils.setViewVisibility(this.payInApp, View.GONE);
+         ViewUtils.setViewVisibility(this.points, View.VISIBLE);
+      }
+
       if (perkVisibility == View.VISIBLE) {
-         this.perks.setText(itemView.getContext()
-               .getString(R.string.perks_formatted, perks));
+         this.perks.setText(itemView.getContext().getString(R.string.perks_formatted, perks));
       }
    }
 

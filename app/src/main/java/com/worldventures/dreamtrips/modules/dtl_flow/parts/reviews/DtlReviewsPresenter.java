@@ -9,5 +9,11 @@ public interface DtlReviewsPresenter extends DtlPresenter<DtlReviewsScreen, View
 
    void onAddClick();
 
+   void loadFirstReviews();
+
+   void getFirstPage();
+
    void addMoreReviews(int indexOf);
+
+   void addNewComment();
 }

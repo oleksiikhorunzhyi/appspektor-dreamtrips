@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewScreenImpl
-      android:id="@+id/root_reviews_view"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewScreenImpl android:id="@+id/root_reviews_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >
 
-   <android.support.v7.widget.Toolbar
-         android:id="@+id/toolbar_actionbar"
-         style="@style/ToolBarStyle"
-         />
+   <RelativeLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         >
+
+      <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_actionbar"
+            style="@style/ToolBarStyle"
+            ></android.support.v7.widget.Toolbar>
+
+      <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textColor="@color/merchant_landscape_title_color"
+            android:textSize="@dimen/font_large"
+            android:textStyle="normal"
+            android:visibility="gone"
+            />
+   </RelativeLayout>
+
 
    <include
          android:id="@+id/include_detail_review"
@@ -67,4 +86,4 @@
 
    </LinearLayout>
 
-</com.worldventures.dreamtrips.modules.dtl_flow.parts.detailReview.DtlDetailReviewScreenImpl>
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewScreenImpl>

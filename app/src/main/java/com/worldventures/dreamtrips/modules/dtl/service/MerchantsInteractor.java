@@ -8,10 +8,13 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocat
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -26,6 +29,9 @@ public class MerchantsInteractor {
    private final ActionPipe<ReviewMerchantsAction> reviewsMerchantsPipe;
    private final ActionPipe<AddReviewAction> addReviewsPipe;
    private final ActionPipe<FlaggingReviewAction> addFlaggingPipe;
+   private final ActionPipe<UrlTokenAction> addUrlTokenPipe;
+   private final ActionPipe<TransactionPilotAction> addTransactionPipe;
+   private final ActionPipe<GetTransactionsCommand> getTransactionsPipe;
 
    public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor dtlLocationInteractor,
          ClearMemoryInteractor clearMemoryInteractor) {
@@ -37,6 +43,9 @@ public class MerchantsInteractor {
       this.reviewsMerchantsPipe = sessionActionPipeCreator.createPipe(ReviewMerchantsAction.class, Schedulers.io());
       this.addReviewsPipe = sessionActionPipeCreator.createPipe(AddReviewAction.class, Schedulers.io());
       this.addFlaggingPipe = sessionActionPipeCreator.createPipe(FlaggingReviewAction.class, Schedulers.io());
+      this.addUrlTokenPipe = sessionActionPipeCreator.createPipe(UrlTokenAction.class, Schedulers.io());
+      this.addTransactionPipe = sessionActionPipeCreator.createPipe(TransactionPilotAction.class, Schedulers.io());
+      this.getTransactionsPipe = sessionActionPipeCreator.createPipe(GetTransactionsCommand.class, Schedulers.io());
 
       connectNewRelicTracking();
       connectForLocationUpdates();
@@ -89,6 +98,18 @@ public class MerchantsInteractor {
 
    public ActionPipe<FlaggingReviewAction> flaggingReviewHttpPipe() {
       return addFlaggingPipe;
+   }
+
+   public ActionPipe<UrlTokenAction> urlTokenThrstHttpPipe() {
+      return addUrlTokenPipe;
+   }
+
+   public ActionPipe<TransactionPilotAction> transactionThrstHttpPipe() {
+      return addTransactionPipe;
+   }
+
+   public ActionPipe<GetTransactionsCommand> getTransactionsPipe() {
+      return getTransactionsPipe;
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {

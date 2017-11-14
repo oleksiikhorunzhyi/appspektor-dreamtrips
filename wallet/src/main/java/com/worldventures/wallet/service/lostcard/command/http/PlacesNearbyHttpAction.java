@@ -1,5 +1,6 @@
 package com.worldventures.wallet.service.lostcard.command.http;
 
+import com.worldventures.core.janet.BaseThirdPartyHttpAction;
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.wallet.service.lostcard.command.http.model.NearbyResponse;
 

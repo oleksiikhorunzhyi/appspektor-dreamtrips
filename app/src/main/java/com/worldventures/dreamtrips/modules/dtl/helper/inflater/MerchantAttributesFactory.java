@@ -34,6 +34,8 @@ public final class MerchantAttributesFactory {
             .currencies(merchant.currencies())
             .categories(merchant.categories())
             .amenities(merchant.amenities())
+            .useThrstFlow(merchant.useThrstFlow())
+            .thrstFullCapabilityUrl(merchant.thrstFullCapabilityUrl())
             .build();
    }
 
@@ -56,6 +58,8 @@ public final class MerchantAttributesFactory {
             .operationDays(merchant.operationDays())
             .categories(merchant.categories())
             .reviewSummary(merchant.reviewSummary())
+            .useThrstFlow(merchant.useThrstFlow())
+            .thrstFullCapabilityUrl(merchant.thrstFullCapabilityUrl())
             .build();
    }
 }

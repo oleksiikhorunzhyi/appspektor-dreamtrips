@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationFacadeCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
@@ -419,6 +420,21 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .coordinates(latLng)
             .build();
       locationInteractor.changeSourceLocation(mapSelectedLocation);
+   }
+
+   @Override
+   public void onTransactionsClick() {
+      merchantInteractor.getTransactionsPipe()
+            .createObservableResult(GetTransactionsCommand.readCurrentTransactionsCommand())
+            .compose(bindViewIoToMainComposer())
+            .map(Command::getResult)
+            .subscribe(items -> {
+               if (items == null || items.size() == 0) {
+                  getView().showNoTransactionMessage();
+               } else {
+                  getView().goToTransactionPage();
+               }
+            });
    }
 
    private static boolean isNeedShowLoadMoreButton(MerchantsAction action) {

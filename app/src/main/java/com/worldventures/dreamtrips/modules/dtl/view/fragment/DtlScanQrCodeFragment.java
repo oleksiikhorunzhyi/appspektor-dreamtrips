@@ -83,6 +83,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
 
    void startCamera() {
       scanner.startCamera();
+      scanner.setResultHandler(this);
    }
 
    void showRationaleForCamera() {
@@ -132,7 +133,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    public void showProgress(@StringRes int titleText) {
       if (progressDialog == null || !progressDialog.isShowing()) {
          scanner.stopCamera();
-         //
          progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
          progressDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
          progressDialog.setTitleText(getString(titleText));
@@ -175,7 +175,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
    public void noConnection() {
       showImageUploadError(sweetAlertDialog -> {
          sweetAlertDialog.dismissWithAnimation();
-         scanner.startCamera();
+         startCamera();
       });
    }
 

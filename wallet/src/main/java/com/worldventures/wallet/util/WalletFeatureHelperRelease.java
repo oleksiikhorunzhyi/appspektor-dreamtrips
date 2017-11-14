@@ -12,6 +12,7 @@ import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.service.RecordInteractor;
 import com.worldventures.wallet.service.command.RecordListCommand;
 import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
+import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.wallet.ui.settings.WalletSettingsScreen;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsScreen;
@@ -107,6 +108,16 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    @Override
    public boolean isSampleCardMode() {
       return true;
+   }
+
+   @Override
+   public void finishRegularProvisioning(Navigator navigator) {
+      navigator.goCardList();
+   }
+
+   @Override
+   public boolean pinFunctionalityAvailable() {
+      return false;
    }
 
    private void invalidateDivider(LinearLayout container) {

@@ -106,7 +106,7 @@ ext {
          // API
          mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.21-RELEASE-1.23-SNAPSHOT', config: {
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.27-RELEASE-1.24-SNAPSHOT', config: {
             changing = true
          }],
    ]
@@ -114,7 +114,7 @@ ext {
    coreDependencies.util = [
          jodaTimeAndroidDebug  : [debugApi: "net.danlew:android.joda:$jodaTimeVersion"],
          jodaTimeAndroidRelease: [releaseApi: "net.danlew:android.joda:$jodaTimeVersion"],
-         timber                : [api: 'com.jakewharton.timber:timber:4.5.1'],
+         timber                : [api: 'com.jakewharton.timber:timber:4.6.0'],
          collectionsQuery      : [api: 'com.innahema:collections-query:0.2.9'],
          multidex              : [api: 'com.android.support:multidex:1.0.1'],
          jetbrainsAnnotations  : [p: 'org.jetbrains:annotations:13.0'],

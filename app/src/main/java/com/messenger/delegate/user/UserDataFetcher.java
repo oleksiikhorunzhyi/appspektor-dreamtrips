@@ -20,8 +20,6 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import rx.Observable;
 
-import static com.innahema.collections.query.queriables.Queryable.from;
-
 class UserDataFetcher {
    private static final String HOST_BADGE = "DreamTrips Host";
 
@@ -34,10 +32,12 @@ class UserDataFetcher {
       this.shortProfilesPipe = janet.createPipe(GetShortProfilesCommand.class);
    }
 
-   public Observable<List<DataUser>> fetchUserData(List<MessengerUser> messengerUsers) {
-      if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
+   Observable<List<DataUser>> fetchUserData(List<MessengerUser> messengerUsers) {
+      if (messengerUsers.isEmpty()) {
+         return Observable.just(Collections.emptyList());
+      }
 
-      List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
+      List<String> userNames = Queryable.from(messengerUsers).map(MessengerUser::getName).toList();
 
       return shortProfilesPipe.createObservableResult(new GetShortProfilesCommand(userNames))
             .map(action -> composeDataUsers(messengerUsers, action.getResult()));
@@ -53,7 +53,7 @@ class UserDataFetcher {
 
    private Pair<MessengerUser, User> pairUserProfiles(MessengerUser messengerUser, List<User> socialUsers) {
       String messengerName = messengerUser.getName();
-      User user = from(socialUsers).firstOrDefault(temp -> TextUtils.equals(temp.getUsername()
+      User user = Queryable.from(socialUsers).firstOrDefault(temp -> TextUtils.equals(temp.getUsername()
             .toLowerCase(), messengerName));
       return new Pair<>(messengerUser, user);
    }
@@ -85,9 +85,13 @@ class UserDataFetcher {
    }
 
    private boolean hasHostBadge(@Nullable List<String> badges) {
-      if (badges == null || badges.isEmpty()) return false;
+      if (badges == null || badges.isEmpty()) {
+         return false;
+      }
       for (String badge : badges) {
-         if (TextUtils.equals(badge, HOST_BADGE)) return true;
+         if (TextUtils.equals(badge, HOST_BADGE)) {
+            return true;
+         }
       }
       return false;
    }

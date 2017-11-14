@@ -20,9 +20,10 @@ import java.util.List;
 import rx.Observable;
 
 class BaseDAO {
+
    private final Context context;
    private final ContentResolver contentResolver;
-   private RxContentResolver rxContentResolver;
+   private final RxContentResolver rxContentResolver;
 
    BaseDAO(Context context, RxContentResolver rxContentResolver) {
       this.context = context;

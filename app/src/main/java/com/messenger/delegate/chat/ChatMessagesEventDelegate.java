@@ -32,16 +32,19 @@ import timber.log.Timber;
 @Singleton
 public class ChatMessagesEventDelegate {
 
-   private ConversationsDAO conversationsDAO;
-   private MessageDAO messageDAO;
-   private LoadConversationDelegate loadConversationDelegate;
-   private DecomposeMessagesHelper decomposeMessagesHelper;
-   private UsersDelegate usersDelegate;
-
-   private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
+   private final ConversationsDAO conversationsDAO;
+   private final MessageDAO messageDAO;
+   private final LoadConversationDelegate loadConversationDelegate;
+   private final DecomposeMessagesHelper decomposeMessagesHelper;
+   private final UsersDelegate usersDelegate;
+   private final PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
    @Inject
-   public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO, MessageDAO messageDAO, LoadConversationDelegate loadConversationDelegate, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
+   public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO,
+         MessageDAO messageDAO,
+         LoadConversationDelegate loadConversationDelegate,
+         DecomposeMessagesHelper decomposeMessagesHelper,
+         UsersDelegate usersDelegate) {
       this.conversationsDAO = conversationsDAO;
       this.messageDAO = messageDAO;
       this.loadConversationDelegate = loadConversationDelegate;
@@ -80,7 +83,8 @@ public class ChatMessagesEventDelegate {
             .doOnNext(messageDAO::deleteMessageByIds)
             .subscribeOn(Schedulers.io())
             .publish();
-      observable.subscribe(deletedMessageIds -> {}, e -> Timber.e(e, "Something went wrong while messages were deleting"));
+      observable.subscribe(deletedMessageIds -> {
+      }, e -> Timber.e(e, "Something went wrong while messages were deleting"));
       observable.connect();
       return observable;
    }
@@ -119,7 +123,7 @@ public class ChatMessagesEventDelegate {
       message.setDate(time);
       message.setStatus(status);
 
-      DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(Collections.singletonList((message)));
+      DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(Collections.singletonList(message));
 
       result.messages.get(0).setSyncTime(time);
 

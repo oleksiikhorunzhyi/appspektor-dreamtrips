@@ -7,7 +7,7 @@ public class InitialPresence extends Stanza {
 
    public static final String ELEMENT = "presence";
 
-   private String wvApiProtocolVersion;
+   private final String wvApiProtocolVersion;
 
    public InitialPresence(String wvApiProtocolVersion) {
       super();

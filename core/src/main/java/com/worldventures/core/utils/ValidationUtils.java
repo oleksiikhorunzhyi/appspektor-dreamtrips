@@ -3,7 +3,7 @@ package com.worldventures.core.utils;
 import android.support.annotation.Nullable;
 import android.util.Patterns;
 
-public class ValidationUtils {
+public final class ValidationUtils {
 
    private ValidationUtils() {
    }

@@ -1,14 +1,14 @@
 package com.worldventures.core.modules.settings.util;
 
-import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.model.FlagSetting;
 import com.worldventures.core.modules.settings.model.SelectSetting;
+import com.worldventures.core.modules.settings.model.Setting;
 import com.worldventures.core.modules.settings.model.SettingsGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsFactory {
+public final class SettingsFactory {
 
    ////////////////////////////
    // Settings titles
@@ -24,6 +24,9 @@ public class SettingsFactory {
    ////////////////////////////
    public static final String MILES = "miles";
    public static final String KILOMETERS = "kilometers";
+
+   private SettingsFactory() {
+   }
 
    public static List<Setting> createSettings(SettingsGroup group) {
       switch (group.getType()) {

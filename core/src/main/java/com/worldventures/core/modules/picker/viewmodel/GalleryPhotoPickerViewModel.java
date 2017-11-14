@@ -3,9 +3,9 @@ package com.worldventures.core.modules.picker.viewmodel;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.worldventures.core.modules.picker.util.adapter.MediaPickerHolderFactory;
 import com.worldventures.core.utils.Size;
 import com.worldventures.core.utils.ValidationUtils;
-import com.worldventures.core.modules.picker.util.adapter.MediaPickerHolderFactory;
 
 
 public class GalleryPhotoPickerViewModel extends GalleryMediaPickerViewModel {
@@ -82,8 +82,8 @@ public class GalleryPhotoPickerViewModel extends GalleryMediaPickerViewModel {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       GalleryPhotoPickerViewModel that = (GalleryPhotoPickerViewModel) o;
 

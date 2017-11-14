@@ -11,7 +11,7 @@ import rx.functions.Action1;
 
 public class MutualFriendsPresenter extends BaseUserListPresenter<MutualFriendsPresenter.View> {
 
-   private int userId;
+   private final int userId;
 
    public MutualFriendsPresenter(MutualFriendsBundle bundle) {
       userId = bundle.getId();

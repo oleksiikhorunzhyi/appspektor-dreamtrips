@@ -7,12 +7,13 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager;
@@ -27,6 +28,7 @@ import icepick.State;
 import static com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.BucketType;
 
 @Layout(R.layout.fragment_bucket_tab)
+@ComponentPresenter.ComponentTitle(R.string.bucket_list)
 public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends RxBaseFragmentWithArgs<PRESENTER, ForeignBucketTabsBundle> implements BucketTabsPresenter.View {
 
    @InjectView(R.id.tabs) BadgedTabLayout tabStrip;
@@ -103,8 +105,8 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends R
    }
 
    @NonNull
-   protected Route getBucketRoute() {
-      return Route.BUCKET_LIST;
+   protected Class<? extends BucketListFragment> getBucketRoute() {
+      return BucketListFragment.class;
    }
 
    @Override

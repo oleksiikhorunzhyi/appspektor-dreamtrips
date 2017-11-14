@@ -14,7 +14,7 @@ public class Setting<T extends Serializable> implements Parcelable, Serializable
    protected T value;
 
    public Setting() {
-
+      //do nothing
    }
 
    public Setting(String name, Type type, T value) {
@@ -87,7 +87,7 @@ public class Setting<T extends Serializable> implements Parcelable, Serializable
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
+      if (this == o) { return true; }
 
       Setting<?> settings = (Setting<?>) o;
 

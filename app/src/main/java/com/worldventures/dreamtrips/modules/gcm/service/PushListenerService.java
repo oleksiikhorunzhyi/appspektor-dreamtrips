@@ -34,7 +34,9 @@ public class PushListenerService extends GcmListenerService {
    public void onMessageReceived(String from, Bundle data) {
       Timber.i("Push message received: " + data);
       PushMessage message = parser.parseMessage(data, PushMessage.class);
-      if (message == null) return;
+      if (message == null) {
+         return;
+      }
       //
       switch (message.type) {
          case ACCEPT_REQUEST:

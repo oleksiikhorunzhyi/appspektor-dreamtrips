@@ -9,7 +9,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class UpdateCompoundOperationCommand extends CompoundOperationsCommand {
 
-   private PostCompoundOperationModel updatedModel;
+   private final PostCompoundOperationModel updatedModel;
 
    UpdateCompoundOperationCommand(PostCompoundOperationModel updatedModel) {
       this.updatedModel = updatedModel;

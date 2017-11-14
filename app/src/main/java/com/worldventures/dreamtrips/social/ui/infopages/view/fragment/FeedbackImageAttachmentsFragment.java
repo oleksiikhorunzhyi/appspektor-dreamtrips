@@ -13,7 +13,6 @@ import com.worldventures.core.modules.infopages.bundle.FeedbackImageAttachmentsB
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -70,7 +69,7 @@ public class FeedbackImageAttachmentsFragment extends RxBaseFragmentWithArgs<Fee
    @Override
    public void addItems(List<FeedbackImageAttachment> imageAttachments) {
       Queryable.from(imageAttachments)
-            .forEachR(item -> adapter.add(new FragmentItem(Route.FEEDBACK_FULLSCREEN_IMAGE_ATTACHMENT, "", item)));
+            .forEachR(item -> adapter.add(new FragmentItem(FeedbackImageAttachmentFullscreenFragment.class, "", item)));
       refreshToolbarTitle();
       adapter.notifyDataSetChanged();
    }

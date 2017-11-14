@@ -8,8 +8,9 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 import java.util.List;
 
 public class TripViewPagerBundle implements Parcelable {
-   private List<TripImage> tripImages;
-   private int position;
+
+   private final List<TripImage> tripImages;
+   private final int position;
 
    public TripViewPagerBundle(List<TripImage> tripImages, int position) {
       this.tripImages = tripImages;

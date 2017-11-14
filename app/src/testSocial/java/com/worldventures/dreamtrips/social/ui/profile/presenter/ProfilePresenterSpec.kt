@@ -6,6 +6,7 @@ import com.worldventures.core.model.User
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem
@@ -30,7 +31,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
 
    abstract class TestBody<P : ProfilePresenter<V>, V : ProfilePresenter.View> {
       val USER_ID = 1100
-      val USER = User(USER_ID)
+      val USER =User(USER_ID)
       var sessionHolder = makeSessionHolder(USER_ID)
 
       lateinit var presenter: P
@@ -227,12 +228,19 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
          val userSession = mock<UserSession>()
          val user = User()
          user.id = id;
-         whenever(userSession.user).thenReturn(user)
+         whenever(userSession.user()).thenReturn(user)
+         whenever(userSession.locale()).thenReturn("mock-locale")
+         whenever(userSession.apiToken()).thenReturn("mock-token")
+         whenever(userSession.legacyApiToken()).thenReturn("mock-legacy-token")
+         whenever(userSession.username()).thenReturn("mock-username")
+         whenever(userSession.userPassword()).thenReturn("mock-password")
+         whenever(userSession.lastUpdate()).thenReturn(0L)
+         whenever(userSession.permissions()).thenReturn(emptyList())
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
          return sessionHolder
       }
 
-      open fun onSetupInjector(injector: com.worldventures.dreamtrips.common.Injector,
+      open fun onSetupInjector(injector: Injector,
                                pipeCreator: SessionActionPipeCreator) {
       }
    }

@@ -6,7 +6,10 @@ import android.provider.Settings;
 
 import timber.log.Timber;
 
-public class LocationUtils {
+public final class LocationUtils {
+
+   private LocationUtils() {
+   }
 
    public static boolean isGpsOn(Context context) {
       int locationMode = 0;

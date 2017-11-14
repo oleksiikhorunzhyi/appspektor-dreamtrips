@@ -110,8 +110,11 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
                      view.startLoading();
                   })
                   .onSuccess(getFriendsCommand -> {
-                     if (nextPage == 1) view.setFriends(getFriendsCommand.getResult());
-                     else view.addFriends(getFriendsCommand.getResult());
+                     if (nextPage == 1) {
+                        view.setFriends(getFriendsCommand.getResult());
+                     } else {
+                        view.addFriends(getFriendsCommand.getResult());
+                     }
                      canLoadMore = getFriendsCommand.getResult().size() > 0;
                      nextPage++;
                      loading = false;

@@ -6,12 +6,13 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 import java.util.List;
 
-public class DtlMerchantDetailsState extends ViewState {
+class DtlMerchantDetailsState extends ViewState {
 
    private List<String> offers;
    private boolean hoursViewExpanded;
 
-   public DtlMerchantDetailsState() {
+   DtlMerchantDetailsState() {
+      //do nothing
    }
 
    public void setOffersIds(List<String> offers) {

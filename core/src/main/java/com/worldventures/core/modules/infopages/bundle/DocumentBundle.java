@@ -7,8 +7,8 @@ import com.worldventures.core.modules.infopages.model.Document;
 
 public class DocumentBundle implements Parcelable {
 
-   private Document document;
-   private String analyticsAction;
+   private final Document document;
+   private final String analyticsAction;
 
    public DocumentBundle(Document document, String analyticsAction) {
       this.document = document;
@@ -39,9 +39,13 @@ public class DocumentBundle implements Parcelable {
 
    public static final Creator<DocumentBundle> CREATOR = new Creator<DocumentBundle>() {
       @Override
-      public DocumentBundle createFromParcel(Parcel source) {return new DocumentBundle(source);}
+      public DocumentBundle createFromParcel(Parcel source) {
+         return new DocumentBundle(source);
+      }
 
       @Override
-      public DocumentBundle[] newArray(int size) {return new DocumentBundle[size];}
+      public DocumentBundle[] newArray(int size) {
+         return new DocumentBundle[size];
+      }
    };
 }

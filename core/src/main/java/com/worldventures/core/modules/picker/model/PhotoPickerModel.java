@@ -11,6 +11,7 @@ public class PhotoPickerModel extends MediaPickerModelImpl {
    private Size size;
 
    public PhotoPickerModel() {
+      //do nothing
    }
 
    public PhotoPickerModel(String absolutePath, Size size) {
@@ -66,9 +67,13 @@ public class PhotoPickerModel extends MediaPickerModelImpl {
 
    public static final Creator<PhotoPickerModel> CREATOR = new Creator<PhotoPickerModel>() {
       @Override
-      public PhotoPickerModel createFromParcel(Parcel source) {return new PhotoPickerModel(source);}
+      public PhotoPickerModel createFromParcel(Parcel source) {
+         return new PhotoPickerModel(source);
+      }
 
       @Override
-      public PhotoPickerModel[] newArray(int size) {return new PhotoPickerModel[size];}
+      public PhotoPickerModel[] newArray(int size) {
+         return new PhotoPickerModel[size];
+      }
    };
 }

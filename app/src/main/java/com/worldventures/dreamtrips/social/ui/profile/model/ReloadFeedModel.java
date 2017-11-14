@@ -26,6 +26,7 @@ public class ReloadFeedModel implements Parcelable {
    }
 
    public ReloadFeedModel() {
+      //do nothing
    }
 
    protected ReloadFeedModel(Parcel in) {

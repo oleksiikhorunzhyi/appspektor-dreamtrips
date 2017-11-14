@@ -29,7 +29,8 @@ public class LocationsConverter implements Converter<Location, DtlLocation> {
             .locationSourceType(LocationSourceType.EXTERNAL)
             .type(location.type())
             .locatedIn(location.locatedIn() != null ? mapperyContext.convert(location.locatedIn(), DtlLocation.class) : null)
-            .coordinates(location.coordinates() != null ? new LatLng(location.coordinates().lat(), location.coordinates().lng()) : null)
+            .coordinates(location.coordinates() != null ? new LatLng(location.coordinates()
+                  .lat(), location.coordinates().lng()) : null)
             .build();
    }
 }

@@ -7,7 +7,7 @@ import io.techery.janet.ActionPipe;
 
 public class ActiveFeedRouteInteractor {
 
-   private ActionPipe<ActiveFeedRouteCommand> activeFeedRouteCommandActionPipe;
+   private final ActionPipe<ActiveFeedRouteCommand> activeFeedRouteCommandActionPipe;
 
    public ActiveFeedRouteInteractor(SessionActionPipeCreator creator) {
       this.activeFeedRouteCommandActionPipe = creator.createPipe(ActiveFeedRouteCommand.class);

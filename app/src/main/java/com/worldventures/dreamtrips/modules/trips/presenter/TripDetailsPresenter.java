@@ -46,15 +46,22 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
       boolean canBook = featureManager.available(Feature.BOOK_TRIP);
       boolean showSignUpLabel = !canBook;
 
-      if (showSignUpLabel) view.showSignUp();
+      if (showSignUpLabel) {
+         view.showSignUp();
+      }
 
-      if (isSoldOut) view.soldOutTrip();
-      else if (!canBook || (trip.isPlatinum() && !getAccount().isPlatinum())) view.disableBookIt();
+      if (isSoldOut) {
+         view.soldOutTrip();
+      } else if (!canBook || (trip.isPlatinum() && !getAccount().isPlatinum())) {
+         view.disableBookIt();
+      }
    }
 
    @Override
    public void onMenuPrepared() {
-      if (view != null && trip != null) view.setup(trip);
+      if (view != null && trip != null) {
+         view.setup(trip);
+      }
    }
 
    public void loadTripDetails() {
@@ -71,8 +78,9 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
                      tripLoaded(command.getResult());
                      analyticsInteractor.analyticsActionPipe().send(new ViewDreamTripsApptentiveAnalyticAction());
                   }).onFail((command, e) -> {
-                     if (command.getCacheData() == null || command.getCacheData().getContent() == null)
+                     if (command.getCacheData() == null || command.getCacheData().getContent() == null) {
                         view.setContent(null);
+                     }
                      handleError(command, e);
                   }));
    }

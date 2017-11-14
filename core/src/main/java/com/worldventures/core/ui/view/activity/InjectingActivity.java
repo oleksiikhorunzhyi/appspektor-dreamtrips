@@ -32,6 +32,7 @@ public abstract class InjectingActivity extends AppCompatActivity implements Inj
    }
 
    protected void afterInject() {
+      //do nothing
    }
 
    protected void setupObjectGraph() {

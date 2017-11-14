@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.post.CheckVideoProcessingHttpAction;
 import com.worldventures.dreamtrips.api.post.model.response.PostStatus;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
@@ -51,7 +51,9 @@ public class UpdateVideoProcessStatusCommand extends Command<Void> implements In
                      .toList();
             })
             .flatMap(ids -> {
-               if (ids.isEmpty()) return Observable.just(new PostStatus[0]);
+               if (ids.isEmpty()) {
+                  return Observable.just(new PostStatus[0]);
+               }
                return janet.createPipe(CheckVideoProcessingHttpAction.class, Schedulers.io())
                      .createObservableResult(new CheckVideoProcessingHttpAction(ids.toArray(new String[0])))
                      .map(httpAction -> httpAction.response().postStatuses());
@@ -64,10 +66,14 @@ public class UpdateVideoProcessStatusCommand extends Command<Void> implements In
       Observable.from(operationModels)
             .flatMap(operationModel -> {
                TextualPost post = operationModel.body().createdPost();
-               if (post == null) return Observable.empty();
+               if (post == null) {
+                  return Observable.empty();
+               }
 
                PostStatus postStatus = getPostStatus(post.getUid(), postStatuses);
-               if (postStatus == null) return Observable.empty();
+               if (postStatus == null) {
+                  return Observable.empty();
+               }
 
                return updateModelStatus(operationModel, postStatus);
             }).subscribe(Actions.empty(), e -> Timber.e(e, "Failed to perform update"));

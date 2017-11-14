@@ -26,8 +26,8 @@ public class DtMediaController extends FrameLayout {
 
    private int duration;
 
-   private MediaStringUtils mediaStringUtils = new MediaStringUtils();
-   private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
+   private final MediaStringUtils mediaStringUtils = new MediaStringUtils();
+   private final SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
       public void onStartTrackingTouch(SeekBar bar) {
          dragging = true;
       }
@@ -79,7 +79,9 @@ public class DtMediaController extends FrameLayout {
    }
 
    public void setProgress(int currentPosition, int bufferPercentage) {
-      if (dragging) return;
+      if (dragging) {
+         return;
+      }
 
       if (duration > 0) {
          long pos = 1000L * currentPosition / duration;

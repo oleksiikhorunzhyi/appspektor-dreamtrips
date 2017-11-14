@@ -16,9 +16,11 @@ public class DtlTransactionResult {
    public String getId() {
       return id;
    }
+
    public double getEarnedPoints() {
       return creditedAmount;
    }
+
    public double getTotal() {
       return currentBalance;
    }

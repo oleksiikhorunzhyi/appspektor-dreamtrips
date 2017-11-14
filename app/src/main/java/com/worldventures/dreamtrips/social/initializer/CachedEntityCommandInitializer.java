@@ -8,7 +8,7 @@ import com.worldventures.core.service.command.MigrateFromCachedEntityCommand;
 
 public class CachedEntityCommandInitializer implements AppInitializer {
 
-   private CachedEntityInteractor interactor;
+   private final CachedEntityInteractor interactor;
 
    public CachedEntityCommandInitializer(CachedEntityInteractor interactor) {
       this.interactor = interactor;

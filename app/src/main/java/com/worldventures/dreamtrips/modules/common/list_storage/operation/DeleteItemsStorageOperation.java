@@ -4,7 +4,7 @@ import java.util.List;
 
 public class DeleteItemsStorageOperation<T> implements ListStorageOperation<T> {
 
-   private T item;
+   private final T item;
 
    public DeleteItemsStorageOperation(T item) {
       this.item = item;

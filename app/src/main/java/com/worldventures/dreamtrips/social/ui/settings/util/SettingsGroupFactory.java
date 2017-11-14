@@ -13,7 +13,7 @@ import static com.worldventures.core.modules.settings.model.SettingsGroup.Type.N
 
 public class SettingsGroupFactory {
 
-   private Context context;
+   private final Context context;
 
    public SettingsGroupFactory(Context context) {
       this.context = context;

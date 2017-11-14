@@ -1,14 +1,14 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripsLocationsHttpAction;
 import com.worldventures.dreamtrips.api.trip.ImmutableGetTripsLocationsHttpAction;
 import com.worldventures.dreamtrips.api.trip.model.TripPinWrapper;
-import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.util.TripsFilterData;
@@ -30,8 +30,8 @@ public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implem
    @Inject Janet janet;
    @Inject MapperyContext mappery;
 
-   private String searchQuery;
-   private TripsFilterData tripsFilterData;
+   private final String searchQuery;
+   private final TripsFilterData tripsFilterData;
 
    private List<Pin> cachedResult;
 
@@ -42,7 +42,9 @@ public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implem
 
    @Override
    protected void run(CommandCallback<List<Pin>> callback) throws Throwable {
-      if (cachedResult != null && !cachedResult.isEmpty()) callback.onProgress(0);
+      if (cachedResult != null && !cachedResult.isEmpty()) {
+         callback.onProgress(0);
+      }
       //
       janet.createPipe(GetTripsLocationsHttpAction.class)
             .createObservableResult(new GetTripsLocationsHttpAction(getParams()))
@@ -56,7 +58,9 @@ public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implem
    }
 
    private GetTripsLocationsHttpAction.Params getParams() {
-      if (tripsFilterData == null) return ImmutableGetTripsLocationsHttpAction.Params.builder().build();
+      if (tripsFilterData == null) {
+         return ImmutableGetTripsLocationsHttpAction.Params.builder().build();
+      }
       return ImmutableGetTripsLocationsHttpAction.Params.builder()
             .durationMax(tripsFilterData.getMaxNights())
             .durationMin(tripsFilterData.getMinNights())
@@ -74,8 +78,11 @@ public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implem
    }
 
    public List<Pin> getItems() {
-      if (getResult() != null) return getResult();
-      else return cachedResult;
+      if (getResult() != null) {
+         return getResult();
+      } else {
+         return cachedResult;
+      }
    }
 
    @Override

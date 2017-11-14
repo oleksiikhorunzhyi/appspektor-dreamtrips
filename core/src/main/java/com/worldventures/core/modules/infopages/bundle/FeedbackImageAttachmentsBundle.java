@@ -9,8 +9,8 @@ import java.util.List;
 
 public class FeedbackImageAttachmentsBundle implements Parcelable {
 
-   private int position;
-   private List<FeedbackImageAttachment> attachments;
+   private final int position;
+   private final List<FeedbackImageAttachment> attachments;
 
    public FeedbackImageAttachmentsBundle(int position, List<FeedbackImageAttachment> attachments) {
       this.position = position;
@@ -41,9 +41,13 @@ public class FeedbackImageAttachmentsBundle implements Parcelable {
 
    public static final Creator<FeedbackImageAttachmentsBundle> CREATOR = new Creator<FeedbackImageAttachmentsBundle>() {
       @Override
-      public FeedbackImageAttachmentsBundle createFromParcel(Parcel source) {return new FeedbackImageAttachmentsBundle(source);}
+      public FeedbackImageAttachmentsBundle createFromParcel(Parcel source) {
+         return new FeedbackImageAttachmentsBundle(source);
+      }
 
       @Override
-      public FeedbackImageAttachmentsBundle[] newArray(int size) {return new FeedbackImageAttachmentsBundle[size];}
+      public FeedbackImageAttachmentsBundle[] newArray(int size) {
+         return new FeedbackImageAttachmentsBundle[size];
+      }
    };
 }

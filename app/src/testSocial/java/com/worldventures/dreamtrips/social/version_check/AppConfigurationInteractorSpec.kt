@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.social.version_check
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.config.model.Category
 import com.worldventures.dreamtrips.api.config.model.ConfigSetting
@@ -81,7 +85,7 @@ class AppConfigurationInteractorSpec : BaseSpec({
       fun mockSessionHolder(): SessionHolder {
          val sessionHolder: SessionHolder = mock()
          val userSession: UserSession = mock()
-         whenever(userSession.locale).thenReturn("en-US")
+         whenever(userSession.locale()).thenReturn("en-US")
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
          return sessionHolder;
       }

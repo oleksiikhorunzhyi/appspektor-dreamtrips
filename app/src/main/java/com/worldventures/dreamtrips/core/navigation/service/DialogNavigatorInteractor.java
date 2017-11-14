@@ -7,7 +7,7 @@ import io.techery.janet.ActionPipe;
 
 public class DialogNavigatorInteractor {
 
-   private ActionPipe<CloseDialogCommand> closeDialogActionPipe;
+   private final ActionPipe<CloseDialogCommand> closeDialogActionPipe;
 
    public DialogNavigatorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       this.closeDialogActionPipe = sessionActionPipeCreator.createPipe(CloseDialogCommand.class);

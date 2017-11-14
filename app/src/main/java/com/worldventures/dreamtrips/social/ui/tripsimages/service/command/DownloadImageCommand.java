@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.worldventures.core.di.qualifier.ForApplication;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 
 import java.io.FileNotFoundException;
@@ -92,7 +92,9 @@ public class DownloadImageCommand extends Command<String> implements InjectableA
          }
       }
       //
-      if (url != null) stringUrl = url.toString();
+      if (url != null) {
+         stringUrl = url.toString();
+      }
 
       return stringUrl;
    }

@@ -8,7 +8,7 @@ import rx.schedulers.Schedulers;
 
 public abstract class FeedItemsStorageBaseInteractor<C extends FeedItemsStorageBaseCommand> {
 
-   private ActionPipe<C> feedItemsStoragePipe;
+   private final ActionPipe<C> feedItemsStoragePipe;
 
    public FeedItemsStorageBaseInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       feedItemsStoragePipe = sessionActionPipeCreator.createPipe(getCommandClass(), Schedulers.io());

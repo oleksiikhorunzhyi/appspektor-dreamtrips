@@ -13,21 +13,21 @@ public class DtlNearbyHeaderCell extends BaseAbstractCell<DtlNearbyHeaderCell.Ne
       super(view);
    }
 
-   public static final class NearbyHeaderModel {
-
-      private NearbyHeaderModel() {
-      }
-
-      public static final NearbyHeaderModel INSTANCE = new NearbyHeaderModel();
-   }
-
    @Override
    protected void syncUIStateWithModel() {
-
+      //do nothing
    }
 
    @Override
    public void prepareForReuse() {
+      //do nothing
+   }
 
+   public static final class NearbyHeaderModel {
+
+      public static final NearbyHeaderModel INSTANCE = new NearbyHeaderModel();
+
+      private NearbyHeaderModel() {
+      }
    }
 }

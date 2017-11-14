@@ -14,9 +14,6 @@ public class BucketLocation implements Serializable {
    private String description;
    private boolean liked;
 
-   public BucketLocation() {
-   }
-
    public String getName() {
       return name;
    }

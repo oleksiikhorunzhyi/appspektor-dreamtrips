@@ -3,7 +3,6 @@ package com.worldventures.core.modules.infopages.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
 import com.worldventures.core.model.ImagePathHolder;
 
 import java.util.UUID;
@@ -57,8 +56,8 @@ public class FeedbackImageAttachment implements FeedbackAttachment, Parcelable, 
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       FeedbackImageAttachment that = (FeedbackImageAttachment) o;
 
@@ -91,9 +90,13 @@ public class FeedbackImageAttachment implements FeedbackAttachment, Parcelable, 
 
    public static final Creator<FeedbackImageAttachment> CREATOR = new Creator<FeedbackImageAttachment>() {
       @Override
-      public FeedbackImageAttachment createFromParcel(Parcel source) {return new FeedbackImageAttachment(source);}
+      public FeedbackImageAttachment createFromParcel(Parcel source) {
+         return new FeedbackImageAttachment(source);
+      }
 
       @Override
-      public FeedbackImageAttachment[] newArray(int size) {return new FeedbackImageAttachment[size];}
+      public FeedbackImageAttachment[] newArray(int size) {
+         return new FeedbackImageAttachment[size];
+      }
    };
 }

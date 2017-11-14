@@ -5,7 +5,7 @@ import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
 import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.ui.helper.ConversationHelper;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 

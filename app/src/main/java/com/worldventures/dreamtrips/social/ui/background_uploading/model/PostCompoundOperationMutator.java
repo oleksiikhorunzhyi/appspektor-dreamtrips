@@ -16,7 +16,7 @@ public class PostCompoundOperationMutator {
    private static final int PROGRESS_MEDIA_CREATED = 95;
    private static final int PROGRESS_POST_CREATED = 100;
 
-   private SessionHolder sessionSessionHolder;
+   private final SessionHolder sessionSessionHolder;
 
    public PostCompoundOperationMutator(SessionHolder sessionSessionHolder) {
       this.sessionSessionHolder = sessionSessionHolder;
@@ -55,18 +55,18 @@ public class PostCompoundOperationMutator {
       switch (compoundOperationModel.type()) {
          case VIDEO:
             compoundOperationState = CompoundOperationState.PROCESSING;
-            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
+            textualPost.setOwner(sessionSessionHolder.get().get().user());
             body = ImmutablePostWithVideoAttachmentBody.copyOf((PostWithVideoAttachmentBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;
          case PHOTO:
-            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
+            textualPost.setOwner(sessionSessionHolder.get().get().user());
             body = ImmutablePostWithPhotoAttachmentBody
                   .copyOf((PostWithPhotoAttachmentBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;
          case TEXT:
-            textualPost.setOwner(sessionSessionHolder.get().get().getUser());
+            textualPost.setOwner(sessionSessionHolder.get().get().user());
             body = ImmutableTextPostBody.copyOf((TextPostBody) compoundOperationModel.body())
                   .withCreatedPost(textualPost);
             break;

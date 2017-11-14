@@ -13,12 +13,11 @@ public class ActivityModel extends BaseEntity {
    private int position;
    private String icon;
    private String name;
+   private boolean checked = true;
 
    public ActivityModel() {
       super();
    }
-
-   private boolean checked = true;
 
    public int getParentId() {
       return parentId;

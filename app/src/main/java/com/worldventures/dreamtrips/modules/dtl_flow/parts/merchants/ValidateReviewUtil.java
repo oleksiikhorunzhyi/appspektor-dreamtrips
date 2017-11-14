@@ -8,9 +8,12 @@ import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 
-public class ValidateReviewUtil {
+public final class ValidateReviewUtil {
 
    private static final float DEFAULT_RATING_VALUE = 0f;
+
+   private ValidateReviewUtil() {
+   }
 
    public static void setUpRating(Context context, ReviewSummary reviewSummary, RatingBar ratingBar, TextView ratingText) {
       if (reviewSummary == null || ratingBar == null) {

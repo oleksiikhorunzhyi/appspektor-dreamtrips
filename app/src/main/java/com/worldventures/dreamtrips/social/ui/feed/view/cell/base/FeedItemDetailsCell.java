@@ -7,15 +7,16 @@ import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
+
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedViewInjector;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FeedItemCommonDataHelper;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
@@ -33,7 +34,7 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
 
    FeedItemCommonDataHelper feedItemCommonDataHelper;
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject @ForActivity protected Provider<Injector> injectorProvider;
    @Inject FeedViewInjector feedViewInjector;
 
@@ -56,7 +57,7 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
       }
       feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get()
             .get()
-            .getUser()
+            .user()
             .getId(), injectorProvider.get());
       feedViewInjector.initCardViewWrapper(cardViewWrapper);
    }
@@ -67,13 +68,12 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
    }
 
    private void onOpenItemDetails() {
-      Route detailsRoute = Route.FEED_ITEM_DETAILS;
       FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder().feedItem(getModelObject())
             .showAdditionalInfo(true);
       if (tabletAnalytic.isTabletLandscape()) {
          bundleBuilder.slave(true);
       }
-      router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+      router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
             .data(bundleBuilder.build()).build());
    }
 
@@ -95,7 +95,7 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
    @OnClick(R.id.feed_header_avatar)
    void eventOwnerClicked() {
       User user = getModelObject().getLinks().getUsers().get(0);
-      router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(user.getId()), NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(user))
             .build());

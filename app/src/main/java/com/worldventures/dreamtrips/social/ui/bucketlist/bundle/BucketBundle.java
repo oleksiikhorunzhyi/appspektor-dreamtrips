@@ -63,7 +63,6 @@ public class BucketBundle implements Parcelable {
       this.slave = slave;
    }
 
-
    @Override
    public int describeContents() {
       return 0;
@@ -79,6 +78,7 @@ public class BucketBundle implements Parcelable {
    }
 
    public BucketBundle() {
+      //do nothing
    }
 
    protected BucketBundle(Parcel in) {

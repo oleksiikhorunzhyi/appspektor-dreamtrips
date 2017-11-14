@@ -18,8 +18,8 @@ import rx.Observable;
 
 public class CreateChatHelper {
 
-   private ChatManager chatManager;
-   private ConversationsDAO conversationsDAO;
+   private final ChatManager chatManager;
+   private final ConversationsDAO conversationsDAO;
 
    @Inject
    CreateChatHelper(MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {

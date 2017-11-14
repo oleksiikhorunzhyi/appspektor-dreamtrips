@@ -7,7 +7,6 @@ import android.view.View;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -86,7 +85,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
       try {
          photoPickerLayout.hidePanel();
          @IdRes int containerId = (getView() != null && getView().getParent() != null) ? ((View) getView().getParent()).getId() : DEFAULT_CONTAINER_ID;
-         router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
+         router.moveTo(MediaPickerFragment.class, NavigationConfigBuilder.forRemoval()
                .containerId(containerId)
                .fragmentManager(getFragmentManager())
                .build());

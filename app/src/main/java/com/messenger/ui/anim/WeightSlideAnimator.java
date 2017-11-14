@@ -7,19 +7,14 @@ import android.widget.LinearLayout;
 
 public class WeightSlideAnimator {
 
-   private View view;
-   private WeightWrapper slideInAnimationWrapper;
-   private WeightWrapper slideOutAnimationWrapper;
-
-   private ObjectAnimator slideInAnimator;
-   private ObjectAnimator slideOutAnimator;
+   private final View view;
+   private final ObjectAnimator slideInAnimator;
+   private final ObjectAnimator slideOutAnimator;
 
    public WeightSlideAnimator(View view) {
       this.view = view;
-      this.slideInAnimationWrapper = new WeightWrapper(view);
-      this.slideOutAnimationWrapper = new WeightWrapper(view);
-      slideInAnimator = ObjectAnimator.ofFloat(slideInAnimationWrapper, "weight", 1f, 0f);
-      slideOutAnimator = ObjectAnimator.ofFloat(slideOutAnimationWrapper, "weight", 0f, 1f);
+      this.slideInAnimator = ObjectAnimator.ofFloat(new WeightWrapper(view), "weight", 1f, 0f);
+      this.slideOutAnimator = ObjectAnimator.ofFloat(new WeightWrapper(view), "weight", 0f, 1f);
    }
 
    public void slideIn() {

@@ -37,6 +37,7 @@ public class PhotoReviewCreationItem implements Parcelable {
    private Location locationFromExif;
 
    public PhotoReviewCreationItem() {
+      //do nothing
    }
 
    public String getFileUri() {
@@ -181,7 +182,7 @@ public class PhotoReviewCreationItem implements Parcelable {
       this.fileUri = in.readString();
       this.originUrl = in.readString();
       this.location = in.readString();
-      int tmpStatus = in.readInt();
+      int tmpStatus = in.readInt(); //NOPMD
       this.basePhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedAddedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
       this.cachedRemovedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);

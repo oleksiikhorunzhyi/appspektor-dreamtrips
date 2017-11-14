@@ -21,8 +21,8 @@ import static com.messenger.messengerservers.constant.MessageType.MESSAGE;
 
 public class ChatViewHolderProvider {
 
-   private Set<ChatViewHolderInfo> chatViewHolderInfoSet;
-   private DataUser currentUser;
+   private final Set<ChatViewHolderInfo> chatViewHolderInfoSet;
+   private final DataUser currentUser;
 
    @Inject
    public ChatViewHolderProvider(DataUser currentUser, Set<ChatViewHolderInfo> chatViewHolderInfoSet) {

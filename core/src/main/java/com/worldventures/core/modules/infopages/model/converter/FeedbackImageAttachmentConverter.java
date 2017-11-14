@@ -23,8 +23,8 @@ public class FeedbackImageAttachmentConverter implements Converter<FeedbackImage
    public FeedbackAttachment convert(MapperyContext mapperyContext, FeedbackImageAttachment attachment) {
       return ImmutableFeedbackAttachment.builder()
             .originUrl(attachment.getUrl())
-            .type(attachment.getType() == com.worldventures.core.modules.infopages.model.FeedbackAttachment.Type.IMAGE ?
-                  FeedbackAttachment.FeedbackType.IMAGE : null)
+            .type(attachment.getType() == com.worldventures.core.modules.infopages.model.FeedbackAttachment.Type.IMAGE
+                  ? FeedbackAttachment.FeedbackType.IMAGE : null)
             .build();
    }
 }

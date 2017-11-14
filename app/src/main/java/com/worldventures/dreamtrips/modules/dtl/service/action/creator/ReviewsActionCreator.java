@@ -9,7 +9,9 @@ import javax.inject.Inject;
 public class ReviewsActionCreator implements HttpActionCreator<GetReviewsMerchantsHttpAction, ReviewsMerchantsActionParams> {
 
    @Inject
-   public ReviewsActionCreator(){}
+   public ReviewsActionCreator() {
+      //do nothing
+   }
 
    @Override
    public GetReviewsMerchantsHttpAction createAction(ReviewsMerchantsActionParams params) {

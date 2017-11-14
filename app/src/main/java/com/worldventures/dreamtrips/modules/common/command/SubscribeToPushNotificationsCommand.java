@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.push_notifications.SubscribeToPushNotificationsHttpAction;

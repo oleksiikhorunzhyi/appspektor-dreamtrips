@@ -8,7 +8,8 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 @Layout(R.layout.screen_single_settings)
 public class SingleSettingsPath extends StyledPath {
-   private String conversationId;
+
+   private final String conversationId;
 
    public SingleSettingsPath(String conversationId) {
       this.conversationId = conversationId;

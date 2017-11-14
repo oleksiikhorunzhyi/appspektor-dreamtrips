@@ -2,13 +2,9 @@ package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
 import com.worldventures.core.service.NewDreamTripsHttpService;
 import com.worldventures.core.utils.ProjectTextUtils;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
-import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.OtaViewedAction;
-import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMemberViewedAction;
-import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMerchantViewedAction;
 
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
@@ -28,7 +24,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    @Override
    public void onResume() {
       super.onResume();
-      if (inErrorState) load();
+      if (inErrorState) {
+         load();
+      }
    }
 
    public void noInternetConnection() {
@@ -51,7 +49,9 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
       // TODO Check if view is still attached.
       // To improve this and remove check we need to refactor our StaticInfoFragment,
       // saving its state and detecting if page was already loaded
-      if (view != null) view.hideLoadingProgress();
+      if (view != null) {
+         view.hideLoadingProgress();
+      }
    }
 
    public void setInErrorState(boolean inErrorState) {
@@ -59,29 +59,15 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
    }
 
    public String getAuthToken() {
-      return NewDreamTripsHttpService.getAuthorizationHeader(appSessionHolder.get().get().getApiToken());
+      return NewDreamTripsHttpService.getAuthorizationHeader(appSessionHolder.get().get().apiToken());
    }
 
    public String getLegacyAuthTokenBase64() {
-      String legacyToken = appSessionHolder.get().get().getUsername() + ":" + appSessionHolder.get()
+      String legacyToken = appSessionHolder.get().get().username() + ":" + appSessionHolder.get()
             .get()
-            .getLegacyApiToken();
+            .legacyApiToken();
       String base64 = ProjectTextUtils.convertToBase64(legacyToken);
       return "Basic " + base64;
-   }
-
-   public void track(Route route) {
-      switch (route) {
-         case OTA:
-            analyticsInteractor.analyticsActionPipe().send(new OtaViewedAction());
-            break;
-         case ENROLL_MEMBER:
-            analyticsInteractor.analyticsActionPipe().send(new EnrollMemberViewedAction(getAccountUserId()));
-            break;
-         case ENROLL_MERCHANT:
-            analyticsInteractor.analyticsActionPipe().send(new EnrollMerchantViewedAction(getAccountUserId()));
-            break;
-      }
    }
 
    public interface View extends RxView {

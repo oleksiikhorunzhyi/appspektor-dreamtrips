@@ -9,7 +9,7 @@ public class CreatePhotoPostEntity {
 
    private String description;
    private Location location;
-   private List<Attachment> attachments;
+   private final List<Attachment> attachments;
 
    public CreatePhotoPostEntity() {
       attachments = new ArrayList<>();
@@ -41,7 +41,7 @@ public class CreatePhotoPostEntity {
 
    public static class Attachment {
 
-      private String uid;
+      private final String uid;
 
       public Attachment(String uid) {
          this.uid = uid;

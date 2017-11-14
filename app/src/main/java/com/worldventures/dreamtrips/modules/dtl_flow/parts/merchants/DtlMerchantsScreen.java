@@ -62,6 +62,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    int getMerchantType();
 
-   void loadMerchantsAndAmenities(List<String> merchantType , int stringResource);
+   void loadMerchantsAndAmenities(List<String> merchantType, int stringResource);
 
 }

@@ -86,7 +86,9 @@ public class PhotoTagHolderManager {
    void requestFriends(String query, int page) {
       if (friendRequestProxy != null) {
          friendRequestProxy.requestFriends(query, page, users -> {
-            if (photoTagHolder.getCreationTagView() != null) photoTagHolder.getCreationTagView().setUserFriends(users);
+            if (photoTagHolder.getCreationTagView() != null) {
+               photoTagHolder.getCreationTagView().setUserFriends(users);
+            }
          });
       }
    }
@@ -104,7 +106,9 @@ public class PhotoTagHolderManager {
       return new GestureDetector(photoTagHolder.getContext(), new GestureDetector.SimpleOnGestureListener() {
          @Override
          public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (isEnableToTag(e)) photoTagHolder.addCreationTagView(e.getX(), e.getY());
+            if (isEnableToTag(e)) {
+               photoTagHolder.addCreationTagView(e.getX(), e.getY());
+            }
             return isEnableToTag(e);
          }
       });

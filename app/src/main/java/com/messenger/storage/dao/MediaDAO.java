@@ -34,33 +34,33 @@ public class MediaDAO extends BaseDAO {
       super(context, rxContentResolver);
    }
 
+   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public Observable<List<PhotoAttachment>> getPhotoAttachmentsSinceTime(String conversationId, String currentUserId, long syncTime) {
-      RxContentResolver.Query query = new RxContentResolver.Query.Builder(null).withSelection(" SELECT p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " as " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + "," +
-            " a." + DataAttachment$Table.MESSAGEID + " as " + DataAttachment$Table.MESSAGEID + "," +
-            " a." + DataAttachment$Table.CONVERSATIONID + " as " + DataAttachment$Table.CONVERSATIONID + "," +
-            " m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + "," +
-            " u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + "," +
-            " CASE WHEN m." + DataMessage$Table.STATUS + " != ? " +
-            " THEN m." + DataMessage$Table.DATE + " ELSE 0 END as " + DataMessage$Table.DATE + "," +
-            " CASE WHEN p." + DataPhotoAttachment$Table.URL + " IS NOT NULL " +
-            " THEN p." + DataPhotoAttachment$Table.URL + " ELSE p." + DataPhotoAttachment$Table.LOCALPATH + " END" +
-            " as " + DataPhotoAttachment$Table.URL + "," +
-            " CASE WHEN m." + DataMessage$Table.FROMID + " != ? AND c." + DataConversation$Table.TYPE + " = ? " +
-            " THEN 1 ELSE 0 END as " + FLAGGING_ENABLED_COLUMN +
-
-            " FROM " + DataPhotoAttachment.TABLE_NAME + " p" +
-            " LEFT JOIN " + DataAttachment.TABLE_NAME + " a" +
-            " ON p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " = a." + DataAttachment$Table._ID +
-            " LEFT JOIN " + DataMessage.TABLE_NAME + " m" +
-            " ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID +
-            " LEFT JOIN " + DataUser.TABLE_NAME + " u" +
-            " ON m." + DataMessage$Table.FROMID + " = u." + DataUser$Table._ID +
-            " LEFT JOIN " + DataConversation.TABLE_NAME + " c" +
-            " ON a." + DataAttachment$Table.CONVERSATIONID + " = c." + DataConversation$Table._ID +
-
-            " WHERE m." + DataMessage$Table.CONVERSATIONID + " = ? " +
-            " AND m." + DataMessage$Table.SYNCTIME + " >= ? " +
-            " ORDER BY m." + DataMessage$Table.DATE + " ")
+      RxContentResolver.Query query = new RxContentResolver.Query.Builder(null)
+            .withSelection(" SELECT p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " as " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + ","
+                  + " a." + DataAttachment$Table.MESSAGEID + " as " + DataAttachment$Table.MESSAGEID + ","
+                  + " a." + DataAttachment$Table.CONVERSATIONID + " as " + DataAttachment$Table.CONVERSATIONID + ","
+                  + " m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ","
+                  + " u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ","
+                  + " CASE WHEN m." + DataMessage$Table.STATUS + " != ? "
+                  + " THEN m." + DataMessage$Table.DATE + " ELSE 0 END as " + DataMessage$Table.DATE + ","
+                  + " CASE WHEN p." + DataPhotoAttachment$Table.URL + " IS NOT NULL "
+                  + " THEN p." + DataPhotoAttachment$Table.URL + " ELSE p." + DataPhotoAttachment$Table.LOCALPATH + " END"
+                  + " as " + DataPhotoAttachment$Table.URL + ","
+                  + " CASE WHEN m." + DataMessage$Table.FROMID + " != ? AND c." + DataConversation$Table.TYPE + " = ? "
+                  + " THEN 1 ELSE 0 END as " + FLAGGING_ENABLED_COLUMN
+                  + " FROM " + DataPhotoAttachment.TABLE_NAME + " p"
+                  + " LEFT JOIN " + DataAttachment.TABLE_NAME + " a"
+                  + " ON p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " = a." + DataAttachment$Table._ID
+                  + " LEFT JOIN " + DataMessage.TABLE_NAME + " m"
+                  + " ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID
+                  + " LEFT JOIN " + DataUser.TABLE_NAME + " u"
+                  + " ON m." + DataMessage$Table.FROMID + " = u." + DataUser$Table._ID
+                  + " LEFT JOIN " + DataConversation.TABLE_NAME + " c"
+                  + " ON a." + DataAttachment$Table.CONVERSATIONID + " = c." + DataConversation$Table._ID
+                  + " WHERE m." + DataMessage$Table.CONVERSATIONID + " = ? "
+                  + " AND m." + DataMessage$Table.SYNCTIME + " >= ? "
+                  + " ORDER BY m." + DataMessage$Table.DATE + " ")
             .withSelectionArgs(new String[]{Integer.toString(MessageStatus.ERROR), currentUserId, ConversationType.TRIP, conversationId, Long.toString(syncTime)})
             .build();
 
@@ -69,8 +69,9 @@ public class MediaDAO extends BaseDAO {
 
    private List<PhotoAttachment> obtainPhotoAttachmentListFromCursor(Cursor cursor) {
       ArrayList<PhotoAttachment> photoAttachments = new ArrayList<>();
-      while (cursor.moveToNext()) photoAttachments.add(obtainPhotoAttachmentFromCursor(cursor));
-
+      while (cursor.moveToNext()) {
+         photoAttachments.add(obtainPhotoAttachmentFromCursor(cursor));
+      }
       cursor.close();
       return photoAttachments;
    }

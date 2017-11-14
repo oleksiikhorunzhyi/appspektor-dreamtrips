@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.navdrawer;
 
-import com.worldventures.core.model.User;
 import com.worldventures.core.component.ComponentDescription;
+import com.worldventures.core.model.User;
 
 import java.util.List;
 

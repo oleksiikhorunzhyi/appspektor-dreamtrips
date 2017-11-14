@@ -9,7 +9,7 @@ public class EnrollMerchantPresenter extends AuthorizedStaticInfoPresenter {
 
    @Inject protected MerchantStaticPageProvider provider;
 
-   private MerchantIdBundle merchantBundle;
+   private final MerchantIdBundle merchantBundle;
 
    public EnrollMerchantPresenter(String url, MerchantIdBundle merchantBundle) {
       super(url);

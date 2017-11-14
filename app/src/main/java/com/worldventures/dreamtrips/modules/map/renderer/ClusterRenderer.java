@@ -42,7 +42,9 @@ public class ClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
 
    @Override
    protected void onBeforeClusterItemRendered(DtlClusterItem cluster, MarkerOptions markerOptions) {
-      final int resourceId = cluster.getMerchant().asMerchantAttributes().hasOffers() ? R.drawable.offer_pin_icon : R.drawable.blue_pin_icon_big;
+      final int resourceId = cluster.getMerchant()
+            .asMerchantAttributes()
+            .hasOffers() ? R.drawable.offer_pin_icon : R.drawable.blue_pin_icon_big;
       pin.setImageResource(resourceId);
       markerOptions.icon(BitmapDescriptorFactory.fromBitmap(makeIcon(pin)));
    }
@@ -72,7 +74,9 @@ public class ClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
    }
 
    public static Bitmap makeIcon(View icon) {
-      if (icon.getMeasuredWidth() == 0 || icon.getMeasuredHeight() == 0) measureIcon(icon);
+      if (icon.getMeasuredWidth() == 0 || icon.getMeasuredHeight() == 0) {
+         measureIcon(icon);
+      }
       Bitmap bitmap = Bitmap.createBitmap(icon.getMeasuredWidth(), icon.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
       Canvas c = new Canvas(bitmap);
       icon.draw(c);

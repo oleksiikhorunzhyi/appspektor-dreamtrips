@@ -18,7 +18,6 @@ package com.worldventures.core.storage.complex_objects;
 
 import android.support.annotation.Nullable;
 
-
 import com.worldventures.core.utils.ValidationUtils;
 
 import java.util.Collections;

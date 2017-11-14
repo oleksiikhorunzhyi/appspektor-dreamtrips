@@ -26,7 +26,10 @@ import java.util.Map;
 
 import timber.log.Timber;
 
-public class ParseUtils {
+public final class ParseUtils {
+
+   private ParseUtils() {
+   }
 
    private static Stanza parseDeletedPresence(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
       MessageDeletedPresence presence = new MessageDeletedPresence();
@@ -110,6 +113,8 @@ public class ParseUtils {
                   break outerloop;
                }
                break;
+            default:
+               break;
          }
       }
       return presence;
@@ -129,26 +134,25 @@ public class ParseUtils {
             case XmlPullParser.START_TAG:
                String elementName = parser.getName();
                String namespace = parser.getNamespace();
-               switch (elementName) {
-                  case "error":
-                     stanza.setError(PacketParserUtils.parseError(parser));
-                     break;
-                  default:
-                     // Otherwise, it must be a packet extension.
-                     // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
-                     // failing completely here. See SMACK-390 for more information.
-                     try {
-                        PacketParserUtils.addExtensionElement(stanza, parser, elementName, namespace);
-                     } catch (Exception e) {
-                        Timber.w(e, "Failed to parse extension packet in Presence packet.");
-                     }
-                     break;
+               if ("error".equals(elementName)) {
+                  stanza.setError(PacketParserUtils.parseError(parser));
+               } else {
+                  // Otherwise, it must be a packet extension.
+                  // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
+                  // failing completely here. See SMACK-390 for more information.
+                  try {
+                     PacketParserUtils.addExtensionElement(stanza, parser, elementName, namespace);
+                  } catch (Exception e) {
+                     Timber.w(e, "Failed to parse extension packet in Presence packet.");
+                  }
                }
                break;
             case XmlPullParser.END_TAG:
                if (parser.getDepth() == initialDepth) {
                   break outerloop;
                }
+               break;
+            default:
                break;
          }
       }
@@ -165,7 +169,7 @@ public class ParseUtils {
     */
    public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
       ParserUtils.assertAtStartTag(parser);
-      assert (parser.getName().equals(Message.ELEMENT));
+      assert parser.getName().equals(Message.ELEMENT);
 
       final int initialDepth = parser.getDepth();
       Message message = new Message();
@@ -245,6 +249,8 @@ public class ParseUtils {
                if (parser.getDepth() == initialDepth) {
                   break outerloop;
                }
+               break;
+            default:
                break;
          }
       }
@@ -334,28 +340,25 @@ public class ParseUtils {
             case XmlPullParser.START_TAG:
                String name = parser.getName();
                String namespace = parser.getNamespace();
-               switch (namespace) {
-                  case XMPPError.NAMESPACE:
-                     switch (name) {
-                        case Stanza.TEXT:
-                           descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
-                           break;
-                        default:
-                           condition = XMPPError.Condition.fromString(name);
-                           if (!parser.isEmptyElementTag()) {
-                              conditionText = parser.nextText();
-                           }
-                           break;
+               if (namespace.equals(XMPPError.NAMESPACE)) {
+                  if (name.equals(Stanza.TEXT)) {
+                     descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
+                  } else {
+                     condition = XMPPError.Condition.fromString(name);
+                     if (!parser.isEmptyElementTag()) {
+                        conditionText = parser.nextText();
                      }
-                     break;
-                  default:
-                     PacketParserUtils.addExtensionElement(extensions, parser, name, namespace);
+                  }
+               } else {
+                  PacketParserUtils.addExtensionElement(extensions, parser, name, namespace);
                }
                break;
             case XmlPullParser.END_TAG:
                if (parser.getDepth() == initialDepth) {
                   break outerloop;
                }
+            default:
+               break;
          }
       }
       return new XMPPError(condition, conditionText, errorGenerator, errorType, descriptiveTexts, extensions);

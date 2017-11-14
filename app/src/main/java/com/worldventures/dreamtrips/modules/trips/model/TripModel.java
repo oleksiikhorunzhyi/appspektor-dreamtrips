@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve PMD error
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class TripModel extends BaseFeedEntity {
 
@@ -240,9 +241,9 @@ public class TripModel extends BaseFeedEntity {
    }
 
    public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
-      return duration <= maxNights &&
-            duration >= minNights &&
-            getAvailabilityDates().check(dateFilterItem);
+      return duration <= maxNights
+            && duration >= minNights
+            && getAvailabilityDates().check(dateFilterItem);
    }
 
    public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {

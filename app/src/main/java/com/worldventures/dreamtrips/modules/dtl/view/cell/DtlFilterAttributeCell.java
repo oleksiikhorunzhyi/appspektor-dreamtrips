@@ -31,8 +31,8 @@ public class DtlFilterAttributeCell
 
    @Override
    protected void syncUIStateWithModel() {
-      textViewName.setText(TextUtils.isEmpty(getModelObject().displayName()) ?
-            getModelObject().name() : getModelObject().displayName());
+      textViewName.setText(TextUtils.isEmpty(getModelObject().displayName())
+            ? getModelObject().name() : getModelObject().displayName());
       checkBox.setChecked(selectableDelegate.isSelected(getAdapterPosition()));
    }
 

@@ -21,6 +21,7 @@ public class EditPhotoTagsBundle implements Parcelable {
    private long requestId;
 
    public EditPhotoTagsBundle() {
+      //do nothing
    }
 
    public void setPhoto(PhotoEntity photo) {

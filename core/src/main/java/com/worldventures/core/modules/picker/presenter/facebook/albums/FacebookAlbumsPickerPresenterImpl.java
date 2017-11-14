@@ -6,10 +6,10 @@ import com.worldventures.core.modules.facebook.FacebookHelper;
 import com.worldventures.core.modules.facebook.exception.FacebookAccessTokenException;
 import com.worldventures.core.modules.facebook.service.FacebookInteractor;
 import com.worldventures.core.modules.facebook.service.command.GetAlbumsCommand;
-import com.worldventures.core.modules.picker.viewmodel.FacebookAlbumPickerViewModel;
 import com.worldventures.core.modules.picker.presenter.facebook.FacebookMediaPickerPresenterImpl;
 import com.worldventures.core.modules.picker.service.MediaPickerFacebookService;
 import com.worldventures.core.modules.picker.view.facebook.albums.FacebookAlbumPickerView;
+import com.worldventures.core.modules.picker.viewmodel.FacebookAlbumPickerViewModel;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class FacebookAlbumsPickerPresenterImpl extends FacebookMediaPickerPresen
             .checkFacebookLogin(FacebookHelper.LOGIN_PERMISSIONS)
             .compose(getView().lifecycle())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(notification ->  {
+            .subscribe(notification -> {
                if (notification.isOnNext()) {
                   loadItems();
                } else if (notification.isOnCompleted()) {

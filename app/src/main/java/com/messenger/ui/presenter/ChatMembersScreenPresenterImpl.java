@@ -21,7 +21,7 @@ import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.util.StringUtils;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -34,12 +34,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
+import static com.worldventures.dreamtrips.core.module.FragmentClassProviderModule.PROFILE;
 
 public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterImpl<ChatMembersScreen, ChatMembersScreenViewState> implements ChatMembersScreenPresenter {
 
    @Inject DataUser user;
-   @Inject @Named(PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject MessengerServerFacade messengerServerFacade;
    @Inject CreateConversationHelper createConversationHelper;
    @Inject UserSectionHelper userSectionHelper;
@@ -125,6 +125,8 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
          case ERROR:
             screen.showError(viewState.getError());
             break;
+         default:
+            break;
       }
    }
 
@@ -163,7 +165,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
    }
 
    protected void addListItems(List<Object> items) {
-      if (getView() == null) return;
+      if (getView() == null) {
+         return;
+      }
       getViewState().setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
       getView().setAdapterItems(items);
       getView().showContent();
@@ -172,8 +176,11 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
    @SuppressWarnings("all")
    protected void setConversationNameInputFieldVisible(boolean show) {
       ChatMembersScreen view = getView();
-      if (show) view.slideInConversationNameEditText();
-      else view.slideOutConversationNameEditText();
+      if (show) {
+         view.slideInConversationNameEditText();
+      } else {
+         view.slideOutConversationNameEditText();
+      }
    }
 
    @Override

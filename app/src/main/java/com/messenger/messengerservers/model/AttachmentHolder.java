@@ -7,6 +7,7 @@ public class AttachmentHolder {
    private Attachment item;
 
    public AttachmentHolder() {
+      //do nothing
    }
 
    public static AttachmentHolder newImageAttachment(String url) {

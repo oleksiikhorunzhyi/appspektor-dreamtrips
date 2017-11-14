@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;

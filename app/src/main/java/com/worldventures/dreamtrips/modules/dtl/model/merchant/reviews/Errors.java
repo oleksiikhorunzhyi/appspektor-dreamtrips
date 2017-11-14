@@ -12,7 +12,7 @@ import java.util.List;
 @Value.Immutable
 public interface Errors extends Serializable {
 
-    String message();
-    String code();
-    List<InnerErrors> innerError();
+   String message();
+   String code();
+   List<InnerErrors> innerError();
 }

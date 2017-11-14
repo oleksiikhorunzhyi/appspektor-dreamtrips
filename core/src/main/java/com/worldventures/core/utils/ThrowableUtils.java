@@ -2,7 +2,10 @@ package com.worldventures.core.utils;
 
 import android.support.annotation.Nullable;
 
-public class ThrowableUtils {
+public final class ThrowableUtils {
+
+   private ThrowableUtils() {
+   }
 
    @Nullable
    public static <T> T getCauseByType(Class<T> causeType, Throwable exception) {

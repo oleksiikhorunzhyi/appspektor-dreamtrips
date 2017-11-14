@@ -96,7 +96,9 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
 
    @OnClick(R.id.swipeLayout)
    void onItemClicked() {
-      if (!isSwiping()) cellDelegate.onCellClicked(getModelObject());
+      if (!isSwiping()) {
+         cellDelegate.onCellClicked(getModelObject());
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -191,6 +193,8 @@ public class BucketItemCell extends DraggableArrayListAdapter.DraggableCell<Buck
             imageViewStatusDone.setVisibility(View.INVISIBLE);
             imageViewStatusClose.setVisibility(View.INVISIBLE);
             swipeLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            break;
+         default:
             break;
       }
    }

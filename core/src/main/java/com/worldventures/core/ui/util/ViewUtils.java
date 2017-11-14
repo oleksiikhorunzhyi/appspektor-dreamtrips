@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 
-public class ViewUtils {
+public final class ViewUtils {
 
    private ViewUtils() {
    }
@@ -33,8 +33,7 @@ public class ViewUtils {
       Display display = activity.getWindowManager().getDefaultDisplay();
       Point size = new Point();
       display.getSize(size);
-      int width = size.x;
-      return width;
+      return size.x;
    }
 
    public static int getMinSideSize(Activity activity) {
@@ -45,8 +44,7 @@ public class ViewUtils {
       Display display = activity.getWindowManager().getDefaultDisplay();
       Point size = new Point();
       display.getSize(size);
-      int height = size.y;
-      return height;
+      return size.y;
    }
 
    public static void removeSupportGlobalLayoutListener(View view, ViewTreeObserver.OnGlobalLayoutListener listener) {
@@ -157,15 +155,18 @@ public class ViewUtils {
       }
 
       Rect viewRect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
-      if (screenRect.left > viewRect.right || screenRect.right < viewRect.left || screenRect.top > viewRect.bottom || screenRect.bottom < viewRect.top) {
-         return false;
-      }
-      return true;
+      return !(
+            screenRect.left > viewRect.right
+                  || screenRect.right < viewRect.left
+                  || screenRect.top > viewRect.bottom
+                  || screenRect.bottom < viewRect.top
+      );
    }
 
    public static void setCompatDrawable(View view, @DrawableRes int resId) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) view.setBackgroundResource(resId);
-      else view.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), resId));
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) { view.setBackgroundResource(resId); } else {
+         view.setBackgroundDrawable(ContextCompat.getDrawable(view.getContext(), resId));
+      }
    }
 
    public static void setTextColor(@NonNull Button view, @ColorRes int color) {
@@ -176,12 +177,12 @@ public class ViewUtils {
       if (!android.text.TextUtils.isEmpty(text)) {
          setViewVisibility(textView, View.VISIBLE);
          textView.setText(text);
-      } else setViewVisibility(textView, View.GONE);
+      } else { setViewVisibility(textView, View.GONE); }
    }
 
    public static void setViewVisibility(View view, int visibility) {
       Preconditions.checkNotNull(view, "view is null");
-      if (view.getVisibility() != visibility) view.setVisibility(visibility);
+      if (view.getVisibility() != visibility) { view.setVisibility(visibility); }
    }
 
    public static void setViewVisibility(int visibility, View... views) {

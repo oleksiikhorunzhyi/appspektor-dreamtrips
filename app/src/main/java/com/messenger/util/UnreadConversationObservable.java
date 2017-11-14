@@ -10,7 +10,7 @@ import timber.log.Timber;
 
 public class UnreadConversationObservable {
 
-   private Observable<Integer> observable;
+   private final Observable<Integer> observable;
 
    public UnreadConversationObservable(ConversationsDAO conversationsDAO) {
       observable = conversationsDAO.getUnreadConversationsCount()

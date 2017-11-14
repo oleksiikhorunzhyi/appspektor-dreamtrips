@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class FacebookAlbum implements Serializable {
 
-   private String id;
-   private String name;
-   private int count;
-   private FacebookCoverPhoto coverPhoto;
+   private final String id;
+   private final String name;
+   private final int count;
+   private final FacebookCoverPhoto coverPhoto;
 
    public FacebookAlbum(String id, String name, int count, FacebookCoverPhoto coverPhoto) {
       this.id = id;

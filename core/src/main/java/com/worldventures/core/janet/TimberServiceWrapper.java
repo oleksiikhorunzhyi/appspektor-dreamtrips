@@ -18,8 +18,7 @@ public class TimberServiceWrapper extends ActionServiceWrapper {
 
    public TimberServiceWrapper(ActionService actionService, String tag) {
       super(actionService);
-      if (TextUtils.isEmpty(tag)) serviceTag = actionService.getClass().getSimpleName();
-      else serviceTag = tag;
+      if (TextUtils.isEmpty(tag)) { serviceTag = actionService.getClass().getSimpleName(); } else { serviceTag = tag; }
    }
 
    private Timber.Tree timber() {

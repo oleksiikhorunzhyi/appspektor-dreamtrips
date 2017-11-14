@@ -19,7 +19,7 @@ public class TranslationDelegate {
    private TranslationDelegate.View view;
    private List<FeedItem> feedItems;
 
-   private TranslationFeedInteractor translationFeedInteractor;
+   private final TranslationFeedInteractor translationFeedInteractor;
    private Observable.Transformer stopper;
 
    public TranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {

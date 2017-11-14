@@ -27,7 +27,9 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
       return itemView.getResources();
    }
 
-   protected void onAttachedToWindow(View v) { }
+   protected void onAttachedToWindow(View v) {
+      //do nothing
+   }
 
    public T getModelObject() {
       return modelObject;
@@ -45,13 +47,13 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
 
    @Override
    public void prepareForReuse() {
-
+      //do nothing
    }
 
    protected abstract void syncUIStateWithModel();
 
    public void afterInject() {
-
+      //do nothing
    }
 
    public boolean shouldInject() {
@@ -60,5 +62,6 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
 
    @Override
    public void clearResources() {
+      //do nothing
    }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RefreshStorageOperation<T> implements ListStorageOperation<T> {
 
-   private List<T> operationItems;
+   private final List<T> operationItems;
 
    public RefreshStorageOperation(List<T> items) {
       this.operationItems = items;

@@ -11,62 +11,65 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class ReviewStorage {
+public final class ReviewStorage {
 
-    private static final String PREFS_NAME = "DTL_PREFS";
+   private static final String PREFS_NAME = "DTL_PREFS";
 
-    public static void saveReviewsPosted(Context context, String idUser, String idMerchant) {
+   private ReviewStorage() {
+   }
 
-        if (!exists(context, idUser, idMerchant)) {
-            Timber.i("------> Saved the post shared preferences");
-            List<String> merchantsArray;
-            String[] merchants = getReviewsPosted(context, idUser);
-            if (merchants == null) {
-                merchantsArray = new ArrayList<>();
-            } else {
-                merchantsArray =  new ArrayList<>(Arrays.asList(merchants));
+   public static void saveReviewsPosted(Context context, String idUser, String idMerchant) {
+
+      if (!exists(context, idUser, idMerchant)) {
+         Timber.i("------> Saved the post shared preferences");
+         List<String> merchantsArray;
+         String[] merchants = getReviewsPosted(context, idUser);
+         if (merchants == null) {
+            merchantsArray = new ArrayList<>();
+         } else {
+            merchantsArray = new ArrayList<>(Arrays.asList(merchants));
+         }
+         merchantsArray.add(idMerchant);
+         saveReviewsList(context, idUser, merchantsArray);
+      }
+   }
+
+   private static String[] getReviewsPosted(Context context, String idUser) {
+      Gson gson = new Gson();
+      String json = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString(idUser, "[]");
+      return gson.fromJson(json, String[].class);
+   }
+
+   public static boolean exists(Context context, String idUser, String idMerchant) {
+      String[] merchants = getReviewsPosted(context, idUser);
+      if (merchants != null && merchants.length > 0) {
+         return Arrays.asList(merchants).contains(idMerchant);
+      } else {
+         return false;
+      }
+   }
+
+   public static void updateReviewsPosted(Context context, String idUser, String idMerchant, boolean hasPending) {
+      String[] merchants = getReviewsPosted(context, idUser);
+      List<String> merchantsArray = new ArrayList<>(Arrays.asList(merchants));
+      if (exists(context, idUser, idMerchant) && !hasPending) {
+         for (String s : merchants) {
+            if (s.equals(idMerchant)) {
+               merchantsArray.remove(s);
             }
-            merchantsArray.add(idMerchant);
-            saveReviewsList(context, idUser, merchantsArray);
-        }
-    }
+         }
+         saveReviewsList(context, idUser, merchantsArray);
+      } else if (!exists(context, idUser, idMerchant) && hasPending) {
+         merchantsArray.add(idMerchant);
+         saveReviewsList(context, idUser, merchantsArray);
+      }
+   }
 
-    private static String[] getReviewsPosted(Context context, String idUser) {
-        Gson gson = new Gson();
-        String json = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString(idUser, "[]");
-        return gson.fromJson(json, String[].class);
-    }
-
-    public static boolean exists(Context context, String idUser, String idMerchant) {
-        String[] merchants = getReviewsPosted(context, idUser);
-        if (merchants != null && merchants.length > 0) {
-            return (Arrays.asList(merchants).contains(idMerchant));
-        } else {
-            return false;
-        }
-    }
-
-    public static void updateReviewsPosted(Context context, String idUser, String idMerchant, boolean hasPending) {
-        String[] merchants = getReviewsPosted(context, idUser);
-        List<String> merchantsArray = new ArrayList<>(Arrays.asList(merchants));
-        if (exists(context, idUser, idMerchant) && !hasPending) {
-            for (String s : merchants) {
-                if (s.equals(idMerchant)){
-                    merchantsArray.remove(s);
-                }
-            }
-           saveReviewsList(context, idUser, merchantsArray);
-        } else if(!exists(context, idUser, idMerchant) && hasPending){
-           merchantsArray.add(idMerchant);
-           saveReviewsList(context, idUser, merchantsArray);
-        }
-    }
-
-    private static void saveReviewsList(Context context, String idUser, List<String> merchantsArray) {
-        SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-        Gson gson = new Gson();
-        String jsonFavorites = gson.toJson(merchantsArray);
-        editor.putString(idUser, jsonFavorites);
-        editor.apply();
-    }
+   private static void saveReviewsList(Context context, String idUser, List<String> merchantsArray) {
+      SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+      Gson gson = new Gson();
+      String jsonFavorites = gson.toJson(merchantsArray);
+      editor.putString(idUser, jsonFavorites);
+      editor.apply();
+   }
 }

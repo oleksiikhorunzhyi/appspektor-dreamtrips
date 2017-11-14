@@ -33,7 +33,9 @@ public class FeedItemAdditionalInfoPresenter<V extends FeedItemAdditionalInfoPre
    }
 
    public void loadUser() {
-      if (user == null) return;
+      if (user == null) {
+         return;
+      }
       //
       if (!TextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
          view.setupView(user);

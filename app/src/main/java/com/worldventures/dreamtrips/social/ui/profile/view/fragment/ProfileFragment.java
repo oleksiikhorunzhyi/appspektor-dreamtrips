@@ -13,11 +13,12 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.LoadMoreModel;
@@ -30,10 +31,11 @@ import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteIntera
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditingView;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.profile.presenter.ProfilePresenter;
@@ -42,6 +44,7 @@ import com.worldventures.dreamtrips.social.ui.profile.view.cell.ProfileCell;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.ProfileCellDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +68,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
    private Bundle savedInstanceState;
 
-   protected StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   protected FocusableStatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
          setToolbarAlpha(percent);
       }
       startAutoplayVideos();
-      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(getRoute()));
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
+            .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.TIMELINE));
    }
 
    protected void startAutoplayVideos() {
@@ -106,7 +110,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       BaseDelegateAdapter adapter = new BaseDelegateAdapter(getContext(), this);
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      statePaginatedRecyclerViewManager = new FocusableStatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
       statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
@@ -159,13 +164,13 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle) {
-      fragmentWithFeedDelegate.openBucketList(route, foreignBucketBundle);
+   public void openBucketList(Class<? extends BucketTabsFragment> clazz, ForeignBucketTabsBundle foreignBucketBundle) {
+      fragmentWithFeedDelegate.openBucketList(clazz, foreignBucketBundle);
    }
 
    @Override
-   public void openTripImages(Route route, TripImagesArgs tripImagesBundle) {
-      fragmentWithFeedDelegate.openTripImages(route, tripImagesBundle);
+   public void openTripImages(TripImagesArgs tripImagesBundle) {
+      router.moveTo(TripImagesFragment.class, NavigationConfigBuilder.forActivity().data(tripImagesBundle).build());
    }
 
    @Override
@@ -178,7 +183,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       List feedModels = new ArrayList();
       feedModels.add(user);
       feedModels.addAll(items);
-      fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.stateRecyclerView);
+      fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
       ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
       profileToolbarTitle.setText(user.getFullName());
@@ -227,7 +232,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    protected abstract void initToolbar();
 
    private float calculateOffset() {
-      return Math.min(statePaginatedRecyclerViewManager.stateRecyclerView.getScrollOffset() / (float) scrollArea, 1);
+      return Math.min(statePaginatedRecyclerViewManager.getStateRecyclerView().getScrollOffset() / (float) scrollArea, 1);
    }
 
    private void setToolbarAlpha(float percentage) {
@@ -310,6 +315,4 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
    @Override
    public void onCellClicked(User model) { }
-
-   public abstract Route getRoute();
 }

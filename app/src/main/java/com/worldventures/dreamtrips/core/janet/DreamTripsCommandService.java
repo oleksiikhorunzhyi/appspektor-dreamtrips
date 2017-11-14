@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.core.janet;
 
 import android.content.Context;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.core.janet.CommandWithError;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionServiceWrapper;
@@ -13,8 +13,8 @@ import io.techery.janet.JanetException;
 
 public class DreamTripsCommandService extends ActionServiceWrapper {
 
-   private Context appContext;
-   private HttpErrorHandlingUtil httpErrorHandlingUtil;
+   private final Context appContext;
+   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
 
    public DreamTripsCommandService(Context appContext, HttpErrorHandlingUtil httpErrorHandlingUtil) {
@@ -30,22 +30,22 @@ public class DreamTripsCommandService extends ActionServiceWrapper {
 
    @Override
    protected <A> void onInterceptCancel(ActionHolder<A> holder) {
-
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptStart(ActionHolder<A> holder) {
-
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
-
+      //do nothing
    }
 
    @Override
    protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
-
+      //do nothing
    }
 
    @Override

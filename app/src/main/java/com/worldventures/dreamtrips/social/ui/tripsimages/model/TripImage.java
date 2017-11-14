@@ -69,6 +69,7 @@ public class TripImage implements Parcelable, ImagePathHolder {
    }
 
    public TripImage() {
+      //do nothing
    }
 
    protected TripImage(Parcel in) {

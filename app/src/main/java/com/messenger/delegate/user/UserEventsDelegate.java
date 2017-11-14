@@ -67,7 +67,9 @@ public class UserEventsDelegate {
    ///////////////////////////////////////////////////////////////////////////
 
    public void presenceChanged(String userId, boolean isOnline) {
-      if (!isOnline) typingManager.userOffline(userId);
+      if (!isOnline) {
+         typingManager.userOffline(userId);
+      }
       getUser(userId).compose(new NonNullFilter<>()).doOnNext(user -> {
          user.setOnline(isOnline);
          usersDAO.save(user);

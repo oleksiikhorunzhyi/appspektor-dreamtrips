@@ -22,8 +22,9 @@ public enum DistanceType {
          Crashlytics.logException(new NullPointerException("Setting cannot be null!"));
          return MILES; // safety-patch, should never happen
       }
-      if (!setting.getName().equals(SettingsFactory.DISTANCE_UNITS))
+      if (!setting.getName().equals(SettingsFactory.DISTANCE_UNITS)) {
          throw new IllegalArgumentException(SettingsFactory.DISTANCE_UNITS + " setting must be provided!");
+      }
       //
       return setting.getValue().equals(SettingsFactory.MILES) ? MILES : KMS;
    }

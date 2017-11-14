@@ -6,17 +6,19 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendsMainPresenter;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_friends_base)
+@ComponentPresenter.ComponentTitle(R.string.profile_friends)
 public class FriendsMainFragment extends BaseFragmentWithArgs<FriendsMainPresenter, FriendMainBundle> implements FriendsMainPresenter.View {
 
    @InjectView(R.id.tabs) BadgedTabLayout tabLayout;
@@ -29,8 +31,8 @@ public class FriendsMainFragment extends BaseFragmentWithArgs<FriendsMainPresent
       super.afterCreateView(rootView);
 
       adapter = new BasePagerAdapter<>(getChildFragmentManager());
-      adapter.add(new FragmentItem(Route.FRIEND_LIST, getString(R.string.social_my_friends)));
-      adapter.add(new FragmentItem(Route.FRIEND_REQUESTS, getString(R.string.social_requests)));
+      adapter.add(new FragmentItem(FriendListFragment.class, getString(R.string.social_my_friends)));
+      adapter.add(new FragmentItem(RequestsFragment.class, getString(R.string.social_requests)));
 
       pager.setAdapter(adapter);
       pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

@@ -15,6 +15,7 @@ public class TagPosition implements Parcelable, Serializable {
     * For serialization
     */
    public TagPosition() {
+      //do nothing
    }
 
    public TagPosition(Position topLeft, Position bottomRight) {
@@ -68,20 +69,26 @@ public class TagPosition implements Parcelable, Serializable {
 
    @Override
    public String toString() {
-      return "TagPosition{" +
-            "topLeft=" + topLeft +
-            ", bottomRight=" + bottomRight +
-            '}';
+      return "TagPosition{"
+            + "topLeft=" + topLeft
+            + ", bottomRight=" + bottomRight
+            + '}';
    }
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       TagPosition that = (TagPosition) o;
 
-      if (topLeft != null ? !topLeft.equals(that.topLeft) : that.topLeft != null) return false;
+      if (topLeft != null ? !topLeft.equals(that.topLeft) : that.topLeft != null) {
+         return false;
+      }
       return bottomRight != null ? bottomRight.equals(that.bottomRight) : that.bottomRight == null;
 
    }

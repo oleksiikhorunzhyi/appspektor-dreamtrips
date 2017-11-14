@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDele
 
 import butterknife.InjectView;
 
-public abstract class UserCell<EntityType, D extends CellDelegate<EntityType>> extends BaseAbstractDelegateCell<EntityType, D> {
+public abstract class UserCell<T, D extends CellDelegate<T>> extends BaseAbstractDelegateCell<T, D> {
 
    @InjectView(R.id.contact_icon) AvatarView avatarView;
    @InjectView(R.id.contact_name_textview) TextView nameTextView;

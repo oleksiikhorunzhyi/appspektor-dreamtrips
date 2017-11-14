@@ -14,7 +14,7 @@ import dagger.Provides;
 @Module(injects = {
       MediaPickerFragment.class,
       MediaPickerPresenter.class,
-      PhotoPickerLayout.class,}, complete = false, library = true)
+      PhotoPickerLayout.class}, complete = false, library = true)
 public class OldMediaPickerActivityModule {
 
    @Provides

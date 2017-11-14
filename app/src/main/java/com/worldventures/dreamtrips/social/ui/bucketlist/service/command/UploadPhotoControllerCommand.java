@@ -18,12 +18,11 @@ import rx.functions.Func1;
 import static com.worldventures.dreamtrips.social.ui.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage.BUCKET_ID_PARAM;
 
 @CommandAction
-public class UploadPhotoControllerCommand extends Command<List<EntityStateHolder<BucketPhoto>>> implements CachedAction<List<EntityStateHolder<BucketPhoto>>> {
-   private String bucketId;
+public final class UploadPhotoControllerCommand extends Command<List<EntityStateHolder<BucketPhoto>>> implements CachedAction<List<EntityStateHolder<BucketPhoto>>> {
 
+   private final String bucketId;
+   private final Func1<List<EntityStateHolder<BucketPhoto>>, List<EntityStateHolder<BucketPhoto>>> actionFunc;
    private List<EntityStateHolder<BucketPhoto>> listOfPhotoHolders;
-
-   private Func1<List<EntityStateHolder<BucketPhoto>>, List<EntityStateHolder<BucketPhoto>>> actionFunc;
 
    public static UploadPhotoControllerCommand create(String bucketUid, EntityStateHolder<BucketPhoto> photoStateHolder) {
       return new UploadPhotoControllerCommand(bucketUid, new CreateInProcessFunc(photoStateHolder));
@@ -73,7 +72,8 @@ public class UploadPhotoControllerCommand extends Command<List<EntityStateHolder
    }
 
    private static class CreateInProcessFunc implements Func1<List<EntityStateHolder<BucketPhoto>>, List<EntityStateHolder<BucketPhoto>>> {
-      private EntityStateHolder<BucketPhoto> photoEntityStateHolder;
+
+      private final EntityStateHolder<BucketPhoto> photoEntityStateHolder;
 
       CreateInProcessFunc(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
          this.photoEntityStateHolder = photoEntityStateHolder;
@@ -93,6 +93,8 @@ public class UploadPhotoControllerCommand extends Command<List<EntityStateHolder
             case DONE:
                list.remove(photoEntityStateHolder);
                break;
+            default:
+               break;
          }
 
          return list;
@@ -110,7 +112,8 @@ public class UploadPhotoControllerCommand extends Command<List<EntityStateHolder
    }
 
    private static class CancelFunc implements Func1<List<EntityStateHolder<BucketPhoto>>, List<EntityStateHolder<BucketPhoto>>> {
-      private EntityStateHolder<BucketPhoto> photoEntityStateHolder;
+
+      private final EntityStateHolder<BucketPhoto> photoEntityStateHolder;
 
       CancelFunc(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
          this.photoEntityStateHolder = photoEntityStateHolder;

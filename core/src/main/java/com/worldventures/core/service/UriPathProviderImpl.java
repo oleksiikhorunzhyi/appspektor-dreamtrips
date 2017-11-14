@@ -14,7 +14,7 @@ import java.net.URISyntaxException;
 
 public class UriPathProviderImpl implements UriPathProvider {
 
-   private Context context;
+   private final Context context;
 
    public UriPathProviderImpl(Context context) {
       this.context = context;
@@ -56,14 +56,14 @@ public class UriPathProviderImpl implements UriPathProvider {
          Cursor cursor = null;
          try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if (cursor == null) return null;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            if (cursor == null) { return null; }
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             if (cursor.moveToFirst()) {
-               return cursor.getString(column_index);
+               return cursor.getString(columnIndex);
             }
-         } catch (Exception ignored) {
+         } catch (Exception ignored) { //NOPMD
          } finally {
-            if (cursor != null) cursor.close();
+            if (cursor != null) { cursor.close(); }
          }
       } else if ("file".equalsIgnoreCase(uri.getScheme())) {
          return uri.getPath();

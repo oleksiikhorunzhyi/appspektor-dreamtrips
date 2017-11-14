@@ -54,10 +54,16 @@ public class ConversationSwipeLayoutInflater extends ViewInflater implements Vie
    public void onClick(View view) {
       switch (view.getId()) {
          case R.id.swipe_layout_button_more:
-            if (swipeButtonsListener != null) swipeButtonsListener.onMoreOptionsButtonPressed(conversation);
+            if (swipeButtonsListener != null) {
+               swipeButtonsListener.onMoreOptionsButtonPressed(conversation);
+            }
             break;
          case R.id.swipe_layout_button_delete:
-            if (swipeButtonsListener != null) swipeButtonsListener.onDeleteButtonPressed(conversation);
+            if (swipeButtonsListener != null) {
+               swipeButtonsListener.onDeleteButtonPressed(conversation);
+            }
+            break;
+         default:
             break;
       }
    }

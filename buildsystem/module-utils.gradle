@@ -1,0 +1,22 @@
+ext {
+
+   addModuleTestToAppTasks = { listOfTasks, moduleName, moduleTestTask ->
+      listOfTasks.all { t ->
+         logger.info("Task " + t.name + " depends on " + moduleTestTask)
+         t.dependsOn moduleTestTask
+         t.finalizedBy tasks.create("copyTestResult${t.name}", Copy) {
+            from "${project(moduleName).buildDir.absolutePath}/test-results/${(moduleTestTask =~ ":(.*):(.*)") [0][2]}/"
+            into "${project.buildDir.absolutePath}/test-results/${t.name}"
+            include "*.xml"
+         }
+      }
+   }
+
+   bindModuleTestsToAppFlavor = { moduleName, flavorConfigName ->
+      def appUnitTestsDebugTasks = tasks.withType(Test).matching { task -> task.name.matches("(.+)$flavorConfigName(.*)DebugUnitTest(.*)") }
+      def appUnitTestsReleaseTasks = tasks.withType(Test).matching { task -> task.name.matches("(.+)$flavorConfigName(.*)ReleaseUnitTest(.*)") }
+
+      addModuleTestToAppTasks(appUnitTestsDebugTasks, moduleName, "$moduleName:testDebugUnitTest")
+      addModuleTestToAppTasks(appUnitTestsReleaseTasks, moduleName, "$moduleName:testReleaseUnitTest")
+   }
+}

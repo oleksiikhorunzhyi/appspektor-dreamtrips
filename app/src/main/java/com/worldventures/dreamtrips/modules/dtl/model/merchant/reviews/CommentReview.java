@@ -14,12 +14,20 @@ import java.util.List;
 @Value.Immutable
 public interface CommentReview extends Serializable {
 
-   @Nullable String reviewId();
-   @Nullable Integer brand();
-   @Nullable String userNickName();
-   @Nullable String userImage();
-   @Nullable String reviewText();
-   @Nullable Integer rating();
-   @Nullable Boolean verified();
-   @Nullable List<Errors> errors();
+   @Nullable
+   String reviewId();
+   @Nullable
+   Integer brand();
+   @Nullable
+   String userNickName();
+   @Nullable
+   String userImage();
+   @Nullable
+   String reviewText();
+   @Nullable
+   Integer rating();
+   @Nullable
+   Boolean verified();
+   @Nullable
+   List<Errors> errors();
 }

@@ -18,7 +18,13 @@ import static com.jakewharton.rxbinding.internal.Preconditions.checkNotNull;
  * Static factory methods for creating {@linkplain Observable observables} and {@linkplain Action1
  * actions} for {@link DtlToolbar} and it's descendants.
  */
-public class RxDtlToolbar {
+public final class RxDtlToolbar {
+
+   private final static String DTL_TOOLBAR_NULL_MESSAGE = "dtlToolbar == null";
+   private final static String VIEW_NULL_MESSAGE = "view == null";
+
+   private RxDtlToolbar() {
+   }
 
    /**
     * Create an observable which emits on {@code DtlToolbar} expand. The emitted value is
@@ -30,7 +36,7 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Void> expands(@NonNull ExpandableDtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
       return Observable.create(new DtlToolbarExpandsOnSubscribe(dtlToolbar));
    }
 
@@ -44,7 +50,7 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Void> collapses(@NonNull ExpandableDtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
       return Observable.create(new DtlToolbarCollapsesOnSubscribe(dtlToolbar));
    }
 
@@ -58,7 +64,7 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Void> navigationClicks(@NonNull ExpandableDtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
       return Observable.create(new DtlToolbarNavigationClicksOnSubscribe(dtlToolbar));
    }
 
@@ -72,7 +78,7 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Void> actionViewClicks(@NonNull ExpandableDtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
       return Observable.create(new DtlToolbarNavigationControlClicksOnSubscribe(dtlToolbar));
    }
 
@@ -86,7 +92,7 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Void> filterButtonClicks(@NonNull DtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
       return Observable.create(new DtlToolbarFilterClicksOnSubscribe(dtlToolbar));
    }
 
@@ -109,8 +115,8 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<String> merchantSearchTextChanges(@NonNull DtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
-      checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
+      checkNotNull(dtlToolbar.getMerchantSearchView(), VIEW_NULL_MESSAGE);
       return RxTextView.textChangeEvents(dtlToolbar.getMerchantSearchView())
             .filter(textViewTextChangeEvent -> textViewTextChangeEvent.view().hasFocus())
             .map(textViewTextChangeEvent -> textViewTextChangeEvent.text().toString());
@@ -133,8 +139,8 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<String> merchantSearchApplied(@NonNull DtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
-      checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
+      checkNotNull(dtlToolbar.getMerchantSearchView(), VIEW_NULL_MESSAGE);
       return RxTextView.editorActionEvents(dtlToolbar.getMerchantSearchView())
             .filter(actionEvent -> actionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH)
             .map(actionEvent -> actionEvent.view().getText().toString());
@@ -159,8 +165,8 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<String> locationSearchTextChanges(@NonNull DtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
-      checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
+      checkNotNull(dtlToolbar.getMerchantSearchView(), VIEW_NULL_MESSAGE);
       return RxTextView.textChangeEvents(dtlToolbar.getLocationSearchView())
             .filter(textViewTextChangeEvent -> textViewTextChangeEvent.view().hasFocus())
             .map(textViewTextChangeEvent -> textViewTextChangeEvent.text().toString());
@@ -183,8 +189,8 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Boolean> locationInputFocusChanges(@NonNull DtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
-      checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
+      checkNotNull(dtlToolbar.getLocationSearchView(), VIEW_NULL_MESSAGE);
       return RxView.focusChanges(dtlToolbar.getLocationSearchView());
    }
 
@@ -205,8 +211,8 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Boolean> merchantSearchInputFocusChanges(@NonNull DtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
-      checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
+      checkNotNull(dtlToolbar.getLocationSearchView(), VIEW_NULL_MESSAGE);
       return RxView.focusChanges(dtlToolbar.getMerchantSearchView());
    }
 
@@ -223,8 +229,8 @@ public class RxDtlToolbar {
    @CheckResult
    @NonNull
    public static Observable<Boolean> offersOnlyToggleChanges(@NonNull DtlToolbar dtlToolbar) {
-      checkNotNull(dtlToolbar, "dtlToolbar == null");
-      checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
+      checkNotNull(dtlToolbar, DTL_TOOLBAR_NULL_MESSAGE);
+      checkNotNull(dtlToolbar.getLocationSearchView(), VIEW_NULL_MESSAGE);
       return RxCompoundButton.checkedChanges(dtlToolbar.getDiningFilterToggle()).skip(1);
    }
 }

@@ -11,7 +11,7 @@ import rx.functions.Func0;
 
 public class PodcastsDiskStorage extends PaginatedDiskStorage<Podcast> {
 
-   private SocialSnappyRepository db;
+   private final SocialSnappyRepository db;
 
    public PodcastsDiskStorage(SocialSnappyRepository db) {
       this.db = db;

@@ -12,9 +12,9 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class GetMutualFriendsCommand extends GetUsersCommand {
 
-   private int userId;
-   private int page;
-   private int perPage;
+   private final int userId;
+   private final int page;
+   private final int perPage;
 
    public GetMutualFriendsCommand(int userId, int page, int perPage) {
       this.userId = userId;

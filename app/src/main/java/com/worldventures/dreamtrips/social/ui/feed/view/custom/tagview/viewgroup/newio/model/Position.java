@@ -9,23 +9,6 @@ import rx.functions.Func2;
 
 public class Position implements Parcelable, Serializable {
 
-   private float x;
-   private float y;
-
-   public Position() {
-
-   }
-
-   public Position(float x, float y) {
-      this.x = x;
-      this.y = y;
-   }
-
-   protected Position(Parcel in) {
-      x = in.readFloat();
-      y = in.readFloat();
-   }
-
    public static final Func2<PhotoTag, PhotoTag, Integer> SORT_BY_POSITION = (o1, o2) -> {
       Position p1 = o1.getProportionalPosition().getTopLeft();
       Position p2 = o2.getProportionalPosition().getTopLeft();
@@ -46,6 +29,23 @@ public class Position implements Parcelable, Serializable {
          return new Position[size];
       }
    };
+
+   private float x;
+   private float y;
+
+   public Position() {
+      //do nothing
+   }
+
+   public Position(float x, float y) {
+      this.x = x;
+      this.y = y;
+   }
+
+   protected Position(Parcel in) {
+      x = in.readFloat();
+      y = in.readFloat();
+   }
 
    public float getX() {
       return x;
@@ -68,20 +68,26 @@ public class Position implements Parcelable, Serializable {
 
    @Override
    public String toString() {
-      return "Position{" +
-            "x=" + x +
-            ", y=" + y +
-            '}';
+      return "Position{"
+            + "x=" + x
+            + ", y=" + y
+            + '}';
    }
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       Position position = (Position) o;
 
-      if (Float.compare(position.x, x) != 0) return false;
+      if (Float.compare(position.x, x) != 0) {
+         return false;
+      }
       return Float.compare(position.y, y) == 0;
 
    }

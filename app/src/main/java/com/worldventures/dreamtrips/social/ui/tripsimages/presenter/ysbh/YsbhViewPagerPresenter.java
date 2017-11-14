@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.BaseImageViewPagerPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.YsbhPagerArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.FullscreenYsbhFragment;
 
 import java.util.List;
 
@@ -57,7 +57,9 @@ public class YsbhViewPagerPresenter extends BaseImageViewPagerPresenter<BaseImag
                   .onSuccess(getYSBHPhotosCommand -> {
                      loading = false;
                      lastPageReached = getYSBHPhotosCommand.lastPageReached();
-                     if (getYSBHPhotosCommand.getPage() == 1) currentItems.clear();
+                     if (getYSBHPhotosCommand.getPage() == 1) {
+                        currentItems.clear();
+                     }
                      currentItems.addAll(getYSBHPhotosCommand.getResult());
                      view.setItems(getItems());
                   }));
@@ -66,7 +68,7 @@ public class YsbhViewPagerPresenter extends BaseImageViewPagerPresenter<BaseImag
    @Override
    protected List<FragmentItem> getItems() {
       return Queryable.from(currentItems)
-            .map(item -> new FragmentItem(Route.YSBH_FULLSCREEN_IMAGE, "", item))
+            .map(item -> new FragmentItem(FullscreenYsbhFragment.class, "", item))
             .toList();
    }
 

@@ -64,7 +64,9 @@ public class ImageryView extends ScaleImageView {
                @Override
                public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
                   super.onFinalImageSet(id, imageInfo, animatable);
-                  if (onFinalImageSetAction != null) onFinalImageSetAction.call();
+                  if (onFinalImageSetAction != null) {
+                     onFinalImageSetAction.call();
+                  }
                }
 
                @Override
@@ -72,11 +74,15 @@ public class ImageryView extends ScaleImageView {
                   if (Utils.isConnected(getContext()) && throwable instanceof IOException) {
                      throwable = new Exception("Could not load image");
                   }
-                  if (onErrorAction != null) onErrorAction.call(throwable);
+                  if (onErrorAction != null) {
+                     onErrorAction.call(throwable);
+                  }
                }
             });
 
-      if (!thumbnailOnly) draweeControllerBuilder.setLowResImageRequest(getLowResImageRequest(url, thumbSize));
+      if (!thumbnailOnly) {
+         draweeControllerBuilder.setLowResImageRequest(getLowResImageRequest(url, thumbSize));
+      }
       setController(draweeControllerBuilder.build());
    }
 

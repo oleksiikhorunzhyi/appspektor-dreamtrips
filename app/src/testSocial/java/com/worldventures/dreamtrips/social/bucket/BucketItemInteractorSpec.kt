@@ -9,8 +9,8 @@ import com.worldventures.core.janet.cache.storage.ActionStorage
 import com.worldventures.core.model.EntityStateHolder
 import com.worldventures.core.model.EntityStateHolder.State
 import com.worldventures.core.model.EntityStateHolder.create
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.AssertUtil.assertStatusCount
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
+import com.worldventures.core.test.AssertUtil.assertStatusCount
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketItemSocialized
 import com.worldventures.dreamtrips.api.bucketlist.model.BucketStatus
 import com.worldventures.dreamtrips.api.bucketlist.model.ImmutableBucketItemSocialized
@@ -22,11 +22,18 @@ import com.worldventures.dreamtrips.api.uploadery.model.UploaderyImageResponse
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.BucketType
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.COMPLETED
+import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.NEW
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.*
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteBucketItemCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteItemPhotoCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.FindBucketItemByPhotoCommand
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.UploadPhotoControllerCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.BucketBody
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketPostBody
@@ -42,7 +49,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.Date
 
 typealias ApiBucketPhoto = com.worldventures.dreamtrips.api.bucketlist.model.BucketPhoto
 typealias ApiBucketType = com.worldventures.dreamtrips.api.bucketlist.model.BucketType

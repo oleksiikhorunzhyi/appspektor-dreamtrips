@@ -25,7 +25,9 @@ public class MerchantCommonDataInflater extends MerchantDataInflater {
       if (merchantAttributes.rating() != 0.0d) {
          ViewUtils.setViewVisibility(rating, View.VISIBLE);
          rating.setRating(Double.valueOf(merchantAttributes.rating()).intValue());
-      } else ViewUtils.setViewVisibility(rating, View.GONE);
+      } else {
+         ViewUtils.setViewVisibility(rating, View.GONE);
+      }
 
       if (!merchantAttributes.hasOffers()) {
          earnPointsBadge.setVisibility(View.GONE);
@@ -44,8 +46,9 @@ public class MerchantCommonDataInflater extends MerchantDataInflater {
          return;
       }
 
-      earnPointsBadge.setImageResource(merchantAttributes.hasPerks() ?
-            R.drawable.ic_dtl_points_and_perks_badge : R.drawable.ic_dtl_points_badge);
+      earnPointsBadge.setImageResource(merchantAttributes.hasPerks()
+            ? R.drawable.ic_dtl_points_and_perks_badge
+            : R.drawable.ic_dtl_points_badge);
    }
 
    private void setupPerksBadge() {

@@ -11,7 +11,6 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.CirclesFilterPopupWindow;
@@ -48,12 +47,14 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
             openFriendSearch("");
             getPresenter().onAddFriendsPressed();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
 
    private void openFriendSearch(String query) {
-      router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
+      router.moveTo(FriendSearchFragment.class, NavigationConfigBuilder.forActivity()
             .data(new FriendGlobalSearchBundle(query))
             .build());
    }
@@ -95,12 +96,14 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
       // https://code.google.com/p/android/issues/detail?id=77712
       weakHandler.postDelayed(() -> {
          if (refreshLayout != null)
-            // show info text only if empty view isn't showing
+         // show info text only if empty view isn't showing
+         {
             if (recyclerView.isEmptyViewVisible()) {
                refreshLayout.setRefreshing(true);
             } else {
                refreshLayout.setRefreshing(true, adapter.getCount() == 0);
             }
+         }
       }, 100);
    }
 

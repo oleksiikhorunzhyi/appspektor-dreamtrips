@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.dreamtrips.R;
@@ -30,7 +30,7 @@ public class AcceptTermsCommand extends CommandWithError implements InjectableAc
             .createObservableResult(new AcceptTermsAndConditionsHttpAction(text))
             .doOnNext(action -> {
                UserSession userSession = appSessionHolder.get().get();
-               userSession.getUser().setTermsAccepted(true);
+               userSession.user().setTermsAccepted(true);
                appSessionHolder.put(userSession);
             })
             .subscribe(callback::onSuccess, callback::onFail);

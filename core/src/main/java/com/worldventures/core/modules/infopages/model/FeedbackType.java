@@ -9,6 +9,7 @@ public class FeedbackType implements Parcelable {
    private String text;
 
    public FeedbackType() {
+      super();
    }
 
    public FeedbackType(int id, String text) {

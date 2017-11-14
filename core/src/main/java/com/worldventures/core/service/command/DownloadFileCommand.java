@@ -14,8 +14,10 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class DownloadFileCommand extends Command<File> {
 
-   private File file;
-   private String urlLink;
+   private final static int PROGRESS_TRESHOLD = 5;
+
+   private final File file;
+   private final String urlLink;
 
    public DownloadFileCommand(File file, String urlLink) {
       this.file = file;
@@ -57,7 +59,7 @@ public class DownloadFileCommand extends Command<File> {
             total += count;
             if (fileLength > 0) {
                int progress = (int) (total * 1f / fileLength * 100);
-               if (progress - reportedProgress > 5) {
+               if (progress - reportedProgress > PROGRESS_TRESHOLD) {
                   reportedProgress = progress;
                   callback.onProgress(reportedProgress);
                }

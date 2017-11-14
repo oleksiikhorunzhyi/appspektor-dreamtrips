@@ -10,15 +10,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
@@ -34,6 +33,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.UsersLikedItemFragment;
 
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
    @Optional @InjectView(R.id.likers_panel) protected TextView likersPanel;
    @Optional @InjectView(R.id.title) protected TextView header;
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
 
    protected LoadMore loadMore;
    protected RecyclerViewStateDelegate stateDelegate;
@@ -160,7 +160,9 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    private void showKeyboard() {
       recyclerView.postDelayed(() -> {
-         if (recyclerView == null || inputContainer == null || input == null) return;
+         if (recyclerView == null || inputContainer == null || input == null) {
+            return;
+         }
          //
          recyclerView.scrollBy(0, Integer.MAX_VALUE);
          inputContainer.setVisibility(View.VISIBLE);
@@ -177,9 +179,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @Override
    public void setLikePanel(FeedEntity entity) {
-      if (likersPanel == null || !getArgs().shouldShowLikersPanel()) return;
+      if (likersPanel == null || !getArgs().shouldShowLikersPanel()) {
+         return;
+      }
       likersPanelHelper.setup(likersPanel, entity);
-      likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
+      likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(UsersLikedItemFragment.class,
             new UsersLikedEntityBundle(entity, entity.getLikesCount())));
    }
 
@@ -234,7 +238,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @Override
    public void editComment(FeedEntity feedEntity, Comment comment) {
-      router.moveTo(Route.EDIT_COMMENT, NavigationConfigBuilder.forDialog()
+      router.moveTo(EditCommentFragment.class, NavigationConfigBuilder.forDialog()
             .fragmentManager(getChildFragmentManager())
             .gravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
             .data(new SingleCommentBundle(feedEntity, comment))
@@ -284,7 +288,9 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
    @Override
    public void openInput() {
-      if (isVisibleOnScreen()) SoftInputUtil.showSoftInputMethod(input);
+      if (isVisibleOnScreen()) {
+         SoftInputUtil.showSoftInputMethod(input);
+      }
    }
 
    protected int getLoadMorePosition() {

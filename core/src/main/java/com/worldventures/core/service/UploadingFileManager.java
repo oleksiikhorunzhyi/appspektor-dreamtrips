@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 public class UploadingFileManager {
 
-   private File uploadingFilesDir;
+   private final File uploadingFilesDir;
 
    public UploadingFileManager(File uploadingFilesDir) {
       this.uploadingFilesDir = uploadingFilesDir;
@@ -28,7 +28,7 @@ public class UploadingFileManager {
       final String md5 = "MD5";
       try {
          // Create MD5 Hash
-         MessageDigest digest = java.security.MessageDigest.getInstance(md5);
+         MessageDigest digest = MessageDigest.getInstance(md5);
          digest.update(s.getBytes());
          byte messageDigest[] = digest.digest();
 
@@ -36,7 +36,9 @@ public class UploadingFileManager {
          StringBuilder hexString = new StringBuilder();
          for (byte aMessageDigest : messageDigest) {
             String h = Integer.toHexString(0xFF & aMessageDigest);
-            while (h.length() < 2) h = String.format("0%s", h);
+            while (h.length() < 2) {
+               h = String.format("0%s", h);
+            }
             hexString.append(h);
          }
          return hexString.toString();

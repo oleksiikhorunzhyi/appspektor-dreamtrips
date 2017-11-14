@@ -36,10 +36,8 @@ public class SuggestionPhotoCell extends BaseAbstractDelegateCell<PhotoPickerMod
    }
 
    private void setImage(Uri uri, SimpleDraweeView draweeView) {
-      if (draweeView.getTag() != null) {
-         if (uri.equals(draweeView.getTag())) {
-            return;
-         }
+      if (draweeView.getTag() != null && uri.equals(draweeView.getTag())) {
+         return;
       }
 
       draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));

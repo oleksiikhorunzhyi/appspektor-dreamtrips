@@ -27,7 +27,9 @@ public class HelpVideosPresenter extends TrainingVideosPresenter<HelpVideosPrese
       if (videoLanguage != null) {
          sendViewAnalytics();
          analyticSent = true;
-      } else analyticSent = false;
+      } else {
+         analyticSent = false;
+      }
    }
 
    @Override

@@ -8,7 +8,7 @@ import rx.Scheduler;
 
 public class CompoundOperationsInteractor {
 
-   private ActionPipe<CompoundOperationsCommand> compoundOperationsPipe;
+   private final ActionPipe<CompoundOperationsCommand> compoundOperationsPipe;
 
    public CompoundOperationsInteractor(SessionActionPipeCreator sessionActionPipeCreator, Scheduler scheduler) {
       compoundOperationsPipe = sessionActionPipeCreator.createPipe(CompoundOperationsCommand.class, scheduler);

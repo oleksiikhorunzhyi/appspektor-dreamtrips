@@ -26,7 +26,7 @@ public class ChatSendMessageCommand extends BaseChatCommand<Message> {
    @Override
    protected void run(CommandCallback<Message> callback) throws Throwable {
       Message message = new Message.Builder().messageBody(messageBodyCreator.provideForText(messageText))
-            .fromId(appSessionHolder.get().get().getUsername())
+            .fromId(appSessionHolder.get().get().username())
             .conversationId(conversationId)
             .type(MessageType.MESSAGE)
             .build();

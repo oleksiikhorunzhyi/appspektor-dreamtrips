@@ -14,9 +14,9 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.DrawableUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.social.ui.profile.view.dialog.FriendActionDialogDelegate;
@@ -79,7 +79,7 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
 
    @Override
    public void showFriendDialog(User user) {
-      ImageView userPhoto = ButterKnife.findById(statePaginatedRecyclerViewManager.stateRecyclerView, R.id.user_photo);
+      ImageView userPhoto = ButterKnife.findById(statePaginatedRecyclerViewManager.getStateRecyclerView(), R.id.user_photo);
       if (userPhoto != null) {
          userPhoto.setDrawingCacheEnabled(true);
          new FriendActionDialogDelegate(getActivity())
@@ -91,7 +91,7 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
 
    @Override
    public void openFriendPrefs(UserBundle userBundle) {
-      router.moveTo(Route.FRIEND_PREFERENCES, NavigationConfigBuilder.forActivity().data(userBundle).build());
+      router.moveTo(FriendPreferenceFragment.class, NavigationConfigBuilder.forActivity().data(userBundle).build());
    }
 
    @Override
@@ -126,11 +126,8 @@ public class UserFragment extends ProfileFragment<UserPresenter> implements User
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
-   }
-
-   @Override
-   public Route getRoute() {
-      return Route.FOREIGN_PROFILE;
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 }

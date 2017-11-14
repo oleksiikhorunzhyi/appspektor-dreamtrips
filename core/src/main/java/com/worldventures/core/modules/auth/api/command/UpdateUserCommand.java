@@ -1,6 +1,6 @@
 package com.worldventures.core.modules.auth.api.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.User;
 
 import io.techery.janet.Command;

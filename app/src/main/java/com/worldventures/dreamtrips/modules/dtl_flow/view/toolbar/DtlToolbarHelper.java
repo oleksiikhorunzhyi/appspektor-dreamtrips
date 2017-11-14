@@ -6,10 +6,15 @@ import android.text.TextUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
-public class DtlToolbarHelper {
+public final class DtlToolbarHelper {
+
+   private DtlToolbarHelper() {
+   }
 
    public static String provideLocationCaption(Resources resources, DtlLocation dtlLocation) {
-      if (dtlLocation == null) return "";
+      if (dtlLocation == null) {
+         return "";
+      }
 
       switch (dtlLocation.locationSourceType()) {
          case NEAR_ME:

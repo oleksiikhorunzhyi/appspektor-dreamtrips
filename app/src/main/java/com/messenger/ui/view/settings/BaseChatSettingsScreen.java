@@ -28,7 +28,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, Presenter extends ChatSettingsScreenPresenter<Screen>, Path extends StyledPath> extends MessengerPathLayout<Screen, Presenter, Path> implements ChatSettingsScreen {
+public abstract class BaseChatSettingsScreen<S extends ChatSettingsScreen, P extends ChatSettingsScreenPresenter<S>, PT extends StyledPath>
+      extends MessengerPathLayout<S, P, PT>
+      implements ChatSettingsScreen {
 
    @InjectView(R.id.content_layout) ViewGroup contentView;
    @InjectView(R.id.chat_settings_loading_view) View loadingView;
@@ -83,7 +85,7 @@ public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, 
       notificationsSettingsRow = new ChatSettingsRow(getContext());
       notificationsSettingsRow.setIcon(R.drawable.ic_notifications_black_24_px);
       notificationsSettingsRow.setTitle(R.string.chat_settings_row_notifications);
-      notificationsSettingsRow.enableSwitch(((compoundButton, b) -> getPresenter().onNotificationsSwitchClicked(b)));
+      notificationsSettingsRow.enableSwitch((compoundButton, b) -> getPresenter().onNotificationsSwitchClicked(b));
       parent.addView(notificationsSettingsRow);
    }
 

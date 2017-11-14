@@ -23,6 +23,6 @@ public class ReviewImagesConverter implements Converter<com.worldventures.dreamt
       return ImmutableReviewImages.builder()
             .normalUrl(reviewImages.normalUrl())
             .thumbnailUrl(reviewImages.thumbnailUrl())
-          .build();
+            .build();
    }
 }

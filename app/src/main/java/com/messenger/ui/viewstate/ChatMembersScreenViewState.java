@@ -12,11 +12,12 @@ import java.util.List;
 
 public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
 
-   public ChatMembersScreenViewState() {
-   }
-
    private List<DataUser> selectedContacts = new ArrayList<>();
    private String searchFilter;
+
+   public ChatMembersScreenViewState() {
+      //do nothing
+   }
 
    public List<DataUser> getSelectedContacts() {
       return selectedContacts;
@@ -47,9 +48,13 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
    }
 
    public static final Parcelable.Creator<ChatMembersScreenViewState> CREATOR = new Parcelable.Creator<ChatMembersScreenViewState>() {
-      public ChatMembersScreenViewState createFromParcel(Parcel source) {return new ChatMembersScreenViewState(source);}
+      public ChatMembersScreenViewState createFromParcel(Parcel source) {
+         return new ChatMembersScreenViewState(source);
+      }
 
-      public ChatMembersScreenViewState[] newArray(int size) {return new ChatMembersScreenViewState[size];}
+      public ChatMembersScreenViewState[] newArray(int size) {
+         return new ChatMembersScreenViewState[size];
+      }
    };
 
    public ChatMembersScreenViewState(Parcel in) {

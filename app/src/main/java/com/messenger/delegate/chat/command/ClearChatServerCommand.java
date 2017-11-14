@@ -2,7 +2,7 @@ package com.messenger.delegate.chat.command;
 
 import com.messenger.messengerservers.ChatExtensions;
 import com.messenger.messengerservers.event.ClearChatEvent;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 

@@ -10,6 +10,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public final class BucketUtility {
+
    public static Func1<BucketItem, Boolean> filterByType(BucketItem.BucketType type) {
       switch (type) {
          case LOCATION:
@@ -70,7 +71,8 @@ public final class BucketUtility {
    }
 
    private static final class FilterTransformer implements Observable.Transformer<List<BucketItem>, List<BucketItem>> {
-      private BucketItem.BucketType type;
+
+      private final BucketItem.BucketType type;
 
       public FilterTransformer(BucketItem.BucketType type) {
          this.type = type;

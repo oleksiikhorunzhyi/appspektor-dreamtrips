@@ -10,7 +10,7 @@ import com.messenger.messengerservers.event.ClearChatEvent;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.PhotoDAO;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 
@@ -57,7 +57,9 @@ public class ClearChatCommand extends Command<Void> implements InjectableAction 
       ImagePipeline imagePipeline = Fresco.getImagePipeline();
       for (DataPhotoAttachment photo : photoAttachments) {
          String url = photo.getUrl();
-         if (TextUtils.isEmpty(url)) continue;
+         if (TextUtils.isEmpty(url)) {
+            continue;
+         }
          imagePipeline.evictFromCache(Uri.parse(url));
       }
    }

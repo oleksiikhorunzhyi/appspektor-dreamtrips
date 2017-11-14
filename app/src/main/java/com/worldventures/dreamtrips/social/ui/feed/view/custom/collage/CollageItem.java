@@ -31,10 +31,10 @@ public class CollageItem {
 
    @Override
    public String toString() {
-      return "CollageItem{" +
-            "url='" + url + '\'' +
-            ", width=" + width +
-            ", height=" + height +
-            '}';
+      return "CollageItem{"
+            + "url='" + url + '\''
+            + ", width=" + width
+            + ", height=" + height
+            + '}';
    }
 }

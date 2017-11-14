@@ -173,7 +173,7 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
 
    public class DeleteFeedItemStorageOperation implements ListStorageOperation<FeedItem<FeedEntity>> {
 
-      private String uid;
+      private final String uid;
 
       public DeleteFeedItemStorageOperation(String uid) {
          this.uid = uid;
@@ -192,8 +192,11 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
                while (attachmentIterator.hasNext()) {
                   FeedEntity attachment = attachmentIterator.next().getItem();
                   if (attachment.getUid().equals(uid)) {
-                     if (post.getAttachments().size() == 1) itemIterator.remove();
-                     else attachmentIterator.remove();
+                     if (post.getAttachments().size() == 1) {
+                        itemIterator.remove();
+                     } else {
+                        attachmentIterator.remove();
+                     }
                   }
                }
             }

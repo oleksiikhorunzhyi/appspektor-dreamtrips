@@ -15,15 +15,15 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
-import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
@@ -44,10 +44,11 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRou
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDecorator;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.HashtagSuggestionUtil;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.List;
@@ -71,7 +72,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
    RecyclerViewStateDelegate stateDelegate;
 
-   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private FocusableStatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
    private Bundle savedInstanceState;
    private SearchView searchView;
    private EditText searchText;
@@ -90,8 +91,9 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       BaseDelegateAdapter feedAdapter = new BaseDelegateAdapter<>(getContext(), this);
-      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
-      statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+      statePaginatedRecyclerViewManager = new FocusableStatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
+      statePaginatedRecyclerViewManager.getStateRecyclerView().setEmptyView(emptyView);
       statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
@@ -186,7 +188,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       }
 
       activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
-            .send(ActiveFeedRouteCommand.update(Route.FEED_HASHTAG));
+            .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.TIMELINE));
    }
 
    @Override
@@ -247,7 +249,9 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    private void searchPosts(String query) {
       getPresenter().setQuery(query);
-      if (searchItem != null) releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+      if (searchItem != null) {
+         releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+      }
       getPresenter().onRefresh();
       clearSuggestions();
       getPresenter().cancelLastSuggestionRequest();
@@ -260,7 +264,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void refreshFeedItems(List feedItems) {
-      fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.stateRecyclerView);
+      fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
    }
 
@@ -282,13 +286,17 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void startLoading() {
       statePaginatedRecyclerViewManager.startLoading();
-      if (emptyView != null) emptyView.setVisibility(View.GONE);
+      if (emptyView != null) {
+         emptyView.setVisibility(View.GONE);
+      }
    }
 
    @Override
    public void finishLoading() {
       statePaginatedRecyclerViewManager.finishLoading();
-      if (emptyView != null) emptyView.setVisibility(View.VISIBLE);
+      if (emptyView != null) {
+         emptyView.setVisibility(View.VISIBLE);
+      }
    }
 
    @Override
@@ -325,18 +333,26 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
 
    @Override
    public void showSuggestionProgress() {
-      if (suggestions != null) suggestions.showProgress();
+      if (suggestions != null) {
+         suggestions.showProgress();
+      }
    }
 
    @Override
    public void hideSuggestionProgress() {
-      if (suggestions != null) suggestions.hideProgress();
+      if (suggestions != null) {
+         suggestions.hideProgress();
+      }
    }
 
    private void releaseSearchFocus(@Nullable View search) {
       new WeakHandler().postDelayed(() -> {
-         if (search != null) search.clearFocus();
-         if (getView() != null) getView().requestFocus(); //check for multiple fast device rotation
+         if (search != null) {
+            search.clearFocus();
+         }
+         if (getView() != null) {
+            getView().requestFocus(); //check for multiple fast device rotation
+         }
       }, 50);
    }
 

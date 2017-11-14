@@ -7,7 +7,9 @@ import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 @Layout(R.layout.screen_conversation_list)
-public class ConversationsPath extends StyledPath {
+public final class ConversationsPath extends StyledPath {
+
+   public static final ConversationsPath MASTER_PATH = new ConversationsPath();
 
    /**
     * don't create instance of this path, use static instance instead provided below
@@ -24,6 +26,4 @@ public class ConversationsPath extends StyledPath {
    public MasterDetailPath getMaster() {
       return MASTER_PATH;
    }
-
-   public static final ConversationsPath MASTER_PATH = new ConversationsPath();
 }

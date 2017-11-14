@@ -16,7 +16,7 @@ import dagger.Module;
             SuccessStoryListPresenter.class,
             SuccessStoryDetailsPresenter.class,
             RepToolsFragment.class,
-            RepToolsPresenter.class,},
+            RepToolsPresenter.class},
       complete = false,
       library = true)
 public class ReptoolsActivityModule {

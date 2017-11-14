@@ -8,22 +8,22 @@ import io.techery.mappery.MapperyContext;
 
 public class ReviewTextConverter implements Converter<com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewText, ReviewText> {
 
-    @Override
-    public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewText> sourceClass() {
-        return com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewText.class;
-    }
+   @Override
+   public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewText> sourceClass() {
+      return com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewText.class;
+   }
 
-    @Override
-    public Class<ReviewText> targetClass() {
-        return ReviewText.class;
-    }
+   @Override
+   public Class<ReviewText> targetClass() {
+      return ReviewText.class;
+   }
 
-    @Override
-    public ReviewText convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewText errors) {
-        return ImmutableReviewText.builder()
-                .field(errors.field())
-                .message(errors.message())
-                .code(errors.code())
-                .build();
-    }
+   @Override
+   public ReviewText convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.ReviewText errors) {
+      return ImmutableReviewText.builder()
+            .field(errors.field())
+            .message(errors.message())
+            .code(errors.code())
+            .build();
+   }
 }

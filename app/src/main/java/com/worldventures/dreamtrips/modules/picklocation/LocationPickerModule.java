@@ -15,7 +15,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-      injects = {PickLocationPresenterImpl.class, PickLocationActivity.class, PickLocationViewImpl.class,},
+      injects = {PickLocationPresenterImpl.class, PickLocationActivity.class, PickLocationViewImpl.class},
       complete = false, library = true)
 public class LocationPickerModule {
 

@@ -11,6 +11,7 @@ import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.BaseUserListPresenter;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.UsersLikedItemPresenter;
@@ -22,6 +23,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_likes)
+@ComponentPresenter.ComponentTitle(R.string.users_who_liked_title)
 public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle>
       implements BaseUserListPresenter.View, UserCellDelegate {
 

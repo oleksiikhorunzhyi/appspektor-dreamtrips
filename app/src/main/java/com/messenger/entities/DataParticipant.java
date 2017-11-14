@@ -48,6 +48,7 @@ public class DataParticipant extends BaseProviderModel<DataParticipant> {
    }
 
    public DataParticipant() {
+      //do nothing
    }
 
    public String getId() {

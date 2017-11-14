@@ -26,11 +26,11 @@ public class MerchantDetailsViewCommand extends DtlAnalyticsCommand {
             .map(FilterData::isOffersOnly)
             .doOnNext(((MerchantDetailsViewEvent) action)::setOffersOnly)
             .subscribe(aVoid -> {
-                     try {
-                        super.run(callback);
-                     } catch (Throwable throwable) {
-                        callback.onFail(throwable);
-                     }
-                  }, callback::onFail);
+               try {
+                  super.run(callback);
+               } catch (Throwable throwable) {
+                  callback.onFail(throwable);
+               }
+            }, callback::onFail);
    }
 }

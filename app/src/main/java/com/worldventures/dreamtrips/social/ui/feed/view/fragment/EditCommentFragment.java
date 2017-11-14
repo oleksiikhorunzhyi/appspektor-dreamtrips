@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
@@ -84,7 +84,9 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
    @Override
    public void setText(String text) {
       editComment.setText(text);
-      if (text != null) editComment.setSelection(text.length());
+      if (text != null) {
+         editComment.setSelection(text.length());
+      }
    }
 
    @Override

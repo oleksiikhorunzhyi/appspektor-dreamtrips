@@ -21,7 +21,9 @@ public class MerchantSingleImageDataInflater extends MerchantCommonDataInflater 
 
    private void setImage(List<MerchantMedia> mediaList) {
       MerchantMedia media = Queryable.from(mediaList).firstOrDefault();
-      if (media == null) return;
+      if (media == null) {
+         return;
+      }
       //
       cover.setImageUrl(media.getImagePath());
    }

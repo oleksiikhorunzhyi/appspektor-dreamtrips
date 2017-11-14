@@ -47,10 +47,6 @@ public class ActivityRouter extends ActivityBoundRouter {
       startActivity(Player360Activity.class, bundle);
    }
 
-   public void startService(Class clazz) {
-      super.startService(clazz);
-   }
-
    public void openPodcastPlayer(String url, String name) {
       Intent intent = new Intent(getContext(), PodcastPlayerActivity.class);
       intent.setData(Uri.parse(url));

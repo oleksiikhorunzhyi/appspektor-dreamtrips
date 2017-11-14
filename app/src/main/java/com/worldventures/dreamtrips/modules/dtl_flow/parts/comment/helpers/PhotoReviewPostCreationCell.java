@@ -47,7 +47,7 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
    @InjectView(R.id.remove) View remove;
 
-   private void hideInfo(){
+   private void hideInfo() {
       photoTitle.setVisibility(View.GONE);
       tagButton.setVisibility(View.GONE);
    }
@@ -59,7 +59,9 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
          public void onViewAttachedToWindow(View v) {
             photoTitle.addTextChangedListener(textWatcher);
             photoTitle.setOnFocusChangeListener((view, hasFocus) -> {
-               if (!hasFocus) photoContainer.requestFocus();
+               if (!hasFocus) {
+                  photoContainer.requestFocus();
+               }
                cellDelegate.onPhotoTitleFocusChanged(hasFocus);
             });
          }
@@ -132,7 +134,7 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
    }
 
    private void showTagViewGroup() {
-      User user = userSessionHolder.get().get().getUser();
+      User user = userSessionHolder.get().get().user();
       PhotoTagHolderManager photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, user, user);
       photoTagHolderManager.setTagCreatedListener(photoTag -> {
          getModelObject().getCachedRemovedPhotoTags().remove(photoTag);
@@ -142,7 +144,9 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
 
       photoTagHolderManager.setTagDeletedListener(photoTag -> {
          boolean removed = getModelObject().getCachedAddedPhotoTags().remove(photoTag);
-         if (!removed) getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         if (!removed) {
+            getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+         }
          addTagSuggestions(photoTagHolderManager);
          invalidateTags();
       });
@@ -157,9 +161,8 @@ public class PhotoReviewPostCreationCell extends BaseAbstractDelegateCell<PhotoR
       currentTags.addAll(getModelObject().getCombinedTags());
       currentTags.addAll(getModelObject().getCachedAddedPhotoTags());
       currentTags.removeAll(getModelObject().getCachedRemovedPhotoTags());
-      List<PhotoTag> notIntersectingSuggestions =
-            PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
-                  new ArrayList<>(currentTags));
+      List<PhotoTag> notIntersectingSuggestions = PhotoTag.findSuggestionsNotIntersectingWithTags(getModelObject().getSuggestions(),
+            new ArrayList<>(currentTags));
       photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
             tag -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
    }

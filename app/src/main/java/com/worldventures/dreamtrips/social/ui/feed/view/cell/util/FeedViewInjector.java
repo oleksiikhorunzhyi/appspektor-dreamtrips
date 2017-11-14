@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.R;
 
 public class FeedViewInjector {
 
-   private Context context;
+   private final Context context;
 
    public FeedViewInjector(Context context) {
       this.context = context;

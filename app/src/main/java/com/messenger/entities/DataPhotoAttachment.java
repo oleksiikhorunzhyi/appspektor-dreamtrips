@@ -38,7 +38,9 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
    @Column String localPath;
    @Column @PhotoAttachmentStatus int uploadState;
 
+   @SuppressWarnings("PMD.UnnecessaryConstructor")
    public DataPhotoAttachment() {
+      //do nothing
    }
 
    private DataPhotoAttachment(Builder builder) {
@@ -132,9 +134,6 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
       private String url;
       private int state = PhotoAttachmentStatus.UPLOADED;
       private String localPath;
-
-      public Builder() {
-      }
 
       public Builder id(String var) {
          id = var;

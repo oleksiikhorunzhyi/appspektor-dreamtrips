@@ -1,7 +1,6 @@
 package com.worldventures.core.modules.video;
 
 
-
 import android.content.Context;
 
 import com.worldventures.core.di.qualifier.ForApplication;

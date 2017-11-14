@@ -7,7 +7,7 @@ import java.util.List;
 
 public class TripMapListPresenter extends Presenter<TripMapListPresenter.View> {
 
-   private List<TripModel> trips;
+   private final List<TripModel> trips;
 
    public TripMapListPresenter(List<TripModel> trips) {
       this.trips = trips;

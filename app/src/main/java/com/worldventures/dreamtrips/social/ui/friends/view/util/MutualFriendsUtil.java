@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.R;
 
 public class MutualFriendsUtil {
 
-   private Context context;
+   private final Context context;
 
    public MutualFriendsUtil(Context context) {
       this.context = context;

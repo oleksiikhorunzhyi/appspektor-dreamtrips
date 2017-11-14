@@ -4,7 +4,7 @@ import com.messenger.delegate.chat.CreateChatHelper;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.model.Message;
-import com.worldventures.dreamtrips.janet.MockDaggerActionService;
+import com.worldventures.core.test.janet.MockDaggerActionService;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 
 import org.junit.Before;

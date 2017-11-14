@@ -26,7 +26,7 @@ public class MarkMessageAsReadCommand extends BaseChatCommand<Boolean> {
 
    @Override
    protected void run(CommandCallback<Boolean> callback) throws Throwable {
-      String currentUserId = sessionHolder.get().get().getUsername();
+      String currentUserId = sessionHolder.get().get().username();
       long lastSeenMessageTime = lastSeenMessage.getDate().getTime();
       messageDAO.getLastOtherUserMessage(conversationId, currentUserId, lastSeenMessageTime).flatMap(dataMessage -> {
          if (dataMessage == null) {

@@ -25,6 +25,7 @@ import java.util.List;
 @Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 @TableEndpoint(name = DataAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 public class DataAttachment extends BaseProviderModel<DataAttachment> {
+
    public static final String TABLE_NAME = "Attachments";
 
    @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME) public static final Uri CONTENT_URI = MessengerDatabase
@@ -36,7 +37,9 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
    @Column String conversationId;
    @AttachmentType.Type @Column String type;
 
+   @SuppressWarnings("PMD.UnnecessaryConstructor")
    public DataAttachment() {
+      //do nothing
    }
 
    private DataAttachment(Builder builder) {
@@ -129,9 +132,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
       String messageId;
       String conversationId;
       String type;
-
-      public Builder() {
-      }
 
       public Builder conversationId(String conversationId) {
          this.conversationId = conversationId;

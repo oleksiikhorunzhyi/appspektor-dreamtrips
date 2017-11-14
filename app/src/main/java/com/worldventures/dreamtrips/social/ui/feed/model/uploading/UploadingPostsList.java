@@ -10,14 +10,16 @@ import java.util.List;
  */
 public class UploadingPostsList {
 
-   private List<PostCompoundOperationModel> photoPosts;
+   private final List<PostCompoundOperationModel> photoPosts;
 
    public UploadingPostsList(List<PostCompoundOperationModel> photoPosts) {
       this.photoPosts = photoPosts;
    }
 
    public List<PostCompoundOperationModel> getPhotoPosts() {
-      if (photoPosts == null) return new ArrayList<>();
+      if (photoPosts == null) {
+         return new ArrayList<>();
+      }
       return photoPosts;
    }
 }

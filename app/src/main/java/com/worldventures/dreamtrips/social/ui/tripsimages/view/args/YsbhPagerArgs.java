@@ -9,9 +9,10 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 import java.util.List;
 
 public class YsbhPagerArgs implements Parcelable {
-   private List<YSBHPhoto> currentItems;
-   private boolean lastPageReached;
-   private int currentItemPosition;
+
+   private final List<YSBHPhoto> currentItems;
+   private final boolean lastPageReached;
+   private final int currentItemPosition;
 
    public YsbhPagerArgs(List<YSBHPhoto> currentItems, boolean lastPageReached, int currentItemPosition) {
       this.currentItems = currentItems;

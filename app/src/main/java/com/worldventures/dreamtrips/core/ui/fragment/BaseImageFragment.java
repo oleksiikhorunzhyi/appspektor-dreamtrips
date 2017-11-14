@@ -47,7 +47,9 @@ public class BaseImageFragment<T extends ImagePathHolder> extends BaseFragmentWi
       ivImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
          @Override
          public void onGlobalLayout() {
-            if (ivImage == null) return;
+            if (ivImage == null) {
+               return;
+            }
             getPresenter().onImageReady(ivImage.getWidth(), ivImage.getHeight());
             //
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -69,13 +71,17 @@ public class BaseImageFragment<T extends ImagePathHolder> extends BaseFragmentWi
 
          @Override
          public void onFailure(String id, Throwable throwable) {
-            if (!isAdded()) return;
+            if (!isAdded()) {
+               return;
+            }
             progressBar.setVisibility(View.GONE);
          }
 
          @Override
          public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-            if (!isAdded()) return;
+            if (!isAdded()) {
+               return;
+            }
             progressBar.setVisibility(View.GONE);
          }
       };

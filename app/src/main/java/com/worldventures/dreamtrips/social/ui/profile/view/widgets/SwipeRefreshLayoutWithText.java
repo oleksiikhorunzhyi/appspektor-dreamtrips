@@ -40,7 +40,9 @@ public class SwipeRefreshLayoutWithText extends SwipeRefreshLayout {
    }
 
    public void setInfoText(@StringRes int resource) {
-      if (!(getChildAt(1) instanceof ViewGroup)) throw new IllegalStateException("Child must be instance of ViewGroup");
+      if (!(getChildAt(1) instanceof ViewGroup)) {
+         throw new IllegalStateException("Child must be instance of ViewGroup");
+      }
       //
       if (infoTextView == null) {
          infoTextView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.layout_refresh_info, null, false);
@@ -73,7 +75,12 @@ public class SwipeRefreshLayoutWithText extends SwipeRefreshLayout {
          final int width = getMeasuredWidth();
          final int infoWidth = infoTextView.getMeasuredWidth();
          final int infoHeight = infoTextView.getMeasuredHeight();
-         infoTextView.layout((width / 2 - infoWidth / 2), getCurrentTargetOffsetTop() + getCircleHeight() + VERTICAL_OFFSET, (width / 2 + infoWidth / 2), getCurrentTargetOffsetTop() + getCircleHeight() + infoHeight + VERTICAL_OFFSET);
+         infoTextView.layout(
+               (width / 2 - infoWidth / 2),
+               getCurrentTargetOffsetTop() + getCircleHeight() + VERTICAL_OFFSET,
+               (width / 2 + infoWidth / 2),
+               getCurrentTargetOffsetTop() + getCircleHeight() + infoHeight + VERTICAL_OFFSET
+         );
       }
    }
 

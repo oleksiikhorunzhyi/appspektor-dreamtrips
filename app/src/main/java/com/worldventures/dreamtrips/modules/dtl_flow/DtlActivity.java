@@ -9,9 +9,12 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterViewImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPath;
+
+import java.util.List;
 
 import butterknife.InjectView;
 import flow.History;
@@ -22,6 +25,13 @@ public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresente
    public static final int GPS_LOCATION_RESOLUTION_REQUEST = 481;
 
    @InjectView(R.id.drawer_filter_layout) DtlFilterViewImpl filterView;
+
+   @Override
+   protected List<Object> getModules() {
+      List<Object> modules = super.getModules();
+      modules.add(new DtlActivityModule());
+      return modules;
+   }
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ReplayEventDelegatesWiper {
 
-   private List<ReplayEventDelegate> delegates = Collections.synchronizedList(new ArrayList<>());
+   private final List<ReplayEventDelegate> delegates = Collections.synchronizedList(new ArrayList<>());
 
    public void register(ReplayEventDelegate replayEventDelegate) {
       delegates.add(replayEventDelegate);

@@ -33,7 +33,9 @@ public class MultiSelectionManager extends SimpleSelectionManager {
    }
 
    public boolean isAllSelected(int itemViewTypeId) {
-      if (selectableWrapperAdapter.getItemCount() == 0) return false;
+      if (selectableWrapperAdapter.getItemCount() == 0) {
+         return false;
+      }
 
       return Queryable.from(selectableWrapperAdapter.getSelectedItems())
             .filter(pos -> (Integer) pos > 0 && selectableWrapperAdapter.getItemViewType((Integer) pos) == itemViewTypeId)
@@ -49,7 +51,9 @@ public class MultiSelectionManager extends SimpleSelectionManager {
     * @return list of positions of selected items
     */
    public List<Integer> getSelectedPositions(int itemViewTypeId) {
-      if (selectableWrapperAdapter.getItemCount() == 0) return Collections.emptyList();
+      if (selectableWrapperAdapter.getItemCount() == 0) {
+         return Collections.emptyList();
+      }
 
       return Queryable.from(selectableWrapperAdapter.getSelectedItems())
             .filter(pos -> selectableWrapperAdapter.getItemViewType((Integer) pos) == itemViewTypeId)
@@ -72,8 +76,9 @@ public class MultiSelectionManager extends SimpleSelectionManager {
    public void setSelectionForAll(boolean setSelected) {
       selectableWrapperAdapter.clearSelections();
       if (setSelected) {
-         for (int i = 0; i < selectableWrapperAdapter.getItemCount(); i++)
+         for (int i = 0; i < selectableWrapperAdapter.getItemCount(); i++) {
             toggleSelectionImpl(i);
+         }
       }
       selectableWrapperAdapter.notifyDataSetChanged();
    }

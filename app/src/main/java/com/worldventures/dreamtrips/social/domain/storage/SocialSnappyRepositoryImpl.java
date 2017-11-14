@@ -37,6 +37,21 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    private static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
    private static final String PODCASTS = "PODCASTS";
    private static final String CATEGORIES = "categories";
+   private static final String NOTIFICATIONS = "notifications";
+   private static final String UNDEFINED_FEED_ITEM = "undefined";
+   private static final String PHOTO_FEED_ITEM = "photo";
+   private static final String POST_FEED_ITEM = "post";
+   private static final String TRIP_FEED_ITEM = "trip";
+   private static final String BUCKET_FEED_ITEM = "bucket";
+   private static final Map<String, Class<? extends FeedItem>> FEED_ITEMS_MAPPING = new HashMap<>();
+
+   static {
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + UNDEFINED_FEED_ITEM, UndefinedFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + TRIP_FEED_ITEM, TripFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + PHOTO_FEED_ITEM, PhotoFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + BUCKET_FEED_ITEM, BucketFeedItem.class);
+      FEED_ITEMS_MAPPING.put(NOTIFICATIONS + POST_FEED_ITEM, PostFeedItem.class);
+   }
 
    private final DefaultSnappyOpenHelper defaultSnappyOpenHelper;
 
@@ -78,9 +93,13 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    private List<BucketItem> readBucketList(String key) {
       List<BucketItem> list = readList(key, BucketItem.class);
       Collections.sort(list, (lhs, rhs) -> {
-         if (lhs.isDone() == rhs.isDone()) return 0;
-         else if (lhs.isDone() && !rhs.isDone()) return 1;
-         else return -1;
+         if (lhs.isDone() == rhs.isDone()) {
+            return 0;
+         } else if (lhs.isDone() && !rhs.isDone()) {
+            return 1;
+         } else {
+            return -1;
+         }
       });
       return list;
    }
@@ -144,7 +163,9 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
 
    @Override
    public void saveCircles(List<Circle> circles) {
-      if (circles == null) circles = new ArrayList<>();
+      if (circles == null) {
+         circles = new ArrayList<>();
+      }
       putList(CIRCLES, circles);
    }
 
@@ -177,26 +198,9 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    // Notifications
    ///////////////////////////////////////////////////////////////////////////
 
-   private static final String NOTIFICATIONS = "notifications";
-   private static final String UNDEFINED_FEED_ITEM = "undefined";
-   private static final String PHOTO_FEED_ITEM = "photo";
-   private static final String POST_FEED_ITEM = "post";
-   private static final String TRIP_FEED_ITEM = "trip";
-   private static final String BUCKET_FEED_ITEM = "bucket";
-
-   private static final Map<String, Class<? extends FeedItem>> feedItemsMapping = new HashMap<>();
-
-   static {
-      feedItemsMapping.put(NOTIFICATIONS + UNDEFINED_FEED_ITEM, UndefinedFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + TRIP_FEED_ITEM, TripFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + PHOTO_FEED_ITEM, PhotoFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + BUCKET_FEED_ITEM, BucketFeedItem.class);
-      feedItemsMapping.put(NOTIFICATIONS + POST_FEED_ITEM, PostFeedItem.class);
-   }
-
    @Override
    public void saveNotifications(List<FeedItem> notifications) {
-      for (Map.Entry<String, Class<? extends FeedItem>> entry : feedItemsMapping.entrySet()) {
+      for (Map.Entry<String, Class<? extends FeedItem>> entry : FEED_ITEMS_MAPPING.entrySet()) {
          saveNotificationByType(notifications, entry.getValue(), entry.getKey());
       }
    }
@@ -211,7 +215,7 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
    @Override
    public List<FeedItem> getNotifications() {
       List<FeedItem> feedItems = new ArrayList<>();
-      for (Map.Entry<String, Class<? extends FeedItem>> entry : feedItemsMapping.entrySet()) {
+      for (Map.Entry<String, Class<? extends FeedItem>> entry : FEED_ITEMS_MAPPING.entrySet()) {
          feedItems.addAll(readList(entry.getKey(), entry.getValue()));
       }
       return Queryable.from(feedItems)
@@ -225,7 +229,9 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
 
    @Override
    public void savePodcasts(List<Podcast> podcasts) {
-      if (podcasts == null) podcasts = new ArrayList<>();
+      if (podcasts == null) {
+         podcasts = new ArrayList<>();
+      }
       putList(PODCASTS, podcasts);
    }
 

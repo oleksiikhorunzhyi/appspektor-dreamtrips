@@ -139,14 +139,18 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
       public ImageView statusImageView;
+      public TextView subtotal;
+      public Context context;
 
       public ViewHolder(View itemView) {
          super(itemView);
+         this.context = itemView.getContext();
          merchantName = itemView.findViewById(R.id.merchant_name);
          earnedPoints = itemView.findViewById(R.id.earned_points);
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
          statusImageView = itemView.findViewById(R.id.imageViewStatus);
+         subtotal = itemView.findViewById(R.id.subtotal);
       }
 
       public void bind(TransactionModel transactionModel) {
@@ -157,6 +161,7 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          setPaymentStatusIcon(transactionModel);
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
+         subtotal.setText(context.getString(R.string.dtl_subtotal, transactionModel.getSubTotalAmount()));
       }
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {

@@ -65,7 +65,6 @@ import com.worldventures.wallet.service.command.uploadery.SmartCardUploaderyComm
 import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
-import com.worldventures.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
 
 import dagger.Module;
@@ -89,7 +88,6 @@ import dagger.Module;
             DefaultRecordIdCommand.class,
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
-            WizardCheckCommand.class,
             AddRecordCommand.class,
             SetDefaultCardOnDeviceCommand.class,
             SetPaymentCardAction.class,

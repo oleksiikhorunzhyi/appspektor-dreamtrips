@@ -8,7 +8,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.social.domain.entity.InviteTemplate
 import com.worldventures.dreamtrips.social.domain.entity.InviteType
 import com.worldventures.dreamtrips.social.service.InviteShareInteractor
-import com.worldventures.dreamtrips.social.service.invites.*
+import com.worldventures.dreamtrips.social.service.invites.CreateFilledInviteCommand
+import com.worldventures.dreamtrips.social.service.invites.DeselectAllContactsCommand
+import com.worldventures.dreamtrips.social.service.invites.ReadMembersCommand
+import com.worldventures.dreamtrips.social.service.invites.SendInvitesCommand
+import com.worldventures.dreamtrips.social.service.invites.selectedMemberAddresses
 import com.worldventures.dreamtrips.social.ui.membership.bundle.TemplateBundle
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.InviteShareEmailAction

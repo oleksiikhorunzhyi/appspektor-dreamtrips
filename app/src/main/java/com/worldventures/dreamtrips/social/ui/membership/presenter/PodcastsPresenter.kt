@@ -66,7 +66,7 @@ class PodcastsPresenter<T : PodcastsPresenter.View> : Presenter<T>() {
 
    private fun updatePodcasts(newPodcasts: List<Podcast>) {
       val items = ArrayList<Any>()
-      if(!newPodcasts.isEmpty()) items.add(MediaHeader(context.getString(R.string.recently_added)))
+      if (!newPodcasts.isEmpty()) items.add(MediaHeader(context.getString(R.string.recently_added)))
       items.addAll(newPodcasts)
       view.setItems(items)
    }

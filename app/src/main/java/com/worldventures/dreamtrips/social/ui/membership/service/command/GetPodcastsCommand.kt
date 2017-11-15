@@ -74,7 +74,7 @@ class GetPodcastsCommand (val refresh: Boolean = false) : CommandWithError<List<
    fun hasMore() = result.size == PAGE_SIZE
 
    private fun obtainPage(): Int {
-      return when (refresh ||  cachedData.isEmpty()) {
+      return when (refresh || cachedData.isEmpty()) {
          true -> 1
          false -> cachedData.size / PAGE_SIZE + 1
       }

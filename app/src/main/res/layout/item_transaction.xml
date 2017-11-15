@@ -47,7 +47,6 @@
                android:layout_alignBottom="@+id/merchant_name"
                android:layout_alignParentTop="true"
                android:layout_toStartOf="@+id/transaction_date"
-               app:srcCompat="@drawable/check_error_pilot"
                />
 
          <TextView

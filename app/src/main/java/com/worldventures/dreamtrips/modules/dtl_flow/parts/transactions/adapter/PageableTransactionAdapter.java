@@ -158,7 +158,10 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          earnedPoints.setText(getEarnedPointText(transactionModel.getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-         statusImageView.setImageResource(TransactionModel.ThrstPaymentStatus.SUCCESSFUL.equals(transactionModel.getThrstPaymentStatus()) ? R.drawable.check_succes_pilot : R.drawable.check_error_pilot);
+         if(transactionModel.isTrhstTransaction())
+            statusImageView.setImageResource(TransactionModel.ThrstPaymentStatus.SUCCESSFUL.equals(transactionModel.getThrstPaymentStatus()) ? R.drawable.check_succes_pilot : R.drawable.check_error_pilot);
+         else
+            statusImageView.setImageBitmap(null);
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
          subtotal.setText(context.getString(R.string.dtl_subtotal, transactionModel.getSubTotalAmount()));

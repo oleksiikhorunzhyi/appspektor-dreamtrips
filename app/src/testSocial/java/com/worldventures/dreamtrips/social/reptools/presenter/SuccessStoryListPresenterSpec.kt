@@ -1,13 +1,13 @@
 package com.worldventures.dreamtrips.social.reptools.presenter
 
 import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryListPresenter
 import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand
+import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
@@ -29,22 +29,27 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
          it("should set items and finish loading on response") {
             presenter.takeView(view)
             presenter.onResume()
-            verify(view, VerificationModeFactory.times(1)).setItems(any())
-            verify(view, VerificationModeFactory.times(1)).finishLoading()
+
+            verify(view).setItems(any())
+            verify(view).finishLoading()
          }
 
          it("should reload in onResume if there are no items") {
-            presenter.takeView(view)
             doReturn(0).whenever(view).itemsCount
+            presenter.takeView(view)
             presenter.onResume()
-            verify(presenter, VerificationModeFactory.times(1)).reload()
+
+            verify(view).setItems(any())
+            verify(view).finishLoading()
          }
 
          it("should not reload in onResume if there are already some items") {
-            presenter.takeView(view)
             doReturn(55).whenever(view).itemsCount
+
+            presenter.takeView(view)
             presenter.onResume()
-            verify(presenter, VerificationModeFactory.times(0)).reload()
+
+            verify(view, never()).setItems(any())
          }
       }
 
@@ -52,9 +57,11 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
          it ("should handle error") {
             init(BaseContract.of(GetSuccessStoriesCommand::class.java).exception(RuntimeException()))
             doReturn(0).whenever(view).itemsCount
+
             presenter.takeView(view)
             presenter.onResume()
-            verify(presenter, VerificationModeFactory.times(1)).handleError(any(), any())
+
+            verify(view).informUser(anyOrNull<String>())
          }
       }
    }
@@ -67,7 +74,7 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
       lateinit var successStoriesInteractor: SuccessStoriesInteractor
 
       fun init(contract: Contract) {
-         presenter = spy(SuccessStoryListPresenter())
+         presenter = SuccessStoryListPresenter()
          view = mock()
 
          val service = MockCommandActionService.Builder().apply {
@@ -82,18 +89,20 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
          injector.registerProvider(SuccessStoriesInteractor::class.java, { successStoriesInteractor })
          injector.inject(presenter)
          presenter.onInjected()
-
-         doReturn(true).whenever(presenter).isConnected
       }
 
-      fun makeStubStories(): List<SuccessStory> = mutableListOf(makeStubStory(1), makeStubStory(2))
+      fun makeStubStories() = mutableListOf(makeStubStory(1), makeStubStory(2))
 
       fun makeStubStory(id: Int): SuccessStory {
-         val story = SuccessStory()
-         story.id = id
-         story.author = "Author $id"
-         story.category = "category $id"
-         return story;
+         return SuccessStory(
+               id = id,
+               author = "Author $id",
+               category = "category $id",
+               locale = "",
+               url = "",
+               sharingUrl = "",
+               isLiked = false
+         )
       }
    }
 }

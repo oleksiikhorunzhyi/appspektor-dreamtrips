@@ -23,7 +23,6 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    private List<AdapterItem> items = new ArrayList<>();
    private boolean loaderIsShowing;
 
-   // View Types
    private static final int ITEM = 0;
    private static final int LOADING = 1;
 
@@ -141,6 +140,7 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       public TextView transactionDate;
       public TextView subtotal;
       public Context context;
+      public ImageView statusImageView;
 
       public ViewHolder(View itemView) {
          super(itemView);
@@ -150,6 +150,7 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
          subtotal = itemView.findViewById(R.id.subtotal);
+         statusImageView = itemView.findViewById(R.id.imageViewStatus);
       }
 
       public void bind(TransactionModel transactionModel) {
@@ -157,6 +158,7 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          earnedPoints.setText(getEarnedPointText(transactionModel.getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
+         statusImageView.setImageResource(TransactionModel.ThrstPaymentStatus.SUCCESSFUL.equals(transactionModel.getThrstPaymentStatus()) ? R.drawable.check_succes_pilot : R.drawable.check_error_pilot);
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
          subtotal.setText(context.getString(R.string.dtl_subtotal, transactionModel.getSubTotalAmount()));
@@ -175,4 +177,3 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    }
 
 }
-

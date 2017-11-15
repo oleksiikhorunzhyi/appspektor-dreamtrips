@@ -52,7 +52,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
    @Override
    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
       final SearchableTransactionsAdapter.ViewHolder recyclerViewHolder = (SearchableTransactionsAdapter.ViewHolder) holder;
-      recyclerViewHolder.bind(position);
+      recyclerViewHolder.bind(transactionsList.get(position));
    }
 
    @Override
@@ -66,7 +66,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
       public TextView subtotal;
-
+      public ImageView statusImageView;
 
       public ViewHolder(View itemView) {
          super(itemView);
@@ -75,16 +75,18 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
          subtotal = itemView.findViewById(R.id.subtotal);
+         statusImageView = itemView.findViewById(R.id.imageViewStatus);
       }
 
-      public void bind(int position) {
-         merchantName.setText(transactionsList.get(position).getMerchantName());
-         earnedPoints.setText(getEarnedPointText(transactionsList.get(position).getEarnedPoints()));
+      public void bind(TransactionModel transactionModel) {
+         merchantName.setText(transactionModel.getMerchantName());
+         earnedPoints.setText(getEarnedPointText(transactionModel.getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-         transactionDate.setText(DateTimeUtils.convertDateToString(transactionsList.get(position).getTransactionDate(),
+         statusImageView.setImageResource(TransactionModel.ThrstPaymentStatus.SUCCESSFUL.equals(transactionModel.getThrstPaymentStatus()) ? R.drawable.check_succes_pilot : R.drawable.check_error_pilot);
+         transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
-         subtotal.setText(context.getString(R.string.dtl_subtotal, transactionsList.get(position).getSubTotalAmount()));
+         subtotal.setText(context.getString(R.string.dtl_subtotal, transactionModel.getSubTotalAmount()));
       }
 
       private String getEarnedPointText(int earnedPoints) {

@@ -2,7 +2,10 @@ package com.worldventures.core.modules.infopages.service.command
 
 import com.facebook.common.internal.ImmutableList
 import com.worldventures.core.R
-import com.worldventures.core.janet.cache.*
+import com.worldventures.core.janet.cache.CacheBundleImpl
+import com.worldventures.core.janet.cache.CacheOptions
+import com.worldventures.core.janet.cache.CacheOptionsImpl
+import com.worldventures.core.janet.cache.CachedAction
 import com.worldventures.core.janet.cache.storage.KeyValueStorage
 import com.worldventures.core.janet.cache.storage.PaginatedStorage
 import com.worldventures.core.modules.infopages.model.Document
@@ -19,7 +22,7 @@ class GetDocumentsCommand(private val documentType: DocumentType, val isRefresh:
 
    constructor(documentType: DocumentType) : this(documentType, false)
 
-   private var cachedDocuments: ImmutableList<Document>? = null
+   private var cachedDocuments: List<Document> = emptyList()
 
    override fun mapHttpActionResult(httpAction: GetDocumentsHttpAction): Any = httpAction.response()
 
@@ -55,7 +58,7 @@ class GetDocumentsCommand(private val documentType: DocumentType, val isRefresh:
 
    fun items(): List<Document> {
       val documents = ArrayList<Document>()
-      cachedDocuments?.let { documents.addAll(it) }
+      if (!cachedDocuments.isEmpty()) documents.addAll(cachedDocuments)
       if (result != null) documents.addAll(result)
       return documents
    }
@@ -63,14 +66,10 @@ class GetDocumentsCommand(private val documentType: DocumentType, val isRefresh:
    fun isNoMoreElements() = result.size < PER_PAGE
 
    private fun clearCacheIfNeeded() {
-      if (isRefresh) cachedDocuments = null
+      if (isRefresh) cachedDocuments = emptyList()
    }
 
-   private fun getPage(): Int {
-      return if (isRefresh || cachedDocuments == null || cachedDocuments!!.isEmpty()) {
-         1
-      } else cachedDocuments!!.size / PER_PAGE + 1
-   }
+   private fun getPage() = if (isRefresh || cachedDocuments.isEmpty()) 1 else cachedDocuments.size / PER_PAGE + 1
 
    enum class DocumentType {
       HELP,

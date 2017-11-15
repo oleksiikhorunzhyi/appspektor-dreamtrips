@@ -16,7 +16,7 @@ data class Podcast(var title: String? = null,
                    var imageUrl: String? = null,
                    var fileUrl: String? = null,
                    var speaker: String? = null,
-                   var cachedModel:CachedModel? = null) {
+                   var cachedModel: CachedModel? = null) {
 
    override fun equals(other: Any?) = (other !is Podcast) || this.fileUrl.equals(other.fileUrl)
 

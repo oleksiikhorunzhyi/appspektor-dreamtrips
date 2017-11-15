@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.domain.converter
 
-
 import com.worldventures.core.converter.Converter
 import com.worldventures.dreamtrips.api.invitation.model.InvitationPreview
 import com.worldventures.dreamtrips.social.domain.entity.InviteTemplate

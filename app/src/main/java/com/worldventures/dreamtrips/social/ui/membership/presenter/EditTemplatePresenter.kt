@@ -8,7 +8,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.social.domain.entity.InviteTemplate
 import com.worldventures.dreamtrips.social.domain.entity.InviteType
 import com.worldventures.dreamtrips.social.service.InviteShareInteractor
-import com.worldventures.dreamtrips.social.service.invites.*
+import com.worldventures.dreamtrips.social.service.invites.CreateFilledInviteCommand
+import com.worldventures.dreamtrips.social.service.invites.DeselectAllContactsCommand
+import com.worldventures.dreamtrips.social.service.invites.ReadMembersCommand
+import com.worldventures.dreamtrips.social.service.invites.SendInvitesCommand
+import com.worldventures.dreamtrips.social.service.invites.selectedMemberAddresses
 import com.worldventures.dreamtrips.social.ui.membership.bundle.TemplateBundle
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.InviteShareEmailAction
@@ -90,14 +94,12 @@ class EditTemplatePresenter(templateBundle: TemplateBundle) : Presenter<EditTemp
       inviteShareInteractor.membersPipe.createObservableResult(ReadMembersCommand())
             .map { it.result.selectedMemberAddresses() }
             .subscribe {
-               val addresses = it.toTypedArray()
-
                view.openShare(if (inviteType === InviteType.EMAIL) {
                   val body = context.getString(R.string.invitation_text_template, username,
                         if (TextUtils.isEmpty(message)) "" else "\n\n" + message + ".", template.link)
-                  IntentUtils.newEmailIntent(template.title, body, *addresses)
+                  IntentUtils.newEmailIntent(template.title, body, it)
                } else {
-                  IntentUtils.newSmsIntent(context, template.title + " " + template.link, *addresses)
+                  IntentUtils.newSmsIntent(context, template.title + " " + template.link, it)
                })
 
                inviteShareInteractor.deseseltAllContactsPipe.send(DeselectAllContactsCommand())

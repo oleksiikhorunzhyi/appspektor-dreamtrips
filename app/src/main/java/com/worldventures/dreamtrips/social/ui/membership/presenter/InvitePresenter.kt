@@ -132,11 +132,11 @@ class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InviteP
       } else {
          inviteShareInteractor.membersPipe.createObservableResult(ReadMembersCommand())
                .map<List<String>>({ it.result.selectedMemberAddresses() })
-               .subscribe { addresses ->
+               .subscribe {
                   view.shareLink(if (type === InviteType.EMAIL) {
-                     IntentUtils.newEmailIntent("", shareBundle.shareLink, *addresses.toTypedArray())
+                     IntentUtils.newEmailIntent("", shareBundle.shareLink, it)
                   } else {
-                     IntentUtils.newSmsIntent(context, shareBundle.shareLink, *addresses.toTypedArray())
+                     IntentUtils.newSmsIntent(context, shareBundle.shareLink, it)
                   })
                }
       }

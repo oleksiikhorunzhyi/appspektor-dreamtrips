@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.service.invites
 
-
 import com.worldventures.core.janet.CommandWithError
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.invitation.GetInvitationTemplatesHttpAction

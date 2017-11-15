@@ -8,6 +8,7 @@ import android.provider.Telephony;
 import android.text.Html;
 import android.text.TextUtils;
 
+import java.util.List;
 import java.util.Locale;
 
 public final class IntentUtils {
@@ -16,13 +17,13 @@ public final class IntentUtils {
       //nothing
    }
 
-   public static Intent newEmailIntent(String subject, String body, String... addresses) {
+   public static Intent newEmailIntent(String subject, String body, List<String> addresses) {
       Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
 
-      if (addresses != null && addresses.length == 1) {
-         intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+      if (addresses != null && addresses.size() == 1) {
+         intent.putExtra(Intent.EXTRA_EMAIL, addresses.get(0));
       } else {
-         intent.putExtra(Intent.EXTRA_BCC, addresses);
+         intent.putExtra(Intent.EXTRA_BCC, addresses.get(0));
       }
       intent.putExtra(Intent.EXTRA_SUBJECT, subject);
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -48,12 +49,12 @@ public final class IntentUtils {
    }
 
 
-   public static Intent newSmsIntent(Context context, String body, String... phoneNumber) {
+   public static Intent newSmsIntent(Context context, String body, List<String> phoneNumbers) {
       Uri smsUri;
-      if (phoneNumber == null) {
+      if (phoneNumbers == null || phoneNumbers.isEmpty()) {
          smsUri = Uri.parse("smsto:");
       } else {
-         smsUri = Uri.parse("smsto:" + Uri.encode(TextUtils.join(",", phoneNumber)));
+         smsUri = Uri.parse("smsto:" + Uri.encode(TextUtils.join(",", phoneNumbers)));
       }
       Intent intent;
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

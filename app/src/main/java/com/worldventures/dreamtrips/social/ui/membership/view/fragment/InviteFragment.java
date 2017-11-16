@@ -28,12 +28,15 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCall
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.domain.entity.Contact;
 import com.worldventures.dreamtrips.social.domain.entity.InviteType;
-import com.worldventures.dreamtrips.social.ui.membership.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.social.ui.membership.bundle.InviteShareBundle;
 import com.worldventures.dreamtrips.social.ui.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.social.ui.membership.view.adapter.SimpleImageArrayAdapter;
 import com.worldventures.dreamtrips.social.ui.membership.view.cell.ContactCell;
 import com.worldventures.dreamtrips.social.ui.membership.view.dialog.AddContactDialog;
 import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -45,7 +48,8 @@ import butterknife.OnClick;
 import static com.worldventures.core.ui.util.permission.PermissionConstants.READ_PHONE_CONTACTS;
 
 @Layout(R.layout.fragment_invite)
-public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, ShareBundle> implements InvitePresenter.View, SearchView.OnQueryTextListener {
+@ComponentPresenter.ComponentTitle(R.string.invite_and_share)
+public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, InviteShareBundle> implements InvitePresenter.View, SearchView.OnQueryTextListener {
 
    @Inject PermissionUtils permissionUtils;
 
@@ -225,5 +229,10 @@ public class InviteFragment extends BaseFragmentWithArgs<InvitePresenter, ShareB
    @Override
    public void shareLink(@NonNull Intent intent) {
       startActivity(Intent.createChooser(intent, getActivity().getString(R.string.action_share)));
+   }
+
+   @Override
+   public void setType(@NotNull InviteType type) {
+      selectionTypeSpinner.setSelection(type.ordinal());
    }
 }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.membership.presenter
 
 import android.content.Intent
+import android.os.Bundle
 import com.worldventures.core.ui.util.permission.PermissionConstants.READ_PHONE_CONTACTS
 import com.worldventures.core.ui.util.permission.PermissionConstants.WRITE_PHONE_CONTACTS
 import com.worldventures.core.ui.util.permission.PermissionDispatcher
@@ -17,7 +18,7 @@ import com.worldventures.dreamtrips.social.service.invites.ReadMembersCommand
 import com.worldventures.dreamtrips.social.service.invites.SelectContactCommand
 import com.worldventures.dreamtrips.social.service.invites.UpdateContactsCommand
 import com.worldventures.dreamtrips.social.service.invites.selectedMemberAddresses
-import com.worldventures.dreamtrips.social.ui.membership.bundle.ShareBundle
+import com.worldventures.dreamtrips.social.ui.membership.bundle.InviteShareBundle
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.AddContactInviteScreenAction
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.InviteShareContactsAction
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.SearchInInviteScreenAction
@@ -26,7 +27,7 @@ import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent
 import icepick.State
 import javax.inject.Inject
 
-class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InvitePresenter.View>() {
+class InvitePresenter(private val inviteShareBundle: InviteShareBundle?) : Presenter<InvitePresenter.View>() {
 
    @Inject lateinit var inviteShareInteractor: InviteShareInteractor
    @Inject lateinit var permissionDispatcher: PermissionDispatcher
@@ -40,6 +41,14 @@ class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InviteP
       analyticsInteractor.analyticsActionPipe().send(InviteShareContactsAction())
       subscribeToContactLoading()
       loadContacts()
+      view.setType(type)
+   }
+
+   override fun restoreInstanceState(savedState: Bundle?) {
+      super.restoreInstanceState(savedState)
+      if (savedState == null && inviteShareBundle != null) {
+            type = inviteShareBundle.type
+      }
    }
 
    private fun subscribeToContactLoading() {
@@ -127,16 +136,16 @@ class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InviteP
    }
 
    fun continueAction() {
-      if (shareBundle?.shareLink == null) {
+      if (inviteShareBundle?.shareText == null) {
          view.openTemplateView()
       } else {
          inviteShareInteractor.membersPipe.createObservableResult(ReadMembersCommand())
                .map<List<String>>({ it.result.selectedMemberAddresses() })
                .subscribe {
                   view.shareLink(if (type === InviteType.EMAIL) {
-                     IntentUtils.newEmailIntent("", shareBundle.shareLink, it)
+                     IntentUtils.newEmailIntent(inviteShareBundle.emailSubject, inviteShareBundle.shareText, it)
                   } else {
-                     IntentUtils.newSmsIntent(context, shareBundle.shareLink, it)
+                     IntentUtils.newSmsIntent(context, inviteShareBundle.shareText, it)
                   })
                }
       }
@@ -154,5 +163,7 @@ class InvitePresenter(private val shareBundle: ShareBundle?) : Presenter<InviteP
       fun showAddContactDialog()
 
       fun shareLink(intent: Intent)
+
+      fun setType(type: InviteType)
    }
 }

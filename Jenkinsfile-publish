@@ -5,6 +5,7 @@ def buildParams = [:]
 
 utils.runBuild('android', getNotifier(utils)) {
    stage('prepare build') {
+      println "Environment: ${env.getEnvironment()}"
       buildParams = generateParams(isPullRequest(), isInternalOnly())
       println "Build params: $buildParams"
    }
@@ -213,8 +214,8 @@ def getNotifier(utils) {
 }
 
 @NonCPS
-def String generateReleaseNotes(buildParams, changelog, boolean isPullRequest) {
-   StringBuilder text = new StringBuilder()
+def String generateReleaseNotes(Map buildParams, String changelog, boolean isPullRequest) {
+   def text = StringBuilder.newInstance()
    changelog = changelog?.split('\\n').collect { s -> "* $s" }.join('\n')
    if (isPullRequest) {
       // title

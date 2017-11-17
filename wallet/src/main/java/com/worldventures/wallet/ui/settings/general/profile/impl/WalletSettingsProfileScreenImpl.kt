@@ -16,8 +16,8 @@ import com.worldventures.core.ui.util.SoftInputUtil
 import com.worldventures.wallet.R
 import com.worldventures.wallet.databinding.ScreenWalletSettingsProfileBinding
 import com.worldventures.wallet.service.WalletCropImageService
-import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand
+import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.binding.LastPositionSelector
 import com.worldventures.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter

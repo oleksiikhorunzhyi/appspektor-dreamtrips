@@ -8,7 +8,7 @@ import com.worldventures.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletSocialInfoProvider;
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserPhotoCommand;
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserPhotoCommand;
 import com.worldventures.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
 import com.worldventures.wallet.util.FormatException;
 import com.worldventures.wallet.util.WalletValidateHelper;

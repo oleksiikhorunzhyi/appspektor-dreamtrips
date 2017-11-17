@@ -1,4 +1,4 @@
-package com.worldventures.wallet.service.command.profile
+package com.worldventures.wallet.service.profile
 
 import com.worldventures.dreamtrips.api.smart_card.user_info.UpdateCardUserHttpAction
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone

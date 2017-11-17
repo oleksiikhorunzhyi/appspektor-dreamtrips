@@ -14,8 +14,8 @@ import com.worldventures.wallet.service.WalletSocialInfoProvider
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.SetupUserDataCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
-import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand
-import com.worldventures.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand
+import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
+import com.worldventures.wallet.service.profile.RevertSmartCardUserUpdatingCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.wallet.ui.common.BasePresenterTest
 import com.worldventures.wallet.ui.common.InteractorBuilder

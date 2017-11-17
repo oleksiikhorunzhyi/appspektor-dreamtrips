@@ -5,10 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.worldventures.wallet.R;
-import com.worldventures.wallet.service.command.profile.BaseUserUpdateCommand;
-import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand;
-import com.worldventures.wallet.service.command.profile.UploadProfileDataException;
+import com.worldventures.wallet.service.profile.BaseUserUpdateCommand;
+import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
+import com.worldventures.wallet.service.profile.UploadProfileDataException;
 import com.worldventures.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
 import com.worldventures.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory;

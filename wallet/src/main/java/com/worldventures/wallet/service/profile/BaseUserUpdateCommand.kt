@@ -1,4 +1,4 @@
-package com.worldventures.wallet.service.command.profile
+package com.worldventures.wallet.service.profile
 
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import io.techery.janet.Command

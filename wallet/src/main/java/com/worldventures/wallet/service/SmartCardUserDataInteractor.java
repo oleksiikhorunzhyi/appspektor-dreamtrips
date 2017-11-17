@@ -1,9 +1,9 @@
 package com.worldventures.wallet.service;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
-import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
-import com.worldventures.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand;
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand;
+import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand;
+import com.worldventures.wallet.service.profile.RevertSmartCardUserUpdatingCommand;
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.WriteActionPipe;

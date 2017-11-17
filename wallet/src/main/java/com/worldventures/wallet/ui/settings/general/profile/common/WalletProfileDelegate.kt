@@ -11,9 +11,9 @@ import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.SmartCardUserDataInteractor
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand
-import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand
-import com.worldventures.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand
+import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
+import com.worldventures.wallet.service.profile.RevertSmartCardUserUpdatingCommand
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand
 import io.techery.janet.operationsubscriber.OperationActionSubscriber
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber

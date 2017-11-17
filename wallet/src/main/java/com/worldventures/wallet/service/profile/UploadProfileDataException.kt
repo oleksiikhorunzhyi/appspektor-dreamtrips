@@ -1,3 +1,3 @@
-package com.worldventures.wallet.service.command.profile
+package com.worldventures.wallet.service.profile
 
 class UploadProfileDataException internal constructor(cause: Throwable) : RuntimeException(cause)

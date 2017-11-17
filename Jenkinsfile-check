@@ -5,6 +5,7 @@ def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.w
 def notifier = utils.notifiers.gitlab(this)
 utils.runBuild('android', notifier) {
    stage('prepare build') {
+      println "Environment: ${env.getEnvironment()}"
       buildParams = generateParams()
       println buildParams
    }
@@ -80,7 +81,8 @@ utils.runBuild('android', notifier) {
       step([$class: "PmdPublisher", pattern: "**/reports/pmd/pmd.xml"])
       if (!errors.isEmpty()) {
          def firstError = errors[0]
-         def sb = new StringBuilder("Code analysis failed. See reports: ")
+         def sb = StringBuilder.newInstance()
+         sb.append("Code analysis failed. See reports: ")
          sb.append(createReportLink("Checkstyle", "checkstyleResult")).append(", ")
          sb.append(createReportLink("PMD", "pmdResult"))
          notifier.comment(sb.toString())

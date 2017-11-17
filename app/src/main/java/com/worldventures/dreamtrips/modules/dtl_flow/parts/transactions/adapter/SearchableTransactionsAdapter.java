@@ -52,7 +52,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
    @Override
    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
       final SearchableTransactionsAdapter.ViewHolder recyclerViewHolder = (SearchableTransactionsAdapter.ViewHolder) holder;
-      recyclerViewHolder.bind(position);
+      recyclerViewHolder.bind(transactionsList.get(position));
    }
 
    @Override
@@ -65,7 +65,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       public TextView earnedPoints;
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
-
+      public ImageView statusImageView;
 
       public ViewHolder(View itemView) {
          super(itemView);
@@ -73,15 +73,27 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
          earnedPoints = itemView.findViewById(R.id.earned_points);
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
+         statusImageView = itemView.findViewById(R.id.imageViewStatus);
+
       }
 
-      public void bind(int position) {
-         merchantName.setText(transactionsList.get(position).getMerchantName());
-         earnedPoints.setText(getEarnedPointText(transactionsList.get(position).getEarnedPoints()));
+      public void bind(TransactionModel transactionModel) {
+         merchantName.setText(transactionModel.getMerchantName());
+         earnedPoints.setText(getEarnedPointText(transactionModel.getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-         transactionDate.setText(DateTimeUtils.convertDateToString(transactionsList.get(position).getTransactionDate(),
+         setPaymentStatusIcon(transactionModel);
+         transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
+      }
+
+      private void setPaymentStatusIcon(TransactionModel transactionModel) {
+         if (transactionModel.isTrhstTransaction()) {
+            boolean isSuccess = TransactionModel.ThrstPaymentStatus.SUCCESSFUL.equals(transactionModel.getThrstPaymentStatus());
+            statusImageView.setImageResource(isSuccess ? R.drawable.check_succes_pilot : R.drawable.check_error_pilot);
+         } else {
+            statusImageView.setImageBitmap(null);
+         }
       }
 
       private String getEarnedPointText(int earnedPoints) {
@@ -128,7 +140,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
    }
 
    public List<TransactionModel> getCurrentItems() {
-      return  transactionsList;
+      return transactionsList;
    }
 
-   }
+}

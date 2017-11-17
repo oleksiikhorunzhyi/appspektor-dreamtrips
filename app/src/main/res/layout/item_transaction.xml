@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -34,10 +35,21 @@
                android:textStyle="bold"
                />
 
+         <ImageView
+               android:id="@+id/imageViewStatus"
+               android:layout_width="@dimen/dtl_transaction_screen_item_transaction_status_icon_size"
+               android:layout_height="wrap_content"
+               android:layout_alignBottom="@+id/merchant_name"
+               android:layout_alignParentTop="true"
+               android:layout_toStartOf="@+id/transaction_date"
+               />
+
          <TextView
                android:id="@+id/transaction_date"
-               android:layout_width="match_parent"
+               android:layout_width="wrap_content"
                android:layout_height="wrap_content"
+               android:layout_alignParentEnd="true"
+               android:layout_alignParentTop="true"
                android:gravity="end"
                android:text="10-11-1990"
                android:textColor="@color/gray_btn_bg_color"

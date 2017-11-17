@@ -87,7 +87,21 @@ ext {
       if (configSuffix != flavors.codes.prod) {
          versionName += "-${configSuffix}"
       }
-      //
-      variant.mergedFlavor.setVersionName versionName
+      if (variant.buildType.name == 'debug') {
+         versionName += "-debug"
+      }
+      variant.outputs.all { output ->
+         output.processManifest.doLast {
+            // Stores the path to the maifest.
+            String manifestPath = "$manifestOutputDirectory/AndroidManifest.xml"
+            // Stores the contents of the manifest.
+            def manifestContent = file(manifestPath).getText()
+            // Changes the version code in the stored text.
+            manifestContent = manifestContent.replaceAll('android:versionName=\".*\"',
+                  String.format('android:versionName="%s"', versionName))
+            // Overwrites the manifest with the new text.
+            file(manifestPath).write(manifestContent)
+         }
+      }
    }
 }

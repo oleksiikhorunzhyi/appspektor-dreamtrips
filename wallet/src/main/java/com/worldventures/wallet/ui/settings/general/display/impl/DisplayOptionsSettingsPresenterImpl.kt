@@ -8,8 +8,6 @@ import com.worldventures.wallet.service.SmartCardUserDataInteractor
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.wallet.service.WalletSocialInfoProvider
 import com.worldventures.wallet.service.command.SmartCardUserCommand
-import com.worldventures.wallet.service.command.profile.ChangedFields
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand
 import com.worldventures.wallet.service.command.settings.general.display.GetDisplayTypeCommand
 import com.worldventures.wallet.service.command.settings.general.display.SaveDisplayTypeCommand
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate
@@ -31,12 +29,12 @@ import timber.log.Timber
 class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
                                           deviceConnectionDelegate: WalletDeviceConnectionDelegate,
                                           private val smartCardInteractor: SmartCardInteractor,
-                                          private val smartCardUserDataInteractor: SmartCardUserDataInteractor,
+                                          smartCardUserDataInteractor: SmartCardUserDataInteractor,
                                           analyticsInteractor: WalletAnalyticsInteractor,
                                           private val socialInfoProvider: WalletSocialInfoProvider)
    : WalletPresenterImpl<DisplayOptionsSettingsScreen>(navigator, deviceConnectionDelegate), DisplayOptionsSettingsPresenter {
 
-   private val delegate: WalletProfileDelegate = WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor)
+   private val delegate: WalletProfileDelegate = WalletProfileDelegate(smartCardUserDataInteractor, smartCardInteractor, analyticsInteractor)
 
    private var mustSaveUserProfile: Boolean = false
    private var user: SmartCardUser? = null
@@ -142,17 +140,7 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
    }
 
    private fun updateProfileAndSaveDisplayType(saveDisplayType: SaveDisplayTypeCommand) {
-      val changedFields = ChangedFields(
-            firstName = user!!.firstName,
-            middleName = user!!.middleName,
-            lastName = user!!.lastName,
-            phone = user!!.phoneNumber,
-            photo = user!!.userPhoto)
-
-      smartCardUserDataInteractor.updateSmartCardUserPipe()
-            .createObservableResult(UpdateSmartCardUserCommand(changedFields, true))
-            .doOnNext { smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType) }
-            .subscribe({ }) { throwable -> Timber.e(throwable, "") }
+      delegate.updateUser(user!!, true) { smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType) }
    }
 
    override fun goBack() {

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.worldventures.wallet.R;
+import com.worldventures.wallet.service.command.profile.BaseUserUpdateCommand;
 import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand;
 import com.worldventures.wallet.service.command.profile.UploadProfileDataException;
@@ -67,12 +68,12 @@ public class UpdateSmartCardUserOperationView {
       return errorProvider;
    }
 
-   private static <T> ErrorViewProvider<T> provideUploadDataExceptionHandler(Context context, WalletProfileDelegate profileDelegate) {
+   private static <T extends BaseUserUpdateCommand> ErrorViewProvider<T> provideUploadDataExceptionHandler(Context context, WalletProfileDelegate profileDelegate) {
       final SimpleDialogErrorViewProvider<T> errorProvider = new SimpleDialogErrorViewProvider<>(context,
             UploadProfileDataException.class,
             R.string.wallet_card_settings_profile_dialog_error_server_content,
-            command -> profileDelegate.retryUploadToServer(),
-            command -> profileDelegate.cancelUploadServerUserData());
+            command -> profileDelegate.retryUploadToServer(command.getSmartCardId(), command.getNewUser()),
+            command -> profileDelegate.cancelUploadServerUserData(command.getSmartCardId(), command.getNewUser()));
       errorProvider.setPositiveText(R.string.wallet_retry_label);
       return errorProvider;
    }

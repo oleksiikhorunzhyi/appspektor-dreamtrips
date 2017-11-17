@@ -247,7 +247,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    public void showConfirmationDialog(ProfileViewModel profileViewModel) {
       new MaterialDialog.Builder(getContext())
             .content(fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message,
-                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastNameWithSuffix()))))
+                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastName()))))
             .contentGravity(GravityEnum.CENTER)
             .positiveText(R.string.wallet_edit_profile_confirmation_dialog_button_positive)
             .onPositive((dialog, which) -> getPresenter().onUserDataConfirmed())

@@ -43,7 +43,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
       this.wizardInteractor = wizardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.socialInfoProvider = socialInfoProvider;
-      this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, analyticsInteractor);
+      this.delegate = new WalletProfileDelegate(smartCardUserDataInteractor, smartCardInteractor, analyticsInteractor);
    }
 
    @Override
@@ -54,7 +54,6 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
       }
       observeSetupUserCommand(getView());
 
-      delegate.observePickerAndCropper(getView());
       delegate.sendAnalytics(new SetupUserAction());
    }
 
@@ -104,7 +103,7 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
       // noinspection ConstantConditions
       final ProfileViewModel profile = view.getProfile();
       //noinspection ConstantConditions
-      WalletProfileUtils.checkUserNameValidation(profile.getFirstName(), profile.getMiddleName(), profile.getLastNameWithSuffix(),
+      WalletProfileUtils.INSTANCE.checkUserNameValidation(profile.getFirstName(), profile.getMiddleName(), profile.getLastName(),
             () -> view.showConfirmationDialog(profile),
             e -> view.provideOperationView().showError(null, e));
    }

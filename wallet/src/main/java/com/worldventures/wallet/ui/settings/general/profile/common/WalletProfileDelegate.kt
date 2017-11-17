@@ -7,20 +7,23 @@ import com.worldventures.wallet.analytics.settings.ProfileChangesSavedAction
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.SmartCardUserPhone
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto
+import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.SmartCardUserDataInteractor
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
+import com.worldventures.wallet.service.command.ActiveSmartCardCommand
 import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand
 import com.worldventures.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand
+import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand
 import io.techery.janet.operationsubscriber.OperationActionSubscriber
 import rx.android.schedulers.AndroidSchedulers
-import rx.functions.Action1
+import timber.log.Timber
 
 class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUserDataInteractor,
+                            private val smartCardInteractor: SmartCardInteractor,
                             private val analyticsInteractor: WalletAnalyticsInteractor) {
 
-   @JvmOverloads
    fun observeProfileUploading(view: UpdateSmartCardUserView,
-                               onSuccess: Action1<SmartCardUser>? = null, onFailure: Action1<Throwable>? = null) {
+                               onSuccess: ((SmartCardUser) -> Unit)? = null, onFailure: ((Throwable) -> Unit)? = null) {
 
       smartCardUserDataInteractor.updateSmartCardUserPipe()
             .observeWithReplay()
@@ -30,10 +33,10 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
             .subscribe(OperationActionSubscriber.forView(view.provideUpdateSmartCardOperation(this))
                   .onSuccess { setupUserDataCommand ->
                      sendAnalytics(ProfileChangesSavedAction())
-                     onSuccess?.call(setupUserDataCommand.result)
+                     onSuccess?.invoke(setupUserDataCommand.result)
                   }
                   .onFail { _, throwable ->
-                     onFailure?.call(throwable)
+                     onFailure?.invoke(throwable)
                   }
                   .create())
 
@@ -45,12 +48,28 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
             .subscribe(OperationActionSubscriber.forView(view.provideHttpUploadOperation(this)).create())
    }
 
-   fun cancelUploadServerUserData() {
-      smartCardUserDataInteractor.revertSmartCardUserUpdatingPipe().send(RevertSmartCardUserUpdatingCommand())
+   fun updateUser(profile: ProfileViewModel, forceUpdateDisplayType: Boolean, actionComplete: (() -> Unit)? = null) {
+      updateUser(createSmartCardUser(profile), forceUpdateDisplayType, actionComplete)
    }
 
-   fun retryUploadToServer() {
-      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe().send(RetryHttpUploadUpdatingCommand())
+   fun updateUser(newUser: SmartCardUser, forceUpdateDisplayType: Boolean, actionComplete: (() -> Unit)? = null) {
+      smartCardInteractor.activeSmartCardPipe()
+            .createObservableResult(ActiveSmartCardCommand())
+            .subscribe({
+               smartCardUserDataInteractor.updateSmartCardUserPipe()
+                     .createObservableResult(UpdateSmartCardUserCommand(newUser, it.result.smartCardId, forceUpdateDisplayType))
+                     .subscribe({ actionComplete?.invoke()}, { Timber.e(it)})
+            }, { Timber.e(it) })
+   }
+
+   fun cancelUploadServerUserData(smartCardId: String, newUser: SmartCardUser) {
+      smartCardUserDataInteractor.revertSmartCardUserUpdatingPipe()
+            .send(RevertSmartCardUserUpdatingCommand(smartCardId, newUser))
+   }
+
+   fun retryUploadToServer(smartCardId: String, newUser: SmartCardUser) {
+      smartCardUserDataInteractor.retryHttpUploadUpdatingPipe()
+            .send(RetryHttpUploadUpdatingCommand(smartCardId, newUser))
    }
 
    fun sendAnalytics(action: WalletAnalyticsAction) {
@@ -58,22 +77,16 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
       analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand)
    }
 
-   @Deprecated("This method does nothing")
-   fun observePickerAndCropper(view: WalletProfilePhotoView) {
-      //      view.observeCropper().compose(view.lifecycle()).subscribe(photoFile -> { /*nothing*/ });
-   }
-
    fun createPhone(model: ProfileViewModel): SmartCardUserPhone? {
-      return if (model.phoneCode.isNullOrEmpty() || model.phoneNumber.isNullOrEmpty()) {
+      return if (model.phoneCode.isEmpty() || model.phoneNumber.isEmpty()) {
          null
       } else {
          SmartCardUserPhone("+${model.phoneCode}", model.phoneNumber)
       }
    }
 
-   fun createPhoto(model: ProfileViewModel): SmartCardUserPhoto? {
-      return if (!model.isPhotoEmpty) SmartCardUserPhoto(model.chosenPhotoUri!!) else null
-   }
+   private fun createPhoto(model: ProfileViewModel): SmartCardUserPhoto? =
+         if (!model.isPhotoEmpty) SmartCardUserPhoto(model.chosenPhotoUri!!) else null
 
    fun toViewModel(user: SmartCardUser): ProfileViewModel {
       val phone = user.phoneNumber
@@ -106,12 +119,11 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
       return SmartCardUser(
             firstName = profile.firstName,
             middleName = profile.middleName,
-            lastName = profile.lastNameWithSuffix,
+            lastName = profile.lastName,
             phoneNumber = createPhone(profile),
             userPhoto = createPhoto(profile))
    }
 
-   fun provideInitialPhotoUrl(userPhotoUrl: String?): String? {
-      return if (userPhotoUrl != null && !WalletProfileUtils.isPhotoEmpty(userPhotoUrl)) userPhotoUrl else null
-   }
+   fun provideInitialPhotoUrl(userPhotoUrl: String?): String? =
+         if (userPhotoUrl != null && !WalletProfileUtils.isPhotoEmpty(userPhotoUrl)) userPhotoUrl else null
 }

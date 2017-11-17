@@ -594,8 +594,8 @@ public class WalletActivityModule {
          WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
          WalletSocialInfoProvider socialInfoProvider) {
-      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate,
-            smartCardInteractor, analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider);
+      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor,
+            smartCardInteractor, smartCardUserDataInteractor, socialInfoProvider);
    }
 
    @Provides

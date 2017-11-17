@@ -1,8 +1,5 @@
 package com.worldventures.wallet.service.command.profile
 
-import com.worldventures.dreamtrips.api.smart_card.user_info.model.CardUserPhone
-import com.worldventures.dreamtrips.api.smart_card.user_info.model.ImmutableUpdateCardUserData
-import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
 import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET
 import com.worldventures.wallet.domain.entity.SmartCardUser
@@ -10,10 +7,10 @@ import com.worldventures.wallet.domain.entity.SmartCardUserPhoto
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WalletNetworkService
 import com.worldventures.wallet.service.WalletSocialInfoProvider
-import com.worldventures.wallet.service.command.ActiveSmartCardCommand
 import com.worldventures.wallet.service.command.SmartCardUserCommand
 import com.worldventures.wallet.service.command.settings.general.display.ValidateDisplayTypeDataCommand
 import com.worldventures.wallet.service.command.uploadery.SmartCardUploaderyCommand
+import com.worldventures.wallet.ui.settings.general.profile.common.WalletProfileUtils.equalsPhone
 import com.worldventures.wallet.util.CachedPhotoUtil
 import com.worldventures.wallet.util.FormatException
 import com.worldventures.wallet.util.NetworkUnavailableException
@@ -31,8 +28,9 @@ import javax.inject.Inject
 import javax.inject.Named
 
 @CommandAction
-class UpdateSmartCardUserCommand(private val changedFields: ChangedFields,
-                                 private val forceUpdateDisplayType: Boolean) : Command<SmartCardUser>(), InjectableAction {
+class UpdateSmartCardUserCommand(newUser: SmartCardUser, smartCardId: String,
+                                 private val forceUpdateDisplayType: Boolean)
+   : BaseUserUpdateCommand<SmartCardUser>(smartCardId, newUser), InjectableAction {
 
    @field:[Inject Named(JANET_WALLET)]
    lateinit var janet: Janet
@@ -50,26 +48,18 @@ class UpdateSmartCardUserCommand(private val changedFields: ChangedFields,
 
       smartCardInteractor.validateDisplayTypeDataPipe()
             .createObservableResult(ValidateDisplayTypeDataCommand(
-                  changedFields.photo != null, changedFields.phone != null, forceUpdateDisplayType))
-            .doOnNext { updateProfileManager.attachChangedFields(changedFields) }
+                  newUser.userPhoto != null, newUser.phoneNumber != null, forceUpdateDisplayType))
             .flatMap {
-               Observable.zip<ActiveSmartCardCommand, SmartCardUserCommand, Pair<ActiveSmartCardCommand, SmartCardUserCommand>>(
-                     smartCardInteractor.activeSmartCardPipe()
-                           .createObservableResult(ActiveSmartCardCommand()),
-                     smartCardInteractor.smartCardUserPipe()
-                           .createObservableResult(SmartCardUserCommand.fetch()),
-                     { first, second -> Pair(first, second) })
+               smartCardInteractor.smartCardUserPipe()
+                     .createObservableResult(SmartCardUserCommand.fetch())
+                     .flatMap { uploadData(smartCardId, it.result) }
             }
-            .flatMap { pair -> uploadData(pair.first.result.smartCardId, pair.second.result) }
-            .subscribe( { callback.onSuccess(it) },  { callback.onFail(it) })
+            .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }
 
    @Throws(FormatException::class)
    private fun validateData() {
-      WalletValidateHelper.validateUserFullNameOrThrow(
-            changedFields.firstName,
-            changedFields.middleName,
-            changedFields.lastName)
+      WalletValidateHelper.validateUserFullNameOrThrow(newUser.firstName, newUser.middleName, newUser.lastName)
    }
 
    private fun validateNetwork() {
@@ -79,87 +69,60 @@ class UpdateSmartCardUserCommand(private val changedFields: ChangedFields,
    }
 
    private fun uploadData(smartCardId: String, user: SmartCardUser): Observable<SmartCardUser> {
-      return pushToSmartCard(smartCardId, user)
+      return updateNameOnSmartCard(smartCardId, user)
+            .flatMap {
+               uploadPhotoIfNeed(user, smartCardId)
+                     .map { newUser.copy(userPhoto = it?.let { SmartCardUserPhoto(it) }) }
+            }
             .flatMap { updateCardUserData -> updateProfileManager.uploadData(smartCardId, updateCardUserData) }
    }
 
-   private fun pushToSmartCard(smartCardId: String, user: SmartCardUser): Observable<UpdateCardUserData> {
-      return updateNameOnSmartCard(smartCardId, user)
-            .flatMap { userData -> uploadPhotoIfNeed(user, smartCardId, userData) }
-   }
-
-   private fun updateNameOnSmartCard(scId: String, user: SmartCardUser): Observable<UpdateCardUserData> {
-      val dataBuilder = ImmutableUpdateCardUserData.builder()
-
-      dataBuilder.photoUrl(if (changedFields.photo != null) changedFields.photo.uri else null)
-      dataBuilder.firstName(changedFields.firstName)
-      dataBuilder.middleName(changedFields.middleName)
-      dataBuilder.lastName(changedFields.lastName)
-
-      if (changedFields.phone != null) {
-         dataBuilder.phone(mapperyContext.convert(changedFields.phone, CardUserPhone::class.java))
-      }
-
-      val userData = dataBuilder.build()
-      return if (needToUpdate(user)) {
+   private fun updateNameOnSmartCard(scId: String, сachedUser: SmartCardUser): Observable<Void> {
+      return if (needToUpdate(newUser, сachedUser)) {
          janet.createPipe(UpdateUserAction::class.java)
-               .createObservableResult(UpdateUserAction(ImmutableUser.builder()
-                     .firstName(changedFields.firstName)
-                     .middleName(changedFields.middleName)
-                     .lastName(changedFields.lastName)
-                     .phoneNum(changedFields.phone?.fullPhoneNumber())
+               .createObservableResult(UpdateUserAction(ImmutableUser.builder() //todo duplicated code
+                     .firstName(newUser.firstName)
+                     .middleName(newUser.middleName)
+                     .lastName(newUser.lastName)
+                     .phoneNum(newUser.phoneNumber?.fullPhoneNumber())
                      .isUserAssigned(true)
                      .memberId(socialInfoProvider.userId()!!.toLong())
                      .barcodeId(java.lang.Long.parseLong(scId))
                      .memberStatus(socialInfoProvider.memberStatus()!!)
                      .build()))
-               .map { userData }
+               .map { null }
       } else {
-         Observable.just(userData)
+         Observable.just(null)
       }
    }
 
-   private fun needToUpdate(user: SmartCardUser): Boolean {
-      return (changedFields.firstName != user.firstName
-            || changedFields.middleName != user.middleName
-            || changedFields.lastName != user.lastName
-            || !equalsDirectly(user.phoneNumber, changedFields.phone))
+   private fun needToUpdate(updatedUser: SmartCardUser, cachedUser: SmartCardUser): Boolean {
+      return (updatedUser.firstName != cachedUser.firstName
+            || updatedUser.middleName != cachedUser.middleName
+            || updatedUser.lastName != cachedUser.lastName
+            || !equalsPhone(updatedUser.phoneNumber, cachedUser.phoneNumber))
    }
 
-   private fun equalsDirectly(a: Any?, b: Any?): Boolean {
-      return a === b || a != null && a == b
-   }
+   private fun uploadPhotoIfNeed(cachedUser: SmartCardUser, smartCardId: String): Observable<String?> {
+      val newPhoto = newUser.userPhoto
+      clearUserImageCache(cachedUser.userPhoto)
 
-   private fun uploadPhotoIfNeed(user: SmartCardUser, smartCardId: String,
-                                 updateUserData: UpdateCardUserData): Observable<UpdateCardUserData> {
-      val newPhoto = changedFields.photo
-      if (newPhoto != null) {
-
-         clearUserImageCache(user.userPhoto)
-
-         return janet.createPipe(UpdateSmartCardUserPhotoCommand::class.java)
+      return if (newPhoto != null) {
+         janet.createPipe(UpdateSmartCardUserPhotoCommand::class.java)
                .createObservableResult(UpdateSmartCardUserPhotoCommand(newPhoto.uri))
                .flatMap {
                   janet.createPipe(SmartCardUploaderyCommand::class.java, Schedulers.io())
                         .createObservableResult(SmartCardUploaderyCommand(smartCardId, newPhoto.uri))
                }
-               .map { command ->
-                  ImmutableUpdateCardUserData.builder()
-                        .from(updateUserData)
-                        //uri saved in UpdateProfileManager
-                        .photoUrl(command.result.response().uploaderyPhoto().location())
-                        .build()
-               }
+               .map { it.result.response().uploaderyPhoto().location() }
       } else {
-         return smartCardInteractor.removeUserPhotoActionPipe()
+         smartCardInteractor.removeUserPhotoActionPipe()
                .createObservableResult(RemoveUserPhotoAction())
-               .map { updateUserData }
+               .map { null }
       }
    }
 
    private fun clearUserImageCache(photo: SmartCardUserPhoto?) {
-      if (photo != null) {
-         cachedPhotoUtil.removeCachedPhoto(photo.uri)
-      }
+      photo?.let { cachedPhotoUtil.removeCachedPhoto(it.uri) }
    }
 }

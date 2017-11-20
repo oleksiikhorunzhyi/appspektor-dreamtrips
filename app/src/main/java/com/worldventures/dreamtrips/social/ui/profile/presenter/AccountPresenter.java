@@ -321,7 +321,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    }
 
    public void imageSelected(MediaPickerAttachment mediaAttachment) {
-      if (mediaAttachment.getChosenImages().size() > 0) {
+      if (mediaAttachment.getChosenImages().isEmpty()) {
          return;
       }
 

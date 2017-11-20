@@ -8,6 +8,7 @@ import com.worldventures.core.model.Filterable
 import com.worldventures.core.ui.view.adapter.HeaderItem
 
 class SuccessStory(id: Int,
+                   val title: String,
                    val author: String,
                    val category: String,
                    val locale: String,
@@ -30,6 +31,7 @@ class SuccessStory(id: Int,
          source.readString(),
          source.readString(),
          source.readString(),
+         source.readString(),
          1 == source.readInt()
    ) {
       isSelected = 1 == source.readInt()
@@ -39,6 +41,7 @@ class SuccessStory(id: Int,
 
    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
       writeInt(id)
+      writeString(title)
       writeString(author)
       writeString(category)
       writeString(locale)

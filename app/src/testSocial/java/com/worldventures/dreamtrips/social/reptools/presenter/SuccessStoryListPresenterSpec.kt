@@ -96,6 +96,7 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
       fun makeStubStory(id: Int): SuccessStory {
          return SuccessStory(
                id = id,
+               title = "title $id",
                author = "Author $id",
                category = "category $id",
                locale = "",

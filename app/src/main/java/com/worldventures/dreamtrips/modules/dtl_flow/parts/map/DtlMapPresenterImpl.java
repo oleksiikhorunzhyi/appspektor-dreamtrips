@@ -252,8 +252,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    @Override
-   public void setMerchantType(List<String> merchantType, String searchQuery) {
-      filterDataInteractor.searchMerchantType(merchantType, searchQuery);
+   public void setMerchantType(List<String> merchantType) {
+      filterDataInteractor.searchMerchantType(merchantType);
    }
 
    @Override

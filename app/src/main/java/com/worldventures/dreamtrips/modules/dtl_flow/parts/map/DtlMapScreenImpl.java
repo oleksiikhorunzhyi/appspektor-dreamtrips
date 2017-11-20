@@ -392,7 +392,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       if (dtlToolbar == null) {
          return;
       }
-      dtlToolbar.setSearchCaption(searchCaption);
+      dtlToolbar.setSearchHint(searchCaption);
    }
 
    @Override
@@ -468,13 +468,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
       ViewUtils.setTextColor((Button) filterSpa, MerchantTypeUtil.filterMerchantColor(filterSpa));
 
       if (stringResource != 0 && dtlToolbar != null) {
-         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
+         dtlToolbar.setSearchHint(getContext().getResources().getString(stringResource));
       }
    }
 
    private void loadMerchantsAndAmenities(List<String> merchantType, int stringResource) {
       updateFiltersView(stringResource);
-      getPresenter().setMerchantType(merchantType, getActivity().getString(stringResource));
+      getPresenter().setMerchantType(merchantType);
       getPresenter().loadAmenities(merchantType);
    }
 

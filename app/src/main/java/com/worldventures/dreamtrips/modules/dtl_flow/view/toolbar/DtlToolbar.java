@@ -36,15 +36,17 @@ public class DtlToolbar extends LinearLayout {
    protected List<TransactionButtonListener> transactionButtonListeners = new ArrayList<>();
 
    protected String searchQuery;
+   protected String searchHint;
    protected FocusedMode focusedMode;
    protected String locationTitle;
    protected String defaultEmptySearchCaption;
-   protected String currentSelectedFilter;
 
    public DtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
       inflateLayout();
       initAttributes(attrs);
+      defaultEmptySearchCaption = context.getString(R.string.filter_merchant_dining);
+      Timber.d("Flow -- DtlToolbar create()");
    }
 
    protected void inflateLayout() {
@@ -81,15 +83,10 @@ public class DtlToolbar extends LinearLayout {
    }
 
    protected void updateToolbarCaptions() {
-      merchantSearchInput.setText("");
-      if (TextUtils.isEmpty(searchQuery)) {
-         merchantSearchInput.setHint(defaultEmptySearchCaption);
-      } else {
-         if (searchQuery.equals(getContext().getString(R.string.filter_merchant_dining))) {
-            searchQuery = defaultEmptySearchCaption;
-         }
-         merchantSearchInput.setHint(searchQuery);
-      }
+      String hint = TextUtils.isEmpty(searchHint) ? defaultEmptySearchCaption : searchHint;
+      merchantSearchInput.setHint(hint);
+      merchantSearchInput.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
+
       locationSearchInput.setText(locationTitle);
       locationSearchInput.selectAll();
    }
@@ -109,8 +106,8 @@ public class DtlToolbar extends LinearLayout {
       updateToolbarCaptions();
    }
 
-   public void setSearchCaption(String searchCaption) {
-      this.searchQuery = searchCaption;
+   public void setSearchHint(String searchHint) {
+      this.searchHint = searchHint;
       updateToolbarCaptions();
    }
 

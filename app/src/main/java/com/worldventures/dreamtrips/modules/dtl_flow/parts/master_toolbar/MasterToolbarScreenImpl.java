@@ -142,7 +142,7 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
 
    @Override
    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
-      toolbar.setSearchCaption(searchCaption);
+      toolbar.setSearchHint(searchCaption);
    }
 
    @Override

@@ -58,16 +58,16 @@ class WalletSettingsProfilePresenterImpl(navigator: Navigator,
    private fun fetchProfile() {
       smartCardInteractor.smartCardUserPipe()
             .createObservableResult(SmartCardUserCommand.fetch())
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ setUser(it.result) }) { Timber.e(it, "") }
+            .subscribe({ setUser(it.result) }) { Timber.e(it) }
    }
 
    private fun setUser(user: SmartCardUser) {
-      if (view!!.profile.isEmpty) {
-         view!!.profile = delegate.toViewModel(user)
+      if (view.profile.isEmpty) {
+         view.profile = delegate.toViewModel(user)
       }
-      view!!.setDoneButtonEnabled(view!!.isDataChanged)
+      view.setDoneButtonEnabled(view.isDataChanged)
    }
 
    override fun handleDoneAction() {
@@ -79,22 +79,22 @@ class WalletSettingsProfilePresenterImpl(navigator: Navigator,
    }
 
    override fun handleBackOnDataChanged() {
-      view!!.showRevertChangesDialog()
+      view.showRevertChangesDialog()
    }
 
    override fun revertChanges() {
-      view!!.discardChanges()
+      view.discardChanges()
       goBack()
    }
 
    private fun applyChanges(updatedUser: SmartCardUser) {
-      view!!.profile = delegate.toViewModel(updatedUser)
+      view.profile = delegate.toViewModel(updatedUser)
       goBack()
    }
 
    private fun saveUserProfile(forceUpdateDisplayType: Boolean) {
-      view!!.setDoneButtonEnabled(false)
-      delegate.updateUser(view!!.profile, forceUpdateDisplayType)
+      view.setDoneButtonEnabled(false)
+      delegate.updateUser(view.profile, forceUpdateDisplayType)
    }
 
    override fun goBack() {
@@ -102,21 +102,21 @@ class WalletSettingsProfilePresenterImpl(navigator: Navigator,
    }
 
    override fun choosePhoto() {
-      view!!.pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()))
+      view.pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()))
    }
 
    override fun doNotAdd() {
-      view!!.dropPhoto()
+      view.dropPhoto()
    }
 
    override fun handlePickedPhoto(photoPickerModel: PhotoPickerModel) {
-      view!!.cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel))
+      view.cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel))
    }
 
    override fun openDisplaySettings() {
       assertSmartCardConnected {
-         val profileViewModel = view!!.profile
-         if (validateViewModel(profileViewModel) { view!!.provideUpdateSmartCardOperation(delegate).showError(null, it) }) {
+         val profileViewModel = view.profile
+         if (validateViewModel(profileViewModel) { view.provideUpdateSmartCardOperation(delegate).showError(null, it) }) {
             navigator.goSettingsDisplayOptions(DisplayOptionsSource.PROFILE, profileViewModel)
          }
       }
@@ -125,14 +125,14 @@ class WalletSettingsProfilePresenterImpl(navigator: Navigator,
    private fun assertSmartCardConnected(onConnected: () -> Unit) {
       smartCardInteractor.deviceStatePipe()
             .createObservable(DeviceStateCommand.fetch())
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess { command ->
                      if (command.result.connectionStatus.isConnected) {
                         onConnected.invoke()
                      } else {
-                        view!!.showSCNonConnectionDialog()
+                        view.showSCNonConnectionDialog()
                      }
                   }
             )

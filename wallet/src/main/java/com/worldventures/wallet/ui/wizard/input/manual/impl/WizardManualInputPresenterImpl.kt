@@ -28,9 +28,9 @@ class WizardManualInputPresenterImpl(
    }
 
    private fun observeScidInput() {
-      view!!.scidInput()
-            .compose(view!!.bindUntilDetach())
-            .subscribe { scid -> view!!.buttonEnable(scid.length == view!!.getScIdLength()) }
+      view.scidInput()
+            .compose(view.bindUntilDetach())
+            .subscribe { scid -> view.buttonEnable(scid.length == view.getScIdLength()) }
    }
 
    override fun goBack() {

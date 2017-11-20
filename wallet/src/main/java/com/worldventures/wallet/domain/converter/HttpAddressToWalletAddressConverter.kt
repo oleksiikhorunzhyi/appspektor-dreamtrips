@@ -34,13 +34,8 @@ class HttpAddressToWalletAddressConverter : Converter<AddressRestResponse, Walle
             }
    }
 
-   private fun isResponseInvalid(addressRestResponse: AddressRestResponse): Boolean {
-      //todo
-      return (addressRestResponse.status == null
-            || addressRestResponse.status != null && addressRestResponse.status != "OK"
-            || addressRestResponse.results == null
-            || addressRestResponse.results.isEmpty())
-   }
+   private fun isResponseInvalid(addressRestResponse: AddressRestResponse) =
+         (addressRestResponse.status != "OK" || addressRestResponse.results.isEmpty())
 
    private fun getAddress(addressComponents: ArrayList<AddressComponent>): String {
       val number = getFieldFromAddressResponse(addressComponents, STREET_NUMBER)

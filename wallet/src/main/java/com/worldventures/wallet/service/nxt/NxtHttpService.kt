@@ -60,6 +60,7 @@ class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder, private val
       retriedActions.remove(holder.action())
    }
 
+   @Suppress("UNCHECKED_CAST")
    override fun <A> onInterceptFail(holder: ActionHolder<A>, e: JanetException): Boolean {
       if (holder.action() is MultifunctionNxtHttpAction && !retriedActions.remove(holder.action())) {
          val action = holder.action() as MultifunctionNxtHttpAction

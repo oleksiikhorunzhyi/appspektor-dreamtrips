@@ -8,21 +8,23 @@ import rx.Observable
 import java.io.File
 
 @CommandAction
-class LoadNordicFirmwareCommand(private val firmwareFile: File, private val firmwareVersion: String, private val bootloaderFile: Boolean) : BaseLoadFirmwareCommand() {
+class LoadNordicFirmwareCommand(private val firmwareFile: File,
+                                private val firmwareVersion: String,
+                                private val bootloaderFile: Boolean) : BaseLoadFirmwareCommand() {
 
-   internal override fun provideProgress(): Observable<Int> {
+   override fun provideProgress(): Observable<Int> {
       return janet.createPipe(UpgradeAppFirmwareProgressEvent::class.java)
             .observeSuccess()
             .map { event -> event.progress }
    }
 
-   internal override fun loadFile(): Observable<Void> {
+   override fun loadFile(): Observable<Void> {
       return janet.createPipe(UpgradeAppFirmwareAction::class.java)
             .createObservableResult(UpgradeAppFirmwareAction(firmwareFile))
-            .map { action -> null }
+            .map { null }
    }
 
-   internal override fun updatedSmartCardFirmware(currentSmartCardFirmware: SmartCardFirmware): SmartCardFirmware {
+   override fun updatedSmartCardFirmware(currentSmartCardFirmware: SmartCardFirmware): SmartCardFirmware {
       return if (bootloaderFile)
          currentSmartCardFirmware.copy(nrfBootloaderVersion = firmwareVersion)
       else

@@ -23,11 +23,9 @@ class ForceUpdatePowerOnPresenterImpl(navigator: Navigator,
       navigator.goBack()
    }
 
-   override fun goNext() {
-      if (bluetoothService.isEnable && networkDelegate.isAvailable) {
-         navigator.goForcePairKey()
-      } else {
-         view!!.showDialogEnableBleAndInternet()
-      }
+   override fun goNext() = if (bluetoothService.isEnable && networkDelegate.isAvailable) {
+      navigator.goForcePairKey()
+   } else {
+      view.showDialogEnableBleAndInternet()
    }
 }

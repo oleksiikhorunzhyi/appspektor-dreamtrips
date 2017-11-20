@@ -20,13 +20,13 @@ class SendFeedbackPresenterImpl(navigator: Navigator,
       SendFeedbackPresenter {
 
    override fun sendFeedback() {
-      view!!.changeActionSendMenuItemEnabled(false)
+      view.changeActionSendMenuItemEnabled(false)
 //
       sendFeedbackCommand(
-            if (view!!.feedbackType == FeedbackType.SmartCardFeedback)
-               SmartCardFeedbackCommand(view!!.feedbackMessage, attachmentDelegate.imagesAttachments)
+            if (view.feedbackType == FeedbackType.SmartCardFeedback)
+               SmartCardFeedbackCommand(view.feedbackMessage, attachmentDelegate.imagesAttachments)
             else
-               CustomerSupportFeedbackCommand(view!!.feedbackMessage, attachmentDelegate.imagesAttachments)
+               CustomerSupportFeedbackCommand(view.feedbackMessage, attachmentDelegate.imagesAttachments)
       )
    }
 
@@ -39,12 +39,12 @@ class SendFeedbackPresenterImpl(navigator: Navigator,
    }
 
    private fun observeFormValidation() {
-      view!!.textFeedbackMessage
+      view.textFeedbackMessage
             .map { it.isNotBlank() }
             .startWith(false)
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .subscribe { enable ->
-               view!!.changeActionSendMenuItemEnabled(enable && !attachmentDelegate.hasFailedOrPendingAttachments)
+               view.changeActionSendMenuItemEnabled(enable && !attachmentDelegate.hasFailedOrPendingAttachments)
             }
    }
 
@@ -54,7 +54,7 @@ class SendFeedbackPresenterImpl(navigator: Navigator,
    }
 
    override fun handleFailSentFeedback(command: SendWalletFeedbackCommand<*>, throwable: Throwable) {
-      view!!.changeActionSendMenuItemEnabled(true)
+      view.changeActionSendMenuItemEnabled(true)
    }
 
    override fun goBack() {

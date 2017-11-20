@@ -86,7 +86,7 @@ class UpdateSmartCardUserCommand(newUser: SmartCardUser, smartCardId: String,
                      .lastName(newUser.lastName)
                      .phoneNum(newUser.phoneNumber?.fullPhoneNumber())
                      .isUserAssigned(true)
-                     .memberId(socialInfoProvider.userId()!!.toLong())
+                     .memberId(socialInfoProvider.userId().toLong())
                      .barcodeId(java.lang.Long.parseLong(scId))
                      .memberStatus(socialInfoProvider.memberStatus()!!)
                      .build()))

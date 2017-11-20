@@ -66,7 +66,7 @@ class RevertSmartCardUserUpdatingCommand(smartCardId: String, newUser: SmartCard
             .middleName(user.middleName)
             .lastName(user.lastName)
             .isUserAssigned(true)
-            .memberId(socialInfoProvider.userId()!!.toLong())
+            .memberId(socialInfoProvider.userId().toLong())
             .barcodeId(java.lang.Long.parseLong(smartCardId))
             .memberStatus(socialInfoProvider.memberStatus()!!)
             .build()

@@ -38,7 +38,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.UploadingPostsSectionCell;
-import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.EditPhotoFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
@@ -286,11 +286,11 @@ public class FragmentWithFeedDelegate {
    }
 
    public void openPost(FragmentManager fragmentManager) {
-      router.moveTo(CreateFeedPostFragment.class, NavigationConfigBuilder.forRemoval()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_details_floating)
             .fragmentManager(fragmentManager)
             .build());
-      router.moveTo(CreateFeedPostFragment.class, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
             .data(new CreateEntityBundle(false, CreateEntityBundle.Origin.FEED))
@@ -299,11 +299,11 @@ public class FragmentWithFeedDelegate {
    }
 
    public void openSharePhoto(FragmentManager fragmentManager, CreateEntityBundle bundle) {
-      router.moveTo(CreateFeedPostFragment.class, NavigationConfigBuilder.forRemoval()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_details_floating)
             .fragmentManager(fragmentManager)
             .build());
-      router.moveTo(CreateFeedPostFragment.class, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
             .containerId(R.id.container_details_floating)

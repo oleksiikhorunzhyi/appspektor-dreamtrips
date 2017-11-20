@@ -41,6 +41,10 @@ public class FeatureConverter implements Converter<Feature, com.worldventures.co
             return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.WALLET);
          case WALLET_PROVISIONING:
             return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.WALLET_PROVISIONING);
+         case TRIP_IMAGES:
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.TRIP_IMAGES);
+         case BUCKET_LIST:
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.BUCKET_LIST);
          default:
             return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.UNKNOWN);
       }

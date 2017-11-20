@@ -62,7 +62,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedViewInject
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateEntityFragment;
-import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateFeedPostFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.DescriptionCreatorFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.EditPhotoFragment;
@@ -128,7 +127,6 @@ import dagger.Provides;
             EditCommentPresenter.class,
             DtGalleryFragment.class,
             GalleryPresenter.class,
-            CreateFeedPostFragment.class,
             CreateEntityFragment.class,
             CreateEntityPresenter.class,
             LocationFragment.class,

@@ -183,10 +183,7 @@ public class SmartCardSyncManager {
                   .map(pinStatusEvent -> pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.AUTHENTICATED
                         && pinStatusEvent.pinStatus != PinStatusEvent.PinStatus.DISABLED)
       )
-            .subscribe(
-                  state -> interactor.deviceStatePipe().send(DeviceStateCommand.Companion.lock(state)),
-                  throwable -> Timber.d(throwable, "")
-            );
+            .subscribe(state -> interactor.deviceStatePipe().send(DeviceStateCommand.Companion.lock(state)), Timber::e);
    }
 
    private void saveFirmwareDataForAboutScreen(SmartCardFirmware firmware) {
@@ -201,9 +198,7 @@ public class SmartCardSyncManager {
             .takeUntil(interactor.disconnectPipe().observeSuccess())
             .filter(inter -> !syncDisabled)
             .doOnNext(aLong -> Timber.d("setupBatteryObserver = %s", aLong))
-            .subscribe(value ->
-                        interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()),
-                  throwable -> Timber.e(throwable, ""));
+            .subscribe(value -> interactor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand()), Timber::e);
    }
 
    private void setupChargerEventObserver() {
@@ -232,7 +227,7 @@ public class SmartCardSyncManager {
             .flatMap(aLong -> interactor.smartCardSyncPipe()
                   .createObservableResult(new SyncSmartCardCommand()))
             .retry(1)
-            .subscribe(command -> { /*nothing*/ }, throwable -> Timber.e(throwable, ""));
+            .subscribe(command -> { /*nothing*/ }, Timber::e);
    }
 
    private static final class FilterActiveConnectedSmartCard implements Observable.Transformer<Object, SmartCard> {

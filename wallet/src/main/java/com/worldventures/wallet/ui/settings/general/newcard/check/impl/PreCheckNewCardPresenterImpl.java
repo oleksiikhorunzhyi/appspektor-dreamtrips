@@ -64,8 +64,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
             (smartCardCommand, bluetoothIsEnabled) -> new Pair<>(bluetoothIsEnabled, smartCardCommand.getResult()))
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(pair -> bind(pair.first, pair.second.getConnectionStatus()
-                  .isConnected()), throwable -> Timber.e(throwable, ""));
+            .subscribe(pair -> bind(pair.first, pair.second.getConnectionStatus().isConnected()), Timber::e);
 
       bluetoothService.observeEnablesState()
             .startWith(bluetoothService.isEnable())
@@ -92,7 +91,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
                   .onSuccess(command -> getView().showAddCardContinueDialog(command.getResult().getSmartCardId()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable))
             );
    }
 
@@ -111,9 +110,5 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
    @Override
    public void goBack() {
       getNavigator().goBack();
-   }
-
-   void retryFactoryReset() {
-      checkPinDelegate.getFactoryResetDelegate().factoryReset();
    }
 }

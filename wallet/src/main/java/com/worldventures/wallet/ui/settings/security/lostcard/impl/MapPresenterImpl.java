@@ -44,8 +44,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
             .observeSuccess()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()),
-                  throwable -> Timber.e(throwable, ""));
+            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()), Timber::e);
    }
 
    private void setupEmptyLocation(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {

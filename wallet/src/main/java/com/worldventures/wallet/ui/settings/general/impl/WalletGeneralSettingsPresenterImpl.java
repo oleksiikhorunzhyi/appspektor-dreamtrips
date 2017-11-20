@@ -158,7 +158,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .map(Command::getResult)
-            .subscribe(this::bindSmartCardUser, throwable -> Timber.e(throwable, ""));
+            .subscribe(this::bindSmartCardUser, Timber::e);
    }
 
    private void bindSmartCardUser(SmartCardUser it) {

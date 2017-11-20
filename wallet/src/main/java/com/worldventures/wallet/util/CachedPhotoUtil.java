@@ -19,7 +19,7 @@ public class CachedPhotoUtil {
       try {
          Fresco.getImagePipeline().evictFromCache(Uri.parse(photoUri));
       } catch (Exception e) {
-         Timber.e(e, "");
+         Timber.e(e);
       }
    }
 }

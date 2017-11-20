@@ -489,7 +489,7 @@ public class NavigatorImpl implements Navigator {
       try {
          routerLazy.get().getActivity().startActivity(intent);
       } catch (ActivityNotFoundException e) {
-         Timber.e(e, "");
+         Timber.e(e);
       }
    }
 

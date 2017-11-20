@@ -147,7 +147,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             (records, defaultRecordId) -> (records.isEmpty() || defaultRecordId == null))
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(shouldBeDefault -> getView().defaultPaymentCard(shouldBeDefault), throwable -> Timber.e(throwable, ""));
+            .subscribe(shouldBeDefault -> getView().defaultPaymentCard(shouldBeDefault), Timber::e);
    }
 
    private void onUpdateStatusDefaultCard(boolean setDefaultCard) {
@@ -164,7 +164,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             .filter(defaultRecord -> defaultRecord != null)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(defaultRecord -> getView().showChangeCardDialog(defaultRecord), throwable -> Timber.e(throwable, ""));
+            .subscribe(defaultRecord -> getView().showChangeCardDialog(defaultRecord), Timber::e);
    }
 
    private Observable<List<Record>> fetchLocalRecords() {

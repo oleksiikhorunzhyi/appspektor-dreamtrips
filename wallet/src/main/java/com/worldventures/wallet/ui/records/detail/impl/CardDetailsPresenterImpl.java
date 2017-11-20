@@ -261,7 +261,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .createObservableResult(RecordListCommand.Companion.fetch())
             .map(command -> WalletRecordUtil.Companion.findRecord((List<Record>) command.getResult(), recordId))
             .compose(getView().bindUntilDetach())
-            .subscribe(recordAction, throwable -> Timber.e(throwable, ""));
+            .subscribe(recordAction, Timber::e);
    }
 
    private void fetchConnectionStats(Action1<ConnectionStatus> action) {
@@ -271,7 +271,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .map(SmartCardStatus::getConnectionStatus)
-            .subscribe(action, throwable -> Timber.e(throwable, ""));
+            .subscribe(action, Timber::e);
    }
 
    private void fetchDefaultRecord(Action1<Record> action) {
@@ -290,6 +290,6 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .onErrorReturn(null)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(action, throwable -> Timber.e(throwable, ""));
+            .subscribe(action, Timber::e);
    }
 }

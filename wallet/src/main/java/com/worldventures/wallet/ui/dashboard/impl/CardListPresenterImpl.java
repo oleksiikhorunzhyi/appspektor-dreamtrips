@@ -174,13 +174,13 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .throttleLast(300, TimeUnit.MILLISECONDS)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::handleSmartCardStatus, throwable -> Timber.e(throwable, ""));
+            .subscribe(this::handleSmartCardStatus, Timber::e);
 
       smartCardInteractor.smartCardUserPipe().observeSuccessWithReplay()
             .map(Command::getResult)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::handleSmartCardUser, throwable -> Timber.e(throwable, ""));
+            .subscribe(this::handleSmartCardUser, Timber::e);
 
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
@@ -192,7 +192,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .map(Command::getResult)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getView()::setDisplayType, throwable -> Timber.e(throwable, ""));
+            .subscribe(getView()::setDisplayType, Timber::e);
       smartCardInteractor.getDisplayTypePipe().send(new GetDisplayTypeCommand(false));
    }
 
@@ -236,7 +236,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .distinct()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::firmwareLoaded, throwable -> Timber.e(throwable, ""));
+            .subscribe(this::firmwareLoaded, Timber::e);
 
       smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.Companion.fetch());
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
@@ -262,7 +262,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
                   cards -> {
                      WalletAnalyticsCommand analyticsCommand = new WalletAnalyticsCommand(new WalletHomeAction(cards));
                      analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand);
-                  }, throwable -> Timber.e(throwable, "")
+                  }, Timber::e
             );
    }
 
@@ -369,7 +369,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
             .distinctUntilChanged()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::cardsLoaded, throwable -> Timber.e(throwable, ""));
+            .subscribe(this::cardsLoaded, Timber::e);
    }
 
    @SuppressWarnings("ConstantConditions")

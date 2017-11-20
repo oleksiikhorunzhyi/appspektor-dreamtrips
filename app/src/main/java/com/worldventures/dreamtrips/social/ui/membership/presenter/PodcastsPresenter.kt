@@ -54,7 +54,7 @@ class PodcastsPresenter<T : PodcastsPresenter.View> : Presenter<T>() {
             .compose(bindViewToMainComposer())
             .subscribe(ActionStateSubscriber<GetPodcastsCommand>()
                   .onStart { view.startLoading() }
-                  .onProgress { command, progress -> updatePodcasts(command.getItems()) }
+                  .onProgress { command, _ -> updatePodcasts(command.getItems()) }
                   .onSuccess { podcastsLoaded(it.getItems(), it.hasMore()) }
                   .onFail { command, error -> this.podcastsLoadingFailed(command, error) })
    }

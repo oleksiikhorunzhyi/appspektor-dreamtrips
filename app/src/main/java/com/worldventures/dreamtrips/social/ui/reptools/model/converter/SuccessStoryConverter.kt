@@ -16,6 +16,7 @@ class SuccessStoryConverter : Converter<ApiSuccessStory, SuccessStory> {
    override fun convert(context: MapperyContext, source: ApiSuccessStory) =
       SuccessStory(
             id = source.id(),
+            title = source.title(),
             author = source.author(),
             category = source.category(),
             locale = source.locale(),

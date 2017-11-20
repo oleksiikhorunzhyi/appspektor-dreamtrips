@@ -1,10 +1,10 @@
 package com.worldventures.wallet.ui.common.base;
 
-import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 
-public abstract class WalletPresenterImpl<V extends WalletScreen> extends MvpBasePresenter<V> implements WalletPresenter<V> {
+public abstract class WalletPresenterImpl<V extends WalletScreen> extends MvpNullObjectBasePresenter<V> implements WalletPresenter<V> {
 
    @SuppressWarnings("WeakerAccess")
    private final Navigator navigator;

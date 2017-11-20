@@ -94,7 +94,8 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    private Observable<Void> addBundleVersion() {
       final FirmwareUpdateData data = firmwareRepository.getFirmwareUpdateData();
       return smartCardInteractor.smartCardFirmwarePipe()
-            .createObservableResult(SmartCardFirmwareCommand.Companion.bundleVersion(data.getFirmwareInfo().firmwareVersion()))
+            .createObservableResult(SmartCardFirmwareCommand.Companion.bundleVersion(data.getFirmwareInfo()
+                  .firmwareVersion()))
             .onErrorReturn(throwable -> null)
             .map(command -> null);
    }

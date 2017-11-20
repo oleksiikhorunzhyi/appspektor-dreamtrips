@@ -57,10 +57,10 @@ class SecureMultipleRecordsCommand private constructor(private val records: List
             .createObservable(DetokenizeMultipleRecordsCommand(records, skipTokenizationErrors))
             .doOnNext(processResultForAnalytics())
             .compose(ActionStateToActionTransformer())
-            .map{ it.result }
+            .map { it.result }
    }
 
-   private fun processResultForAnalytics(): (ActionState<out BaseMultipleRecordsCommand>) -> Unit{
+   private fun processResultForAnalytics(): (ActionState<out BaseMultipleRecordsCommand>) -> Unit {
       return { actionState ->
          if (actionState.status == ActionState.Status.SUCCESS) {
             sendTokenizationAnalytics(actionState.action.result, true)

@@ -14,7 +14,6 @@ object NxtBankCardHelper {
    val TRACK_2 = "track2"
    val TRACK_3 = "track3"
 
-
    private val OPERATION_TOKENIZE = "tokenize"
    private val OPERATION_DETOKENIZE = "detokenize"
 

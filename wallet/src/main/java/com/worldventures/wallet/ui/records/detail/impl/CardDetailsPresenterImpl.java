@@ -76,7 +76,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private void observeSaveCardData(CardDetailsScreen view) {
       recordInteractor.updateRecordPipe()
             .observe()
-            .filter(state -> WalletRecordUtil.Companion.equalsRecordId(recordDetailViewModel.getRecordId(), state.action.getRecord()))
+            .filter(state -> WalletRecordUtil.Companion.equalsRecordId(recordDetailViewModel.getRecordId(), state.action
+                  .getRecord()))
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(view.provideOperationSaveCardData()).create());
@@ -131,7 +132,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetDefaultOnDevice())
                   .onSuccess(command -> getView()
-                        .defaultCardChanged(WalletRecordUtil.Companion.equalsRecordId(recordDetailViewModel.getRecordId(), command.getResult())))
+                        .defaultCardChanged(WalletRecordUtil.Companion.equalsRecordId(recordDetailViewModel.getRecordId(), command
+                              .getResult())))
                   .create());
    }
 
@@ -250,7 +252,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void nicknameUpdated(String nickName) {
       fetchRecord(recordDetailViewModel.getRecordId(),
-            record -> recordInteractor.updateRecordPipe().send(UpdateRecordCommand.Companion.updateNickname(record, nickName)));
+            record -> recordInteractor.updateRecordPipe()
+                  .send(UpdateRecordCommand.Companion.updateNickname(record, nickName)));
    }
 
    private void fetchRecord(@NonNull String recordId, @NonNull Action1<Record> recordAction) {

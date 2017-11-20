@@ -57,7 +57,6 @@ class FetchAssociatedSmartCardCommand : Command<FetchAssociatedSmartCardCommand.
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }
 
-
    private fun handleResponse(listSmartCardInfo: List<SmartCardInfo>): Observable<FetchAssociatedSmartCardCommand.AssociatedCard> {
       if (listSmartCardInfo.isEmpty()) {
          return Observable.just(AssociatedCard(exist = false))

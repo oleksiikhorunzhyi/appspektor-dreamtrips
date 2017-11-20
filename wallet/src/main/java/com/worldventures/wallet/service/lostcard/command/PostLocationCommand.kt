@@ -65,7 +65,7 @@ class PostLocationCommand : Command<Void>(), InjectableAction {
    }
 
    private fun wipeRedundantLocations(locations: List<WalletLocation>): Observable<Void> {
-      val lastLocation = locations.sortedWith(Comparator({location1, location2 -> location1.createdAt.compareTo(location2.createdAt)})).last()
+      val lastLocation = locations.sortedWith(Comparator({ location1, location2 -> location1.createdAt.compareTo(location2.createdAt) })).last()
       val postedLocation = lastLocation.copy(postedAt = Calendar.getInstance().time)
       locationRepository.saveWalletLocations(listOf(postedLocation))
       return Observable.just(null)

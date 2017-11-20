@@ -66,7 +66,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
 
    @Inject lateinit var screenPresenter: CardListPresenter
 
-   private var cardStackHeaderHolder: CardStackHeaderHolder? = null
+   private var cardStackHeaderHolder: CardStackHeaderHolder = CardStackHeaderHolder()
 
    private var installFirmwareErrorDialog: InstallFirmwareErrorDialog? = null
    private var forceUpdateDialog: MaterialDialog? = null
@@ -74,14 +74,10 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    private var factoryResetConfirmationDialog: Dialog? = null
    private var scNonConnectionDialog: Dialog? = null
 
-   private var multiAdapter: DashboardHolderAdapter<BaseViewModel<*>>? = null
-   private var binding: ScreenWalletCardlistBinding? = null
+   private lateinit var multiAdapter: DashboardHolderAdapter<BaseViewModel<*>>
+   private lateinit var binding: ScreenWalletCardlistBinding
 
    private var cardViewModels: ArrayList<BaseViewModel<*>>? = null
-
-   init {
-      cardStackHeaderHolder = CardStackHeaderHolder()
-   }
 
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
@@ -108,21 +104,11 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    private fun dismissDialogs() {
-      if (installFirmwareErrorDialog != null) {
-         installFirmwareErrorDialog!!.dismiss()
-      }
-      if (forceUpdateDialog != null) {
-         forceUpdateDialog!!.dismiss()
-      }
-      if (addCardErrorDialog != null) {
-         addCardErrorDialog!!.dismiss()
-      }
-      if (factoryResetConfirmationDialog != null) {
-         factoryResetConfirmationDialog!!.dismiss()
-      }
-      if (scNonConnectionDialog != null) {
-         scNonConnectionDialog!!.dismiss()
-      }
+      installFirmwareErrorDialog?.dismiss()
+      forceUpdateDialog?.dismiss()
+      addCardErrorDialog?.dismiss()
+      factoryResetConfirmationDialog?.dismiss()
+      scNonConnectionDialog?.dismiss()
    }
 
    override fun showRecordsInfo(result: ArrayList<BaseViewModel<*>>) {
@@ -135,7 +121,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
                R.anim.wallet_instant_layout_anim)
       }
 
-      multiAdapter!!.swapList(result)
+      multiAdapter.swapList(result)
       this.cardViewModels = result
       emptyCardListView.visibility = if (result.isNotEmpty()) GONE else VISIBLE
    }
@@ -145,10 +131,10 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    override fun setSmartCardStatusAttrs(batteryLevel: Int, connected: Boolean, lock: Boolean, stealthMode: Boolean) {
-      cardStackHeaderHolder = cardStackHeaderHolder!!.copy(
-            batteryLevel=batteryLevel,
-            connected=connected,
-            lock= lock,
+      cardStackHeaderHolder = cardStackHeaderHolder.copy(
+            batteryLevel = batteryLevel,
+            connected = connected,
+            lock = lock,
             stealthMode = stealthMode
       )
 
@@ -158,22 +144,22 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    override fun setSmartCardUser(smartCardUser: SmartCardUser) {
       val photo = smartCardUser.userPhoto
       val phone = smartCardUser.phoneNumber
-      cardStackHeaderHolder = cardStackHeaderHolder!!.copy(
+      cardStackHeaderHolder = cardStackHeaderHolder.copy(
             firstName = smartCardUser.firstName,
             middleName = smartCardUser.middleName,
-            lastName=smartCardUser.lastName,
-            photoUrl=photo?.uri ?: "",
-            phoneNumber=phone?.fullPhoneNumber() ?: "")
+            lastName = smartCardUser.lastName,
+            photoUrl = photo?.uri ?: "",
+            phoneNumber = phone?.fullPhoneNumber() ?: "")
       smartCardWidget.bindCard(cardStackHeaderHolder)
    }
 
    override fun setCardsCount(count: Int) {
-      cardStackHeaderHolder = cardStackHeaderHolder!!.copy(cardCount = count)
+      cardStackHeaderHolder = cardStackHeaderHolder.copy(cardCount = count)
       smartCardWidget.bindCard(cardStackHeaderHolder)
    }
 
    override fun setDisplayType(displayType: Int) {
-      cardStackHeaderHolder = cardStackHeaderHolder!!.copy(displayType = displayType)
+      cardStackHeaderHolder = cardStackHeaderHolder.copy(displayType = displayType)
       smartCardWidget.bindCard(cardStackHeaderHolder)
    }
 
@@ -197,7 +183,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
       addCardErrorDialog = builder.positiveText(R.string.wallet_ok)
             .negativeText(R.string.wallet_cancel_label)
             .build()
-      addCardErrorDialog!!.show()
+      addCardErrorDialog?.show()
    }
 
    override fun hideFirmwareUpdateBtn() {
@@ -214,52 +200,52 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    override fun showFirmwareUpdateError() {
-      if (installFirmwareErrorDialog == null) {
-         installFirmwareErrorDialog = InstallFirmwareErrorDialog(context)
-               .setOnRetryction { presenter.retryFWU() }
-               .setOnCancelAction { presenter.retryFWUCanceled() }
-      }
-      if (!installFirmwareErrorDialog!!.isShowing) {
-         if (forceUpdateDialog != null && forceUpdateDialog!!.isShowing) {
-            forceUpdateDialog!!.setOnCancelListener(null)
-            forceUpdateDialog!!.cancel()
+      val dialog = installFirmwareErrorDialog ?:
+            InstallFirmwareErrorDialog(context)
+                  .setOnRetryction { presenter.retryFWU() }
+                  .setOnCancelAction { presenter.retryFWUCanceled() }
+
+      if (!dialog.isShowing) {
+         if (forceUpdateDialog?.isShowing == true) {
+            forceUpdateDialog?.setOnCancelListener(null)
+            forceUpdateDialog?.cancel()
          }
-         installFirmwareErrorDialog!!.show()
+         dialog.show()
       }
    }
 
    override fun showForceFirmwareUpdateDialog() {
-      if (forceUpdateDialog == null) {
-         forceUpdateDialog = MaterialDialog.Builder(context)
-               .title(R.string.wallet_dashboard_update_dialog_title)
-               .content(R.string.wallet_dashboard_update_dialog_content)
-               .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
-               .cancelable(false)
-               .onNegative { _, _ -> presenter.navigateBack() }
-               .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
-               .onPositive { _, _ -> presenter.confirmForceFirmwareUpdate() }
-               .build()
-      } else {
-         forceUpdateDialog!!.dismiss()
-      }
-      if (!forceUpdateDialog!!.isShowing && (installFirmwareErrorDialog == null || !installFirmwareErrorDialog!!.isShowing)) {
-         forceUpdateDialog!!.show()
+      forceUpdateDialog?.dismiss()
+
+      val dialog = forceUpdateDialog ?:
+            MaterialDialog.Builder(context)
+                  .title(R.string.wallet_dashboard_update_dialog_title)
+                  .content(R.string.wallet_dashboard_update_dialog_content)
+                  .negativeText(R.string.wallet_dashboard_update_dialog_btn_text_negative)
+                  .cancelable(false)
+                  .onNegative { _, _ -> presenter.navigateBack() }
+                  .positiveText(R.string.wallet_dashboard_update_dialog_btn_text_positive)
+                  .onPositive { _, _ -> presenter.confirmForceFirmwareUpdate() }
+                  .build()
+
+      if (!dialog.isShowing && installFirmwareErrorDialog?.isShowing != true) {
+         dialog.show()
       }
    }
 
    override fun showFactoryResetConfirmationDialog() {
-      if (factoryResetConfirmationDialog == null) {
-         factoryResetConfirmationDialog = MaterialDialog.Builder(context)
-               .content(R.string.wallet_dashboard_factory_reset_dialog_content)
-               .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
-               .cancelListener { presenter.navigateBack() }
-               .onNegative { _, _ -> presenter.navigateBack() }
-               .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
-               .onPositive { _, _ -> presenter.navigateToFirmwareUpdate() }
-               .build()
-      }
-      if (!factoryResetConfirmationDialog!!.isShowing) {
-         factoryResetConfirmationDialog!!.show()
+      val dialog = factoryResetConfirmationDialog ?:
+            MaterialDialog.Builder(context)
+                  .content(R.string.wallet_dashboard_factory_reset_dialog_content)
+                  .negativeText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_negative)
+                  .cancelListener { presenter.navigateBack() }
+                  .onNegative { _, _ -> presenter.navigateBack() }
+                  .positiveText(R.string.wallet_dashboard_factory_reset_dialog_btn_text_positive)
+                  .onPositive { _, _ -> presenter.navigateToFirmwareUpdate() }
+                  .build()
+
+      if (!dialog.isShowing) {
+         dialog.show()
       }
    }
 
@@ -288,7 +274,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    private fun setupCardStackList() {
-      val dimension = resources!!.getDimensionPixelSize(R.dimen.wallet_card_height)
+      val dimension = resources?.getDimensionPixelSize(R.dimen.wallet_card_height) ?: 0
       multiAdapter = DashboardHolderAdapter(ArrayList(), DashboardHolderFactoryImpl())
       bankCardList.adapter = multiAdapter
       val listAnimator = DefaultItemAnimator()
@@ -304,7 +290,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
                   if (!presenter.isCardDetailSupported) {
                      return
                   }
-                  if (multiAdapter!!.getItemViewType(position) == R.layout.item_wallet_record) {
+                  if (multiAdapter.getItemViewType(position) == R.layout.item_wallet_record) {
                      showDetails(view, (dimension.toDouble() * VISIBLE_SCALE * -1.0).toInt())
                   }
                }
@@ -315,8 +301,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
             }))
 
       smartCardWidget.setOnPhotoClickListener { presenter.onProfileChosen() }
-      binding!!.transitionView!!.root.visibility = GONE
-
+      binding.transitionView?.root?.visibility = GONE
 
       cardViewModels?.let { showRecordsInfo(it) }
    }
@@ -330,8 +315,9 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    private fun addTransitionView(model: CommonCardViewModel, transitionModel: TransitionModel) {
-      val transitionView = binding!!.transitionView!!
-      transitionView.cardModel = model
+      val transitionView = binding.transitionView
+
+      transitionView!!.cardModel = model
       setUpViewPosition(transitionModel, transitionView.root)
       transitionView.root.visibility = VISIBLE
    }
@@ -344,15 +330,14 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    override fun showSCNonConnectionDialog() {
-      if (scNonConnectionDialog == null) {
-         scNonConnectionDialog = MaterialDialog.Builder(context)
-               .title(R.string.wallet_card_settings_cant_connected)
-               .content(R.string.wallet_card_settings_message_cant_connected)
-               .positiveText(R.string.wallet_ok)
-               .build()
-      }
-      if (!scNonConnectionDialog!!.isShowing) {
-         scNonConnectionDialog!!.show()
+      val dialog = scNonConnectionDialog ?:
+            MaterialDialog.Builder(context)
+                  .title(R.string.wallet_card_settings_cant_connected)
+                  .content(R.string.wallet_card_settings_message_cant_connected)
+                  .positiveText(R.string.wallet_ok)
+                  .build()
+      if (!dialog.isShowing) {
+         dialog.show()
       }
    }
 
@@ -370,7 +355,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    private fun addCardButtonClick() {
-      presenter.addCardRequired(cardStackHeaderHolder!!.cardCount)
+      presenter.addCardRequired(cardStackHeaderHolder.cardCount)
    }
 
    private fun onSyncPaymentsCardsButtonClick() {
@@ -399,6 +384,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
       )
    }
 
+   @Suppress("MagicNumber")
    override fun provideReSyncOperationView(): OperationView<SyncRecordOnNewDeviceCommand> {
       return ComposableOperationView(
             AnimatorProgressView(ObjectAnimator.ofFloat(fabButton, View.ROTATION.name, 0f, -360f)
@@ -406,17 +392,12 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
       )
    }
 
-   override fun getViewContext(): Context {
-      return context
-   }
+   //todo remove it
+   override fun getViewContext(): Context = context
 
-   override fun getCardListFab(): FloatingActionButton? {
-      return fabButton
-   }
+   override fun getCardListFab(): FloatingActionButton? = fabButton
 
-   override fun getEmptyCardListView(): TextView? {
-      return emptyCardListView
-   }
+   override fun getEmptyCardListView(): TextView? = emptyCardListView
 
    override fun provideResetOperationView(factoryResetDelegate: FactoryResetDelegate): OperationView<ResetSmartCardCommand> {
       return FactoryResetOperationView.create(context,
@@ -430,21 +411,14 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
             false)
    }
 
-   override fun getPresenter(): CardListPresenter {
-      return screenPresenter
-   }
+   override fun getPresenter(): CardListPresenter = screenPresenter
 
-   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View {
-      return layoutInflater.inflate(R.layout.screen_wallet_cardlist, viewGroup, false)
-   }
+   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View =
+         layoutInflater.inflate(R.layout.screen_wallet_cardlist, viewGroup, false)
 
-   override fun supportConnectionStatusLabel(): Boolean {
-      return true
-   }
+   override fun supportConnectionStatusLabel() = true
 
-   override fun supportHttpConnectionStatusLabel(): Boolean {
-      return true
-   }
+   override fun supportHttpConnectionStatusLabel() = true
 
    companion object {
       private val KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE"

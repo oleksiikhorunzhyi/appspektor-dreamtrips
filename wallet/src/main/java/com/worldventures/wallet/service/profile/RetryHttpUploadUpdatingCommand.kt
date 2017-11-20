@@ -17,6 +17,6 @@ class RetryHttpUploadUpdatingCommand(smartCardId: String, newUser: SmartCardUser
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<SmartCardUser>) {
       updateProfileManager.uploadData(smartCardId, newUser)
-            .subscribe({ callback.onSuccess(it) },  { callback.onFail(it) })
+            .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }
 }

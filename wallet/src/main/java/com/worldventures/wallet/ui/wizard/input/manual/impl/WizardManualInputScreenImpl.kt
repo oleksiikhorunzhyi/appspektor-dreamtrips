@@ -35,49 +35,40 @@ class WizardManualInputScreenImpl : WalletBaseController<WizardManualInputScreen
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-      toolbar.setNavigationOnClickListener { presenter!!.goBack() }
+      toolbar.setNavigationOnClickListener { presenter.goBack() }
       scidNumberInput = view.findViewById(R.id.wallet_wizard_manual_input_scid)
       scidNumberInput.setOnEditorActionListener { _, action, _ ->
          if (action == EditorInfo.IME_ACTION_NEXT) {
-            presenter!!.checkBarcode(scidNumberInput.text.toString())
+            presenter.checkBarcode(scidNumberInput.text.toString())
             return@setOnEditorActionListener true
          }
          false
       }
       nextButton = view.findViewById(R.id.wallet_wizard_manual_input_next_btn)
-      nextButton.setOnClickListener { presenter!!.checkBarcode(scidNumberInput.text.toString()) }
+      nextButton.setOnClickListener { presenter.checkBarcode(scidNumberInput.text.toString()) }
    }
 
-   override fun getScIdLength(): Int {
-      return resources!!.getInteger(R.integer.wallet_smart_card_id_length)
-   }
+   override fun getScIdLength(): Int = resources?.getInteger(R.integer.wallet_smart_card_id_length) ?: 0
 
-   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View {
-      return layoutInflater.inflate(R.layout.screen_wallet_wizard_manual_input, viewGroup, false)
-   }
+   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View =
+         layoutInflater.inflate(R.layout.screen_wallet_wizard_manual_input, viewGroup, false)
 
-   override fun supportConnectionStatusLabel(): Boolean {
-      return false
-   }
+   override fun supportConnectionStatusLabel(): Boolean = false
 
-   override fun supportHttpConnectionStatusLabel(): Boolean {
-      return false
-   }
+   override fun supportHttpConnectionStatusLabel(): Boolean = false
 
    override fun buttonEnable(isEnable: Boolean) {
       nextButton.isEnabled = isEnable
    }
 
-   override fun scidInput(): Observable<CharSequence> {
-      return RxTextView.textChanges(scidNumberInput)
-   }
+   override fun scidInput(): Observable<CharSequence> = RxTextView.textChanges(scidNumberInput)
 
    override fun provideOperationFetchCardStatus(): OperationView<GetSmartCardStatusCommand> {
       return ComposableOperationView(
             SimpleDialogProgressView(context, R.string.wallet_wizard_assigning_msg, false),
             ErrorViewFactory.builder<GetSmartCardStatusCommand>()
                   .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
-                        { command -> presenter!!.retry(command.barcode) }) { /*nothing*/ }
+                        { command -> presenter.retry(command.barcode) }) { /*nothing*/ }
                   ).build()
       )
    }
@@ -86,7 +77,7 @@ class WizardManualInputScreenImpl : WalletBaseController<WizardManualInputScreen
       return ComposableOperationView(
             ErrorViewFactory.builder<SmartCardUserCommand>()
                   .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
-                        { presenter!!.retryAssignedToCurrentDevice() }) { /*nothing*/ }
+                        { presenter.retryAssignedToCurrentDevice() }) { /*nothing*/ }
                   ).build()
       )
    }
@@ -99,7 +90,5 @@ class WizardManualInputScreenImpl : WalletBaseController<WizardManualInputScreen
             .show()
    }
 
-   override fun getPresenter(): WizardManualInputPresenter? {
-      return viewPresenter
-   }
+   override fun getPresenter() = viewPresenter
 }

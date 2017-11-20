@@ -71,7 +71,8 @@ public class WizardEditProfilePresenterImpl extends WalletPresenterImpl<WizardEd
    private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(
-                  user.getUserPhoto() != null ? PhotoWasSetAction.Companion.methodDefault() : PhotoWasSetAction.Companion.noPhoto())
+                  user.getUserPhoto() != null ? PhotoWasSetAction.Companion.methodDefault() : PhotoWasSetAction.Companion
+                        .noPhoto())
             );
       if (getView().getProvisionMode() != null) {
          getNavigator().goWizardAssignUser(getView().getProvisionMode());

@@ -58,7 +58,7 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
             .subscribe({
                smartCardUserDataInteractor.updateSmartCardUserPipe()
                      .createObservableResult(UpdateSmartCardUserCommand(newUser, it.result.smartCardId, forceUpdateDisplayType))
-                     .subscribe({ actionComplete?.invoke()}, { Timber.e(it)})
+                     .subscribe({ actionComplete?.invoke() }, { Timber.e(it) })
             }, { Timber.e(it) })
    }
 

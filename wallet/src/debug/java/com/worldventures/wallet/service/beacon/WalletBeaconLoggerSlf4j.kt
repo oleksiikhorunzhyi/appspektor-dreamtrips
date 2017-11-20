@@ -3,7 +3,7 @@ package com.worldventures.wallet.service.beacon
 import org.slf4j.LoggerFactory
 import timber.log.Timber
 
-class WalletBeaconLoggerSlf4j: WalletBeaconLogger {
+class WalletBeaconLoggerSlf4j : WalletBeaconLogger {
 
    private val TAG = "Beacon client"
    private val FILE_LOGGER = LoggerFactory.getLogger(TAG)

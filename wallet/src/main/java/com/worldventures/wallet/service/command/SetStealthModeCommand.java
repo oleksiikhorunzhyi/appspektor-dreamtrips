@@ -34,7 +34,8 @@ public class SetStealthModeCommand extends Command<Boolean> implements Injectabl
             .createObservableResult(new SetStealthModeAction(stealthModeEnabled))
             .map(smartCard -> stealthModeEnabled)
             .subscribe(callback::onSuccess, throwable -> {
-               smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.stealthMode(!stealthModeEnabled));
+               smartCardInteractor.deviceStatePipe()
+                     .send(DeviceStateCommand.Companion.stealthMode(!stealthModeEnabled));
                callback.onFail(throwable);
             });
    }

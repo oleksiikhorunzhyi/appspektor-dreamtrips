@@ -51,7 +51,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
                   .onSuccess(command -> onUserSetupSuccess(command.getResult()))
                   .onFail((command, throwable) -> {
                      getView().showRetryDialog();
-                     Timber.e(throwable, "");
+                     Timber.e(throwable);
                   })
                   .create());
    }
@@ -77,9 +77,10 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(
-                  user.getUserPhoto() != null ? PhotoWasSetAction.Companion.methodDefault() : PhotoWasSetAction.Companion.noPhoto())
+                  user.getUserPhoto() != null ? PhotoWasSetAction.Companion.methodDefault() : PhotoWasSetAction.Companion
+                        .noPhoto())
             );
-//      getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
+      //getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
       getNavigator().goWizardAssignUser(getView().getProvisionMode());
    }
 }

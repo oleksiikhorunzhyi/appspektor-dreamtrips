@@ -46,35 +46,35 @@ class WizardChargingPresenterImpl(navigator: Navigator,
    private fun fetchUserPhoto() {
       smartCardInteractor.smartCardUserPipe()
             .createObservable(SmartCardUserCommand.fetch())
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess { command -> view!!.userPhoto(command.result.userPhoto) }
+                  .onSuccess { command -> view.userPhoto(command.result.userPhoto) }
             )
    }
 
    private fun observeCharger() {
       smartCardInteractor.startCardRecordingPipe()
             .createObservable(StartCardRecordingAction())
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(view!!.provideOperationStartCardRecording()).create())
+            .subscribe(OperationActionSubscriber.forView(view.provideOperationStartCardRecording()).create())
 
       smartCardInteractor.cardSwipedEventPipe()
             .observeSuccess()
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { event ->
                if (event.result == CardSwipedEvent.Result.ERROR) {
-                  view!!.showSwipeError()
+                  view.showSwipeError()
                } else {
-                  view!!.showSwipeSuccess()
+                  view.showSwipeSuccess()
                }
             }
 
       smartCardInteractor.chargedEventPipe()
             .observeSuccess()
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .take(1)
             .map { cardChargedEvent -> cardChargedEvent.record }
@@ -82,15 +82,15 @@ class WizardChargingPresenterImpl(navigator: Navigator,
    }
 
    private fun errorReceiveRecord() {
-      view!!.trySwipeAgain()
+      view.trySwipeAgain()
    }
 
    private fun observeBankCardCreation() {
       recordInteractor.bankCardPipe()
             .observe()
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(view!!.provideOperationCreateRecord())
+            .subscribe(OperationActionSubscriber.forView(view.provideOperationCreateRecord())
                   .onSuccess { command -> bankCardCreated(command.result) }
                   .create())
    }

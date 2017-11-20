@@ -136,6 +136,7 @@ class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, 
       updateAttachmentsViewVisibility()
    }
 
+   @Suppress("MagicNumber")
    override fun changeAddPhotosButtonEnabled(enable: Boolean) {
       binding.incAdditionalInfo!!.feedbackAddPhotos.alpha = if (enable) 1f else 0.5f
       binding.incAdditionalInfo!!.feedbackAddPhotos.isEnabled = enable

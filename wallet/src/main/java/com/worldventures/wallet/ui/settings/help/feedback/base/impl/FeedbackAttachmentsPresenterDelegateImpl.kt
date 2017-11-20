@@ -21,7 +21,7 @@ import timber.log.Timber
 
 class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor: MediaPickerInteractor,
                                                private val feedbackInteractor: FeedbackInteractor,
-                                               private val attachmentsManager: CancelableFeedbackAttachmentsManager): FeedbackAttachmentsPresenterDelegate {
+                                               private val attachmentsManager: CancelableFeedbackAttachmentsManager) : FeedbackAttachmentsPresenterDelegate {
 
    override val imagesAttachments: List<FeedbackImageAttachment>
       get() = attachmentsManager.attachments.map { it.entity() }
@@ -36,7 +36,7 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
       get() = attachmentsManager.attachmentsObservable
 
    private var attachmentsCount: Int = 0
-   private var view: BaseFeedbackScreen? = null
+   private lateinit var view: BaseFeedbackScreen
 
    override fun init(view: BaseFeedbackScreen) {
       this.view = view
@@ -46,13 +46,12 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
 
    override fun destroy() {
       attachmentsManager.cancelAll()
-      view = null
    }
 
-   override fun findPosition(holder: EntityStateHolder<FeedbackImageAttachment>)= attachmentsManager.attachments.indexOf(holder)
+   override fun findPosition(holder: EntityStateHolder<FeedbackImageAttachment>) = attachmentsManager.attachments.indexOf(holder)
 
    override fun fetchAttachments() {
-      view!!.setAttachments(attachmentsManager.attachments)
+      view.setAttachments(attachmentsManager.attachments)
    }
 
    override fun clearAttachments() {
@@ -66,9 +65,8 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
 
    override fun removeAttachment(holder: EntityStateHolder<FeedbackImageAttachment>) {
       attachmentsManager.remove(holder)
-      view!!.removeAttachment(holder)
+      view.removeAttachment(holder)
    }
-
 
    override fun handleAttachedImages(chosenImages: List<PhotoPickerModel>) {
       mediaPickerInteractor.mediaAttachmentPreparePipe().send(MediaAttachmentPrepareCommand(chosenImages))
@@ -77,7 +75,7 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
    private fun observeAttachmentsPreparation() {
       mediaPickerInteractor.mediaAttachmentPreparePipe()
             .observe()
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ActionStateSubscriber<MediaAttachmentPrepareCommand>()
                   .onSuccess { it.result.forEach { uploadImageAttachment(it) } }
@@ -87,10 +85,10 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
 
    private fun observeAttachments() {
       attachmentsManager.attachmentsObservable
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .subscribe {
                this.attachmentsCount = attachmentsManager.attachments.size
-               view!!.changeAddPhotosButtonEnabled(attachmentsCount < WalletConstants.WALLET_FEEDBACK_MAX_PHOTOS_ATTACHMENT)
+               view.changeAddPhotosButtonEnabled(attachmentsCount < WalletConstants.WALLET_FEEDBACK_MAX_PHOTOS_ATTACHMENT)
             }
 
       feedbackInteractor.attachmentsRemovedPipe()
@@ -98,13 +96,13 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
             .compose<ActionState<AttachmentsRemovedCommand>>(ActionPipeCacheWiper<AttachmentsRemovedCommand>(feedbackInteractor.attachmentsRemovedPipe()))
             .filter { actionState -> actionState.status == ActionState.Status.SUCCESS }
             .map<List<FeedbackImageAttachment>> { actionState -> actionState.action.result }
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { removedAttachments ->
                attachmentsManager.attachments.forEach { holder ->
                   if (removedAttachments.contains(holder.entity())) {
                      attachmentsManager.remove(holder)
-                     view!!.removeAttachment(holder)
+                     view.removeAttachment(holder)
                   }
                }
             }
@@ -112,7 +110,7 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
       feedbackInteractor.uploadAttachmentPipe()
             .observeWithReplay()
             .compose(ActionPipeCacheWiper(feedbackInteractor.uploadAttachmentPipe()))
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ActionStateSubscriber<UploadFeedbackAttachmentCommand>()
                   .onStart { this.updateImageAttachment(it) }
@@ -129,7 +127,7 @@ class FeedbackAttachmentsPresenterDelegateImpl(private val mediaPickerInteractor
 
    private fun updateImageAttachment(command: UploadFeedbackAttachmentCommand) {
       val updatedHolder = command.entityStateHolder
-      view!!.updateAttachment(updatedHolder)
+      view.updateAttachment(updatedHolder)
       attachmentsManager.update(updatedHolder)
    }
 

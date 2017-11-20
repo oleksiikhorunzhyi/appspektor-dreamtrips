@@ -44,21 +44,21 @@ class SwitchOfflineModeCommand : Command<Boolean>(), InjectableAction {
       } else {
          smartCardInteractor.offlineModeStatusPipe()
                .createObservableResult(OfflineModeStatusCommand.save(!offlineModeEnabled))
-               .map{ it.result }
-               .subscribe( { callback.onSuccess(it) }, { callback.onFail(it) })
+               .map { it.result }
+               .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
       }
    }
 
    private fun tokenizeRecords(records: List<Record>): Observable<List<Record>> {
       return nxtInteractor.tokenizeMultipleRecordsPipe()
             .createObservableResult(TokenizeMultipleRecordsCommand(records, false))
-            .map{ it.result }
+            .map { it.result }
    }
 
    private fun detokenizeRecords(records: List<Record>): Observable<List<Record>> {
       return nxtInteractor.detokenizeMultipleRecordsPipe()
             .createObservableResult(DetokenizeMultipleRecordsCommand(records, false))
-            .map{ it.result }
+            .map { it.result }
    }
 
 }

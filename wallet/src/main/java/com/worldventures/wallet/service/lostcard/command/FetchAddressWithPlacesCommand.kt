@@ -1,6 +1,5 @@
 package com.worldventures.wallet.service.lostcard.command
 
-import android.support.v4.util.Pair
 import com.worldventures.core.janet.cache.CacheOptions
 import com.worldventures.core.janet.cache.CachedAction
 import com.worldventures.core.janet.cache.ImmutableCacheOptions
@@ -19,7 +18,9 @@ import rx.Observable.zip
 import javax.inject.Inject
 
 @CommandAction
-class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Command<FetchAddressWithPlacesCommand.PlacesWithAddress>(), InjectableAction, CachedAction<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
+class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates)
+   : Command<FetchAddressWithPlacesCommand.PlacesWithAddress>(), InjectableAction,
+      CachedAction<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
 
    @Inject lateinit var janet: Janet
    @Inject lateinit var mapperyContext: MapperyContext
@@ -43,13 +44,9 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Comman
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }
 
-   private fun needApiRequest(): Boolean {
-      return cachedResult == null
-   }
+   private fun needApiRequest() = cachedResult == null
 
-   override fun getCacheData(): Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress> {
-      return Pair(coordinates, result)
-   }
+   override fun getCacheData() = Pair(coordinates, result)
 
    override fun onRestore(holder: ActionHolder<*>, cache: Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>) {
       if (cache.first == coordinates) {

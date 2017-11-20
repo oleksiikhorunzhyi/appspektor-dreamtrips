@@ -210,7 +210,6 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                .addService(SmartCardActionService.createDefault(cardClient))
                .build()
 
-
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(WalletStorage::class.java) { mockDb }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
@@ -339,6 +338,5 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          verify(locationStorage, times(1)).isEnableTracking
          testFetchSubscriber.unsubscribe()
       }
-
    }
 }

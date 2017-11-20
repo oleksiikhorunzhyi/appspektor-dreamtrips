@@ -4,8 +4,13 @@ import com.worldventures.wallet.domain.session.NxtSessionHolder
 import com.worldventures.wallet.service.nxt.model.MultiErrorResponse
 import com.worldventures.wallet.service.nxt.model.NxtSession
 
+private const val NXT_SESSION_ERROR_1 = 11001
+private const val NXT_SESSION_ERROR_2 = 11002
+private const val NXT_SESSION_ERROR_3 = 11003
+private const val NXT_SESSION_ERROR_4 = 11004
+
 class NxtAuthRetryPolicy(private val nxtSessionHolder: NxtSessionHolder) {
-   private val sessionErrorCodes = listOf(11001, 11002, 10003, 10004)
+   private val sessionErrorCodes = listOf(NXT_SESSION_ERROR_1, NXT_SESSION_ERROR_2, NXT_SESSION_ERROR_3, NXT_SESSION_ERROR_4)
 
    private val isCredentialExists: Boolean
       get() {
@@ -18,9 +23,7 @@ class NxtAuthRetryPolicy(private val nxtSessionHolder: NxtSessionHolder) {
          }
       }
 
-   fun handle(createNxtSessionCall: () -> NxtSession?): Boolean {
-      return handle(null, createNxtSessionCall)
-   }
+   fun handle(createNxtSessionCall: () -> NxtSession?): Boolean = handle(null, createNxtSessionCall)
 
    fun handle(apiError: MultiErrorResponse?, createNxtSessionCall: () -> NxtSession?): Boolean {
       if (shouldRetry(apiError)) {
@@ -37,11 +40,7 @@ class NxtAuthRetryPolicy(private val nxtSessionHolder: NxtSessionHolder) {
       nxtSessionHolder.put(nxtSession)
    }
 
-   private fun shouldRetry(apiError: MultiErrorResponse?): Boolean {
-      return isLoginError(apiError) || !isCredentialExists
-   }
+   private fun shouldRetry(apiError: MultiErrorResponse?) = isLoginError(apiError) || !isCredentialExists
 
-   private fun isLoginError(apiError: MultiErrorResponse?): Boolean {
-      return apiError != null && sessionErrorCodes.contains(apiError.code)
-   }
+   private fun isLoginError(apiError: MultiErrorResponse?) = apiError != null && sessionErrorCodes.contains(apiError.code)
 }

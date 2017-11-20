@@ -8,9 +8,9 @@ import io.techery.mappery.MapperyContext
 
 class SmartCardDetailsConverter : Converter<ApiSmartCardDetails, SmartCardDetails> {
 
-   override fun targetClass() =  SmartCardDetails::class.java
+   override fun targetClass() = SmartCardDetails::class.java
 
-   override fun sourceClass() =  ApiSmartCardDetails::class.java
+   override fun sourceClass() = ApiSmartCardDetails::class.java
 
    override fun convert(context: MapperyContext, source: ApiSmartCardDetails): SmartCardDetails {
       return SmartCardDetails(

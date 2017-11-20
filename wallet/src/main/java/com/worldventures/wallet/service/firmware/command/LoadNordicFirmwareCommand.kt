@@ -24,9 +24,9 @@ class LoadNordicFirmwareCommand(private val firmwareFile: File, private val firm
 
    internal override fun updatedSmartCardFirmware(currentSmartCardFirmware: SmartCardFirmware): SmartCardFirmware {
       return if (bootloaderFile)
-         currentSmartCardFirmware.copy(nrfBootloaderVersion=firmwareVersion)
+         currentSmartCardFirmware.copy(nrfBootloaderVersion = firmwareVersion)
       else
-         currentSmartCardFirmware.copy(nordicAppVersion =firmwareVersion)
+         currentSmartCardFirmware.copy(nordicAppVersion = firmwareVersion)
    }
 
 }

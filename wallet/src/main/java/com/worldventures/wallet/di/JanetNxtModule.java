@@ -112,11 +112,11 @@ public class JanetNxtModule {
       return new NxtHttpService(nxtSessionHolder, appVersionNameBuilder, socialInfoProvider, mapperyContext,
             nxtIdConfigsProvider.nxtidApi(), httpClient, new GsonConverter(
             new GsonProvider().provideBuilder()
-//                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestBody())
-//                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestElement())
-//                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseBody())
-//                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseElement())
-//                  .registerTypeAdapterFactory(new GsonAdaptersMultiErrorResponse())
+                  //                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestBody())
+                  //                  .registerTypeAdapterFactory(new GsonAdaptersMultiRequestElement())
+                  //                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseBody())
+                  //                  .registerTypeAdapterFactory(new GsonAdaptersMultiResponseElement())
+                  //                  .registerTypeAdapterFactory(new GsonAdaptersMultiErrorResponse())
                   .create()),
             nxtIdConfigsProvider);
    }

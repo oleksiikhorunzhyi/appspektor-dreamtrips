@@ -10,11 +10,11 @@ import com.worldventures.wallet.service.nxt.util.NxtBankCardHelper
 fun createTestSmartCardFirmware() = SmartCardFirmware(
       firmwareBundleVersion = null,
       nordicAppVersion = "1.0.0-test",
-      nrfBootloaderVersion =  "1.0.0-test",
+      nrfBootloaderVersion = "1.0.0-test",
       internalAtmelVersion = "1.0.0-test",
       internalAtmelBootloaderVersion = "1.0.0-test",
       externalAtmelVersion = "1.0.0-test",
-      externalAtmelBootloaderVersion =  "1.0.0-test"
+      externalAtmelBootloaderVersion = "1.0.0-test"
 )
 
 fun createTestNxtSession(nxtSessionToken: String) = NxtSession(nxtSessionToken)
@@ -29,7 +29,7 @@ fun createTestFirmwareUpdateData(scId: String, currentFirmwareVersion: SmartCard
 )
 
 fun createTestMultiResponseBody(recordIds: List<String?>, number: String, cvv: String,
-                                track1: String, track2: String = track1, track3: String=track1): MultiResponseBody {
+                                track1: String, track2: String = track1, track3: String = track1): MultiResponseBody {
    val responseElements = mutableListOf<MultiResponseElement>()
 
    recordIds.reversed().forEach { refIdPrefix ->

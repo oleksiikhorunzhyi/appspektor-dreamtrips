@@ -6,7 +6,7 @@ import com.worldventures.wallet.ui.settings.help.feedback.base.BaseFeedbackScree
 import com.worldventures.wallet.ui.settings.help.feedback.base.FeedbackAttachmentsPresenter
 import rx.Observable
 
-interface FeedbackAttachmentsPresenterDelegate: FeedbackAttachmentsPresenter {
+interface FeedbackAttachmentsPresenterDelegate : FeedbackAttachmentsPresenter {
 
    val imagesAttachments: List<FeedbackImageAttachment>
 

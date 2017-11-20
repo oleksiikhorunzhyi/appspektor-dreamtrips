@@ -23,15 +23,12 @@ data class Record(
          return true
       }
       if (other is Record) {
-         val record = other as Record?
-         val recordId = record!!.id
+         val recordId = other.id
          val id = id
          return recordId != null && id != null && recordId == id
       }
       return false
    }
 
-   override fun hashCode(): Int {
-      return id?.hashCode() ?: super.hashCode()
-   }
+   override fun hashCode(): Int = id?.hashCode() ?: super.hashCode()
 }

@@ -63,7 +63,8 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
-                  .onSuccess(command -> getView().showConfirmationUnassignOnBackend(command.getResult().getSmartCardId()))
+                  .onSuccess(command -> getView().showConfirmationUnassignOnBackend(command.getResult()
+                        .getSmartCardId()))
                   .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
             );
    }

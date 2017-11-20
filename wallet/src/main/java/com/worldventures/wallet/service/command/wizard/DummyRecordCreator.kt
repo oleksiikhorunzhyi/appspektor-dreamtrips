@@ -12,19 +12,19 @@ object DummyRecordCreator {
 
    fun createRecords(user: SmartCardUser, version: String): List<Record> {
       val dummyCard1 = Record(
-             id = "0",
-             number = "9999999999994984",
-             numberLastFourDigits = "4984",
-             financialService = GENERIC,
-             expDate = "02/19",
-             cvv = "748",
-             version = version,
-             track1 = "B1234567890123445^FLYE/TEST CARD^23045211000000827000000",
-             track2 = "1234567890123445=230452110000827",
-             nickname = "Credit Card",
-             cardHolderLastName = user.lastName,
-             cardHolderMiddleName = user.middleName,
-             cardHolderFirstName = user.firstName)
+            id = "0",
+            number = "9999999999994984",
+            numberLastFourDigits = "4984",
+            financialService = GENERIC,
+            expDate = "02/19",
+            cvv = "748",
+            version = version,
+            track1 = "B1234567890123445^FLYE/TEST CARD^23045211000000827000000",
+            track2 = "1234567890123445=230452110000827",
+            nickname = "Credit Card",
+            cardHolderLastName = user.lastName,
+            cardHolderMiddleName = user.middleName,
+            cardHolderFirstName = user.firstName)
 
       val dummyCard2 = Record(
             id = "1",

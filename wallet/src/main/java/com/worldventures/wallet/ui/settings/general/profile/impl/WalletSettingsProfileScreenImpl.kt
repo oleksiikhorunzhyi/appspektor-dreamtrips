@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.profile.impl
 
-
 import android.app.Dialog
 import android.databinding.DataBindingUtil
 import android.net.Uri
@@ -84,7 +83,6 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       }
 
       binding.lastName.keyListener = null
-
 
       cropImageService = context.getSystemService(WalletCropImageService.SERVICE_NAME) as WalletCropImageService
       SmartCardAvatarHelper.applyGrayScaleColorFilter(binding.photoPreview)

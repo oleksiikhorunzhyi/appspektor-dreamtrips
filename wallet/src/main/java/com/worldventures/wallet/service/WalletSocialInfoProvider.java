@@ -8,7 +8,7 @@ public interface WalletSocialInfoProvider {
 
    boolean hasUser();
 
-   Integer userId();
+   int userId();
 
    @Nullable
    String firstName();

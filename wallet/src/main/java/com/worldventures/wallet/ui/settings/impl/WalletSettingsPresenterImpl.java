@@ -52,7 +52,7 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
       observeSmartCardChanges();
       observeFirmwareUpdates();
 
-      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
+      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.Companion.fetch());
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
    }
 
@@ -105,6 +105,8 @@ public class WalletSettingsPresenterImpl extends WalletPresenterImpl<WalletSetti
    }
 
    private void bindFirmwareUpdateData(@Nullable FirmwareUpdateData firmwareUpdateData) {
-      getView().firmwareUpdateCount(firmwareUpdateData.updateAvailable() ? 1 : 0);
+      if (firmwareUpdateData != null) {
+         getView().firmwareUpdateCount(firmwareUpdateData.isUpdateAvailable() ? 1 : 0);
+      }
    }
 }

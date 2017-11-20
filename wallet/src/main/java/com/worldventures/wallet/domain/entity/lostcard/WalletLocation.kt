@@ -1,6 +1,6 @@
 package com.worldventures.wallet.domain.entity.lostcard
 
-import java.util.*
+import java.util.Date
 
 data class WalletLocation(
       val coordinates: WalletCoordinates,

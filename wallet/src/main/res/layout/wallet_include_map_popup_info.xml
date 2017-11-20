@@ -20,7 +20,7 @@
 
       <variable
             name="visible"
-            type="Boolean"
+            type="boolean"
             />
    </data>
 

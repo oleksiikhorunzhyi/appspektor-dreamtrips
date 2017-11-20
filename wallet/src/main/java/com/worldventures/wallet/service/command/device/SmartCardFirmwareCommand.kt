@@ -23,9 +23,7 @@ class SmartCardFirmwareCommand private constructor(private val func: Func1<Smart
       callback.onSuccess(smartCardFirmware)
    }
 
-   override fun getCacheData(): SmartCardFirmware {
-      return result
-   }
+   override fun getCacheData(): SmartCardFirmware = result
 
    override fun onRestore(holder: ActionHolder<*>, cache: SmartCardFirmware) {
       cachedSmartCardFirmware = cache
@@ -39,27 +37,17 @@ class SmartCardFirmwareCommand private constructor(private val func: Func1<Smart
             .build()
    }
 
-   private fun createDefault(): SmartCardFirmware {
-      return SmartCardFirmware()
-   }
+   private fun createDefault() = SmartCardFirmware()
 
    companion object {
 
-      fun fetch(): SmartCardFirmwareCommand {
-         return SmartCardFirmwareCommand(Func1 { smartCardFirmware -> smartCardFirmware })
-      }
+      fun fetch() = SmartCardFirmwareCommand(Func1 { smartCardFirmware -> smartCardFirmware })
 
-      fun bundleVersion(bundleVersion: String): SmartCardFirmwareCommand {
-         return update({ it.copy(firmwareBundleVersion = bundleVersion) })
-      }
+      fun bundleVersion(bundleVersion: String) = update({ it.copy(firmwareBundleVersion = bundleVersion) })
 
-      fun save(smartCardFirmware: SmartCardFirmware): SmartCardFirmwareCommand {
-         return SmartCardFirmwareCommand(Func1 { smartCardFirmware })
-      }
+      fun save(smartCardFirmware: SmartCardFirmware) = SmartCardFirmwareCommand(Func1 { smartCardFirmware })
 
-      private fun update(builderFunc: (SmartCardFirmware) -> SmartCardFirmware): SmartCardFirmwareCommand {
-         return SmartCardFirmwareCommand(Func1 { builderFunc.invoke(it) }
-         )
-      }
+      private fun update(builderFunc: (SmartCardFirmware) -> SmartCardFirmware) =
+            SmartCardFirmwareCommand(Func1 { builderFunc.invoke(it) })
    }
 }

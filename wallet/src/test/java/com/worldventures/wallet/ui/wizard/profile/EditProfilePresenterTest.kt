@@ -64,7 +64,6 @@ class EditProfilePresenterTest : BasePresenterTest<WizardEditProfileScreen, Wiza
       whenever(socialInfoProvider.firstName()).thenReturn("firstName")
       whenever(socialInfoProvider.lastName()).thenReturn("lastName")
 
-
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
       val wizardInteractor = interactorBuilder.createInteractor(WizardInteractor::class)
 
@@ -113,10 +112,10 @@ class EditProfilePresenterTest : BasePresenterTest<WizardEditProfileScreen, Wiza
 
    @Test
    @Throws(Throwable::class)
-   fun testSaveUserCorrectUser(){
+   fun testSaveUserCorrectUser() {
       contractSetupUserData.result(SmartCardUser(
-                  firstName = "TestFirst",
-                  lastName = "Test Last"))
+            firstName = "TestFirst",
+            lastName = "Test Last"))
 
       val profile = ProfileViewModel()
       profile.firstName = "TestFirst"

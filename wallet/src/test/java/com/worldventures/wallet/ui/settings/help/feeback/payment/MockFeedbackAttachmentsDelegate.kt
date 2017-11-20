@@ -10,7 +10,7 @@ import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import rx.subjects.PublishSubject
 
-class MockFeedbackAttachmentsDelegate(val maxAttachmentsCount: Int): FeedbackAttachmentsPresenterDelegate {
+class MockFeedbackAttachmentsDelegate(val maxAttachmentsCount: Int) : FeedbackAttachmentsPresenterDelegate {
 
    private val attachmentsList: List<EntityStateHolder<FeedbackImageAttachment>> = ArrayList()
    private val attachmentsPublishSubject: PublishSubject<EntityStateHolder<FeedbackImageAttachment>> = PublishSubject()
@@ -36,16 +36,20 @@ class MockFeedbackAttachmentsDelegate(val maxAttachmentsCount: Int): FeedbackAtt
    }
 
    // Mock implementation
-   override fun fetchAttachments() { /* nothing */ }
+   override fun fetchAttachments() { /* nothing */
+   }
 
-   override fun handleAttachedImages(chosenImages: List<PhotoPickerModel>) { /* nothing */ }
+   override fun handleAttachedImages(chosenImages: List<PhotoPickerModel>) { /* nothing */
+   }
 
-   override fun removeAttachment(holder: EntityStateHolder<FeedbackImageAttachment>) { /* nothing */ }
+   override fun removeAttachment(holder: EntityStateHolder<FeedbackImageAttachment>) { /* nothing */
+   }
 
    override val imagesAttachments: List<FeedbackImageAttachment>
       get() = attachmentsList.map { it.entity() }
 
-   override fun retryUploadingAttachment(attachmentHolder: EntityStateHolder<FeedbackImageAttachment>) { /* nothing */ }
+   override fun retryUploadingAttachment(attachmentHolder: EntityStateHolder<FeedbackImageAttachment>) { /* nothing */
+   }
 
    override val availableAttachmentsCount: Int
       get() = maxAttachmentsCount - attachmentsList.size
@@ -58,9 +62,11 @@ class MockFeedbackAttachmentsDelegate(val maxAttachmentsCount: Int): FeedbackAtt
 
    override fun findPosition(holder: EntityStateHolder<FeedbackImageAttachment>): Int = 0
 
-   override fun clearAttachments() {  }
+   override fun clearAttachments() {}
 
-   override fun init(view: BaseFeedbackScreen) { /* nothing */ }
+   override fun init(view: BaseFeedbackScreen) { /* nothing */
+   }
 
-   override fun destroy() { /* nothing */ }
+   override fun destroy() { /* nothing */
+   }
 }

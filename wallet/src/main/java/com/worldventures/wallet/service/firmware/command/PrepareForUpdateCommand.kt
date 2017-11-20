@@ -32,6 +32,4 @@ class PrepareForUpdateCommand : Command<FirmwareUpdateType>(), InjectableAction 
                .subscribe({ callback.onSuccess(FirmwareUpdateType.CRITICAL) }, { callback.onFail(it) })
       }
    }
-
-
 }

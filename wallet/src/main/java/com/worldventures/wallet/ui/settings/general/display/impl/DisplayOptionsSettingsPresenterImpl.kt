@@ -57,8 +57,8 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
    }
 
    private fun initiateData() {
-      val profileViewModel = view!!.profileViewModel
-      this.user = if (profileViewModel != null) delegate.createSmartCardUser(view!!.profileViewModel) else null
+      val profileViewModel = view.profileViewModel
+      this.user = if (profileViewModel != null) delegate.createSmartCardUser(profileViewModel) else null
       this.mustSaveUserProfile = user != null
    }
 
@@ -68,28 +68,28 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
             smartCardInteractor.displayTypePipe.observeSuccess()
                   .map { it.result },
             { first, second -> Pair(first, second) })
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .take(1)
             .doOnSubscribe { this.fetchDisplayType() }
-            .subscribe({ pair -> view!!.setupViewPager(user!!, pair.second) }) { t -> Timber.e(t, "") }
+            .subscribe({ pair -> view.setupViewPager(pair.first, pair.second) }) { t -> Timber.e(t) }
 
-      val getDisplayTypeOperationView = view!!.provideGetDisplayTypeOperationView()
+      val getDisplayTypeOperationView = view.provideGetDisplayTypeOperationView()
       getDisplayTypeOperationView.showProgress(null)
       smartCardInteractor.displayTypePipe.observe()
             .compose(GuaranteedProgressVisibilityTransformer<ActionState<GetDisplayTypeCommand>>())
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getDisplayTypeOperationView)
                   .create()
             )
       smartCardInteractor.saveDisplayTypePipe().observe()
             .compose(GuaranteedProgressVisibilityTransformer<ActionState<SaveDisplayTypeCommand>>())
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(view!!.provideSaveDisplayTypeOperationView())
+            .subscribe(OperationActionSubscriber.forView(view.provideSaveDisplayTypeOperationView())
                   .onSuccess {
-                     if (view!!.displayOptionsSource.isSettings) {
+                     if (view.displayOptionsSource.isSettings) {
                         goBack()
                      } else {
                         navigator.goBackToProfile()
@@ -100,7 +100,7 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
    }
 
    private fun observeUserProfileUploading() {
-      delegate.observeProfileUploading(view!!)
+      delegate.observeProfileUploading(view)
    }
 
    override fun fetchDisplayType() {
@@ -109,38 +109,40 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
 
    override fun savePhoneNumber(profile: ProfileViewModel) {
       val enteredPhone = delegate.createPhone(profile) ?: return
-      user = user!!.copy(phoneNumber = enteredPhone)
+      user = user?.copy(phoneNumber = enteredPhone)
 
       mustSaveUserProfile = true
-      view!!.updateUser(user)
+      view.updateUser(user)
    }
 
    override fun handlePickedPhoto(model: PhotoPickerModel) {
-      view!!.cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model))
+      view.cropPhoto(WalletFilesUtils.convertPickedPhotoToUri(model))
    }
 
    override fun saveAvatar(imageUri: String) {
-      user = user!!.copy(userPhoto = SmartCardUserPhoto(imageUri))
+      user = user?.copy(userPhoto = SmartCardUserPhoto(imageUri))
 
       mustSaveUserProfile = true
-      view!!.updateUser(user)
+      view.updateUser(user)
    }
 
    override fun choosePhoto() {
-      view!!.pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()))
+      view.pickPhoto(delegate.provideInitialPhotoUrl(socialInfoProvider.photoThumb()))
    }
 
    override fun saveDisplayType(@SetHomeDisplayTypeAction.HomeDisplayType type: Int) {
-      val saveDisplayType = SaveDisplayTypeCommand(type, user!!)
-      if (mustSaveUserProfile) {
-         updateProfileAndSaveDisplayType(saveDisplayType)
-      } else {
-         smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType)
+      user?.let {
+         val saveDisplayType = SaveDisplayTypeCommand(type, it)
+         if (mustSaveUserProfile) {
+            updateProfileAndSaveDisplayType(it, saveDisplayType)
+         } else {
+            smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType)
+         }
       }
    }
 
-   private fun updateProfileAndSaveDisplayType(saveDisplayType: SaveDisplayTypeCommand) {
-      delegate.updateUser(user!!, true) { smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType) }
+   private fun updateProfileAndSaveDisplayType(user: SmartCardUser, saveDisplayType: SaveDisplayTypeCommand) {
+      delegate.updateUser(user, true) { smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType) }
    }
 
    override fun goBack() {

@@ -303,8 +303,6 @@ class SmartCardInteractorSpec : BaseSpec({
          }
       }
    }
-
-
 }) {
 
    private companion object {

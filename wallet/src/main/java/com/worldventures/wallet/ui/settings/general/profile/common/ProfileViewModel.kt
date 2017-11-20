@@ -15,7 +15,6 @@ data class ProfileViewModel(
       private var _chosenPhotoUri: String? = null
 ) : BaseObservable(), Parcelable {
 
-
    var firstName: String
       @Bindable get() = _firstName
       set(value) {

@@ -1,6 +1,5 @@
 package com.worldventures.wallet.service.firmware.command
 
-
 import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData
 import com.worldventures.wallet.service.firmware.FirmwareRepository
@@ -22,8 +21,8 @@ class FetchFirmwareUpdateData : Command<FetchFirmwareUpdateData.Result>(), Injec
    }
 
    data class Result(
-      val isForceUpdateStarted: Boolean,
-      val firmwareUpdateData: FirmwareUpdateData? = null) {
+         val isForceUpdateStarted: Boolean,
+         val firmwareUpdateData: FirmwareUpdateData? = null) {
 
       @Deprecated("Use isForceUpdateStarted")
       fun hasUpdate() = isForceUpdateStarted

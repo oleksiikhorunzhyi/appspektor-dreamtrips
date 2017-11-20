@@ -15,8 +15,8 @@ class DeviceStateCommand private constructor(private val func: (SmartCardStatus)
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<SmartCardStatus>) {
-      if (cachedSmartCardStatus == null) cachedSmartCardStatus = createDefault()
-      val newSmartCardStatus = func.invoke(cachedSmartCardStatus!!)
+      val status = cachedSmartCardStatus ?: createDefault()
+      val newSmartCardStatus = func.invoke(status)
       callback.onSuccess(newSmartCardStatus)
    }
 

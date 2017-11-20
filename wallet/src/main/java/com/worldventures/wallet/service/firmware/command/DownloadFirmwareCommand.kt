@@ -30,6 +30,6 @@ class DownloadFirmwareCommand : Command<Void>(), InjectableAction {
             .subscribe({ result ->
                firmwareRepository.firmwareUpdateData = result
                callback.onSuccess(null)
-            },  { callback.onFail(it) })
+            }, { callback.onFail(it) })
    }
 }

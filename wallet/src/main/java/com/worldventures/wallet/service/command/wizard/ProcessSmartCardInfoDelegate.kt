@@ -34,9 +34,9 @@ internal class ProcessSmartCardInfoDelegate(
       val apiPhone = apiUser.phone()
 
       return SmartCardUser(
-            firstName = defaultIfEmpty(apiUser.firstName(),""),
+            firstName = defaultIfEmpty(apiUser.firstName(), ""),
             middleName = defaultIfEmpty(apiUser.middleName(), ""),
-            lastName= defaultIfEmpty(apiUser.lastName(), ""),
+            lastName = defaultIfEmpty(apiUser.lastName(), ""),
             phoneNumber = if (apiPhone != null) mappery.convert(apiPhone, SmartCardUserPhone::class.java) else null,
             userPhoto = if (photoUrl.isNullOrEmpty()) null else SmartCardUserPhoto(photoUrl!!))
    }
@@ -56,5 +56,6 @@ internal class ProcessSmartCardInfoDelegate(
             .createObservableResult(ActiveSmartCardCommand(result.smartCard))
             .map { null }
    }
+
    internal class Result(val smartCard: SmartCard, val user: SmartCardUser, val details: SmartCardDetails)
 }

@@ -176,7 +176,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
    }
 
    private void openPost() {
-      router.moveTo(CreateFeedPostFragment.class, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .data(new CreateEntityBundle(false, CreateEntityBundle.Origin.FEED))

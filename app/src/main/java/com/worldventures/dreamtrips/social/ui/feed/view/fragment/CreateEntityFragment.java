@@ -8,6 +8,7 @@ import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
@@ -28,7 +29,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 
-public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
+@Layout(R.layout.layout_post)
+public class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
       implements CreateEntityPresenter.View {
 
    @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
@@ -72,6 +74,16 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    @Override
    protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
       return new CreateEntityPresenter(getArgs().getOrigin());
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      if (getArgs() != null && getArgs().isShowPickerImmediately()) {
+         getPresenter().showMediaPicker();
+         getArgs().setShowPickerImmediately(true);
+      }
+      updatePickerState();
    }
 
    @Override

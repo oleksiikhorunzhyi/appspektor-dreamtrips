@@ -111,6 +111,13 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                   }));
    }
 
+   @Override
+   protected void updateDescription() {
+      if (origin == CreateEntityBundle.Origin.FEED) {
+         super.updateDescription();
+      }
+   }
+
    public void initialPhotoStripDelegate() {
       photoStripDelegate.setMaxPickLimits(MAX_PHOTOS_COUNT, MAX_VIDEO_COUNT);
       photoStripDelegate.maintainPhotoStrip(view.getPhotoStrip(), bindView(), true);

@@ -33,7 +33,7 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.UploadingPostsSectionCell;
-import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.VideoMediaEntity;
@@ -242,7 +242,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       if (isCreatePhotoAlreadyAttached()) {
          return;
       }
-      router.moveTo(CreateFeedPostFragment.class, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .containerId(R.id.container_details_floating)
@@ -256,6 +256,6 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    private boolean isCreatePhotoAlreadyAttached() {
       return Queryable.from(getActivity().getSupportFragmentManager().getFragments())
-            .firstOrDefault(fragment -> fragment instanceof CreateFeedPostFragment) != null;
+            .firstOrDefault(fragment -> fragment instanceof CreateEntityFragment) != null;
    }
 }

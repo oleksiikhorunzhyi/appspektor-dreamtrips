@@ -22,6 +22,6 @@ class DetectGeoLocationCommand : Command<WalletCoordinates>(), InjectableAction 
       }
       locationService.detectLastKnownLocation()
             .map { WalletCoordinates(lat = it.latitude, lng = it.longitude) }
-            .subscribe( { callback.onSuccess(it) }, { callback.onFail(it) })
+            .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }
 }

@@ -1,6 +1,5 @@
 package com.worldventures.wallet.analytics
 
-
 import android.text.TextUtils
 import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.record.Record

@@ -63,7 +63,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
-                  .onSuccess(command -> bindSmartCardId(command.getResult().smartCardId()))
+                  .onSuccess(command -> bindSmartCardId(command.getResult().getSmartCardId()))
             );
    }
 
@@ -104,7 +104,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
-                  .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().smartCardId()))
+                  .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().getSmartCardId()))
                   .create());
    }
 
@@ -117,7 +117,7 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
             .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
                   .onSuccess(command -> {
                      sendAnalyticAction(new ExistSmartCardDontHaveCardAction());
-                     getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId());
+                     getView().showConfirmationUnassignOnBackend(command.getResult().getSmartCardId());
                   })
                   .create());
    }

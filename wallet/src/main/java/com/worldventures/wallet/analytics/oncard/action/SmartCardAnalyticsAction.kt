@@ -4,8 +4,9 @@ import android.support.annotation.CallSuper
 import com.worldventures.wallet.analytics.BaseCardDetailsAction
 import com.worldventures.wallet.util.TimeUtils
 import io.techery.janet.smartcard.model.analytics.AnalyticsLog
-import io.techery.janet.smartcard.model.analytics.AnalyticsLog.*
+import io.techery.janet.smartcard.model.analytics.AnalyticsLog.* // ktlint-disable no-wildcard-imports
 
+@JvmSuppressWildcards
 abstract class SmartCardAnalyticsAction internal constructor(private val analyticsLog: AnalyticsLog) : BaseCardDetailsAction() {
 
    init {
@@ -17,15 +18,13 @@ abstract class SmartCardAnalyticsAction internal constructor(private val analyti
       attributeMap.put("octimepart", TimeUtils.formatToIso(logEntry.timestampMillis()))
    }
 
-   override fun toString(): String {
-      return "SmartCardAnalyticsAction :: type = " + analyticsLog.type() + ", attributes = " + attributeMap
-   }
+   override fun toString(): String =
+         "SmartCardAnalyticsAction :: type = ${analyticsLog.type()}, attributes = $attributeMap"
 
    companion object {
 
       fun from(analyticsLog: AnalyticsLog): SmartCardAnalyticsAction? {
          var analyticsAction: SmartCardAnalyticsAction? = null
-
 
          val type = analyticsLog.type()
          when (type) {

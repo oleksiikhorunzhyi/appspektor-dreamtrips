@@ -60,8 +60,8 @@ public class DisplayOptionsViewHolder {
    }
 
    void bindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, @NonNull SmartCardUser user) {
-      SmartCardUserPhoto userPhoto = user.userPhoto();
-      SmartCardUserPhone userPhone = user.phoneNumber();
+      SmartCardUserPhoto userPhoto = user.getUserPhoto();
+      SmartCardUserPhone userPhone = user.getPhoneNumber();
       String phone = (userPhone == null) ? String.format(Locale.US, "(%s)", rootView.getResources()
             .getString(R.string.wallet_settings_general_display_phone_required)) : userPhone.fullPhoneNumber();
 
@@ -87,7 +87,7 @@ public class DisplayOptionsViewHolder {
             if (userPhoto != null) {
                photo.setImageURI(userPhoto.getUri());
             }
-            firstName.setText(user.firstName());
+            firstName.setText(user.getFirstName());
             break;
          case DISPLAY_NAME_ONLY:
             fullName.setText(userFullName(user));

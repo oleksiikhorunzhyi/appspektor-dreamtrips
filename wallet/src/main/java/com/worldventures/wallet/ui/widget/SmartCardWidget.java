@@ -83,12 +83,12 @@ public class SmartCardWidget extends ConstraintLayout {
    public void bindCard(CardStackHeaderHolder holder) {
       final int type = getNormalizedType(holder);
 
-      final StringBuilder fullNameBuilder = new StringBuilder(holder.firstName());
-      if (!holder.middleName().isEmpty()) {
-         fullNameBuilder.append('\n').append(holder.middleName());
+      final StringBuilder fullNameBuilder = new StringBuilder(holder.getFirstName());
+      if (!holder.getMiddleName().isEmpty()) {
+         fullNameBuilder.append('\n').append(holder.getMiddleName());
       }
-      if (!holder.lastName().isEmpty()) {
-         fullNameBuilder.append('\n').append(holder.lastName());
+      if (!holder.getLastName().isEmpty()) {
+         fullNameBuilder.append('\n').append(holder.getLastName());
       }
 
       final String photoFullName = fullNameBuilder.toString();
@@ -98,19 +98,19 @@ public class SmartCardWidget extends ConstraintLayout {
 
       switch (type) {
          case DISPLAY_PICTURE_ONLY:
-            scAvatar.setImageURI(holder.photoUrl());
+            scAvatar.setImageURI(holder.getPhotoUrl());
             break;
          case DISPLAY_PICTURE_AND_NAME:
-            scAvatar.setImageURI(holder.photoUrl());
-            tvPhotoFirstName.setText(holder.firstName());
+            scAvatar.setImageURI(holder.getPhotoUrl());
+            tvPhotoFirstName.setText(holder.getFirstName());
             break;
          case DISPLAY_NAME_ONLY:
             tvPhotoFullName.setText(photoFullName);
             break;
          case DISPLAY_PHONE_AND_NAME:
-            final String phoneNumber = ProjectTextUtils.isEmpty(holder.phoneNumber())
+            final String phoneNumber = ProjectTextUtils.isEmpty(holder.getPhoneNumber())
                   ? String.format(Locale.US, "(%s)", getResources().getString(R.string.wallet_settings_general_display_phone_required))
-                  : holder.phoneNumber();
+                  : holder.getPhoneNumber();
             tvPhotoFullName.setText(photoFullName + "\n\n" + phoneNumber);
             break;
          default:
@@ -121,12 +121,12 @@ public class SmartCardWidget extends ConstraintLayout {
       tvPhotoFullName.setVisibility((type == DISPLAY_NAME_ONLY || type == DISPLAY_PHONE_AND_NAME) ? View.VISIBLE : View.GONE);
       scAvatar.setVisibility((type == DISPLAY_PICTURE_AND_NAME || type == DISPLAY_PICTURE_ONLY) ? View.VISIBLE : View.GONE);
 
-      bindCardLoadedCount(holder.cardCount());
+      bindCardLoadedCount(holder.getCardCount());
 
-      bindConnectionIndicator(holder.connected());
-      bindStealthModeIndicator(holder.stealthMode());
-      bindLockIndicator(holder.lock());
-      bindBatteryIndicator(holder.batteryLevel());
+      bindConnectionIndicator(holder.getConnected());
+      bindStealthModeIndicator(holder.getStealthMode());
+      bindLockIndicator(holder.getLock());
+      bindBatteryIndicator(holder.getBatteryLevel());
 
       setVisibility(VISIBLE);
    }
@@ -135,17 +135,17 @@ public class SmartCardWidget extends ConstraintLayout {
     * Fallback to default type if there is not enough user information or display type is invalid.
     */
    private int getNormalizedType(CardStackHeaderHolder holder) {
-      final int displayType = holder.displayType();
+      final int displayType = holder.getDisplayType();
       switch (displayType) {
          case DISPLAY_PICTURE_ONLY:
          case DISPLAY_PICTURE_AND_NAME:
-            if (ProjectTextUtils.isEmpty(holder.photoUrl())) {
+            if (ProjectTextUtils.isEmpty(holder.getPhotoUrl())) {
                break;
             } else {
                return displayType;
             }
          case DISPLAY_PHONE_AND_NAME:
-            if (ProjectTextUtils.isEmpty(holder.phoneNumber())) {
+            if (ProjectTextUtils.isEmpty(holder.getPhoneNumber())) {
                break;
             } else {
                return displayType;

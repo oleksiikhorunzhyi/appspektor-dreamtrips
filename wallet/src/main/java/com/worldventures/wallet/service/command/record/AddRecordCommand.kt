@@ -31,16 +31,14 @@ class AddRecordCommand private constructor(private val record: Record, private v
    @Inject lateinit var walletStorage: WalletStorage
    @Inject lateinit var recordInteractor: RecordInteractor
 
-   fun setAsDefaultRecord(): Boolean {
-      return setAsDefaultRecord
-   }
+   fun setAsDefaultRecord() = setAsDefaultRecord
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Record>) {
       checkCardData()
 
       prepareRecordForLocalStorage(record)
-            .flatMap { pushRecordToSmartCard(record).map { recordId -> it.copy(id =recordId) } }
+            .flatMap { pushRecordToSmartCard(record).map { recordId -> it.copy(id = recordId) } }
             .doOnNext { this.saveRecordLocally(it) }
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }
@@ -64,12 +62,13 @@ class AddRecordCommand private constructor(private val record: Record, private v
    }
 
    private fun saveDefaultCard(recordId: String): Observable<String> {
-      return if (setAsDefaultRecord)
+      return if (setAsDefaultRecord) {
          recordInteractor.setDefaultCardOnDeviceCommandPipe()
                .createObservableResult(SetDefaultCardOnDeviceCommand.setAsDefault(recordId))
                .map { recordId }
-      else
+      } else {
          Observable.just(recordId)
+      }
    }
 
    private fun saveRecordLocally(record: Record) {
@@ -111,8 +110,6 @@ class AddRecordCommand private constructor(private val record: Record, private v
          return this
       }
 
-      fun create(): AddRecordCommand {
-         return AddRecordCommand(record.copy(cvv = cvv, nickname = recordName), setAsDefaultRecord)
-      }
+      fun create() = AddRecordCommand(record.copy(cvv = cvv, nickname = recordName), setAsDefaultRecord)
    }
 }

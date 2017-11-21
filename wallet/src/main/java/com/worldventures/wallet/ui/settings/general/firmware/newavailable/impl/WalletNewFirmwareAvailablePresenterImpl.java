@@ -57,10 +57,10 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
    }
 
    private void bindDataToView(FirmwareUpdateData firmwareUpdateData) {
-      final FirmwareInfo firmwareInfo = firmwareUpdateData.firmwareInfo();
+      final FirmwareInfo firmwareInfo = firmwareUpdateData.getFirmwareInfo();
       final boolean isCompatible = firmwareInfo != null && firmwareInfo.isCompatible();
 
-      getView().currentFirmwareInfo(firmwareUpdateData.currentFirmwareVersion(), firmwareInfo, isCompatible);
+      getView().currentFirmwareInfo(firmwareUpdateData.getCurrentFirmwareVersion(), firmwareInfo, isCompatible);
    }
 
    private void trackScreen() {
@@ -99,7 +99,7 @@ public class WalletNewFirmwareAvailablePresenterImpl extends WalletPresenterImpl
 
    private void checkStoreAndNavigateToDownLoadScreen(FirmwareUpdateData firmwareUpdateData) {
       try {
-         checkStorageAvailability(getView().getViewContext(), firmwareUpdateData.firmwareInfo().fileSize());
+         checkStorageAvailability(getView().getViewContext(), firmwareUpdateData.getFirmwareInfo().fileSize());
          goDownloadFile();
       } catch (WalletFilesUtils.NotEnoughSpaceException e) {
          getView().insufficientSpace(e.getMissingByteSpace());

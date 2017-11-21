@@ -10,11 +10,6 @@ import com.worldventures.core.repository.SnappyAction;
 import com.worldventures.core.repository.SnappyResult;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData;
-import com.worldventures.wallet.domain.entity.ImmutableFirmwareUpdateData;
-import com.worldventures.wallet.domain.entity.ImmutableSmartCard;
-import com.worldventures.wallet.domain.entity.ImmutableSmartCardDetails;
-import com.worldventures.wallet.domain.entity.ImmutableSmartCardFirmware;
-import com.worldventures.wallet.domain.entity.ImmutableSmartCardUser;
 import com.worldventures.wallet.domain.entity.SmartCard;
 import com.worldventures.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
@@ -66,7 +61,7 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
 
    @Override
    public SmartCard getSmartCard() {
-      return getEncrypted(WALLET_SMART_CARD, ImmutableSmartCard.class);
+      return getEncrypted(WALLET_SMART_CARD, SmartCard.class);
    }
 
    @Override
@@ -81,7 +76,7 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
 
    @Override
    public SmartCardUser getSmartCardUser() {
-      return getEncrypted(WALLET_SMART_CARD_USER, ImmutableSmartCardUser.class);
+      return getEncrypted(WALLET_SMART_CARD_USER, SmartCardUser.class);
    }
 
    @Override
@@ -96,7 +91,7 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
 
    @Override
    public SmartCardDetails getSmartCardDetails() {
-      return getEncrypted(WALLET_DETAILS_SMART_CARD, ImmutableSmartCardDetails.class);
+      return getEncrypted(WALLET_DETAILS_SMART_CARD, SmartCardDetails.class);
    }
 
    @Override
@@ -111,7 +106,7 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
 
    @Override
    public SmartCardFirmware getSmartCardFirmware() {
-      return getEncrypted(WALLET_SMART_CARD_FIRMWARE, ImmutableSmartCardFirmware.class);
+      return getEncrypted(WALLET_SMART_CARD_FIRMWARE, SmartCardFirmware.class);
    }
 
    @Override
@@ -141,7 +136,7 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
 
    @Override
    public FirmwareUpdateData getFirmwareUpdateData() {
-      return getEncrypted(WALLET_FIRMWARE, ImmutableFirmwareUpdateData.class);
+      return getEncrypted(WALLET_FIRMWARE, FirmwareUpdateData.class);
    }
 
    @Override

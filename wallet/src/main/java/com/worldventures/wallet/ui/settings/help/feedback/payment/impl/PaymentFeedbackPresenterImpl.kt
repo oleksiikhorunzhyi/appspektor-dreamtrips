@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.help.feedback.payment.impl
 
-
 import com.worldventures.core.model.EntityStateHolder
 import com.worldventures.wallet.service.command.settings.WalletSettingsInteractor
 import com.worldventures.wallet.service.command.settings.help.PaymentFeedbackCommand
@@ -14,9 +13,12 @@ import com.worldventures.wallet.ui.settings.help.feedback.payment.PaymentFeedbac
 
 import rx.Observable
 
-class PaymentFeedbackPresenterImpl(navigator: Navigator, deviceConnectionDelegate: WalletDeviceConnectionDelegate,
+class PaymentFeedbackPresenterImpl(navigator: Navigator,
+                                   deviceConnectionDelegate: WalletDeviceConnectionDelegate,
                                    feedbackAttachmentsPresenterDelegate: FeedbackAttachmentsPresenterDelegate,
-                                   walletSettingsInteractor: WalletSettingsInteractor) : BaseFeedbackPresenterImpl<PaymentFeedbackScreen>(navigator, deviceConnectionDelegate, feedbackAttachmentsPresenterDelegate, walletSettingsInteractor), PaymentFeedbackPresenter {
+                                   walletSettingsInteractor: WalletSettingsInteractor)
+   : BaseFeedbackPresenterImpl<PaymentFeedbackScreen>(navigator, deviceConnectionDelegate,
+      feedbackAttachmentsPresenterDelegate, walletSettingsInteractor), PaymentFeedbackPresenter {
 
    private val paymentFeedbackConverter: PaymentFeedbackConverter = PaymentFeedbackConverter()
 
@@ -28,8 +30,8 @@ class PaymentFeedbackPresenterImpl(navigator: Navigator, deviceConnectionDelegat
 
    private fun observeUpdateStateAttachments() {
       attachmentDelegate.attachmentsObservable
-            .compose(view!!.bindUntilDetach())
-            .subscribe { view!!.changeAddPhotosButtonEnabled(attachmentDelegate.hasFailedOrPendingAttachments) }
+            .compose(view.bindUntilDetach())
+            .subscribe { view.changeAddPhotosButtonEnabled(attachmentDelegate.hasFailedOrPendingAttachments) }
    }
 
    override fun goBack() {
@@ -37,12 +39,12 @@ class PaymentFeedbackPresenterImpl(navigator: Navigator, deviceConnectionDelegat
    }
 
    override fun showBackConfirmation() {
-      view!!.showBackConfirmDialog()
+      view.showBackConfirmDialog()
    }
 
    private fun observeFormValidation() {
       Observable.combineLatest(
-            view!!.observeMerchantName()
+            view.observeMerchantName()
                   .map<Boolean> { it.isNotBlank() }
                   .startWith(false),
             attachmentDelegate.attachmentsObservable
@@ -51,21 +53,21 @@ class PaymentFeedbackPresenterImpl(navigator: Navigator, deviceConnectionDelegat
       ) { isMerchantNameValid, isAttachmentsUploadFinished ->
          isMerchantNameValid && isAttachmentsUploadFinished && !attachmentDelegate.hasFailedOrPendingAttachments
       }
-            .compose(view!!.bindUntilDetach())
-            .subscribe { enable -> view!!.changeActionSendMenuItemEnabled(enable) }
+            .compose(view.bindUntilDetach())
+            .subscribe { enable -> view.changeActionSendMenuItemEnabled(enable) }
    }
 
    override fun sendFeedback() {
-      view!!.changeActionSendMenuItemEnabled(false)
+      view.changeActionSendMenuItemEnabled(false)
 
       sendFeedbackCommand(PaymentFeedbackCommand(
-            paymentFeedbackConverter.createFeedback(view!!.paymentFeedbackViewModel),
+            paymentFeedbackConverter.createFeedback(view.paymentFeedbackViewModel),
             attachmentDelegate.imagesAttachments))
    }
 
    override fun discardChanges() {
       attachmentDelegate.clearAttachments()
-      view!!.discardViewModelChanges()
+      view.discardViewModelChanges()
       goBack()
    }
 
@@ -74,6 +76,6 @@ class PaymentFeedbackPresenterImpl(navigator: Navigator, deviceConnectionDelegat
    }
 
    override fun handleFailSentFeedback(command: SendWalletFeedbackCommand<*>, throwable: Throwable) {
-      view!!.changeActionSendMenuItemEnabled(true)
+      view.changeActionSendMenuItemEnabled(true)
    }
 }

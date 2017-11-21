@@ -52,6 +52,6 @@ class SendOnCardAnalyticsCommand(private val analyticsLogs: List<AnalyticsLog>) 
    }
 
    private fun fillUserDetails(analyticsAction: SmartCardUserAction) {
-      analyticsAction.setUserId(socialInfoProvider.userId()!!)
+      analyticsAction.setUserId(socialInfoProvider.userId())
    }
 }

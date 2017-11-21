@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.help.feedback.regular.impl
 
-
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
@@ -145,6 +144,7 @@ class SendFeedbackScreenImpl(args: Bundle) : BaseFeedbackScreenImpl<SendFeedback
             }.show()
    }
 
+   @Suppress("MagicNumber")
    override fun changeAddPhotosButtonEnabled(enable: Boolean) {
       addPhotosButton.alpha = if (enable) 1f else 0.5f
       addPhotosButton.isEnabled = enable

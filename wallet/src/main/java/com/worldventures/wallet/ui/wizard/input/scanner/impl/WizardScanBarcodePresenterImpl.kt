@@ -3,7 +3,6 @@ package com.worldventures.wallet.ui.wizard.input.scanner.impl
 import com.worldventures.core.ui.util.permission.PermissionConstants
 import com.worldventures.core.ui.util.permission.PermissionDispatcher
 import com.worldventures.core.ui.util.permission.PermissionSubscriber
-import com.worldventures.core.ui.util.permission.PermissionsResult
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl
 import com.worldventures.wallet.ui.common.navigation.Navigator
@@ -15,7 +14,7 @@ import com.worldventures.wallet.ui.wizard.input.scanner.WizardScanBarcodeScreen
 class WizardScanBarcodePresenterImpl(
       navigator: Navigator,
       deviceConnectionDelegate: WalletDeviceConnectionDelegate,
-      private val permissionDispatcher: PermissionDispatcher,
+      private val permissionDispatcher: PermissionDispatcher, // todo: remove it form presenter.
       private val inputBarcodeDelegate: InputBarcodeDelegate)
    : WalletPresenterImpl<WizardScanBarcodeScreen>(navigator, deviceConnectionDelegate), WizardScanBarcodePresenter,
       BaseBarcodeInputPresenter by inputBarcodeDelegate {
@@ -26,11 +25,11 @@ class WizardScanBarcodePresenterImpl(
    }
 
    override fun requestCamera() {
-      permissionDispatcher.requestPermission(*PermissionConstants.CAMERA_PERMISSIONS)
-            .compose<PermissionsResult>(view!!.bindUntilDetach<PermissionsResult>())
-            .subscribe(PermissionSubscriber().onPermissionGrantedAction { view!!.startCamera() }
-                  .onPermissionRationaleAction { view!!.showRationaleForCamera() }
-                  .onPermissionDeniedAction { view!!.showDeniedForCamera() })
+      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS, true)
+            .compose(view.bindUntilDetach())
+            .subscribe(PermissionSubscriber().onPermissionGrantedAction { view.startCamera() }
+                  .onPermissionRationaleAction { view.showRationaleForCamera() }
+                  .onPermissionDeniedAction { view.showDeniedForCamera() })
    }
 
    override fun startManualInput() {
@@ -42,6 +41,6 @@ class WizardScanBarcodePresenterImpl(
    }
 
    override fun retryScan() {
-      view!!.reset()
+      view.reset()
    }
 }

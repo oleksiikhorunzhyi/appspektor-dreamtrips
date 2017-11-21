@@ -47,5 +47,4 @@ ext {
    ]
 
    coreDependencies.di.each { walletDependencies.annotationProcessor << it }
-   coreDependencies.immutables.each { walletDependencies.annotationProcessor << it }
 }

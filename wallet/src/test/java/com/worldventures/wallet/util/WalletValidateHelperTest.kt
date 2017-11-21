@@ -23,7 +23,7 @@ class WalletValidateHelperTest {
       }
    }
 
-   fun formatMessage(name: String) = "/$name/"
+   private fun formatMessage(name: String) = "/$name/"
 
    @Test
    fun testProfileLastNameWithSuffixValidator() {

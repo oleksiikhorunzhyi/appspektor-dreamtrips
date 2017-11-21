@@ -35,6 +35,7 @@ class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, Wiza
 
    private var dialog: MaterialDialog? = null
 
+   @Suppress("MagicNumber")
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
@@ -46,17 +47,12 @@ class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, Wiza
       SmartCardAvatarHelper.applyGrayScaleColorFilter(userPhoto)
    }
 
-   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View {
-      return layoutInflater.inflate(R.layout.screen_wallet_wizard_charging, viewGroup, false)
-   }
+   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View =
+         layoutInflater.inflate(R.layout.screen_wallet_wizard_charging, viewGroup, false)
 
-   override fun supportConnectionStatusLabel(): Boolean {
-      return false
-   }
+   override fun supportConnectionStatusLabel(): Boolean = false
 
-   override fun supportHttpConnectionStatusLabel(): Boolean {
-      return false
-   }
+   override fun supportHttpConnectionStatusLabel(): Boolean = false
 
    override fun onAttach(view: View) {
       super.onAttach(view)
@@ -64,12 +60,10 @@ class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, Wiza
       swipingAnimations.animateBankCard(creditCard)
    }
 
-   override fun getPresenter(): WizardChargingPresenter? {
-      return screenPresenter
-   }
+   override fun getPresenter() = screenPresenter
 
    private fun navigateClick() {
-      presenter!!.goBack()
+      presenter.goBack()
    }
 
    override fun showSwipeError() {
@@ -94,15 +88,15 @@ class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, Wiza
          builder.positiveText(R.string.wallet_ok)
          builder.onPositive { dialog, _ ->
             dialog.dismiss()
-            presenter!!.goBack()
+            presenter.goBack()
          }
       }
 
-      if (dialog != null) {
-         dialog!!.dismiss()
-      }
-      dialog = builder.build()
-      dialog!!.show()
+      dialog?.dismiss()
+
+      val localDialog = builder.build()
+      localDialog.show()
+      dialog = localDialog
    }
 
    override fun userPhoto(photo: SmartCardUserPhoto?) {
@@ -124,9 +118,9 @@ class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, Wiza
       return ComposableOperationView(
             ErrorViewFactory.builder<StartCardRecordingAction>()
                   .addProvider(SCConnectionErrorViewProvider(context,
-                        { trySwipeAgain() }) { presenter!!.goBack() })
+                        { trySwipeAgain() }) { presenter.goBack() })
                   .addProvider(SmartCardErrorViewProvider(context,
-                        { trySwipeAgain() }) { presenter!!.goBack() })
+                        { trySwipeAgain() }) { presenter.goBack() })
                   .build()
       )
    }

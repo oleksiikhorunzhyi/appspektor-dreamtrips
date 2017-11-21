@@ -103,11 +103,11 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
          int batteryLevel, boolean bluetoothEnabled, boolean cardInCharger) {
 
       if (bluetoothEnabled && connectionStatus == ConnectionStatus.DISCONNECTED) {
-         smartCardInteractor.connectActionPipe().send(new ConnectSmartCardCommand(data.smartCardId()));
+         smartCardInteractor.connectActionPipe().send(new ConnectSmartCardCommand(data.getSmartCardId()));
       }
 
       return new FirmwareChecksState(bluetoothEnabled, connectionStatus.isConnected(),
-            cardIsCharged(batteryLevel, cardInCharger), chargerRequired(data.currentFirmwareVersion()), cardInCharger);
+            cardIsCharged(batteryLevel, cardInCharger), chargerRequired(data.getCurrentFirmwareVersion()), cardInCharger);
    }
 
    private void updateViewStates(FirmwareChecksState checksState) {

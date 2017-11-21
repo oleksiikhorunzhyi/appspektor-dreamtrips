@@ -18,7 +18,7 @@ import timber.log.Timber;
 class LostCardManager {
 
    private static final String UUID_MOTION = "92812fda-67b3-4e31-8c65-a3c6aa2bed37";
-//   private static final String UUID_PAYMENT = "1ff0917c-61e3-49dc-90c0-3202b6b71ec3"; //NOPMD
+   //private static final String UUID_PAYMENT = "1ff0917c-61e3-49dc-90c0-3202b6b71ec3"; //NOPMD
 
    private final SmartCardInteractor smartCardInteractor;
    private final SmartCardLocationInteractor locationInteractor;
@@ -84,7 +84,7 @@ class LostCardManager {
    private void observeBeacon() {
       subscriptions.add(smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
-            .map(command -> command.getResult().smartCardId())
+            .map(command -> command.getResult().getSmartCardId())
             .flatMap(activeSmartCardId -> beaconClient.observeEvents()
                   .filter(beaconEvent -> beaconEvent.getSmartCardId() != null)
                   .doOnNext(beaconEvent -> beaconLogger.logBeacon("Beacon %s :: SmartCard ID - %s",

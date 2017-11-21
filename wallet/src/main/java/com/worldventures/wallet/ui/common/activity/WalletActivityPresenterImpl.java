@@ -42,9 +42,9 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
             .createObservableResult(new ActiveSmartCardCommand())
             .compose(view.bindUntilDetach())
             .map(Command::getResult)
-            .filter(smartCard -> smartCard.cardStatus().isActive())
+            .filter(smartCard -> smartCard.getCardStatus().isActive())
             .flatMap(smartCard -> interactor.connectActionPipe()
-                  .createObservable(new ConnectSmartCardCommand(smartCard.smartCardId())))
+                  .createObservable(new ConnectSmartCardCommand(smartCard.getSmartCardId())))
             .subscribe(connectAction -> Timber.i("Success connection to Smart Card"),
                   throwable -> Timber.e(throwable, "Connect to Smart Card on Wallet enter"));
    }

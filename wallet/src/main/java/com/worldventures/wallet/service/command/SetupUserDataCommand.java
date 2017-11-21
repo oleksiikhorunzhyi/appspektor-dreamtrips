@@ -8,7 +8,7 @@ import com.worldventures.wallet.domain.entity.SmartCardUserPhone;
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletSocialInfoProvider;
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserPhotoCommand;
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserPhotoCommand;
 import com.worldventures.wallet.service.command.settings.general.display.RestoreDefaultDisplayTypeCommand;
 import com.worldventures.wallet.util.FormatException;
 import com.worldventures.wallet.util.WalletValidateHelper;
@@ -53,9 +53,9 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
    private Observable<Void> validateUserData() {
       try {
          WalletValidateHelper.validateUserFullNameOrThrow(
-               userData.firstName(),
-               userData.middleName(),
-               userData.lastName()
+               userData.getFirstName(),
+               userData.getMiddleName(),
+               userData.getLastName()
          );
       } catch (FormatException e) {
          return Observable.error(e);
@@ -67,19 +67,19 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
       return smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(new ActiveSmartCardCommand())
             .map(command -> ImmutableUser.builder()
-                  .firstName(userData.firstName())
-                  .lastName(userData.lastName())
-                  .middleName(userData.middleName())
+                  .firstName(userData.getFirstName())
+                  .lastName(userData.getLastName())
+                  .middleName(userData.getMiddleName())
                   .phoneNum(fetchPhone(userData))
                   .memberStatus(socialInfoProvider.memberStatus())
                   .memberId(socialInfoProvider.userId())
-                  .barcodeId(Long.valueOf(command.getResult().smartCardId()))
+                  .barcodeId(Long.valueOf(command.getResult().getSmartCardId()))
                   .build());
    }
 
    @Nullable
    private String fetchPhone(SmartCardUser userData) {
-      final SmartCardUserPhone phone = userData.phoneNumber();
+      final SmartCardUserPhone phone = userData.getPhoneNumber();
       return phone != null ? phone.fullPhoneNumber() : null;
    }
 
@@ -90,7 +90,7 @@ public class SetupUserDataCommand extends Command<SmartCardUser> implements Inje
    }
 
    private Observable<Void> uploadUserPhoto() {
-      final SmartCardUserPhoto photo = userData.userPhoto();
+      final SmartCardUserPhoto photo = userData.getUserPhoto();
       if (photo == null) {
          return Observable.just(null);
       }

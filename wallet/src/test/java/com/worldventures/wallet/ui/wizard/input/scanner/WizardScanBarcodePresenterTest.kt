@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.wizard.input.scanner
 
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
@@ -15,7 +16,6 @@ import com.worldventures.wallet.ui.wizard.input.helper.InputBarcodeDelegate
 import com.worldventures.wallet.ui.wizard.input.scanner.impl.WizardScanBarcodePresenterImpl
 import org.junit.Test
 import rx.Observable
-import kotlin.test.todo
 
 class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen, WizardScanBarcodePresenter>() {
 
@@ -37,10 +37,7 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
 
    @Test
    fun testRequestCameraPermissionGranted() {
-      todo {
-         // create factory for PermissionsResult or mock PermissionDispatcher
-      }
-      whenever(permissionDispatcher.requestPermission(any())).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), 0)))
+      whenever(permissionDispatcher.requestPermission(any(), eq(true))).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), 0)))
 
       presenter.requestCamera()
       verify(screen, times(1)).startCamera()
@@ -48,7 +45,7 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
 
    @Test
    fun testRequestCameraPermissionDenied() {
-      whenever(permissionDispatcher.requestPermission(any())).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), -1)))
+      whenever(permissionDispatcher.requestPermission(any(), eq(true))).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), -1)))
 
       presenter.requestCamera()
       verify(screen, times(1)).showDeniedForCamera()
@@ -56,7 +53,7 @@ class WizardScanBarcodePresenterTest : BasePresenterTest<WizardScanBarcodeScreen
 
    @Test
    fun testRequestCameraPermissionRationale() {
-      whenever(permissionDispatcher.requestPermission(any())).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), true)))
+      whenever(permissionDispatcher.requestPermission(any(), eq(true))).thenReturn(Observable.just(PermissionsResult(0, arrayOf<String>(), true)))
 
       presenter.requestCamera()
       verify(screen, times(1)).showRationaleForCamera()

@@ -11,7 +11,6 @@ class DisplayMapAnalyticsAction : BaseLocateSmartCardAction() {
    @Attribute("trackingenabled") internal val trackingEnabled = "Yes"
    @Attribute("locationavailable") internal var locationAvailable = "No"
 
-
    override fun setLocation(walletCoordinates: WalletCoordinates) {
       super.setLocation(walletCoordinates)
       locationAvailable = "Yes"

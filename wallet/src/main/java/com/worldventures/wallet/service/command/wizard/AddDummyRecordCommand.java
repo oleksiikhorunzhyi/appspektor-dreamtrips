@@ -71,7 +71,7 @@ public class AddDummyRecordCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<List<Record>> createDummyCards(SmartCardFirmware firmware) {
-      final String version = obtainRecordVersion(firmware.nordicAppVersion());
+      final String version = obtainRecordVersion(firmware.getNordicAppVersion());
 
       return just(DummyRecordCreator.INSTANCE.createRecords(user, version));
    }

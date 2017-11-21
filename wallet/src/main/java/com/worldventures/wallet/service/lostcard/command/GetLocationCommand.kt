@@ -21,16 +21,15 @@ class GetLocationCommand : Command<List<WalletLocation>>(), InjectableAction {
    @Inject lateinit var smartCardInteractor: SmartCardInteractor
    @Inject lateinit var mapperyContext: MapperyContext
 
-   fun historicalLocationObservable(): Observable<List<WalletLocation>> {
+   private fun historicalLocationObservable(): Observable<List<WalletLocation>> {
       return observeActiveSmartCard()
-            .flatMap { command -> observeGetSmartCardLocations(command.result.smartCardId()) }
+            .flatMap { command -> observeGetSmartCardLocations(command.result.smartCardId) }
             .map { it.response() }
             .map { locations -> mapperyContext.convert(locations, WalletLocation::class.java) }
             .onErrorReturn { emptyList() }
    }
 
-
-   fun storedLocationObservable(): Observable<List<WalletLocation>> {
+   private fun storedLocationObservable(): Observable<List<WalletLocation>> {
       val locations = locationRepository.walletLocations
       return if (locations.isEmpty()) Observable.empty() else Observable.just(locations)
    }

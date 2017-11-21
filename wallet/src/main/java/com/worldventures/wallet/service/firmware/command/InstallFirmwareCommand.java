@@ -52,7 +52,7 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
 
    private Observable<Void> prepareCardAndInstallFirmware(CommandCallback callback) {
       final FirmwareUpdateData firmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
-      return connectSmartCard(firmwareUpdateData.smartCardId())
+      return connectSmartCard(firmwareUpdateData.getSmartCardId())
             .flatMap(connectionType -> installFirmware(firmwareUpdateData, connectionType, callback));
    }
 
@@ -65,11 +65,11 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
    }
 
    private Observable<Void> installFirmware(FirmwareUpdateData firmwareUpdateData, ConnectionType connectionType, CommandCallback callback) {
-      final SmartCardFirmware firmwareVersion = firmwareUpdateData.currentFirmwareVersion();
+      final SmartCardFirmware firmwareVersion = firmwareUpdateData.getCurrentFirmwareVersion();
       loadFirmwareFilesCommand = new LoadFirmwareFilesCommand(
             firmwareVersion,
-            firmwareUpdateData.firmwareInfo().firmwareVersions(),
-            firmwareUpdateData.firmwareFile(),
+            firmwareUpdateData.getFirmwareInfo().firmwareVersions(),
+            firmwareUpdateData.getFirmwareFile(),
             connectionType == ConnectionType.DFU);
 
       Subscription subscription = loadFirmwareFilesCommandActionPipe.observe()
@@ -87,14 +87,15 @@ public class InstallFirmwareCommand extends Command<FirmwareUpdateData> implemen
       final FirmwareUpdateData data = firmwareRepository.getFirmwareUpdateData();
       firmwareRepository.clear();
       return firmwareInteractor.clearFirmwareFilesPipe()
-            .createObservableResult(new FirmwareClearFilesCommand(data.firmwareFile().getParent()))
+            .createObservableResult(new FirmwareClearFilesCommand(data.getFirmwareFile().getParent()))
             .map(command -> data);
    }
 
    private Observable<Void> addBundleVersion() {
       final FirmwareUpdateData data = firmwareRepository.getFirmwareUpdateData();
       return smartCardInteractor.smartCardFirmwarePipe()
-            .createObservableResult(SmartCardFirmwareCommand.bundleVersion(data.firmwareInfo().firmwareVersion()))
+            .createObservableResult(SmartCardFirmwareCommand.Companion.bundleVersion(data.getFirmwareInfo()
+                  .firmwareVersion()))
             .onErrorReturn(throwable -> null)
             .map(command -> null);
    }

@@ -7,7 +7,6 @@ import com.worldventures.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
-import com.worldventures.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.wallet.service.provisioning.PinOptionalCommand;
 import com.worldventures.wallet.service.provisioning.ProvisioningModeCommand;
@@ -28,7 +27,6 @@ public final class WizardInteractor {
    private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
    private final ActionPipe<CancelPinSetupAction> cancelPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
-   private final ActionPipe<WizardCheckCommand> checksPipe;
    private final ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe;
 
    private final ActionPipe<ReAssignCardCommand> reAssignCardPipe;
@@ -46,7 +44,6 @@ public final class WizardInteractor {
       pinSetupFinishedPipe = sessionActionPipeCreator.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
       startPinSetupPipe = sessionActionPipeCreator.createPipe(StartPinSetupAction.class, Schedulers.io());
       cancelPinSetupPipe = sessionActionPipeCreator.createPipe(CancelPinSetupAction.class, Schedulers.io());
-      checksPipe = sessionActionPipeCreator.createPipe(WizardCheckCommand.class, Schedulers.io());
 
       reAssignCardPipe = sessionActionPipeCreator.createPipe(ReAssignCardCommand.class, Schedulers.io());
       getSmartCardStatusCommandActionPipe = sessionActionPipeCreator.createPipe(GetSmartCardStatusCommand.class, Schedulers
@@ -84,10 +81,6 @@ public final class WizardInteractor {
 
    public ActionPipe<ReAssignCardCommand> reAssignCardPipe() {
       return reAssignCardPipe;
-   }
-
-   public ActionPipe<WizardCheckCommand> checksPipe() {
-      return checksPipe;
    }
 
    public ActionPipe<WizardCompleteCommand> completePipe() {

@@ -15,21 +15,24 @@ import com.worldventures.wallet.domain.entity.record.RecordType
 import com.worldventures.wallet.ui.records.model.RecordViewModel
 import java.lang.String.format
 
+private const val CVV_LENGTH_DEFAULT = 3
+private const val CVV_LENGTH_AMEX = 4
+private const val AMEX_CARD_NUMBER_LENGTH = 15
+private const val LAST_CARD_DIGITS_COUNT = 4
+
 class WalletRecordUtil {
 
-   private fun obtainFinancialServiceType(context: Context, financialService: FinancialService): String {
-      return when (financialService) {
-         FinancialService.VISA -> context.getString(R.string.wallet_card_financial_service_visa)
-         FinancialService.MASTERCARD -> context.getString(R.string.wallet_card_financial_service_master_card)
-         FinancialService.DISCOVER -> context.getString(R.string.wallet_card_financial_service_discover)
-         FinancialService.AMEX -> context.getString(R.string.wallet_card_financial_service_amex)
-         else -> ""
-      }
-   }
+   private fun obtainFinancialServiceType(context: Context, financialService: FinancialService): String =
+         when (financialService) {
+            FinancialService.VISA -> context.getString(R.string.wallet_card_financial_service_visa)
+            FinancialService.MASTERCARD -> context.getString(R.string.wallet_card_financial_service_master_card)
+            FinancialService.DISCOVER -> context.getString(R.string.wallet_card_financial_service_discover)
+            FinancialService.AMEX -> context.getString(R.string.wallet_card_financial_service_amex)
+            else -> ""
+         }
 
-   fun financialServiceWithCardNumber(context: Context, record: Record): String {
-      return format("%s •••• %s", obtainFinancialServiceType(context, record.financialService), record.numberLastFourDigits)
-   }
+   fun financialServiceWithCardNumber(context: Context, record: Record): String =
+         "${obtainFinancialServiceType(context, record.financialService)} •••• ${record.numberLastFourDigits}"
 
    // utils
    fun obtainRecordType(context: Context, cardType: RecordType?): String? {
@@ -43,10 +46,9 @@ class WalletRecordUtil {
       }
    }
 
-   fun obtainFullCardNumber(numberLastFourDigits: String): CharSequence {
-      return "•••• •••• •••• " + numberLastFourDigits
-   }
+   fun obtainFullCardNumber(numberLastFourDigits: String): CharSequence = "•••• •••• •••• $numberLastFourDigits"
 
+   @Suppress("MagicNumber")
    fun obtainShortCardNumber(numberLastFourDigits: String): CharSequence {
       val lastDigits = SpannableString(numberLastFourDigits)
       lastDigits.setSpan(RelativeSizeSpan(.6f), 0, lastDigits.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -64,20 +66,7 @@ class WalletRecordUtil {
       return boldSpannable
    }
 
-   fun formattedBankNameWithCardNumber(record: Record): CharSequence {
-      val bankName = toBoldSpannable(record.bankName)
-
-      val cardNumber = SpannableString(format(" •••• %s", record.numberLastFourDigits))
-      cardNumber.setSpan(RelativeSizeSpan(0.8f), 0, cardNumber.length, 0)
-
-      return if (bankName.isEmpty()) {
-         cardNumber
-      } else SpannableStringBuilder()
-            .append(bankName)
-            .append(cardNumber)
-
-   }
-
+   @Suppress("MagicNumber")
    fun goodThrough(context: Context, date: String): CharSequence {
       val goodThru = SpannableString(context.getString(R.string.wallet_bank_card_good_thru))
       goodThru.setSpan(RelativeSizeSpan(.65f), 0, goodThru.length, 0)
@@ -90,55 +79,34 @@ class WalletRecordUtil {
    companion object {
 
       fun obtainLastCardDigits(cardNumber: String): String {
-         return if (cardNumber.length <= 4) {
+         return if (cardNumber.length <= LAST_CARD_DIGITS_COUNT) {
             cardNumber
-         } else cardNumber.substring(cardNumber.length - 4)
+         } else cardNumber.substring(cardNumber.length - LAST_CARD_DIGITS_COUNT)
       }
 
-      fun obtainIin(swipedCardPan: String): Long {
-         return java.lang.Long.parseLong(swipedCardPan.substring(0, 6))
-      }
-
-      fun obtainRequiredCvvLength(cardNumber: String): Int {
-         return if (isAmexBank(cardNumber)) 4 else 3
-      }
+      fun obtainRequiredCvvLength(cardNumber: String) = if (isAmexBank(cardNumber)) CVV_LENGTH_AMEX else CVV_LENGTH_DEFAULT
 
       /*
       If card number begins with 34 or 37 and is 15 digits in length
       then it is an American express and should have 4 digits of cvv.
-    */
+      */
       fun isAmexBank(cardNumber: String): Boolean {
          val amexPrefix = cardNumber.startsWith("34") || cardNumber.startsWith("37")
-         return cardNumber.length == 15 && amexPrefix
+         return cardNumber.length == AMEX_CARD_NUMBER_LENGTH && amexPrefix
       }
 
-      fun bankNameWithCardNumber(record: Record) = format("%s •••• %s", record.bankName, record.numberLastFourDigits)!!
-
-      fun isRealRecord(record: Record?): Boolean {
-         return record != null && isRealRecordId(record.id)
-      }
-
-      private fun isRealRecordId(recordId: String?): Boolean {
-         return recordId != null
-      }
+      fun bankNameWithCardNumber(record: Record) = "${record.bankName} •••• ${record.numberLastFourDigits}"
 
       @Deprecated("")
-      fun equals(recordId: String, record: Record): Boolean {
-         return equalsRecordId(recordId, record)
-      }
+      fun equals(recordId: String, record: Record): Boolean = equalsRecordId(recordId, record)
 
-      fun equalsRecordId(recordId: String?, record: Record?): Boolean {
-         return recordId != null && record != null && equalsRecordId(recordId, record.id)
-      }
+      fun equalsRecordId(recordId: String?, record: Record?) =
+            recordId != null && record != null && equalsRecordId(recordId, record.id)
 
-      fun equalsRecordId(recordId1: String, recordId2: String?): Boolean {
-         return recordId2 != null && recordId2 == recordId1
-      }
+      fun equalsRecordId(recordId1: String, recordId2: String?) = recordId2 != null && recordId2 == recordId1
 
-      fun findRecord(records: List<Record>, recordId: String): Record? {
-         return records.firstOrNull { (id) -> equalsRecordId(recordId, id) }
-      }
-
+      fun findRecord(records: List<Record>, recordId: String) =
+            records.firstOrNull { (id) -> equalsRecordId(recordId, id) }
 
       fun fetchFullName(card: Record): String {
          return format("%s %s", card.cardHolderFirstName,
@@ -149,9 +117,8 @@ class WalletRecordUtil {
          )
       }
 
-      fun validationMandatoryFields(number: String, cvv: String): Boolean {
-         return cvv.length == WalletRecordUtil.obtainRequiredCvvLength(number)
-      }
+      fun validationMandatoryFields(number: String, cvv: String): Boolean =
+            cvv.length == WalletRecordUtil.obtainRequiredCvvLength(number)
 
       fun prepareRecordViewModel(record: Record): RecordViewModel {
          val cvvLength = obtainRequiredCvvLength(record.number)

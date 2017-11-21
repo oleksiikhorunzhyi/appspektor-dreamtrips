@@ -11,11 +11,11 @@ import io.techery.janet.command.annotations.CommandAction
 @CommandAction
 class TokenizeMultipleRecordsCommand(records: List<Record>, skipTokenizationErrors: Boolean) : BaseMultipleRecordsCommand(records, skipTokenizationErrors, true) {
 
-   internal override fun prepareMultiRequestElements(record: Record): List<MultiRequestElement> {
+   override fun prepareMultiRequestElements(record: Record): List<MultiRequestElement> {
       return NxtBankCardHelper.getDataForTokenization(record)
    }
 
-   internal override fun createResponseBody(records: List<Record>, nxtResponses: List<MultiResponseBody>): List<NxtRecord> {
+   override fun createResponseBody(records: List<Record>, nxtResponses: List<MultiResponseBody>): List<NxtRecord> {
       return records
             .map { record -> TokenizedRecord.from(record, nxtResponses) }
    }

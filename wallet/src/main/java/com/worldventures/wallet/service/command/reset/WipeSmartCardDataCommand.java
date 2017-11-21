@@ -67,7 +67,7 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    private Observable<Void> disassociateCardUserServer(SmartCard smartCard) {
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
             .createObservableResult(
-                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.smartCardId()), smartCard.deviceId()))
+                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.getSmartCardId()), smartCard.getDeviceId()))
             .map(disassociateCardUserHttpAction -> (Void) null)
             .onErrorResumeNext(this::handleDisassociateError);
    }

@@ -32,7 +32,7 @@ class WalletLocationCommand(private val locationType: WalletLocationType) : Comm
          .createObservableResult(DetectGeoLocationCommand())
 
    private fun saveLocation(location: WalletLocation): Observable<WalletLocation> {
-      walletBeaconLogger.logBeacon("Save location - %s", location);
+      walletBeaconLogger.logBeacon("Save location - %s", location)
       val walletLocations = locationRepository.walletLocations
       walletLocations.add(location)
       locationRepository.saveWalletLocations(walletLocations)

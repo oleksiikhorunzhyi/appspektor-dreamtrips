@@ -1,6 +1,5 @@
 package com.worldventures.wallet.service.lostcard.command
 
-import android.support.v4.util.Pair
 import com.worldventures.core.janet.cache.CacheOptions
 import com.worldventures.core.janet.cache.CachedAction
 import com.worldventures.core.janet.cache.ImmutableCacheOptions
@@ -8,7 +7,6 @@ import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
 import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
-import com.worldventures.wallet.service.location.WalletDetectLocationService
 import com.worldventures.wallet.service.lostcard.command.http.AddressHttpAction
 import com.worldventures.wallet.service.lostcard.command.http.PlacesNearbyHttpAction
 import io.techery.janet.ActionHolder
@@ -20,10 +18,11 @@ import rx.Observable.zip
 import javax.inject.Inject
 
 @CommandAction
-class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Command<FetchAddressWithPlacesCommand.PlacesWithAddress>(), InjectableAction, CachedAction<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
+class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates)
+   : Command<FetchAddressWithPlacesCommand.PlacesWithAddress>(), InjectableAction,
+      CachedAction<Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>> {
 
    @Inject lateinit var janet: Janet
-   @Inject lateinit var locationService: WalletDetectLocationService
    @Inject lateinit var mapperyContext: MapperyContext
 
    private var cachedResult: PlacesWithAddress? = null
@@ -37,7 +36,7 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Comman
       zip(
             janet.createPipe(PlacesNearbyHttpAction::class.java)
                   .createObservableResult(PlacesNearbyHttpAction(coordinates))
-                  .map { httpAction -> mapperyContext.convert(httpAction.response().locationPlaces(), WalletPlace::class.java) },
+                  .map { httpAction -> mapperyContext.convert(httpAction.response().locationPlaces, WalletPlace::class.java) },
             janet.createPipe(AddressHttpAction::class.java)
                   .createObservableResult(AddressHttpAction(coordinates))
                   .map { addressAction -> mapperyContext.convert(addressAction.response(), WalletAddress::class.java) }
@@ -45,13 +44,9 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates) : Comman
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }
 
-   private fun needApiRequest(): Boolean {
-      return cachedResult == null
-   }
+   private fun needApiRequest() = cachedResult == null
 
-   override fun getCacheData(): Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress> {
-      return Pair(coordinates, result)
-   }
+   override fun getCacheData() = Pair(coordinates, result)
 
    override fun onRestore(holder: ActionHolder<*>, cache: Pair<WalletCoordinates, FetchAddressWithPlacesCommand.PlacesWithAddress>) {
       if (cache.first == coordinates) {

@@ -8,7 +8,6 @@ import com.worldventures.wallet.domain.entity.SDKRecord
 import com.worldventures.wallet.domain.entity.record.Record
 import io.techery.janet.smartcard.model.ImmutableRecord
 import io.techery.mappery.MapperyContext
-import java.util.HashMap
 
 class WalletRecordToSmartCardRecordConverter : Converter<Record, SDKRecord> {
 
@@ -17,8 +16,7 @@ class WalletRecordToSmartCardRecordConverter : Converter<Record, SDKRecord> {
    override fun targetClass() = SDKRecord::class.java
 
    override fun convert(context: MapperyContext, source: Record): SDKRecord {
-      val metadata = HashMap<String, String>(5)
-      metadata.put(BANK_NAME_FIELD, source.bankName)
+      val metadata = hashMapOf(Pair(BANK_NAME_FIELD, source.bankName))
 
       return ImmutableRecord.builder()
             .id(parseCardId(source))

@@ -47,9 +47,9 @@ potential-bugs:
   LateinitUsage:
     active: false
   UnsafeCallOnNullableType:
-    active: true
+    active: false
   UnsafeCast:
-    active: true
+    active: false
 
 performance:
   active: true
@@ -147,7 +147,7 @@ style:
     active: true
     max: 4
   NewLineAtEndOfFile:
-    active: true
+    active: false
   OptionalAbstractKeyword:
     active: true
   ForbiddenComment:

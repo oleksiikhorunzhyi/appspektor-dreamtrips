@@ -368,10 +368,9 @@ public class WalletActivityModule {
 
    @Provides
    WizardPowerOnPresenter provideWizardPowerOnPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         WalletNetworkDelegate networkDelegate, WizardInteractor wizardInteractor,
+         WalletNetworkDelegate networkDelegate,
          WalletBluetoothService walletBluetoothService, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WizardPowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor,
-            walletBluetoothService, analyticsInteractor);
+      return new WizardPowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, walletBluetoothService, analyticsInteractor);
    }
 
    @Provides
@@ -382,9 +381,8 @@ public class WalletActivityModule {
 
    @Provides
    WizardCheckingPresenter providesWizardCheckingPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         WalletNetworkDelegate networkDelegate, WizardInteractor wizardInteractor,
-         WalletBluetoothService walletBluetoothService) {
-      return new WizardCheckingPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor, walletBluetoothService);
+         WalletNetworkDelegate networkDelegate, WalletBluetoothService walletBluetoothService) {
+      return new WizardCheckingPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, walletBluetoothService);
    }
 
    @Provides
@@ -596,8 +594,8 @@ public class WalletActivityModule {
          WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          WalletAnalyticsInteractor analyticsInteractor, SmartCardUserDataInteractor smartCardUserDataInteractor,
          WalletSocialInfoProvider socialInfoProvider) {
-      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate,
-            smartCardInteractor, analyticsInteractor, smartCardUserDataInteractor, socialInfoProvider);
+      return new WalletSettingsProfilePresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor,
+            smartCardInteractor, smartCardUserDataInteractor, socialInfoProvider);
    }
 
    @Provides
@@ -716,10 +714,8 @@ public class WalletActivityModule {
    @Provides
    ForceUpdatePowerOnPresenter provideForceUpdatePowerOnPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate, WalletNetworkDelegate networkDelegate,
-         WizardInteractor wizardInteractor,
          WalletBluetoothService walletBluetoothService) {
-      return new ForceUpdatePowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, wizardInteractor,
-            walletBluetoothService);
+      return new ForceUpdatePowerOnPresenterImpl(navigator, deviceConnectionDelegate, networkDelegate, walletBluetoothService);
    }
 
    @Provides

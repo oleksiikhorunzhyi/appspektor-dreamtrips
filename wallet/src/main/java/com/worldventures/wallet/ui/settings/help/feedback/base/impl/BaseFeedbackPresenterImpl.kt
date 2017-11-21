@@ -26,7 +26,7 @@ abstract class BaseFeedbackPresenterImpl<S : BaseFeedbackScreen>(navigator: Navi
    }
 
    override fun chosenAttachments() {
-      view!!.pickPhoto(attachmentDelegate.availableAttachmentsCount)
+      view.pickPhoto(attachmentDelegate.availableAttachmentsCount)
    }
 
    override fun openFullScreenPhoto(holder: EntityStateHolder<FeedbackImageAttachment>) {
@@ -38,9 +38,9 @@ abstract class BaseFeedbackPresenterImpl<S : BaseFeedbackScreen>(navigator: Navi
    protected fun sendFeedbackCommand(feedbackCommand: SendWalletFeedbackCommand<*>) {
       settingsInteractor.walletFeedbackPipe()
             .createObservable(feedbackCommand)
-            .compose(view!!.bindUntilDetach())
+            .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(view!!.provideOperationSendFeedback())
+            .subscribe(OperationActionSubscriber.forView(view.provideOperationSendFeedback())
                   .onSuccess { _ -> handleSuccessSentFeedback() }
                   .onFail { command, throwable -> this.handleFailSentFeedback(command, throwable) }
                   .create()

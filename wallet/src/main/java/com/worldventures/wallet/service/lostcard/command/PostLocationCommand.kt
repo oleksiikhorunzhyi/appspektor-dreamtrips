@@ -22,7 +22,6 @@ import rx.subjects.PublishSubject
 import java.util.Calendar
 import java.util.Collections
 import javax.inject.Inject
-import kotlin.Comparator
 
 @CommandAction
 class PostLocationCommand : Command<Void>(), InjectableAction {
@@ -61,12 +60,12 @@ class PostLocationCommand : Command<Void>(), InjectableAction {
 
    private fun observeLocationsPost(locations: List<WalletLocation>, smartCard: SmartCard): Observable<CreateSmartCardLocationHttpAction> {
       return janet.createPipe(CreateSmartCardLocationHttpAction::class.java, Schedulers.io())
-            .createObservableResult(CreateSmartCardLocationHttpAction(java.lang.Long.parseLong(smartCard.smartCardId()),
+            .createObservableResult(CreateSmartCardLocationHttpAction(java.lang.Long.parseLong(smartCard.smartCardId),
                   prepareRequestBody(locations)))
    }
 
    private fun wipeRedundantLocations(locations: List<WalletLocation>): Observable<Void> {
-      val lastLocation = locations.sortedWith(Comparator({location1, location2 -> location1.createdAt.compareTo(location2.createdAt)})).last()
+      val lastLocation = locations.sortedWith(Comparator({ location1, location2 -> location1.createdAt.compareTo(location2.createdAt) })).last()
       val postedLocation = lastLocation.copy(postedAt = Calendar.getInstance().time)
       locationRepository.saveWalletLocations(listOf(postedLocation))
       return Observable.just(null)

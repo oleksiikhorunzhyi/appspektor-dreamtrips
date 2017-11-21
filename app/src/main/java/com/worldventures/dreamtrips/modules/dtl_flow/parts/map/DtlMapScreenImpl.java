@@ -127,7 +127,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             .skip(1)
             .compose(RxLifecycleAndroid.bindView(this))
             .filter(Boolean::booleanValue) // only true -> only focus gains
-            .subscribe(aBoolean -> getPresenter().locationChangeRequested());
+            .subscribe(aBoolean -> getPresenter().locationChangeRequested(dtlToolbar.getSearchQuery()));
       RxDtlToolbar.navigationClicks(dtlToolbar)
             .throttleFirst(200L, TimeUnit.MILLISECONDS)
             .compose(RxLifecycleAndroid.bindView(this))
@@ -388,11 +388,12 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
    }
 
    @Override
-   public void updateToolbarSearchCaption(@Nullable String searchCaption) {
+   public void updateToolbarSearchCaption(List<String> types, @Nullable String searchQuery) {
       if (dtlToolbar == null) {
          return;
       }
-      dtlToolbar.setSearchHint(searchCaption);
+      dtlToolbar.setSearchHint(MerchantTypeUtil.getSearchHintForMerchantTypes(getContext(), types));
+      dtlToolbar.setSearchQuery(searchQuery);
    }
 
    @Override

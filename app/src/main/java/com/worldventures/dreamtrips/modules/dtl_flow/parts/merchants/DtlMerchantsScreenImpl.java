@@ -143,7 +143,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
             .skip(1)
             .compose(RxLifecycleAndroid.bindView(this))
             .filter(Boolean::booleanValue) // only true -> only focus gains
-            .subscribe(aBoolean -> getPresenter().locationChangeRequested());
+            .subscribe(aBoolean -> getPresenter().locationChangeRequested(dtlToolbar.getSearchQuery()));
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
@@ -309,11 +309,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void updateToolbarSearchCaption(@Nullable String searchCaption) {
+   public void updateToolbarSearchQuery(@Nullable String searchQuery) {
       if (dtlToolbar == null) {
          return;
       }
-      dtlToolbar.setSearchHint(searchCaption);
+      dtlToolbar.setSearchQuery(searchQuery);
    }
 
    @Override

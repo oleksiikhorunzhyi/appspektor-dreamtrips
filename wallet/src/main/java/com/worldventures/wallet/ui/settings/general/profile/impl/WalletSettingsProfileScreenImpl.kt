@@ -34,6 +34,7 @@ import java.io.File
 import javax.inject.Inject
 
 private const val PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY"
+private const val PROFILE_ORIGIN_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_ORIGIN_STATE_KEY"
 
 class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfileScreen, WalletSettingsProfilePresenter>(), WalletSettingsProfileScreen {
 
@@ -171,14 +172,15 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       observeNewAvatar()
    }
 
-   override fun onSaveInstanceState(outState: Bundle) {
+   override fun onSaveViewState(view: View, outState: Bundle) {
       outState.putParcelable(PROFILE_STATE_KEY, binding.profile)
-      super.onSaveInstanceState(outState)
+      outState.putParcelable(PROFILE_ORIGIN_STATE_KEY, originProfileModule)
+      super.onSaveViewState(view, outState)
    }
 
-   override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-      super.onRestoreInstanceState(savedInstanceState)
-      setProfileModel(savedInstanceState.getParcelable(PROFILE_STATE_KEY))
+   override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+      setProfileModel(savedViewState.getParcelable(PROFILE_ORIGIN_STATE_KEY), savedViewState.getParcelable(PROFILE_STATE_KEY))
+      super.onRestoreViewState(view, savedViewState)
    }
 
    private fun observeNewAvatar() {
@@ -188,11 +190,14 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    }
 
    private fun setProfileModel(model: ProfileViewModel) {
-      originProfileModule = model
-      val newProfileModel = model.copy()
-      binding.profile!!.removeOnPropertyChangedCallback(profileViewModelCallback)
-      binding.profile = newProfileModel
-      newProfileModel.addOnPropertyChangedCallback(profileViewModelCallback)
+      setProfileModel(model, model.copy())
+   }
+
+   private fun setProfileModel(origin: ProfileViewModel, forBinding: ProfileViewModel) {
+      originProfileModule = origin
+      binding.profile?.removeOnPropertyChangedCallback(profileViewModelCallback)
+      binding.profile = forBinding
+      forBinding.addOnPropertyChangedCallback(profileViewModelCallback)
    }
 
    override fun discardChanges() {

@@ -11,10 +11,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +44,6 @@ public class DtlToolbar extends LinearLayout {
       super(context, attrs);
       inflateLayout();
       initAttributes(attrs);
-      defaultEmptySearchCaption = context.getString(R.string.filter_merchant_dining);
-      Timber.d("Flow -- DtlToolbar create()");
    }
 
    protected void inflateLayout() {
@@ -68,12 +65,7 @@ public class DtlToolbar extends LinearLayout {
 
    @CallSuper
    protected void initAttributes(AttributeSet attrs) {
-      String selectedMerchantFilter = DtlMerchantsScreenImpl.currentSelectedFilter;
-      if (selectedMerchantFilter == null) {
-         defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
-      } else {
-         defaultEmptySearchCaption = selectedMerchantFilter;
-      }
+      defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
    }
 
    protected void bindSearchQueryPersisting() {
@@ -83,16 +75,25 @@ public class DtlToolbar extends LinearLayout {
    }
 
    protected void updateToolbarCaptions() {
-      String hint = TextUtils.isEmpty(searchHint) ? defaultEmptySearchCaption : searchHint;
+      String hint = getHint();
       merchantSearchInput.setHint(hint);
       merchantSearchInput.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
 
-      locationSearchInput.setText(locationTitle);
+      locationSearchInput.setHint(locationTitle);
       locationSearchInput.selectAll();
+   }
+
+   protected String getHint() {
+      return TextUtils.isEmpty(searchHint) ? defaultEmptySearchCaption : searchHint;
    }
 
    public AppCompatEditText getLocationSearchInput() {
       return locationSearchInput;
+   }
+
+   public void setSearchQuery(String searchQuery) {
+      this.searchQuery = searchQuery;
+      updateToolbarCaptions();
    }
 
    public void setCaptions(String searchQuery, String locationTitle) {
@@ -103,6 +104,12 @@ public class DtlToolbar extends LinearLayout {
 
    public void setLocationCaption(String locationTitle) {
       this.locationTitle = locationTitle;
+      updateToolbarCaptions();
+   }
+
+   public void resetLocationCaption() {
+      locationSearchInput.setText("");
+      locationTitle = "";
       updateToolbarCaptions();
    }
 
@@ -148,6 +155,10 @@ public class DtlToolbar extends LinearLayout {
       onMerchantSearchInputClicked();
    }
 
+   public String getSearchQuery() {
+      return searchQuery;
+   }
+
    protected void initState() {
       focusedMode = FocusedMode.UNDEFINED;
       patchInputFields();
@@ -170,7 +181,7 @@ public class DtlToolbar extends LinearLayout {
       }
       // due to possible bug in EditText - hint not saved after rotation. Fix below:
       if (TextUtils.isEmpty(searchQuery) || TextUtils.isEmpty(merchantSearchInput.getHint())) {
-         merchantSearchInput.setHint(defaultEmptySearchCaption);
+         merchantSearchInput.setHint(getHint());
       }
    }
 

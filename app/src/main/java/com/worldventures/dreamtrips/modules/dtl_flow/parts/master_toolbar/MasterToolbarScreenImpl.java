@@ -255,7 +255,8 @@ public class MasterToolbarScreenImpl extends DtlLayout<MasterToolbarScreen, Mast
 
    public void onLocationClicked(DtlLocation location) {
       hideSoftInput();
-      getPresenter().locationSelected(location);
+      toolbar.resetLocationCaption();
+      getPresenter().locationSelected(location, toolbar.getSearchQuery());
    }
 
    private void onNearMeClicked() {

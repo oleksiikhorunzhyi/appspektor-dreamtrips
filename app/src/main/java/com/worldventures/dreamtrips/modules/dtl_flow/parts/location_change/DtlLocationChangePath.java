@@ -8,6 +8,16 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 @Layout(R.layout.screen_dtl_location_change)
 public class DtlLocationChangePath extends DtlMasterPath {
 
+   private String prefilledMerchantSearchQuery;
+
+   public DtlLocationChangePath(String prefilledMerchantSearchQuery) {
+      this.prefilledMerchantSearchQuery = prefilledMerchantSearchQuery;
+   }
+
+   public DtlLocationChangePath() {
+      // This constructor is intentionally empty. Nothing special is needed here.
+   }
+
    @Override
    public PathAttrs getAttrs() {
       return PathAttrs.WITHOUT_DRAWER;
@@ -16,5 +26,9 @@ public class DtlLocationChangePath extends DtlMasterPath {
    @Override
    public boolean isFullScreen() {
       return false;
+   }
+
+   public String getPrefilledMerchantSearchQuery() {
+      return prefilledMerchantSearchQuery;
    }
 }

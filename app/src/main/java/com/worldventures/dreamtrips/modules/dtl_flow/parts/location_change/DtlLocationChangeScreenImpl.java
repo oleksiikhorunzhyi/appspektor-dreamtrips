@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationChangeCell;
+import com.worldventures.dreamtrips.modules.dtl.view.util.MerchantTypeUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
@@ -122,10 +123,12 @@ public class DtlLocationChangeScreenImpl
    }
 
    @Override
-   public void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery) {
+   public void updateToolbarTitle(@Nullable DtlLocation dtlLocation, List<String> selectedMerchantTypes,
+         @Nullable String appliedSearchQuery) {
       if (dtlLocation == null) {
          return;
       }
+      dtlToolbar.setSearchHint(MerchantTypeUtil.getSearchHintForMerchantTypes(getContext(), selectedMerchantTypes));
       switch (dtlLocation.locationSourceType()) {
          case NEAR_ME:
          case EXTERNAL:
@@ -212,6 +215,11 @@ public class DtlLocationChangeScreenImpl
       adapter.clearAndUpdateItems(locations);
    }
 
+   @Override
+   public String getMerchantsSearchQuery() {
+      return dtlToolbar.getSearchQuery();
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Boilerplate stuff
    ///////////////////////////////////////////////////////////////////////////
@@ -226,6 +234,6 @@ public class DtlLocationChangeScreenImpl
 
    @Override
    public DtlLocationChangePresenter createPresenter() {
-      return new DtlLocationChangePresenterImpl(getContext(), injector);
+      return new DtlLocationChangePresenterImpl(getContext(), injector, getPath().getPrefilledMerchantSearchQuery());
    }
 }

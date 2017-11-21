@@ -17,7 +17,7 @@ public interface DtlMapScreen extends DtlScreen {
 
    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
 
-   void updateToolbarSearchCaption(@Nullable String searchCaption);
+   void updateToolbarSearchCaption(List<String> merchantTypes, @Nullable String searchQuery);
 
    GoogleMap getMap();
 

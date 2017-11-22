@@ -2,15 +2,17 @@ package com.worldventures.wallet.ui.settings.help.feedback.payment.model
 
 import android.databinding.BaseObservable
 import android.databinding.Bindable
+import android.os.Parcel
+import android.os.Parcelable
 import com.worldventures.wallet.BR
 import com.worldventures.wallet.domain.entity.settings.payment_feedback.PaymentType
 
-class PaymentTerminalViewModel : BaseObservable() {
+data class PaymentTerminalViewModel(private var _terminalNameModel: String = "") : BaseObservable(), Parcelable {
 
-   @get:Bindable
-   var terminalNameModel: String = ""
+   var terminalNameModel: String
+      @Bindable get() = _terminalNameModel
       set(terminalNameModel) {
-         field = terminalNameModel
+         _terminalNameModel = terminalNameModel
          notifyPropertyChanged(BR.terminalNameModel)
       }
 
@@ -20,19 +22,17 @@ class PaymentTerminalViewModel : BaseObservable() {
    val isDataChanged: Boolean
       get() = this.terminalNameModel.isNotEmpty()
 
-   override fun equals(other: Any?): Boolean {
-      if (this === other) {
-         return true
-      }
-      if (other == null || javaClass != other.javaClass) {
-         return false
-      }
+   constructor(parcel: Parcel) : this(parcel.readString())
 
-      val that = other as PaymentTerminalViewModel
-
-      return this.terminalNameModel == that.terminalNameModel
-
+   override fun writeToParcel(parcel: Parcel, flags: Int) {
+      parcel.writeString(_terminalNameModel)
    }
 
-   override fun hashCode() = terminalNameModel.hashCode()
+   override fun describeContents(): Int = 0
+
+   companion object CREATOR : Parcelable.Creator<PaymentTerminalViewModel> {
+      override fun createFromParcel(parcel: Parcel) = PaymentTerminalViewModel(parcel)
+
+      override fun newArray(size: Int): Array<PaymentTerminalViewModel?> = arrayOfNulls(size)
+   }
 }

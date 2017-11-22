@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.settings.help.feedback.payment.impl
 
 import android.databinding.DataBindingUtil
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -27,9 +28,9 @@ import io.techery.janet.operationsubscriber.view.OperationView
 import rx.Observable
 import javax.inject.Inject
 
-class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, PaymentFeedbackPresenter>(), PaymentFeedbackScreen {
+private const val STATE_KEY_FEEDBACK_VIEW_MODEL = "PaymentFeedbackScreenImpl#STATE_KEY_FEEDBACK_VIEW_MODEL"
 
-   override val paymentFeedbackViewModel = PaymentFeedbackViewModel()
+class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, PaymentFeedbackPresenter>(), PaymentFeedbackScreen {
 
    private lateinit var actionSendMenuItem: MenuItem
    private lateinit var binding: ScreenWalletSettingsHelpPaymentFeedbackBinding
@@ -37,10 +38,13 @@ class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, 
 
    @Inject lateinit var paymentFeedbackPresenter: PaymentFeedbackPresenter
 
+   override val paymentFeedbackViewModel
+      get() = binding.paymentFeedbackViewModel!!
+
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       binding = DataBindingUtil.bind(view)
-      binding.paymentFeedbackViewModel = paymentFeedbackViewModel
+      binding.paymentFeedbackViewModel = PaymentFeedbackViewModel()
       initToolbar()
       setupAsteriskColor()
 
@@ -49,7 +53,7 @@ class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, 
       val merchantViewModel = paymentFeedbackViewModel.merchantView
       val merchantTypeSpinner = binding.incMerchant!!.sMerchantType
       merchantTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+         override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
             merchantViewModel.merchantType = parent.adapter.getItem(position).toString()
             merchantViewModel.selectedTypeIndex = position
          }
@@ -85,6 +89,16 @@ class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, 
       super.onAttach(view)
       initAttachments()
       presenter.fetchAttachments()
+   }
+
+   override fun onSaveViewState(view: View, outState: Bundle) {
+      outState.putParcelable(STATE_KEY_FEEDBACK_VIEW_MODEL, binding.paymentFeedbackViewModel)
+      super.onSaveViewState(view, outState)
+   }
+
+   override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+      binding.paymentFeedbackViewModel = savedViewState.getParcelable(STATE_KEY_FEEDBACK_VIEW_MODEL)
+      super.onRestoreViewState(view, savedViewState)
    }
 
    private fun initAttachments() {

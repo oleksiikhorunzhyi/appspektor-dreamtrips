@@ -157,7 +157,9 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    }
 
    private String obtainAddress(WalletAddress address) {
-      return format("%s, %s\n%s", address.getCountryName(), address.getAdminArea(), address.getAddressLine());
+      return address != null
+            ? format("%s, %s\n%s", address.getCountryName(), address.getAdminArea(), address.getAddressLine())
+            : "";
    }
 
    private void openExternalMap(LatLng position) {

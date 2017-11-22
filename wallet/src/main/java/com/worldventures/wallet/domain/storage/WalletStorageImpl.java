@@ -159,12 +159,12 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
       if (walletLocations == null) {
          walletLocations = new ArrayList<>();
       }
-      putList(WALLET_SMART_CARD_LOCATION, walletLocations);
+      putEncrypted(WALLET_SMART_CARD_LOCATION, walletLocations);
    }
 
    @Override
    public List<WalletLocation> getWalletLocations() {
-      return readList(WALLET_SMART_CARD_LOCATION, WalletLocation.class);
+      return getEncryptedList(WALLET_SMART_CARD_LOCATION);
    }
 
    @Override

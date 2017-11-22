@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class ApiPlace(
       @field:SerializedName("place_id") val placeId: String,
-      val name: String,
-      val vicinity: String
+      @field:SerializedName("name") val name: String,
+      @field:SerializedName("vicinity") val vicinity: String
 )

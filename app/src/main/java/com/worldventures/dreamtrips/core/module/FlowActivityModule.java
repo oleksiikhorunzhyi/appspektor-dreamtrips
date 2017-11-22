@@ -8,7 +8,8 @@ import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.core.utils.DateTimeDeserializer;
 import com.worldventures.core.utils.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.util.ImmutablesGsonAdaptersProvider;
+
+import org.immutables.gson.adapter.util.ImmutablesGsonAdaptersProvider;
 
 import java.util.Date;
 import java.util.HashSet;

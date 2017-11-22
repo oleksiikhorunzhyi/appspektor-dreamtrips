@@ -8,7 +8,7 @@ import com.worldventures.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.wallet.ui.records.model.RecordViewModel;
-import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.wallet.ui.settings.help.documents.model.WalletDocumentModel;
 import com.worldventures.wallet.ui.wizard.pin.Action;

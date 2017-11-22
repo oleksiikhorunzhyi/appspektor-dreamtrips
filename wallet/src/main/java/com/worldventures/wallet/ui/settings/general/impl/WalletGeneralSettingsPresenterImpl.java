@@ -22,7 +22,7 @@ import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsScreen;
-import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
 import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.wallet.util.WalletFeatureHelper;

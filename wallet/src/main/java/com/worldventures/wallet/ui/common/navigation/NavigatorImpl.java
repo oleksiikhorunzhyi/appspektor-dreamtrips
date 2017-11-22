@@ -27,7 +27,7 @@ import com.worldventures.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
 import com.worldventures.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.wallet.ui.settings.general.about.impl.AboutScreenImpl;
-import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.download.impl.WalletDownloadFirmwareScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.install.impl.WalletInstallFirmwareScreenImpl;
@@ -375,12 +375,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goSettingsDisplayOptions(DisplayOptionsSource source) {
-      go(DisplayOptionsSettingsScreenImpl.create(source));
+      go(DisplayOptionsSettingsScreenImpl.Companion.create(source));
    }
 
    @Override
    public void goSettingsDisplayOptions(DisplayOptionsSource source, ProfileViewModel profileViewModel) {
-      go(DisplayOptionsSettingsScreenImpl.create(profileViewModel, source));
+      go(DisplayOptionsSettingsScreenImpl.Companion.create(profileViewModel, source));
    }
 
    @Override

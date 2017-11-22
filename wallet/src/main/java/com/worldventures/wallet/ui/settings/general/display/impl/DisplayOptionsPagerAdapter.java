@@ -1,4 +1,4 @@
-package com.worldventures.wallet.ui.settings.general.display;
+package com.worldventures.wallet.ui.settings.general.display.impl;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.worldventures.wallet.R;
-import com.worldventures.wallet.domain.entity.SmartCardUser;
+import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,33 +36,35 @@ public class DisplayOptionsPagerAdapter extends PagerAdapter {
    };
 
    private final LayoutInflater inflater;
-   private final SmartCardUser smartCardUser;
+   private final ProfileViewModel profileViewModel;
    private final DisplayOptionsClickListener clickListener;
 
-   public DisplayOptionsPagerAdapter(@NonNull Context context, @NonNull SmartCardUser smartCardUser, DisplayOptionsClickListener clickListener) {
-      inflater = LayoutInflater.from(context);
-      this.smartCardUser = smartCardUser;
+   public DisplayOptionsPagerAdapter(@NonNull Context context, @NonNull ProfileViewModel profileViewModel, DisplayOptionsClickListener clickListener) {
+      this.inflater = LayoutInflater.from(context);
+      this.profileViewModel = profileViewModel;
       this.clickListener = clickListener;
    }
 
    @Override
    public Object instantiateItem(ViewGroup collection, int position) {
-      ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.item_wallet_settings_display, collection, false);
+      final ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.item_wallet_settings_display, collection, false);
 
-      DisplayOptionsViewHolder holder = new DisplayOptionsViewHolder(layout);
-      holder.bindData(DISPLAY_OPTIONS.get(position), DISPLAY_OPTION_TITLES.get(position), smartCardUser);
+      final DisplayOptionsViewHolder holder = new DisplayOptionsViewHolder(layout);
+      holder.bindData(DISPLAY_OPTIONS.get(position), DISPLAY_OPTION_TITLES.get(position), profileViewModel);
       holder.setClickListener(clickListener);
 
       layout.setTag(holder);
       collection.addView(layout);
-
+      registerDataSetObserver(holder.dataSetObserver);
       return layout;
    }
 
 
    @Override
    public void destroyItem(ViewGroup collection, int position, Object view) {
-      collection.removeView((View) view);
+      final View currentView = (View) view;
+      unregisterDataSetObserver(((DisplayOptionsViewHolder) currentView.getTag()).dataSetObserver);
+      collection.removeView(currentView);
    }
 
    @Override

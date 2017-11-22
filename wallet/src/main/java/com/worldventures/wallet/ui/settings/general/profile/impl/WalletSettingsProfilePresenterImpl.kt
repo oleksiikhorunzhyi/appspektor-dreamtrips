@@ -12,7 +12,7 @@ import com.worldventures.wallet.service.command.device.DeviceStateCommand
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl
 import com.worldventures.wallet.ui.common.navigation.Navigator
-import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSource
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource
 import com.worldventures.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter
 import com.worldventures.wallet.ui.settings.general.profile.WalletSettingsProfileScreen
 import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel

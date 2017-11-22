@@ -3,7 +3,6 @@ package com.worldventures.wallet.ui.common.recycler;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import timber.log.Timber;
 

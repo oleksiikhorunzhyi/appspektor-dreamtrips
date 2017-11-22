@@ -42,7 +42,9 @@ public class DisplayOptionsViewHolder {
    final DataSetObserver dataSetObserver = new DataSetObserver() {
       @Override
       public void onChanged() {
-         if (profileViewModel == null) return;
+         if (profileViewModel == null) {
+            return;
+         }
          internalBindData(type, titleRes, profileViewModel);
       }
    };
@@ -81,8 +83,8 @@ public class DisplayOptionsViewHolder {
       final String userPhoto = profileViewModel.getChosenPhotoUri();
       final String userPhone = profileViewModel.getPhoneNumber();
       final String phone = userPhone.isEmpty() ? String.format(Locale.US, "(%s)", rootView.getResources()
-            .getString(R.string.wallet_settings_general_display_phone_required)) :
-            profileViewModel.getPhoneCode() + userPhone;
+            .getString(R.string.wallet_settings_general_display_phone_required))
+            : profileViewModel.getPhoneCode() + userPhone;
 
       title.setText(titleRes);
 

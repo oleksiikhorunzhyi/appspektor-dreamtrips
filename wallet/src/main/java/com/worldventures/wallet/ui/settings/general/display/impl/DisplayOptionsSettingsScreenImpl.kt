@@ -123,6 +123,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       }
    }
 
+   @Suppress("MagicNumber")
    private fun initViewPager(view: View) {
       viewPager = view.findViewById(R.id.pager)
       wrapperPager = view.findViewById(R.id.wrapper_pager)
@@ -167,6 +168,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       setupDisplayOptions(displayModel, profileFromArgs ?: displayModel.copy(), type)
    }
 
+   @Suppress("MagicNumber")
    private fun setupDisplayOptions(originProfile: ProfileViewModel, profileModel: ProfileViewModel, @SetHomeDisplayTypeAction.HomeDisplayType type: Int) {
       this.originProfileModel = originProfile
       this.profileModel = profileModel

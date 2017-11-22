@@ -80,7 +80,7 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
    private fun createPhone(model: ProfileViewModel): SmartCardUserPhone? = createPhone(model.phoneCode, model.phoneNumber)
 
    fun createPhone(phoneCode: String, phoneNumber: String): SmartCardUserPhone? {
-      return if (phoneCode.isEmpty() ||phoneNumber.isEmpty()) {
+      return if (phoneCode.isEmpty() || phoneNumber.isEmpty()) {
          null
       } else {
          SmartCardUserPhone("+$phoneCode", phoneNumber)

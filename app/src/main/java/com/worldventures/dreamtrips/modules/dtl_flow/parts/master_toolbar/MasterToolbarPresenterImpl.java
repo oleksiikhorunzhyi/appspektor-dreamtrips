@@ -348,9 +348,10 @@ public class MasterToolbarPresenterImpl extends DtlPresenterImpl<MasterToolbarSc
    }
 
    @Override
-   public void locationSelected(DtlLocation dtlExternalLocation) {
+   public void locationSelected(DtlLocation dtlExternalLocation, String merchantSearchQuery) {
       analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(dtlExternalLocation)));
       locationInteractor.changeSourceLocation(dtlExternalLocation);
+      filterDataInteractor.applySearch(merchantSearchQuery);
    }
 }

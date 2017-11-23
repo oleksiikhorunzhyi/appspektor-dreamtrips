@@ -12,21 +12,17 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 
@@ -94,7 +90,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       collapsed = true;
       updateToolbarCaptions();
       animateCollapsing();
-      patchInputFields();
       Queryable.from(collapseListeners).forEachR(listener -> listener.onCollapsed());
    }
 
@@ -178,31 +173,26 @@ public class ExpandableDtlToolbar extends DtlToolbar {
 
    @Override
    protected void updateToolbarCaptions() {
+      String hint = getHint();
       if (collapsed) {
-         String searchQueryTitle = TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
-         if (TextUtils.isEmpty(searchQuery)) {
-            merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
+         hint += " " + locationTitle;
+      }
+      merchantSearchInput.setHint(hint);
+
+      if (!TextUtils.isEmpty(searchQuery)) {
+         String query = this.searchQuery;
+         if (collapsed) {
+            query += " " + locationTitle;
+            merchantSearchInput.setHint(query);
          } else {
-            merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
+            merchantSearchInput.setText(query);
          }
-      } else {
-         if (TextUtils.isEmpty(searchQuery)) {
-            merchantSearchInput.setHint(defaultEmptySearchCaption);
-         }
-         if (!merchantSearchInput.hasFocus() || merchantSearchInput.getText().toString().isEmpty()) {
-            merchantSearchInput.setText(searchQuery);
-         }
+      }
+
+      if (!collapsed) {
          locationSearchInput.setText(locationTitle);
          locationSearchInput.selectAll();
       }
-   }
-
-   private SpannableStringBuilder prepareSpannedTopCaption(String searchQuery, String locationTitle) {
-      final SpannableStringBuilder stringBuilder = new SpannableStringBuilder(searchQuery + " " + locationTitle);
-      final ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources()
-            .getColor(R.color.dtlt_input_hint_color));
-      stringBuilder.setSpan(colorSpan, searchQuery.length(), stringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-      return stringBuilder;
    }
 
    private void animateExpanding() {
@@ -263,9 +253,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    protected void onMerchantSearchInputClicked() {
       if (collapsed) {
          expand();
-      } else {
-         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-         imm.hideSoftInputFromWindow(merchantSearchInput.getWindowToken(), 0);
       }
    }
 

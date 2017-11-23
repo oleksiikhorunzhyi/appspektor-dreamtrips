@@ -12,7 +12,7 @@ import rx.Observable;
 
 public interface DtlLocationChangeScreen extends DtlScreen {
 
-   void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
+   void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable List<String> selectedMerchantTypes, @Nullable String appliedSearchQuery);
 
    void locationResolutionRequired(Status status);
 
@@ -35,4 +35,6 @@ public interface DtlLocationChangeScreen extends DtlScreen {
    Observable<Void> provideDtlToolbarCollapsesObservable();
 
    Observable<String> provideLocationSearchObservable();
+
+   String getMerchantsSearchQuery();
 }

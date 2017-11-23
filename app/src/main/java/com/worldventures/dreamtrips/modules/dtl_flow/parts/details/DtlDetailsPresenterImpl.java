@@ -264,6 +264,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
 
       getView().setTransaction(dtlTransaction, merchant.useThrstFlow());
+      if (merchant.useThrstFlow()) {
+         getView().openTransaction(merchant, dtlTransaction);
+      }
 
       analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant.asMerchantAttributes(), location)));

@@ -303,7 +303,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             suggestedPhotoInteractor.suggestedPhotoCommandActionPipe.send(SuggestedPhotoCommand())
 
             assert(presenter.shouldShowSuggestionItems == true)
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, true)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, null, true)
          }
 
          it("Suggested photos collection should be clear, suggestedPhotoCellHelper should call reset and call refreshFeedItems") {
@@ -311,7 +311,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
             assert(presenter.shouldShowSuggestionItems == false)
             verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).reset()
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, false)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, null, false)
          }
 
          it("Should call sync of suggestedPhotoCellHelper") {
@@ -374,7 +374,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             compoundOperationsInteractor.compoundOperationsPipe().send(QueryCompoundOperationsCommand())
 
             assert(presenter.postUploads.containsAll(postCompoundOperations))
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, presenter.postUploads, false)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, presenter.postUploads, false)
          }
       }
    }

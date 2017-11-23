@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -311,13 +312,14 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList,
+   public void refreshFeedItems(@NonNull List<FeedItem> feedItems,
+         @Nullable List<PostCompoundOperationModel> uploadingPostsList,
          boolean shouldShowSuggestions) {
       List feedModels = new ArrayList();
       if (shouldShowSuggestions) {
          feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
       }
-      if (!uploadingPostsList.isEmpty()) {
+      if (uploadingPostsList != null && !uploadingPostsList.isEmpty()) {
          feedModels.add(new UploadingPostsList(uploadingPostsList));
       }
       processFeedItems(feedItems, feedModels);

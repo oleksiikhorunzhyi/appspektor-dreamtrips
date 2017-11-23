@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
@@ -486,7 +487,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
       void setUnreadConversationCount(int count);
 
-      void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList, boolean shouldShowSuggestions);
+      void refreshFeedItems(@NonNull List<FeedItem> feedItems,
+            @Nullable List<PostCompoundOperationModel> uploadingPostsList, boolean shouldShowSuggestions);
 
       void dataSetChanged();
 

@@ -99,6 +99,8 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       tvNonThrstSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount()));
       tvNonThrstEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
       tvNonThrstTransactionDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
+
+      hideReviewsOnTablets();
    }
 
    @Override
@@ -120,6 +122,10 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
       tvEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
 
+      hideReviewsOnTablets();
+   }
+
+   private void hideReviewsOnTablets() {
       if (ViewUtils.isTablet(getActivity())) {
          tvReview.setVisibility(GONE);
       }

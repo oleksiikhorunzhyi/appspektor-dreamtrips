@@ -6,12 +6,15 @@ import com.worldventures.core.modules.video.model.VideoLocale;
 import com.worldventures.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel;
 
-import java.util.List;
-
 public interface WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVideoScreen> {
+
    void goBack();
 
+   void fetchVideoAndLocales();
+
    void refreshVideos();
+
+   void fetchVideos(final VideoLanguage videoLanguage);
 
    void onSelectedLocale(VideoLocale item);
 
@@ -23,15 +26,9 @@ public interface WalletHelpVideoPresenter extends WalletPresenter<WalletHelpVide
 
    void onPlayVideo(WalletVideoModel entity);
 
-   void fetchSmartCardVideosForDefaultLocale(List<VideoLocale> videoLocales);
-
-   void fetchVideoLocales();
-
    void onCancelAction(CachedModel entity);
 
    void onDeleteAction(CachedModel entity);
-
-   void fetchSmartCardVideos(VideoLanguage videoLanguage);
 
    void onSelectLastLocale();
 

@@ -21,7 +21,7 @@ import com.worldventures.wallet.ui.settings.help.video.WalletHelpVideoPresenter;
 import com.worldventures.wallet.ui.settings.help.video.WalletHelpVideoScreen;
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -50,9 +50,9 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    @Override
    public void attachView(WalletHelpVideoScreen view) {
       super.attachView(view);
+
       observeUpdateStatusCachedEntity();
       subscribeToCachingStatusUpdates();
-      fetchVideoLocales();
    }
 
    private void observeUpdateStatusCachedEntity() {
@@ -67,19 +67,23 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    }
 
    private void handleUpdatedStatusCachedEntities(List<VideoCategory> categories) {
-      getView().provideVideos(convert(categories.get(0).getVideos()));
+      getView().setVideos(convert(categories.get(0).getVideos()));
       getView().showRefreshing(false);
    }
 
-   private List<WalletVideoModel> convert(List<Video> videos) {
+   private ArrayList<WalletVideoModel> convert(List<Video> videos) {
       if (videos.isEmpty()) {
-         return Collections.emptyList();
+         return new ArrayList<>();
       }
-      return Queryable.from(videos).map(WalletVideoModel::new).toList();
+      return new ArrayList<>(Queryable.from(videos).map(WalletVideoModel::new).toList());
    }
 
    @Override
-   public void fetchVideoLocales() {
+   public void fetchVideoAndLocales() {
+      fetchVideoLocales();
+   }
+
+   private void fetchVideoLocales() {
       memberVideosInteractor.getVideoLocalesPipe()
             .createObservable(new GetVideoLocalesCommand())
             .compose(getView().bindUntilDetach())
@@ -89,13 +93,8 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
                   .create());
    }
 
-   private void handleLoadedLocales(GetVideoLocalesCommand command) {
-      helpVideoDelegate.setVideoLocales(command.getResult());
-      getView().provideVideoLocales(command.getResult());
-   }
-
    @Override
-   public void fetchSmartCardVideos(final VideoLanguage videoLanguage) {
+   public void fetchVideos(final VideoLanguage videoLanguage) {
       memberVideosInteractor.getMemberVideosPipe()
             .createObservable(GetMemberVideosCommand.forHelpSmartCardVideos(videoLanguage))
             .compose(getView().bindUntilDetach())
@@ -107,15 +106,18 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
                   .create());
    }
 
+   private void handleLoadedLocales(GetVideoLocalesCommand command) {
+      final List<VideoLocale> locales = command.getResult();
+      helpVideoDelegate.setVideoLocales(locales);
+      getView().setVideoLocales(new ArrayList<>(locales));
+      getView().setSelectedLocale(helpVideoDelegate.getDefaultLocaleIndex(locales));
+
+      fetchVideos(helpVideoDelegate.getDefaultLanguage(locales));
+   }
+
    private void onVideoLoaded(List<VideoCategory> categories) {
       cachedEntityInteractor.updateStatusCachedEntityCommandPipe()
             .send(new UpdateStatusCachedEntityCommand(categories));
-   }
-
-   @Override
-   public void fetchSmartCardVideosForDefaultLocale(final List<VideoLocale> videoLocales) {
-      fetchSmartCardVideos(helpVideoDelegate.getDefaultLanguage(videoLocales));
-      getView().setSelectedLocale(helpVideoDelegate.getDefaultLocaleIndex(videoLocales));
    }
 
    @Override
@@ -176,7 +178,7 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
 
    @Override
    public void refreshVideos() {
-      fetchSmartCardVideos(helpVideoDelegate.getDefaultLanguageFromLastLocales());
+      fetchVideos(helpVideoDelegate.getDefaultLanguageFromLastLocales());
    }
 
    @Override

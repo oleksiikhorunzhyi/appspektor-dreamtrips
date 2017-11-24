@@ -7,7 +7,7 @@ import com.worldventures.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.wallet.service.provisioning.ProvisioningMode;
 import com.worldventures.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.wallet.ui.dashboard.util.model.TransitionModel;
-import com.worldventures.wallet.ui.records.model.RecordViewModel;
+import com.worldventures.wallet.ui.records.add.RecordBundle;
 import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel;
 import com.worldventures.wallet.ui.settings.help.documents.model.WalletDocumentModel;
@@ -43,7 +43,7 @@ public interface Navigator {
 
    void goSuccessProvisioningWithRevertAnimation();
 
-   void goAddCard(RecordViewModel recordViewModel);
+   void goAddCard(RecordBundle bundle);
 
    void goInstallFirmware();
 

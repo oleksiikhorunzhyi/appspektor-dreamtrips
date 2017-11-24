@@ -21,10 +21,10 @@ import com.worldventures.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedScreenImpl;
+import com.worldventures.wallet.ui.records.add.RecordBundle;
 import com.worldventures.wallet.ui.records.add.impl.AddCardDetailsScreenImpl;
 import com.worldventures.wallet.ui.records.detail.impl.CardDetailsEnterAnimHandler;
 import com.worldventures.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
-import com.worldventures.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.wallet.ui.settings.general.about.impl.AboutScreenImpl;
 import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
@@ -172,8 +172,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goAddCard(RecordViewModel recordViewModel) {
-      withoutLast(AddCardDetailsScreenImpl.create(recordViewModel));
+   public void goAddCard(RecordBundle bundle) {
+      withoutLast(AddCardDetailsScreenImpl.create(bundle));
    }
 
    @Override

@@ -39,16 +39,6 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideFinancialServiceToRecordConverter() {
-      return new WalletFinancialServiceToSmartCardFinancialServiceConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   Converter provideRecordToFinancialServiceConverter() {
-      return new SmartCardFinancialServiceToWalletFinancialServiceConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideNxtSessionConverter() {
       return new NxtSessionConverter();
    }
@@ -96,16 +86,6 @@ public class SmartCardConverterModule {
    @Provides(type = Provides.Type.SET)
    Converter providePlaceConverter() {
       return new ApiPlaceToWalletPlaceConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   Converter provideSmartCardRecordTypeToWalletRecordTypeConverter() {
-      return new SmartCardRecordTypeToWalletRecordTypeConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   Converter provideWalletRecordTypeToSmartCardRecordTypeConverter() {
-      return new WalletRecordTypeToSmartCardRecordTypeConverter();
    }
 
    @Provides(type = Provides.Type.SET)

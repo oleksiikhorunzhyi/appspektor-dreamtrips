@@ -33,7 +33,6 @@ import com.worldventures.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.wallet.service.command.http.CreateNxtSessionCommand;
-import com.worldventures.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
@@ -106,7 +105,6 @@ import dagger.Module;
             GetDisplayTypeCommand.class,
             RestoreDefaultDisplayTypeCommand.class,
             ValidateDisplayTypeDataCommand.class,
-            CreateRecordCommand.class,
             AssociateCardUserCommand.class,
             WizardCompleteCommand.class,
             FetchFirmwareInfoCommand.class,
@@ -141,5 +139,5 @@ import dagger.Module;
             AddDummyRecordCommand.class,
       },
       complete = false, library = true)
-public class WalletCommandModule {}
+class WalletCommandModule {}
 

@@ -108,13 +108,15 @@ class WalletRecordUtil {
       fun findRecord(records: List<Record>, recordId: String) =
             records.firstOrNull { (id) -> equalsRecordId(recordId, id) }
 
-      fun fetchFullName(card: Record): String {
-         return format("%s %s", card.cardHolderFirstName,
-               if (card.cardHolderMiddleName.isEmpty())
-                  card.cardHolderLastName
-               else
-                  format("%s %s", card.cardHolderMiddleName, card.cardHolderLastName)
-         )
+      fun fetchFullName(card: Record) = createFullName(card.cardHolderFirstName, card.cardHolderMiddleName, card.cardHolderLastName)
+
+      fun createFullName(firstName: String, middleName: String, lastName: String) : String {
+
+         return if (middleName.isEmpty()) {
+            "$firstName $lastName"
+         } else {
+            "$firstName $middleName $lastName"
+         }
       }
 
       fun validationMandatoryFields(number: String, cvv: String): Boolean =

@@ -1,7 +1,7 @@
 package com.worldventures.wallet.domain.entity.record
 
 data class Record(
-      val id: String?,
+      val id: String? = null,
       val number: String,
       val numberLastFourDigits: String,
       val expDate: String,

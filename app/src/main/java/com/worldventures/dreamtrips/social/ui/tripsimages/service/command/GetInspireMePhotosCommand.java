@@ -88,7 +88,7 @@ public class GetInspireMePhotosCommand extends CommandWithError<List<Inspiration
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
       cacheBundle.put(InspireMeStorage.RELOAD, page == 1);
       cacheBundle.put(InspireMeStorage.LOAD_MORE, page != 1);
-      return ImmutableCacheOptions.builder().params(cacheBundle).build();
+      return ImmutableCacheOptions.builder().saveToCache(!fromCache).params(cacheBundle).build();
    }
 
    @Override

@@ -87,6 +87,7 @@ public class GetMemberMediaCommand extends BaseMediaCommand implements Injectabl
       cacheBundle.put(TripImageStorage.REMOVE_ITEMS, false);
       return ImmutableCacheOptions.builder()
             .params(cacheBundle)
+            .saveToCache(!fromCache)
             .build();
    }
 

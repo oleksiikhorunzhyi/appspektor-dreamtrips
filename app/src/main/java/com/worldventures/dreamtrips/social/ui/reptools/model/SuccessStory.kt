@@ -19,7 +19,7 @@ class SuccessStory(id: Int,
    var isSelected: Boolean = false
 
    override fun containsQuery(query: String?): Boolean {
-      return query == null || author.toLowerCase().contains(query)
+      return query == null || title.toLowerCase().contains(query)
    }
 
    override fun getHeaderTitle(): String? = category

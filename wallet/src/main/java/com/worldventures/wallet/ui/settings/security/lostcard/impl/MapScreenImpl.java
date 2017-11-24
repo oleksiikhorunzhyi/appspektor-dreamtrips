@@ -12,8 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bluelinelabs.conductor.rxlifecycle.ControllerEvent;
-import com.bluelinelabs.conductor.rxlifecycle.RxRestoreViewOnCreateController;
+import com.bluelinelabs.conductor.RestoreViewOnCreateController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,7 +23,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.trello.rxlifecycle.LifecycleTransformer;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.view.custom.ToucheableMapView;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
@@ -50,16 +48,19 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import io.techery.janet.operationsubscriber.view.OperationView;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static java.lang.String.format;
 
-public class MapScreenImpl extends RxRestoreViewOnCreateController implements MapScreen, OnMapReadyCallback {
+public class MapScreenImpl extends RestoreViewOnCreateController implements MapScreen, OnMapReadyCallback {
 
    @Inject MapPresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
+   private final PublishSubject<Void> detachStopper = PublishSubject.create();
    private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
 
    private ToucheableMapView mapView;
@@ -117,6 +118,7 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    @Override
    protected void onDetach(@NonNull View view) {
       super.onDetach(view);
+      detachStopper.onNext(null);
       getPresenter().detachView(true);
       mapView.onPause();
    }
@@ -215,8 +217,8 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    }
 
    @Override
-   public <T> LifecycleTransformer<T> bindUntilDetach() {
-      return bindUntilEvent(ControllerEvent.DETACH);
+   public <T> Observable.Transformer<T, T> bindUntilDetach() {
+      return input -> input.takeUntil(detachStopper);
    }
 
    @Override

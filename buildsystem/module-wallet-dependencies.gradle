@@ -19,7 +19,6 @@ ext {
    walletDependencies.presentation = [
          conductor           : [impl: "com.bluelinelabs:conductor:$conductorVersion"],
          conductorSupport    : [impl: "com.bluelinelabs:conductor-support:$conductorVersion"],
-         conductorRxLifecycle: [impl: "com.bluelinelabs:conductor-rxlifecycle:$conductorVersion"],
    ]
 
    walletDependencies.media = [

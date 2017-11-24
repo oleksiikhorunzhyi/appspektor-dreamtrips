@@ -42,7 +42,7 @@ class WalletRecordUtil {
       return when (cardType) {
          RecordType.CREDIT -> context.getString(R.string.wallet_record_type_credit)
          RecordType.DEBIT -> context.getString(R.string.wallet_record_type_debit)
-         else -> context.getString(R.string.wallet_empty)
+         else -> ""
       }
    }
 

@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.profile.service.command;
 
 import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.model.session.ImmutableUserSession;
+import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
 import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
@@ -19,6 +22,7 @@ public class UploadBackgroundCommand extends CommandWithError<User> implements I
 
    @Inject Janet janet;
    @Inject MapperyContext mappery;
+   @Inject SessionHolder appSessionHolder;
 
    private final File file;
 
@@ -32,7 +36,12 @@ public class UploadBackgroundCommand extends CommandWithError<User> implements I
             .createObservableResult(new UpdateProfileBackgroundPhotoHttpAction(file))
             .map(UpdateProfileBackgroundPhotoHttpAction::response)
             .map(user -> mappery.convert(user, User.class))
-            .doOnNext(user -> file.delete())
+            .doOnNext(user -> {
+               file.delete();
+               UserSession userSession = ImmutableUserSession.builder()
+                     .from(appSessionHolder.get().get()).user(user).build();
+               appSessionHolder.put(userSession);
+            })
             .subscribe(callback::onSuccess, callback::onFail);
    }
 

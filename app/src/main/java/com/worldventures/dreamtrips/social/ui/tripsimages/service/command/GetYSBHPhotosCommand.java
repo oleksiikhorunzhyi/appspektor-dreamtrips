@@ -95,6 +95,9 @@ public class GetYSBHPhotosCommand extends CommandWithError<List<YSBHPhoto>> impl
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
       cacheBundle.put(YsbhPhotoStorage.RELOAD, page == 1);
       cacheBundle.put(YsbhPhotoStorage.LOAD_MORE, page != 1);
-      return ImmutableCacheOptions.builder().params(cacheBundle).build();
+      return ImmutableCacheOptions.builder()
+            .saveToCache(!fromCache)
+            .params(cacheBundle)
+            .build();
    }
 }

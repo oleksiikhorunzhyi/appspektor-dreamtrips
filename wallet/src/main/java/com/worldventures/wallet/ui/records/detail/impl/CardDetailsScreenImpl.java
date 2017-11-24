@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.records.detail.impl;
 
-
 import android.databinding.DataBindingUtil;
 import android.databinding.Observable.OnPropertyChangedCallback;
 import android.os.Bundle;

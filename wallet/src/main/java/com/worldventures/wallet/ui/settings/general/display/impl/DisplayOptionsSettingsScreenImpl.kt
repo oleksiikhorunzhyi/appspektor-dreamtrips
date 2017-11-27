@@ -79,6 +79,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       else
          null
 
+   @Suppress("UnsafeCast")
    override val displayOptionsSource: DisplayOptionsSource
       get() = args.getSerializable(PARAM_KEY_DISPLAY_OPTIONS_SOURCE) as DisplayOptionsSource
 
@@ -103,6 +104,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
 
    override fun supportHttpConnectionStatusLabel(): Boolean = false
 
+   @Suppress("UnsafeCast")
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       setupToolbar(view)
@@ -124,7 +126,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       }
    }
 
-   @Suppress("MagicNumber")
+   @Suppress("MagicNumber", "UnsafeCast")
    private fun initViewPager(view: View) {
       viewPager = view.findViewById(R.id.pager)
       wrapperPager = view.findViewById(R.id.wrapper_pager)
@@ -223,8 +225,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
             .onPositive { _, _ -> presenter.phoneNumberEntered(phoneBinding.profile!!.phoneCode, phoneBinding.profile!!.phoneNumber) }
             .build()
       builder.setOnShowListener {
-         (phoneView.findViewById<View>(R.id.et_phone_number) as EditText)
-               .setHint(R.string.wallet_settings_general_display_add_phone_number_hint)
+         (phoneView.findViewById<EditText>(R.id.et_phone_number)).setHint(R.string.wallet_settings_general_display_add_phone_number_hint)
          val countryCode = phoneView.findViewById<EditText>(R.id.et_country_code)
          countryCode.setSelection(countryCode.text.length)
       }

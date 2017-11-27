@@ -307,6 +307,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
       cardViewModels?.let { showRecordsInfo(it) }
    }
 
+   @Suppress("UnsafeCast")
    private fun showDetails(view: View, overlap: Int) {
       val model = (bankCardList.getChildViewHolder(view) as CommonCardHolder).data
       val transitionModel = presenter.getCardPosition(view, overlap, model.cardBackGround,

@@ -49,7 +49,7 @@ potential-bugs:
   UnsafeCallOnNullableType:
     active: true
   UnsafeCast:
-    active: false
+    active: true
 
 performance:
   active: true

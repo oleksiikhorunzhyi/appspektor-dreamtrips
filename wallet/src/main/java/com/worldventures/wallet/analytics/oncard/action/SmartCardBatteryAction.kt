@@ -9,6 +9,7 @@ import io.techery.janet.smartcard.model.analytics.AnalyticsLogEntryBattery
 @AnalyticsEvent(action = "wallet:oncard:battery", trackers = arrayOf(AdobeTracker.TRACKER_KEY))
 internal class SmartCardBatteryAction(logEntry: AnalyticsLog) : SmartCardAnalyticsAction(logEntry) {
 
+   @Suppress("UnsafeCast")
    override fun processLog(type: Int, logEntry: AnalyticsLog) {
       super.processLog(type, logEntry)
       when (type) {

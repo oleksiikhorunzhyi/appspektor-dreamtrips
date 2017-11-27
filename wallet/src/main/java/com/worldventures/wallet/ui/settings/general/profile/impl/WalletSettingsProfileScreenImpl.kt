@@ -67,6 +67,7 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       get() = binding.profile!!
       set(value) = setProfileModel(value)
 
+   @Suppress("UnsafeCast")
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       binding = DataBindingUtil.bind(view)

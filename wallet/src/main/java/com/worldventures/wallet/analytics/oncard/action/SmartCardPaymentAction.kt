@@ -20,6 +20,7 @@ class SmartCardPaymentAction internal constructor(logEntry: AnalyticsLog) : Smar
       }
    }
 
+   @Suppress("UnsafeCast")
    override fun processLog(type: Int, logEntry: AnalyticsLog) {
       super.processLog(type, logEntry)
       when (type) {

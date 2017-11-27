@@ -35,6 +35,7 @@ class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder, private val
          .createPipe(CreateNxtSessionHttpAction::class.java)
    private val retriedActions = CopyOnWriteArraySet<Any>()
 
+   @Suppress("UnsafeCast")
    override fun <A> onInterceptSend(holder: ActionHolder<A>): Boolean {
       if (holder.action() is MultifunctionNxtHttpAction) {
          nxtAuthRetryPolicy.handle { this.createSession() }
@@ -61,7 +62,7 @@ class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder, private val
       retriedActions.remove(holder.action())
    }
 
-   @Suppress("UNCHECKED_CAST")
+   @Suppress("UNCHECKED_CAST", "UnsafeCast")
    override fun <A> onInterceptFail(holder: ActionHolder<A>, e: JanetException): Boolean {
       if (holder.action() is MultifunctionNxtHttpAction && !retriedActions.remove(holder.action())) {
          val action = holder.action() as MultifunctionNxtHttpAction

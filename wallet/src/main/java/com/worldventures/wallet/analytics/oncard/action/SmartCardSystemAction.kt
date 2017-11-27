@@ -9,6 +9,7 @@ import io.techery.janet.smartcard.model.analytics.AnalyticsLogEntryRestart
 @AnalyticsEvent(action = "wallet:oncard:system", trackers = arrayOf(AdobeTracker.TRACKER_KEY))
 internal class SmartCardSystemAction(logEntry: AnalyticsLog) : SmartCardAnalyticsAction(logEntry) {
 
+   @Suppress("UnsafeCast")
    override fun processLog(type: Int, logEntry: AnalyticsLog) {
       super.processLog(type, logEntry)
       when (type) {

@@ -49,7 +49,7 @@ class PostLocationCommand : Command<Void>(), InjectableAction {
    private fun postLocations(locations: List<WalletLocation>): Observable<Void> {
       return observeActiveSmartCard()
             .flatMap { smartCard -> observeLocationsPost(locations, smartCard) }
-            .map { null as Void? }
+            .map { null }
    }
 
    private fun observeActiveSmartCard(): Observable<SmartCard> {

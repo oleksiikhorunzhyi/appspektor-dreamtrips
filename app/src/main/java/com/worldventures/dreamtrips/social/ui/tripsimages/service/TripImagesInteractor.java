@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetIns
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSBHPhotosCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesAddedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesRemovedCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.UserImagesRemovedCommand;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
@@ -36,6 +37,7 @@ public class TripImagesInteractor {
    private final ActionPipe<CreateReviewPhotoCreationItemCommand> createReviewPhotoCreationItemPipe;
    private final ActionPipe<MemberImagesAddedCommand> memberImagesAddedCommandPipe;
    private final ActionPipe<MemberImagesRemovedCommand> memberImagesRemovedCommandPipe;
+   private final ActionPipe<UserImagesRemovedCommand> userImagesRemovedCommandPipe;
    private final ActionPipe<CheckVideoProcessingStatusCommand> checkVideoProcessingStatusPipe;
 
    public TripImagesInteractor(SessionActionPipeCreator pipeCreator) {
@@ -54,6 +56,7 @@ public class TripImagesInteractor {
             .io());
       this.memberImagesAddedCommandPipe = pipeCreator.createPipe(MemberImagesAddedCommand.class, Schedulers.io());
       this.memberImagesRemovedCommandPipe = pipeCreator.createPipe(MemberImagesRemovedCommand.class, Schedulers.io());
+      this.userImagesRemovedCommandPipe = pipeCreator.createPipe(UserImagesRemovedCommand.class, Schedulers.io());
       this.checkVideoProcessingStatusPipe = pipeCreator.createPipe(CheckVideoProcessingStatusCommand.class, Schedulers.io());
    }
 
@@ -111,6 +114,10 @@ public class TripImagesInteractor {
 
    public ActionPipe<MemberImagesRemovedCommand> memberImagesRemovedPipe() {
       return memberImagesRemovedCommandPipe;
+   }
+
+   public ActionPipe<UserImagesRemovedCommand> userImagesRemovedPipe() {
+      return userImagesRemovedCommandPipe;
    }
 
    public ActionPipe<CheckVideoProcessingStatusCommand> checkVideoProcessingStatusPipe() {

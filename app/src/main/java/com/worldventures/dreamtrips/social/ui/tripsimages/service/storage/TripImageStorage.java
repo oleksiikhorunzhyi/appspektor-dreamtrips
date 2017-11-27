@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetMem
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetUsersMediaCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesAddedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesRemovedCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.UserImagesRemovedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +78,6 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
       return Arrays.asList(GetMemberMediaCommand.class, GetUsersMediaCommand.class,
-            MemberImagesAddedCommand.class, MemberImagesRemovedCommand.class);
+            MemberImagesAddedCommand.class, MemberImagesRemovedCommand.class, UserImagesRemovedCommand.class);
    }
 }

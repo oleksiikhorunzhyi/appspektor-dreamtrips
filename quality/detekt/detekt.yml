@@ -147,7 +147,7 @@ style:
     active: true
     max: 4
   NewLineAtEndOfFile:
-    active: false
+    active: true
   OptionalAbstractKeyword:
     active: true
   ForbiddenComment:

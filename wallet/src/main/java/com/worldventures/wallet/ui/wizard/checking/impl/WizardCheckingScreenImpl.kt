@@ -14,6 +14,7 @@ import com.worldventures.wallet.ui.wizard.checking.WizardCheckingScreen
 
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 class WizardCheckingScreenImpl : WalletBaseController<WizardCheckingScreen, WizardCheckingPresenter>(), WizardCheckingScreen {
 
    private lateinit var checkInternet: WalletCheckWidget

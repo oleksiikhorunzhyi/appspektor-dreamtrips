@@ -55,6 +55,7 @@ import io.techery.janet.smartcard.exception.WaitingResponseException
 import java.util.ArrayList
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresenter>(), CardListScreen {
 
    private lateinit var bankCardList: RecyclerView

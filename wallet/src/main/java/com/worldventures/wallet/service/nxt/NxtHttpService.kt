@@ -24,6 +24,7 @@ import timber.log.Timber
 import java.net.HttpURLConnection
 import java.util.concurrent.CopyOnWriteArraySet
 
+@Suppress("UnsafeCallOnNullableType")
 class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder, private val appVersionNameBuilder: AppVersionNameBuilder,
                      private val socialInfoProvider: WalletSocialInfoProvider, private val mapperyContext: MapperyContext, baseUrl: String,
                      client: HttpClient, converter: Converter, private val nxtIdConfigsProvider: NxtIdConfigsProvider) : ActionServiceWrapper(HttpActionService(baseUrl, client, converter)) {

@@ -15,6 +15,7 @@ import io.techery.janet.command.annotations.CommandAction
 import io.techery.janet.smartcard.util.SmartCardSDK
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 @CommandAction
 class FetchFirmwareInfoCommand @JvmOverloads constructor(
       private val firmwareVersion: SmartCardFirmware,

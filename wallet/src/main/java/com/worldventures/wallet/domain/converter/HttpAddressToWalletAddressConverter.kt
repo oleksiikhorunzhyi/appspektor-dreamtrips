@@ -6,6 +6,7 @@ import com.worldventures.wallet.service.lostcard.command.http.model.AddressCompo
 import com.worldventures.wallet.service.lostcard.command.http.model.AddressRestResponse
 import io.techery.mappery.MapperyContext
 
+@Suppress("UnsafeCallOnNullableType")
 class HttpAddressToWalletAddressConverter : Converter<AddressRestResponse, WalletAddress> {
 
    override fun sourceClass(): Class<AddressRestResponse> = AddressRestResponse::class.java

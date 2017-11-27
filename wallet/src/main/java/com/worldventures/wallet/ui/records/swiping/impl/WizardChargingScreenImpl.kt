@@ -22,6 +22,7 @@ import io.techery.janet.operationsubscriber.view.OperationView
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, WizardChargingPresenter>(), WizardChargingScreen {
 
    @Inject lateinit var screenPresenter: WizardChargingPresenter

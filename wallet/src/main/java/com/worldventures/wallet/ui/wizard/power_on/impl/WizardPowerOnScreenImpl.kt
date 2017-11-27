@@ -14,6 +14,7 @@ import com.worldventures.wallet.ui.wizard.welcome.WizardWelcomeScreen
 
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 class WizardPowerOnScreenImpl : WalletBaseController<WizardWelcomeScreen, WizardPowerOnPresenter>(), WizardPowerOnScreen {
 
    @Inject lateinit var screenPresenter: WizardPowerOnPresenter

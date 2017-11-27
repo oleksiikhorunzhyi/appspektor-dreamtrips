@@ -16,6 +16,7 @@ import com.worldventures.wallet.ui.settings.general.firmware.reset.poweron.Force
 import com.worldventures.wallet.ui.widget.WizardVideoView
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 class ForceUpdatePowerOnScreenImpl : WalletBaseController<ForceUpdatePowerOnScreen, ForceUpdatePowerOnPresenter>(), ForceUpdatePowerOnScreen {
 
    private lateinit var walletWizardSplashTitle: TextView

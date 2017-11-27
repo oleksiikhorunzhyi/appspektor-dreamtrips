@@ -5,6 +5,7 @@ import com.worldventures.core.service.analytics.Attribute
 import com.worldventures.janet.analytics.AnalyticsEvent
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData
 
+@Suppress("UnsafeCallOnNullableType")
 @AnalyticsEvent(action = "wallet:settings:general:SmartCard Update:Step 4:Installing Update:Fail", trackers = arrayOf(AdobeTracker.TRACKER_KEY))
 class RetryInstallUpdateAction(retry: Boolean) : FirmwareAnalyticsAction() {
 

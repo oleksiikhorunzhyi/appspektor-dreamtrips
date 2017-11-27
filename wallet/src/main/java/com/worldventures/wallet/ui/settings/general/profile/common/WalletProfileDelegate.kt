@@ -18,6 +18,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 
+@Suppress("UnsafeCallOnNullableType")
 class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUserDataInteractor,
                             private val smartCardInteractor: SmartCardInteractor,
                             private val analyticsInteractor: WalletAnalyticsInteractor) {

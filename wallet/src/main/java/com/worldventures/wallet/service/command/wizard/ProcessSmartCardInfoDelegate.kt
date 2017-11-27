@@ -15,6 +15,7 @@ import io.techery.janet.Janet
 import io.techery.mappery.MapperyContext
 import rx.Observable
 
+@Suppress("UnsafeCallOnNullableType")
 internal class ProcessSmartCardInfoDelegate(
       private val walletStorage: WalletStorage,
       private val janetWallet: Janet,

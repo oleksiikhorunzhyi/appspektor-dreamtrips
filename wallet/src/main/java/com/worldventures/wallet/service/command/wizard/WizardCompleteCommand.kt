@@ -22,6 +22,7 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
+@Suppress("UnsafeCallOnNullableType")
 @CommandAction
 class WizardCompleteCommand : Command<Void>(), InjectableAction {
 

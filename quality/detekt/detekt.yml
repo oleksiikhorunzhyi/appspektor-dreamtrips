@@ -47,7 +47,7 @@ potential-bugs:
   LateinitUsage:
     active: false
   UnsafeCallOnNullableType:
-    active: false
+    active: true
   UnsafeCast:
     active: false
 

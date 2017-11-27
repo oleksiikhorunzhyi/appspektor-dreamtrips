@@ -6,6 +6,7 @@ import com.worldventures.wallet.service.nxt.model.MultiErrorResponse
 import com.worldventures.wallet.service.nxt.model.MultiRequestElement
 import java.util.ArrayList
 
+@Suppress("UnsafeCallOnNullableType")
 object NxtBankCardHelper {
 
    val PAN = "number"

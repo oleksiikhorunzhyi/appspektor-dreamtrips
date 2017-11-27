@@ -28,6 +28,7 @@ import io.techery.janet.operationsubscriber.view.OperationView
 import rx.Observable
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 class SendFeedbackScreenImpl(args: Bundle) : BaseFeedbackScreenImpl<SendFeedbackScreen, SendFeedbackPresenter>(args), SendFeedbackScreen {
 
    @Inject lateinit var sendFeedbackPresenter: SendFeedbackPresenter

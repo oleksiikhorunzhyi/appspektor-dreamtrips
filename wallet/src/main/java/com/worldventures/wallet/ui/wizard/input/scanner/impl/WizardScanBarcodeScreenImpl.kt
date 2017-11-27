@@ -27,6 +27,7 @@ import io.techery.janet.operationsubscriber.view.OperationView
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import javax.inject.Inject
 
+@Suppress("UnsafeCallOnNullableType")
 class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen, WizardScanBarcodePresenter>(), WizardScanBarcodeScreen, ZXingScannerView.ResultHandler {
 
    private var scanner: WalletBarCodeScanner? = null

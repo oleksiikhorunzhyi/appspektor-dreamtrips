@@ -16,6 +16,7 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
+@Suppress("UnsafeCallOnNullableType")
 @CommandAction
 class RevertSmartCardUserUpdatingCommand(smartCardId: String, newUser: SmartCardUser)
    : BaseUserUpdateCommand<Void>(smartCardId, newUser), InjectableAction {

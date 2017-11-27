@@ -7,6 +7,7 @@ import com.worldventures.wallet.domain.entity.lostcard.WalletLocation
 import com.worldventures.wallet.domain.entity.lostcard.WalletLocationType
 import io.techery.mappery.MapperyContext
 
+@Suppress("UnsafeCallOnNullableType")
 class SmartCardLocationToWalletLocationConverter : Converter<SmartCardLocation, WalletLocation> {
 
    override fun sourceClass(): Class<SmartCardLocation> = SmartCardLocation::class.java

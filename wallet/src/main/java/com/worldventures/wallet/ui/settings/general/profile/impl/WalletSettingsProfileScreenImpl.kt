@@ -36,6 +36,7 @@ import javax.inject.Inject
 private const val PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY"
 private const val PROFILE_ORIGIN_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_ORIGIN_STATE_KEY"
 
+@Suppress("UnsafeCallOnNullableType")
 class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfileScreen, WalletSettingsProfilePresenter>(), WalletSettingsProfileScreen {
 
    @Inject lateinit var screenPresenter: WalletSettingsProfilePresenter

@@ -30,6 +30,7 @@ import javax.inject.Inject
 
 private const val STATE_KEY_FEEDBACK_VIEW_MODEL = "PaymentFeedbackScreenImpl#STATE_KEY_FEEDBACK_VIEW_MODEL"
 
+@Suppress("UnsafeCallOnNullableType")
 class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, PaymentFeedbackPresenter>(), PaymentFeedbackScreen {
 
    private lateinit var actionSendMenuItem: MenuItem

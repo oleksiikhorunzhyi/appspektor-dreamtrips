@@ -57,6 +57,7 @@ private const val STATE_KEY_SELECTED_DISPLAY_TYPE = "DisplayOptionsSettingsScree
 private const val STATE_KEY_DISPLAY_ORIGIN_MODEL = "DisplayOptionsSettingsScreenImpl#STATE_KEY_DISPLAY_ORIGIN_MODEL"
 private const val STATE_KEY_DISPLAY_MODEL = "DisplayOptionsSettingsScreenImpl#STATE_KEY_DISPLAY_MODEL"
 
+@Suppress("UnsafeCallOnNullableType")
 class DisplayOptionsSettingsScreenImpl(args: Bundle)
    : WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter>(args),
       DisplayOptionsSettingsScreen, DisplayOptionsClickListener {

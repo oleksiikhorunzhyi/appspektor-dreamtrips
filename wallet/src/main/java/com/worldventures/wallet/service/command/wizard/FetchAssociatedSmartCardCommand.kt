@@ -19,6 +19,7 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
+@Suppress("UnsafeCallOnNullableType")
 @CommandAction
 class FetchAssociatedSmartCardCommand : Command<FetchAssociatedSmartCardCommand.AssociatedCard>(), InjectableAction {
 

@@ -27,6 +27,7 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
+@Suppress("UnsafeCallOnNullableType")
 @CommandAction
 class UpdateSmartCardUserCommand(newUser: SmartCardUser, smartCardId: String,
                                  private val forceUpdateDisplayType: Boolean)

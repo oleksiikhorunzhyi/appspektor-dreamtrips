@@ -2,35 +2,33 @@ package com.worldventures.wallet.ui.settings.help.feedback.payment.model
 
 import android.databinding.BaseObservable
 import android.databinding.Bindable
-import com.worldventures.core.utils.ProjectTextUtils.isNotEmpty
+import android.os.Parcel
+import android.os.Parcelable
 import com.worldventures.wallet.BR
 
-class AdditionalInfoViewModel : BaseObservable() {
+data class AdditionalInfoViewModel(private var _notes: String = "") : BaseObservable(), Parcelable {
 
-   @get:Bindable
-   var notes: String = ""
+   var notes: String
+      @Bindable get() = _notes
       set(notes) {
-         field = notes
+         _notes = notes
          notifyPropertyChanged(BR.notes)
       }
 
    val isDataChanged: Boolean
-      get() = isNotEmpty(this.notes)
+      get() = this.notes.isNotEmpty()
 
-   override fun equals(other: Any?): Boolean {
-      if (this === other) {
-         return true
-      }
-      if (other == null || javaClass != other.javaClass) {
-         return false
-      }
+   constructor(parcel: Parcel) : this(parcel.readString())
 
-      val that = other as AdditionalInfoViewModel?
-
-      return this.notes == that!!.notes
+   override fun writeToParcel(parcel: Parcel, flags: Int) {
+      parcel.writeString(_notes)
    }
 
-   override fun hashCode(): Int {
-      return this.notes.hashCode()
+   override fun describeContents() = 0
+
+   companion object CREATOR : Parcelable.Creator<AdditionalInfoViewModel> {
+      override fun createFromParcel(parcel: Parcel) = AdditionalInfoViewModel(parcel)
+
+      override fun newArray(size: Int): Array<AdditionalInfoViewModel?> = arrayOfNulls(size)
    }
 }

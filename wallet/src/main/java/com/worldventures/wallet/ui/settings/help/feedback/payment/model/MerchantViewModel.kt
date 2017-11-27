@@ -2,6 +2,8 @@ package com.worldventures.wallet.ui.settings.help.feedback.payment.model
 
 import android.databinding.BaseObservable
 import android.databinding.Bindable
+import android.os.Parcel
+import android.os.Parcelable
 import com.worldventures.core.utils.ProjectTextUtils.isNotEmpty
 import com.worldventures.wallet.BR
 
@@ -16,7 +18,7 @@ data class MerchantViewModel(
       var city: String = "",
       var state: String = "",
       var zip: String = ""
-) : BaseObservable() {
+) : BaseObservable(), Parcelable {
 
    var merchantName: String
       @Bindable get() = _merchantName
@@ -40,4 +42,33 @@ data class MerchantViewModel(
             || isNotEmpty(city)
             || isNotEmpty(state)
             || isNotEmpty(zip))
+
+   constructor(parcel: Parcel) : this(
+         parcel.readInt(),
+         parcel.readString(),
+         parcel.readString(),
+         parcel.readString(),
+         parcel.readString(),
+         parcel.readString(),
+         parcel.readString(),
+         parcel.readString())
+
+   override fun writeToParcel(parcel: Parcel, flags: Int) {
+      parcel.writeInt(selectedTypeIndex)
+      parcel.writeString(merchantType)
+      parcel.writeString(_merchantName)
+      parcel.writeString(_addressLine1)
+      parcel.writeString(addressLine2)
+      parcel.writeString(city)
+      parcel.writeString(state)
+      parcel.writeString(zip)
+   }
+
+   override fun describeContents() = 0
+
+   companion object CREATOR : Parcelable.Creator<MerchantViewModel> {
+      override fun createFromParcel(parcel: Parcel) = MerchantViewModel(parcel)
+
+      override fun newArray(size: Int): Array<MerchantViewModel?> = arrayOfNulls(size)
+   }
 }

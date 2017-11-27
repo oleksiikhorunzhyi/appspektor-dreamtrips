@@ -22,8 +22,8 @@ abstract class WalletAnalyticsAction : BaseAnalyticsAction {
       cid = scId
    }
 
-   internal fun setSmartCardAction(smartCard: SmartCard?, smartCardStatus: SmartCardStatus,
-                                   smartCardFirmware: SmartCardFirmware?) {
+   internal open fun setSmartCardAction(smartCard: SmartCard?, smartCardStatus: SmartCardStatus,
+                                        smartCardFirmware: SmartCardFirmware?) {
       setSmartCardData(
             fetchScId(smartCard),
             fetchScStatus(smartCard),

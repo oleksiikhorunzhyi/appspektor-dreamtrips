@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen, WizardScanBarcodePresenter>(), WizardScanBarcodeScreen, ZXingScannerView.ResultHandler {
 
-   private lateinit var scanner: WalletBarCodeScanner
+   private var scanner: WalletBarCodeScanner? = null
    private lateinit var contentView: View
 
    @Inject lateinit var viewPresenter: WizardScanBarcodePresenter
@@ -42,30 +42,25 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
       contentView = view.findViewById(R.id.content)
       val finder = view.findViewById<WalletBarCodeFinder>(R.id.scanner_view_finder)
       scanner = view.findViewById(R.id.scanner_view)
-      scanner.setBarCodeFinder(finder)
-      scanner.setResultHandler(this)
+      scanner?.setBarCodeFinder(finder)
+      scanner?.setResultHandler(this)
       val manualInputView = view.findViewById<View>(R.id.wallet_wizard_scan_barcode_manual_input)
       manualInputView.setOnClickListener { presenter.startManualInput() }
    }
 
-   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View {
-      return layoutInflater.inflate(R.layout.screen_wallet_wizard_barcode_scan, viewGroup, false)
-   }
+   override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View =
+         layoutInflater.inflate(R.layout.screen_wallet_wizard_barcode_scan, viewGroup, false)
 
-   override fun supportConnectionStatusLabel(): Boolean {
-      return false
-   }
+   override fun supportConnectionStatusLabel() = false
 
-   override fun supportHttpConnectionStatusLabel(): Boolean {
-      return false
-   }
+   override fun supportHttpConnectionStatusLabel() = false
 
    override fun onPostEnterAnimation() {
       presenter.requestCamera()
    }
 
    override fun onPreExitAnimation() {
-      scanner.stopCamera()
+      scanner?.stopCamera()
    }
 
    override fun onAttach(view: View) {
@@ -79,22 +74,20 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
    }
 
    override fun onActivityStopped(activity: Activity) {
-      scanner.stopCamera()
+      scanner?.stopCamera()
       super.onActivityStopped(activity)
    }
 
    override fun onDetach(view: View) {
-      scanner.stopCamera()
+      scanner?.stopCamera()
       super.onDetach(view)
       activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
    }
 
-   override fun getPresenter(): WizardScanBarcodePresenter {
-      return viewPresenter
-   }
+   override fun getPresenter() = viewPresenter
 
    override fun startCamera() {
-      scanner.startCamera()
+      scanner?.startCamera()
    }
 
    override fun showRationaleForCamera() {
@@ -105,9 +98,7 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
       Snackbar.make(view!!, R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show()
    }
 
-   override fun getContentView(): View {
-      return contentView
-   }
+   override fun getContentView(): View = contentView
 
    override fun provideOperationFetchCardStatus(): OperationView<GetSmartCardStatusCommand> {
       return ComposableOperationView(
@@ -142,7 +133,7 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
    }
 
    override fun reset() {
-      scanner.resumeCameraPreview(this)
+      scanner?.resumeCameraPreview(this)
    }
 
    override fun handleResult(result: Result) {

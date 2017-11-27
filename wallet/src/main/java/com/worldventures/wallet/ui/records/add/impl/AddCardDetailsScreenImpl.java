@@ -1,7 +1,10 @@
 package com.worldventures.wallet.ui.records.add.impl;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,8 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.domain.entity.record.Record;
 import com.worldventures.wallet.service.command.record.AddRecordCommand;
@@ -26,10 +31,10 @@ import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressV
 import com.worldventures.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
 import com.worldventures.wallet.ui.records.add.AddCardDetailsPresenter;
 import com.worldventures.wallet.ui.records.add.AddCardDetailsScreen;
+import com.worldventures.wallet.ui.records.add.RecordBundle;
 import com.worldventures.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.wallet.ui.widget.BankCardWidget;
 import com.worldventures.wallet.ui.widget.PinEntryEditText;
-import com.worldventures.wallet.ui.widget.WalletSwitcher;
 import com.worldventures.wallet.util.CardNameFormatException;
 import com.worldventures.wallet.util.CvvFormatException;
 import com.worldventures.wallet.util.WalletRecordUtil;
@@ -44,16 +49,18 @@ import static com.worldventures.wallet.util.WalletCardNameUtil.bindSpannableStri
 
 public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetailsScreen, AddCardDetailsPresenter> implements AddCardDetailsScreen {
 
-   private static final String KEY_ADD_RECORD = "key_add_record";
+   private static final String PARAM_KEY_RECORD_BUNDLE = "AddCardDetailsScreenImpl#PARAM_KEY_RECORD_BUNDLE";
+   private static final String STATE_KEY_RECORD_MODEL = "AddCardDetailsScreenImpl#STATE_KEY_RECORD_MODEL";
 
-   @Inject AddCardDetailsPresenter presenter;
+   @Inject AddCardDetailsPresenter screenPresenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private BankCardWidget bankCardWidget;
    private PinEntryEditText etCardCvv;
    private TextView cardNicknameLabel;
    private EditText etCardNickname;
    private TextView cvvLabel;
-   private WalletSwitcher defaultPaymentCardSwitcher;
+   private SwitchCompat defaultPaymentCardSwitcher;
    private Button confirmButton;
    private TextInputLayout cardNameInputLayout;
 
@@ -61,9 +68,11 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    private Observable<String> cardNicknameObservable;
    private Observable<String> cvvObservable;
 
-   public static AddCardDetailsScreenImpl create(RecordViewModel recordViewModel) {
+   @Nullable private RecordViewModel recordViewModel = null;
+
+   public static AddCardDetailsScreenImpl create(RecordBundle bundle) {
       final Bundle args = new Bundle();
-      args.putParcelable(KEY_ADD_RECORD, recordViewModel);
+      args.putParcelable(PARAM_KEY_RECORD_BUNDLE, bundle);
       return new AddCardDetailsScreenImpl(args);
    }
 
@@ -73,7 +82,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
 
    @Override
    public AddCardDetailsPresenter getPresenter() {
-      return presenter;
+      return screenPresenter;
    }
 
    @Override
@@ -84,7 +93,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
       bankCardWidget = view.findViewById(R.id.card);
 
       etCardCvv = view.findViewById(R.id.card_cvv);
-      cvvObservable = observableFrom(etCardCvv);
+      cvvObservable = observableTextView(etCardCvv);
 
       cardNicknameLabel = view.findViewById(R.id.card_nickname_label);
       etCardNickname = view.findViewById(R.id.card_name);
@@ -95,14 +104,12 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
          }
          return false;
       });
-      cardNicknameObservable = RxTextView.afterTextChangeEvents(etCardNickname).map(event -> event.editable()
-            .toString()
-            .trim()).skip(1);
+      cardNicknameObservable = observableTextView(etCardNickname)
+            .map(String::trim);
 
       defaultPaymentCardSwitcher = view.findViewById(R.id.set_default_card_switcher);
       setAsDefaultCardObservable = RxCompoundButton.checkedChanges(defaultPaymentCardSwitcher)
-            .doOnNext(value -> bankCardWidget.setAsDefault(value))
-            .skip(1);
+            .doOnNext(value -> bankCardWidget.setAsDefault(value));
 
       confirmButton = view.findViewById(R.id.confirm_button);
       confirmButton.setOnClickListener(button -> addRecordWithCurrentData());
@@ -117,6 +124,14 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    }
 
    @Override
+   protected void onAttach(@NonNull View view) {
+      super.onAttach(view);
+      if (recordViewModel == null) {
+         screenPresenter.fetchRecordViewModel();
+      }
+   }
+
+   @Override
    public boolean supportConnectionStatusLabel() {
       return false;
    }
@@ -126,18 +141,22 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
       return false;
    }
 
-   private Observable<String> observableFrom(TextView textView) {
-      return RxTextView.afterTextChangeEvents(textView).map(event -> event.editable().toString());
+   private Observable<String> observableTextView(TextView textView) {
+      return RxTextView.afterTextChangeEvents(textView)
+            .map(TextViewAfterTextChangeEvent::editable)
+            .filter(text -> text != null)
+            .map(CharSequence::toString);
    }
 
    @Override
    public void setCardBank(RecordViewModel recordViewModel) {
+      this.recordViewModel = recordViewModel;
       bankCardWidget.setBankCard(recordViewModel);
       etCardCvv.setMaxLength(recordViewModel.getCvvLength());
    }
 
    public Observable<String> getCardNicknameObservable() {
-      return cardNicknameObservable;
+      return cardNicknameObservable.asObservable();
    }
 
    @Override
@@ -146,7 +165,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    }
 
    @Override
-   public void setCardName(String cardName) {
+   public void setCardName(CharSequence cardName) {
       bankCardWidget.setCardName(cardName);
    }
 
@@ -191,7 +210,7 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
                   .defaultErrorView(new RetryDialogErrorView<>(getContext(), R.string.wallet_add_card_details_error_default,
                         command -> addRecordWithCurrentData()))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext(), command -> addRecordWithCurrentData()))
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(), command -> addRecordWithCurrentData(), command -> {
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil, command -> addRecordWithCurrentData(), command -> {
                   }))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CardNameFormatException.class, R.string.wallet_add_card_details_error_message))
                   .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), CvvFormatException.class, R.string.wallet_add_card_details_error_message))
@@ -200,13 +219,11 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
    }
 
    @Override
-   public RecordViewModel getRecordViewModel() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_ADD_RECORD))
-            ? getArgs().getParcelable(KEY_ADD_RECORD)
-            : null;
+   public RecordBundle getRecordBundle() {
+      return getArgs().getParcelable(PARAM_KEY_RECORD_BUNDLE);
    }
 
-   protected void navigateButtonClick() {
+   private void navigateButtonClick() {
       getPresenter().goBack();
    }
 
@@ -224,4 +241,18 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
       bindSpannableStringToTarget(cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, true, false);
    }
+
+   @Override
+   protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+      super.onSaveViewState(view, outState);
+      outState.putParcelable(STATE_KEY_RECORD_MODEL, recordViewModel);
+   }
+
+   @Override
+   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+      super.onRestoreViewState(view, savedViewState);
+      setCardBank(savedViewState.getParcelable(STATE_KEY_RECORD_MODEL));
+      setCardName(etCardNickname.getText());
+   }
+
 }

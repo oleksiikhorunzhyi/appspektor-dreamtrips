@@ -1,5 +1,6 @@
-package com.worldventures.wallet.ui.settings.general.display;
+package com.worldventures.wallet.ui.settings.general.display.impl;
 
+import android.database.DataSetObserver;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.view.View;
@@ -7,16 +8,14 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.wallet.R;
-import com.worldventures.wallet.domain.entity.SmartCardUser;
-import com.worldventures.wallet.domain.entity.SmartCardUserPhone;
-import com.worldventures.wallet.domain.entity.SmartCardUserPhoto;
+import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel;
+import com.worldventures.wallet.util.SCUserUtils;
 import com.worldventures.wallet.util.SmartCardAvatarHelper;
 
 import java.util.Locale;
 
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 
-import static com.worldventures.wallet.util.SCUserUtils.userFullName;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PHONE_AND_NAME;
 import static io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction.DISPLAY_PICTURE_AND_NAME;
@@ -26,15 +25,29 @@ public class DisplayOptionsViewHolder {
 
    private final View rootView;
 
-   private TextView title;
-   private TextView firstName;
-   private TextView fullName;
-   private SimpleDraweeView photo;
-   private View silhouette;
-   private TextView addPhone;
-   private TextView addPhoto;
-   private TextView photoRequired;
+   private final TextView title;
+   private final TextView firstName;
+   private final TextView fullName;
+   private final SimpleDraweeView photo;
+   private final View silhouette;
+   private final TextView addPhone;
+   private final TextView addPhoto;
+   private final TextView photoRequired;
    private DisplayOptionsClickListener clickListener;
+
+   private int type;
+   private int titleRes;
+   private ProfileViewModel profileViewModel;
+
+   final DataSetObserver dataSetObserver = new DataSetObserver() {
+      @Override
+      public void onChanged() {
+         if (profileViewModel == null) {
+            return;
+         }
+         internalBindData(type, titleRes, profileViewModel);
+      }
+   };
 
    DisplayOptionsViewHolder(View view) {
       this.rootView = view;
@@ -59,11 +72,19 @@ public class DisplayOptionsViewHolder {
       photoRequired = view.findViewById(R.id.tv_photo_required);
    }
 
-   void bindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, @NonNull SmartCardUser user) {
-      SmartCardUserPhoto userPhoto = user.getUserPhoto();
-      SmartCardUserPhone userPhone = user.getPhoneNumber();
-      String phone = (userPhone == null) ? String.format(Locale.US, "(%s)", rootView.getResources()
-            .getString(R.string.wallet_settings_general_display_phone_required)) : userPhone.fullPhoneNumber();
+   void bindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, @NonNull ProfileViewModel profileViewModel) {
+      this.type = type;
+      this.titleRes = titleRes;
+      this.profileViewModel = profileViewModel;
+      internalBindData(type, titleRes, profileViewModel);
+   }
+
+   private void internalBindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, ProfileViewModel profileViewModel) {
+      final String userPhoto = profileViewModel.getChosenPhotoUri();
+      final String userPhone = profileViewModel.getPhoneNumber();
+      final String phone = userPhone.isEmpty() ? String.format(Locale.US, "(%s)", rootView.getResources()
+            .getString(R.string.wallet_settings_general_display_phone_required))
+            : profileViewModel.getPhoneCode() + userPhone;
 
       title.setText(titleRes);
 
@@ -75,29 +96,34 @@ public class DisplayOptionsViewHolder {
       photoRequired.setVisibility(hasPhoto ? View.VISIBLE : View.GONE);
       silhouette.setVisibility(hasPhoto ? View.VISIBLE : View.GONE);
 
-      addPhone.setVisibility(type == DISPLAY_PHONE_AND_NAME && userPhone == null ? View.VISIBLE : View.GONE);
+      addPhone.setVisibility(type == DISPLAY_PHONE_AND_NAME && userPhone.isEmpty() ? View.VISIBLE : View.GONE);
+
 
       switch (type) {
          case DISPLAY_PICTURE_ONLY:
             if (userPhoto != null) {
-               photo.setImageURI(userPhoto.getUri());
+               photo.setImageURI(userPhoto);
             }
             break;
          case DISPLAY_PICTURE_AND_NAME:
             if (userPhoto != null) {
-               photo.setImageURI(userPhoto.getUri());
+               photo.setImageURI(userPhoto);
             }
-            firstName.setText(user.getFirstName());
+            firstName.setText(profileViewModel.getFirstName());
             break;
          case DISPLAY_NAME_ONLY:
-            fullName.setText(userFullName(user));
+            fullName.setText(getFullName(profileViewModel));
             break;
          case DISPLAY_PHONE_AND_NAME:
-            fullName.setText(userFullName(user) + "\n\n" + phone);
+            fullName.setText(getFullName(profileViewModel) + "\n\n" + phone);
             break;
          default:
             break;
       }
+   }
+
+   private String getFullName(ProfileViewModel profile) {
+      return SCUserUtils.userFullName(profile.getFirstName(), profile.getMiddleName(), profile.getLastName());
    }
 
    void setClickListener(DisplayOptionsClickListener clickListener) {

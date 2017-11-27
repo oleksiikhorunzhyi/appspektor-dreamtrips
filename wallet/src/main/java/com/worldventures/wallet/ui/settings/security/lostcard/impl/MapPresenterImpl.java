@@ -47,12 +47,8 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
             .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()), Timber::e);
    }
 
-   private void setupEmptyLocation(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
-      getView().addPin(WalletLocationsUtil.INSTANCE.toLatLng(fetchAddressWithPlacesCommand.getCoordinates()));
-   }
-
    private void setupLocationAndAddress(WalletCoordinates coordinates, WalletAddress address, List<WalletPlace> places) {
-      getView().addPin(new LostCardPin(places, address, WalletLocationsUtil.INSTANCE.toLatLng(coordinates)));
+      getView().addPin(new LostCardPin(places, address, coordinates));
    }
 
    private void fetchLastSmartCardLocation() {
@@ -71,17 +67,13 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
 
    private void processLastLocation(WalletLocation walletLocation) {
       if (walletLocation == null) {
-         toggleLocationContainersVisibility(false);
+         getView().setCoordinates(null);
          return;
       }
-      toggleLocationContainersVisibility(true);
       getView().setLastConnectionDate(walletLocation.getCreatedAt());
+      getView().setCoordinates(walletLocation.getCoordinates());
 
       fetchAddressWithPlaces(walletLocation.getCoordinates());
-   }
-
-   private void toggleLocationContainersVisibility(boolean locationExists) {
-      getView().setVisibleMsgEmptyLastLocation(!locationExists);
    }
 
    private void fetchAddressWithPlaces(WalletCoordinates coordinates) {
@@ -94,7 +86,6 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
                   .onSuccess(command ->
                         setupLocationAndAddress(coordinates, command.getResult().getAddress(), command.getResult()
                               .getPlaces()))
-                  .onFail((fetchAddressWithPlacesCommand, throwable) -> setupEmptyLocation(fetchAddressWithPlacesCommand))
                   .create());
    }
 
@@ -110,7 +101,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
    }
 
    @Override
-   public void onMapPrepared() {
+   public void fetchLastKnownLocation() {
       fetchLastSmartCardLocation();
    }
 }

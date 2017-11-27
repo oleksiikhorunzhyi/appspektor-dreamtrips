@@ -9,7 +9,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.facebook.drawee.view.SimpleDraweeView
 import com.worldventures.wallet.R
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto
-import com.worldventures.wallet.service.command.http.CreateRecordCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
 import com.worldventures.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider
@@ -103,15 +102,6 @@ class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, Wiza
       if (photo != null) {
          userPhoto.setImageURI(photo.uri)
       }
-   }
-
-   override fun provideOperationCreateRecord(): OperationView<CreateRecordCommand> {
-      return ComposableOperationView(
-            ErrorViewFactory.builder<CreateRecordCommand>()
-                  .addProvider(SCConnectionErrorViewProvider(context))
-                  .addProvider(SmartCardErrorViewProvider(context))
-                  .build()
-      )
    }
 
    override fun provideOperationStartCardRecording(): OperationView<StartCardRecordingAction> {

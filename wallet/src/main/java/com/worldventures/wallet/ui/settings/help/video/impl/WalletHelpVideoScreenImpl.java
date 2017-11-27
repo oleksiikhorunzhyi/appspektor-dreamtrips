@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.settings.help.video.impl;
 
-import android.support.v4.view.MenuItemCompat;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -34,6 +35,9 @@ import com.worldventures.wallet.ui.settings.help.video.holder.VideoHolderFactory
 import com.worldventures.wallet.ui.settings.help.video.holder.WalletVideoHolderDelegate;
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,15 +48,21 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 
 public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVideoScreen, WalletHelpVideoPresenter> implements WalletHelpVideoScreen {
 
+   private static final String STATE_KEY_VIDEOS = "WalletHelpVideoScreenImpl#STATE_KEY_VIDEOS";
+   private static final String STATE_KEY_VIDEO_LOCALES = "WalletHelpVideoScreenImpl#STATE_KEY_VIDEO_LOCALES";
+
    @Inject WalletHelpVideoPresenter presenter;
    @Inject WalletVideoHolderDelegate videoHolderDelegate;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private EmptyRecyclerView rvVideos;
    private SwipeRefreshLayout refreshLayout;
-   private MultiHolderAdapter<WalletVideoModel> adapter;
+   private MultiHolderAdapter<WalletVideoModel> videoAdapter;
    private VideoLocaleAdapter localeAdapter;
-   private Spinner videoLocales;
+   private Spinner spinnerVideoLocales;
+
+   @Nullable private ArrayList<WalletVideoModel> videos;
+   @Nullable private ArrayList<VideoLocale> videoLocales;
 
    @Override
    protected void onFinishInflate(View view) {
@@ -63,6 +73,14 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
       initRefreshLayout(view);
       initAdapter();
       initToolbar(view);
+   }
+
+   @Override
+   protected void onAttach(@NonNull View view) {
+      super.onAttach(view);
+      if (videoLocales == null) {
+         presenter.fetchVideoAndLocales();
+      }
    }
 
    private void initRefreshLayout(View view) {
@@ -76,12 +94,12 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
       toolbar.inflateMenu(R.menu.wallet_settings_videos);
 
       final MenuItem actionVideoLanguage = toolbar.getMenu().findItem(R.id.action_video_language);
-      videoLocales = (Spinner) MenuItemCompat.getActionView(actionVideoLanguage);
+      spinnerVideoLocales = (Spinner) actionVideoLanguage.getActionView();
 
       localeAdapter = new VideoLocaleAdapter(getContext(), new ArrayList<>());
 
-      videoLocales.setAdapter(localeAdapter);
-      videoLocales.setOnItemSelectedListener(itemLocaleSelectedListener);
+      spinnerVideoLocales.setAdapter(localeAdapter);
+      spinnerVideoLocales.setOnItemSelectedListener(itemLocaleSelectedListener);
    }
 
    private final AdapterView.OnItemSelectedListener itemLocaleSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -95,8 +113,8 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    };
 
    private void initAdapter() {
-      adapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(), new VideoHolderFactoryImpl(videoActionsCallback, videoHolderDelegate));
-      rvVideos.setAdapter(adapter);
+      videoAdapter = new SimpleMultiHolderAdapter<>(new ArrayList<>(), new VideoHolderFactoryImpl(videoActionsCallback, videoHolderDelegate));
+      rvVideos.setAdapter(videoAdapter);
    }
 
    private WalletVideoCallback videoActionsCallback = new WalletVideoCallback() {
@@ -123,16 +141,15 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    };
 
    @Override
-   public void provideVideos(List<WalletVideoModel> videos) {
-      adapter.clear();
-      adapter.addItems(videos);
+   public void setVideos(@NotNull ArrayList<WalletVideoModel> videos) {
+      this.videos = videos;
+      this.videoAdapter.clear();
+      this.videoAdapter.addItems(videos);
    }
 
    @Override
-   public void provideVideoLocales(List<VideoLocale> videoLocales) {
-      if (localeAdapter.isEmpty()) {
-         getPresenter().fetchSmartCardVideosForDefaultLocale(videoLocales);
-      }
+   public void setVideoLocales(@NotNull ArrayList<VideoLocale> videoLocales) {
+      this.videoLocales = videoLocales;
       localeAdapter.clear();
       localeAdapter.addAll(videoLocales);
    }
@@ -143,7 +160,7 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_video_loading, false),
             ErrorViewFactory.<GetMemberVideosCommand>builder()
                   .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
-                        command -> getPresenter().fetchSmartCardVideosForDefaultLocale(null),
+                        command -> getPresenter().fetchVideos(null),
                         command -> getPresenter().goBack())
                   ).build()
       );
@@ -155,7 +172,7 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_settings_help_video_locales_loading, false),
             ErrorViewFactory.<GetVideoLocalesCommand>builder()
                   .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
-                        command -> getPresenter().fetchVideoLocales(),
+                        command -> getPresenter().fetchVideoAndLocales(),
                         command -> getPresenter().goBack())
                   ).build()
       );
@@ -187,12 +204,12 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
 
    @Override
    public void notifyItemChanged(CachedModel cachedEntity) {
-      adapter.notifyDataSetChanged();
+      videoAdapter.notifyDataSetChanged();
    }
 
    @Override
    public List<WalletVideoModel> getCurrentItems() {
-      return adapter.getItemCount() == 0 ? new ArrayList<>() : adapter.getItems();
+      return videoAdapter.getItemCount() == 0 ? new ArrayList<>() : videoAdapter.getItems();
    }
 
    @Override
@@ -200,7 +217,7 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
       new MaterialDialog.Builder(getContext())
             .adapter(new VideoLanguagesAdapter(getContext(), videoLocale.getLanguages()),
                   (dialog, itemView, which, text) -> {
-                     getPresenter().fetchSmartCardVideos(videoLocale.getLanguages().get(which));
+                     getPresenter().fetchVideos(videoLocale.getLanguages().get(which));
                      dialog.dismiss();
                   })
             .cancelListener(dialog -> getPresenter().onSelectLastLocale())
@@ -210,8 +227,8 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
 
    @Override
    public void setSelectedLocale(int index) {
-      if (videoLocales != null) {
-         videoLocales.setSelection(index);
+      if (spinnerVideoLocales != null) {
+         spinnerVideoLocales.setSelection(index);
       }
    }
 
@@ -238,5 +255,21 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+
+   @Override
+   protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+      super.onSaveViewState(view, outState);
+      outState.putParcelableArrayList(STATE_KEY_VIDEOS, videos);
+      outState.putSerializable(STATE_KEY_VIDEO_LOCALES, videoLocales);
+   }
+
+   @Override
+   @SuppressWarnings("ConstantConditions, unchecked")
+   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+      super.onRestoreViewState(view, savedViewState);
+      setVideos(savedViewState.getParcelableArrayList(STATE_KEY_VIDEOS));
+      setVideoLocales((ArrayList<VideoLocale>) savedViewState.getSerializable(STATE_KEY_VIDEO_LOCALES));
    }
 }

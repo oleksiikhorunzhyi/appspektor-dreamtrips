@@ -77,11 +77,13 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
       analyticsInteractor.walletAnalyticsPipe().send(analyticsCommand)
    }
 
-   fun createPhone(model: ProfileViewModel): SmartCardUserPhone? {
-      return if (model.phoneCode.isEmpty() || model.phoneNumber.isEmpty()) {
+   private fun createPhone(model: ProfileViewModel): SmartCardUserPhone? = createPhone(model.phoneCode, model.phoneNumber)
+
+   fun createPhone(phoneCode: String, phoneNumber: String): SmartCardUserPhone? {
+      return if (phoneCode.isEmpty() || phoneNumber.isEmpty()) {
          null
       } else {
-         SmartCardUserPhone("+${model.phoneCode}", model.phoneNumber)
+         SmartCardUserPhone("+$phoneCode", phoneNumber)
       }
    }
 

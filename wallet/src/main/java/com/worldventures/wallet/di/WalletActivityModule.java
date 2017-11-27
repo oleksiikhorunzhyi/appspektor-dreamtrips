@@ -119,6 +119,7 @@ import com.worldventures.wallet.ui.settings.general.newcard.success.UnassignSucc
 import com.worldventures.wallet.ui.settings.general.newcard.success.impl.UnassignSuccessPresenterImpl;
 import com.worldventures.wallet.ui.settings.general.newcard.success.impl.UnassignSuccessScreenImpl;
 import com.worldventures.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter;
+import com.worldventures.wallet.ui.settings.general.profile.common.WalletProfileDelegate;
 import com.worldventures.wallet.ui.settings.general.profile.impl.WalletSettingsProfilePresenterImpl;
 import com.worldventures.wallet.ui.settings.general.profile.impl.WalletSettingsProfileScreenImpl;
 import com.worldventures.wallet.ui.settings.general.reset.FactoryResetPresenter;
@@ -661,8 +662,9 @@ public class WalletActivityModule {
          WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
          SmartCardUserDataInteractor smartCardUserDataInteractor, WalletAnalyticsInteractor analyticsInteractor,
          WalletSocialInfoProvider socialInfoProvider) {
-      return new DisplayOptionsSettingsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
-            smartCardUserDataInteractor, analyticsInteractor, socialInfoProvider);
+      return new DisplayOptionsSettingsPresenterImpl(navigator, deviceConnectionDelegate,
+            new WalletProfileDelegate(smartCardUserDataInteractor, smartCardInteractor, analyticsInteractor),
+            smartCardInteractor, socialInfoProvider);
    }
 
    @Provides
@@ -788,9 +790,8 @@ public class WalletActivityModule {
    @Provides
    WizardChargingPresenter providesWizardChargingPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
-         RecordInteractor recordInteractor, WalletAnalyticsInteractor analyticsInteractor) {
-      return new WizardChargingPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
-            recordInteractor, analyticsInteractor);
+         WalletAnalyticsInteractor analyticsInteractor) {
+      return new WizardChargingPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor);
    }
 
    @Provides
@@ -802,10 +803,9 @@ public class WalletActivityModule {
    @Provides
    AddCardDetailsPresenter provideAddCardDetailsPresenter(Navigator navigator,
          WalletDeviceConnectionDelegate deviceConnectionDelegate, SmartCardInteractor smartCardInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor, WizardInteractor wizardInteractor,
-         HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor, WizardInteractor wizardInteractor) {
       return new AddCardDetailsPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor, analyticsInteractor,
-            recordInteractor, wizardInteractor, httpErrorHandlingUtil);
+            recordInteractor, wizardInteractor);
    }
 
    @Provides

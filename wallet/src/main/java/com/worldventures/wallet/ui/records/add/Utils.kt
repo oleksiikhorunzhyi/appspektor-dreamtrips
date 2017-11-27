@@ -23,7 +23,6 @@ fun toCreateRecordBundle(record: SDKRecord) = RecordBundle(
       t2 = record.t2(),
       t3 = record.t3())
 
-
 fun toRecordViewModel(bundle: RecordBundle) = RecordViewModel(
       cvvLength = WalletRecordUtil.obtainRequiredCvvLength(bundle.cardNumber),
       nickName = "",

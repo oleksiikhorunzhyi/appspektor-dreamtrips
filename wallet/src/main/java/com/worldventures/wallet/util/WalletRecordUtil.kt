@@ -13,7 +13,6 @@ import com.worldventures.wallet.domain.entity.record.FinancialService
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.domain.entity.record.RecordType
 import com.worldventures.wallet.ui.records.model.RecordViewModel
-import java.lang.String.format
 
 private const val CVV_LENGTH_DEFAULT = 3
 private const val CVV_LENGTH_AMEX = 4

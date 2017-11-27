@@ -6,7 +6,6 @@ import com.worldventures.wallet.domain.entity.record.FinancialService
 import com.worldventures.wallet.domain.entity.record.RecordType
 import io.techery.janet.smartcard.model.Record
 
-
 fun RecordType.toSDKRecordType(): SDKCardType =
       when (this) {
          RecordType.CREDIT -> SDKCardType.CREDIT
@@ -29,7 +28,7 @@ fun SDKFinancialService.toDomainFinancialService(): FinancialService =
          Record.FinancialService.MASTERCARD -> FinancialService.MASTERCARD
          Record.FinancialService.DISCOVER -> FinancialService.DISCOVER
          Record.FinancialService.AMEX -> FinancialService.AMEX
-         else  -> FinancialService.GENERIC
+         else -> FinancialService.GENERIC
       }
 
 fun FinancialService.toSDKFinancialService(): SDKFinancialService =

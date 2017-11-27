@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.security.lostcard.impl;
 
-
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -22,7 +21,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.trello.rxlifecycle.LifecycleTransformer;
 import com.worldventures.core.janet.Injector;
@@ -30,8 +28,7 @@ import com.worldventures.core.ui.view.custom.ToucheableMapView;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.databinding.WalletIncludeMapPopupInfoBinding;
-import com.worldventures.wallet.domain.entity.lostcard.WalletAddress;
-import com.worldventures.wallet.domain.entity.lostcard.WalletPlace;
+import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
@@ -39,11 +36,9 @@ import com.worldventures.wallet.ui.settings.security.lostcard.MapPresenter;
 import com.worldventures.wallet.ui.settings.security.lostcard.MapScreen;
 import com.worldventures.wallet.ui.settings.security.lostcard.model.LostCardPin;
 import com.worldventures.wallet.ui.settings.security.lostcard.model.PopupLastLocationViewModel;
+import com.worldventures.wallet.util.WalletLocationsUtil;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -53,21 +48,24 @@ import io.techery.janet.operationsubscriber.view.OperationView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static java.lang.String.format;
 
 public class MapScreenImpl extends RxRestoreViewOnCreateController implements MapScreen, OnMapReadyCallback {
+
+   private static final String STATE_KEY_POPUP_MODEL = "MapScreenImpl#STATE_KEY_POPUP_MODEL";
+   private static final String STATE_KEY_MAP_POSITION = "MapScreenImpl#STATE_KEY_MAP_POSITION";
 
    @Inject MapPresenter presenter;
    @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   private final SimpleDateFormat lastConnectedDateFormat = new SimpleDateFormat("EEEE, MMMM dd, h:mma", Locale.US);
-
    private ToucheableMapView mapView;
    private View emptyLocationsView;
    private View noGoogleContainer;
-   private GoogleMap googleMap;
+
+   @Nullable private GoogleMap googleMap;
    private WalletIncludeMapPopupInfoBinding popupInfoViewBinding;
+
    private PopupLastLocationViewModel lastLocationViewModel = new PopupLastLocationViewModel();
+   private LatLng lastPosition;
 
    @NonNull
    @Override
@@ -97,16 +95,18 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       getPresenter().attachView(this);
       mapView.onResume();
 
+      popupInfoViewBinding.setViewModel(lastLocationViewModel);
+
       mapView.setMapTouchListener2(motionEvent -> {
          if (!lastLocationViewModel.hasLastLocation()) {
             return;
          }
          switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-               popupInfoViewBinding.setVisible(false);
+               lastLocationViewModel.setVisible(false);
                break;
             case MotionEvent.ACTION_UP:
-               popupInfoViewBinding.setVisible(true);
+               lastLocationViewModel.setVisible(true);
                break;
             default:
                break;
@@ -124,7 +124,16 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    @Override
    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
       mapView.onSaveInstanceState(outState);
+      outState.putParcelable(STATE_KEY_POPUP_MODEL, lastLocationViewModel);
+      outState.putParcelable(STATE_KEY_MAP_POSITION, lastPosition);
       super.onSaveViewState(view, outState);
+   }
+
+   @Override
+   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+      super.onRestoreViewState(view, savedViewState);
+      lastLocationViewModel = savedViewState.getParcelable(STATE_KEY_POPUP_MODEL);
+      lastPosition = savedViewState.getParcelable(STATE_KEY_MAP_POSITION);
    }
 
    @Override
@@ -140,50 +149,44 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
 
    @Override
    public void addPin(@NonNull LostCardPin pinData) {
-      clearMapAndAttachMarker(pinData.getPosition());
-      lastLocationViewModel.setPlace(obtainPlace(pinData.getPlaces()));
-      lastLocationViewModel.setAddress(obtainAddress(pinData.getAddress()));
-      setVisibleMsgEmptyLastLocation(false);
+      lastLocationViewModel.setPlaces(pinData.getPlaces());
+      lastLocationViewModel.setAddress(pinData.getAddress());
 
-      popupInfoViewBinding.setLastLocation(lastLocationViewModel);
       popupInfoViewBinding.setDirectionClick(view -> {
          openExternalMap(pinData.getPosition());
          getPresenter().trackDirectionsClick();
       });
    }
 
-   private String obtainPlace(List<WalletPlace> places) {
-      return places != null && places.size() == 1 ? places.get(0).getName() : "";
-   }
-
-   private String obtainAddress(WalletAddress address) {
-      return address != null
-            ? format("%s, %s\n%s", address.getCountryName(), address.getAdminArea(), address.getAddressLine())
-            : "";
-   }
-
-   private void openExternalMap(LatLng position) {
-      Intent map = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"
-            + position.latitude + "," + position.longitude + "?z=17&q="
-            + position.latitude + "," + position.longitude));
-      startActivity(map);
+   private void openExternalMap(WalletCoordinates position) {
+      startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"
+            + position.getLat() + "," + position.getLng() + "?z=17&q="
+            + position.getLat() + "," + position.getLng())));
    }
 
    @Override
-   public void addPin(LatLng position) {
-      clearMapAndAttachMarker(position);
+   public void setCoordinates(@Nullable WalletCoordinates position) {
+      if (position != null) {
+         final LatLng latLng = WalletLocationsUtil.INSTANCE.toLatLng(position);
+         lastPosition = latLng;
+         clearMapAndAttachMarker(latLng, true);
+      }
+      emptyLocationsView.setVisibility(position == null ? VISIBLE : GONE);
    }
 
-   private Marker clearMapAndAttachMarker(LatLng position) {
+   private void clearMapAndAttachMarker(LatLng position, boolean withAnimation) {
       googleMap.clear();
-      final Marker marker = googleMap.addMarker(
+      googleMap.addMarker(
             new MarkerOptions()
                   .icon(BitmapDescriptorFactory.fromResource(R.drawable.wallet_image_pin_smart_card))
                   .position(position)
       );
       position = new LatLng(position.latitude + 0.00045, position.longitude);
-      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17));
-      return marker;
+      if (withAnimation) {
+         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17));
+      } else {
+         googleMap.animateCamera(CameraUpdateFactory.newLatLng(position));
+      }
    }
 
    @Override
@@ -195,12 +198,17 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
       uiSettings.setZoomControlsEnabled(true);
 
       googleMap.setMyLocationEnabled(true);
-      getPresenter().onMapPrepared();
+
+      if (lastPosition == null) {
+         getPresenter().fetchLastKnownLocation();
+      } else {
+         clearMapAndAttachMarker(lastPosition, false);
+      }
    }
 
    @Override
    public void setLastConnectionDate(Date date) {
-      lastLocationViewModel.setLastConnectedDate(lastConnectedDateFormat.format(date));
+      lastLocationViewModel.setLastConnectedDate(date);
    }
 
    @Override
@@ -217,12 +225,6 @@ public class MapScreenImpl extends RxRestoreViewOnCreateController implements Ma
    @Override
    public <T> LifecycleTransformer<T> bindUntilDetach() {
       return bindUntilEvent(ControllerEvent.DETACH);
-   }
-
-   @Override
-   public void setVisibleMsgEmptyLastLocation(boolean visible) {
-      emptyLocationsView.setVisibility(visible ? VISIBLE : GONE);
-      popupInfoViewBinding.setVisible(!visible);
    }
 
    private MapPresenter getPresenter() {

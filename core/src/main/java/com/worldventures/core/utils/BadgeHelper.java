@@ -6,6 +6,7 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 
 public class BadgeHelper {
+   public static final boolean WV_PROSPECT_CHECK_DISABLED = true;
 
    private static final String WV_PROSPECT = "WVProspect";
    private static final String TRIP_CHAT_HOST = "DreamTrips Host";
@@ -17,13 +18,13 @@ public class BadgeHelper {
    }
 
    public boolean isWVProspect() {
-      return false;
-/*
+      if (WV_PROSPECT_CHECK_DISABLED) {
+         return false;
+      }
       UserSession userSession = sessionHolder.get().orNull();
 
       return !(userSession == null || userSession.user() == null || userSession.user().getBadges() == null)
-            && Queryable.from(userSession.user().getBadges()).any(userBadge -> userBadge.equals(WV_PROSPECT));
-*/
+         && Queryable.from(userSession.user().getBadges()).any(userBadge -> userBadge.equals(WV_PROSPECT));
    }
 
    public boolean hasTripChatHost(User user) {

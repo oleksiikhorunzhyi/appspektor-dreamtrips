@@ -17,10 +17,13 @@ public class BadgeHelper {
    }
 
    public boolean isWVProspect() {
+      return false;
+/*
       UserSession userSession = sessionHolder.get().orNull();
 
       return !(userSession == null || userSession.user() == null || userSession.user().getBadges() == null)
             && Queryable.from(userSession.user().getBadges()).any(userBadge -> userBadge.equals(WV_PROSPECT));
+*/
    }
 
    public boolean hasTripChatHost(User user) {

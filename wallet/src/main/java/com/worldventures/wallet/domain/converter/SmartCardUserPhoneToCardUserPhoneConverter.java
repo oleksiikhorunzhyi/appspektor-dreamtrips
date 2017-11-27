@@ -12,8 +12,8 @@ public class SmartCardUserPhoneToCardUserPhoneConverter implements Converter<Sma
    @Override
    public CardUserPhone convert(MapperyContext mapperyContext, SmartCardUserPhone smartCardUserPhone) {
       return ImmutableCardUserPhone.builder()
-            .code(smartCardUserPhone.code())
-            .number(smartCardUserPhone.number())
+            .code(smartCardUserPhone.getCode())
+            .number(smartCardUserPhone.getNumber())
             .build();
    }
 

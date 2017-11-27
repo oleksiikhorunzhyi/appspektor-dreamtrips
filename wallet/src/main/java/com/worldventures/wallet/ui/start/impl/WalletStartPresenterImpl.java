@@ -75,7 +75,7 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
    }
 
    private void handleResult(FetchAssociatedSmartCardCommand.AssociatedCard associatedCard) {
-      if (associatedCard.exist()) {
+      if (associatedCard.getExist()) {
          getNavigator().goCardList();
       } else {
          fetchFirmwareUpdateData();
@@ -95,9 +95,9 @@ public class WalletStartPresenterImpl extends WalletPresenterImpl<WalletStartScr
 
    private void checkFirmwareUpdateData(FetchFirmwareUpdateData.Result result) {
       if (result.isForceUpdateStarted()) {
-         final FirmwareUpdateData firmwareUpdateData = result.firmwareUpdateData();
+         final FirmwareUpdateData firmwareUpdateData = result.getFirmwareUpdateData();
          //noinspection ConstantConditions
-         if (firmwareUpdateData.fileDownloaded()) {
+         if (firmwareUpdateData.isFileDownloaded()) {
             getNavigator().goInstallFirmwareWalletStart();
          } else {
             getNavigator().goNewFirmwareAvailableWalletStart();

@@ -136,22 +136,22 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    }
 
    @Override
-   protected void onSaveInstanceState(@NonNull Bundle outState) {
+   protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
       outState.putParcelable(PROFILE_STATE_KEY, viewModel);
-      super.onSaveInstanceState(outState);
+      super.onSaveViewState(view, outState);
    }
 
    @Override
-   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-      super.onRestoreInstanceState(savedInstanceState);
-      setProfile(savedInstanceState.getParcelable(PROFILE_STATE_KEY));
+   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+      super.onRestoreViewState(view, savedViewState);
+      setProfile(savedViewState.getParcelable(PROFILE_STATE_KEY));
    }
 
-   protected void navigateButtonClick() {
+   private void navigateButtonClick() {
       getPresenter().back();
    }
 
-   void onChoosePhotoClick(String initialPhotoUrl) {
+   private void onChoosePhotoClick(String initialPhotoUrl) {
       hideDialog();
       final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
       mediaPickerDialog.setOnDoneListener(attachment -> {
@@ -166,7 +166,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
       }
    }
 
-   void onDontAddClick() {
+   private void onDontAddClick() {
       hideDialog();
       getPresenter().doNotAdd();
    }
@@ -247,7 +247,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    public void showConfirmationDialog(ProfileViewModel profileViewModel) {
       new MaterialDialog.Builder(getContext())
             .content(fromHtml(getString(R.string.wallet_edit_profile_confirmation_dialog_message,
-                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastNameWithSuffix()))))
+                  userFullName(profileViewModel.getFirstName(), profileViewModel.getMiddleName(), profileViewModel.getLastName()))))
             .contentGravity(GravityEnum.CENTER)
             .positiveText(R.string.wallet_edit_profile_confirmation_dialog_button_positive)
             .onPositive((dialog, which) -> getPresenter().onUserDataConfirmed())

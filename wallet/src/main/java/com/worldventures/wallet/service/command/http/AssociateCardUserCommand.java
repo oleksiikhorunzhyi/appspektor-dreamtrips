@@ -73,7 +73,7 @@ public class AssociateCardUserCommand extends Command<SmartCardDetails> implemen
          throw new IllegalArgumentException("You don't have Terms and Conditions data in DB");
       }
 
-      return Integer.parseInt(termsAndConditions.tacVersion());
+      return Integer.parseInt(termsAndConditions.getTacVersion());
    }
 
    @Override

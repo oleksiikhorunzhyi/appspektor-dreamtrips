@@ -7,15 +7,18 @@ import com.worldventures.core.modules.video.service.command.GetVideoLocalesComma
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
 
 public interface WalletHelpVideoScreen extends WalletScreen {
 
-   void provideVideos(List<WalletVideoModel> videos);
+   void setVideos(@NotNull ArrayList<WalletVideoModel> videos);
 
-   void provideVideoLocales(List<VideoLocale> videoLocales);
+   void setVideoLocales(@NotNull ArrayList<VideoLocale> videoLocales);
 
    OperationView<GetMemberVideosCommand> provideOperationLoadVideos();
 

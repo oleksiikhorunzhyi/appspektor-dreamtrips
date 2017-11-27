@@ -18,18 +18,18 @@ import com.worldventures.wallet.BaseSpec
 import com.worldventures.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
 import com.worldventures.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
+import com.worldventures.wallet.domain.entity.CardStatus
+import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.SmartCardDetails
+import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
-import com.worldventures.wallet.model.TestSmartCard
-import com.worldventures.wallet.model.TestSmartCardDetails
-import com.worldventures.wallet.model.TestSmartCardUser
-import com.worldventures.wallet.model.TestTermsAndConditions
-import com.worldventures.wallet.model.TestUpdateCardUserData
+import com.worldventures.wallet.model.TestApiSmartCardDetails
+import com.worldventures.wallet.model.TestApiUpdateCardUserData
 import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
@@ -57,8 +57,8 @@ class WizardInteractorSpec : BaseSpec({
       beforeEachTest {
 
          mockDb = createMockDb()
-         whenever(mockDb.smartCardUser).thenReturn(TestSmartCardUser())
-         whenever(mockDb.smartCard).thenReturn(TestSmartCard("1"))
+         whenever(mockDb.smartCardUser).thenReturn(SmartCardUser("First Name"))
+         whenever(mockDb.smartCard).thenReturn(SmartCard("1", CardStatus.ACTIVE, "12212"))
          recordsStorage = mock()
          mappery = createMappery()
          janet = createJanet()
@@ -69,7 +69,7 @@ class WizardInteractorSpec : BaseSpec({
          settingsInteractor = createSettingsInteractor(janet)
 
          janet.connectToSmartCardSdk()
-         mockedDebitCard = mock()
+         mockedDebitCard = Record(id = null, number = "7777 7777 7777 7777", numberLastFourDigits = "7777", expDate = "00/00")
       }
 
       context("SmartCard wizard flow") {
@@ -88,7 +88,7 @@ class WizardInteractorSpec : BaseSpec({
          }
 
          it("should be associate SmartCard and save SmartCardDetails to mediaModelStorage") {
-            val cardUserData: UpdateCardUserData = TestUpdateCardUserData()
+            val cardUserData: UpdateCardUserData = TestApiUpdateCardUserData()
             val testSubscriber: TestSubscriber<ActionState<AssociateCardUserCommand>> = TestSubscriber()
             janet.createPipe(AssociateCardUserCommand::class.java)
                   .createObservable(AssociateCardUserCommand(MOCK_BARCODE, cardUserData))
@@ -180,7 +180,7 @@ class WizardInteractorSpec : BaseSpec({
 
       fun createMockDb(): WalletStorage {
          val repository: WalletStorage = spy()
-         whenever(repository.walletTermsAndConditions).thenReturn(TestTermsAndConditions())
+         whenever(repository.walletTermsAndConditions).thenReturn(com.worldventures.wallet.domain.entity.TermsAndConditions("", "1"))
          return repository
       }
 
@@ -196,7 +196,7 @@ class WizardInteractorSpec : BaseSpec({
                .bind(MockHttpActionService.Response(204)) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("delete", true)
                }
-               .bind(MockHttpActionService.Response(204).body(TestSmartCardDetails(MOCK_SMART_CARD_ID))) { request ->
+               .bind(MockHttpActionService.Response(204).body(TestApiSmartCardDetails(MOCK_SMART_CARD_ID))) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("post", true)
                }
                .bind(MockHttpActionService.Response(200).body(termsAndConditionsResponse)) { request ->

@@ -2,7 +2,6 @@ package com.worldventures.wallet.service.lostcard;
 
 import android.content.Context;
 
-import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.wallet.domain.WalletTrackingStatusStorage;
@@ -11,7 +10,9 @@ import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.WalletNetworkService;
 import com.worldventures.wallet.service.beacon.BeaconClient;
+import com.worldventures.wallet.service.beacon.BeaconLoggerModule;
 import com.worldventures.wallet.service.beacon.WalletBeaconClient;
+import com.worldventures.wallet.service.beacon.WalletBeaconLogger;
 import com.worldventures.wallet.service.location.AndroidDetectLocationService;
 import com.worldventures.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand;
@@ -28,6 +29,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
+      includes = BeaconLoggerModule.class,
       injects = {
             PostLocationCommand.class,
             GetLocationCommand.class,
@@ -35,7 +37,7 @@ import dagger.Provides;
             FetchAddressWithPlacesCommand.class,
             FetchTrackingStatusCommand.class,
             WalletLocationCommand.class,
-            UpdateTrackingStatusCommand.class
+            UpdateTrackingStatusCommand.class,
       },
       library = true, complete = false)
 public class LostCardModule {
@@ -48,7 +50,7 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   WalletDetectLocationService detectLocationService(@ForApplication Context appContext) {
+   WalletDetectLocationService detectLocationService(Context appContext) {
       return new AndroidDetectLocationService(appContext);
    }
 
@@ -60,15 +62,15 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   BeaconClient walletBeaconClient(@ForApplication Context appContext) {
-      return new WalletBeaconClient(appContext);
+   BeaconClient walletBeaconClient(Context appContext, WalletBeaconLogger beaconLogger) {
+      return new WalletBeaconClient(appContext, beaconLogger);
    }
 
    @Singleton
    @Provides
    LostCardManager locationManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         LocationSyncManager jobScheduler, WalletNetworkService networkService, BeaconClient beaconClient) {
-      return new LostCardManager(smartCardInteractor, locationInteractor, jobScheduler, networkService, beaconClient);
+         LocationSyncManager jobScheduler, WalletNetworkService networkService, BeaconClient beaconClient, WalletBeaconLogger beaconLogger) {
+      return new LostCardManager(smartCardInteractor, locationInteractor, jobScheduler, networkService, beaconClient, beaconLogger);
    }
 
    @Singleton

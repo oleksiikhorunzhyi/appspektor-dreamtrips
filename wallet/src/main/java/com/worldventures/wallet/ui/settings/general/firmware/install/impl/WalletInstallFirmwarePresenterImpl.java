@@ -65,7 +65,7 @@ public class WalletInstallFirmwarePresenterImpl extends WalletPresenterImpl<Wall
    }
 
    private void openSuccess(FirmwareUpdateData firmwareUpdateData) {
-      if (!firmwareUpdateData.factoryResetRequired()) {
+      if (!firmwareUpdateData.isFactoryResetRequired()) {
          getNavigator().goWalletSuccessFirmwareInstall(firmwareUpdateData);
       } else {
          getNavigator().goWalletSuccessFirmwareInstallAfterReset(firmwareUpdateData);

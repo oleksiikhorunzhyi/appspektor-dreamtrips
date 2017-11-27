@@ -10,7 +10,7 @@ public final class SCUserUtils {
    }
 
    public static String userFullName(@NonNull SmartCardUser user) {
-      return userFullName(user.firstName(), user.middleName(), user.lastName());
+      return userFullName(user.getFirstName(), user.getMiddleName(), user.getLastName());
    }
 
    public static String userFullName(@NonNull String firstName, @NonNull String middleName, @NonNull String lastName) {

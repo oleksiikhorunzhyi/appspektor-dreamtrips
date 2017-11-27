@@ -13,8 +13,7 @@
 
       <group
             android:translateX="34"
-            android:translateY="43"
-            >
+            android:translateY="43">
          <!--android:width="60dp"-->
          <!--android:height="43dp"-->
          <path

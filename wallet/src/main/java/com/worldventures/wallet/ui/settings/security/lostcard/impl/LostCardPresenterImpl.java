@@ -71,8 +71,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       locationService.observeLocationSettingState()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::handleLocationSettingsStatus,
-                  throwable -> Timber.e(throwable, ""));
+            .subscribe(this::handleLocationSettingsStatus, Timber::e);
    }
 
    private void observeEnableTrackingState() {
@@ -171,7 +170,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
       locationService.fetchLastKnownLocationSettings()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::checkLocationServiceResult, throwable -> Timber.d(throwable, ""));
+            .subscribe(this::checkLocationServiceResult, Timber::e);
    }
 
    private void checkLocationServiceResult(LocationSettingsResult result) {

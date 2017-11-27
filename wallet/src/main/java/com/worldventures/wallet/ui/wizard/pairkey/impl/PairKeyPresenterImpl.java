@@ -56,7 +56,7 @@ public class PairKeyPresenterImpl extends WalletPresenterImpl<PairKeyScreen> imp
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationCreateAndConnect())
                   .onSuccess(command -> smartCardConnected())
                   .onFail((command, throwable) -> {
-                     Timber.e(throwable, "");
+                     Timber.e(throwable);
                      getView().nextButtonEnable(true);
                   })
                   .create());

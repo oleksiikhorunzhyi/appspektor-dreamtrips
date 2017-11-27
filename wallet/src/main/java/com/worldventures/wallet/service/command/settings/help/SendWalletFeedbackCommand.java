@@ -68,9 +68,9 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
       }
 
       return ImmutableSmartCardMetadata.builder()
-            .smartCardId((int) details.smartCardId())
-            .smartCardSerialNumber(details.serialNumber())
-            .bleId(details.bleAddress())
+            .smartCardId((int) details.getSmartCardId())
+            .smartCardSerialNumber(details.getSerialNumber())
+            .bleId(details.getBleAddress())
             .firmwareVersion(SCFirmwareUtils.smartCardFirmwareVersion(firmware))
             .sdkVersion(SmartCardSDK.getSDKVersion())
             .build();

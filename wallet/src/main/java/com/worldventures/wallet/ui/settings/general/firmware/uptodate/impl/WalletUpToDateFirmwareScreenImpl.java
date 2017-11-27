@@ -47,7 +47,7 @@ public class WalletUpToDateFirmwareScreenImpl extends WalletBaseController<Walle
 
    @Override
    public void version(@Nullable SmartCardFirmware version) {
-      versionView.setText(version == null ? "" : getString(R.string.wallet_settings_version, version.nordicAppVersion()));
+      versionView.setText(version == null ? "" : getString(R.string.wallet_settings_version, version.getNordicAppVersion()));
    }
 
    @Override

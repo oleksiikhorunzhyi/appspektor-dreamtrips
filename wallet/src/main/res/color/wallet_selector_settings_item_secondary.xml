@@ -2,5 +2,5 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
    <item android:state_enabled="false" android:color="@color/wallet_settings_menu_item_secondary_disabled" />
-   <item android:color="@color/wallet_settings_menu_item_secondary"/>
+   <item android:color="@color/wallet_settings_menu_item_secondary" />
 </selector>

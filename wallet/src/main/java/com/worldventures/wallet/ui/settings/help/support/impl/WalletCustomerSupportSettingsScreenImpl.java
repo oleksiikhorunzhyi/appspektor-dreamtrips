@@ -61,8 +61,8 @@ public class WalletCustomerSupportSettingsScreenImpl
 
    @Override
    public void bindData(Contact contact) {
-      tvUsCustomerCare.setText(contact.phone());
-      tvInternationalCollect.setText(contact.fax());
+      tvUsCustomerCare.setText(contact.getPhone());
+      tvInternationalCollect.setText(contact.getFax());
       containerContacts.setVisibility(View.VISIBLE);
    }
 

@@ -23,9 +23,9 @@ class SmartCardUserToUserConverter implements Converter<SmartCardUser, User> {
    @Override
    public User convert(MapperyContext mapperyContext, SmartCardUser smartCardUser) {
       return ImmutableUser.builder()
-            .firstName(smartCardUser.firstName())
-            .middleName(smartCardUser.middleName())
-            .lastName(smartCardUser.lastName())
+            .firstName(smartCardUser.getFirstName())
+            .middleName(smartCardUser.getMiddleName())
+            .lastName(smartCardUser.getLastName())
             .build();
    }
 }

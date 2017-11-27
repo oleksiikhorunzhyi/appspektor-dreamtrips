@@ -19,7 +19,7 @@ public final class WalletValidateHelper {
       if (!isValidFirstName(firstName)) {
          throw new FirstNameException();
       }
-      if (!MIDDLE_NAME_PATTERN.matcher(middleName).matches()) {
+      if (!isValidMiddleName(middleName)) {
          throw new MiddleNameException();
       }
       if (!isValidLastName(lastName)) {
@@ -29,6 +29,10 @@ public final class WalletValidateHelper {
 
    public static boolean isValidFirstName(String firstName) {
       return FIRST_NAME_PATTERN.matcher(firstName).matches();
+   }
+
+   public static boolean isValidMiddleName(String middleName) {
+      return MIDDLE_NAME_PATTERN.matcher(middleName).matches();
    }
 
    public static boolean isValidLastName(String lastName) {
@@ -45,7 +49,7 @@ public final class WalletValidateHelper {
    }
 
    public static boolean validateCardCvv(String cvv, String cardNumber) {
-      return cvv.length() == WalletRecordUtil.obtainRequiredCvvLength(cardNumber);
+      return cvv.length() == WalletRecordUtil.Companion.obtainRequiredCvvLength(cardNumber);
    }
 
    public static boolean validateSCId(String scid) {

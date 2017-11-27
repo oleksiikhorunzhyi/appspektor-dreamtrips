@@ -1,13 +1,10 @@
 package com.worldventures.wallet.ui.records.add.impl;
 
-
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.analytics.AddCardDetailsAction;
 import com.worldventures.wallet.analytics.CardDetailsOptionsAction;
 import com.worldventures.wallet.analytics.SetDefaultCardAction;
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
-import com.worldventures.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.wallet.domain.entity.record.Record;
 import com.worldventures.wallet.service.RecordInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
@@ -22,7 +19,7 @@ import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.records.add.AddCardDetailsPresenter;
 import com.worldventures.wallet.ui.records.add.AddCardDetailsScreen;
-import com.worldventures.wallet.ui.records.model.RecordViewModel;
+import com.worldventures.wallet.ui.records.add.RecordBundle;
 import com.worldventures.wallet.util.WalletRecordUtil;
 import com.worldventures.wallet.util.WalletValidateHelper;
 
@@ -36,52 +33,45 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
+import static com.worldventures.wallet.ui.records.add.UtilsKt.toRecord;
+import static com.worldventures.wallet.ui.records.add.UtilsKt.toRecordViewModel;
+
 public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDetailsScreen> implements AddCardDetailsPresenter {
 
    private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final RecordInteractor recordInteractor;
    private final WizardInteractor wizardInteractor;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
 
-   private String cardNickname;
-   private Record record;
+   private RecordBundle recordBundle;
+   private String recordTitle = "";
 
    public AddCardDetailsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor, RecordInteractor recordInteractor,
-         WizardInteractor wizardInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+         WizardInteractor wizardInteractor) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.recordInteractor = recordInteractor;
       this.wizardInteractor = wizardInteractor;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
    }
 
    @Override
    public void attachView(AddCardDetailsScreen view) {
       super.attachView(view);
-      final RecordViewModel recordViewModel = getView().getRecordViewModel();
-      getView().setCardBank(recordViewModel);
-      observeChargedRecord();
-      presetRecordToDefaultIfNeeded();
+      recordBundle = getView().getRecordBundle();
       observeDefaultCardChangeByUser();
+      observeCardNameValidation();
       observeSavingCardDetailsData();
       observeMandatoryFields();
       observePinOptions();
+      trackScreen();
    }
 
-   private void observeChargedRecord() {
-      recordInteractor
-            .bankCardPipe()
-            .observeSuccessWithReplay()
-            .compose(getView().bindUntilDetach())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map(Command::getResult)
-            .subscribe(record -> {
-               this.record = record;
-               trackScreen();
-            }, Timber::e);
+   @Override
+   public void fetchRecordViewModel() {
+      getView().setCardBank(toRecordViewModel(recordBundle));
+      presetRecordToDefaultIfNeeded();
    }
 
    private void observePinOptions() {
@@ -100,7 +90,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
 
    private void handlePinOptions(Boolean shouldShowPinSuggestion) {
       if (shouldShowPinSuggestion) {
-         getNavigator().goPinProposalRecords(cardNickname);
+         getNavigator().goPinProposalRecords(recordTitle);
       } else {
          getNavigator().goCardList();
       }
@@ -126,16 +116,16 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
       if (command.setAsDefaultRecord()) {
          trackSetAsDefault(command.getResult());
       }
-      trackAddedCard(record, command.setAsDefaultRecord());
+      trackAddedCard(command.getResult(), command.setAsDefaultRecord());
       smartCardInteractor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
       wizardInteractor.pinOptionalActionPipe().send(PinOptionalCommand.fetch());
    }
 
    @Override
    public void onCardInfoConfirmed(String cvv, String cardName, boolean setAsDefaultCard) {
-      this.cardNickname = cardName;
+      this.recordTitle = cardName;
       recordInteractor.addRecordPipe()
-            .send(new AddRecordCommand.Builder().setRecord(record)
+            .send(new AddRecordCommand.Builder().setRecord(toRecord(recordBundle))
                   .setRecordName(cardName)
                   .setCvv(cvv)
                   .setSetAsDefaultRecord(setAsDefaultCard)
@@ -147,7 +137,7 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
             (records, defaultRecordId) -> (records.isEmpty() || defaultRecordId == null))
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(shouldBeDefault -> getView().defaultPaymentCard(shouldBeDefault), throwable -> Timber.e(throwable, ""));
+            .subscribe(shouldBeDefault -> getView().defaultPaymentCard(shouldBeDefault), Timber::e);
    }
 
    private void onUpdateStatusDefaultCard(boolean setDefaultCard) {
@@ -160,17 +150,17 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
       fetchDefaultRecordId()
             .filter(defaultRecordId -> defaultRecordId != null)
             .flatMap(defaultRecordId -> fetchLocalRecords().map(records ->
-                  Queryable.from(records).firstOrDefault(element -> defaultRecordId.equals(element.id()))))
+                  Queryable.from(records).firstOrDefault(element -> defaultRecordId.equals(element.getId()))))
             .filter(defaultRecord -> defaultRecord != null)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(defaultRecord -> getView().showChangeCardDialog(defaultRecord), throwable -> Timber.e(throwable, ""));
+            .subscribe(defaultRecord -> getView().showChangeCardDialog(defaultRecord), Timber::e);
    }
 
    private Observable<List<Record>> fetchLocalRecords() {
       return recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.fetch())
-            .map(Command::getResult);
+            .createObservableResult(RecordListCommand.Companion.fetch())
+            .map(command -> (List<Record>) command.getResult());
    }
 
    private Observable<String> fetchDefaultRecordId() {
@@ -191,55 +181,50 @@ public class AddCardDetailsPresenterImpl extends WalletPresenterImpl<AddCardDeta
       getNavigator().goBack();
    }
 
-   private Observable<Boolean> observeCardNickName() {
-      return getView().getCardNicknameObservable()
-            .map(this::validateNickName);
+   private void observeCardNameValidation() {
+      getView().getCardNicknameObservable()
+            .skip(1)
+            .compose(getView().bindUntilDetach())
+            .subscribe(this::validateCardName, Timber::e);
    }
 
-   private boolean validateNickName(String nickname) {
-      if (WalletValidateHelper.isValidCardName(nickname)) {
+   private void validateCardName(String cardName) {
+      if (WalletValidateHelper.isValidCardName(cardName)) {
          getView().hideCardNameError();
-         getView().setCardName(nickname);
-         return true;
+         getView().setCardName(cardName);
       } else {
          getView().showCardNameError();
-         return false;
       }
    }
 
    private void observeMandatoryFields() {
-      Observable.combineLatest(observeCardNickName(), getView().getCvvObservable(), this::checkMandatoryFields)
+      AddCardDetailsScreen view = getView();
+      Observable.combineLatest(
+            view.getCardNicknameObservable(),
+            view.getCvvObservable(),
+            this::checkMandatoryFields
+      )
             .compose(getView().bindUntilDetach())
             .subscribe(getView()::setEnableButton);
    }
 
-   private boolean checkMandatoryFields(boolean cardNameValid, String cvv) {
-      return cardNameValid && WalletRecordUtil.validationMandatoryFields(record.number(), cvv);
+   private boolean checkMandatoryFields(String cardName, String cvv) {
+      return WalletValidateHelper.isValidCardName(cardName) && WalletRecordUtil.Companion.validationMandatoryFields(recordBundle
+            .getCardNumber(), cvv);
    }
 
    private void trackScreen() {
-      smartCardInteractor.deviceStatePipe()
-            .observeSuccessWithReplay()
-            .take(1)
-            .map(Command::getResult)
-            .map(SmartCardStatus::connectionStatus)
-            .subscribe(connectionStatus -> analyticsInteractor.walletAnalyticsPipe()
-                  .send(new WalletAnalyticsCommand(AddCardDetailsAction
-                        .forBankCard(record, connectionStatus.isConnected()))));
+      analyticsInteractor.walletAnalyticsPipe()
+            .send(new WalletAnalyticsCommand(new AddCardDetailsAction(toRecord(recordBundle))));
    }
 
    private void trackSetAsDefault(Record record) {
       analyticsInteractor.walletAnalyticsPipe()
-            .send(new WalletAnalyticsCommand(SetDefaultCardAction.forBankCard(record)));
+            .send(new WalletAnalyticsCommand(new SetDefaultCardAction(record)));
    }
 
    private void trackAddedCard(Record record, boolean setAsDefault) {
       analyticsInteractor.walletAnalyticsPipe()
-            .send(new WalletAnalyticsCommand(CardDetailsOptionsAction.forBankCard(record, setAsDefault)));
+            .send(new WalletAnalyticsCommand(new CardDetailsOptionsAction(record, setAsDefault)));
    }
-
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
-   }
-
 }

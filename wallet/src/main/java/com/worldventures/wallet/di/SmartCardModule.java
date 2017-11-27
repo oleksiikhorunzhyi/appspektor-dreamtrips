@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.domain.converter.SmartCardConverterModule;
@@ -12,6 +13,8 @@ import com.worldventures.wallet.domain.storage.WalletStorage;
 import com.worldventures.wallet.domain.storage.WalletStorageModule;
 import com.worldventures.wallet.domain.storage.action.PersistentDeviceStorage;
 import com.worldventures.wallet.service.RecordInteractor;
+import com.worldventures.wallet.service.WalletSocialInfoProvider;
+import com.worldventures.wallet.service.WalletSocialInfoProviderImpl;
 import com.worldventures.wallet.service.logout.WalletLogoutActionModule;
 import com.worldventures.wallet.util.WalletBuildConfigHelper;
 import com.worldventures.wallet.util.WalletFeatureHelper;
@@ -85,4 +88,12 @@ public class SmartCardModule {
    NxtSessionHolder provideNxtSessionHolder(SimpleKeyValueStorage simpleKeyValueStorage) {
       return new NxtSessionHolder(simpleKeyValueStorage);
    }
+
+   @Singleton
+   @Provides
+   WalletSocialInfoProvider walletSocialInfoProvider(SessionHolder sessionHolder) {
+      return new WalletSocialInfoProviderImpl(sessionHolder);
+   }
+
+
 }

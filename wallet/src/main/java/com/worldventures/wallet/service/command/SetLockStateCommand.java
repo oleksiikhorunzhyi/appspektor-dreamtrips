@@ -28,11 +28,11 @@ public class SetLockStateCommand extends Command<Void> implements InjectableActi
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
-      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.lock(lock));
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.lock(lock));
       janet.createPipe(LockDeviceAction.class)
             .createObservableResult(new LockDeviceAction(lock))
             .subscribe(action -> callback.onSuccess(null), throwable -> {
-               smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.lock(!lock));
+               smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.lock(!lock));
                callback.onFail(throwable);
             });
    }

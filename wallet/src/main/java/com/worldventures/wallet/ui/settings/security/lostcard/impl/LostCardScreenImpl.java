@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bluelinelabs.conductor.ControllerChangeHandler;
-import com.bluelinelabs.conductor.ControllerChangeType;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
@@ -35,13 +33,9 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
 
    @Inject LostCardPresenter presenter;
 
-   private final LostCardControllerFlipper controllerFlipper;
+   private final LostCardControllerFlipper controllerFlipper = new LostCardControllerFlipperImpl();
 
    private Observable<Boolean> enableTrackingObservable;
-
-   public LostCardScreenImpl() {
-      this.controllerFlipper = new LostCardControllerFlipperImpl();
-   }
 
    @Override
    protected void onFinishInflate(View view) {
@@ -152,17 +146,7 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    @Override
    protected void onAttach(@NonNull View view) {
       super.onAttach(view);
-      if (controllerFlipper.isUpdated()) {
-         getPresenter().prepareTrackingStateSubscriptions();
-      }
-   }
-
-   @Override
-   protected void onChangeEnded(@NonNull ControllerChangeHandler changeHandler, @NonNull ControllerChangeType changeType) {
-      super.onChangeEnded(changeHandler, changeType);
-      if (changeType == ControllerChangeType.PUSH_ENTER || changeType == ControllerChangeType.POP_ENTER) {
-         getPresenter().prepareTrackingStateSubscriptions();
-      }
+      getPresenter().prepareTrackingStateSubscriptions();
    }
 
    @Override

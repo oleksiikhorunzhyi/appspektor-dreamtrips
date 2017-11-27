@@ -56,11 +56,11 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
 
    private void fetchSmartCard() {
       smartCardInteractor.deviceStatePipe()
-            .createObservableResult(DeviceStateCommand.fetch())
+            .createObservableResult(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(command -> {
-               bindToView(command.getResult().disableCardDelay());
+               bindToView(command.getResult().getDisableCardDelay());
                trackScreen();
             });
    }

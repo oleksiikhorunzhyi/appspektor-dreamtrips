@@ -57,11 +57,11 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
 
    private void observeSmartCard() {
       smartCardInteractor.deviceStatePipe()
-            .createObservableResult(DeviceStateCommand.fetch())
+            .createObservableResult(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(deviceStateCommand -> {
-               bindToView(deviceStateCommand.getResult().clearFlyeDelay());
+               bindToView(deviceStateCommand.getResult().getClearFlyeDelay());
                trackScreen();
             });
    }

@@ -22,12 +22,12 @@ class TestRecordsStorage(offlineModeEnabled: Boolean = false) : RecordsStorage {
 
    override fun <T : Any?> executeWithResult(action: SnappyResult<T>?): Optional<T> = Optional.absent<T>()
 
-   override fun saveRecords(items: MutableList<Record>?) {
+   override fun saveRecords(items: List<Record>) {
       records.clear()
-      items?.let { records.addAll(items) }
+      records.addAll(items)
    }
 
-   override fun readRecords(): MutableList<Record> {
+   override fun readRecords(): List<Record> {
       return records
    }
 

@@ -43,8 +43,11 @@ import com.messenger.ui.util.chat.anim.TimestampItemAnimator;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
-import com.worldventures.core.ui.util.SoftInputUtil;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.util.SoftInputUtil;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -64,6 +67,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
    @Inject ChatTimestampInflater chatTimestampInflater;
    @Inject ChatTimestampFormatter chatTimestampFormatter;
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @InjectView(R.id.content_layout) ViewGroup contentView;
    @InjectView(R.id.chat_loading_view) View loadingView;
@@ -444,8 +449,22 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
    }
 
    ///////////////////////////////////////////////////////////////////////////
-   // Photo picking
+   // Photo picking and corresponding permissions
    ///////////////////////////////////////////////////////////////////////////
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(this);
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
+   }
 
    @Override
    public void showPicker() {

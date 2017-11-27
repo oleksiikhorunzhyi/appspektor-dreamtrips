@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.membership.view.cell;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.ui.view.custom.PinProgressButton;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
@@ -53,8 +53,10 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
 
    @Override
    protected void syncUIStateWithModel() {
-      Podcast podcast = getModelObject();
-      image.setImageURI(Uri.parse(podcast.getImageUrl()));
+      final Podcast podcast = getModelObject();
+      final int imageSize = image.getResources().getDimensionPixelSize(R.dimen.size_huge);
+      image.setController(GraphicUtils.provideFrescoResizingController(podcast.getImageUrl(), image.getController(),
+            imageSize, imageSize));
       title.setText(podcast.getTitle());
       if (TextUtils.isEmpty(podcast.getCategory())) {
          category.setVisibility(View.GONE);
@@ -78,7 +80,7 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
          description.setText(podcast.getDescription());
       }
 
-      progressVideoCellHelper.setModelObject(podcast.getCacheEntity());
+      progressVideoCellHelper.setModelObject(podcast.getCachedModel());
       progressVideoCellHelper.syncUIStateWithModel();
    }
 
@@ -89,7 +91,7 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
 
    @OnClick(R.id.download_progress)
    public void onDownloadClick() {
-      progressVideoCellHelper.onDownloadClick(cellDelegate);
+      progressVideoCellHelper.onDownloadClick(cellDelegate, getModelObject());
    }
 
    @Override

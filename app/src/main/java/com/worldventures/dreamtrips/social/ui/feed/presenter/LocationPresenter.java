@@ -6,13 +6,15 @@ import android.location.Geocoder;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.api.Status;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.LocationUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,17 +25,51 @@ import javax.inject.Inject;
 import rx.Observable;
 import timber.log.Timber;
 
+import static com.worldventures.core.ui.util.permission.PermissionConstants.LOCATION_PERMISSIONS;
+
 public class LocationPresenter<V extends LocationPresenter.View> extends Presenter<LocationPresenter.View> {
 
    @Inject LocationDelegate gpsLocationDelegate;
    @Inject PostLocationPickerCallback postLocationPickerCallback;
+   @Inject PermissionDispatcher permissionDispatcher;
+
    private boolean isCanceled;
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      gpsLocationDelegate.setPermissionView(view);
-      view.checkPermissions();
+      gpsLocationDelegate.setPermissionView(null);
+      checkPermissions(true);
+
+   }
+
+   private void checkPermissions(final boolean withExplanation) {
+      permissionDispatcher.requestPermission(LOCATION_PERMISSIONS, withExplanation)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber()
+                  .onPermissionDeniedAction(this::onPermissionDenied)
+                  .onPermissionGrantedAction(this::onPermissionGranted)
+                  .onPermissionRationaleAction(() -> view.showPermissionExplanationText(LOCATION_PERMISSIONS)));
+   }
+
+   public void recheckPermissionAccepted(boolean accepted) {
+      if (accepted) {
+         checkPermissions(false);
+      } else {
+         onPermissionDenied();
+      }
+   }
+
+   public void onPermissionGranted() {
+      gpsLocationDelegate.requestLocationUpdate()
+            .compose(bindViewToMainComposer())
+            .subscribe(this::onLocationObtained, this::onLocationError);
+   }
+
+   public void onPermissionDenied() {
+      view.hideProgress();
+      view.showPermissionDenied(LOCATION_PERMISSIONS);
+      locationNotGranted();
    }
 
    @Override
@@ -80,12 +116,6 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
       return newLocation;
    }
 
-   public void onPermissionGranted() {
-      gpsLocationDelegate.requestLocationUpdate()
-            .compose(bindViewToMainComposer())
-            .subscribe(this::onLocationObtained, this::onLocationError);
-   }
-
    private void onStatusError(Status status) {
       view.resolutionRequired(status);
    }
@@ -112,7 +142,7 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
       }
    }
 
-   public interface View extends RxView, PermissionView {
+   public interface View extends RxView, PermissionUIComponent {
 
       void resolutionRequired(Status status);
 

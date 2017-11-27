@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.domain.storage;
 
 import com.worldventures.core.model.Circle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 
@@ -22,10 +21,6 @@ public interface SocialSnappyRepository {
    void saveOpenBucketTabType(String type);
 
    String getOpenBucketTabType();
-
-   void saveBucketListCategories(List<CategoryItem> categories);
-
-   List<CategoryItem> getBucketListCategories();
 
    void saveLastSuggestedPhotosSyncTime(long time);
 

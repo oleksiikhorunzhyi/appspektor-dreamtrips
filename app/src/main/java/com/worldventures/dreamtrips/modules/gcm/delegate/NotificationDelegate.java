@@ -5,8 +5,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 
 import com.messenger.notification.MessengerNotificationFactory;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.gcm.model.MerchantPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewLocationPushMessage;
@@ -15,30 +13,27 @@ import com.worldventures.dreamtrips.modules.gcm.model.NewUnsupportedMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand;
 
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class NotificationDelegate {
 
-   private final NotificationCountEventDelegate notificationCountEventDelegate;
-   private final SnappyRepository repository;
-   private final NotificationManager notificationManager;
-   //
+   private final UserNotificationInteractor userNotificationInteractor;
    private final NotificationFactoryHolder notificationFactoryHolder;
+   private final NotificationManager notificationManager;
 
-   public NotificationDelegate(Context context, NotificationCountEventDelegate notificationCountEventDelegate, SnappyRepository repository, NotificationFactoryHolder notificationFactoryHolder) {
-      this.notificationCountEventDelegate = notificationCountEventDelegate;
-      this.repository = repository;
+   public NotificationDelegate(Context context, UserNotificationInteractor userNotificationInteractor, NotificationFactoryHolder notificationFactoryHolder) {
+      this.userNotificationInteractor = userNotificationInteractor;
       this.notificationFactoryHolder = notificationFactoryHolder;
       this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
    }
 
    public void updateNotificationCount(PushMessage data) {
-      repository.saveBadgeNotificationsCount(data.alertWrapper.badge);
-      repository.saveNotificationsCount(data.notificationsCount);
-      repository.saveFriendRequestsCount(data.requestsCount);
-      notificationCountEventDelegate.post(null);
+      userNotificationInteractor.notificationCountChangedPipe()
+            .send(new NotificationCountChangedCommand(data.requestsCount, data.notificationsCount, data.alertWrapper.badge));
    }
 
    public void notifyFriendRequestAccepted(UserPushMessage message) {

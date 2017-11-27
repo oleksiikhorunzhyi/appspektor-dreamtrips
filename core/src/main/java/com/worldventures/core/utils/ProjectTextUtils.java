@@ -76,11 +76,11 @@ public final class ProjectTextUtils {
    }
 
    public static List<String> getListFromString(String temp, String divider) {
-      if (android.text.TextUtils.isEmpty(temp)) {
+      if (isEmpty(temp)) {
          return Collections.emptyList();
       } else {
          return Queryable.from(temp.split(divider))
-               .filter(element -> !android.text.TextUtils.isEmpty(element))
+               .filter(element -> !isEmpty(element))
                .map(String::trim)
                .toList();
       }

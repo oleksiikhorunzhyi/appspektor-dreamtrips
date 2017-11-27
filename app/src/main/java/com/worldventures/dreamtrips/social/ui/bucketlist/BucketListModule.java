@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist;
 
 
+import android.content.Context;
+
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketListPresenter;
@@ -10,6 +12,8 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketTabsPre
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.ForeignBucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.ForeignBucketListPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.ForeignBucketTabPresenter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoHelper;
+import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoHelperImpl;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketListFragment;
@@ -22,6 +26,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.ForeignBu
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.ForeignBucketTabsFragment;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
       injects = {
@@ -49,4 +54,9 @@ import dagger.Module;
       complete = false,
       library = true)
 public class BucketListModule {
+
+      @Provides
+      BucketItemInfoHelper provideBucketItemInfoHelper(Context context) {
+            return new BucketItemInfoHelperImpl(context);
+      }
 }

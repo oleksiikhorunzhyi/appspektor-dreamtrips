@@ -149,4 +149,17 @@
    <string name="beta_label">Beta</string>
 
    <string name="photo_strip_read_storage_permission_explanation">Need permission to read storage to suggest you media content</string>
+
+   <string name="permission_location_for_attach_location_on_post">Need access to location service to determine your current location</string>
+   <string name="no_permission_location_for_attach_location_on_post">Cannot suggest your location, because there is no access to location service</string>
+   <string name="permission_location_for_localization_web_page">Allow access to your location to display content in the appropriate language</string>
+   <string name="no_permission_location_for_localization_web_page">Cannot obtain language, because there is no access to location service</string>
+   <string name="permission_to_read_contacts">Need access to read contacts to make invitation list</string>
+   <string name="no_permission_to_read_contacts">Cannot access to suggest people, because you decline permission to read contacts</string>
+   <string name="permission_to_write_contacts">Need access to contacts to add new contact</string>
+   <string name="no_permission_to_write_contacts">Cannot add new contact, because you decline permission to write contacts</string>
+   <string name="permission_to_read_phone_storage">Need access to camera storage to show your photos</string>
+   <string name="no_permission_to_read_phone_storage">Cannot load your photos</string>
+   <string name="no_camera_permission_for_photo_picker">Cannot open camera without permission</string>
+
 </resources>

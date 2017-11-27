@@ -13,9 +13,6 @@ public interface SnappyRepository {
 
    String TRIP_FILTERS = "trip_filters";
 
-   String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
-   String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
-   String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
    String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
    String LAST_SYNC_APP_VERSION = "LAST_SYNC_APP_VERSION";
 
@@ -28,6 +25,9 @@ public interface SnappyRepository {
 
    String CONFIGURATION = "CONFIGURATION";
    String UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP = "UPDATE_APP_OPTIONAL_DIALOG_CONFIRMED_TIMESTAMP";
+   String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
+   String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
+   String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
 
    void clearAll();
 
@@ -48,18 +48,6 @@ public interface SnappyRepository {
    void saveAppUpdateOptionalDialogConfirmedTimestamp(long appUpdateDialogShownTimestamp);
 
    long getAppUpdateOptionalDialogConfirmedTimestamp();
-
-   void saveBadgeNotificationsCount(int notificationsCount);
-
-   int getBadgeNotificationsCount();
-
-   void saveNotificationsCount(int count);
-
-   void saveFriendRequestsCount(int count);
-
-   int getExclusiveNotificationsCount();
-
-   int getFriendsRequestsCount();
 
    String getGcmRegToken();
 
@@ -98,4 +86,16 @@ public interface SnappyRepository {
    List<TripModel> getTripsDetailsForUids(List<String> uids);
 
    TripModel getTripDetail(String uid);
+
+   void saveBadgeNotificationsCount(int notificationsCount);
+
+   int getBadgeNotificationsCount();
+
+   void saveNotificationsCount(int count);
+
+   void saveFriendRequestsCount(int count);
+
+   int getExclusiveNotificationsCount();
+
+   int getFriendsRequestsCount();
 }

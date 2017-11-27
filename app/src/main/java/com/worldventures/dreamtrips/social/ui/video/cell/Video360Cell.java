@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.video.cell;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.View;
 import android.widget.TextView;
 
@@ -51,9 +50,8 @@ public class Video360Cell extends BaseAbstractDelegateCell<Video, Video360Cell.V
    @Override
    protected void syncUIStateWithModel() {
       ViewUtils.runTaskAfterMeasure(itemView, () -> {
-         PipelineDraweeController controller = GraphicUtils
-               .provideFrescoResizingController(Uri.parse(getModelObject().getImageUrl()), imageViewPreview.getController(),
-                     imageViewPreview.getWidth(), imageViewPreview.getHeight());
+         final PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(getModelObject().getImageUrl(),
+               imageViewPreview.getController(), imageViewPreview.getWidth(), imageViewPreview.getHeight());
          imageViewPreview.setController(controller);
       });
       this.textViewTitle.setText(getModelObject().getVideoName());

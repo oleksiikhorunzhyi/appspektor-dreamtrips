@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter;
 
-import android.webkit.WebViewClient;
-
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.modules.auth.api.command.LoginCommand;
+import com.worldventures.core.modules.auth.api.command.LogoutCommand;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 
 import java.util.concurrent.TimeUnit;
@@ -14,11 +13,11 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.functions.Action0;
 import timber.log.Timber;
 
-public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<AuthorizedStaticInfoPresenter.View> {
+public class AuthorizedStaticInfoPresenter<T extends AuthorizedStaticInfoPresenter.View> extends WebViewFragmentPresenter<T> {
 
-   public static final int LIFE_DURATION = 30; // mins
+   private static final int LIFE_DURATION = 30; // mins
 
-   @Inject AuthInteractor loginInteractor;
+   @Inject AuthInteractor authInteractor;
 
    public AuthorizedStaticInfoPresenter(String url) {
       super(url);
@@ -46,7 +45,7 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
    }
 
    public void reLogin() {
-      loginInteractor.loginActionPipe()
+      authInteractor.loginActionPipe()
             .createObservable(new LoginCommand())
             .compose(bindUntilPauseIoToMainComposer())
             .subscribe(new ActionStateSubscriber<LoginCommand>().onSuccess(loginCommand -> onLoginSuccess())
@@ -58,9 +57,9 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
       reload();
    }
 
-   protected void onLoginFail(Throwable throwable) {
+   private void onLoginFail(Throwable throwable) {
       Timber.e(throwable, "Can't login during WebView loading");
-      view.showError(WebViewClient.ERROR_AUTHENTICATION);
+      authInteractor.logoutPipe().send(new LogoutCommand());
       view.setRefreshing(false);
    }
 

@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import butterknife.InjectView;
 
 @Layout(R.layout.activity_feed)
-public class FeedActivity extends SocialDrawerActivity<ActivityPresenter> {
+public class FeedActivity extends SocialDrawerActivity<ActivityPresenter> implements ShowableComponent {
 
    public static final String BUNDLE = "FeedActivityBundle";
 

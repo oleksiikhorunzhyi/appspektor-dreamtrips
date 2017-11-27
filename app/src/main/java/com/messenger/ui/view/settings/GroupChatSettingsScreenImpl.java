@@ -17,16 +17,24 @@ import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenterImpl;
 import com.messenger.ui.widget.ChatSettingsRow;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.functions.Action0;
 
 public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends BaseChatSettingsScreen<GroupChatSettingsScreen, GroupChatSettingsScreenPresenter, P> implements GroupChatSettingsScreen {
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @InjectView(R.id.chat_settings_group_avatars_view_progress_bar) ProgressBar groupAvatarsViewProgressBar;
 
@@ -131,5 +139,19 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ba
       mediaPickerDialog.setOnDoneListener(pickerAttachment ->
             getPresenter().onImagePicked(pickerAttachment.getChosenImages().get(0)));
       mediaPickerDialog.show(1);
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(this);
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 }

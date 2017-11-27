@@ -63,13 +63,6 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
    }
 
    private void itemDeleted(FeedEntity feedEntity) {
-      if (tripImagesArgs != null) {
-         BaseMediaEntity deletedEntity = feedEntity instanceof Photo ? new PhotoMediaEntity() : new VideoMediaEntity();
-         deletedEntity.setItem(feedEntity);
-         int index = baseMediaEntities.indexOf(deletedEntity);
-         tripImagesInteractor.memberImagesRemovedPipe()
-               .send(new MemberImagesRemovedCommand(tripImagesArgs, Collections.singletonList(baseMediaEntities.get(index))));
-      }
       view.goBack();
    }
 

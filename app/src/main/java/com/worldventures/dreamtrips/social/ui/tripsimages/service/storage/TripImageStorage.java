@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesAr
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,19 +49,28 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
       }
 
       if (params.get(RELOAD)) {
-         storage.save(params, data);
+         storage.save(params, new ArrayList<>(data));
       } else if (params.get(LOAD_MORE)) {
-         List<BaseMediaEntity> cachedItems = storage.get(params);
+         List<BaseMediaEntity> cachedItems = fetchCache(storage, params);
          cachedItems.addAll(data);
          storage.save(params, cachedItems);
       } else if (params.get(LOAD_LATEST)) {
-         List<BaseMediaEntity> cachedItems = storage.get(params);
+         List<BaseMediaEntity> cachedItems = fetchCache(storage, params);
          cachedItems.addAll(0, data);
          storage.save(params, cachedItems);
       } else if (params.get(REMOVE_ITEMS)) {
-         List<BaseMediaEntity> cachedItems = storage.get(params);
+         List<BaseMediaEntity> cachedItems = fetchCache(storage, params);
          cachedItems.removeAll(data);
          storage.save(params, cachedItems);
+      }
+   }
+
+   private List<BaseMediaEntity> fetchCache(MemoryStorage<List<BaseMediaEntity>> storage, @Nullable CacheBundle params) {
+      List<BaseMediaEntity> cachedItems = storage.get(params);
+      if (cachedItems != null) {
+         return new ArrayList<>(cachedItems);
+      } else {
+         return new ArrayList<>();
       }
    }
 
@@ -72,7 +82,8 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
          storage = new MemoryStorage<>();
          map.put(args, storage);
       }
-      return storage.get(params);
+
+      return fetchCache(storage, params);
    }
 
    @Override

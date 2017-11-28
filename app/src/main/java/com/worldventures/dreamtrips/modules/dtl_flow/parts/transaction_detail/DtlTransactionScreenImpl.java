@@ -104,15 +104,22 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    }
 
    @Override
-   public void showThrstTransaction(TransactionModel transactionModel, boolean isSuccessful) {
+   public void showThrstTransaction(TransactionModel transactionModel) {
       thrstStatusLabelsContainer.setVisibility(VISIBLE);
       thrstBilledAmountLabelsContainer.setVisibility(VISIBLE);
       nonThrstBilledAmountLabelsContainer.setVisibility(GONE);
 
-      if (isSuccessful) {
-         transactionStatusInjector.showSuccessMessage();
-      } else {
-         transactionStatusInjector.showFailureMessage();
+      switch (transactionModel.getThrstPaymentStatus()) {
+         case INITIATED:
+         case SUCCESSFUL:
+            transactionStatusInjector.showSuccessMessage();
+            break;
+         case REFUNDED:
+            transactionStatusInjector.showRefundedMessage();
+            break;
+         default:
+            transactionStatusInjector.showFailureMessage();
+            break;
       }
 
       tvTotal.setText(CurrencyUtils.toCurrency(transaction.getTotalAmount()));

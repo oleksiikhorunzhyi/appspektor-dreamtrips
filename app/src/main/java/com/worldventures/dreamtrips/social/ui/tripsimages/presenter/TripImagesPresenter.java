@@ -31,7 +31,9 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInte
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.BaseMediaCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesAddedCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesRemovedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.UserImagesRemovedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
@@ -336,10 +338,24 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    @Override
-   public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
+   public void deleteFeedEntity(FeedEntity feedEntity) {
       currentItems = (ArrayList<BaseMediaEntity>) Queryable.from(currentItems)
-            .filter(mediaEntity -> !mediaEntity.getItem().getUid().equals(deletedFeedEntity.getUid()))
+            .filter(mediaEntity -> !mediaEntity.getItem().getUid().equals(feedEntity.getUid()))
             .toList();
+      BaseMediaEntity deletedEntity = feedEntity instanceof Photo ? new PhotoMediaEntity() : new VideoMediaEntity();
+      deletedEntity.setItem(feedEntity);
+      switch (tripImagesArgs.getTripImageType()) {
+         case MEMBER_IMAGES:
+            tripImagesInteractor.memberImagesRemovedPipe()
+                  .send(new MemberImagesRemovedCommand(tripImagesArgs, Collections.singletonList(deletedEntity)));
+            break;
+         case ACCOUNT_IMAGES:
+            tripImagesInteractor.userImagesRemovedPipe()
+                  .send(new UserImagesRemovedCommand(tripImagesArgs, Collections.singletonList(deletedEntity)));
+            break;
+      }
+
+
       updateItemsInView();
    }
 

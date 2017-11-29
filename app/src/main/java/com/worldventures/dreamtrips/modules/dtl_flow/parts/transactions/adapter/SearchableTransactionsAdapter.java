@@ -89,7 +89,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {
          if (transactionModel.isTrhstTransaction()) {
-            switch (transactionModel.getThrstPaymentStatus()){
+            switch (transactionModel.getThrstPaymentStatus()) {
                case SUCCESSFUL:
                case INITIATED:
                   statusImageView.setImageResource(R.drawable.check_succes_pilot);

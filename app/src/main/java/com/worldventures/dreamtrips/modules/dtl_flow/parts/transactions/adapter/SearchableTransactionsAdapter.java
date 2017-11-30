@@ -65,6 +65,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       public TextView earnedPoints;
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
+      public TextView subtotal;
       public ImageView statusImageView;
 
       public ViewHolder(View itemView) {
@@ -73,8 +74,8 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
          earnedPoints = itemView.findViewById(R.id.earned_points);
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
+         subtotal = itemView.findViewById(R.id.subtotal);
          statusImageView = itemView.findViewById(R.id.imageViewStatus);
-
       }
 
       public void bind(TransactionModel transactionModel) {
@@ -85,6 +86,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
          setPaymentStatusIcon(transactionModel);
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
+         subtotal.setText(context.getString(R.string.dtl_subtotal, transactionModel.getSubTotalAmount()));
       }
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {

@@ -50,6 +50,8 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
             return TransactionModel.ThrstPaymentStatus.INITIATED;
          case SUCCESSFUL:
             return TransactionModel.ThrstPaymentStatus.SUCCESSFUL;
+         case REFUNDED:
+            return TransactionModel.ThrstPaymentStatus.REFUNDED;
          case UNKNOWN:
          default:
             return TransactionModel.ThrstPaymentStatus.UNKNOWN;

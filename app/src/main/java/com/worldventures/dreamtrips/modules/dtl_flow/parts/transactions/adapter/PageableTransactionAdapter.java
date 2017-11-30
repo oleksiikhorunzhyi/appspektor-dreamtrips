@@ -166,8 +166,18 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {
          if (transactionModel.isTrhstTransaction()) {
-            boolean isSuccess = TransactionModel.ThrstPaymentStatus.SUCCESSFUL.equals(transactionModel.getThrstPaymentStatus());
-            statusImageView.setImageResource(isSuccess ? R.drawable.check_succes_pilot : R.drawable.check_error_pilot);
+            switch (transactionModel.getThrstPaymentStatus()) {
+               case SUCCESSFUL:
+               case INITIATED:
+                  statusImageView.setImageResource(R.drawable.check_succes_pilot);
+                  break;
+               case REFUNDED:
+                  statusImageView.setImageResource(R.drawable.check_refund_pilot);
+                  break;
+               default:
+                  statusImageView.setImageResource(R.drawable.check_error_pilot);
+                  break;
+            }
          } else {
             statusImageView.setImageBitmap(null);
          }

@@ -64,6 +64,7 @@ public abstract class DetailTransactionThrst implements Serializable {
    public enum PaymentStatus {
       @SerializedName("INITIATED")INITIATED,
       @SerializedName("SUCCESSFUL")SUCCESSFUL,
+      @SerializedName("REFUNDED")REFUNDED,
       UNKNOWN
    }
 }

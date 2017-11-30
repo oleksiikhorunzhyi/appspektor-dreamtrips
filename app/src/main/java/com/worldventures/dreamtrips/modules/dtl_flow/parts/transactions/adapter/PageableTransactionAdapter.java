@@ -141,8 +141,6 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       public TextView subtotal;
       public Context context;
       public ImageView statusImageView;
-      public TextView subtotal;
-      public Context context;
 
       public ViewHolder(View itemView) {
          super(itemView);

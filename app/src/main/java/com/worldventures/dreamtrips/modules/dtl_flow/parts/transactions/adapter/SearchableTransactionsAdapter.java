@@ -67,7 +67,6 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       public TextView transactionDate;
       public TextView subtotal;
       public ImageView statusImageView;
-      public TextView subtotal;
 
       public ViewHolder(View itemView) {
          super(itemView);

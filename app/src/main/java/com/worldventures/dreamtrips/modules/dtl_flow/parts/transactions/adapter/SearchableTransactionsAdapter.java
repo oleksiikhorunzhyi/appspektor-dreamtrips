@@ -76,7 +76,6 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
          transactionDate = itemView.findViewById(R.id.transaction_date);
          subtotal = itemView.findViewById(R.id.subtotal);
          statusImageView = itemView.findViewById(R.id.imageViewStatus);
-         subtotal = itemView.findViewById(R.id.subtotal);
       }
 
       public void bind(TransactionModel transactionModel) {

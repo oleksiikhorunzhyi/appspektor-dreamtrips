@@ -29,10 +29,10 @@ class InteractorBuilder private constructor(val janet: Janet) {
                && it.parameters[0].type.javaType == SessionActionPipeCreator::class.java
                && it.parameters[1].type.javaType == WalletSchedulerProvider::class.java
       }
-      if (constructor != null) {
-         return constructor.call(pipeCreator)
+      return if (constructor != null) {
+         constructor.call(pipeCreator)
       } else if (constructorWithScheduler != null) {
-         return constructorWithScheduler.call(pipeCreator, TestSchedulerProvider())
+         constructorWithScheduler.call(pipeCreator, TestSchedulerProvider())
       } else {
          throw UnsupportedOperationException("Interactor should have constructor with SessionActionPipeCreator argument")
       }
@@ -48,7 +48,7 @@ class InteractorBuilder private constructor(val janet: Janet) {
 }
 
 class JanetBuilder {
-   val builder = Janet.Builder()
+   private val builder = Janet.Builder()
 
    fun addService(actionService: ActionService) {
       builder.addService(actionService)

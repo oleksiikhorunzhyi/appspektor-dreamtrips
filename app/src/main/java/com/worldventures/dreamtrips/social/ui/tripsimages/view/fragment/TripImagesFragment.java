@@ -211,6 +211,14 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
             }
             return super.areItemsTheSame(oldItemPosition, newItemPosition);
          }
+
+         @Override
+         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            if (adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity && items.get(newItemPosition) instanceof PhotoMediaEntity) {
+               return false;
+            }
+            return true;
+         }
       });
       adapter.setItemsNoNotify(items);
       diffResult.dispatchUpdatesTo(adapter);

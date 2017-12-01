@@ -184,7 +184,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       feedModels.add(user);
       feedModels.addAll(items);
       fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.getStateRecyclerView());
-      startAutoplayVideos();
       ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
       profileToolbarTitle.setText(user.getFullName());
    }
@@ -232,7 +231,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    protected abstract void initToolbar();
 
    private float calculateOffset() {
-      return Math.min(statePaginatedRecyclerViewManager.getStateRecyclerView().getScrollOffset() / (float) scrollArea, 1);
+      return Math.min(statePaginatedRecyclerViewManager.getStateRecyclerView()
+            .getScrollOffset() / (float) scrollArea, 1);
    }
 
    private void setToolbarAlpha(float percentage) {

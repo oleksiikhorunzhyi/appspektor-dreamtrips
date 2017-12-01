@@ -315,6 +315,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void refreshFeedItems(@NonNull List<FeedItem> feedItems,
          @Nullable List<PostCompoundOperationModel> uploadingPostsList,
          boolean shouldShowSuggestions) {
+      if (isVisibleOnScreen()) {
+         recyclerViewManager.findFirstCompletelyVisibleItemPosition();
+      }
       List feedModels = new ArrayList();
       if (shouldShowSuggestions) {
          feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
@@ -324,7 +327,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       }
       processFeedItems(feedItems, feedModels);
       fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.getStateRecyclerView());
-      startAutoplayVideos();
    }
 
    @Override

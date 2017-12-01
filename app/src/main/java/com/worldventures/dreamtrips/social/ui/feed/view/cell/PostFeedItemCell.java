@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.cell;
 
-import android.app.Activity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRou
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
-import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.VideoInfoInjector;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageItem;
@@ -35,8 +34,9 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFullscreenFragment;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
-import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoConfig;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +48,6 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import rx.Subscription;
 
 @Layout(R.layout.adapter_item_feed_post_event)
 public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeedCell.FeedCellDelegate<PostFeedItem>>
@@ -60,15 +59,13 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @InjectView(R.id.translate) View translateButton;
    @Optional @InjectView(R.id.collage) CollageView collageView;
    @Optional @InjectView(R.id.tag) ImageView tag;
-   @Optional @InjectView(R.id.videoAttachment) VideoView videoView;
+   @Optional @InjectView(R.id.videoAttachment) DTVideoViewImpl dtVideoView;
 
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
-   @Inject ConfigurationInteractor configurationInteractor;
-   @Inject Activity activity;
-   private FeedCellListWidthProvider feedCellListWidthProvider;
-   private VideoInfoInjector videoInfoInjector = new VideoInfoInjector();
+   @Inject VideoPlayerHolder videoPlayerHolder;
 
-   private Subscription configurationSubscription;
+   private FeedCellListWidthProvider feedCellListWidthProvider;
+
    private FeedCellListWidthProvider.FeedType activeFeedType;
    private boolean displayingInList;
 
@@ -77,30 +74,14 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       feedCellListWidthProvider = new FeedCellListWidthProvider(view.getContext());
    }
 
+   public void setDisplayingInList(boolean displayingInList) {
+      this.displayingInList = displayingInList;
+   }
+
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
       refreshUi();
-      if (configurationSubscription == null || configurationSubscription.isUnsubscribed()) {
-         configurationSubscription = configurationInteractor.configurationActionPipe()
-               .observeSuccess().subscribe(configurationCommand -> {
-                  // happens when there is another feed opened on the top of this one
-                  if (getCurrentRoute() != activeFeedType) {
-                     return;
-                  }
-                  List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
-                  if (attachments != null && attachments.size() > 0) {
-                     if (attachments.get(0).getItem() instanceof Photo) {
-                        processPhotos();
-                     }
-                     refreshVideoIfExists();
-                  }
-               });
-      }
-   }
-
-   public void setDisplayingInList(boolean displayingInList) {
-      this.displayingInList = displayingInList;
    }
 
    private void refreshUi() {
@@ -166,24 +147,21 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    private void processAttachments(List<FeedEntityHolder> attachments) {
       if (attachments != null && !attachments.isEmpty()) {
          if (attachments.get(0).getItem() instanceof Photo) {
-            videoView.hide();
+            dtVideoView.setVisibility(View.GONE);
             processPhotos();
          } else if (attachments.get(0).getItem() instanceof Video) {
+            dtVideoView.setVisibility(View.VISIBLE);
+            dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
             clearImages();
-            processVideo((Video) attachments.get(0).getItem());
+            Video video = (Video) attachments.get(0).getItem();
+            updateVideoHeight(video);
+            dtVideoView.setThumbnail(video.getThumbnail());
          }
       } else {
-         videoView.hide();
+         dtVideoView.setVisibility(View.GONE);
          clearImages();
       }
       processTags(attachments);
-   }
-
-   private void refreshVideoIfExists() {
-      List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
-      if (attachments.get(0).getItem() instanceof Video) {
-         videoView.resizeView(getCellListWidth());
-      }
    }
 
    protected void clearImages() {
@@ -247,7 +225,6 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private void openFeedItemDetails() {
       router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
-            .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
    }
@@ -259,18 +236,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
             .build());
    }
 
-   private void processVideo(Video video) {
-      videoInfoInjector.setVideo(videoView, video, displayingInList);
-   }
-
-   @Override
-   public void onFocused() {
-      videoView.play();
-   }
-
    @Override
    public boolean canFocus() {
-      return videoView.getVisibility() == View.VISIBLE;
+      return dtVideoView.getVisibility() == View.VISIBLE;
    }
 
    @OnClick(R.id.translate)
@@ -300,7 +268,6 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    public void afterInject() {
       super.afterInject();
       activeFeedType = getCurrentRoute();
-      videoInfoInjector.init(activity, itemView);
    }
 
    private FeedCellListWidthProvider.FeedType getCurrentRoute() {
@@ -308,14 +275,53 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
             .createObservableResult(ActiveFeedRouteCommand.fetch()).toBlocking().single().getResult();
    }
 
+
+   private void updateVideoHeight(Video video) {
+      int height = (int) (getCellListWidth() / video.getAspectRatio());
+      ViewGroup.LayoutParams params = dtVideoView.getLayoutParams();
+      params.height = height;
+      dtVideoView.setLayoutParams(params);
+   }
+
+   @Override
+   public void onFocused() {
+      playVideoIfNeeded();
+   }
+
+   void playVideoIfNeeded() {
+      List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
+      if (attachments.get(0).getItem() instanceof Video) {
+         Video video = (Video) getModelObject().getItem().getAttachments().get(0).getItem();
+         if (videoPlayerHolder.getCurrentVideoConfig() != null
+               && video.getUid().equals(videoPlayerHolder.getCurrentVideoConfig().getUid())) {
+            if (videoPlayerHolder.inFullscreen()) {
+               videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList
+                     || videoPlayerHolder.getCurrentVideoConfig().getMute());
+            } else {
+               videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList);
+            }
+         } else {
+            dtVideoView.playVideo(new DTVideoConfig(video.getUid(), displayingInList, video.getQualities(), 0));
+         }
+      }
+   }
+
+   @Override
+   public void onUnfocused() {
+      List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
+      if (attachments.size() > 0 && attachments.get(0).getItem() instanceof Video) {
+         dtVideoView.pauseVideo();
+         dtVideoView.detachPlayer();
+         dtVideoView.showThumbnail();
+      }
+   }
+
    @Override
    public void clearResources() {
       super.clearResources();
-      if (videoView != null) {
-         videoView.clear();
-      }
-      if (configurationSubscription != null && configurationSubscription.isUnsubscribed()) {
-         configurationSubscription.unsubscribe();
+      if (dtVideoView != null) {
+         dtVideoView.detachPlayer();
+         dtVideoView.showThumbnail();
       }
    }
 }

@@ -176,6 +176,12 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
    protected void updateActionBar(ComponentDescription component) {
       setTitle(component.getToolbarTitle());
       setToolbarLogo(component.getToolbarLogo());
+      if (component.skipGeneralToolbar()) {
+         toolbar.setVisibility(View.GONE);
+      } else {
+         toolbar.setVisibility(View.VISIBLE);
+         toolbar.getBackground().setAlpha(255);
+      }
    }
 
    public void makeActionBarGone(boolean hide) {

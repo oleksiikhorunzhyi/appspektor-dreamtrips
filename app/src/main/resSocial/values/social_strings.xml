@@ -381,4 +381,6 @@
    <string name="type_post">Post</string>
    <string name="forgot_member_id">Forgot Member ID?</string>
    <string name="forgot_password">Forgot Password?</string>
+   <string name="hd_name">HD</string>
+   <string name="sd_name">SD</string>
 </resources>

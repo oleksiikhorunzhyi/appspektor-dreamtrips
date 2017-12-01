@@ -20,14 +20,14 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
-import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
-import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
@@ -147,7 +147,6 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
 
    private void openDetails() {
       router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
-            .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
    }

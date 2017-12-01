@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
-import android.content.res.Configuration;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,6 +23,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRou
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import javax.inject.Inject;
 
@@ -44,6 +44,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
+   @Inject VideoPlayerHolder videoPlayerHolder;
 
    @State FeedItem feedItem;
 
@@ -77,13 +78,6 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       });
    }
 
-   @Override
-   public void onConfigurationChanged(Configuration newConfig) {
-      super.onConfigurationChanged(newConfig);
-      showAdditionalInfoIfNeeded();
-      updateStickyInputContainerState();
-   }
-
    private void updateStickyInputContainerState() {
       View view = layout.findViewByPosition(0);
       if (layout.findFirstVisibleItemPosition() > 0 || isNeedToShowInputPanel(view)) {
@@ -109,12 +103,18 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       super.onResume();
       activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
             .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.FEED_DETAILS));
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void onPause() {
+      super.onPause();
+      videoPlayerHolder.pause();
    }
 
    @Override
    public void onDestroyView() {
       FragmentHelper.resetChildFragmentManagerField(this);
-      //
       super.onDestroyView();
    }
 

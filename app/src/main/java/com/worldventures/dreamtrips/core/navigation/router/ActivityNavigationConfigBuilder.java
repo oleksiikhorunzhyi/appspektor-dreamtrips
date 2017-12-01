@@ -34,11 +34,6 @@ public class ActivityNavigationConfigBuilder extends NavigationConfigBuilder {
       return this;
    }
 
-   public ActivityNavigationConfigBuilder manualOrientationActivity(boolean manualOrientationActivity) {
-      navigationConfig.manualOrientationActivity = manualOrientationActivity;
-      return this;
-   }
-
    public ActivityNavigationConfigBuilder transparentBackground(boolean transparentBackground) {
       navigationConfig.transparentBackground = transparentBackground;
       return this;

@@ -37,7 +37,7 @@ public class DtlScanReceiptErrorAdapter extends DtlApiErrorViewAdapter {
          return isUnprocessableEntityError(exception.getCause());
       }
       if (exception instanceof HttpException) {
-         HttpException httpException = (HttpException) exception.getCause();
+         HttpException httpException = (HttpException) exception;
          return httpException.getResponse().getStatus() == HttpStatus.SC_UNPROCESSABLE_ENTITY;
       }
       return false;

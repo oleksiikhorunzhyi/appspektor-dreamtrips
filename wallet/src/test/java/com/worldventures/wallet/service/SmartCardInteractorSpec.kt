@@ -12,13 +12,8 @@ import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.AssertUtil.assertActionFail
 import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.wallet.BaseSpec
-import com.worldventures.wallet.domain.converter.SmartCardFinancialServiceToWalletFinancialServiceConverter
 import com.worldventures.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
-import com.worldventures.wallet.domain.converter.SmartCardRecordTypeToWalletRecordTypeConverter
-import com.worldventures.wallet.domain.converter.WalletFinancialServiceToSmartCardFinancialServiceConverter
 import com.worldventures.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
-import com.worldventures.wallet.domain.converter.WalletRecordTypeToSmartCardRecordTypeConverter
-import com.worldventures.wallet.domain.entity.record.FinancialService
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.domain.entity.record.RecordType
 import com.worldventures.wallet.domain.session.NxtSessionHolder
@@ -375,11 +370,6 @@ class SmartCardInteractorSpec : BaseSpec({
             .map(Record::class.java).to(io.techery.janet.smartcard.model.Record::class.java, WalletRecordToSmartCardRecordConverter())
             .map(io.techery.janet.smartcard.model.Record::class.java).to(Record::class.java, SmartCardRecordToWalletRecordConverter())
 
-            .map(RecordType::class.java).to(io.techery.janet.smartcard.model.Record.CardType::class.java, WalletRecordTypeToSmartCardRecordTypeConverter())
-            .map(io.techery.janet.smartcard.model.Record.CardType::class.java).to(RecordType::class.java, SmartCardRecordTypeToWalletRecordTypeConverter())
-
-            .map(FinancialService::class.java).to(io.techery.janet.smartcard.model.Record.FinancialService::class.java, WalletFinancialServiceToSmartCardFinancialServiceConverter())
-            .map(io.techery.janet.smartcard.model.Record.FinancialService::class.java).to(FinancialService::class.java, SmartCardFinancialServiceToWalletFinancialServiceConverter())
             .build()
 
       fun loadDefaultCardId(): TestSubscriber<ActionState<DefaultRecordIdCommand>> {

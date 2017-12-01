@@ -40,9 +40,7 @@ class FetchAssociatedSmartCardCommand : Command<FetchAssociatedSmartCardCommand.
    override fun run(callback: Command.CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard>) {
       val smartCard = smartCardFromCache
       val user = smartCardUserFromCache
-      if (smartCard != null && smartCard.cardStatus === CardStatus.ACTIVE && user != null
-            // TODO: this check for backward compatibility 1.21 -> 1.23
-            && user.userPhoto != null && user.userPhoto.uri != null) {
+      if (smartCard != null && smartCard.cardStatus === CardStatus.ACTIVE && user != null) {
          callback.onSuccess(createAssociatedCard(smartCard, walletStorage.smartCardDetails))
          return
       }

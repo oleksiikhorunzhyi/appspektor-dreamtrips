@@ -1,6 +1,8 @@
 package com.worldventures.wallet.service.lostcard
 
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -21,6 +23,9 @@ import com.worldventures.wallet.ui.common.InteractorBuilder
 import io.techery.janet.command.test.Contract
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
+
+private const val TEST_SMART_CARD_ID = "my_favorite_smart_card"
 
 class LocationTrackingManagerTest : BaseTest() {
 
@@ -44,13 +49,22 @@ class LocationTrackingManagerTest : BaseTest() {
 
    private val sessionHolder: SessionHolder = mock()
 
-   private fun createLocationTrackingManager(lostCardManager: LostCardManager) = LocationTrackingManager(
-         smartCardInteractor, locationInteractor, MockWalletLocationService(), authInteractor, lostCardManager,
-         sessionHolder)
+   private lateinit var lostCardManager: LostCardManager
+   private lateinit var trackManager: LocationTrackingManager
+   private lateinit var locationManager: MockWalletLocationService
+   private lateinit var mockSmartCardIdHelper: MockSmartCardIdHelper
 
-   private fun createUserSession() {
-      val userSession: UserSession = mock()
-      whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
+   private fun setupManager(trackingStatus: Boolean = false, withUserSession: Boolean = false,
+                            smartCardId: String? = null) {
+      fetchTrackingStatusContract.result(trackingStatus)
+      mockSmartCardIdHelper.initValue = smartCardId
+      whenever(sessionHolder.get()).thenReturn(
+            if (withUserSession) {
+               Optional.of(mock())
+            } else {
+               Optional.absent()
+            }
+      )
    }
 
    @Before
@@ -58,115 +72,182 @@ class LocationTrackingManagerTest : BaseTest() {
       smartCardInteractor = interactorBuilder.createInteractor(SmartCardInteractor::class)
       locationInteractor = interactorBuilder.createInteractor(SmartCardLocationInteractor::class)
       authInteractor = interactorBuilder.createInteractor(AuthInteractor::class)
-      whenever(sessionHolder.get()).thenReturn(Optional.absent())
+
+      locationManager = MockWalletLocationService()
+      lostCardManager = mock()
+      mockSmartCardIdHelper = MockSmartCardIdHelper(locationInteractor)
+      trackManager = LocationTrackingManager(locationInteractor, mockSmartCardIdHelper, locationManager, authInteractor, lostCardManager, sessionHolder)
+   }
+
+   @Test
+   fun testLaunchAppWithoutLogin() {
+      setupManager()
+      trackManager.track()
+
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
+   }
+
+   @Test
+   fun testLaunchAppWithTurnedFeatureWithoutSmartCard() {
+      setupManager(trackingStatus = true, withUserSession = true)
+      trackManager.track()
+
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
    }
 
    @Test
    fun testLaunchAppWithTurnedFeature() {
-      fetchTrackingStatusContract.result(true)
-      createUserSession()
-
-      val lostCardManager: LostCardManager = mock()
-      val trackManager = createLocationTrackingManager(lostCardManager)
+      setupManager(trackingStatus = true, withUserSession = true, smartCardId = TEST_SMART_CARD_ID)
       trackManager.track()
-
-      verify(lostCardManager, times(1)).connect()
-      verify(lostCardManager, times(0)).disconnect()
+      verify(lostCardManager, times(1)).connect(eq(TEST_SMART_CARD_ID))
+      verify(lostCardManager, never()).disconnect()
    }
 
    @Test
    fun testLaunchAppWithTurnedOffFeature() {
-      fetchTrackingStatusContract.result(false)
-      createUserSession()
-
-      val lostCardManager: LostCardManager = mock()
-      val trackManager = createLocationTrackingManager(lostCardManager)
+      setupManager(withUserSession = true, smartCardId = TEST_SMART_CARD_ID)
       trackManager.track()
 
-      verify(lostCardManager, times(0)).connect()
-      verify(lostCardManager, times(1)).disconnect()
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
    }
 
    @Test
-   fun testLogin() {
-      fetchTrackingStatusContract.result(true)
+   fun testLaunchAppWithTurnedOffFeatureWithoutSmartCard() {
+      setupManager(withUserSession = true)
+      trackManager.track()
 
-      val lostCardManager: LostCardManager = mock()
-      val trackManager = createLocationTrackingManager(lostCardManager)
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
+   }
+
+   @Test
+   fun testLoginEnabledFeature() {
+      setupManager(trackingStatus = true, smartCardId = TEST_SMART_CARD_ID)
       trackManager.track()
 
       authInteractor.loginActionPipe().send(LoginCommand("", ""))
 
-      verify(lostCardManager, times(1)).connect()
-      verify(lostCardManager, times(1)).disconnect()
+      verify(lostCardManager, times(1)).connect(eq(TEST_SMART_CARD_ID))
+      verify(lostCardManager, never()).disconnect()
    }
 
    @Test
    fun testLoginWithDisableFeature() {
-      fetchTrackingStatusContract.result(false)
-
-      val lostCardManager: LostCardManager = mock()
-      val trackManager = createLocationTrackingManager(lostCardManager)
+      setupManager(smartCardId = TEST_SMART_CARD_ID)
       trackManager.track()
 
       authInteractor.loginActionPipe().send(LoginCommand("", ""))
 
-      verify(lostCardManager, times(0)).connect()
-      verify(lostCardManager, times(1)).disconnect()
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
+   }
+
+   @Test
+   fun testLoginWithoutSmartCard() {
+      setupManager()
+      trackManager.track()
+
+      authInteractor.loginActionPipe().send(LoginCommand("", ""))
+
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
+   }
+
+   @Test
+   fun testAssociateCardAfterLogin() {
+      setupManager()
+      trackManager.track()
+
+      authInteractor.loginActionPipe().send(LoginCommand("", ""))
+      mockSmartCardIdHelper.pushNewSmartCardId(TEST_SMART_CARD_ID)
+
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
+   }
+
+   @Test
+   fun testAssociateCardAndTurnOnTrackingAfterLogin() {
+      setupManager()
+      trackManager.track()
+
+      authInteractor.loginActionPipe().send(LoginCommand("", ""))
+      mockSmartCardIdHelper.pushNewSmartCardId(TEST_SMART_CARD_ID)
+
+      fetchTrackingStatusContract.result(true)
+      locationInteractor.fetchTrackingStatusPipe().send(FetchTrackingStatusCommand())
+
+      verify(lostCardManager, times(1)).connect(eq(TEST_SMART_CARD_ID))
+      verify(lostCardManager, never()).disconnect()
    }
 
    @Test
    fun testLogout() {
-      fetchTrackingStatusContract.result(true)
-      createUserSession()
-
-      val lostCardManager: LostCardManager = mock()
-      val trackManager = createLocationTrackingManager(lostCardManager)
+      setupManager(trackingStatus = true, withUserSession = true, smartCardId = TEST_SMART_CARD_ID)
       trackManager.track()
 
       authInteractor.logoutPipe().send(LogoutCommand())
 
-      verify(lostCardManager, times(1)).connect()
+      verify(lostCardManager, times(1)).connect(eq(TEST_SMART_CARD_ID))
+      verify(lostCardManager, times(1)).disconnect()
+   }
+
+   @Test
+   fun testReLogin() {
+      setupManager(trackingStatus = true, withUserSession = true, smartCardId = TEST_SMART_CARD_ID)
+      trackManager.track()
+
+      authInteractor.logoutPipe().send(LogoutCommand())
+      authInteractor.loginActionPipe().send(LoginCommand())
+
+      verify(lostCardManager, times(2)).connect(eq(TEST_SMART_CARD_ID))
+      verify(lostCardManager, times(1)).disconnect()
+   }
+
+   @Test
+   fun testChangeLocationSettingsAfterLogout() {
+      setupManager(trackingStatus = true, withUserSession = true, smartCardId = TEST_SMART_CARD_ID)
+      trackManager.track()
+
+      authInteractor.logoutPipe().send(LogoutCommand())
+      locationManager.pushNewLocationSettingsState(false)
+      locationManager.pushNewLocationSettingsState(true)
+
+      verify(lostCardManager, times(1)).connect(eq(TEST_SMART_CARD_ID))
       verify(lostCardManager, times(1)).disconnect()
    }
 
    @Test
    fun testLogoutWithDisableFeature() {
-      fetchTrackingStatusContract.result(false)
-      createUserSession()
-
-      val lostCardManager: LostCardManager = mock()
-      val trackManager = createLocationTrackingManager(lostCardManager)
+      setupManager(withUserSession = true, smartCardId = TEST_SMART_CARD_ID)
       trackManager.track()
 
       authInteractor.logoutPipe().send(LogoutCommand())
 
-      verify(lostCardManager, times(0)).connect()
-      verify(lostCardManager, times(2)).disconnect()
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
    }
 
    @Test
    fun testToggleEnableFeature() {
-      fetchTrackingStatusContract.result(false)
-      createUserSession()
-
-      val lostCardManager: LostCardManager = mock()
-      val trackManager = createLocationTrackingManager(lostCardManager)
+      setupManager(withUserSession = true, smartCardId = TEST_SMART_CARD_ID)
       trackManager.track()
 
-      verify(lostCardManager, times(0)).connect()
-      verify(lostCardManager, times(1)).disconnect()
+      verify(lostCardManager, never()).connect(anyString())
+      verify(lostCardManager, never()).disconnect()
 
       updateTrackingStatusContract.result(true)
       locationInteractor.updateTrackingStatusPipe().send(UpdateTrackingStatusCommand(true))
 
-      verify(lostCardManager, times(1)).connect()
-      verify(lostCardManager, times(1)).disconnect()
+      verify(lostCardManager, times(1)).connect(eq(TEST_SMART_CARD_ID))
+      verify(lostCardManager, never()).disconnect()
 
       updateTrackingStatusContract.result(false)
       locationInteractor.updateTrackingStatusPipe().send(UpdateTrackingStatusCommand(false))
 
-      verify(lostCardManager, times(1)).connect()
-      verify(lostCardManager, times(2)).disconnect()
+      verify(lostCardManager, times(1)).connect(eq(TEST_SMART_CARD_ID))
+      verify(lostCardManager, times(1)).disconnect()
    }
 }

@@ -1,6 +1,8 @@
 package com.worldventures.wallet.model
 
+import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData
+import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.SmartCardFirmware
 import com.worldventures.wallet.service.nxt.model.MultiResponseBody
 import com.worldventures.wallet.service.nxt.model.MultiResponseElement
@@ -27,6 +29,9 @@ fun createTestFirmwareUpdateData(scId: String, currentFirmwareVersion: SmartCard
       currentFirmwareVersion = currentFirmwareVersion,
       isFactoryResetRequired = false
 )
+
+fun createTestSmartCard(smartCardId: String, cardStatus: CardStatus = CardStatus.ACTIVE, deviceId: String = "smart_card_device_id") =
+      SmartCard(smartCardId, cardStatus, deviceId)
 
 fun createTestMultiResponseBody(recordIds: List<String?>, number: String, cvv: String,
                                 track1: String, track2: String = track1, track3: String = track1): MultiResponseBody {

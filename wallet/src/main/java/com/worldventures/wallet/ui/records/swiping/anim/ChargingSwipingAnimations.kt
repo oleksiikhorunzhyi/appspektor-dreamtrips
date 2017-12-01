@@ -69,7 +69,7 @@ class ChargingSwipingAnimations {
    }
 
    fun stopAnimations() {
-      handler.removeCallbacks(null)
+      handler.removeCallbacksAndMessages(null)
 
       smartCardAnimation?.removeAllListeners()
       recordAnimation?.removeAllListeners()

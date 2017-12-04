@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.util;
 
+import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.worldventures.dreamtrips.R;
@@ -62,5 +64,23 @@ public final class MerchantTypeUtil {
          filterEntertainment.setSelected(false);
          filterSpa.setSelected(false);
       }
+   }
+
+   public static @Nullable String getSearchHintForMerchantTypes(Context context, List<String> types) {
+      if (types == null || types.isEmpty()) {
+         return null;
+      }
+      if (types.size() == 1) {
+         if (types.get(0).equals(FilterData.ENTERTAINMENT)) {
+            return context.getString(R.string.filter_merchant_entertainment);
+         } else if (types.get(0).equals(FilterData.SPAS)) {
+            return context.getString(R.string.filter_merchant_spas);
+         }
+      } else {
+         if (types.get(0).equals(FilterData.RESTAURANT) && types.get(1).equals(FilterData.BAR)) {
+            return context.getString(R.string.dtlt_search_hint);
+         }
+      }
+      return null;
    }
 }

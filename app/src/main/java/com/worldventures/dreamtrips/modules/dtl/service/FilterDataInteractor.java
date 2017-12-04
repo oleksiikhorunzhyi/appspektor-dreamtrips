@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceType
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ReadActionPipe;
@@ -41,7 +42,8 @@ public class FilterDataInteractor implements Initializable {
       this.merchantsRequestSourceInteractor = merchantsRequestSourceInteractor;
       this.settingsStorage = settingsStorage;
 
-      filterDataPipe = sessionActionPipeCreator.createPipe(FilterDataAction.class, Schedulers.io());
+      filterDataPipe = sessionActionPipeCreator.createPipe(FilterDataAction.class,
+            Schedulers.from(Executors.newSingleThreadExecutor()));
 
       connectLocationChange();
       init();

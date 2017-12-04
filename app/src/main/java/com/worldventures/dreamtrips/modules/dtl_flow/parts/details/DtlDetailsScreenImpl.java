@@ -51,6 +51,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -404,32 +405,25 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void showThrstSucceed(Merchant merchant, String earnedPoints, String totalPoints) {
-      router.moveTo(DtlTransactionSucceedFragment.class, NavigationConfigBuilder.forDialog()
+      router.moveTo(DtlThrstTransactionSucceedFragment.class, NavigationConfigBuilder.forDialog()
             .data(new ThrstPaymentCompletedBundle(merchant, earnedPoints, totalPoints))
             .build());
    }
 
    @Override
    public void setTransaction(DtlTransaction dtlTransaction, boolean isThrstTransaction) {
+      if (isThrstTransaction) {
+         // there is no separate checked in state for thrst transaction
+         return;
+      }
       Button earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
-
       if (earn != null) {
-         earn.setText(dtlTransaction != null ? thrstFlow(earn) : getTextNormalFlow(earn));
+         earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
       }
-      if (!isThrstTransaction && checkedIn != null) {
+      if (checkedIn != null) {
          ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
       }
-   }
-
-   private int getTextNormalFlow(Button earn) {
-      ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonGreenTheme);
-      return R.string.dtl_check_in;
-   }
-
-   private int thrstFlow(Button earn) {
-      ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonPurpleTheme);
-      return R.string.dtl_merchant_earn_points;
    }
 
    @Override

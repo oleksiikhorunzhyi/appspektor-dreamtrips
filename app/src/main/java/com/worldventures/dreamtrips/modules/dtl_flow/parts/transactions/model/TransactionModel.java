@@ -150,6 +150,7 @@ public class TransactionModel implements Parcelable {
    public enum ThrstPaymentStatus {
       INITIATED,
       SUCCESSFUL,
+      REFUNDED,
       UNKNOWN
    }
 

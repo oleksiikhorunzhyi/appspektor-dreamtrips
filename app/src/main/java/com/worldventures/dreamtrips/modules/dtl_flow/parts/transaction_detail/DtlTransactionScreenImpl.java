@@ -99,18 +99,27 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       tvNonThrstSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount()));
       tvNonThrstEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
       tvNonThrstTransactionDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
+
+      hideReviewsOnTablets();
    }
 
    @Override
-   public void showThrstTransaction(TransactionModel transactionModel, boolean isSuccessful) {
+   public void showThrstTransaction(TransactionModel transactionModel) {
       thrstStatusLabelsContainer.setVisibility(VISIBLE);
       thrstBilledAmountLabelsContainer.setVisibility(VISIBLE);
       nonThrstBilledAmountLabelsContainer.setVisibility(GONE);
 
-      if (isSuccessful) {
-         transactionStatusInjector.showSuccessMessage();
-      } else {
-         transactionStatusInjector.showFailureMessage();
+      switch (transactionModel.getThrstPaymentStatus()) {
+         case INITIATED:
+         case SUCCESSFUL:
+            transactionStatusInjector.showSuccessMessage();
+            break;
+         case REFUNDED:
+            transactionStatusInjector.showRefundedMessage();
+            break;
+         default:
+            transactionStatusInjector.showFailureMessage();
+            break;
       }
 
       tvTotal.setText(CurrencyUtils.toCurrency(transaction.getTotalAmount()));
@@ -120,6 +129,10 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
       tvEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
 
+      hideReviewsOnTablets();
+   }
+
+   private void hideReviewsOnTablets() {
       if (ViewUtils.isTablet(getActivity())) {
          tvReview.setVisibility(GONE);
       }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
+   <string name="dtl_subtotal">Subtotal: $%.2f</string>
    <string name="dtl_locations_title">Select location</string>
    <string name="dtl_locations_try_search">We could not locate a City close to you.\nTry our city search</string>
    <string name="dtl_near_me_caption">near me</string>

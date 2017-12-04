@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.security.lostcard.impl;
 
-
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.worldventures.wallet.analytics.locatecard.LocateCardAnalyticsCommand;
 import com.worldventures.wallet.analytics.locatecard.action.ClickDirectionsAnalyticsAction;
@@ -14,7 +13,8 @@ import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesC
 import com.worldventures.wallet.service.lostcard.command.GetLocationCommand;
 import com.worldventures.wallet.ui.settings.security.lostcard.MapPresenter;
 import com.worldventures.wallet.ui.settings.security.lostcard.MapScreen;
-import com.worldventures.wallet.ui.settings.security.lostcard.model.ImmutableLostCardPin;
+import com.worldventures.wallet.ui.settings.security.lostcard.model.LostCardPin;
+import com.worldventures.wallet.util.WalletLocationsUtil;
 
 import java.util.List;
 
@@ -22,9 +22,6 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
-
-import static com.worldventures.wallet.util.WalletLocationsUtil.getLatestLocation;
-import static com.worldventures.wallet.util.WalletLocationsUtil.toLatLng;
 
 public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements MapPresenter {
 
@@ -47,20 +44,11 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
             .observeSuccess()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()),
-                  throwable -> Timber.e(throwable, ""));
-   }
-
-   private void setupEmptyLocation(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand) {
-      getView().addPin(toLatLng(fetchAddressWithPlacesCommand.getCoordinates()));
+            .subscribe(walletLocationCommand -> processLastLocation(walletLocationCommand.getResult()), Timber::e);
    }
 
    private void setupLocationAndAddress(WalletCoordinates coordinates, WalletAddress address, List<WalletPlace> places) {
-      getView().addPin(ImmutableLostCardPin.builder()
-            .position(toLatLng(coordinates))
-            .address(address)
-            .places(places)
-            .build());
+      getView().addPin(new LostCardPin(places, address, coordinates));
    }
 
    private void fetchLastSmartCardLocation() {
@@ -70,7 +58,8 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<GetLocationCommand>()
                   .onSuccess(getLocationCommand -> {
-                     final WalletLocation walletLocation = getLatestLocation(getLocationCommand.getResult());
+                     final List<WalletLocation> locations = (List<WalletLocation>) getLocationCommand.getResult();
+                     final WalletLocation walletLocation = WalletLocationsUtil.INSTANCE.getLatestLocation(locations);
                      processLastLocation(walletLocation);
                   })
             );
@@ -78,17 +67,13 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
 
    private void processLastLocation(WalletLocation walletLocation) {
       if (walletLocation == null) {
-         toggleLocationContainersVisibility(false);
+         getView().setCoordinates(null);
          return;
       }
-      toggleLocationContainersVisibility(true);
-      getView().setLastConnectionDate(walletLocation.createdAt());
+      getView().setLastConnectionDate(walletLocation.getCreatedAt());
+      getView().setCoordinates(walletLocation.getCoordinates());
 
-      fetchAddressWithPlaces(walletLocation.coordinates());
-   }
-
-   private void toggleLocationContainersVisibility(boolean locationExists) {
-      getView().setVisibleMsgEmptyLastLocation(!locationExists);
+      fetchAddressWithPlaces(walletLocation.getCoordinates());
    }
 
    private void fetchAddressWithPlaces(WalletCoordinates coordinates) {
@@ -99,8 +84,8 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView(), true)
                   .onSuccess(command ->
-                        setupLocationAndAddress(coordinates, command.getResult().address, command.getResult().places))
-                  .onFail((fetchAddressWithPlacesCommand, throwable) -> setupEmptyLocation(fetchAddressWithPlacesCommand))
+                        setupLocationAndAddress(coordinates, command.getResult().getAddress(), command.getResult()
+                              .getPlaces()))
                   .create());
    }
 
@@ -116,7 +101,7 @@ public class MapPresenterImpl extends MvpBasePresenter<MapScreen> implements Map
    }
 
    @Override
-   public void onMapPrepared() {
+   public void fetchLastKnownLocation() {
       fetchLastSmartCardLocation();
    }
 }

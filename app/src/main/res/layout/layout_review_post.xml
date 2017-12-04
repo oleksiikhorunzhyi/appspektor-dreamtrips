@@ -31,7 +31,7 @@
             android:visibility="gone"
             >
 
-         <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         <com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView
                android:id="@+id/avatar"
                android:layout_width="@dimen/size_large"
                android:layout_height="@dimen/size_large"

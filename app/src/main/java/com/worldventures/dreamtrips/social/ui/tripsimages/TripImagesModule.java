@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.tripsimages;
 import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.messenger.ui.fragment.PhotoAttachmentPagerFragment;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;
@@ -23,6 +24,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me.I
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.FullscreenYsbhPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YouShouldBeHerePresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YsbhViewPagerPresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.DownloadImageDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.FullscreenPhotoFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.FullscreenVideoFragment;
@@ -102,6 +105,11 @@ public class TripImagesModule {
    @Singleton
    SocialViewPagerState socialViewPagerState() {
       return new SocialViewPagerState();
+   }
+
+   @Provides
+   DownloadImageDelegate provideDownloadImageDelegate(TripImagesInteractor tripImagesInteractor, PermissionDispatcher permissionDispatcher) {
+      return new DownloadImageDelegate(tripImagesInteractor, permissionDispatcher);
    }
 
 }

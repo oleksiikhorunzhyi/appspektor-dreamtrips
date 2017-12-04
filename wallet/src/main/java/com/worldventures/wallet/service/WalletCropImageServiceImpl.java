@@ -73,7 +73,7 @@ public class WalletCropImageServiceImpl implements WalletCropImageService {
          //added due to avoid result emit before view subscribes on this stream
          handler.post(() -> croppedImagesStream.onNext(Notification.createOnNext(new File(path))));
       } else {
-         Timber.e("Error during cropping: " + errorMsg);
+         Timber.e("Error during cropping: %s",  errorMsg);
       }
    }
 }

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.ui.fragment;
 
 import android.net.Uri;
 
-import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.worldventures.core.model.ImagePathHolder;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 

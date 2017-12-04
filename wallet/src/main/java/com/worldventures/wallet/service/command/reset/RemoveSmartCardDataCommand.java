@@ -52,14 +52,14 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
 
    private void deleteUserData() {
       final SmartCardUser smartCardUser = walletStorage.getSmartCardUser();
-      clearUserImageCache(smartCardUser.userPhoto());
+      clearUserImageCache(smartCardUser.getUserPhoto());
       walletStorage.deleteSmartCardUser();
    }
 
 
    private void clearUserImageCache(SmartCardUserPhoto photo) {
       if (photo != null) {
-         cachedPhotoUtil.removeCachedPhoto(photo.uri());
+         cachedPhotoUtil.removeCachedPhoto(photo.getUri());
       }
    }
 }

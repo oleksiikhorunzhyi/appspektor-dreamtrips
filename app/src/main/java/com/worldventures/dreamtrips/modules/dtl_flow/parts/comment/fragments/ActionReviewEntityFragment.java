@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;

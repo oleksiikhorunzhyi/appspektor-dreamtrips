@@ -21,7 +21,6 @@ import com.worldventures.wallet.util.WalletFeatureHelper;
 import java.util.Collections;
 import java.util.List;
 
-import io.techery.janet.Command;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -107,8 +106,8 @@ public abstract class WizardAssignDelegate {
 
       private Observable<List<Record>> fetchRecordList(WizardAssignUserScreen view) {
          return recordInteractor.cardsListPipe()
-               .createObservableResult(new RecordListCommand())
-               .map(Command::getResult)
+               .createObservableResult(RecordListCommand.Companion.fetch())
+               .map(command -> (List<Record>) command.getResult())
                .onErrorReturn(throwable -> Collections.emptyList())
                .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread());

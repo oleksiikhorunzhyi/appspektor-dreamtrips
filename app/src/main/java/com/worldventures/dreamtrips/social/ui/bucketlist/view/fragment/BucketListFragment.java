@@ -30,7 +30,6 @@ import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.SoftInputUtil;
-import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
@@ -53,6 +52,8 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundl
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
+
+import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -385,15 +386,18 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    }
 
    @Override
-   public BaseArrayListAdapter<BucketItem> getAdapter() {
-      return adapter;
+   public void setItems(List<BucketItem> items) {
+      adapter.setItems(items);
    }
 
    @Override
-   public void checkEmpty(int count) {
-      if (count != 0) {
-         emptyView.setVisibility(View.GONE);
-      }
+   public void notifyItemsChanged() {
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void hideEmptyView() {
+      emptyView.setVisibility(View.GONE);
    }
 
    @Override

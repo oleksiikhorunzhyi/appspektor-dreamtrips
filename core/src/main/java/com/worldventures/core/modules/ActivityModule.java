@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.modules.picker.MediaPickerActivityModule;
+import com.worldventures.core.modules.picker.MediaPickerHelperActivityModule;
 import com.worldventures.core.ui.view.activity.BaseActivity;
 
 import dagger.Module;
@@ -13,6 +14,7 @@ import dagger.Provides;
 @Module(
       includes = {
             MediaPickerActivityModule.class,
+            MediaPickerHelperActivityModule.class,
       },
       complete = false,
       library = true)

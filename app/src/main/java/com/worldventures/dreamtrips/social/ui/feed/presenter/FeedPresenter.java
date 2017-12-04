@@ -2,20 +2,24 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
@@ -63,11 +67,10 @@ import timber.log.Timber;
 public class FeedPresenter extends Presenter<FeedPresenter.View> implements FeedActionHandlerPresenter,
       FeedEditEntityPresenter, UploadingListenerPresenter {
 
-   @Inject SnappyRepository db;
    @Inject SocialSnappyRepository socialDb;
    @Inject TranslationDelegate translationDelegate;
    @Inject UnreadConversationObservable unreadConversationObservable;
-   @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+   @Inject UserNotificationInteractor userNotificationInteractor;
    @Inject UploadingPresenterDelegate uploadingPresenterDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject FeedStorageDelegate feedStorageDelegate;
@@ -77,12 +80,14 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    @Inject CompoundOperationsInteractor compoundOperationsInteractor;
    @Inject PingAssetStatusInteractor assetStatusInteractor;
    @Inject SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
+   @Inject PermissionDispatcher permissionDispatcher;
 
    Circle filterCircle;
    List<PostCompoundOperationModel> postUploads;
    boolean shouldShowSuggestionItems;
    @State ArrayList<FeedItem> feedItems;
    @State int unreadConversationCount;
+   @State boolean permissionPreviouslyDenied = false;
 
    @Override
    public void onViewTaken() {
@@ -191,10 +196,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       view.refreshFeedItems(feedItems, postUploads, shouldShowSuggestionItems);
    }
 
-   public void refreshFeed() {
-      feedInteractor.getRefreshAccountFeedPipe().send(new GetAccountFeedCommand.Refresh(filterCircle.getId()));
-   }
-
    void subscribeToStorage() {
       feedStorageDelegate.observeStorageCommand()
             .compose(bindViewToMainComposer())
@@ -224,7 +225,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       boolean noMoreFeeds = freshItems.size() == 0;
       view.updateLoadingStatus(noMoreFeeds);
       view.finishLoading();
-      suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
+      if (!permissionPreviouslyDenied) {
+         suggestPhotoPermission();
+      }
    }
 
    private void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
@@ -232,6 +235,25 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       view.updateLoadingStatus(false);
       view.finishLoading();
    }
+
+   public void refreshFeed() {
+      view.startLoading();
+      feedInteractor.getRefreshAccountFeedPipe().send(new GetAccountFeedCommand.Refresh(filterCircle.getId()));
+   }
+
+   private void suggestPhotoPermission() {
+      permissionDispatcher.requestPermission(PermissionConstants.READ_STORAGE_PERMISSION, false)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber()
+                  .onPermissionDeniedAction(() -> {
+                     permissionPreviouslyDenied = true;
+                     refreshFeedItems();
+                  })
+                  .onPermissionGrantedAction(() ->
+                        suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand())
+                  ));
+   }
+
 
    void subscribeLoadNextFeeds() {
       feedInteractor.getLoadNextAccountFeedPipe()
@@ -287,7 +309,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    public void menuInflated() {
-      view.setRequestsCount(db.getFriendsRequestsCount());
+      userNotificationInteractor.notificationCountChangedPipe().send(new NotificationCountChangedCommand());
       view.setUnreadConversationCount(unreadConversationCount);
    }
 
@@ -422,9 +444,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    }
 
    void subscribeFriendsNotificationsCount() {
-      notificationCountEventDelegate.getObservable().compose(bindViewToMainComposer()).subscribe(event -> {
-         view.setRequestsCount(db.getFriendsRequestsCount());
-      }, throwable -> Timber.w("Can't get friends notifications count"));
+      userNotificationInteractor.notificationCountChangedPipe()
+            .observeSuccess()
+            .compose(bindViewToMainComposer())
+            .subscribe(command -> view.setRequestsCount(command.getFriendNotificationCount()));
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -464,7 +487,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
       void setUnreadConversationCount(int count);
 
-      void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList, boolean shouldShowSuggestions);
+      void refreshFeedItems(@NonNull List<FeedItem> feedItems,
+            @Nullable List<PostCompoundOperationModel> uploadingPostsList, boolean shouldShowSuggestions);
 
       void dataSetChanged();
 

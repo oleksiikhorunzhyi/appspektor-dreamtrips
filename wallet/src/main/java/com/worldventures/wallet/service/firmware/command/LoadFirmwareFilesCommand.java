@@ -88,7 +88,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadExternalAtmelFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (isNewFirmwareAvailable(currentFirmware.externalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
+      if (isNewFirmwareAvailable(currentFirmware.getExternalAtmelVersion(), availableFirmwareVersions.puckAtmelVerstion())) {
          return loadPuckAtmelFirmwareCommandActionPipe
                .createObservableResult(
                      new LoadPuckAtmelFirmwareCommand(fileBundle.puckAtmel(), availableFirmwareVersions.puckAtmelVerstion()))
@@ -100,7 +100,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadAppAtmelFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (isNewFirmwareAvailable(currentFirmware.internalAtmelVersion(), availableFirmwareVersions.atmelVersion())) {
+      if (isNewFirmwareAvailable(currentFirmware.getInternalAtmelVersion(), availableFirmwareVersions.atmelVersion())) {
          return loadAppAtmelFirmwareCommandActionPipe
                .createObservableResult(
                      new LoadAppAtmelFirmwareCommand(fileBundle.appAtmel(), availableFirmwareVersions.atmelVersion()))
@@ -112,7 +112,7 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
 
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadNordicBootloaderFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
-      if (dfuMode || isNewFirmwareAvailable(currentFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
+      if (dfuMode || isNewFirmwareAvailable(currentFirmware.getNrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
          return loadNordicFirmwareCommandActionPipe
                .createObservableResult(
                      new LoadNordicFirmwareCommand(fileBundle.booloaderNordic(), availableFirmwareVersions.bootloaderNordicVersion(), true))
@@ -131,8 +131,8 @@ public class LoadFirmwareFilesCommand extends Command<Void> implements Injectabl
    private Observable<UnzipFirmwareCommand.FirmwareBundle> loadNordicAppFirmware(UnzipFirmwareCommand.FirmwareBundle fileBundle) {
       notifyNewInstallStep();
       //If app must perform a bootloader upgrade, then app MUST ALWAYS perform app nordic upgrade
-      if (dfuMode || isNewFirmwareAvailable(currentFirmware.nordicAppVersion(), availableFirmwareVersions.nordicVersion())
-            || isNewFirmwareAvailable(currentFirmware.nrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
+      if (dfuMode || isNewFirmwareAvailable(currentFirmware.getNordicAppVersion(), availableFirmwareVersions.nordicVersion())
+            || isNewFirmwareAvailable(currentFirmware.getNrfBootloaderVersion(), availableFirmwareVersions.bootloaderNordicVersion())) {
          return loadNordicFirmwareCommandActionPipe
                .createObservableResult(
                      new LoadNordicFirmwareCommand(fileBundle.appNordic(), availableFirmwareVersions.nordicVersion(), false))

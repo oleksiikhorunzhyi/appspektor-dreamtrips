@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;

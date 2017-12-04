@@ -21,13 +21,13 @@ import com.worldventures.wallet.ui.dashboard.impl.CardListScreenImpl;
 import com.worldventures.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.wallet.ui.dashboard.util.model.TransitionModel;
 import com.worldventures.wallet.ui.provisioning_blocked.impl.WalletProvisioningBlockedScreenImpl;
+import com.worldventures.wallet.ui.records.add.RecordBundle;
 import com.worldventures.wallet.ui.records.add.impl.AddCardDetailsScreenImpl;
 import com.worldventures.wallet.ui.records.detail.impl.CardDetailsEnterAnimHandler;
 import com.worldventures.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
-import com.worldventures.wallet.ui.records.model.RecordViewModel;
 import com.worldventures.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.wallet.ui.settings.general.about.impl.AboutScreenImpl;
-import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.download.impl.WalletDownloadFirmwareScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.install.impl.WalletInstallFirmwareScreenImpl;
@@ -52,9 +52,9 @@ import com.worldventures.wallet.ui.settings.general.reset.success.impl.FactoryRe
 import com.worldventures.wallet.ui.settings.help.documents.doc.impl.HelpDocumentDetailScreenImpl;
 import com.worldventures.wallet.ui.settings.help.documents.impl.WalletHelpDocumentsScreenImpl;
 import com.worldventures.wallet.ui.settings.help.documents.model.WalletDocumentModel;
-import com.worldventures.wallet.ui.settings.help.feedback.FeedbackType;
-import com.worldventures.wallet.ui.settings.help.feedback.impl.SendFeedbackScreenImpl;
 import com.worldventures.wallet.ui.settings.help.feedback.payment.impl.PaymentFeedbackScreenImpl;
+import com.worldventures.wallet.ui.settings.help.feedback.regular.FeedbackType;
+import com.worldventures.wallet.ui.settings.help.feedback.regular.impl.SendFeedbackScreenImpl;
 import com.worldventures.wallet.ui.settings.help.impl.WalletHelpSettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.help.support.impl.WalletCustomerSupportSettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.help.video.impl.WalletHelpVideoScreenImpl;
@@ -153,7 +153,7 @@ public class NavigatorImpl implements Navigator {
             routerLazy.get().getBackstack().subList(0, routerLazy.get().getBackstackSize() - 2)
       );
       backstack.add(constructTransaction(new WalletSettingsProfileScreenImpl()));
-      routerLazy.get().setBackstack(backstack, new RevertHorizontalChangeHandler());
+      routerLazy.get().setBackstack(backstack, new HorizontalChangeHandler());
    }
 
    @Override
@@ -172,8 +172,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goAddCard(RecordViewModel recordViewModel) {
-      withoutLast(AddCardDetailsScreenImpl.create(recordViewModel));
+   public void goAddCard(RecordBundle bundle) {
+      withoutLast(AddCardDetailsScreenImpl.create(bundle));
    }
 
    @Override
@@ -375,12 +375,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goSettingsDisplayOptions(DisplayOptionsSource source) {
-      go(DisplayOptionsSettingsScreenImpl.create(source));
+      go(DisplayOptionsSettingsScreenImpl.Companion.create(source));
    }
 
    @Override
    public void goSettingsDisplayOptions(DisplayOptionsSource source, ProfileViewModel profileViewModel) {
-      go(DisplayOptionsSettingsScreenImpl.create(profileViewModel, source));
+      go(DisplayOptionsSettingsScreenImpl.Companion.create(profileViewModel, source));
    }
 
    @Override
@@ -475,12 +475,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goSendCustomerSupportFeedback() {
-      go(SendFeedbackScreenImpl.create(FeedbackType.CustomerSupport));
+      go(SendFeedbackScreenImpl.Companion.create(FeedbackType.CustomerSupport));
    }
 
    @Override
    public void goSendSmartCardFeedback() {
-      go(SendFeedbackScreenImpl.create(FeedbackType.SmartCardFeedback));
+      go(SendFeedbackScreenImpl.Companion.create(FeedbackType.SmartCardFeedback));
    }
 
    @Override
@@ -489,7 +489,7 @@ public class NavigatorImpl implements Navigator {
       try {
          routerLazy.get().getActivity().startActivity(intent);
       } catch (ActivityNotFoundException e) {
-         Timber.e(e, "");
+         Timber.e(e);
       }
    }
 

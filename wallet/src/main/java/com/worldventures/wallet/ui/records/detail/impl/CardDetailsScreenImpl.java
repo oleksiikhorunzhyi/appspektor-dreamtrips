@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.records.detail.impl;
 
-
 import android.databinding.DataBindingUtil;
 import android.databinding.Observable.OnPropertyChangedCallback;
 import android.os.Bundle;
@@ -124,7 +123,7 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
 
    @Override
    public void showDefaultCardDialog(Record defaultRecord) {
-      new ChangeDefaultPaymentCardDialog(getContext(), WalletRecordUtil.bankNameWithCardNumber(defaultRecord))
+      new ChangeDefaultPaymentCardDialog(getContext(), WalletRecordUtil.Companion.bankNameWithCardNumber(defaultRecord))
             .setOnConfirmAction(() -> getPresenter().onChangeDefaultCardConfirmed())
             .setOnCancelAction(() -> getPresenter().onChangeDefaultCardCanceled())
             .show();

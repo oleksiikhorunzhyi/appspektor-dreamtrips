@@ -10,7 +10,7 @@
       tools:showIn="@layout/adapter_item_feed_trip_event"
       >
 
-   <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+   <com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView
          android:id="@+id/feed_header_avatar"
          android:layout_width="48dp"
          android:layout_height="48dp"

@@ -1,8 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
-
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
@@ -30,8 +31,11 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInte
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.BaseMediaCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesAddedCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesRemovedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.UserImagesRemovedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,6 +58,8 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    @Inject TripImagesCommandFactory tripImagesCommandFactory;
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
    @Inject AppConfigurationInteractor appConfigurationInteractor;
+   @Inject PickerPermissionChecker pickerPermissionChecker;
+   @Inject PermissionUtils permissionUtils;
 
    boolean memberImagesAreRefreshing;
    int previousScrolledTotal = 0;
@@ -67,6 +73,15 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
 
    public TripImagesPresenter(TripImagesArgs tripImagesArgs) {
       this.tripImagesArgs = tripImagesArgs;
+   }
+
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      pickerPermissionChecker.registerCallback(
+            this::showMediaPicker,
+            () -> view.showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> view.showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
    }
 
    @Override
@@ -103,7 +118,17 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
       }
    }
 
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
+   }
+
    public void addPhotoClicked() {
+      pickerPermissionChecker.checkPermission();
+   }
+
+   private void showMediaPicker() {
       appConfigurationInteractor.configurationCommandActionPipe()
             .createObservableResult(new ConfigurationCommand())
             .compose(new IoToMainComposer<>())
@@ -313,14 +338,28 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    @Override
-   public void deleteFeedEntity(FeedEntity deletedFeedEntity) {
+   public void deleteFeedEntity(FeedEntity feedEntity) {
       currentItems = (ArrayList<BaseMediaEntity>) Queryable.from(currentItems)
-            .filter(mediaEntity -> !mediaEntity.getItem().getUid().equals(deletedFeedEntity.getUid()))
+            .filter(mediaEntity -> !mediaEntity.getItem().getUid().equals(feedEntity.getUid()))
             .toList();
+      BaseMediaEntity deletedEntity = feedEntity instanceof Photo ? new PhotoMediaEntity() : new VideoMediaEntity();
+      deletedEntity.setItem(feedEntity);
+      switch (tripImagesArgs.getTripImageType()) {
+         case MEMBER_IMAGES:
+            tripImagesInteractor.memberImagesRemovedPipe()
+                  .send(new MemberImagesRemovedCommand(tripImagesArgs, Collections.singletonList(deletedEntity)));
+            break;
+         case ACCOUNT_IMAGES:
+            tripImagesInteractor.userImagesRemovedPipe()
+                  .send(new UserImagesRemovedCommand(tripImagesArgs, Collections.singletonList(deletedEntity)));
+            break;
+      }
+
+
       updateItemsInView();
    }
 
-   public interface View extends Presenter.View {
+   public interface View extends Presenter.View, PermissionUIComponent {
       void scrollToTop();
 
       void openFullscreen(boolean lastPageReached, int index);

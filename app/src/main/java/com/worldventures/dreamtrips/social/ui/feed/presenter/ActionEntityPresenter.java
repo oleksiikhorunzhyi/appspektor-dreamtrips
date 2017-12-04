@@ -74,13 +74,13 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
       createPostBodyInteractor.getPostDescriptionPipe().clearReplays();
       cachedText = action.getResult();
       invalidateDynamicViews();
-      view.setText(cachedText);
+      updateDescription();
    }
 
    protected void updateUi() {
       view.setName(getAccount().getFullName());
       view.setAvatar(getAccount());
-      view.setText(cachedText);
+      updateDescription();
       if (cachedCreationItems.size() != 0) {
          view.attachPhotos(cachedCreationItems);
          invalidateDynamicViews();
@@ -92,6 +92,11 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
                   invalidateDynamicViews();
                }, e -> Timber.e(e, "Something went wrong"));
       }
+   }
+
+   //todo delete this mess after refactoring presenter and creating more flexible hierarchy
+   protected void updateDescription() {
+      view.setText(cachedText);
    }
 
    protected Observable<VideoCreationModel> getVideoMetadata() {

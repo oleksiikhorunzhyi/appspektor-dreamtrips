@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.friends;
 
 import com.messenger.storage.dao.UsersDAO;
-import com.techery.spares.utils.UserStatusAdapter;
-import com.techery.spares.utils.UserStatusDaoAdapter;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.util.UserStatusAdapter;
+import com.worldventures.dreamtrips.social.util.UserStatusDaoAdapter;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendsMainPresenter;

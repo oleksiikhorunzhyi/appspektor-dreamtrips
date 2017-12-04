@@ -37,8 +37,6 @@ public class PlayerActivity extends ActivityWithPresenter<PlayerPresenter> imple
    @InjectView(R.id.retry) protected TextView retry;
    protected AndroidMediaController mediaController;
 
-   private boolean mBackPressed;
-
    private Uri uri;
    private Subscription subscription;
    private PublishSubject<Pair<Long, Long>> videoProgressStream = PublishSubject.create();
@@ -78,23 +76,33 @@ public class PlayerActivity extends ActivityWithPresenter<PlayerPresenter> imple
    @Override
    protected void onStop() {
       super.onStop();
-      if (!subscription.isUnsubscribed()) {
-         subscription.unsubscribe();
-      }
-
-      if (mBackPressed || !videoView.isBackgroundPlayEnabled()) {
-         videoView.stopPlayback();
-         videoView.release(true);
-         videoView.stopBackgroundPlay();
-      } else {
-         videoView.enterBackground();
-      }
+      pausePlayer();
    }
 
    @Override
-   public void onBackPressed() {
-      mBackPressed = true;
-      super.onBackPressed();
+   protected void onStart() {
+      super.onStart();
+      resumePlayer();
+   }
+
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
+      videoView.stopPlayback();
+      videoView.release(true);
+   }
+
+   private void pausePlayer() {
+      if (subscription != null && !subscription.isUnsubscribed()) {
+         subscription.unsubscribe();
+      }
+      videoView.pause();
+   }
+
+   private void resumePlayer() {
+      // resume() method doesn't work, use start() here instead
+      videoView.start();
+      listenProgress();
    }
 
    @Override
@@ -119,15 +127,15 @@ public class PlayerActivity extends ActivityWithPresenter<PlayerPresenter> imple
       if (uri != null) {
          videoView.setVideoURI(uri);
          videoView.start();
-         subscription = listenProgress();
+         listenProgress();
       } else {
          Timber.e("Null Data Source\n");
          finish();
       }
    }
 
-   private Subscription listenProgress() {
-      return Observable.interval(ANALYTIC_CHECKING_INTERVAL, ANALYTIC_CHECKING_INTERVAL, TimeUnit.MILLISECONDS)
+   private void listenProgress() {
+      subscription = Observable.interval(ANALYTIC_CHECKING_INTERVAL, ANALYTIC_CHECKING_INTERVAL, TimeUnit.MILLISECONDS)
             .subscribe(o -> {
                long duration = videoView.getDuration();
                long currentPosition = videoView.getCurrentPosition();

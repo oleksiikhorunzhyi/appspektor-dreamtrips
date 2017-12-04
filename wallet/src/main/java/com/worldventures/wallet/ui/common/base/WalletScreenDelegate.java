@@ -30,7 +30,9 @@ public abstract class WalletScreenDelegate {
    }
 
    public static WalletScreenDelegate create(View container, boolean visibleConnectionSmartCardLabel, boolean visibleHttpConnectionLabel) {
-      if (container instanceof LinearLayout) {
+      if (!visibleConnectionSmartCardLabel && !visibleHttpConnectionLabel) {
+         return new StubWalletScreenDelegate(container);
+      } else if (container instanceof LinearLayout) {
          return new WalletLinearScreenDelegate(container, visibleConnectionSmartCardLabel, visibleHttpConnectionLabel);
       } else if (container instanceof ConstraintLayout) {
          return new WalletConstraintScreenDelegate(container, visibleConnectionSmartCardLabel, visibleHttpConnectionLabel);
@@ -135,6 +137,28 @@ public abstract class WalletScreenDelegate {
       @Override
       public void viewLabelController(View view, boolean connected) {
          // TODO: 5/22/17 Come up with an idea on how to show these labels more nicely
+      }
+   }
+
+   private final static class StubWalletScreenDelegate extends WalletScreenDelegate {
+
+      private StubWalletScreenDelegate(View container) {
+         super(container, false, false);
+      }
+
+      @Override
+      public void viewLabelController(View view, boolean connected) {
+         //do nothing
+      }
+
+      @Override
+      public void showConnectionStatus(ConnectionStatus connectionStatus) {
+         //do nothing
+      }
+
+      @Override
+      public void showHttpConnectionStatus(boolean connected) {
+         //do nothing
       }
    }
 

@@ -28,6 +28,7 @@ import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.model.PickerIrregularPhotoModel;
@@ -40,10 +41,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Action1;
 import rx.functions.Action2;
 
 public class PhotoStripView extends LinearLayout {
+
+   @Inject PermissionUtils permissionUtils;
 
    private static final long TRANSITION_ANIMATE_DURATION = 1000L;
    private static final long SHOWING_MESSAGE_DURATION = 3000L;
@@ -54,6 +59,7 @@ public class PhotoStripView extends LinearLayout {
 
    private Injector injector;
    private EventListener eventListener;
+   private OnVisibilityChangedListener visibilityListener;
 
    private int errorPlankHeight;
 
@@ -78,10 +84,13 @@ public class PhotoStripView extends LinearLayout {
 
    public void setInjector(Injector injector) {
       this.injector = injector;
+      injector.inject(this);
       initializeAdapter();
    }
 
    private void init(@Nullable AttributeSet attrs) {
+      permissionUtils = new PermissionUtils();
+
       Context context = getContext();
       setOrientation(VERTICAL);
       setBackground(new ColorDrawable(getColor(android.R.color.transparent)));
@@ -244,7 +253,7 @@ public class PhotoStripView extends LinearLayout {
    }
 
    public void askUserForPermissions(String[] permissions, Action2<String[], Boolean> userAnswerListener) {
-      if (permissions != PermissionConstants.STORE_PERMISSIONS) {
+      if (!permissionUtils.equals(permissions, PermissionConstants.READ_STORAGE_PERMISSION)) {
          return;
       }
 
@@ -258,6 +267,18 @@ public class PhotoStripView extends LinearLayout {
             .show();
    }
 
+   public void setVisibilityListener(OnVisibilityChangedListener visibilityListener) {
+      this.visibilityListener = visibilityListener;
+   }
+
+   @Override
+   public void setVisibility(int visibility) {
+      super.setVisibility(visibility);
+      if (visibilityListener != null) {
+         visibilityListener.onVisibilityChanged();
+      }
+   }
+
    public interface EventListener {
 
       void photoPickStatusChanged(PhotoPickerModel model);
@@ -268,6 +289,11 @@ public class PhotoStripView extends LinearLayout {
 
       void openCameraRequired();
    }
+
+   public interface OnVisibilityChangedListener {
+      void onVisibilityChanged();
+   }
+
 
 }
 

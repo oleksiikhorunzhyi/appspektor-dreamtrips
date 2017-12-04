@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.newcard.poweron.impl;
 
-
 import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
@@ -51,8 +50,8 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
-                  .onSuccess(command -> getView().setTitleWithSmartCardID(command.getResult().smartCardId()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+                  .onSuccess(command -> getView().setTitleWithSmartCardID(command.getResult().getSmartCardId()))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable))
             );
    }
 
@@ -63,8 +62,9 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
-                  .onSuccess(command -> getView().showConfirmationUnassignOnBackend(command.getResult().smartCardId()))
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+                  .onSuccess(command -> getView().showConfirmationUnassignOnBackend(command.getResult()
+                        .getSmartCardId()))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable))
             );
    }
 
@@ -79,19 +79,19 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
                   .onSuccess(activeSmartCardCommand -> getNavigator().goUnassignSuccess())
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable, ""))
+                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable))
                   .create());
    }
 
    @Override
    public void navigateNext() {
       smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.fetch())
+            .createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
                   .onSuccess(command -> handleConnectionSmartCard(bluetoothService.isEnable(), command.getResult()
-                        .connectionStatus()
+                        .getConnectionStatus()
                         .isConnected()))
                   .onFail((command, throwable) -> getNavigator().goPreCheckNewCard()));
    }
@@ -108,9 +108,4 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
    public void goBack() {
       getNavigator().goBack();
    }
-
-   void retryFactoryReset() {
-      checkPinDelegate.getFactoryResetDelegate().factoryReset();
-   }
-
 }

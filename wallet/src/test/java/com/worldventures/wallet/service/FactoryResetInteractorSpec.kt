@@ -13,19 +13,20 @@ import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.wallet.BaseSpec
+import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
+import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
-import com.worldventures.wallet.model.TestDisassociateResponseBody
-import com.worldventures.wallet.model.TestSmartCardUser
 import com.worldventures.wallet.service.command.FactoryResetCommand
 import com.worldventures.wallet.service.command.reset.ResetOptions
 import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.wallet.service.command.reset.WipeSmartCardDataCommand
 import com.worldventures.wallet.service.lostcard.LostCardRepository
+import com.worldventures.wallet.service.nxt.model.MultiResponseBody
 import com.worldventures.wallet.util.CachedPhotoUtil
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -64,7 +65,7 @@ class FactoryResetInteractorSpec : BaseSpec({
             val smartCardId = "111"
             val smartCard = mockSmartCard(smartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
-            whenever(mockDb.smartCardUser).thenReturn(TestSmartCardUser())
+            whenever(mockDb.smartCardUser).thenReturn(SmartCardUser("FirstName"))
          }
 
          it("Factory Reset without delete payment cards") {
@@ -195,7 +196,7 @@ class FactoryResetInteractorSpec : BaseSpec({
 
       fun mockHttpService(): MockHttpActionService {
          return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200).body(TestDisassociateResponseBody()), { request ->
+               .bind(MockHttpActionService.Response(200).body(MultiResponseBody(emptyList())), { request ->
                   request.url.contains("card_user") && request.method.equals("delete", true)
                })
                .bind(MockHttpActionService.Response(204)) { request ->
@@ -212,13 +213,7 @@ class FactoryResetInteractorSpec : BaseSpec({
 
       fun createSettingsInteractor(janet: Janet) = SettingsInteractor(SessionActionPipeCreator(janet))
 
-      fun mockSmartCard(cardId: String): SmartCard {
-         val mockedSmartCard: SmartCard = mock()
-         whenever(mockedSmartCard.smartCardId()).thenReturn(cardId)
-         whenever(mockedSmartCard.cardStatus()).thenReturn(SmartCard.CardStatus.ACTIVE)
-
-         return mockedSmartCard
-      }
+      fun mockSmartCard(cardId: String) = SmartCard(cardId, CardStatus.ACTIVE, "deviceId")
 
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1)))

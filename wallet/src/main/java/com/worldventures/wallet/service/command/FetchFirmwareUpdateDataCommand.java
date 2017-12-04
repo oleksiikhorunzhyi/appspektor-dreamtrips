@@ -26,10 +26,10 @@ public class FetchFirmwareUpdateDataCommand extends Command<FirmwareUpdateData> 
       final FirmwareUpdateData cachedFirmwareUpdateData = firmwareRepository.getFirmwareUpdateData();
 
       smartCardInteractor.smartCardFirmwarePipe()
-            .createObservableResult(SmartCardFirmwareCommand.fetch())
+            .createObservableResult(SmartCardFirmwareCommand.Companion.fetch())
             .map(Command::getResult)
             .flatMap(smartCardFirmware -> {
-               if (!cachedFirmwareUpdateData.firmwareInfo().isCompatible()) {
+               if (!cachedFirmwareUpdateData.getFirmwareInfo().isCompatible()) {
                   return firmwareInteractor.fetchFirmwareInfoPipe()
                         .createObservableResult(new FetchFirmwareInfoCommand(smartCardFirmware, true, true))
                         .map(FetchFirmwareInfoCommand::getResult);

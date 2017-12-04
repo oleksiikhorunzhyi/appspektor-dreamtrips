@@ -17,6 +17,7 @@
          android:background="@android:color/white"
          android:orientation="vertical"
          android:theme="@style/WalletTheme"
+         android:paddingBottom="16dp"
          >
 
       <TextView
@@ -52,10 +53,8 @@
             style="@style/WalletTheme.PaymentFeedbackEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
             android:drawableEnd="@drawable/ic_wallet_vector_pencil"
             android:hint="@string/wallet_payment_feedback_enter_name_model_hint"
             android:text="@={paymentTerminal.terminalNameModel}"
@@ -63,79 +62,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView17"
             />
-
-      <TextView
-            android:id="@+id/textView18"
-            style="@style/WalletTheme.PaymentFeedbackSecondaryText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/wallet_payment_feedback_how_pay_label"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_terminal_name_model"
-            />
-
-      <RadioGroup
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView18"
-            app:layout_constraintVertical_bias="0.0"
-            >
-
-         <RadioButton
-               android:id="@+id/rb_magnetic_swipe"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:checked="@={paymentTerminal.magneticSwipe}"
-               android:text="@string/wallet_payment_feedback_magnetic_swipe_label"
-               android:textSize="@dimen/font_normal"
-               app:buttonTint="?attr/colorPrimary"
-               />
-
-         <TextView
-               style="@style/WalletTheme.PaymentFeedbackSecondaryText"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:paddingStart="@dimen/spacing_extra_large"
-               android:paddingEnd="0dp"
-               android:text="@string/wallet_payment_feedback_magnetic_swipe_description"
-               android:textSize="@dimen/font_medium"
-               />
-
-         <RadioButton
-               android:id="@+id/rb_wireless_magnetic"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:checked="@{!paymentTerminal.magneticSwipe}"
-               android:text="@string/wallet_payment_feedback_wireless_magnetic_label"
-               android:textSize="@dimen/font_normal"
-               app:buttonTint="?attr/colorPrimary"
-               />
-
-         <TextView
-               style="@style/WalletTheme.PaymentFeedbackSecondaryText"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:paddingStart="@dimen/spacing_extra_large"
-               android:paddingEnd="0dp"
-               android:text="@string/wallet_payment_feedback_wireless_magnetic_description"
-               android:textSize="@dimen/font_medium"
-               />
-
-      </RadioGroup>
 
    </android.support.constraint.ConstraintLayout>
 </layout>

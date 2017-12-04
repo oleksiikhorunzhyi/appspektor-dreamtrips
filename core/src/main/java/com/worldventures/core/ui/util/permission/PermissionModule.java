@@ -15,4 +15,10 @@ public class PermissionModule {
    PermissionDispatcher providePermissionDispatcher(Activity activity) {
       return new PermissionDispatcher(activity);
    }
+
+   @Provides
+   PermissionUtils providePermissionUtil() {
+      return new PermissionUtils();
+   }
+
 }

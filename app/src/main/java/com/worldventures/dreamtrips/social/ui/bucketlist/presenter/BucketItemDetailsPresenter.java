@@ -3,17 +3,14 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.DiningItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.BucketItemAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.analytics.BucketItemViewedAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.TranslateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.model.ImmutableBucketBodyImpl;
-import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedEntityHolder;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedEntityHolderDelegate;
@@ -28,16 +25,15 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<BucketItemDetailsPresenter.View, BucketPhoto>
       implements FeedEntityHolder {
 
-   public BucketItemDetailsPresenter(BucketBundle bundle) {
-      super(bundle);
+   public BucketItemDetailsPresenter(BucketItem.BucketType type, BucketItem bucketItem, int ownerId) {
+      super(type, bucketItem, ownerId);
    }
 
    @Inject TranslationFeedInteractor translationInteractor;
-   @Inject BucketInteractor bucketInteractor;
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
 
    @Override
-   public void takeView(View view) {
+   public void onViewTaken() {
       super.takeView(view);
       analyticsInteractor.analyticsActionPipe().send(new BucketItemViewedAction());
       subscribeToTranslations();
@@ -56,7 +52,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
          if (!TextUtils.isEmpty(bucketItem.getType())) {
             view.setCategory(bucketItem.getCategoryName());
          }
-         view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
+         view.setPlace(bucketItemInfoHelper.getPlace(bucketItem));
          view.setupDiningView(bucketItem.getDining());
          view.setGalleryEnabled(photos != null && !photos.isEmpty());
       }
@@ -71,7 +67,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
       }
    }
 
-   private void subscribeToTranslations() {
+   void subscribeToTranslations() {
       translationInteractor.translateBucketItemPipe()
             .observe()
             .compose(bindViewToMainComposer())
@@ -80,12 +76,12 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
                   .onFail(this::translationFailed));
    }
 
-   private void translationSucceed(TranslateBucketItemCommand command) {
+   void translationSucceed(TranslateBucketItemCommand command) {
       bucketItem = command.getResult();
       view.setBucketItem(bucketItem);
    }
 
-   private void translationFailed(TranslateBucketItemCommand command, Throwable e) {
+   void translationFailed(TranslateBucketItemCommand command, Throwable e) {
       handleError(command, e);
       view.setBucketItem(bucketItem);
    }

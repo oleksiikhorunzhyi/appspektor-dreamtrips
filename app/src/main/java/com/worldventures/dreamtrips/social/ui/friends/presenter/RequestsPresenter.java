@@ -41,7 +41,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
    @Inject CirclesInteractor circlesInteractor;
    @Inject FriendsInteractor friendsInteractor;
-   @Inject SnappyRepository db;
+   @Inject SnappyRepository snappyRepository;
 
    private int currentPage = 1;
    private int acceptedRequestsCount = 0;
@@ -111,7 +111,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
    }
 
    private int getFriendsRequestsCount() {
-      return db.getFriendsRequestsCount();
+      return snappyRepository.getFriendsRequestsCount();
    }
 
    public void loadNext() {

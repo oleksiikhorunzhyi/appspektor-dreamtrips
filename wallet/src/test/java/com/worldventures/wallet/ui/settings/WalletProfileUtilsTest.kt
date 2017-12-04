@@ -10,7 +10,7 @@ class WalletProfileUtilsTest {
 
    @Test
    fun equalsPhoneTest() {
-      val phone = SmartCardUserPhone.of("+38", "0676776767")
+      val phone = SmartCardUserPhone("+38", "0676776767")
 
       assertTrue(equalsPhone(phone, "+38", "0676776767"))
       assertFalse(equalsPhone(phone, "+38", "00000000"))

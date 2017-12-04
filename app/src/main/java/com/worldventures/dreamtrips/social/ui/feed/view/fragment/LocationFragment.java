@@ -11,12 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.api.Status;
 import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
-import com.worldventures.core.ui.util.permission.PermissionConstants;
-import com.worldventures.core.ui.util.permission.PermissionDispatcher;
-import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -39,7 +37,6 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
    private static final int REQUEST_CHECK_SETTINGS = 65001;
 
    @Inject ActivityResultDelegate activityResultDelegate;
-   @Inject PermissionDispatcher permissionDispatcher;
 
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.input_location) EditText input;
@@ -97,8 +94,7 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
             obtainedLocation = location;
             setInputLocation(obtainedLocation.getName());
          }
-      }, e -> {
-      });
+      }, e -> hideProgress());
    }
 
    private void initToolbar() {
@@ -215,15 +211,6 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
    }
 
    @Override
-   public void checkPermissions() {
-      permissionDispatcher.requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
-            .compose(this::bind)
-            .subscribe(new PermissionSubscriber().onPermissionDeniedAction(this::showDeniedForLocation)
-                  .onPermissionGrantedAction(this::locationPermissionGranted)
-                  .onPermissionRationaleAction(this::showRationaleForLocation));
-   }
-
-   @Override
    public void resolutionRequired(Status status) {
       try {
          status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
@@ -232,15 +219,20 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
       }
    }
 
-   void locationPermissionGranted() {
-      getPresenter().onPermissionGranted();
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      Snackbar.make(getView(), R.string.no_permission_location_for_attach_location_on_post, Snackbar.LENGTH_SHORT).show();
    }
 
-   void showRationaleForLocation() {
-      Snackbar.make(getView(), R.string.permission_location_rationale, Snackbar.LENGTH_SHORT).show();
-   }
-
-   void showDeniedForLocation() {
-      Snackbar.make(getView(), R.string.no_location_permission, Snackbar.LENGTH_SHORT).show();
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.permission_location_for_attach_location_on_post)
+            .positiveText(R.string.dialog_ok)
+            .negativeText(R.string.dialog_cancel)
+            .onPositive((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(true))
+            .onNegative((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(false))
+            .cancelable(false)
+            .show();
    }
 }

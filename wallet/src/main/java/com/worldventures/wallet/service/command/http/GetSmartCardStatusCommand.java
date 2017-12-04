@@ -18,7 +18,7 @@ public class GetSmartCardStatusCommand extends Command<SmartCardStatus> implemen
    @Inject SystemPropertiesProvider propertiesProvider;
 
    public final String barcode;
-   private String smartCardId;
+   private String smartCardId = ""; // todo: getSmartCardId is non-null method
 
    public GetSmartCardStatusCommand(String barcode) {
       this.barcode = barcode;

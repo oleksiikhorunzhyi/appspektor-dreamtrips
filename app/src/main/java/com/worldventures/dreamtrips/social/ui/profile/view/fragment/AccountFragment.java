@@ -6,25 +6,33 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.model.User;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.social.ui.activity.FeedActivity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.presenter.AccountPresenter;
+import com.worldventures.dreamtrips.util.SocialCropImageManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 @Layout(R.layout.fragment_account)
 @MenuResource(R.menu.menu_empty)
 public class AccountFragment extends ProfileFragment<AccountPresenter> implements AccountPresenter.View {
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @Override
    protected AccountPresenter createPresenter(Bundle savedInstanceState) {
@@ -123,6 +131,20 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
       } else {
          profileToolbar.setNavigationIcon(R.drawable.back_icon);
          profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+      }
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
       }
    }
 

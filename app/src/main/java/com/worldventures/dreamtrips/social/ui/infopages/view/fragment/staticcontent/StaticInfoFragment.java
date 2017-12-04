@@ -28,7 +28,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
+import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.infopages.StaticPageProvider;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
@@ -45,7 +46,6 @@ import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteracto
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.WebViewFragmentPresenter;
-import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;

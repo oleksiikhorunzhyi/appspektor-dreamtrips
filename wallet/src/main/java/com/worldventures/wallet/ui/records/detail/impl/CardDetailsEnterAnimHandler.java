@@ -20,6 +20,7 @@ public class CardDetailsEnterAnimHandler extends AnimatorChangeHandler {
    private static final long CARD_TRANSITION_DURATION = 350;
    private TransitionModel transitionModel;
 
+   @SuppressWarnings("unused")
    public CardDetailsEnterAnimHandler() {
       super(CARD_TRANSITION_DURATION);
    }
@@ -29,13 +30,13 @@ public class CardDetailsEnterAnimHandler extends AnimatorChangeHandler {
       this.transitionModel = transitionModel;
    }
 
+   @NonNull
    @Override
    protected Animator getAnimator(@NonNull ViewGroup container, View from, View to, boolean isPush, boolean toAddedToContainer) {
       final View controlsLayout = to.findViewById(R.id.controls_layout);
       final View cardView = to.findViewById(R.id.card);
       final float y = calcTargetTranslationY(transitionModel, cardView);
 
-      cardView.setVisibility(View.VISIBLE);
       controlsLayout.setAlpha(0);
       cardView.setTranslationY(y);
 
@@ -67,6 +68,4 @@ public class CardDetailsEnterAnimHandler extends AnimatorChangeHandler {
       int marginTop = ((ViewGroup) view.getParent()).getPaddingTop();
       return params.getTop() + marginTop + params.getOverlap();
    }
-
-
 }

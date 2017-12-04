@@ -56,7 +56,7 @@ public class WalletHelpVideoDelegate {
    }
 
    private String getDefaultLocaleName() {
-      return Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase();
+      return Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry().toLowerCase(Locale.US);
    }
 
    public String getPathForCache(final CachedModel entity) {

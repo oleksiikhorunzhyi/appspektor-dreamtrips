@@ -1,7 +1,6 @@
 package com.worldventures.wallet.domain.converter;
 
 import com.worldventures.core.converter.Converter;
-import com.worldventures.wallet.service.nxt.model.ImmutableNxtSession;
 import com.worldventures.wallet.service.nxt.model.NxtSession;
 
 import io.techery.mappery.MapperyContext;
@@ -20,8 +19,6 @@ class NxtSessionConverter implements Converter<com.worldventures.dreamtrips.api.
 
    @Override
    public NxtSession convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.smart_card.nxt.model.NxtSession nxtSession) {
-      return ImmutableNxtSession.builder()
-            .token(nxtSession.token())
-            .build();
+      return new NxtSession(nxtSession.token());
    }
 }

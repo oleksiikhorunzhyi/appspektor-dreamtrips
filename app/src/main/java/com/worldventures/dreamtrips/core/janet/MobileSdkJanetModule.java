@@ -84,13 +84,18 @@ public class MobileSdkJanetModule {
 
    @Provides
    @Named(NON_API_QUALIFIER)
-   HttpActionService provideNonApiService(@Named(API_QUALIFIER) Set<Interceptor> interceptors) {
+   HttpActionService provideNonApiService(@Named(API_QUALIFIER) Set<Interceptor> interceptors,
+         Set<TypeAdapterFactory> adapterFactories) {
       final GsonBuilder gsonBuilder = new GsonBuilder()
             .setExclusionStrategies(new SerializedNameExclusionStrategy())
             //
             .registerTypeAdapterFactory(new SmartEnumTypeAdapterFactory("unknown"))
             .registerTypeAdapter(Date.class, new DateTimeSerializer())
             .registerTypeAdapter(Date.class, new DateTimeDeserializer());
+
+      for (TypeAdapterFactory factory : adapterFactories) {
+         gsonBuilder.registerTypeAdapterFactory(factory);
+      }
 
       OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
       Queryable.from(interceptors).forEachR(okHttpClientBuilder::addInterceptor);

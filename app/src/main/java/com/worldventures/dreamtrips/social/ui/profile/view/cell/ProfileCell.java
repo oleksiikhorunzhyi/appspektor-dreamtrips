@@ -143,19 +143,8 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
       }
       divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL) ? View.GONE : View.VISIBLE);
 
-      if (featureManager.available(Feature.TRIP_IMAGES)) {
-         setTripImagesCount(user.getTripImagesCount());
-      } else {
-         tripImages.setVisibility(View.GONE);
-         divider2.setVisibility(View.GONE);
-      }
-
-      if (featureManager.available(Feature.BUCKET_LIST)) {
-         setBucketItemsCount(user.getBucketListItemsCount());
-      } else {
-         buckets.setVisibility(View.GONE);
-         divider3.setVisibility(View.GONE);
-      }
+      setTripImagesCount(user.getTripImagesCount());
+      setBucketItemsCount(user.getBucketListItemsCount());
 
       if (!TextUtils.isEmpty(user.getCompany())) {
          companyName.setVisibility(View.VISIBLE);

@@ -25,7 +25,9 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
          view.showTransactionFailedMessage();
       }
       view.hideReviewMerchant();
-      view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()), thrstPaymentBundle.getSubTotalAmount(), thrstPaymentBundle.getTaxAmount(), thrstPaymentBundle.getTipAmount());
+      view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()), thrstPaymentBundle.getSubTotalAmount(),
+            thrstPaymentBundle.getTaxAmount(), thrstPaymentBundle.getTipAmount(), thrstPaymentBundle.getCurrencyCode(),
+            thrstPaymentBundle.getCurrencySymbol());
       view.setEarnedPoints(Integer.valueOf(thrstPaymentBundle.getEarnedPoints()));
       view.setReceiptURL(thrstPaymentBundle.getReceiptURL());
       view.showDoneButton();
@@ -38,7 +40,8 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
    public interface View extends RxView {
 
-      void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount);
+      void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount,
+            String currencyCode, String currencySymbol);
 
       void showTransactionSuccessfulMessage();
 

@@ -33,6 +33,8 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
       transactionModel.setTransactionDate(detailTransactionThrst.date());
       transactionModel.setThrstPaymentStatus(mapPaymentStatus(detailTransactionThrst.paymentStatus()));
       transactionModel.setTrhstTransaction(detailTransactionThrst.isThrstTransaction());
+      transactionModel.setCurrencySymbol(detailTransactionThrst.currencySymbol());
+      transactionModel.setCurrenyCode(detailTransactionThrst.currencyCode());
       return transactionModel;
    }
 

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.innahema.collections.query.functions.Action1;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.CommandWithError;
@@ -53,7 +55,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       reloadRequests();
    }
 
-   private void observeRequests() {
+   @VisibleForTesting
+   public void observeRequests() {
       friendsInteractor.getRequestsPipe()
             .observe()
             .compose(bindViewToMainComposer())
@@ -122,7 +125,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       view.openUser(new UserBundle(user));
    }
 
-   private Observable<ActionState<GetCirclesCommand>> getCirclesObservable() {
+   @VisibleForTesting
+   public Observable<ActionState<GetCirclesCommand>> getCirclesObservable() {
       return circlesInteractor.pipe()
             .createObservable(new GetCirclesCommand())
             .observeOn(AndroidSchedulers.mainThread())
@@ -201,7 +205,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       deleteRequest(user, DeleteFriendRequestCommand.Action.CANCEL);
    }
 
-   private void deleteRequest(User user, DeleteFriendRequestCommand.Action actionType) {
+   @VisibleForTesting
+   public void deleteRequest(User user, DeleteFriendRequestCommand.Action actionType) {
       friendsInteractor.deleteRequestPipe()
             .createObservable(new DeleteFriendRequestCommand(user, actionType))
             .compose(bindView())
@@ -218,7 +223,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
       view.getAdapter().remove(user);
    }
 
-   private void allFriendRequestsAccepted() {
+   @VisibleForTesting
+   public void allFriendRequestsAccepted() {
       acceptedRequestsCount = getFriendsRequestsCount();
       List<User> outgoingUsers = Queryable.from(view.getAdapter().getItems())
             .filter(item -> item instanceof User)
@@ -249,6 +255,11 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
    public void onAddFriendsPressed() {
       analyticsInteractor.analyticsActionPipe().send(FriendsAnalyticsAction.addFriends());
       analyticsInteractor.analyticsActionPipe().send(FriendsAnalyticsAction.searchFriends());
+   }
+
+   @VisibleForTesting()
+   public int getCurrentPage() {
+      return currentPage;
    }
 
    public interface View extends Presenter.View, BlockingProgressView {

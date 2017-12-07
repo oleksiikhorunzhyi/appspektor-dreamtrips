@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -38,7 +40,8 @@ public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmo
    @InjectView(R.id.receipt) SimpleDraweeView receipt;
    @InjectView(R.id.info) TextView info;
    //
-   @Inject @Named(FragmentClassProviderModule.DTL_TRANSACTION) FragmentClassProvider<DtlTransaction> fragmentClassProvider;
+   @Inject @Named(FragmentClassProviderModule.DTL_TRANSACTION)
+   FragmentClassProvider<DtlTransaction> fragmentClassProvider;
    //
    private DtlEnrollWizard dtlEnrollWizard;
 
@@ -96,4 +99,12 @@ public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmo
    public void attachDtPoints(int count) {
       dtPoints.setText(String.format("+%dpt", count));
    }
+
+   @Override
+   public void setMinimalAmount(double minimalAmount, Currency currency) {
+      String minAmount = String.format(Locale.US, "%.2f", minimalAmount);
+      info.setText(getString(R.string.dtl_estimator_explanation_to_earn_points, String.format("%s%s %s", currency.prefix(),
+            minAmount, currency.suffix())));
+   }
+
 }

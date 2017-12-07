@@ -50,7 +50,6 @@
    <string name="dtl_details_share_title">Voy a ganar puntos Dreamtrips en %1$s</string>
    <string name="dtl_wait_for_receipt">Espera… Cargando recibo</string>
    <string name="dtl_wait_for_earn">Espera… Ganando puntos</string>
-   <string name="dtl_estimator_explanation">Los puntos se calculan en función de una cantidad mínima gastada en un comerciante y del día de la semana</string>
    <string name="dtl_photo_upload_error">Error al cargar. Si el problema persiste, comunícate con el servicio de Atención a los miembros</string>
    <string name="dtl_open_now">Abierto ahora</string>
    <string name="dtl_closed_now">Cerrado ahora</string>

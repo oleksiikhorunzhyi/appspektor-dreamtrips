@@ -76,6 +76,7 @@ public abstract class Merchant implements Serializable {
    public abstract Boolean useThrstFlow();
    @Nullable
    public abstract String thrstFullCapabilityUrl();
+   public abstract Double earnPointsMinSpendLocalCurrency();
 
    @Value.Derived
    public MerchantAttributes asMerchantAttributes() {

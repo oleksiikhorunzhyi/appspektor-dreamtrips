@@ -50,7 +50,6 @@
    <string name="dtl_details_share_title">Voi câștiga puncte Dreamtrips în %1$s</string>
    <string name="dtl_wait_for_receipt">Așteptați… Se încarcă nota de plată</string>
    <string name="dtl_wait_for_earn">Așteptați… Se colectează punctele</string>
-   <string name="dtl_estimator_explanation">Punctele se calculează în funcție de suma minimă cheltuită la comerciant și de ziua săptămânii</string>
    <string name="dtl_photo_upload_error">Eroare de încărcare. Dacă problema persistă, contactați asistența pentru membri.</string>
    <string name="dtl_open_now">Acum este deschis</string>
    <string name="dtl_closed_now">Acum este închis</string>

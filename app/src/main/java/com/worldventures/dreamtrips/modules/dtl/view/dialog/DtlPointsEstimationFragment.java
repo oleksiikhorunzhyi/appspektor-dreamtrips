@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.CurrencyDTEditText;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import butterknife.InjectView;
@@ -68,6 +70,13 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
    }
 
    @Override
+   public void setMinimalAmount(double minimalAmount, Currency currency) {
+      String minAmount = String.format(Locale.US, "%.2f", minimalAmount);
+      info.setText(getString(R.string.dtl_estimator_explanation_to_earn_points, String.format("%s%s %s", currency.prefix(),
+            minAmount, currency.suffix())));
+   }
+
+   @Override
    public void onDestroyView() {
       inputPoints.removeTextChangedListener(textWatcherAdapter);
       inputPoints.setOnEditorActionListener(null);
@@ -90,11 +99,13 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
 
    @Override
    public void showError(@StringRes int errorRes) {
+      hideProgress();
       inputPoints.setError(getString(errorRes));
    }
 
    @Override
    public void showError(String error) {
+      hideProgress();
       inputPoints.setError(error);
    }
 

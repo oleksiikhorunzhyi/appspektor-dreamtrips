@@ -22,6 +22,7 @@ public class DtlScanReceiptErrorAdapter extends DtlApiErrorViewAdapter {
    public void showError(Throwable exception) {
       if (isUnprocessableEntityError(exception)) {
          JanetActionException janetActionException = (JanetActionException) exception;
+         dialogView.hideProgress();
          dialogView.showErrorDialog(errorHandlingUtils.handleJanetHttpError(janetActionException.getAction(), exception,
                context.getString(R.string.smth_went_wrong), context.getString(R.string.no_connection)));
       } else {

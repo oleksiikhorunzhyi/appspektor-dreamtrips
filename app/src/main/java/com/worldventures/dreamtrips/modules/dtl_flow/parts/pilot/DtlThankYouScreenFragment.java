@@ -108,11 +108,12 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    }
 
    @Override
-   public void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount) {
-      mMoneyCharged.setText(CurrencyUtils.toCurrency(money));
-      tvSubTotal.setText(CurrencyUtils.toCurrency(subTotal));
-      tvTax.setText(CurrencyUtils.toCurrency(taxAmount));
-      tvTip.setText(CurrencyUtils.toCurrency(tipAmount));
+   public void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount,
+         String currencyCode, String currencySymbol) {
+      mMoneyCharged.setText(CurrencyUtils.toCurrency(money, currencyCode, currencySymbol));
+      tvSubTotal.setText(CurrencyUtils.toCurrency(subTotal, currencyCode, currencySymbol));
+      tvTax.setText(CurrencyUtils.toCurrency(taxAmount, currencyCode, currencySymbol));
+      tvTip.setText(CurrencyUtils.toCurrency(tipAmount, currencyCode, currencySymbol));
    }
 
    @Override

@@ -12,6 +12,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +162,9 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          setPaymentStatusIcon(transactionModel);
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
-         subtotal.setText(context.getString(R.string.dtl_subtotal, transactionModel.getSubTotalAmount()));
+         subtotal.setText(context.getString(R.string.dtl_subtotal,
+               CurrencyUtils.toCurrency(transactionModel.getSubTotalAmount(), transactionModel.getCurrenyCode(),
+                     transactionModel.getCurrencySymbol())));
       }
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {

@@ -50,7 +50,6 @@
    <string name="dtl_details_share_title">Jag tjänade just Dreamtrips-poäng på %1$s</string>
    <string name="dtl_wait_for_receipt">Vänta… Laddar upp kvitto</string>
    <string name="dtl_wait_for_earn">Vänta… Samlar in poäng</string>
-   <string name="dtl_estimator_explanation">Poängen beräknas baseras på det minsta belopp som spenderas hos återförsäljaren samt veckodag</string>
    <string name="dtl_photo_upload_error">Fel vid överföring. Kontakta medlemsservice om problemet kvarstår</string>
    <string name="dtl_open_now">Öppet</string>
    <string name="dtl_closed_now">Stängt</string>

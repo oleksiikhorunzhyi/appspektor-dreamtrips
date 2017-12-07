@@ -105,10 +105,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    private void bindApiJob() {
       transactionInteractor.estimatePointsActionPipe()
             .observe()
-            .takeUntil(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.FAIL)
+            .takeUntil(state -> state.status == ActionState.Status.SUCCESS)
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>().onStart(action -> view.showProgress())
-                  .onFail(apiErrorViewAdapter::handleError)
+            .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>()
+                  .onStart(action -> view.showProgress())
                   .onSuccess(action -> attachDtPoints(action.estimatedPoints().points())));
    }
 
@@ -126,8 +126,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                         .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
                         .build())))
             .compose(bindViewIoToMainComposer())
-            .subscribe(action -> {
-            }, apiErrorViewAdapter::showError);
+            .subscribe(action -> {}, throwable -> apiErrorViewAdapter.showError(throwable));
    }
 
    private void attachDtPoints(Double points) {

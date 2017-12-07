@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -141,11 +142,10 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @Override
    public void showErrorDialog(String error) {
       SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
-      alertDialog.setTitleText(error);
+      alertDialog.setTitleText(getString(R.string.dtl_estimator_error_title));
+      alertDialog.setContentText(error);
       alertDialog.setConfirmText(getActivity().getString(R.string.ok));
-      alertDialog.setConfirmClickListener(listener -> {
-         listener.dismiss();
-      });
+      alertDialog.setConfirmClickListener(Dialog::dismiss);
       alertDialog.show();
    }
 

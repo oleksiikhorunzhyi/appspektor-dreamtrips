@@ -37,6 +37,7 @@ public class YsbhViewPagerPresenter extends BaseImageViewPagerPresenter<BaseImag
    protected void initItems() {
       tripImagesInteractor.ysbhPhotosPipe()
             .createObservableResult(GetYSBHPhotosCommand.cachedCommand())
+            .compose(bindViewToMainComposer())
             .map(Command::getResult)
             .subscribe(items -> {
                currentItems = items;

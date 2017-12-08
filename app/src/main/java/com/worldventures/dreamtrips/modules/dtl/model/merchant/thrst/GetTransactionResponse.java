@@ -26,7 +26,5 @@ public interface GetTransactionResponse extends Serializable {
    @Nullable Double tax();
    @Nullable Double tip();
    @Nullable Double subTotal();
-   @Nullable String currencyCode();
-   @Nullable String currencySymbol();
 
 }

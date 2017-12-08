@@ -11,6 +11,9 @@ public final class CurrencyUtils {
    }
 
    public static String toCurrency(double amount, String currencyCode, String currencySymbol) {
+      if (currencyCode == null || currencySymbol == null) {
+         return toCurrency(amount);
+      }
       NumberFormat format = NumberFormat.getCurrencyInstance();
       format.setMaximumFractionDigits(2);
       Currency currency = Currency.getInstance(currencyCode);
@@ -21,4 +24,8 @@ public final class CurrencyUtils {
       return format.format(amount);
    }
 
+   public static String toCurrency(double amount) {
+      NumberFormat format = NumberFormat.getCurrencyInstance();
+      return format.format(amount);
+   }
 }

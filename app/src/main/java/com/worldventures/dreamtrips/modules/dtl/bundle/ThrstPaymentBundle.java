@@ -16,12 +16,10 @@ public class ThrstPaymentBundle implements Parcelable {
    private final double subTotalAmount;
    private final double taxAmount;
    private final double tipAmount;
-   private final String currencyCode;
-   private final String currencySymbol;
 
    public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount,
          String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount,
-         double taxAmount, double tipAmount, String currencyCode, String currencySymbol) {
+         double taxAmount, double tipAmount) {
       this.merchant = merchant;
       this.isPaid = isPaid;
       this.totalAmount = totalAmount;
@@ -31,8 +29,6 @@ public class ThrstPaymentBundle implements Parcelable {
       this.subTotalAmount = subTotalAmount;
       this.taxAmount = taxAmount;
       this.tipAmount = tipAmount;
-      this.currencyCode = currencyCode;
-      this.currencySymbol = currencySymbol;
    }
 
    public Merchant getMerchant() {
@@ -71,14 +67,6 @@ public class ThrstPaymentBundle implements Parcelable {
       return tipAmount;
    }
 
-   public String getCurrencyCode() {
-      return currencyCode;
-   }
-
-   public String getCurrencySymbol() {
-      return currencySymbol;
-   }
-
    ///////////////////////////////////////////////////////////////////////////
    // Parcelable part
    ///////////////////////////////////////////////////////////////////////////
@@ -93,8 +81,6 @@ public class ThrstPaymentBundle implements Parcelable {
       subTotalAmount = in.readDouble();
       taxAmount = in.readDouble();
       tipAmount = in.readDouble();
-      currencyCode = in.readString();
-      currencySymbol = in.readString();
    }
 
    @Override
@@ -108,8 +94,6 @@ public class ThrstPaymentBundle implements Parcelable {
       dest.writeDouble(subTotalAmount);
       dest.writeDouble(taxAmount);
       dest.writeDouble(tipAmount);
-      dest.writeString(currencyCode);
-      dest.writeString(currencySymbol);
    }
 
    public static final Creator<ThrstPaymentBundle> CREATOR = new Creator<ThrstPaymentBundle>() {

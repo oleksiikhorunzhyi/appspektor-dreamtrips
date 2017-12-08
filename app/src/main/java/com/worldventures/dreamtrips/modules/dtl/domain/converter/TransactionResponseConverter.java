@@ -35,8 +35,6 @@ public class TransactionResponseConverter implements Converter<GetTransactionRes
             .subTotal(pilot.subTotal())
             .tax(pilot.tax())
             .tip(pilot.tip())
-            .currencyCode(pilot.currencyCode())
-            .currencySymbol(pilot.currencySymbol())
             .build();
    }
 }

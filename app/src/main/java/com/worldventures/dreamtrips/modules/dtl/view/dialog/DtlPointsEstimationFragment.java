@@ -74,6 +74,7 @@ public class DtlPointsEstimationFragment extends RxBaseFragmentWithArgs<DtlPoint
       String minAmount = String.format(Locale.US, "%.2f", minimalAmount);
       info.setText(getString(R.string.dtl_estimator_explanation_to_earn_points, String.format("%s%s %s", currency.prefix(),
             minAmount, currency.suffix())));
+      info.append("\n");
    }
 
    @Override

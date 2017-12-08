@@ -98,7 +98,6 @@
    <string name="library">Bibliotek</string>
 
 
-
    <string name="nav_back">Tillbaka</string>
 
    <string name="logout_component">Logga ut</string>
@@ -148,6 +147,8 @@
 
    <string name="beta_label">Beta</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">Behöver tillåtelse att läsa av lagret för att föreslå mediainnehåll</string>
+
+   
+
 </resources>

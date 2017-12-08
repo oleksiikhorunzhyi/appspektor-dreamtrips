@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
+   <string name="dtl_subtotal">Υποσύνολο: %1$s</string>
    <string name="dtl_locations_title">Επιλέξτε την τοποθεσία</string>
    <string name="dtl_locations_try_search">Δεν μπορέσαμε να εντοπίσουμε Πόλη σε κοντινή απόσταση.\nΔοκιμάστε την αναζήτηση πόλεων</string>
    <string name="dtl_near_me_caption">Κοντά μου</string>
@@ -33,6 +34,7 @@
    <string name="dtl_barcode_title">Σάρωση κωδικού QR</string>
    <string name="dtl_barcode_merchant">Σάρωση κωδικού εμπόρου</string>
    <string name="dtl_scan_receipt_screen_title">Eισάγετε Υποσύνολο</string>
+   <string name="dtl_thrst_scan_receipt_screen_title">Σάρωση απόδειξης</string>
    <string name="dtl_scan_receipt_input_caption"> Eισάγετε Υποσύνολο (Ποσό χωρίς Φ.Π.Α &amp; φιλοδώρημα)</string>
    <string name="dtl_congrats">Συγχαρητήρια!</string>
    <string name="dtl_you_earned">Έχετε κερδίσει</string>
@@ -43,6 +45,7 @@
    <string name="dtl_total_amount">Συνολικό ποσό:</string>
    <string name="dtl_verify_earn_hint">Μπορείτε να κερδίσετε </string>
    <string name="dtl_check_in">Δηλώστε παρουσία &amp; κερδίστε</string>
+   <string name="dtl_pay">Πληρώστε &amp; κερδίστε</string>
    <string name="dtl_earn">Κερδίστε</string>
    <string name="dtl_dt_points">%1$d DreamTrips Πόντοι</string>
    <string name="suggest_merchant">Προτείνετε Εμπορικό Κατάστημα</string>
@@ -64,7 +67,9 @@
    <string name="everyday">Καθημερινά</string>
    <string name="perks_terms">Όροι &amp; Προϋποθέσεις</string>
    <string name="perks_formatted">%1$d Δώρα</string>
-   <string name="dtl_show_offers_only">Δείξε μόνο προσφορές</string>
+   <string name="dtl_show_offers_only">Μόνο προσφορές</string>
+   <string name="dtl_show_transaction">Συναλλαγές</string>
+   <string name="dtl_show_transaction_toolbar">Ιστορικό Πληρωμών</string>
    <string name="dtl_earn_points">Κερδίστε DreamTrips Πόντους</string>
    <string name="dtl_details_share_title_without_points">Ανακάλυψα το %1$s χρησιμοποιώντας την εφαρμογή DreamTrips</string>
    <string name="details_collapsed_text_caption">Δείξε Περισσότερα</string>
@@ -135,6 +140,7 @@
    <string name="comment_review_error_unknown_cancel">Ακύρωση</string>
    <string name="comment_review_error_limited_reached_content">Όλοι οι διακομιστές μας είναι απασχολημένοι αυτή τη στιγμή. Παρακαλούμε δοκιμάστε ξανά σε ένα λεπτό</string>
    <string name="comment_review_unrecognized_error_content">Ωχ, χάλασε κάτι Εργαζόμαστε για να το επιδιορθώσουμε. Παρακαλούμε δοκιμάστε ξανά αύριο.</string>
+   <string name="comment_review_duplicated_review">Έχετε μια παλιότερη αξιολόγηση για αυτή την τοποθεσία σε αναμονή έγκρισης. Αφού εγκριθεί μπορείτε να αξιολογήσετε αυτή την τοποθεσία ξανά.</string>
    <string name="comment_review_confirm_text">OK</string>
    <string name="comment_review_error_limited_reached_confirm">OK</string>
    <string name="comment_review_unrecognized_error_confirm">OK</string>
@@ -145,4 +151,43 @@
    <string name="input_major_limit">Η κριτική σας έχει φτάσει το όριο μας. Έχει μειωθεί για να χωρέσει.</string>
 
    <string name="text_add_photos_and_videos">Προσθήκη Φωτογραφιών</string>
+
+   <string name="dtl_no_transaction_message">Δεν έχετε κάποια συναλλαγή μέχρι στιγμής.</string>
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">Υποσύνολο: $</string>
+   <string name="dtl_transaction_screen_earned_points_text">Κερδίσατε</string>
+   <string name="dtl_thrst_text_button">Πληρωμή στην Εφαρμογή</string>
+   <string name="dtl_all_locations">όλες οι τοποθεσίες</string>
+   <string name="dtl_earned_points">Έχετε κερδίσει %1$d πόντους</string>
+   <string name="dtl_earned_points_on_item">+%1$dpt</string>
+
+   <!-- Pilot -->
+   <string name="done_pilot_button">ΟΛΟΚΛΗΡΩΘΗΚΕ</string>
+   <string name="thank_you_thrst_pilot">Σας ευχαριστούμε!</string>
+   <string name="first_failure_text_thrst_pilot">Ευχαριστούμε για την προσπάθεια,</string>
+   <string name="second_failure_text_thrst_pilot">αλλά η πληρωμή σας απορρίφθηκε.</string>
+   <string name="payment_success_status_pilot">Δεχθήκαμε την πληρωμή σας.</string>
+   <string name="payment_error_status_pilot">Δεν πετύχαμε την αποδοχή της πληρωμής σας αυτή τη στιγμή.</string>
+   <string name="btn_payment_done_pilot">ΟΛΟΚΛΗΡΩΘΗΚΕ</string>
+   <string name="payment_resume_success_pilot">Παρακαλούμε δείξτε αυτή την οθόνη στον σερβιτόρο σας.</string>
+   <string name="payment_resume_failure_pilot">Παρακαλούμε πληρώστε τον σερβιτόρο σας.</string>
+   <string name="total_amount_charged_pilot">Συνολικό Πληρωθέν Ποσό</string>
+   <string name="payment_amount_due_pilot">Συνολικό Απορριπτέο Ποσό</string>
+   <string name="payment_money_charged">$ %1$s </string>
+
+   <string name="dtl_thrst_flow_title">Thrst</string>
+   <string name="order_from_menu">Παραγγελία από το Μενού</string>
+   <string name="open_order_from_menu_msg">Αυτό είναι ένα πιλοτικό χαρακτηριστικό εκτός DTL &amp; δεν θα κερδίσετε πόντους. Θα μεταφερθείτε σε μια εξωτερική τοποθεσία που ανοίγει σε ξεχωριστό πρόγραμμα περιήγησης εκτός εφαρμογής</string>
+   <string name="dtl_merchant_earn_points">Κερδίστε πόντους</string>
+
+   <string name="could_not_load_merchant_for_review">Δεν φορτώθηκαν οι λεπτομέρειες του εμπόρου, παρακαλούμε δοκιμάστε ξανά αργότερα</string>
+   <string name="transaction_total_amount_paid">Συνολικό Πληρωθέν Ποσό</string>
+   <string name="transaction_tip_amount">Ποσό Φιλοδωρήματος:</string>
+   <string name="transaction_tax_amount">Ποσό Φόρου:</string>
+   <string name="transaction_sub_total_amount">Υποσύνολο: </string>
+   <string name="transaction_view_your_receipt">Δείτε την απόδειξή σας</string>
+   <string name="transaction_review_merchant">Κριτική Εμπόρου</string>
+   <string name="transaction_sub_total_amount_no_semicolon">Ποσό Υποσυνόλου</string>
+   <string name="dtl_estimator_explanation_to_earn_points">Οι πόντοι υπολογίζονται βάσει ενός ελάχιστου ποσού που έχει δαπανηθεί στον έμπορο και της ημέρας της εβδομάδας. Για να κερδίσετε πόντους το ελάχιστο ποσό πρέπει να είναι %1$s</string>
+   <string name="dtl_estimator_error_title">Σφάλμα</string>
 </resources>

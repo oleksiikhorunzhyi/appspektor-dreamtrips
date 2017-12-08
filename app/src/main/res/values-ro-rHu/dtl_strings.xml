@@ -64,7 +64,6 @@
    <string name="everyday">Zilnic</string>
    <string name="perks_terms">Termeni și condiții</string>
    <string name="perks_formatted">%1$d Beneficii</string>
-   <string name="dtl_show_offers_only">Afișați numai ofertele</string>
    <string name="dtl_earn_points">Câștigați puncte DreamTrips</string>
    <string name="dtl_details_share_title_without_points">Am descoperit %1$s în aplicația DreamTrips</string>
    <string name="details_collapsed_text_caption">Arătați mai multe</string>
@@ -135,6 +134,7 @@
    <string name="comment_review_error_unknown_cancel">Anulați</string>
    <string name="comment_review_error_limited_reached_content">Momentan, toate serverele noastre sunt ocupate. Vă rugăm să încercați din nou într-un minut</string>
    <string name="comment_review_unrecognized_error_content">Ups, am stricat ceva Lucrăm la remedierea problemei. Încercați din nou mâine.</string>
+   <string name="comment_review_duplicated_review">Ai o recenzie nouă pentru această locație care nu a fost aprobată .\n După aprobare, vei putea evalua din nou această locație.</string>
    <string name="comment_review_confirm_text">OK</string>
    <string name="comment_review_error_limited_reached_confirm">OK</string>
    <string name="comment_review_unrecognized_error_confirm">OK</string>
@@ -145,4 +145,17 @@
    <string name="input_major_limit">Recenzia ta a atins limita. A fost prescurtată pentru a încăpea.</string>
 
    <string name="text_add_photos_and_videos">Adăugați fotografii</string>
+
+   <string name="dtl_transaction_screen_earned_points_text">Ați câștigat</string>
+   <string name="dtl_thrst_text_button">Plătiți în aplicație</string>
+   <string name="dtl_all_locations">toate locațiile</string>
+   <string name="done_pilot_button">TERMINAT</string>
+   <string name="thank_you_thrst_pilot">Mulțumim!</string>
+   <string name="btn_payment_done_pilot">TERMINAT</string>
+   <string name="total_amount_charged_pilot">Suma totală plătită</string>
+   <string name="dtl_merchant_earn_points">Câștigați puncte</string>
+
+   <string name="transaction_total_amount_paid">Suma totală plătită</string>
+   <string name="dtl_estimator_explanation_to_earn_points">Punctele se calculează în funcție de suma minimă cheltuită la comerciant și de ziua săptămânii. Pentru a câștiga puncte, suma minimă ar trebui să fie de %1$s</string>
+   <string name="dtl_estimator_error_title">Eroare</string>
 </resources>

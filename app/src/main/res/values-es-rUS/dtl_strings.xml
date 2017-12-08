@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
+   <string name="dtl_subtotal">Subtotal: %1$s</string>
    <string name="dtl_locations_title">Elegir ubicación</string>
    <string name="dtl_locations_try_search">No pudimos encontrar una ciudad cercana.\nPrueba nuestra búsqueda de ciudades</string>
    <string name="dtl_near_me_caption">Cerca de mi</string>
@@ -33,6 +34,7 @@
    <string name="dtl_barcode_title">Escanea el código QR</string>
    <string name="dtl_barcode_merchant">Escanear código del comerciante</string>
    <string name="dtl_scan_receipt_screen_title">Ingresar Subtotal</string>
+   <string name="dtl_thrst_scan_receipt_screen_title">Escanear el recibo</string>
    <string name="dtl_scan_receipt_input_caption"> Ingresar Subtotal (Cantidad sin impuestos y propina)</string>
    <string name="dtl_congrats">¡Felicidades!</string>
    <string name="dtl_you_earned">Has ganado</string>
@@ -43,6 +45,7 @@
    <string name="dtl_total_amount">Cantidad total:</string>
    <string name="dtl_verify_earn_hint">Podrías ganar </string>
    <string name="dtl_check_in">Registraste y gana</string>
+   <string name="dtl_pay">Paga y gana</string>
    <string name="dtl_earn">Ganar</string>
    <string name="dtl_dt_points">%1$d DreamTrips Points</string>
    <string name="suggest_merchant">Sugerir Comerciante</string>
@@ -64,7 +67,9 @@
    <string name="everyday">Todos los días</string>
    <string name="perks_terms">Términos y condiciones</string>
    <string name="perks_formatted">%1$d Ventajas</string>
-   <string name="dtl_show_offers_only">Mostrar sólo ofertas</string>
+   <string name="dtl_show_offers_only">Sólo ofertas</string>
+   <string name="dtl_show_transaction">Transacciones</string>
+   <string name="dtl_show_transaction_toolbar">Historial de pagos</string>
    <string name="dtl_earn_points">Ganar DreamTrips Points</string>
    <string name="dtl_details_share_title_without_points">Descubrí %1$s usando la app de DreamTrips</string>
    <string name="details_collapsed_text_caption">Mostrar más</string>
@@ -135,6 +140,7 @@
    <string name="comment_review_error_unknown_cancel">Cancelar</string>
    <string name="comment_review_error_limited_reached_content">Todos nuestros servidores están ocupados en este momento. Inténtalo de nuevo en un minuto.</string>
    <string name="comment_review_unrecognized_error_content">Oops, rompimos algo. Estamos trabajando en la solución. Inténtalo de nuevo mañana.</string>
+   <string name="comment_review_duplicated_review">Tienes un comentario anterior para esta ubicación en espera de aprobación.\n Una vez aprobado puedes comentar sobre este lugar nuevamente.</string>
    <string name="comment_review_confirm_text">Aceptar</string>
    <string name="comment_review_error_limited_reached_confirm">Aceptar</string>
    <string name="comment_review_unrecognized_error_confirm">Aceptar</string>
@@ -145,4 +151,43 @@
    <string name="input_major_limit">Tu comentario ha llegado a al límite. Se ha acortado para adaptarse.</string>
 
    <string name="text_add_photos_and_videos">Agregar fotos</string>
+
+   <string name="dtl_no_transaction_message">Hasta el momento no tienes ninguna transacción.</string>
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">Cantidad subtotal: $</string>
+   <string name="dtl_transaction_screen_earned_points_text">Has ganado</string>
+   <string name="dtl_thrst_text_button">Pagar en la aplicación</string>
+   <string name="dtl_all_locations">todas las ubicaciones</string>
+   <string name="dtl_earned_points">Has ganado %1$d puntos</string>
+   <string name="dtl_earned_points_on_item">+%1$dpt</string>
+
+   <!-- Pilot -->
+   <string name="done_pilot_button">LISTO</string>
+   <string name="thank_you_thrst_pilot">¡Gracias!</string>
+   <string name="first_failure_text_thrst_pilot">Gracias por intentarlo,</string>
+   <string name="second_failure_text_thrst_pilot">pero tu pago fue rechazado.</string>
+   <string name="payment_success_status_pilot">Hemos aceptado tu pago.</string>
+   <string name="payment_error_status_pilot">No podemos aceptar tu pago en este momento.</string>
+   <string name="btn_payment_done_pilot">LISTO</string>
+   <string name="payment_resume_success_pilot">Por favor, mostrar esta pantalla a su servidor.</string>
+   <string name="payment_resume_failure_pilot">Favor de pagar a tu servidor.</string>
+   <string name="total_amount_charged_pilot">Cantidad total pagada</string>
+   <string name="payment_amount_due_pilot">Cantidad total rechazada</string>
+   <string name="payment_money_charged">$ %1$s </string>
+
+   <string name="dtl_thrst_flow_title">Thrst</string>
+   <string name="order_from_menu">Ordenar del menú</string>
+   <string name="open_order_from_menu_msg">Esta es una función piloto fuera de DTL y no te generará puntos. Se te llevará a un sitio externo que se abre en un navegador separado fuera de la aplicación</string>
+   <string name="dtl_merchant_earn_points">Ganar puntos</string>
+
+   <string name="could_not_load_merchant_for_review">No se pudieron cargar los datos del comerciante. Inténtalo de nuevo más tarde.</string>
+   <string name="transaction_total_amount_paid">Cantidad total pagada</string>
+   <string name="transaction_tip_amount">Cantidad de la propina</string>
+   <string name="transaction_tax_amount">Cantidad de impuestos:</string>
+   <string name="transaction_sub_total_amount">Cantidad subtotal:</string>
+   <string name="transaction_view_your_receipt">Ver tu recibo</string>
+   <string name="transaction_review_merchant">Reseñar Negocio</string>
+   <string name="transaction_sub_total_amount_no_semicolon">Cantidad subtotal:</string>
+   <string name="dtl_estimator_explanation_to_earn_points">Los puntos se calculan en función de una cantidad mínima gastada en un establecimiento y del día de la semana. La cantidad mínima para ganar puntos debe ser de %1$s</string>
+   <string name="dtl_estimator_error_title">Error</string>
 </resources>

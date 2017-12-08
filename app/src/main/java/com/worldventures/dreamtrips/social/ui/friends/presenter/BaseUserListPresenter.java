@@ -113,6 +113,9 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
       view.finishLoading();
       loading = false;
       if (!finishedLoadingAllData) {
+         if (users.size() % getPerPageCount() == 0) {
+            nextPage = users.size() / getPerPageCount();
+         }
          nextPage++;
       }
    }

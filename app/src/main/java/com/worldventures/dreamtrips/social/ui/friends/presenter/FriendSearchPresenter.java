@@ -12,11 +12,13 @@ import java.util.List;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPresenter.View> {
 
    @State String query;
+   private Subscription subscription;
 
    public FriendSearchPresenter(String query) {
       this.query = query;
@@ -24,7 +26,12 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
 
    @Override
    protected void loadUsers(int page, Action1<List<User>> onSuccessAction) {
-      friendsInteractor.getSearchUsersPipe()
+      //It's correcting pagination and removing layering of queries
+      if (subscription != null && !subscription.isUnsubscribed()) {
+         subscription.unsubscribe();
+      }
+
+      subscription = friendsInteractor.getSearchUsersPipe()
             .createObservable(new GetSearchUsersCommand(query, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetSearchUsersCommand>()

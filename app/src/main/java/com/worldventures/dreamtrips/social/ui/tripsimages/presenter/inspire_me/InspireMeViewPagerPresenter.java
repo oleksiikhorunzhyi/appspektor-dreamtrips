@@ -41,6 +41,7 @@ public class InspireMeViewPagerPresenter extends BaseImageViewPagerPresenter<Bas
    protected void initItems() {
       tripImagesInteractor.inspireMePhotosPipe()
             .createObservableResult(GetInspireMePhotosCommand.cachedCommand())
+            .compose(bindViewToMainComposer())
             .map(Command::getResult)
             .subscribe(items -> {
                currentItems = new ArrayList<>(items);

@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSB
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.InspireMeViewPagerArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.inspire_me.FullscreenInspireMeFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,7 +43,7 @@ public class InspireMeViewPagerPresenter extends BaseImageViewPagerPresenter<Bas
             .createObservableResult(GetInspireMePhotosCommand.cachedCommand())
             .map(Command::getResult)
             .subscribe(items -> {
-               currentItems = items;
+               currentItems = new ArrayList<>(items);
                super.initItems();
             });
    }

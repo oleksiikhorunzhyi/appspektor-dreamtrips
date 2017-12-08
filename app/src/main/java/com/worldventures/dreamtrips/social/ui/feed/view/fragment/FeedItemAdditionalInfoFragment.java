@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -17,10 +16,10 @@ import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 
 import java.text.DecimalFormat;
 

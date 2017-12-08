@@ -62,7 +62,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
    @Override
    public void setupView(User user) {
       userPhoto.setup(user, injectorProvider.get());
-      setUserPhotoAndCover(user);
+      userPhoto.post(() -> setUserPhotoAndCover(user));
       userName.setText(user.getFullName());
       companyName.setText(user.getCompany());
       viewProfile.setVisibility(View.VISIBLE);

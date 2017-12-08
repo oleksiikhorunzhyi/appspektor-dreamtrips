@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
+   <string name="dtl_subtotal">Jumlah kecil bayaran: %1$s</string>
    <string name="dtl_locations_title">Pilih lokasi</string>
    <string name="dtl_locations_try_search">Kami tidak dapat mengesan Bandar terdekat kepada anda.\nCuba carian bandar kami</string>
    <string name="dtl_near_me_caption">berhampiran saya</string>
@@ -33,6 +34,7 @@
    <string name="dtl_barcode_title">Imbas Kod QR</string>
    <string name="dtl_barcode_merchant">Imbas kod saudagar</string>
    <string name="dtl_scan_receipt_screen_title">Masuk Jumlah Kecil</string>
+   <string name="dtl_thrst_scan_receipt_screen_title">Mengimbas resit</string>
    <string name="dtl_scan_receipt_input_caption">Masuk Jumlah Kecil (Jumlah tidak termasuk cukai &amp; tip)</string>
    <string name="dtl_congrats">Tahniah!</string>
    <string name="dtl_you_earned"> Anda telah mendapat </string>
@@ -43,6 +45,7 @@
    <string name="dtl_total_amount">Jumlah Amaun:</string>
    <string name="dtl_verify_earn_hint">Anda boleh memperoleh </string>
    <string name="dtl_check_in">Daftar masuk &amp; belajar </string>
+   <string name="dtl_pay">Bayar dan dapatkan</string>
    <string name="dtl_earn">Dapatkan </string>
    <string name="dtl_dt_points">%1$d DreamTrips Points</string>
    <string name="suggest_merchant">Cadangkan Pedagang</string>
@@ -64,7 +67,9 @@
    <string name="everyday">Setiap hari</string>
    <string name="perks_terms">Terma &amp; Syarat</string>
    <string name="perks_formatted">%1$d Faedah</string>
-   <string name="dtl_show_offers_only">Tunjukkan tawaran sahaja</string>
+   <string name="dtl_show_offers_only">Hanya menawarkan</string>
+   <string name="dtl_show_transaction">Transaksi</string>
+   <string name="dtl_show_transaction_toolbar">Sejarah Pembayaran</string>
    <string name="dtl_earn_points">Peroleh mata DreamTrips</string>
    <string name="dtl_details_share_title_without_points">Saya menemui %1$s menggunakan aplikasi DreamTrips</string>
    <string name="details_collapsed_text_caption">Tunjukkan Selanjutnya </string>
@@ -135,6 +140,7 @@
    <string name="comment_review_error_unknown_cancel">Batal</string>
    <string name="comment_review_error_limited_reached_content">Semua pelayan kami sibuk sekarang. Sila cuba semula dalam satu minit.</string>
    <string name="comment_review_unrecognized_error_content">Ops, kami telah memecahkan sesuatu Kami sedang berusaha membaikinya. Sila cuba semula esok.</string>
+   <string name="comment_review_duplicated_review">Anda ada ulasan terdahulu untuk lokasi ini yang sedang menunggu kelulusan.\n Sebaik sahaja diluluskan anda boleh memberi ulasan bagi lokasi ini sekali lagi.</string>
    <string name="comment_review_confirm_text">OK</string>
    <string name="comment_review_error_limited_reached_confirm">OK</string>
    <string name="comment_review_unrecognized_error_confirm">OK</string>
@@ -145,4 +151,43 @@
    <string name="input_major_limit">Ulasan anda telah mencapai had kami. Ia telah disingkatkan supaya suai.</string>
 
    <string name="text_add_photos_and_videos">Tambah Gambar</string>
+
+   <string name="dtl_no_transaction_message">Anda tidak mempunyai sebarang urus niaga setakat ini.</string>
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">Amaun Subjumlah: $</string>
+   <string name="dtl_transaction_screen_earned_points_text">Anda memperoleh</string>
+   <string name="dtl_thrst_text_button">Aplikasi Bayar Masuk</string>
+   <string name="dtl_all_locations">semua lokasi</string>
+   <string name="dtl_earned_points">Anda telah memperoleh %1$d mata</string>
+   <string name="dtl_earned_points_on_item">+%1$dmata</string>
+
+   <!-- Pilot -->
+   <string name="done_pilot_button">SELESAI</string>
+   <string name="thank_you_thrst_pilot">Terima kasih!</string>
+   <string name="first_failure_text_thrst_pilot">Terima kasih kerana mencuba,</string>
+   <string name="second_failure_text_thrst_pilot">tetapi bayaran anda telah ditolak.</string>
+   <string name="payment_success_status_pilot">Kami telah menerima pembayaran anda.</string>
+   <string name="payment_error_status_pilot">Kami tidak berjaya menerima bayaran anda pada masa ini.</string>
+   <string name="btn_payment_done_pilot">SELESAI</string>
+   <string name="payment_resume_success_pilot">Sila tunjukkan skrin ini kepada pelayan anda.</string>
+   <string name="payment_resume_failure_pilot">Sila bayar yuran perkhidmatan anda.</string>
+   <string name="total_amount_charged_pilot">Jumlah Amaun yang Dibayar</string>
+   <string name="payment_amount_due_pilot">Jumlah Amaun yang Ditolak</string>
+   <string name="payment_money_charged">$%1$s </string>
+
+   <string name="dtl_thrst_flow_title">Thrst</string>
+   <string name="order_from_menu">Pesanan Daripada Menu</string>
+   <string name="open_order_from_menu_msg">Ini adalah ciri perintis di luar DTL &amp; anda tidak akan mendapat mata. Anda akan dibawa ke laman web luaran yang dibuka dalam pelayar berasingan di luar aplikasi.</string>
+   <string name="dtl_merchant_earn_points">Peroleh mata</string>
+
+   <string name="could_not_load_merchant_for_review">Tidak dapat memuat butiran pedagang, sila cuba sebentar lagi</string>
+   <string name="transaction_total_amount_paid">Jumlah Amaun yang Dibayar</string>
+   <string name="transaction_tip_amount">Amaun Tips:</string>
+   <string name="transaction_tax_amount">Amaun Tax:</string>
+   <string name="transaction_sub_total_amount">Amaun Subjumlah:</string>
+   <string name="transaction_view_your_receipt">Semak resit anda</string>
+   <string name="transaction_review_merchant">Penilaian Pedagang</string>
+   <string name="transaction_sub_total_amount_no_semicolon">Amaun Subjumlah</string>
+   <string name="dtl_estimator_explanation_to_earn_points">Mata dikira berdasarkan amaun minimum dibelanjakan di saudagar dan hari minggu tersebut. Untuk mendapatkan mata jumlah minimum seharusnya %1$s</string>
+   <string name="dtl_estimator_error_title">Ralat</string>
 </resources>

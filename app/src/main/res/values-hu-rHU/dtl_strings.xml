@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
+   <string name="dtl_subtotal">Részösszeg: %1$s</string>
    <string name="dtl_locations_title">Helyzet kiválasztása </string>
    <string name="dtl_locations_try_search">Nem találtunk várost a közelében.\nPróbálja ki a városok keresését.</string>
    <string name="dtl_near_me_caption">Közel hozzám</string>
@@ -33,6 +34,7 @@
    <string name="dtl_barcode_title">QR-kód beolvasása</string>
    <string name="dtl_barcode_merchant">Értékesítői kód beolvasása</string>
    <string name="dtl_scan_receipt_screen_title">Végösszeg</string>
+   <string name="dtl_thrst_scan_receipt_screen_title">Nyugta beolvasás</string>
    <string name="dtl_scan_receipt_input_caption">Végösszeg (Összeg ÁFA és borravaló nélkül)</string>
    <string name="dtl_congrats">Gratulálunk!</string>
    <string name="dtl_you_earned">Ennyit kerestél:</string>
@@ -43,6 +45,7 @@
    <string name="dtl_total_amount">Teljes összeg:</string>
    <string name="dtl_verify_earn_hint">Megszerezhető: </string>
    <string name="dtl_check_in">Bejelentkezés és pontgyűjtés</string>
+   <string name="dtl_pay">Fizetés és pontgyűjtés</string>
    <string name="dtl_earn">Pontgyűjtés</string>
    <string name="dtl_dt_points">%1$d DreamTrips pontok</string>
    <string name="suggest_merchant">Kereskedő javaslat</string>
@@ -64,7 +67,9 @@
    <string name="everyday">Mindennap</string>
    <string name="perks_terms">Használati feltételek</string>
    <string name="perks_formatted">%1$d Bónusz</string>
-   <string name="dtl_show_offers_only">Csak az ajánlatok mutatása</string>
+   <string name="dtl_show_offers_only">Csak ajánlatok</string>
+   <string name="dtl_show_transaction">Tranzakciók</string>
+   <string name="dtl_show_transaction_toolbar">Fizetési előzmények</string>
    <string name="dtl_earn_points">DreamTrips pont szerzés</string>
    <string name="dtl_details_share_title_without_points">A(z) %1$s felfedezését a DreamTrips alkalmazás segítette</string>
    <string name="details_collapsed_text_caption">Több</string>
@@ -135,6 +140,7 @@
    <string name="comment_review_error_unknown_cancel">Mégse</string>
    <string name="comment_review_error_limited_reached_content">Minden szerverünk foglalt most. Kérjük, próbálja meg újra egy perc múlva</string>
    <string name="comment_review_unrecognized_error_content">Hoppá, valami történt Dolgozunk a probléma elhárításán. Kérjük, próbálja meg újra holnap.</string>
+   <string name="comment_review_duplicated_review">Egy korábbi értékelés jóváhagyásra vár ehhez a helyszínhez.\n Elfogadás után nézheted meg ezt a helyszínt újra.</string>
    <string name="comment_review_confirm_text">OK</string>
    <string name="comment_review_error_limited_reached_confirm">OK</string>
    <string name="comment_review_unrecognized_error_confirm">OK</string>
@@ -145,4 +151,43 @@
    <string name="input_major_limit">Az Ön értékelése elérte a maximum méretet. Lerövidítettük, hogy elférjen.</string>
 
    <string name="text_add_photos_and_videos">Fénykép hozzáadása</string>
+
+   <string name="dtl_no_transaction_message">Eddig még nincs tranzakció.</string>
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">Részösszeg:</string>
+   <string name="dtl_transaction_screen_earned_points_text">Megszerzett:</string>
+   <string name="dtl_thrst_text_button">Fizetés alkalmazásban</string>
+   <string name="dtl_all_locations">minden helyszín</string>
+   <string name="dtl_earned_points">%1$d pontot kaptál</string>
+   <string name="dtl_earned_points_on_item">+%1$dpt</string>
+
+   <!-- Pilot -->
+   <string name="done_pilot_button">KÉSZ</string>
+   <string name="thank_you_thrst_pilot">Köszönjük szépen!</string>
+   <string name="first_failure_text_thrst_pilot">Köszönjük a próbát,</string>
+   <string name="second_failure_text_thrst_pilot">de a fizetés elutasítva.</string>
+   <string name="payment_success_status_pilot">A fizetést elfogadtuk.</string>
+   <string name="payment_error_status_pilot">Ezúttal nem sikerült elfogadni a fizetést.</string>
+   <string name="btn_payment_done_pilot">KÉSZ</string>
+   <string name="payment_resume_success_pilot">Kérjük, mutasd meg ezt a képernyőt a felszolgálónak.</string>
+   <string name="payment_resume_failure_pilot">Kérjük, fizess a felszolgálónál.</string>
+   <string name="total_amount_charged_pilot">Kifizetett teljes összeg</string>
+   <string name="payment_amount_due_pilot">Teljes összeg visszautasítva</string>
+   <string name="payment_money_charged">%1$s $ </string>
+
+   <string name="dtl_thrst_flow_title">Thrst</string>
+   <string name="order_from_menu">Rendelés a menüből</string>
+   <string name="open_order_from_menu_msg">Ez egy kísérleti funkció a DTL-en kívül &amp; és nem hoz pontokat. Átirányítunk egy külső oldalra, ami egy másik böngészőben nyílik meg az alkalmazáson kívül</string>
+   <string name="dtl_merchant_earn_points">Szerezzen pontokat</string>
+
+   <string name="could_not_load_merchant_for_review">Nem tudtuk betölteni a kereskedő adatait, kérjük próbáld később</string>
+   <string name="transaction_total_amount_paid">Teljes kifizetett összeg</string>
+   <string name="transaction_tip_amount">Borravaló összege:</string>
+   <string name="transaction_tax_amount">ÁFA összeg:</string>
+   <string name="transaction_sub_total_amount">Részösszeg:</string>
+   <string name="transaction_view_your_receipt">Nyugta megtekintése</string>
+   <string name="transaction_review_merchant">Kereskedő megtekintése</string>
+   <string name="transaction_sub_total_amount_no_semicolon">Részösszeg</string>
+   <string name="dtl_estimator_explanation_to_earn_points">A pontok számolása az értékesítőnél elköltött minimális összeg és a hét napja alapján történik. Pontok gyűjtéséhez a minimum összeg %1$s</string>
+   <string name="dtl_estimator_error_title">Hiba</string>
 </resources>

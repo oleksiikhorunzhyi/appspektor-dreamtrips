@@ -47,7 +47,7 @@ public class TransactionStatusInjector {
    }
 
    public void showRefundedMessage() {
-      showSuccessMessage();
+      showFailureMessage();
       statusImage.setImageDrawable(getDrawableFromResource(R.drawable.check_refund_pilot));
    }
 

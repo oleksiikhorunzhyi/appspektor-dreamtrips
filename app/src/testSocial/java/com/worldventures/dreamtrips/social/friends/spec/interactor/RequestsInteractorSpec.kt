@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.friends
+package com.worldventures.dreamtrips.social.friends.spec.interactor
 
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
@@ -28,9 +28,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class RequestsInteractorSpec : BaseSpec({
-
    describe("Receive request list successfully") {
-
       setup(mockHttpServiceForSuccessResult())
 
       context("First page is received and processed correctly") {
@@ -52,7 +50,6 @@ class RequestsInteractorSpec : BaseSpec({
          it("should inform that there is at least one more page") {
             assertFalse { firstPageRequest.isNoMoreElements }
          }
-
       }
 
       context("Pagination should proceed for second page as well") {
@@ -84,7 +81,7 @@ class RequestsInteractorSpec : BaseSpec({
                .subscribe(testSubscriber)
 
          it("should indicate that it isn't first page and errors didn't occur") {
-            AssertUtil.assertActionSuccess(testSubscriber, { !thirdPageRequest.isFirstPage })
+            AssertUtil.assertActionSuccess(testSubscriber) { !thirdPageRequest.isFirstPage }
          }
 
          it("should contain only 101 elements from cache") {
@@ -99,7 +96,6 @@ class RequestsInteractorSpec : BaseSpec({
    }
 
    describe("Error during receiving request list") {
-
       setup(mockHttpServiceForError())
 
       context("Nothing should happen except thrown exception") {
@@ -113,18 +109,13 @@ class RequestsInteractorSpec : BaseSpec({
             AssertUtil.assertActionFail(testSubscriber, { firstPageRequest.items().isEmpty() })
          }
       }
-
    }
-
 }) {
    companion object {
-
-      val PAGE_SIZE = 100
-      lateinit var friendsInteractor: FriendsInteractor
-      val mapperyContext: MapperyContext = mock()
-
-      val apiUsersPage1: List<FriendCandidate> = (1..PAGE_SIZE).map { it -> mockUserCandidate(it) }.toList()
-      val apiUsersPage2: List<FriendCandidate> = listOf(mockUserCandidate(PAGE_SIZE + 1))
+      private lateinit var friendsInteractor: FriendsInteractor
+      private val PAGE_SIZE = 100
+      private val apiUsersPage1: List<FriendCandidate> = (1..PAGE_SIZE).map { it -> mockUserCandidate(it) }.toList()
+      private val apiUsersPage2: List<FriendCandidate> = listOf(mockUserCandidate(PAGE_SIZE + 1))
 
       fun setup(httpService: ActionService) {
          val daggerCommandActionService = CommandActionService().wrapDagger()
@@ -137,11 +128,13 @@ class RequestsInteractorSpec : BaseSpec({
                .addService(httpService)
                .build()
 
+         val mapperyContext: MapperyContext = mock()
+
          whenever(mapperyContext.convert(com.nhaarman.mockito_kotlin.any(), eq(User::class.java))).thenAnswer {
             if (it.arguments[0] is List<*>) {
                val source = it.arguments[0] as List<FriendCandidate>
                val users = source.map {
-                  var user: User = mock()
+                  val user: User = mock()
                   user.id = it.id()
                   user
                }.toList()
@@ -173,24 +166,21 @@ class RequestsInteractorSpec : BaseSpec({
                .build()
       }
 
-      fun mockHttpServiceForSuccessResult(): MockHttpActionService {
-         return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(200).body(apiUsersPage1)) {
-                  it.url.contains("/api/social/friends/requests") && it.url.contains("?page=1")
-               }
-               .bind(MockHttpActionService.Response(200).body(apiUsersPage2)) {
-                  it.url.contains("/api/social/friends/requests") && it.url.contains("?page=2")
-               }
-               .bind(MockHttpActionService.Response(200).body(ArrayList<FriendCandidate>())) {
-                  it.url.contains("/api/social/friends/requests") && it.url.contains("?page=3")
-               }
-               .build()
-      }
+      fun mockHttpServiceForSuccessResult(): MockHttpActionService = MockHttpActionService.Builder()
+            .bind(MockHttpActionService.Response(200).body(apiUsersPage1)) {
+               it.url.contains("/api/social/friends/requests") && it.url.contains("?page=1")
+            }
+            .bind(MockHttpActionService.Response(200).body(apiUsersPage2)) {
+               it.url.contains("/api/social/friends/requests") && it.url.contains("?page=2")
+            }
+            .bind(MockHttpActionService.Response(200).body(ArrayList<FriendCandidate>())) {
+               it.url.contains("/api/social/friends/requests") && it.url.contains("?page=3")
+            }
+            .build()
 
-      fun mockHttpServiceForError(): MockHttpActionService {
-         return MockHttpActionService.Builder()
-               .bind(MockHttpActionService.Response(422)) { it.url.contains("/api/social/friends/requests") }
-               .build()
-      }
+      fun mockHttpServiceForError(): MockHttpActionService = MockHttpActionService.Builder()
+            .bind(MockHttpActionService.Response(422)) {
+               it.url.contains("/api/social/friends/requests")
+            }.build()
    }
 }

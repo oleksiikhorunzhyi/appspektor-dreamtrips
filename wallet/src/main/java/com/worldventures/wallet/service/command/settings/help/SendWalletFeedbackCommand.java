@@ -39,7 +39,7 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
    @Inject MapperyContext mappery;
 
    protected final String description;
-   protected final List<FeedbackImageAttachment> imageAttachments;
+   private final List<FeedbackImageAttachment> imageAttachments;
 
    SendWalletFeedbackCommand(String description, List<FeedbackImageAttachment> imageAttachments) {
       this.description = description;
@@ -55,20 +55,20 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
 
    abstract F provideFeedbackBody();
 
-   protected List<FeedbackAttachment> provideAttachments() {
+   List<FeedbackAttachment> provideAttachments() {
       return mappery.convert(imageAttachments, FeedbackAttachment.class);
    }
 
-   protected SmartCardMetadata provideSmartCardMetadata() {
+   SmartCardMetadata provideSmartCardMetadata() {
       SmartCard smartCard = walletStorage.getSmartCard();
-      SmartCardDetails details = walletStorage.getSmartCardDetails();
       SmartCardFirmware firmware = walletStorage.getSmartCardFirmware();
-      if (smartCard == null || details == null) {
+      if (smartCard == null) {
          return null;
       }
 
+      SmartCardDetails details = smartCard.getDetails();
       return ImmutableSmartCardMetadata.builder()
-            .smartCardId((int) details.getSmartCardId())
+            .smartCardId(Integer.parseInt(smartCard.getSmartCardId()))
             .smartCardSerialNumber(details.getSerialNumber())
             .bleId(details.getBleAddress())
             .firmwareVersion(SCFirmwareUtils.smartCardFirmwareVersion(firmware))
@@ -76,7 +76,7 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
             .build();
    }
 
-   protected BaseFeedback.Metadata provideMetadata() {
+   BaseFeedback.Metadata provideMetadata() {
       String osVersion = String.format(Locale.US, "android-%d", Build.VERSION.SDK_INT);
       String appVersion = appVersionNameBuilder.getSemanticVersionName();
       String deviceModel = String.format("%s:%s", Build.MANUFACTURER, Build.MODEL);

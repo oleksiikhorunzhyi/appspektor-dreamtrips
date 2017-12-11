@@ -11,7 +11,6 @@ import com.worldventures.core.repository.SnappyResult;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.wallet.domain.entity.SmartCard;
-import com.worldventures.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.domain.entity.TermsAndConditions;
@@ -25,9 +24,8 @@ import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 
 class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStorage {
 
-   private final static String WALLET_SMART_CARD = "WALLET_SMART_CARD";
+   private final static String WALLET_SMART_CARD = "WALLET_SMART_CARD_DATA";
    private final static String WALLET_SMART_CARD_USER = "WALLET_SMART_CARD_USER";
-   private final static String WALLET_DETAILS_SMART_CARD = "WALLET_DETAILS_SMART_CARD";
    private final static String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
    private final static String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
    private final static String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
@@ -82,21 +80,6 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
    @Override
    public void deleteSmartCardUser() {
       act(db -> db.del(WALLET_SMART_CARD_USER));
-   }
-
-   @Override
-   public void saveSmartCardDetails(SmartCardDetails smartCardDetails) {
-      putEncrypted(WALLET_DETAILS_SMART_CARD, smartCardDetails);
-   }
-
-   @Override
-   public SmartCardDetails getSmartCardDetails() {
-      return getEncrypted(WALLET_DETAILS_SMART_CARD, SmartCardDetails.class);
-   }
-
-   @Override
-   public void deleteSmartCardDetails() {
-      act(db -> db.del(WALLET_DETAILS_SMART_CARD));
    }
 
    @Override

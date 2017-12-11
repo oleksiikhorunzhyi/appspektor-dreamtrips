@@ -15,12 +15,8 @@ import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
 import com.worldventures.wallet.BaseSpec
-import com.worldventures.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
 import com.worldventures.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
-import com.worldventures.wallet.domain.entity.CardStatus
-import com.worldventures.wallet.domain.entity.SmartCard
-import com.worldventures.wallet.domain.entity.SmartCardDetails
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.domain.storage.WalletStorage
@@ -30,6 +26,7 @@ import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.wallet.model.TestApiSmartCardDetails
 import com.worldventures.wallet.model.TestApiUpdateCardUserData
+import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
@@ -58,7 +55,7 @@ class WizardInteractorSpec : BaseSpec({
 
          mockDb = createMockDb()
          whenever(mockDb.smartCardUser).thenReturn(SmartCardUser("First Name"))
-         whenever(mockDb.smartCard).thenReturn(SmartCard("1", CardStatus.ACTIVE, "12212"))
+         whenever(mockDb.smartCard).thenReturn(createTestSmartCard("1"))
          recordsStorage = mock()
          mappery = createMappery()
          janet = createJanet()
@@ -84,7 +81,6 @@ class WizardInteractorSpec : BaseSpec({
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
             verify(mockDb, times(1)).saveSmartCard(any())
-            verify(propertiesProvider, times(1)).deviceId()
          }
 
          it("should be associate SmartCard and save SmartCardDetails to mediaModelStorage") {
@@ -95,7 +91,7 @@ class WizardInteractorSpec : BaseSpec({
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(mockDb, times(0)).saveSmartCardDetails(any())
+            verify(mockDb, times(1)).saveSmartCard(any())
             verify(propertiesProvider, times(1)).deviceId()
             verify(propertiesProvider, times(1)).deviceName()
             verify(propertiesProvider, times(1)).osVersion()
@@ -187,7 +183,6 @@ class WizardInteractorSpec : BaseSpec({
       fun createMappery(): MapperyContext = Mappery.Builder()
             .map(Record::class.java).to(io.techery.janet.smartcard.model.Record::class.java, WalletRecordToSmartCardRecordConverter())
             .map(io.techery.janet.smartcard.model.Record::class.java).to(Record::class.java, SmartCardRecordToWalletRecordConverter())
-            .map(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails::class.java).to(SmartCardDetails::class.java, SmartCardDetailsConverter())
             .build()
 
       fun mockHttpService(): MockHttpActionService {

@@ -8,10 +8,8 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.api.smart_card.status.model.SmartCardStatus
-import com.worldventures.wallet.domain.entity.CardStatus
-import com.worldventures.wallet.domain.entity.SmartCard
-import com.worldventures.wallet.domain.entity.SmartCardDetails
 import com.worldventures.wallet.domain.entity.SmartCardUser
+import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.SmartCardUserCommand
@@ -26,7 +24,6 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.ProgressView
 import org.junit.Before
 import org.junit.Test
-import java.util.Date
 
 class TestInputBarcodeDelegate : BaseTest() {
 
@@ -34,9 +31,7 @@ class TestInputBarcodeDelegate : BaseTest() {
    private val contractSmartCardUser = Contract.of(SmartCardUserCommand::class.java).result(SmartCardUser("First Name"))
    private val contractFetchAssociatedSmartCard = Contract.of(FetchAssociatedSmartCardCommand::class.java)
          .result(FetchAssociatedSmartCardCommand.AssociatedCard(
-               smartCard = SmartCard("00000044", CardStatus.ACTIVE, "deviceId"),
-               smartCardDetails = SmartCardDetails("0000044", 0, "BLE address", "wvOrder", "unknown", "unknown", Date()),
-               exist = true))
+               smartCard = createTestSmartCard("55")))
 
    private val interactorBuilder = InteractorBuilder.configJanet {
       addMockCommandActionService {

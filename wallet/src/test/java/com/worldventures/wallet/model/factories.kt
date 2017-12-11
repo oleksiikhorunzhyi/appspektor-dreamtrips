@@ -3,11 +3,13 @@ package com.worldventures.wallet.model
 import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData
 import com.worldventures.wallet.domain.entity.SmartCard
+import com.worldventures.wallet.domain.entity.SmartCardDetails
 import com.worldventures.wallet.domain.entity.SmartCardFirmware
 import com.worldventures.wallet.service.nxt.model.MultiResponseBody
 import com.worldventures.wallet.service.nxt.model.MultiResponseElement
 import com.worldventures.wallet.service.nxt.model.NxtSession
 import com.worldventures.wallet.service.nxt.util.NxtBankCardHelper
+import java.util.Date
 
 fun createTestSmartCardFirmware() = SmartCardFirmware(
       firmwareBundleVersion = null,
@@ -31,7 +33,8 @@ fun createTestFirmwareUpdateData(scId: String, currentFirmwareVersion: SmartCard
 )
 
 fun createTestSmartCard(smartCardId: String, cardStatus: CardStatus = CardStatus.ACTIVE, deviceId: String = "smart_card_device_id") =
-      SmartCard(smartCardId, cardStatus, deviceId)
+      SmartCard(smartCardId, cardStatus,
+            SmartCardDetails(deviceId, smartCardId, "BLE address", "wvOrder", "unknown", "unknown", Date()))
 
 fun createTestMultiResponseBody(recordIds: List<String?>, number: String, cvv: String,
                                 track1: String, track2: String = track1, track3: String = track1): MultiResponseBody {

@@ -30,6 +30,8 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
       super.onViewTaken();
       if (currentItems == null) {
          currentItems = new ArrayList<>();
+      } else {
+         currentItems = new ArrayList<>(currentItems);
       }
       view.updatePhotos(currentItems);
       subscribeToNewItems();
@@ -55,6 +57,7 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
                      view.finishLoading();
                      loading = false;
                      lastPageReached = getYSBHPhotosCommand.lastPageReached();
+                     currentItems = new ArrayList<>(currentItems);
                      if (getYSBHPhotosCommand.getPage() == 1) {
                         currentItems.clear();
                      }
@@ -73,7 +76,7 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
    }
 
    public void onItemClick(YSBHPhoto entity) {
-      view.openFullscreen(currentItems, lastPageReached, currentItems.indexOf(entity));
+      view.openFullscreen(new ArrayList<>(currentItems), lastPageReached, currentItems.indexOf(entity));
       analyticsInteractor.analyticsActionPipe().send(new TripImageItemViewEvent(String.valueOf(entity.getId())));
    }
 

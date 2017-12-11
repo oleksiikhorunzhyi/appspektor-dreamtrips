@@ -75,6 +75,7 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
       if (baseMediaEntities == null) {
          tripImagesInteractor.baseTripImagesCommandActionPipe()
                .createObservableResult(tripImagesCommandFactory.provideCommandCacheOnly(tripImagesArgs))
+               .compose(bindViewToMainComposer())
                .map(Command::getResult)
                .subscribe(items -> {
                   baseMediaEntities = new ArrayList<>(items);

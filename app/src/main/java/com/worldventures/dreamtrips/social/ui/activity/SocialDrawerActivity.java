@@ -155,7 +155,7 @@ public abstract class SocialDrawerActivity<P extends ActivityPresenter> extends 
       FragmentManager fm = getSupportFragmentManager();
       for (int entry = 0; entry < fm.getBackStackEntryCount(); entry++) {
          String name = fm.getBackStackEntryAt(entry).getName();
-         if (name.equals(component.getKey())) {
+         if (name != null && name.equals(component.getKey())) {
             backStackName = name;
             break;
          }

@@ -10,6 +10,7 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
@@ -62,7 +63,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
    @Override
    public void setupView(User user) {
       userPhoto.setup(user, injectorProvider.get());
-      userPhoto.post(() -> setUserPhotoAndCover(user));
+      setUserPhotoAndCover(user);
       userName.setText(user.getFullName());
       companyName.setText(user.getCompany());
       viewProfile.setVisibility(View.VISIBLE);
@@ -78,13 +79,17 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
    }
 
    private void setUserPhotoAndCover(User user) {
+      // views dimensions might be zero, wait for measure
       if (!ProjectTextUtils.isEmpty(user.getAvatar().getThumb())) {
-         userPhoto.setController(GraphicUtils.provideFrescoResizingController(user.getAvatar().getThumb(),
-               userPhoto.getController(), userPhoto.getWidth(), userPhoto.getHeight()));
+         ViewUtils.runTaskAfterMeasure(userPhoto, () ->
+            userPhoto.setController(GraphicUtils.provideFrescoResizingController(user.getAvatar().getThumb(),
+                  userPhoto.getController(), userPhoto.getWidth(), userPhoto.getHeight())));
       }
+
       if (!ProjectTextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
-         userCover.setController(GraphicUtils.provideFrescoResizingController(user.getBackgroundPhotoUrl(),
-               userCover.getController(), userCover.getWidth(), userCover.getHeight()));
+         ViewUtils.runTaskAfterMeasure(userCover, () ->
+            userCover.setController(GraphicUtils.provideFrescoResizingController(user.getBackgroundPhotoUrl(),
+                  userCover.getController(), userCover.getWidth(), userCover.getHeight())));
       }
    }
 

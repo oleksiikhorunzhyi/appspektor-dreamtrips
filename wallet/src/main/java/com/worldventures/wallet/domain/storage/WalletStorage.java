@@ -2,7 +2,6 @@ package com.worldventures.wallet.domain.storage;
 
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.wallet.domain.entity.SmartCard;
-import com.worldventures.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.domain.entity.TermsAndConditions;
@@ -39,12 +38,6 @@ public interface WalletStorage {
    TermsAndConditions getWalletTermsAndConditions();
 
    void deleteTermsAndConditions();
-
-   void saveSmartCardDetails(SmartCardDetails details);
-
-   SmartCardDetails getSmartCardDetails();
-
-   void deleteSmartCardDetails();
 
    void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware);
 

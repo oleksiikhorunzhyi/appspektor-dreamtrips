@@ -6,7 +6,6 @@ import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET
 import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
-import com.worldventures.wallet.domain.entity.SmartCardDetails
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.service.SystemPropertiesProvider
@@ -41,7 +40,7 @@ class FetchAssociatedSmartCardCommand : Command<FetchAssociatedSmartCardCommand.
       val smartCard = smartCardFromCache
       val user = smartCardUserFromCache
       if (smartCard != null && smartCard.cardStatus === CardStatus.ACTIVE && user != null) {
-         callback.onSuccess(createAssociatedCard(smartCard, walletStorage.smartCardDetails))
+         callback.onSuccess(createAssociatedCard(smartCard))
          return
       }
       janet.createPipe(GetAssociatedCardsHttpAction::class.java)
@@ -58,25 +57,19 @@ class FetchAssociatedSmartCardCommand : Command<FetchAssociatedSmartCardCommand.
 
    private fun handleResponse(listSmartCardInfo: List<SmartCardInfo>): Observable<FetchAssociatedSmartCardCommand.AssociatedCard> {
       if (listSmartCardInfo.isEmpty()) {
-         return Observable.just(AssociatedCard(exist = false))
+         return Observable.just(AssociatedCard())
       }
       val smartCardInfo = listSmartCardInfo[0]
 
       return ProcessSmartCardInfoDelegate(walletStorage, janetWallet, mappery)
             .processSmartCardInfo(smartCardInfo)
-            .map { result -> createAssociatedCard(result.smartCard, result.details) }
+            .map { (smartCard, _) -> createAssociatedCard(smartCard) }
    }
 
-   private fun createAssociatedCard(smartCard: SmartCard, smartCardDetails: SmartCardDetails): AssociatedCard {
-      return AssociatedCard(
-            exist = true,
-            smartCard = smartCard,
-            smartCardDetails = smartCardDetails)
-   }
+   private fun createAssociatedCard(smartCard: SmartCard) = AssociatedCard(smartCard = smartCard)
 
-   data class AssociatedCard(
-         val smartCard: SmartCard? = null,
-         val smartCardDetails: SmartCardDetails? = null,
-         val exist: Boolean
-   )
+   class AssociatedCard(val smartCard: SmartCard? = null) {
+      val exist: Boolean
+         get() = smartCard != null
+   }
 }

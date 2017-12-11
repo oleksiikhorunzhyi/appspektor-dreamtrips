@@ -8,7 +8,6 @@ import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage;
 import com.worldventures.wallet.domain.storage.action.DeviceStateActionStorage;
 import com.worldventures.wallet.domain.storage.action.FirmwareUpdateActionStorage;
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage;
-import com.worldventures.wallet.domain.storage.action.SmartCardDetailsActionStorage;
 import com.worldventures.wallet.domain.storage.action.SmartCardFirmwareActionStorage;
 import com.worldventures.wallet.domain.storage.action.SmartCardUserActionStorage;
 import com.worldventures.wallet.domain.storage.action.SyncRecordsStatusActionStorage;
@@ -46,12 +45,6 @@ public class WalletActionStorageModule {
    @Named(JANET_WALLET)
    ActionStorage smartCardActionStorage(WalletStorage walletStorage) {
       return new SmartCardActionStorage(walletStorage);
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Named(JANET_WALLET)
-   ActionStorage smartCardDetailsActionStorage(WalletStorage walletStorage) {
-      return new SmartCardDetailsActionStorage(walletStorage);
    }
 
    @Provides(type = Provides.Type.SET)

@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.api.smart_card.user_association.DisassociateCardUserHttpAction;
 import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.SmartCard;
+import com.worldventures.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.wallet.service.command.device.DeviceStateCommand;
@@ -65,9 +66,11 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    }
 
    private Observable<Void> disassociateCardUserServer(SmartCard smartCard) {
+      final SmartCardDetails details = smartCard.getDetails();
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
             .createObservableResult(
-                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.getSmartCardId()), smartCard.getDeviceId()))
+                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.getSmartCardId()),
+                        details != null ? details.getDeviceId() : null))
             .map(disassociateCardUserHttpAction -> (Void) null)
             .onErrorResumeNext(this::handleDisassociateError);
    }

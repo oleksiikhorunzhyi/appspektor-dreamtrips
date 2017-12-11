@@ -39,8 +39,6 @@ import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
-import com.worldventures.wallet.service.profile.UpdateProfileModule;
-import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 import com.worldventures.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.wallet.service.command.record.DeleteRecordCommand;
@@ -65,6 +63,8 @@ import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
+import com.worldventures.wallet.service.profile.UpdateProfileModule;
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 
 import dagger.Module;
 

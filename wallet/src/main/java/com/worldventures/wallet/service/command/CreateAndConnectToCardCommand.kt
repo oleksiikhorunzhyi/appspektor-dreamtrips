@@ -5,7 +5,6 @@ import com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET
 import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.service.SmartCardInteractor
-import com.worldventures.wallet.service.SystemPropertiesProvider
 import io.techery.janet.Command
 import io.techery.janet.Janet
 import io.techery.janet.command.annotations.CommandAction
@@ -15,10 +14,8 @@ import javax.inject.Named
 @CommandAction
 class CreateAndConnectToCardCommand(private val barcode: String) : Command<SmartCard>(), InjectableAction {
 
-   @field:[Inject Named(JANET_WALLET)]
-   lateinit var janet: Janet
-   @Inject lateinit var propertiesProvider: SystemPropertiesProvider
    @Inject lateinit var interactor: SmartCardInteractor
+   @field:[Inject Named(JANET_WALLET)] lateinit var janet: Janet
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<SmartCard>) {
@@ -33,10 +30,5 @@ class CreateAndConnectToCardCommand(private val barcode: String) : Command<Smart
             .subscribe({ callback.onSuccess(it.result) }, { callback.onFail(it) })
    }
 
-   private fun createSmartCard(scId: String): SmartCard {
-      return SmartCard(
-            smartCardId = scId,
-            cardStatus = CardStatus.IN_PROVISIONING,
-            deviceId = propertiesProvider.deviceId())
-   }
+   private fun createSmartCard(scId: String): SmartCard = SmartCard(scId, CardStatus.IN_PROVISIONING)
 }

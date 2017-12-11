@@ -94,7 +94,7 @@ class SmartCardIdHelperTest : BaseTest() {
 
       val userSession: UserSession = mock()
       whenever(userSession.permissions()).thenReturn(listOf(Feature(Feature.DTL), Feature(Feature.WALLET)))
-      fetchTrackingStatusContract.result(AssociatedCard(createTestSmartCard(TEST_SMART_CARD_ID), null, true))
+      fetchTrackingStatusContract.result(AssociatedCard(createTestSmartCard(TEST_SMART_CARD_ID)))
       smartCardIdHelper.fetchSmartCardFromServer(userSession)
 
       assertEquals(1, testSubscriber.onNextEvents.size)
@@ -104,7 +104,7 @@ class SmartCardIdHelperTest : BaseTest() {
    @Test
    fun testRequestOnSCAfterLoginWithoutWalletPermission() {
       activeSmartCardContract.exception(NoActiveSmartCardException(""))
-      fetchTrackingStatusContract.result(AssociatedCard(null, null, false))
+      fetchTrackingStatusContract.result(AssociatedCard())
 
       val testSubscriber = TestSubscriber<String>()
       smartCardIdHelper.smartCardIdObservable()

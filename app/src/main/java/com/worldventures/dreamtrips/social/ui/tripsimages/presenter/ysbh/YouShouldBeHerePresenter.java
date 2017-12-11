@@ -57,10 +57,10 @@ public class YouShouldBeHerePresenter extends Presenter<YouShouldBeHerePresenter
                      view.finishLoading();
                      loading = false;
                      lastPageReached = getYSBHPhotosCommand.lastPageReached();
+                     currentItems = new ArrayList<>(currentItems);
                      if (getYSBHPhotosCommand.getPage() == 1) {
                         currentItems.clear();
                      }
-                     currentItems = new ArrayList<>(currentItems);
                      currentItems.addAll(getYSBHPhotosCommand.getResult());
                      view.updatePhotos(currentItems);
                   }));

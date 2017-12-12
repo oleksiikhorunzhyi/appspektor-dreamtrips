@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.welcome.impl;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -30,9 +29,9 @@ import static android.view.View.VISIBLE;
 public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeScreen, WizardWelcomePresenter> implements WizardWelcomeScreen {
 
    private static final String KEY_PROVISION_MODE = "key_provision_mode";
-   private static final long ANIMATION_DURATION = 1000;
-   private static final long GREETING_ANIMATION_DELAY = 1000;
-   private static final long ANIMATION_DELAY = 3000;
+   private static final long ANIMATION_DURATION = 500;
+   private static final long GREETING_ANIMATION_DELAY = 500;
+   private static final long ANIMATION_DELAY = 1100;
 
    private TextView greeting;
    private TextView content;

@@ -3,7 +3,7 @@ ext {
          versionMajor    : 1,
          versionMinor    : 25,
          versionPatch    : 0,
-         versionBuild    : 0,
+         versionBuild    : 1,
          applicationId   : 'com.worldventures.dreamtrips',
          archivesBaseName: 'DreamTrips',
 

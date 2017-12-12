@@ -51,11 +51,13 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 
 @Layout(R.layout.fragment_trip_list_images)
 @ComponentPresenter.ComponentTitle(R.string.trip_images)
 public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFragmentWithArgs<T, TripImagesArgs>
       implements TripImagesPresenter.View, SelectablePagerFragment {
+
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
 
    @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
@@ -66,9 +68,13 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @InjectView(R.id.new_images_button) Button newImagesButton;
    @InjectView(R.id.fab_photo) FloatingActionButton addNewPhotoButton;
 
+   @State protected int videoDuration;
+   @State protected boolean mediaPickerShown;
+
    protected BaseDelegateAdapter adapter;
    protected GridLayoutManager layoutManager;
    private RecyclerViewStateDelegate stateDelegate;
+   private MediaPickerDialog mediaPickerDialog;
 
    @Override
    public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,6 +87,15 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
       stateDelegate.saveStateIfNeeded(outState);
+   }
+
+   @Override
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
+
+      if (mediaPickerShown) {
+         openPicker(videoDuration);
+      }
    }
 
    @Override
@@ -182,9 +197,25 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void openPicker(int durationLimit) {
-      MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
-      mediaPickerDialog.setOnDoneListener(getPresenter()::pickedAttachments);
+      mediaPickerShown = true;
+      videoDuration = durationLimit;
+
+      mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnCancelListener(dialogInterface -> mediaPickerShown = false);
+      mediaPickerDialog.setOnDoneListener(pickerAttachment -> {
+         mediaPickerShown = false;
+         getPresenter().pickedAttachments(pickerAttachment);
+      });
       mediaPickerDialog.show(MEDIA_PICKER_ITEMS_COUNT, durationLimit);
+   }
+
+   @Override
+   public void onStop() {
+      super.onStop();
+      //fix memory leak after rotation
+      if (mediaPickerDialog != null) {
+         mediaPickerDialog.dismiss();
+      }
    }
 
    @Override

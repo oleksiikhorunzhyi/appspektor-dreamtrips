@@ -614,7 +614,7 @@ public class WalletActivityModule {
       //noinspection all
       return new LostCardPresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
             smartCardLocationInteractor, walletDetectLocationService,
-            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.COMPONENT_NAME), analyticsInteractor);
+            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.Companion.getCOMPONENT_NAME()), analyticsInteractor);
    }
 
    @Provides

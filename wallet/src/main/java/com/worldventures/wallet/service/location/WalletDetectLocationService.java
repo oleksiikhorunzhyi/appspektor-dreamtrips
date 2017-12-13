@@ -2,8 +2,6 @@ package com.worldventures.wallet.service.location;
 
 import android.location.Location;
 
-import com.google.android.gms.location.LocationSettingsResult;
-
 import rx.Observable;
 
 public interface WalletDetectLocationService {
@@ -12,7 +10,7 @@ public interface WalletDetectLocationService {
 
    boolean isEnabled();
 
-   Observable<LocationSettingsResult> fetchLastKnownLocationSettings();
+   Observable<SettingsResult> fetchLastKnownLocationSettings();
 
    Observable<Boolean> observeLocationSettingState();
 

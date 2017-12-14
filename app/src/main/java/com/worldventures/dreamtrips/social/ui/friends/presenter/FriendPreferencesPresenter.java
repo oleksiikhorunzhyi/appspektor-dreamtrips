@@ -6,8 +6,8 @@ import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendT
 import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.State;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,16 +42,16 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
    }
 
    private void updateCircles() {
-      circlesInteractor.pipe().send(new GetCirclesCommand());
+      circlesInteractor.getPipe().send(new GetCirclesCommand());
    }
 
    private void subscribeCircles() {
-      circlesInteractor.pipe()
+      circlesInteractor.getPipe()
             .observe()
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-                  .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                  .onSuccess(circlesCommand -> onCirclesSuccess(new ArrayList<>(circlesCommand.getResult())))
                   .onFail(this::onCirclesError));
    }
 

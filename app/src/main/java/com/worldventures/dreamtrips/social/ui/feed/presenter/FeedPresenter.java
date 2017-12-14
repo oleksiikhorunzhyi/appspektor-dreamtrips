@@ -45,8 +45,8 @@ import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditi
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 
@@ -161,20 +161,22 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       refreshFeed();
    }
 
+   @SuppressWarnings("unchecked")
    public void actionFilter() {
-      circlesInteractor.pipe()
+      circlesInteractor.getPipe()
             .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>()
                   .onStart(circlesCommand -> view.showBlockingProgress())
-                  .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                  .onSuccess(circlesCommand ->
+                        onCirclesSuccess((List<Circle>) circlesCommand.getResult())) // generic problem java vs kotlin
                   .onFail(this::onCirclesError));
    }
 
    void updateCircles() {
-      circlesInteractor.pipe().send(new GetCirclesCommand());
+      circlesInteractor.getPipe().send(new GetCirclesCommand());
    }
 
    private void onCirclesSuccess(List<Circle> resultCircles) {

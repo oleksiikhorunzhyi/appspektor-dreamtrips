@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteracto
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 
 import javax.inject.Singleton;
 
@@ -109,6 +110,12 @@ public class ManagerModule {
    @Provides
    PresentationInteractor providePresentationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new PresentationInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   FriendsInteractor provideFriendsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new FriendsInteractor(sessionActionPipeCreator);
    }
 
    @Singleton

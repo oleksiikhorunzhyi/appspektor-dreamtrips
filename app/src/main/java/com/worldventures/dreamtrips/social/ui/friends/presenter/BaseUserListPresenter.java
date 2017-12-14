@@ -10,13 +10,13 @@ import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetUsersCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.RemoveFriendCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetUsersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.service.analytics.FriendRelationshipAnalyticAction;
@@ -57,7 +57,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
    @VisibleForTesting
    public void subscribeToRemovedFriends() {
-      friendsInteractor.removeFriendPipe()
+      friendsInteractor.getRemoveFriendPipe()
             .observeSuccess()
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -65,7 +65,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
    }
 
    protected Observable<ActionState<GetCirclesCommand>> getCirclesObservable() {
-      return circlesInteractor.pipe()
+      return circlesInteractor.getPipe()
             .createObservable(new GetCirclesCommand())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView());
@@ -142,14 +142,14 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
    public void acceptRequest(User user) {
       getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-            .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(user, circlesCommand.getResult()))
+            .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(user, new ArrayList<>(circlesCommand.getResult())))
             .onFail(this::onCirclesError));
    }
 
    private void onCirclesSuccessAcceptRequest(User user, List<Circle> circles) {
       onCirclesSuccess(circles);
       view.showAddFriendDialog(circles, position ->
-            friendsInteractor.acceptRequestPipe()
+            friendsInteractor.getAcceptRequestPipe()
                   .createObservable(new ActOnFriendRequestCommand.Accept(user, circles.get(position).getId()))
                   .compose(bindView())
                   .observeOn(AndroidSchedulers.mainThread())
@@ -165,7 +165,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
    protected void addFriend(User user) {
       getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-            .onSuccess(circlesCommand -> onCirclesSuccessAddUserRequest(user, circlesCommand.getResult()))
+            .onSuccess(circlesCommand -> onCirclesSuccessAddUserRequest(user, new ArrayList<>(circlesCommand.getResult())))
             .onFail(this::onCirclesError));
    }
 
@@ -209,7 +209,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
             });
    }
 
-   private void userActionSucceed(User user) {
+   @VisibleForTesting
+   public void userActionSucceed(User user) {
       if (view != null) {
          view.finishLoading();
          userStateChanged(user);
@@ -220,7 +221,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
    public void unfriend(User user) {
       analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.unfriend());
-      friendsInteractor.removeFriendPipe()
+      friendsInteractor.getRemoveFriendPipe()
             .createObservable(new RemoveFriendCommand(user))
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -236,7 +237,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
 
    @VisibleForTesting
    public void addFriend(User user, Circle circle) {
-      friendsInteractor.addFriendPipe()
+      friendsInteractor.getAddFriendPipe()
             .createObservable(new AddFriendCommand(user, circle.getId()))
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())

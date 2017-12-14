@@ -6,9 +6,9 @@ import com.worldventures.core.model.User
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.social.friends.util.MockUtil
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.DeleteFriendRequestCommand
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.DeleteFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -105,7 +105,7 @@ class DeleteFriendRequestCommandSpec : BaseSpec({
       private fun sendCommand(action: DeleteFriendRequestCommand.Action)
             : TestSubscriber<ActionState<DeleteFriendRequestCommand>> {
          return TestSubscriber<ActionState<DeleteFriendRequestCommand>>().apply {
-            friendsInteractor.deleteRequestPipe()
+            friendsInteractor.deleteRequestPipe
                   .createObservable(DeleteFriendRequestCommand(user, action))
                   .subscribe(this)
          }

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.social.friends.util.MockUtil
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendSearchPresenter.View
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetSearchUsersCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
@@ -17,11 +17,11 @@ class FriendSearchPresenterSpec : AbstractUserListPresenterSpec(FriendSearchPres
    class FriendSearchPresenterTestBody : AbstractUserListPresenterTestBody<View, FriendSearchPresenter>() {
       private fun createTestSuit(): SpecBody.() -> Unit = {
          describe("Search users") {
-            it("Invoking setQuery() valid query should invoke getSearchUsersPipe()" +
-                  ", save input query and notify view with new user data") {
+            it("Invoking setQuery() valid query and" +
+                  " save input query and notify view with new user data") {
                val query = "friends name"
                presenter.setQuery(query)
-               verify(friendInteractor).searchUsersPipe
+               verify(presenter).reload()
                verify(view).refreshUsers(argWhere { friends.size == it.size })
                assertTrue { presenter.query == query }
             }
@@ -67,8 +67,10 @@ class FriendSearchPresenterSpec : AbstractUserListPresenterSpec(FriendSearchPres
 
       override fun mockView(): View = mock()
 
-      override fun mockActionService(): MockCommandActionService.Builder = super.mockActionService().apply {
-         addContract(BaseContract.of(GetSearchUsersCommand::class.java).result(friends))
+      override fun mockActionService(): MockCommandActionService.Builder {
+         return super.mockActionService().apply {
+            addContract(BaseContract.of(GetSearchUsersCommand::class.java).result(friends))
+         }
       }
 
       override fun getMainDescription() = "FriendSearchPresenter"

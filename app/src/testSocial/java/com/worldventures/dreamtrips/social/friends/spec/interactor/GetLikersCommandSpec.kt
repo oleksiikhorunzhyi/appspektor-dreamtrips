@@ -13,9 +13,9 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.social.friends.util.MockUtil
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -26,7 +26,6 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
-import kotlin.test.assertTrue
 
 
 class GetLikersCommandSpec : BaseSpec({

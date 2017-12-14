@@ -7,9 +7,13 @@ import com.worldventures.core.model.User
 import com.worldventures.core.test.common.Injector
 import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.*
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AcceptAllFriendRequestsCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.DeleteFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetRequestsCommand
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
@@ -84,9 +88,8 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
          }
 
          describe("Reject request") {
-            it("Should invoke rejectRequestPipe and remove rejected user from adapter") {
+            it("Should remove rejected user from adapter") {
                presenter.rejectRequest(user)
-               verify(friendsInteractor).rejectRequestPipe()
                verify(adapter).remove(argWhere<Any> { (it as User) == user })
             }
          }
@@ -145,8 +148,8 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
 
          val janet = Janet.Builder().addService(service).build()
 
-         friendsInteractor = spy(FriendsInteractor(SessionActionPipeCreator(janet)))
-         circlesInteractor = spy(CirclesInteractor(SessionActionPipeCreator(janet)))
+         friendsInteractor = FriendsInteractor(SessionActionPipeCreator(janet))
+         circlesInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
 
          whenever(view.adapter).thenReturn(adapter)
          whenever(adapter.items).thenReturn(requests)
@@ -173,18 +176,22 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
          id = userId
       }
 
-      private fun mockUsersList(): List<User> = (1..USERS_PER_PAGE).map {
-         val user = mockUser(it)
-         if (it % 2 == 0) user.relationship = User.Relationship.INCOMING_REQUEST
-         else user.relationship = User.Relationship.OUTGOING_REQUEST
-         user
-      }.toList()
+      private fun mockUsersList(): List<User> {
+         return (1..USERS_PER_PAGE).map {
+            val user = mockUser(it)
+            if (it % 2 == 0) user.relationship = User.Relationship.INCOMING_REQUEST
+            else user.relationship = User.Relationship.OUTGOING_REQUEST
+            user
+         }.toList()
+      }
 
-      override fun prepareInjection(presenter: RequestsPresenter): Injector = prepareInjector().apply {
-         registerProvider(FriendsInteractor::class.java) { friendsInteractor }
-         registerProvider(CirclesInteractor::class.java) { circlesInteractor }
-         registerProvider(SnappyRepository::class.java) { snappyRepository }
-         inject(presenter)
+      override fun prepareInjection(presenter: RequestsPresenter): Injector {
+         return prepareInjector().apply {
+            registerProvider(FriendsInteractor::class.java) { friendsInteractor }
+            registerProvider(CirclesInteractor::class.java) { circlesInteractor }
+            registerProvider(SnappyRepository::class.java) { snappyRepository }
+            inject(presenter)
+         }
       }
 
       companion object {

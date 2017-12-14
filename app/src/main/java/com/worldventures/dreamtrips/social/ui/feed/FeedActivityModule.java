@@ -79,7 +79,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.FeedEntityContentFr
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.FullscreenViewActivity;
 

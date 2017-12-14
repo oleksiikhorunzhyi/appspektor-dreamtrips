@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.social.ui.friends.bundle.MutualFriendsBundle
 import com.worldventures.dreamtrips.social.ui.friends.presenter.MutualFriendsPresenter.View
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetMutualFriendsCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetMutualFriendsCommand
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
@@ -16,10 +16,6 @@ class MutualFriendsPresenterSpec : AbstractUserListPresenterSpec(MutualFriendsPr
    class MutualFriendsPresenterTestBody : AbstractUserListPresenterTestBody<View, MutualFriendsPresenter>() {
       private fun createTestSuit(): SpecBody.() -> Unit = {
          describe("View taken") {
-            it("Should invoke getMutualFriendsPipe") {
-               verify(friendInteractor).mutualFriendsPipe
-            }
-
             it("Should notify view with new user data") {
                verify(view).refreshUsers(argWhere { it.size == friends.size })
             }
@@ -36,8 +32,10 @@ class MutualFriendsPresenterSpec : AbstractUserListPresenterSpec(MutualFriendsPr
 
       override fun mockView(): View = mock()
 
-      override fun mockActionService(): MockCommandActionService.Builder = super.mockActionService().apply {
-         addContract(BaseContract.of(GetMutualFriendsCommand::class.java).result(friends))
+      override fun mockActionService(): MockCommandActionService.Builder {
+         return super.mockActionService().apply {
+            addContract(BaseContract.of(GetMutualFriendsCommand::class.java).result(friends))
+         }
       }
 
       override fun getMainDescription() = "MutualFriendsPresenterSpec"

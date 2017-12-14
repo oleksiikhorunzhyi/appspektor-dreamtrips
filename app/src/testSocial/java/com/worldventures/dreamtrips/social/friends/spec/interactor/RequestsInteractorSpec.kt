@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetRequestsCommand
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetRequestsCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService

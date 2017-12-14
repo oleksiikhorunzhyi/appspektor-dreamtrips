@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.AccountTim
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFeedStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;

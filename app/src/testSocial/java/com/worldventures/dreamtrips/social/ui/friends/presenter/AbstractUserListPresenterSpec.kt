@@ -16,11 +16,11 @@ import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.friends.presenter.AbstractPresenterSpec.TestBody
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand
-import com.worldventures.dreamtrips.social.ui.friends.service.command.RemoveFriendCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -79,18 +79,19 @@ abstract class AbstractUserListPresenterSpec(testBody: TestBody<*, *>) : Present
 
       override abstract fun mockView(): View
 
-      protected open fun mockActionService(): MockCommandActionService.Builder
-            = MockCommandActionService.Builder().apply {
-         actionService(CommandActionService())
-         addContract(BaseContract.of(RemoveFriendCommand::class.java).result(user))
-         addContract(BaseContract.of(GetCirclesCommand::class.java).result(circles))
-         addContract(BaseContract.of(AddFriendCommand::class.java).result(user))
+      protected open fun mockActionService(): MockCommandActionService.Builder {
+         return MockCommandActionService.Builder().apply {
+            actionService(CommandActionService())
+            addContract(BaseContract.of(RemoveFriendCommand::class.java).result(user))
+            addContract(BaseContract.of(GetCirclesCommand::class.java).result(circles))
+            addContract(BaseContract.of(AddFriendCommand::class.java).result(user))
+         }
       }
 
       protected open fun mockInteractors(janet: Janet) {
-         friendInteractor = spy(FriendsInteractor(SessionActionPipeCreator(janet)))
+         friendInteractor = FriendsInteractor(SessionActionPipeCreator(janet))
          circleInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
-         profileInteractor = spy(ProfileInteractor(SessionActionPipeCreator(janet), sessionHolder))
+         profileInteractor = ProfileInteractor(SessionActionPipeCreator(janet), sessionHolder)
       }
 
       protected open fun mockUser(userId: Int): User = User().apply {

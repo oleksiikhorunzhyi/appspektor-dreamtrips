@@ -12,9 +12,9 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetSearchUsersCommand
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -25,7 +25,6 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
-import kotlin.test.assertTrue
 
 
 class GetUserSearchCommandSpec : BaseSpec({

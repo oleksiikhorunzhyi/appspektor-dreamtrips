@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.security.lostcard.impl;
 
-import com.google.android.gms.location.LocationSettingsResult;
 import com.worldventures.core.ui.util.permission.PermissionConstants;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.core.ui.util.permission.PermissionSubscriber;
@@ -11,6 +10,7 @@ import com.worldventures.wallet.analytics.locatecard.action.LocateDisabledAnalyt
 import com.worldventures.wallet.analytics.locatecard.action.LocateEnabledAnalyticsAction;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
+import com.worldventures.wallet.service.location.SettingsResult;
 import com.worldventures.wallet.service.location.WalletDetectLocationService;
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
@@ -173,7 +173,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
             .subscribe(this::checkLocationServiceResult, Timber::e);
    }
 
-   private void checkLocationServiceResult(LocationSettingsResult result) {
+   private void checkLocationServiceResult(SettingsResult result) {
       locationScreenComponent.checkSettingsResult(result)
             .compose(getView().bindUntilDetach())
             .subscribe(this::onLocationSettingsResult);

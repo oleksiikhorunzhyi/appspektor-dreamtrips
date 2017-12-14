@@ -7,6 +7,7 @@ import com.worldventures.wallet.service.lostcard.LostCardRepository
 import com.worldventures.wallet.util.LocationPermissionDeniedException
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
+import rx.Observable
 import javax.inject.Inject
 
 @CommandAction
@@ -21,6 +22,13 @@ class DetectGeoLocationCommand : Command<WalletCoordinates>(), InjectableAction 
          throw LocationPermissionDeniedException()
       }
       locationService.detectLastKnownLocation()
+            .flatMap { location ->
+               return@flatMap if (location == null) {
+                  Observable.error(IllegalStateException("Sorry! Location is unavailable."))
+               } else {
+                  Observable.just(location)
+               }
+            }
             .map { WalletCoordinates(lat = it.latitude, lng = it.longitude) }
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }

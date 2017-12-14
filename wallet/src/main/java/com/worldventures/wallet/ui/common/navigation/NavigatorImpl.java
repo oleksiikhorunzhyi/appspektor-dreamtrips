@@ -228,12 +228,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goPairKey(ProvisioningMode provisioningMode, String smartCardId) {
-      go(PairKeyScreenImpl.create(provisioningMode, smartCardId));
+      go(PairKeyScreenImpl.Companion.create(provisioningMode, smartCardId));
    }
 
    @Override
    public void goPairKeyExistingDevice(ProvisioningMode provisioningMode, String smartCardId) {
-      single(PairKeyScreenImpl.create(provisioningMode, smartCardId));
+      single(PairKeyScreenImpl.Companion.create(provisioningMode, smartCardId));
    }
 
    @Override

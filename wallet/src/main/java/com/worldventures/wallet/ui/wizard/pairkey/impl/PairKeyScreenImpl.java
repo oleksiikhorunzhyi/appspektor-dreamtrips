@@ -1,9 +1,9 @@
 package com.worldventures.wallet.ui.wizard.pairkey.impl;
 
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +36,8 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
 
    @Inject PairKeyPresenter presenter;
 
+   private OperationView<CreateAndConnectToCardCommand> operationView;
+
    public static PairKeyScreenImpl create(ProvisioningMode mode, String barcode) {
       final Bundle args = new Bundle();
       args.putSerializable(KEY_PROVISION_MODE, mode);
@@ -57,11 +59,8 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
       toolbar = view.findViewById(R.id.toolbar);
       btnNext = view.findViewById(R.id.button_next);
       btnNext.setOnClickListener(next -> getPresenter().tryToPairAndConnectSmartCard());
-   }
 
-   @Override
-   public OperationView<CreateAndConnectToCardCommand> provideOperationCreateAndConnect() {
-      return new ComposableOperationView<>(
+      operationView = new ComposableOperationView<>(
             new SimpleDialogProgressView<>(getContext(), R.string.wallet_loading, false),
             ErrorViewFactory.<CreateAndConnectToCardCommand>builder()
                   .addProvider(new SimpleDialogErrorViewProvider<>(
@@ -73,17 +72,25 @@ public class PairKeyScreenImpl extends WalletBaseController<PairKeyScreen, PairK
    }
 
    @Override
+   public OperationView<CreateAndConnectToCardCommand> provideOperationCreateAndConnect() {
+      return operationView;
+   }
+
+   @Override
    public ProvisioningMode getProvisionMode() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_PROVISION_MODE))
-            ? (ProvisioningMode) getArgs().getSerializable(KEY_PROVISION_MODE)
-            : null;
+      return getArgs().containsKey(KEY_PROVISION_MODE) ? (ProvisioningMode) getArgs().getSerializable(KEY_PROVISION_MODE) : null;
    }
 
    @Override
    public String getBarcode() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_BARCODE))
-            ? getArgs().getString(KEY_BARCODE)
-            : null;
+      return getArgs().containsKey(KEY_BARCODE) ? getArgs().getString(KEY_BARCODE) : null;
+   }
+
+   @Override
+   protected void onDetach(@NonNull View view) {
+      super.onDetach(view);
+      operationView.hideError();
+      operationView.hideProgress();
    }
 
    @Override

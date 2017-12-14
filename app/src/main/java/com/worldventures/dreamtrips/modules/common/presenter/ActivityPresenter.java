@@ -71,7 +71,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    private void subscribeToAppVersionUpdates() {
-      appConfigurationInteractor.configurationCommandActionPipe()
+      appConfigurationInteractor.getConfigurationPipe()
             .observeWithReplay()
             .compose(bindUntilPauseIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ConfigurationCommand>()

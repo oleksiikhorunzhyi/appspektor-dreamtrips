@@ -267,7 +267,7 @@ public class PhotoStripDelegate {
    }
 
    private Observable<Integer> videoMaxLengthObserver() {
-      return appConfigurationInteractor.configurationCommandActionPipe()
+      return appConfigurationInteractor.getConfigurationPipe()
             .createObservableResult(new ConfigurationCommand())
             .compose(new IoToMainComposer<>())
             .map(configurationCommand -> configurationCommand.getResult()

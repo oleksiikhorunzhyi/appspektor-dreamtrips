@@ -78,16 +78,16 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
             .getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
       objectGraph.inject(this);
       mapView = view.findViewById(R.id.map_view);
+      emptyLocationsView = view.findViewById(R.id.empty_location_view);
+      noGoogleContainer = view.findViewById(R.id.noGoogleContainer);
+      final View popupInfoContainer = view.findViewById(R.id.ll_popup_info);
+      popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
          noGoogleContainer.setVisibility(VISIBLE);
       } else {
          mapView.onCreate(bundle);
       }
       mapView.getMapAsync(this);
-      emptyLocationsView = view.findViewById(R.id.empty_location_view);
-      noGoogleContainer = view.findViewById(R.id.noGoogleContainer);
-      final View popupInfoContainer = view.findViewById(R.id.ll_popup_info);
-      popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       return view;
    }
 

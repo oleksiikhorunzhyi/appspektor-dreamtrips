@@ -1,17 +1,13 @@
 package com.worldventures.wallet.ui.common
 
 import android.app.Activity
-import android.content.Intent
 import android.content.IntentSender
 import com.google.android.gms.common.api.ResolvableApiException
-
 import com.worldventures.wallet.service.location.SettingsResult
-
-import java.lang.ref.WeakReference
-
 import rx.Observable
 import rx.subjects.PublishSubject
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 class LocationScreenComponent(activity: Activity) {
 

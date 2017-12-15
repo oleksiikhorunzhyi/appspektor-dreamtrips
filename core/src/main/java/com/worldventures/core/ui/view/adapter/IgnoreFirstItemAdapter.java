@@ -3,6 +3,7 @@ package com.worldventures.core.ui.view.adapter;
 import android.content.Context;
 
 import com.worldventures.core.janet.Injector;
+import com.worldventures.core.ui.view.custom.horizontal_photo_view.model.AddPhotoModel;
 
 public class IgnoreFirstItemAdapter extends BaseDelegateAdapter {
 
@@ -17,7 +18,7 @@ public class IgnoreFirstItemAdapter extends BaseDelegateAdapter {
          item = getItem(0);
       }
       super.clear();
-      if (item != null) {
+      if (item instanceof AddPhotoModel) {
          addItem(item);
       }
    }

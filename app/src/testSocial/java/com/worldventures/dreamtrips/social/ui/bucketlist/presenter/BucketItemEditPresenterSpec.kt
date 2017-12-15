@@ -17,6 +17,10 @@ import io.techery.janet.command.test.Contract
 import junit.framework.Assert.assertFalse
 import org.jetbrains.spek.api.dsl.Spec
 import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.xit
+import rx.lang.kotlin.TestSubject
+import rx.observers.TestSubscriber
+import java.util.Collections
 
 class BucketItemEditPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemEditPresenter, BucketItemEditPresenter.View,
       BucketItemEditPresenterSpec.DetailsTestBody>(DetailsTestBody()) {
@@ -43,32 +47,19 @@ class BucketItemEditPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemEdi
                setup(defaultMockContracts())
 
                presenter.loadCategories()
-               verify(presenter).mergeBucketItemPhotosWithStorage()
+
+               verify(view).setCategoryItems(any(), anyOrNull())
             }
 
-            it("should load categories and process error properly") {
-               setup(Contract.of(GetCategoriesCommand::class.java).exception(Exception()))
-
-               presenter.loadCategories()
-
-               verify(presenter).handleError(any(), any())
-            }
-
-            it("should subscribe to new photos on take view") {
-               setup()
-               doNothing().whenever(presenter).subscribeToAddingPhotos()
-
-               presenter.onViewTaken()
-
-               verify(presenter).subscribeToAddingPhotos()
-            }
-
-            it("should merge bucket items with storage on sync ui") {
-               setup(defaultMockContracts())
+            it("should set images on sync ui") {
+               val contracts = mutableListOf<Contract>()
+               contracts.addAll(defaultMockContracts())
+               contracts.add(Contract.of(MergeBucketItemPhotosWithStorageCommand::class.java)
+                     .result(emptyList<EntityStateHolder<BucketPhoto>>()))
+               setup(contracts)
 
                presenter.onResume()
 
-               verify(presenter).mergeBucketItemPhotosWithStorage()
                verify(view).setImages(any())
             }
 
@@ -87,45 +78,34 @@ class BucketItemEditPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemEdi
             it("should delete photo properly") {
                setup(Contract.of(DeleteItemPhotoCommand::class.java).result(presenter.bucketItem))
                val bucketPhoto = stubBucketPhoto()
-               val bucketItem = presenter.bucketItem
-               whenever(bucketItem.photos).thenReturn(listOf(bucketPhoto))
+               val bucketItem = stubBucketItem()
+               bucketItem.photos = listOf(bucketPhoto)
+               presenter.bucketItem = bucketItem
 
                presenter.deletePhotoRequest(bucketPhoto)
 
                verify(view).deleteImage(any())
             }
 
-            it("should process deleting photos error properly") {
-               setup(Contract.of(DeleteItemPhotoCommand::class.java).exception(Exception()))
-               val bucketPhoto = stubBucketPhoto()
-               val bucketItem = presenter.bucketItem
-               whenever(bucketItem.photos).thenReturn(listOf(bucketPhoto))
-
-               presenter.deletePhotoRequest(bucketPhoto)
-
-               verify(presenter).handleError(any(), any())
-            }
-
-            it("should cancel upload if uploading is in progress") {
+            it("should delete image if uploading is in progress") {
                setup()
                val stateHolder = EntityStateHolder.create(stubBucketPhoto(), EntityStateHolder.State.PROGRESS)
-               doNothing().whenever(presenter).cancelUpload(any())
 
                presenter.onPhotoCellClicked(stateHolder)
 
                verify(view).deleteImage(any())
-               verify(presenter).cancelUpload(any())
             }
 
-            it("should start upload if uploading is failed") {
-               setup()
+            it("should delete image if uploading is failed and start upload") {
+               setup(Contract.of(AddBucketItemPhotoCommand::class.java).result(Pair(stubBucketItem(), stubBucketPhoto())))
                val stateHolder = EntityStateHolder.create(stubBucketPhoto(), EntityStateHolder.State.FAIL)
-               doNothing().whenever(presenter).startUpload(any())
+               val testSubscriber = TestSubscriber<AddBucketItemPhotoCommand>()
+               bucketInteractor.addBucketItemPhotoPipe().observeSuccess().subscribe(testSubscriber)
 
                presenter.onPhotoCellClicked(stateHolder)
 
                verify(view).deleteImage(any())
-               verify(presenter).startUpload(any())
+               testSubscriber.assertValueCount(1)
             }
 
             it("should refresh view when uploading is finished") {

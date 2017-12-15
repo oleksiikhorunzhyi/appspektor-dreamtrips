@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
+package com.worldventures.dreamtrips.social.ui.bucketlist.view.util;
 
 import android.app.Activity;
 import android.app.Dialog;

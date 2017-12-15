@@ -19,8 +19,8 @@ import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import kotlin.test.assertFalse
 
-class BucketDetailsPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemDetailsPresenter, BucketItemDetailsPresenter.View,
-      BucketDetailsPresenterSpec.DetailsTestBody>(DetailsTestBody()) {
+class BucketItemDetailsPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemDetailsPresenter, BucketItemDetailsPresenter.View,
+      BucketItemDetailsPresenterSpec.DetailsTestBody>(DetailsTestBody()) {
 
    class DetailsTestBody: BucketDetailsBasePresenterSpec.TestBody<BucketItemDetailsPresenter, BucketItemDetailsPresenter.View>() {
       val feedEntityHolderDelegate = mock<FeedEntityHolderDelegate>()
@@ -45,7 +45,6 @@ class BucketDetailsPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemDeta
 
                presenter.onViewTaken()
 
-               verify(presenter).subscribeToTranslations()
                verify(feedEntityHolderDelegate).subscribeToUpdates(any(), any(), any())
             }
 
@@ -74,7 +73,6 @@ class BucketDetailsPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemDeta
                presenter.onTranslateClicked()
 
                subscriber.assertNoErrors()
-               verify(presenter).translationSucceed(any())
                verify(view).setBucketItem(any())
             }
 
@@ -86,18 +84,6 @@ class BucketDetailsPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemDeta
 
                assertFalse(presenter.bucketItem.isTranslated)
                verify(view).setBucketItem(any())
-            }
-
-            it("should call translation failed and process error") {
-               setup(Contract.of(TranslateBucketItemCommand::class.java).exception(Exception()))
-               presenter.bucketItem.isTranslated = false
-
-               presenter.subscribeToTranslations()
-               presenter.onTranslateClicked()
-
-               verify(presenter).translationFailed(any(), any())
-               verify(presenter).handleError(any(), any())
-
             }
 
             it("should update bucket if new status is done") {
@@ -112,11 +98,11 @@ class BucketDetailsPresenterSpec : BucketDetailsBasePresenterSpec<BucketItemDeta
                verify(view).enableMarkAsDone()
             }
 
-            it("should handle error if failed to update bucket item status") {
+            it("should update bucket item status on error") {
                setup(Contract.of(UpdateBucketItemCommand::class.java).exception(Exception()))
 
                presenter.onStatusUpdated(true)
-               verify(presenter).handleError(any(), any())
+
                verify(view).enableMarkAsDone()
             }
          }

@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteracto
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.CurrentOpenTabEventDelegate;
 
 import javax.inject.Singleton;
 
@@ -126,6 +127,12 @@ public class ManagerModule {
    @Singleton
    MediaPickerImagesProcessedEventDelegate provideMediaPickerImagesProcessedDelegate(ReplayEventDelegatesWiper wiper) {
       return new MediaPickerImagesProcessedEventDelegate(wiper);
+   }
+
+   @Provides
+   @Singleton
+   CurrentOpenTabEventDelegate provideCurrentOpenTabEventDelegate(ReplayEventDelegatesWiper wiper) {
+      return new CurrentOpenTabEventDelegate(wiper);
    }
 
    @Provides

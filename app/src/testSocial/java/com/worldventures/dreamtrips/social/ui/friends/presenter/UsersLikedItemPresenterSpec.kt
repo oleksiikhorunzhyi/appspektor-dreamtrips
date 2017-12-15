@@ -7,7 +7,7 @@ import com.nhaarman.mockito_kotlin.verify
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.social.ui.friends.bundle.UsersLikedEntityBundle
 import com.worldventures.dreamtrips.social.ui.friends.presenter.BaseUserListPresenter.View
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
@@ -20,10 +20,6 @@ class UsersLikedItemPresenterSpec : AbstractUserListPresenterSpec(UsersLikedItem
    class UsersLikedItemPresenterTestBody : AbstractUserListPresenterTestBody<View, UsersLikedItemPresenter>() {
       private fun createTestSuit(): SpecBody.() -> Unit = {
          describe("View taken") {
-            it("Should invoke getLikersPipe()") {
-               verify(friendInteractor).likersPipe
-            }
-
             it("Should notify view with new user data") {
                verify(view).refreshUsers(argWhere { it.size == friends.size })
             }
@@ -47,14 +43,16 @@ class UsersLikedItemPresenterSpec : AbstractUserListPresenterSpec(UsersLikedItem
 
       override fun createTestSuits(): List<SpecBody.() -> Unit> = listOf(createTestSuit())
 
-      override fun mockPresenter(): UsersLikedItemPresenter
-            = spy(UsersLikedItemPresenter(UsersLikedEntityBundle(mock(), 1)))
+      override fun mockPresenter(): UsersLikedItemPresenter {
+         return spy(UsersLikedItemPresenter(UsersLikedEntityBundle(mock(), 1)))
+      }
 
       override fun mockView(): View = mock()
 
-      override fun mockActionService(): MockCommandActionService.Builder
-            = super.mockActionService().apply {
-         addContract(BaseContract.of(GetLikersCommand::class.java).result(friends))
+      override fun mockActionService(): MockCommandActionService.Builder {
+         return super.mockActionService().apply {
+            addContract(BaseContract.of(GetLikersCommand::class.java).result(friends))
+         }
       }
 
       override fun getMainDescription() = "UsersLikedItemPresenter"

@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand;
 
 import java.util.ArrayList;
@@ -84,8 +84,8 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
                   .onSuccess(getFriendsCommand ->
-                        act.call(Queryable.from(getFriendsCommand.getResult())
-                              .filter(user -> !isUserExists(user)).toList()))
+                        act.call(new ArrayList<>(Queryable.from(getFriendsCommand.getResult())
+                              .filter(user -> !isUserExists(user)).toList())))
                   .onFail(this::handleError));
    }
 

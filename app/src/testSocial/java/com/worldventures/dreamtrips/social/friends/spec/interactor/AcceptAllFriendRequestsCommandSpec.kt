@@ -4,9 +4,9 @@ import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.janet.cache.CacheResultWrapper
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.AcceptAllFriendRequestsCommand
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AcceptAllFriendRequestsCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -75,7 +75,7 @@ class AcceptAllFriendRequestsCommandSpec : BaseSpec({
 
       private fun sendCommand(): TestSubscriber<ActionState<AcceptAllFriendRequestsCommand>> {
         return TestSubscriber<ActionState<AcceptAllFriendRequestsCommand>>().apply {
-         friendsInteractor.acceptAllPipe()
+         friendsInteractor.acceptAllPipe
                .createObservable(AcceptAllFriendRequestsCommand(FRIEND_CIRCLE_ID))
                .subscribe(this)
         }

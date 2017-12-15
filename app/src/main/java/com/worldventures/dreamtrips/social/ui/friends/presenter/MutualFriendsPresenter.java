@@ -2,8 +2,9 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.MutualFriendsBundle;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetMutualFriendsCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetMutualFriendsCommand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -23,7 +24,7 @@ public class MutualFriendsPresenter extends BaseUserListPresenter<MutualFriendsP
             .createObservable(new GetMutualFriendsCommand(userId, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetMutualFriendsCommand>()
-                  .onSuccess(getMutualFriendsCommand -> onSuccessAction.call(getMutualFriendsCommand.getResult()))
+                  .onSuccess(getMutualFriendsCommand -> onSuccessAction.call(new ArrayList<>(getMutualFriendsCommand.getResult())))
                   .onFail(this::onError));
    }
 

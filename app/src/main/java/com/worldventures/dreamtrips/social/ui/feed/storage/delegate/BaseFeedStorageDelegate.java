@@ -27,8 +27,8 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntity
 import com.worldventures.dreamtrips.social.ui.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedItemsStorageBaseCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedItemsStorageBaseInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;

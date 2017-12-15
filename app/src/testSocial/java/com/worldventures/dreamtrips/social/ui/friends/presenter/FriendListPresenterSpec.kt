@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedPresenterSpek
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendListPresenter.View
-import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
@@ -20,17 +20,15 @@ class FriendListPresenterSpec : AbstractUserListPresenterSpec(FriendListPresente
       private fun createTestSuit(): SpecBody.() -> Unit = {
          describe("View taken") {
             it("Should subscribe on accept friend command") {
-               verify(friendInteractor).acceptRequestPipe()
+               verify(presenter).subscribeOnAcceptRequestResult()
             }
 
-            it("Should invoke getFriendsPipe()") {
-               verify(friendInteractor, VerificationModeFactory.atLeastOnce()).friendsPipe
+            it("Should invoke reload()") {
+               verify(presenter, VerificationModeFactory.atLeastOnce()).reload()
             }
 
             it("View should receive new users data") {
-               verify(view).refreshUsers(argWhere {
-                  it.size == friends.size
-               })
+               verify(view).refreshUsers(argWhere { it.size == friends.size })
             }
          }
 
@@ -47,7 +45,7 @@ class FriendListPresenterSpec : AbstractUserListPresenterSpec(FriendListPresente
                presenter.setQuery(query)
                verify(view, VerificationModeFactory.times(2))
                      .refreshUsers(argWhere { it.size == friends.size })
-               assertTrue { presenter.query == query }
+               assertTrue { presenter.getQuery() == query }
             }
          }
 
@@ -55,7 +53,8 @@ class FriendListPresenterSpec : AbstractUserListPresenterSpec(FriendListPresente
             it("Presenter should invoke getCirclesObservable() and notify view to open filters") {
                presenter.onFilterClicked()
                verify(presenter).circlesObservable
-               verify(view).showFilters(argWhere { it.size == circles.size }, ArgumentMatchers.anyInt())
+               verify(view).showFilters(argWhere { it.size == circles.size + 1 /*select all circle*/ }
+                     , ArgumentMatchers.anyInt())
             }
          }
       }

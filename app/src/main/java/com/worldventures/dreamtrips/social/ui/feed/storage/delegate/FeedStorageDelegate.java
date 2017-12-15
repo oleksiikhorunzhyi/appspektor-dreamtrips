@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedStorageCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedStorageInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 
 import io.techery.janet.Command;

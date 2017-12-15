@@ -4,8 +4,8 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetSearchUsersCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetUsersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetUsersCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
             .createObservable(new GetSearchUsersCommand(query, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetSearchUsersCommand>()
-                  .onSuccess(searchUsersCommand -> onSuccessAction.call(searchUsersCommand.getResult()))
+                  .onSuccess(searchUsersCommand -> onSuccessAction.call(new ArrayList<>(searchUsersCommand.getResult())))
                   .onFail(this::onError));
    }
 

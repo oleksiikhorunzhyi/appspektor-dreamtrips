@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.core.model.Circle
 import com.worldventures.core.model.User
-import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedPresenterSpek
 import com.worldventures.dreamtrips.social.ui.friends.presenter.BaseUserListPresenter.View
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
@@ -68,15 +67,14 @@ class BaseUserListPresenterSpec : AbstractUserListPresenterSpec(BaseUserListPres
          }
 
          describe("Remove user from friends") {
-            it("Should invoke removeFriendPipe() and change user relationships to NONE") {
+            it("Should invoke userActionSucceed() and change user relationships to NONE") {
                presenter.unfriend(user)
-               verify(friendInteractor, VerificationModeFactory.times(2)).removeFriendPipe()
-               assertTrue { user.relationship == User.Relationship.NONE }
+               verify(presenter).userActionSucceed(argWhere { it.relationship == User.Relationship.NONE })
             }
 
             it("Should notify view that data have already finished loading") {
                presenter.unfriend(user)
-               verify(view, VerificationModeFactory.atLeast(1)).finishLoading()
+               verify(view, VerificationModeFactory.atLeastOnce()).finishLoading()
             }
          }
 
@@ -84,13 +82,12 @@ class BaseUserListPresenterSpec : AbstractUserListPresenterSpec(BaseUserListPres
             it("Should invoke getCirclesObservable() and notify view for show add friend dialog") {
                presenter.addFriend(user)
                verify(presenter).circlesObservable
-               verify(view, VerificationModeFactory.times(1))
+               verify(view)
                      .showAddFriendDialog(argWhere<List<Circle>> { it.size == circles.size }, argWhere { true })
             }
 
-            it("Should invoke addFriendPipe() and change adding user status to OUTGOING_REQUEST") {
+            it("Should change adding user status to OUTGOING_REQUEST") {
                presenter.addFriend(user, circles[0])
-               verify(friendInteractor, VerificationModeFactory.times(1)).addFriendPipe()
                assertTrue { user.relationship == User.Relationship.OUTGOING_REQUEST }
             }
          }

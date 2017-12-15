@@ -6,9 +6,9 @@ import com.worldventures.core.model.User
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.social.friends.util.MockUtil
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -99,7 +99,7 @@ class ActOnFriendRequestCommandSpec : BaseSpec({
 
       private fun sendAcceptCommand(): TestSubscriber<ActionState<ActOnFriendRequestCommand.Accept>> {
          return TestSubscriber<ActionState<ActOnFriendRequestCommand.Accept>>().apply {
-            friendsInteractor.acceptRequestPipe()
+            friendsInteractor.acceptRequestPipe
                   .createObservable(ActOnFriendRequestCommand.Accept(user, FRIEND_CIRCLE_ID))
                   .subscribe(this)
          }
@@ -107,7 +107,7 @@ class ActOnFriendRequestCommandSpec : BaseSpec({
 
       private fun sendRejectCommand(): TestSubscriber<ActionState<ActOnFriendRequestCommand.Reject>> {
          return TestSubscriber<ActionState<ActOnFriendRequestCommand.Reject>>().apply {
-            friendsInteractor.rejectRequestPipe()
+            friendsInteractor.rejectRequestPipe
                   .createObservable(ActOnFriendRequestCommand.Reject(user))
                   .subscribe(this)
          }

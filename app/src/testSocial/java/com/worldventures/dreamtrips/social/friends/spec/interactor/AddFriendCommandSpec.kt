@@ -6,14 +6,13 @@ import com.worldventures.core.model.User
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.social.friends.util.MockUtil
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
-import io.techery.janet.command.test.MockCommandActionService
 import io.techery.janet.http.test.MockHttpActionService
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -82,7 +81,7 @@ class AddFriendCommandSpec : BaseSpec({
 
       private fun senCommand(): TestSubscriber<ActionState<AddFriendCommand>> {
          return TestSubscriber<ActionState<AddFriendCommand>>().apply {
-            friendsInteractor.addFriendPipe()
+            friendsInteractor.addFriendPipe
                   .createObservable(AddFriendCommand(user, FRIEND_CIRCLE_ID))
                   .subscribe(this)
          }

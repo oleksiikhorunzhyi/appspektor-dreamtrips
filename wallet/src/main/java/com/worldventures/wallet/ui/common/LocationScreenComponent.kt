@@ -46,7 +46,7 @@ class LocationScreenComponent(activity: Activity) {
       resultPublishSubject.onNext(enableResult)
    }
 
-   fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent): Boolean {
+   fun onActivityResult(requestCode: Int, resultCode: Int): Boolean {
       if (requestCode == REQUEST_CODE) {
          resolutionIsShown = false
          notifyCallbacks(if (resultCode == Activity.RESULT_OK) EnableResult.AVAILABLE else EnableResult.UNAVAILABLE)

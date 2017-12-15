@@ -55,12 +55,12 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
    init {
+      LayoutInflater.from(context).inflate(R.layout.layout_video_view, this, true)
       val tempContext = context
       if (tempContext is Injector) {
          tempContext.inject(this)
          actionPanelInjector.setup(context, this, tempContext)
       }
-      LayoutInflater.from(context).inflate(R.layout.layout_video_view, this, true)
       progressBar = findViewById(R.id.videoLoadingProgress)
       videoErrorView = findViewById(R.id.videoErrorView)
       simpleExoPlayerView = findViewById(R.id.exoPlayerView)

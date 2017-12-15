@@ -74,6 +74,7 @@ ext {
    // ui (views/layouts/widgets)
    moduleDependencies.ui = [
          googleRecyclerView    : [impl: "com.android.support:recyclerview-v7:${googleLibrariesVersion}"],
+         exoPlayer             : [impl: "com.google.android.exoplayer:exoplayer:r2.5.4"],
          // RecyclerView
          advrecyclerview       : [impl: 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'],
          linearlistview        : [impl: 'com.github.frankiesardo:linearlistview:1.0.1@aar'],
@@ -99,8 +100,6 @@ ext {
          properratingbar       : [impl: 'com.github.techery:properratingbar:0.0.5'],
          materialRangeBar      : [impl: 'com.github.techery:material-range-bar:db6fec9fdd'],
          shortuctbadger        : [impl: 'me.leolin:ShortcutBadger:1.1.3@aar'],
-         jwPlayer              : [impl: 'com.longtailvideo.jwplayer:jwplayer-core:2.7.6+24'],
-         jwPlayerCore          : [impl: 'com.longtailvideo.jwplayer:jwplayer-common:2.7.6+24'],
    ]
    coreDependencies.ui.each { moduleDependencies.ui << it }
    //

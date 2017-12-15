@@ -59,12 +59,15 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
 
    @Override
    protected void syncUIStateWithModel() {
+      super.syncUIStateWithModel();
       imagesList.setLayoutManager(layout);
       if (adapter != imagesList.getAdapter()) {
          imagesList.setAdapter(adapter);
       }
-
-      super.syncUIStateWithModel();
+      dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
+      if (videoPlayerHolder.inFullscreen()) {
+         playVideoIfNeeded();
+      }
    }
 
    private void openFullsreenPhoto(Photo model) {
@@ -84,7 +87,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
             .build());
    }
 
-   protected int getPositionOfPhoto(Photo model) {
+   private int getPositionOfPhoto(Photo model) {
       int result = 0;
       List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
       for (int i = 0; i < attachments.size(); i++) {
@@ -115,5 +118,11 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
    @Override
    protected void onMore() {
       showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
+   }
+
+   @Override
+   public void clearResources() {
+      super.clearResources();
+      dtVideoView.pauseVideo();
    }
 }

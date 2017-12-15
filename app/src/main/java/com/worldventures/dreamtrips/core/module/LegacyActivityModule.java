@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPrese
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
-import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerActivityModule;
@@ -87,12 +86,6 @@ public class LegacyActivityModule {
    @Provides
    public Router provideRouter() {
       return new RouterImpl(baseActivity);
-   }
-
-   @Provides
-   @Singleton
-   public VideoPlayerHolder provideVideoPlayerHolder() {
-      return new VideoPlayerHolder();
    }
 
    @Provides

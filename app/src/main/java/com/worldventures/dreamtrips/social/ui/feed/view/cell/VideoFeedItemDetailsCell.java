@@ -1,25 +1,25 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.cell;
 
-import android.app.Activity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.model.VideoFeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRouteCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
-import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.VideoInfoInjector;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
-import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoConfig;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import rx.Subscription;
 
 @Layout(R.layout.adapter_item_feed_video_event)
 public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem, BaseFeedCell.FeedCellDelegate<VideoFeedItem>>
@@ -27,14 +27,12 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
 
    @InjectView(R.id.feed_share) ImageView share;
 
-   @InjectView(R.id.videoAttachment) VideoView videoView;
-   @Inject Activity activity;
-   @Inject ConfigurationInteractor configurationInteractor;
+   @InjectView(R.id.videoAttachment) DTVideoViewImpl dtVideoView;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
-   private FeedCellListWidthProvider feedCellListWidthProvider;
-   private VideoInfoInjector videoInfoInjector = new VideoInfoInjector();
+   @Inject VideoPlayerHolder videoPlayerHolder;
 
-   private Subscription configurationSubscription;
+   private FeedCellListWidthProvider feedCellListWidthProvider;
+
    private FeedCellListWidthProvider.FeedType activeFeedType;
    private boolean displayingInList;
 
@@ -50,19 +48,17 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
    @Override
    public void afterInject() {
       super.afterInject();
-      videoInfoInjector.init(activity, itemView);
       activeFeedType = getCurrentRoute();
    }
 
    @Override
    protected void syncUIStateWithModel() {
       super.syncUIStateWithModel();
-      videoInfoInjector.setVideo(videoView, getModelObject().getItem(), displayingInList);
-      if (configurationSubscription == null || configurationSubscription.isUnsubscribed()) {
-         configurationSubscription = configurationInteractor
-               .configurationActionPipe()
-               .observeSuccess()
-               .subscribe(configurationCommand -> videoView.resizeView(getCellListWidth()));
+      updateVideoHeight(getModelObject().getItem());
+      dtVideoView.setThumbnail(getModelObject().getItem().getThumbnail());
+      dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
+      if (videoPlayerHolder.inFullscreen()) {
+         playVideoIfNeeded();
       }
    }
 
@@ -86,18 +82,45 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
       cellDelegate.onDeleteVideo(getModelObject().getItem());
    }
 
-   @Override
-   public void clearResources() {
-      super.clearResources();
-      videoView.clear();
-      if (configurationSubscription != null && configurationSubscription.isUnsubscribed()) {
-         configurationSubscription.unsubscribe();
-      }
+   private void updateVideoHeight(Video video) {
+      int height = (int) (getCellListWidth() / video.getAspectRatio());
+      ViewGroup.LayoutParams params = dtVideoView.getLayoutParams();
+      params.height = height;
+      dtVideoView.setLayoutParams(params);
    }
 
    @Override
    public void onFocused() {
-      videoView.play();
+      playVideoIfNeeded();
+   }
+
+   private void playVideoIfNeeded() {
+      Video video = getModelObject().getItem();
+      if (videoPlayerHolder.getCurrentVideoConfig() != null
+            && video.getUid().equals(videoPlayerHolder.getCurrentVideoConfig().getUid())) {
+         if (videoPlayerHolder.inFullscreen()) {
+            videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList);
+         } else {
+            videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList
+                  || videoPlayerHolder.getCurrentVideoConfig().getMute());
+         }
+      } else {
+         dtVideoView.playVideo(new DTVideoConfig(video.getUid(), displayingInList, video.getQualities(), 0));
+      }
+   }
+
+   @Override
+   public void onUnfocused() {
+      dtVideoView.pauseVideo();
+      dtVideoView.detachPlayer();
+      dtVideoView.showThumbnail();
+   }
+
+   @Override
+   public void clearResources() {
+      super.clearResources();
+      dtVideoView.detachPlayer();
+      dtVideoView.showThumbnail();
    }
 
    @Override

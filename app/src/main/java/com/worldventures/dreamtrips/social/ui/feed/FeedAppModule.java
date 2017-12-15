@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFee
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import javax.inject.Singleton;
 
@@ -33,7 +35,8 @@ import dagger.Provides;
       AccountTimelineStorageDelegate.class,
       UserTimelineStorageDelegate.class,
       HashtagFeedStorageDelegate.class,
-      FeedEntityHolderDelegate.class
+      FeedEntityHolderDelegate.class,
+      DTVideoViewImpl.class
 }, complete = false, library = true)
 public class FeedAppModule {
 
@@ -79,5 +82,11 @@ public class FeedAppModule {
    @Provides
    FileSplitter provideFileSplitter(Context context) {
       return new FileSplitter(context.getExternalCacheDir());
+   }
+
+   @Provides
+   @Singleton
+   VideoPlayerHolder provideVideoPlayerHolder(Context context) {
+      return new VideoPlayerHolder(context);
    }
 }

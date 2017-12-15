@@ -73,7 +73,7 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends BaseFeed
       if (tabletAnalytic.isTabletLandscape()) {
          bundleBuilder.slave(true);
       }
-      router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+      router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .data(bundleBuilder.build()).build());
    }
 

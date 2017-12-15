@@ -5,7 +5,6 @@ import android.support.annotation.DrawableRes;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.modules.config.ConfigurationModule;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;

@@ -14,6 +14,8 @@ import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.service.CachedEntityDelegate;
 import com.worldventures.core.service.CachedEntityInteractor;
+import com.worldventures.core.ui.util.permission.PermissionDispatcher;
+import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.LoadCanceledAction;
@@ -32,11 +34,14 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.worldventures.core.ui.util.permission.PermissionConstants.WRITE_EXTERNAL_STORAGE;
+
 public class PresentationVideosPresenter<T extends PresentationVideosPresenter.View> extends Presenter<T> {
 
    @Inject CachedEntityInteractor cachedEntityInteractor;
    @Inject CachedEntityDelegate cachedEntityDelegate;
    @Inject CachedModelHelper cachedModelHelper;
+   @Inject PermissionDispatcher permissionDispatcher;
    @Inject protected MediaModelStorage mediaModelStorage;
    @Inject protected MemberVideosInteractor memberVideosInteractor;
 
@@ -130,9 +135,13 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
    }
 
    public void downloadVideo(Video video) {
-      CachedModel entity = video.getCacheEntity();
-      cachedEntityDelegate.startCaching(entity, getPathForCache(entity));
-      sendVideoDownloadingAnalytics(video);
+      permissionDispatcher.requestPermission(WRITE_EXTERNAL_STORAGE, false)
+            .compose(bindView())
+            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> {
+               CachedModel entity = video.getCacheEntity();
+               cachedEntityDelegate.startCaching(entity, getPathForCache(entity));
+               sendVideoDownloadingAnalytics(video);
+            }));
    }
 
    protected void sendVideoDownloadingAnalytics(Video video) {

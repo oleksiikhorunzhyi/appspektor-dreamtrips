@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
@@ -36,10 +37,13 @@ public class MediaHeaderCell extends BaseAbstractDelegateCell<MediaHeader, Video
       }
 
       header.setTextColor(itemView.getResources().getColor(R.color.white));
-      language.setVisibility(getModelObject().isShowLanguage() ? View.VISIBLE : View.INVISIBLE);
+      language.setVisibility(getModelObject().getShowLanguage() ? View.VISIBLE : View.INVISIBLE);
 
       if (getModelObject().getVideoLocale() != null) {
-         flag.setImageURI(Uri.parse(getModelObject().getVideoLocale().getImage()));
+         final int flagWidth = flag.getResources().getDimensionPixelSize(R.dimen.locale_flag_size_width);
+         final int flagHeight = flag.getResources().getDimensionPixelSize(R.dimen.locale_flag_size_width);
+         flag.setController(GraphicUtils.provideFrescoResizingController(getModelObject().getVideoLocale().getImage(),
+               flag.getController(), flagWidth, flagHeight));
          flag.setContentDescription(getModelObject().getVideoLocale().getCountry());
          languageCaption.setText(getModelObject().getVideoLanguage().getTitle());
       } else {

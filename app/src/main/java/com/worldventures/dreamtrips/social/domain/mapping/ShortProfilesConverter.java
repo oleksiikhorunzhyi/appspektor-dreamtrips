@@ -31,6 +31,7 @@ public class ShortProfilesConverter implements Converter<ShortUserProfile, User>
          avatar.setOriginal(shortUser.avatar().original());
       }
       user.setAvatar(avatar);
+      user.setBadges(shortUser.badges());
       return user;
    }
 }

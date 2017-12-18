@@ -9,7 +9,7 @@ public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen
 
    void loadNearMeRequested();
 
-   void locationSelected(DtlLocation location);
+   void locationSelected(DtlLocation location, String merchantSearchQuery);
 
    void onLocationResolutionGranted();
 

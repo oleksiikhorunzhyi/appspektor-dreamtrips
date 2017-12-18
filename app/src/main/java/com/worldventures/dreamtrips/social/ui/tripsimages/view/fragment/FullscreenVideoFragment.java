@@ -38,6 +38,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVideoPresenter, Video>
       implements FullscreenVideoPresenter.View {
 
+   private static final long VIDEO_PLAY_DELAY = 500L;
+
    @Inject Router router;
    @Inject @ForActivity Injector injector;
    @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
@@ -121,16 +123,16 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
    public void setUserVisibleHint(boolean isVisibleToUser) {
       super.setUserVisibleHint(isVisibleToUser);
       if (isVisibleToUser) {
-         if (videoView == null) {
-            handler.postDelayed(this::playVideo, 500);
-         } else {
-            playVideo();
-         }
+         playVideo();
       }
    }
 
    private void playVideo() {
-      videoView.playVideo();
+      if (videoView == null) {
+         handler.postDelayed(this::playVideo, VIDEO_PLAY_DELAY);
+      } else {
+         videoView.playVideo();
+      }
    }
 
    @Override

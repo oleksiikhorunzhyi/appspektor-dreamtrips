@@ -17,8 +17,6 @@ import org.jetbrains.spek.api.dsl.Spec
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.mockito.internal.verification.VerificationModeFactory
-import kotlin.test.assertEquals
 
 abstract class DocumentListPresenterSpec<T: DocumentListPresenterSpec.TestBody<P>,
       P: DocumentListPresenter>(testBody: () -> T): PresenterBaseSpec(testBody.invoke().getBody()) {
@@ -37,24 +35,14 @@ abstract class DocumentListPresenterSpec<T: DocumentListPresenterSpec.TestBody<P
          return {
             describe(describeTest()) {
 
-               context("attach view") {
-                  setup(Contract.of(GetDocumentsCommand::class.java).result(emptyList<Document>()))
-
-                  it("should correctly initialize") {
-                     verify(presenter, VerificationModeFactory.times(1)).observeDocumentsChanges()
-                     verify(presenter, VerificationModeFactory.times(1)).refreshDocuments()
-                     assertEquals(presenter.documentType, getExpectedDocumentType())
-                  }
-               }
-
                context("success documents list response") {
                   val resultList = emptyList<Document>()
                   setup(Contract.of(GetDocumentsCommand::class.java).result(resultList))
 
                   it("should set items and hide progress on view") {
 
-                     verify(view, VerificationModeFactory.times(1)).hideProgress()
-                     verify(view, VerificationModeFactory.times(1)).setDocumentList(resultList)
+                     verify(view).hideProgress()
+                     verify(view).setDocumentList(resultList)
                   }
                }
 
@@ -62,7 +50,7 @@ abstract class DocumentListPresenterSpec<T: DocumentListPresenterSpec.TestBody<P
                   setup(Contract.of(GetDocumentsCommand::class.java).exception(RuntimeException()))
 
                   it("should still set items and hide progress on view") {
-                     verify(view, VerificationModeFactory.times(1)).hideProgress()
+                     verify(view).hideProgress()
                   }
                }
             }

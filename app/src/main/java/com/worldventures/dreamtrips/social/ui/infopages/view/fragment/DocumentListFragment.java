@@ -82,7 +82,7 @@ public abstract class DocumentListFragment<P extends DocumentListPresenter> exte
    }
 
    @Override
-   public void setDocumentList(List<Document> documentList) {
+   public void setDocumentList(List<? extends Document> documentList) {
       adapter.setItems(documentList);
    }
 

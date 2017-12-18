@@ -42,5 +42,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
    void onReloadHistoryRequired();
 
    void imagesPicked(MediaPickerAttachment mediaPickerAttachment);
+
+   void recheckPermission(String[] permissions, boolean userAnswer);
 }
 

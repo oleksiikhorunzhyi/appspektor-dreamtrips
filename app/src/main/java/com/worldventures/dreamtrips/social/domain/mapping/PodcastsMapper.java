@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.domain.mapping;
 
+import com.worldventures.core.model.CachedModel;
 import com.worldventures.dreamtrips.modules.dtl.model.mapping.Mapper;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 
@@ -7,6 +8,9 @@ public class PodcastsMapper implements Mapper<com.worldventures.dreamtrips.api.p
 
    @Override
    public Podcast map(com.worldventures.dreamtrips.api.podcasts.model.Podcast source) {
+      CachedModel cachedModel = new CachedModel(source.audioURL(), source.audioURL(), source.title());
+      cachedModel.setEntityClass(Podcast.class);
+
       Podcast podcast = new Podcast();
       podcast.setTitle(source.title());
       podcast.setCategory(source.category());
@@ -17,6 +21,7 @@ public class PodcastsMapper implements Mapper<com.worldventures.dreamtrips.api.p
       podcast.setImageUrl(source.imageURL());
       podcast.setSize(source.size());
       podcast.setSpeaker(source.speaker());
+      podcast.setCachedModel(cachedModel);
       return podcast;
    }
 }

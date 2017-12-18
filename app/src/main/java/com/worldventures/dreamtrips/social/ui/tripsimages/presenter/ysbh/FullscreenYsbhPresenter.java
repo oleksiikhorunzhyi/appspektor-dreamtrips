@@ -3,18 +3,15 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh;
 import com.worldventures.core.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.DownloadImageDelegate;
 
 import java.io.IOException;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateSubscriber;
-
 public class FullscreenYsbhPresenter extends Presenter<FullscreenYsbhPresenter.View> {
 
-   @Inject TripImagesInteractor tripImagesInteractor;
+   @Inject DownloadImageDelegate downloadImageDelegate;
 
    private YSBHPhoto ysbhPhoto;
 
@@ -39,11 +36,7 @@ public class FullscreenYsbhPresenter extends Presenter<FullscreenYsbhPresenter.V
 
    public void onShareOptionChosen(@ShareType String type) {
       if (type.equals(ShareType.EXTERNAL_STORAGE)) {
-         tripImagesInteractor.downloadImageActionPipe()
-               .createObservable(new DownloadImageCommand(ysbhPhoto.getUrl()))
-               .compose(bindViewToMainComposer())
-               .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                     .onFail(this::handleError));
+         downloadImageDelegate.downloadImage(ysbhPhoto.getUrl(), bindView(), this::handleError);
       } else {
          view.openShare(ysbhPhoto.getUrl(), ysbhPhoto.getTitle(), type);
       }

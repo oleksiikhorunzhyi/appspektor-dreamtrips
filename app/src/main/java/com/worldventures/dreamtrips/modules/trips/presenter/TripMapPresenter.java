@@ -4,7 +4,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;

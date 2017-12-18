@@ -5,6 +5,7 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
+import com.worldventures.dreamtrips.social.service.InviteShareInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFee
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
+import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.ProgressAnalyticInteractor;
@@ -29,23 +31,23 @@ import dagger.Provides;
 import io.techery.janet.Janet;
 
 @Module(library = true, complete = false)
-public class SocialInteractorModule {
+class SocialInteractorModule {
 
    @Singleton
    @Provides
-   public CirclesInteractor provideQueryCirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+   CirclesInteractor provideQueryCirclesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CirclesInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   public LikesInteractor provideLikesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+    LikesInteractor provideLikesInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new LikesInteractor(sessionActionPipeCreator);
    }
 
    @Singleton
    @Provides
-   public CommentsInteractor provideCommentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+   CommentsInteractor provideCommentsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new CommentsInteractor(sessionActionPipeCreator);
    }
 
@@ -144,5 +146,16 @@ public class SocialInteractorModule {
    @Singleton
    FlagsInteractor provideFlagsProvider(SessionActionPipeCreator sessionActionPipeCreator) {
       return new FlagsInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   InviteShareInteractor provideInviteShareInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new InviteShareInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton PodcastsInteractor providePodcastInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new PodcastsInteractor(sessionActionPipeCreator);
    }
 }

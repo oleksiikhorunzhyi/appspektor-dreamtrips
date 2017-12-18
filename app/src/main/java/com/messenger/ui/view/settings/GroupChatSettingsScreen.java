@@ -3,10 +3,11 @@ package com.messenger.ui.view.settings;
 import android.support.annotation.StringRes;
 
 import com.messenger.entities.DataUser;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
 import rx.functions.Action0;
 
-public interface GroupChatSettingsScreen extends ChatSettingsScreen {
+public interface GroupChatSettingsScreen extends ChatSettingsScreen, PermissionUIComponent {
    void openPicker();
 
    void showChangingAvatarProgressBar();

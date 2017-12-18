@@ -18,6 +18,10 @@ public class BaseEntity implements Serializable, Parcelable {
       //do nothing
    }
 
+   protected BaseEntity(int id) {
+      this.id = id;
+   }
+
    public int getId() {
       return id;
    }

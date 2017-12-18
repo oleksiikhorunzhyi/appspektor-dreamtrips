@@ -98,7 +98,6 @@
    <string name="library">Βιβλιοθήκη</string>
 
 
-
    <string name="nav_back">Πίσω</string>
 
    <string name="logout_component">Αποσύνδεση</string>
@@ -148,6 +147,18 @@
 
    <string name="beta_label">Beta</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">Χρειάζεται άδεια για ανάγνωση χώρου αποθήκευσης για να σας προτείνουμε περιεχόμενο πολυμέσων</string>
+
+   <string name="permission_location_for_attach_location_on_post">Πρέπει να έχετε πρόσβαση στην υπηρεσία τοποθεσίας για να προσδιορίσετε την τρέχουσα τοποθεσία σας</string>
+   <string name="no_permission_location_for_attach_location_on_post">Δεν βρέθηκε η τοποθεσία σας, επειδή δεν υπάρχει πρόσβαση στην υπηρεσία τοποθεσίας</string>
+   <string name="permission_location_for_localization_web_page">Να επιτρέπεται η πρόσβαση στην τοποθεσία σας για να εμφανίζεται το περιεχόμενο στην κατάλληλη γλώσσα</string>
+   <string name="no_permission_location_for_localization_web_page">Δεν ανακτήθηκε η γλώσσα, επειδή δεν υπάρχει πρόσβαση στην υπηρεσία τοποθεσίας</string>
+   <string name="permission_to_read_contacts">Χρειάζεται πρόσβαση για να διαβαστούν οι επαφές στη λίστα πρόσκλησης</string>
+   <string name="no_permission_to_read_contacts">Δεν υπάρχει πρόσβαση στις προτάσεις ανθρώπων, γιατί έχετε αρνηθεί την άδεια στην ανάγνωση επαφών</string>
+   <string name="permission_to_write_contacts">Πρέπει να έχετε πρόσβαση στις επαφές για να προσθέσετε νέα επαφή</string>
+   <string name="no_permission_to_write_contacts">Δεν είναι δυνατό να προσθέσετε νέα επαφή, επειδή έχετε αρνηθεί την εγγραφή επαφών</string>
+   <string name="permission_to_read_phone_storage">Χρειάζεται πρόσβαση στον αποθηκευτικό χώρο της κάμερας για εμφάνιση των φωτογραφιών σας</string>
+   <string name="no_permission_to_read_phone_storage">Η φόρτωση φωτογραφιών απέτυχε</string>
+   <string name="no_camera_permission_for_photo_picker">Δεν είναι δυνατό να ανοίξετε την κάμερα χωρίς άδεια</string>
+
 </resources>

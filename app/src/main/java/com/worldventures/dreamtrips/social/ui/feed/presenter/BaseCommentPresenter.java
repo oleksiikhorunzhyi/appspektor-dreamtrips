@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.CommentAction;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.CommentAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;

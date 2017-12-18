@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
-import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -47,11 +46,11 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
    @State boolean showToDO = true;
    @State boolean showCompleted = true;
 
-   private BucketItem lastOpenedBucketItem;
+   BucketItem lastOpenedBucketItem;
 
-   private List<BucketItem> bucketItems = new ArrayList<>();
+   List<BucketItem> bucketItems = new ArrayList<>();
 
-   private List<BucketItem> filteredItems = new ArrayList<>();
+   List<BucketItem> filteredItems = new ArrayList<>();
 
    public BucketListPresenter(BucketItem.BucketType type) {
       this.type = type;
@@ -97,7 +96,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
       analyticsInteractor.analyticsActionPipe().send(new BucketTabViewAnalyticsAction(type));
    }
 
-   private void refresh() {
+   void refresh() {
       filteredItems.clear();
       if (bucketItems.isEmpty()) {
          view.hideDetailContainer();
@@ -119,28 +118,20 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
          }
       }
 
-      view.getAdapter().setItems(filteredItems);
-      view.checkEmpty(filteredItems.size());
+      view.setItems(filteredItems);
+      if (!filteredItems.isEmpty()) {
+         view.hideEmptyView();
+      }
    }
 
    public void itemClicked(BucketItem bucketItem) {
-      if (!isTypeCorrect(bucketItem.getType()) && !bucketItems.contains(bucketItem)) {
-         return;
-      }
-
       analyticsInteractor.analyticsActionPipe().send(BucketItemAction.view(bucketItem.getUid()));
       openDetails(bucketItem);
    }
 
    public void itemDoneClicked(BucketItem bucketItem) {
-      if (isTypeCorrect(bucketItem.getType())) {
-         analyticsInteractor.analyticsActionPipe().send(BucketItemAction.complete(bucketItem.getUid()));
-         markAsDone(bucketItem);
-      }
-   }
-
-   private boolean isTypeCorrect(String bucketType) {
-      return bucketType.equalsIgnoreCase(type.getName());
+      analyticsInteractor.analyticsActionPipe().send(BucketItemAction.complete(bucketItem.getUid()));
+      markAsDone(bucketItem);
    }
 
    private void openDetailsIfNeeded(BucketItem item) {
@@ -161,7 +152,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
       Queryable.from(bucketItems).forEachR(item -> item.setSelected(bucketItem.equals(item)));
 
       view.openDetails(bucketItem);
-      view.getAdapter().notifyDataSetChanged();
+      view.notifyItemsChanged();
    }
 
    public void popularClicked() {
@@ -250,7 +241,9 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
    public interface View extends RxView {
 
-      BaseArrayListAdapter<BucketItem> getAdapter();
+      void setItems(List<BucketItem> items);
+
+      void notifyItemsChanged();
 
       void startLoading();
 
@@ -262,7 +255,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
       void putCategoryMarker(int position);
 
-      void checkEmpty(int count);
+      void hideEmptyView();
 
       void openDetails(BucketItem bucketItem);
 

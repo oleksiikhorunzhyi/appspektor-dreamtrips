@@ -98,7 +98,6 @@
    <string name="library">图书馆</string>
 
 
-
    <string name="nav_back">回去</string>
 
    <string name="logout_component">退出</string>
@@ -148,6 +147,18 @@
 
    <string name="beta_label">Beta版</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">需要许可读取存储空间，才能建议媒体内容。</string>
+
+   <string name="permission_location_for_attach_location_on_post">需要可以访问位置服务来确定您的当前位置</string>
+   <string name="no_permission_location_for_attach_location_on_post">无法建议您的位置，因为无法访问位置服务</string>
+   <string name="permission_location_for_localization_web_page">允许访问您的位置用来以适当的语言显示内容</string>
+   <string name="no_permission_location_for_localization_web_page">无法获取语言，因为无法访问位置服务</string>
+   <string name="permission_to_read_contacts">需要读取联系人来制作邀请清单</string>
+   <string name="no_permission_to_read_contacts">无法建议联系人，因为您拒绝了读取联系人的许可</string>
+   <string name="permission_to_write_contacts">需要访问联系人来添加新联系人</string>
+   <string name="no_permission_to_write_contacts">无法添加新联系人，因为您拒绝了写入联系人的许可</string>
+   <string name="permission_to_read_phone_storage">需要访问相机存储来显示您的照片</string>
+   <string name="no_permission_to_read_phone_storage">无法加载您的照片</string>
+   <string name="no_camera_permission_for_photo_picker">没有许可无法打开相机</string>
+
 </resources>

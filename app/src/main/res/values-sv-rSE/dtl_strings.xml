@@ -50,7 +50,6 @@
    <string name="dtl_details_share_title">Jag tjänade just Dreamtrips-poäng på %1$s</string>
    <string name="dtl_wait_for_receipt">Vänta… Laddar upp kvitto</string>
    <string name="dtl_wait_for_earn">Vänta… Samlar in poäng</string>
-   <string name="dtl_estimator_explanation">Poängen beräknas baseras på det minsta belopp som spenderas hos återförsäljaren samt veckodag</string>
    <string name="dtl_photo_upload_error">Fel vid överföring. Kontakta medlemsservice om problemet kvarstår</string>
    <string name="dtl_open_now">Öppet</string>
    <string name="dtl_closed_now">Stängt</string>
@@ -65,7 +64,6 @@
    <string name="everyday">Varje dag</string>
    <string name="perks_terms">Användarvillkor</string>
    <string name="perks_formatted">%1$d Förmåner</string>
-   <string name="dtl_show_offers_only">Visa endast erbjudanden</string>
    <string name="dtl_earn_points">Tjäna DreamTrips points</string>
    <string name="dtl_details_share_title_without_points">Jag upptäckte %1$s med hjälp av DreamTrips-appen</string>
    <string name="details_collapsed_text_caption">Visa mer</string>
@@ -136,6 +134,7 @@
    <string name="comment_review_error_unknown_cancel">Avbryt</string>
    <string name="comment_review_error_limited_reached_content">Alla våra servrar är upptagna just nu. Försök igen om en minut</string>
    <string name="comment_review_unrecognized_error_content">Oj, någonting gick sönder Vi jobbar på att fixa det. Försök igen imorgon.</string>
+   <string name="comment_review_duplicated_review">Du har ett tidigare omdöme för den här platsen som väntar på godkännande.\n När det har godkänts kan du göra ett omdöme för den här platsen igen.</string>
    <string name="comment_review_confirm_text">OK</string>
    <string name="comment_review_error_limited_reached_confirm">OK</string>
    <string name="comment_review_unrecognized_error_confirm">OK</string>
@@ -146,4 +145,14 @@
    <string name="input_major_limit">Ditt omdöme har nått vår maxgräns. Det har förkortats för att passa in.</string>
 
    <string name="text_add_photos_and_videos">Lägg till foton</string>
+
+   <string name="dtl_transaction_screen_earned_points_text">Du har tjänat in</string>
+   <string name="dtl_thrst_text_button">Betala i appen</string>
+   <string name="dtl_all_locations">alla platser</string>
+   <string name="done_pilot_button">KLAR</string>
+   <string name="thank_you_thrst_pilot">Tack!</string>
+   <string name="btn_payment_done_pilot">KLAR</string>
+   <string name="dtl_merchant_earn_points">Tjäna poäng</string>
+
+   <string name="dtl_estimator_error_title">Fel</string>
 </resources>

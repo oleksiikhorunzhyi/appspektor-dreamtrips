@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptErrorAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantsAdapterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 
@@ -22,5 +23,10 @@ public class DtlDelegatesModule {
    @Provides
    DtlApiErrorViewAdapter provideApiErrorViewAdapter(@ForApplication Context context, HttpErrorHandlingUtil errorHandlingUtils) {
       return new DtlApiErrorViewAdapter(context, errorHandlingUtils);
+   }
+
+   @Provides
+   DtlScanReceiptErrorAdapter provideScanReceiptErrorViewAdapter(@ForApplication Context context, HttpErrorHandlingUtil errorHandlingUtils) {
+      return new DtlScanReceiptErrorAdapter(context, errorHandlingUtils);
    }
 }

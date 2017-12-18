@@ -98,7 +98,6 @@
    <string name="library">Biblioteca</string>
 
 
-
    <string name="nav_back">Volver</string>
 
    <string name="logout_component">Cerrar sesión</string>
@@ -148,6 +147,18 @@
 
    <string name="beta_label">Beta</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">Necesitas permiso para leer el almacenamiento para poder sugerirte contenido de multimedia</string>
+
+   <string name="permission_location_for_attach_location_on_post">Se necesita acceso al servicio de localización para determinar tu ubicación actual</string>
+   <string name="no_permission_location_for_attach_location_on_post">No se puede sugerir tu ubicación porque no hay acceso a los servicios de ubicación</string>
+   <string name="permission_location_for_localization_web_page">Permite el acceso a tu ubicación para mostrar el contenido en el idioma apropiado</string>
+   <string name="no_permission_location_for_localization_web_page">No se puede obtener el idioma porque no hay acceso al servicio de ubicación</string>
+   <string name="permission_to_read_contacts">Se necesita acceso a leer los contactos para hacer lista de invitaciones</string>
+   <string name="no_permission_to_read_contacts">No se puede acceder a la sugerencia de personas, porque rechazaste el permiso para leer los contactos</string>
+   <string name="permission_to_write_contacts">Se necesita acceso a los contactos para agregar nuevo contacto</string>
+   <string name="no_permission_to_write_contacts">No se puede agregar un nuevo contacto, porque rechazaste el permiso para escribir contactos</string>
+   <string name="permission_to_read_phone_storage">Se necesita acceso al almacenamiento de la cámara para mostrar tus fotos</string>
+   <string name="no_permission_to_read_phone_storage">No se pueden cargar tus fotos</string>
+   <string name="no_camera_permission_for_photo_picker">No se puede abrir la cámara sin permiso</string>
+
 </resources>

@@ -27,7 +27,7 @@ public class SuccessStoryCell extends BaseAbstractDelegateCell<SuccessStory, Suc
    @Override
    protected void syncUIStateWithModel() {
       updateSelection();
-      tvTitle.setText(getModelObject().getAuthor());
+      tvTitle.setText(getModelObject().getTitle());
    }
 
    private void updateSelection() {

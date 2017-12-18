@@ -4,7 +4,8 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
+import com.worldventures.dreamtrips.social.ui.membership.presenter.MembershipPresenter;
+import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
 import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
@@ -13,7 +14,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.social.ui.membership.presenter.MembershipPresenter;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -37,11 +39,6 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
    }
 
    @Override
-   public void toggleTabStripVisibility(boolean isVisible) {
-      tabs.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-   }
-
-   @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       adapter = new BaseStatePagerAdapter(getChildFragmentManager());
@@ -49,7 +46,8 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
       pager.addOnPageChangeListener(this);
    }
 
-   public void setScreens(List<FragmentItem> items) {
+   @Override
+   public void setScreens(@Nullable List<? extends FragmentItem> items) {
       adapter.addItems(items);
       adapter.notifyDataSetChanged();
       tabs.setupWithPagerBadged(pager);

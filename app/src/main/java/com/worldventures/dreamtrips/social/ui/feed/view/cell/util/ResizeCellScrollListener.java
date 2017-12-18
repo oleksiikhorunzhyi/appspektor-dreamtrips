@@ -26,6 +26,11 @@ public class ResizeCellScrollListener extends RecyclerView.OnScrollListener {
       int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
       int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
 
+      if (firstVisibleItemPosition == -1) {
+         checkedRange = new Pair<>(-1, -1);
+         return;
+      }
+
       for (int position = firstVisibleItemPosition; position <= lastVisibleItemPosition; position++) {
          View view = layoutManager.findViewByPosition(position);
          RecyclerView.ViewHolder holder = recyclerView.getChildViewHolder(view);

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.di;
 
 import android.support.annotation.DrawableRes;
 
-import com.techery.spares.module.EventDelegateModule;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;

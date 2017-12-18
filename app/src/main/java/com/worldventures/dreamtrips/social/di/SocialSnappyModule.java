@@ -13,7 +13,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(complete = false, library = true)
-public class SocialSnappyModule {
+class SocialSnappyModule {
 
    @Provides
    @Singleton

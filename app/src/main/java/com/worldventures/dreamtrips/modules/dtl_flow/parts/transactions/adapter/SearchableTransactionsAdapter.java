@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
    @Override
    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
       final SearchableTransactionsAdapter.ViewHolder recyclerViewHolder = (SearchableTransactionsAdapter.ViewHolder) holder;
-      recyclerViewHolder.bind(position);
+      recyclerViewHolder.bind(transactionsList.get(position));
    }
 
    @Override
@@ -65,7 +66,8 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
       public TextView earnedPoints;
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
-
+      public TextView subtotal;
+      public ImageView statusImageView;
 
       public ViewHolder(View itemView) {
          super(itemView);
@@ -73,15 +75,40 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
          earnedPoints = itemView.findViewById(R.id.earned_points);
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
+         subtotal = itemView.findViewById(R.id.subtotal);
+         statusImageView = itemView.findViewById(R.id.imageViewStatus);
       }
 
-      public void bind(int position) {
-         merchantName.setText(transactionsList.get(position).getMerchantName());
-         earnedPoints.setText(getEarnedPointText(transactionsList.get(position).getEarnedPoints()));
+      public void bind(TransactionModel transactionModel) {
+         merchantName.setText(transactionModel.getMerchantName());
+         earnedPoints.setText(getEarnedPointText(transactionModel.getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
-         transactionDate.setText(DateTimeUtils.convertDateToString(transactionsList.get(position).getTransactionDate(),
+         setPaymentStatusIcon(transactionModel);
+         transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
+         subtotal.setText(context.getString(R.string.dtl_subtotal,
+               CurrencyUtils.toCurrency(transactionModel.getSubTotalAmount(), transactionModel.getCurrenyCode(),
+                     transactionModel.getCurrencySymbol())));
+      }
+
+      private void setPaymentStatusIcon(TransactionModel transactionModel) {
+         if (transactionModel.isTrhstTransaction()) {
+            switch (transactionModel.getThrstPaymentStatus()) {
+               case SUCCESSFUL:
+               case INITIATED:
+                  statusImageView.setImageResource(R.drawable.check_succes_pilot);
+                  break;
+               case REFUNDED:
+                  statusImageView.setImageResource(R.drawable.check_refund_pilot);
+                  break;
+               default:
+                  statusImageView.setImageResource(R.drawable.check_error_pilot);
+                  break;
+            }
+         } else {
+            statusImageView.setImageBitmap(null);
+         }
       }
 
       private String getEarnedPointText(int earnedPoints) {
@@ -128,7 +155,7 @@ public class SearchableTransactionsAdapter extends RecyclerView.Adapter<Recycler
    }
 
    public List<TransactionModel> getCurrentItems() {
-      return  transactionsList;
+      return transactionsList;
    }
 
-   }
+}

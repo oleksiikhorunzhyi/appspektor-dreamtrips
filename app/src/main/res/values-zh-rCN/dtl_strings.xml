@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
+   <string name="dtl_subtotal">小计：%1$s</string>
    <string name="dtl_locations_title">选择位置</string>
    <string name="dtl_locations_try_search">我们无法找到离您近的城市。\n试试我们的城市搜索</string>
    <string name="dtl_near_me_caption">靠近我</string>
@@ -33,6 +34,7 @@
    <string name="dtl_barcode_title">扫描QR码</string>
    <string name="dtl_barcode_merchant">扫描商家编号</string>
    <string name="dtl_scan_receipt_screen_title">输入小计</string>
+   <string name="dtl_thrst_scan_receipt_screen_title">扫描收据</string>
    <string name="dtl_scan_receipt_input_caption">输入小计（除去税和小费的金额）</string>
    <string name="dtl_congrats">恭喜！</string>
    <string name="dtl_you_earned">您赚取了</string>
@@ -43,6 +45,7 @@
    <string name="dtl_total_amount">总金额：</string>
    <string name="dtl_verify_earn_hint">您可以赚取 </string>
    <string name="dtl_check_in">入住并赚取</string>
+   <string name="dtl_pay">付款&amp;赢点数</string>
    <string name="dtl_earn">赚取</string>
    <string name="dtl_dt_points">%1$dDreamTrips点数</string>
    <string name="suggest_merchant">推荐商家</string>
@@ -50,7 +53,6 @@
    <string name="dtl_details_share_title">我将赚取%1$sDreamTrips点数</string>
    <string name="dtl_wait_for_receipt">稍候…上传收据</string>
    <string name="dtl_wait_for_earn">稍候…赚取点数</string>
-   <string name="dtl_estimator_explanation">点数计算是根据在商家最低消费以及一周的哪一天</string>
    <string name="dtl_photo_upload_error">上传错误。如果问题仍然存在，请联系会员服务</string>
    <string name="dtl_open_now">现在营业</string>
    <string name="dtl_closed_now">休息中</string>
@@ -65,7 +67,9 @@
    <string name="everyday">每天</string>
    <string name="perks_terms">条款和条件</string>
    <string name="perks_formatted">%1$d优惠</string>
-   <string name="dtl_show_offers_only">只显示优惠</string>
+   <string name="dtl_show_offers_only">只显示优惠项目</string>
+   <string name="dtl_show_transaction">交易</string>
+   <string name="dtl_show_transaction_toolbar">支付历史</string>
    <string name="dtl_earn_points">赚取DreamTrips点数</string>
    <string name="dtl_details_share_title_without_points">我使用DreamTrips应用程序发现了%1$s</string>
    <string name="details_collapsed_text_caption">显示更多</string>
@@ -136,6 +140,7 @@
    <string name="comment_review_error_unknown_cancel">取消</string>
    <string name="comment_review_error_limited_reached_content">我们所有的服务器现在都处于繁忙状态。请稍后再试</string>
    <string name="comment_review_unrecognized_error_content">糟糕，一些东西坏掉了。我们正在努力修复。请明天再尝试。</string>
+   <string name="comment_review_duplicated_review">您在此地点有一个之前的评论等待通过。\n 一旦通过，您就可以再次评论此地点。</string>
    <string name="comment_review_confirm_text">好</string>
    <string name="comment_review_error_limited_reached_confirm">好</string>
    <string name="comment_review_unrecognized_error_confirm">好</string>
@@ -146,4 +151,43 @@
    <string name="input_major_limit">您的评论已经达到我们的上限。它已被缩短以适应。</string>
 
    <string name="text_add_photos_and_videos">添加照片</string>
+
+   <string name="dtl_no_transaction_message">您到目前为止没有任何交易。</string>
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">小计：$</string>
+   <string name="dtl_transaction_screen_earned_points_text">您赚取了</string>
+   <string name="dtl_thrst_text_button">应用内付款</string>
+   <string name="dtl_all_locations">所有地点</string>
+   <string name="dtl_earned_points">您已赚得%1$d点</string>
+   <string name="dtl_earned_points_on_item">+%1$d点</string>
+
+   <!-- Pilot -->
+   <string name="done_pilot_button">完成</string>
+   <string name="thank_you_thrst_pilot">感谢您！</string>
+   <string name="first_failure_text_thrst_pilot">感谢您的尝试，</string>
+   <string name="second_failure_text_thrst_pilot">但是您的支付被拒绝了。</string>
+   <string name="payment_success_status_pilot">我们已经接受了您的支付。</string>
+   <string name="payment_error_status_pilot">我们此时无法成功接受您的支付。</string>
+   <string name="btn_payment_done_pilot">完成</string>
+   <string name="payment_resume_success_pilot">请将此屏幕展示给您的服务员看。</string>
+   <string name="payment_resume_failure_pilot">请付款给您的服务员。</string>
+   <string name="total_amount_charged_pilot">总支付金额</string>
+   <string name="payment_amount_due_pilot">总拒绝金额</string>
+   <string name="payment_money_charged">$ %1$s </string>
+
+   <string name="dtl_thrst_flow_title">Thrst</string>
+   <string name="order_from_menu">从菜单点菜</string>
+   <string name="open_order_from_menu_msg">这是 DTL 之外的一个试点功能&amp;无法为您赚得点数。您将被带到外部网站去，在手机应用外的浏览器打开。</string>
+   <string name="dtl_merchant_earn_points">赚取点数</string>
+
+   <string name="could_not_load_merchant_for_review">无法加载商家细节，请稍后尝试</string>
+   <string name="transaction_total_amount_paid">总支付金额</string>
+   <string name="transaction_tip_amount">小费：</string>
+   <string name="transaction_tax_amount">税：</string>
+   <string name="transaction_sub_total_amount">小计：</string>
+   <string name="transaction_view_your_receipt">查看您的收据</string>
+   <string name="transaction_review_merchant">评论商家</string>
+   <string name="transaction_sub_total_amount_no_semicolon">小计金额</string>
+   <string name="dtl_estimator_explanation_to_earn_points">点数计算是根据在商家的最低消费金额和一周的哪一天。要赢点数最小金额应为%1$s</string>
+   <string name="dtl_estimator_error_title">错误</string>
 </resources>

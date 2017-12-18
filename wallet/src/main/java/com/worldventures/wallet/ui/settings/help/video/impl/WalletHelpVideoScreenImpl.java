@@ -120,17 +120,17 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
    private WalletVideoCallback videoActionsCallback = new WalletVideoCallback() {
 
       @Override
-      public void onDownloadVideo(WalletVideoModel video) {
+      public void onDownloadMedia(WalletVideoModel video) {
          getPresenter().downloadVideo(video.getVideo().getCacheEntity());
       }
 
       @Override
-      public void onDeleteVideo(WalletVideoModel video) {
+      public void onDeleteMedia(WalletVideoModel video) {
          getPresenter().deleteCachedVideo(video.getVideo().getCacheEntity());
       }
 
       @Override
-      public void onCancelCachingVideo(WalletVideoModel video) {
+      public void onCancelCachingMedia(WalletVideoModel video) {
          getPresenter().cancelCachingVideo(video.getVideo().getCacheEntity());
       }
 

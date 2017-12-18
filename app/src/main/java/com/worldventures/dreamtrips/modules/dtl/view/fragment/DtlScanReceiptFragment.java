@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +33,7 @@ import javax.inject.Named;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
@@ -138,6 +140,16 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    }
 
    @Override
+   public void showErrorDialog(String error) {
+      SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
+      alertDialog.setTitleText(getString(R.string.dtl_estimator_error_title));
+      alertDialog.setContentText(error);
+      alertDialog.setConfirmText(getActivity().getString(R.string.ok));
+      alertDialog.setConfirmClickListener(Dialog::dismiss);
+      alertDialog.show();
+   }
+
+   @Override
    public void enableVerification() {
       verify.setEnabled(true);
    }
@@ -146,7 +158,6 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    public void disableVerification() {
       verify.setEnabled(false);
    }
-
 
    @Override
    public void showProgress() {

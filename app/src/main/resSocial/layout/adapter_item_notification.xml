@@ -14,7 +14,7 @@
          android:padding="@dimen/spacing_normal"
          >
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+      <com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView
             android:id="@+id/notification_avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"

@@ -14,14 +14,17 @@ import com.worldventures.core.modules.infopages.service.analytics.SendFeedbackAn
 import com.worldventures.core.modules.infopages.service.command.GetFeedbackCommand;
 import com.worldventures.core.modules.infopages.service.command.SendFeedbackCommand;
 import com.worldventures.core.modules.infopages.service.command.UploadFeedbackAttachmentCommand;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.FeedbackImageAttachmentsFragment;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 import com.worldventures.wallet.util.WalletFilesUtils;
 
 import java.util.List;
@@ -40,8 +43,19 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    @Inject FeedbackInteractor feedbackInteractor;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Router router;
+   @Inject PickerPermissionChecker pickerPermissionChecker;
+   @Inject PermissionUtils permissionUtils;
 
    private FeedbackAttachmentsManager attachmentsManager = new FeedbackAttachmentsManager();
+
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      pickerPermissionChecker.registerCallback(
+            () -> view.showMediaPicker(PICKER_MAX_IMAGES - attachmentsManager.getAttachments().size()),
+            () -> view.showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> view.showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
+   }
 
    @Override
    public void takeView(View view) {
@@ -157,7 +171,13 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
    ///////////////////////////////////////////////////////////////////////////
 
    public void onShowMediaPicker() {
-      view.showMediaPicker(PICKER_MAX_IMAGES - attachmentsManager.getAttachments().size());
+      pickerPermissionChecker.checkPermission();
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 
    public void imagesPicked(MediaPickerAttachment mediaPickerAttachment) {
@@ -265,7 +285,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
       return Queryable.from(attachmentsManager.getAttachments()).map(EntityStateHolder::entity).toList();
    }
 
-   public interface View extends Presenter.View {
+   public interface View extends Presenter.View, PermissionUIComponent {
       void setFeedbackTypes(List<FeedbackType> feedbackTypes);
 
       void feedbackSent();

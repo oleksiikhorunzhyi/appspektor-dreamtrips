@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.core.janet.cache;
 import com.worldventures.core.janet.cache.storage.ActionStorage;
 import com.worldventures.core.modules.facebook.service.storage.FacebookAlbumsStorage;
 import com.worldventures.core.modules.facebook.service.storage.FacebookPhotosStorage;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.service.storage.NotificationCounterStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.FullMerchantStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.LocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.domain.storage.MerchantsStorage;
@@ -43,6 +45,12 @@ public class CacheActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideFacebookPhotosStorage() {
       return new FacebookPhotosStorage();
+   }
+
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   ActionStorage provideNotificationCounterStorage(SnappyRepository socialSnappyRepository) {
+      return new NotificationCounterStorage(socialSnappyRepository);
    }
 
    @Singleton

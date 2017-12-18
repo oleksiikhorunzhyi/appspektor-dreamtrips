@@ -143,7 +143,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
             .skip(1)
             .compose(RxLifecycleAndroid.bindView(this))
             .filter(Boolean::booleanValue) // only true -> only focus gains
-            .subscribe(aBoolean -> getPresenter().locationChangeRequested());
+            .subscribe(aBoolean -> getPresenter().locationChangeRequested(dtlToolbar.getSearchQuery()));
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
@@ -309,11 +309,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    @Override
-   public void updateToolbarSearchCaption(@Nullable String searchCaption) {
+   public void updateToolbarSearchQuery(@Nullable String searchQuery) {
       if (dtlToolbar == null) {
          return;
       }
-      dtlToolbar.setSearchCaption(searchCaption);
+      dtlToolbar.setSearchQuery(searchQuery);
    }
 
    @Override
@@ -482,7 +482,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       ViewUtils.setTextColor((Button) filterSpa, MerchantTypeUtil.filterMerchantColor(filterSpa));
 
       if (stringResource != 0 && dtlToolbar != null) {
-         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
+         dtlToolbar.setSearchHint(getContext().getResources().getString(stringResource));
       }
    }
 

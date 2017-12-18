@@ -13,7 +13,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoUtil;
+import com.worldventures.dreamtrips.social.ui.bucketlist.util.BucketItemInfoHelper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,16 +27,18 @@ public class BucketItemViewInjector {
 
    private final Context context;
    private TranslateBucketItemViewInjector translateBucketItemViewInjector;
+   private BucketItemInfoHelper bucketItemInfoHelper;
 
-   public BucketItemViewInjector(View rootView, Context context, SessionHolder appSessionHolder) {
+   public BucketItemViewInjector(View rootView, Context context, SessionHolder appSessionHolder, BucketItemInfoHelper bucketItemInfoHelper) {
       this.context = context;
       translateBucketItemViewInjector = new TranslateBucketItemViewInjector(rootView, context, appSessionHolder);
+      this.bucketItemInfoHelper = bucketItemInfoHelper;
       ButterKnife.inject(this, rootView);
    }
 
    public void processBucketItem(BucketItem bucketItem) {
-      String mediumResUrl = BucketItemInfoUtil.getMediumResUrl(context, bucketItem);
-      String highResUrl = BucketItemInfoUtil.getHighResUrl(context, bucketItem);
+      String mediumResUrl = bucketItemInfoHelper.getMediumResUrl(bucketItem);
+      String highResUrl = bucketItemInfoHelper.getHighResUrl(bucketItem);
       loadImage(mediumResUrl, highResUrl);
       if (TextUtils.isEmpty(bucketItem.getCategoryName())) {
          textViewCategory.setVisibility(View.GONE);
@@ -44,13 +46,13 @@ public class BucketItemViewInjector {
          textViewCategory.setVisibility(View.VISIBLE);
          textViewCategory.setText(bucketItem.getCategoryName());
       }
-      if (TextUtils.isEmpty(BucketItemInfoUtil.getPlace(bucketItem))) {
+      if (TextUtils.isEmpty(bucketItemInfoHelper.getPlace(bucketItem))) {
          textViewPlace.setVisibility(View.GONE);
       } else {
          textViewPlace.setVisibility(View.VISIBLE);
-         textViewPlace.setText(BucketItemInfoUtil.getPlace(bucketItem));
+         textViewPlace.setText(bucketItemInfoHelper.getPlace(bucketItem));
       }
-      textViewDate.setText(BucketItemInfoUtil.getTime(context, bucketItem));
+      textViewDate.setText(bucketItemInfoHelper.getTime(bucketItem));
       translateBucketItemViewInjector.processTranslation(bucketItem);
    }
 

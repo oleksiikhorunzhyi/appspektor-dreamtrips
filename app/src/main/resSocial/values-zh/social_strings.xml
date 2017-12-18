@@ -368,7 +368,7 @@
    <string name="n_friends_accepted">%1$d朋友请求已接受。</string>
    <string name="friends_will_appear_momentarily">他们马上将出现在我的朋友列表。</string>
    <string name="uploading_post_status_progress_video"><i><b>2步中的第1步.</b></i> 上传中…</string>
-   <string name="uploading_post_status_progress_video_processing"><b><i>2步中的第2步.</i></b> 处理中…</string>
+   <string name="uploading_post_status_progress_video_processing"><b><i>Step 2 of 2.</i></b> Processing…</string>
    <string name="uploading_post_status_progress_video_processing_failed">处理失败视频出错了</string>
    <string name="wv_advantage">WVA</string>
    <string name="uploading_post_status_upload_video_failed">本视频无法上传</string>

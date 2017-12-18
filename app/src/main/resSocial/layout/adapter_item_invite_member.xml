@@ -10,7 +10,7 @@
       >
 
    <CheckBox
-         android:id="@+id/cb_checked"
+         android:id="@+id/selectedCheckBox"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_marginRight="12dp"
@@ -24,46 +24,33 @@
          >
 
       <TextView
-            android:id="@+id/tv_name"
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Travis Just"
             android:textColor="@android:color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
             />
 
       <TextView
-            android:id="@+id/tv_subtitle"
+            android:id="@+id/contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="travis.james@gmail.com"
+            android:lines="1"
             />
    </LinearLayout>
 
-   <ImageView
-         android:id="@+id/iv_phone"
-         android:layout_width="0dp"
-         android:layout_height="wrap_content"
-         android:layout_gravity="top"
-         android:layout_weight="0.3"
-         android:scaleType="fitStart"
-         android:src="@drawable/ic_invite_phone"
-         />
-
    <LinearLayout
+         android:id="@+id/resendContainer"
          android:layout_width="wrap_content"
          android:layout_height="match_parent"
-         android:orientation="vertical"
          android:gravity="center_vertical|center_horizontal"
-         android:id="@+id/ll_resend"
+         android:orientation="vertical"
          >
 
       <TextView
-            android:id="@+id/tv_date"
+            android:id="@+id/lastSentDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Feb 25, 12AM"
             />
 
       <TextView

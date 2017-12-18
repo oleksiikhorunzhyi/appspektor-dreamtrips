@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.trips.model.Price;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import io.techery.mappery.MapperyContext;
@@ -27,6 +28,10 @@ public abstract class ApiTripToTripConverter<T extends Trip> implements Converte
       tripModel.setUid(trip.uid());
       tripModel.setLiked(trip.liked());
       tripModel.setLikesCount(trip.likes());
+      if (trip.comments() != null) {
+         tripModel.setComments(mapperyContext.convert(trip.comments(), Comment.class));
+      }
+      tripModel.setCommentsCount(trip.commentsCount());
       tripModel.setTripId(trip.tripId());
       tripModel.setName(trip.name());
       tripModel.setDescription(trip.description());

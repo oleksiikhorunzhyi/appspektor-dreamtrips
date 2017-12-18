@@ -98,7 +98,6 @@
    <string name="library">圖書館</string>
 
 
-
    <string name="nav_back">回去</string>
 
    <string name="logout_component">退出</string>
@@ -148,6 +147,18 @@
 
    <string name="beta_label">Beta版</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">需要許可讀取存儲空間，才能建議媒體內容</string>
+
+   <string name="permission_location_for_attach_location_on_post">需要可以訪問位置服務來確定您的當前位置</string>
+   <string name="no_permission_location_for_attach_location_on_post">無法建議您的位置，因為無法訪問位置服務</string>
+   <string name="permission_location_for_localization_web_page">允許訪問您的位置用來以適當的語言顯示內容</string>
+   <string name="no_permission_location_for_localization_web_page">無法獲取語言，因為無法訪問位置服務</string>
+   <string name="permission_to_read_contacts">需要讀取聯繫人來製作邀請清單</string>
+   <string name="no_permission_to_read_contacts">無法建議聯繫人，因為您拒絕了讀取聯繫人的許可</string>
+   <string name="permission_to_write_contacts">需要訪問聯繫人來添加新聯繫人</string>
+   <string name="no_permission_to_write_contacts">無法添加新聯繫人，因為您拒絕了寫入聯繫人的許可</string>
+   <string name="permission_to_read_phone_storage">需要訪問相機存儲來顯示您的照片</string>
+   <string name="no_permission_to_read_phone_storage">無法加載您的照片</string>
+   <string name="no_camera_permission_for_photo_picker">沒有許可無法打開相機</string>
+
 </resources>

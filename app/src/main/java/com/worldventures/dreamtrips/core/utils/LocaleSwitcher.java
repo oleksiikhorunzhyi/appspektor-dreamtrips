@@ -16,7 +16,6 @@ public class LocaleSwitcher {
    private final SessionHolder sessionHolder;
 
    private Locale defaultSystemLocale;
-   private Locale currentLocale;
 
    public LocaleSwitcher(Context context, SessionHolder sessionHolder) {
       this.context = context;
@@ -31,8 +30,8 @@ public class LocaleSwitcher {
    public void applyLocaleFromSession() {
       Locale localeToApply;
 
-      if (sessionHolder.get().isPresent() && !TextUtils.isEmpty(sessionHolder.get().get().getLocale())) {
-         localeToApply = LocaleHelper.buildFromLanguageCode(sessionHolder.get().get().getLocale());
+      if (sessionHolder.get().isPresent() && !TextUtils.isEmpty(sessionHolder.get().get().locale())) {
+         localeToApply = LocaleHelper.buildFromLanguageCode(sessionHolder.get().get().locale());
       } else {
          localeToApply = defaultSystemLocale;
       }
@@ -41,13 +40,11 @@ public class LocaleSwitcher {
    }
 
    private void applyLocale(Locale locale) {
-      currentLocale = locale;
-
-      Locale.setDefault(currentLocale);
+      Locale.setDefault(locale);
       Resources resources = context.getResources();
 
       Configuration configuration = resources.getConfiguration();
-      configuration.locale = currentLocale;
+      configuration.locale = locale;
 
       resources.updateConfiguration(configuration, resources.getDisplayMetrics());
    }

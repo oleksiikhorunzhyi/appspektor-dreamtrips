@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 public class PhotoFeedItem extends FeedItem<Photo> {
 
    public PhotoFeedItem() {
+      //do nothing
    }
 
    public PhotoFeedItem(Parcel in) {
@@ -25,7 +26,9 @@ public class PhotoFeedItem extends FeedItem<Photo> {
       int height = res.getDimensionPixelSize(R.dimen.bucket_cover_thumb_h);
       if (getItem().getImagePath() != null) {
          return ImageUtils.getParametrizedUrl(getItem().getImagePath(), width, height);
-      } else return null;
+      } else {
+         return null;
+      }
    }
 
    public static final Creator<PhotoFeedItem> CREATOR = new Creator<PhotoFeedItem>() {

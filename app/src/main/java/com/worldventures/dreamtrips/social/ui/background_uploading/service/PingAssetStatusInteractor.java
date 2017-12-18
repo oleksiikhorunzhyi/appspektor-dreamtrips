@@ -11,10 +11,10 @@ import rx.schedulers.Schedulers;
 
 public class PingAssetStatusInteractor {
 
-   private ActionPipe<UpdateVideoProcessStatusCommand> updateVideoProcessStatusPipe;
-   private ActionPipe<PerformUpdateVideoStatusCommand> performUpdateVideoStatusPipe;
-   private ActionPipe<LaunchUpdatingVideoProcessingCommand> launchUpdatingVideoProcessingPipe;
-   private ActionPipe<FeedItemsVideoProcessingStatusCommand> feedItemsVideoProcessingPipe;
+   private final ActionPipe<UpdateVideoProcessStatusCommand> updateVideoProcessStatusPipe;
+   private final ActionPipe<PerformUpdateVideoStatusCommand> performUpdateVideoStatusPipe;
+   private final ActionPipe<LaunchUpdatingVideoProcessingCommand> launchUpdatingVideoProcessingPipe;
+   private final ActionPipe<FeedItemsVideoProcessingStatusCommand> feedItemsVideoProcessingPipe;
 
    public PingAssetStatusInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       updateVideoProcessStatusPipe = sessionActionPipeCreator.createPipe(UpdateVideoProcessStatusCommand.class, Schedulers

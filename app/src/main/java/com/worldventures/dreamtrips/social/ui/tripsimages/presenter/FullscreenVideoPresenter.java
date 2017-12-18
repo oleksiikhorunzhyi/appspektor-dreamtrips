@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import android.support.v4.app.FragmentManager;
 
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
@@ -71,7 +72,7 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
 
    public void onComment() {
       new NavigationWrapperFactory().componentOrDialogNavigationWrapper(router, fragmentManager, view)
-            .navigate(Route.COMMENTS, new CommentsBundle(video, false, true));
+            .navigate(CommentableFragment.class, new CommentsBundle(video, false, true));
    }
 
    public void onDelete() {

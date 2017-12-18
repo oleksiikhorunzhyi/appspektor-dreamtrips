@@ -75,7 +75,9 @@ public class MerchantInfoInflater extends MerchantDataInflater {
          Observable.fromCallable(() -> merchantAttributes.provideFormattedOperationalTime(rootView.getContext(), true))
                .compose(RxLifecycleAndroid.bindView(rootView))
                .subscribe(operationalTime::setText, ex -> operationalTime.setVisibility(View.GONE));
-      } else ViewUtils.setViewVisibility(operationalTime, View.GONE);
+      } else {
+         ViewUtils.setViewVisibility(operationalTime, View.GONE);
+      }
 
    }
 
@@ -98,10 +100,14 @@ public class MerchantInfoInflater extends MerchantDataInflater {
       ViewUtils.setViewVisibility(this.perks, perkVisibility);
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
-      if (perkVisibility == View.VISIBLE) this.perks.setText(rootView.getContext()
-            .getString(R.string.perks_formatted, perks));
+      if (perkVisibility == View.VISIBLE) {
+         this.perks.setText(rootView.getContext()
+               .getString(R.string.perks_formatted, perks));
+      }
 
-      if (merchantAttributes == null) return;
+      if (merchantAttributes == null) {
+         return;
+      }
 
       if (merchantAttributes.useThrstFlow()) {
          ViewUtils.setViewVisibility(this.payInApp, View.VISIBLE);
@@ -111,6 +117,8 @@ public class MerchantInfoInflater extends MerchantDataInflater {
          ViewUtils.setViewVisibility(this.points, View.VISIBLE);
       }
 
-      if (isFromMerchantDetail) ViewUtils.setViewVisibility(this.payInApp, View.GONE);
+      if (isFromMerchantDetail) {
+         ViewUtils.setViewVisibility(this.payInApp, View.GONE);
+      }
    }
 }

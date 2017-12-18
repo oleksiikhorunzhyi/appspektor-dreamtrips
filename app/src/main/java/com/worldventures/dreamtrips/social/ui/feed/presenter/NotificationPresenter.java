@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.analytics.LoadMoreNotificationsAnalyticAction;
@@ -20,9 +20,8 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class NotificationPresenter extends Presenter<NotificationPresenter.View> {
 
-   @Inject SnappyRepository db;
    @Inject NotificationFeedInteractor feedInteractor;
-   @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+   @Inject UserNotificationInteractor userNotificationInteractor;
 
    @Override
    public void onResume() {
@@ -33,9 +32,10 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      notificationCountEventDelegate.getObservable()
+      userNotificationInteractor.notificationCountChangedPipe()
+            .observeSuccess()
             .compose(bindViewToMainComposer())
-            .subscribe(event -> view.setRequestsCount(db.getFriendsRequestsCount()));
+            .subscribe(command -> view.setRequestsCount(command.getFriendNotificationCount()));
       subscribeToNotificationUpdates();
    }
 
@@ -44,7 +44,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
    }
 
    public void refreshRequestsCount() {
-      view.setRequestsCount(db.getFriendsRequestsCount());
+      userNotificationInteractor.notificationCountChangedPipe().send(new NotificationCountChangedCommand());
    }
 
    public void onRefresh() {
@@ -78,7 +78,9 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
       view.finishLoading();
       view.refreshNotifications(items);
       //
-      if (!noMoreItems) feedInteractor.markNotificationsPipe().send(new MarkNotificationsAsReadCommand(newItems));
+      if (!noMoreItems) {
+         feedInteractor.markNotificationsPipe().send(new MarkNotificationsAsReadCommand(newItems));
+      }
    }
 
 

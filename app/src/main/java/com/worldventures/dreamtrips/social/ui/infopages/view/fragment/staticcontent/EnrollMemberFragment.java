@@ -3,15 +3,16 @@ package com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcon
 import android.os.Bundle;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMemberViewedAction;
 
 @Layout(R.layout.fragment_webview)
-public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
+public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<EnrollMemberPresenter, UrlBundle>
+      implements EnrollMemberPresenter.View {
 
    @Override
    protected String getURL() {
@@ -19,7 +20,7 @@ public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle
    }
 
    @Override
-   protected AuthorizedStaticInfoPresenter createPresenter(Bundle savedInstanceState) {
+   protected EnrollMemberPresenter createPresenter(Bundle savedInstanceState) {
       return new EnrollMemberPresenter(getURL());
    }
 
@@ -31,7 +32,24 @@ public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle
    }
 
    @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.permission_location_for_localization_web_page)
+            .positiveText(R.string.dialog_ok)
+            .negativeText(R.string.dialog_cancel)
+            .onPositive((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(true))
+            .onNegative((materialDialog, dialogAction) -> getPresenter().recheckPermissionAccepted(false))
+            .cancelable(false)
+            .show();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      //do nothing
+   }
+
+   @Override
    protected void trackViewFromViewPagerIfNeeded() {
-      getPresenter().track(Route.ENROLL_MEMBER);
+      analyticsInteractor.analyticsActionPipe().send(new EnrollMemberViewedAction(getUserId()));
    }
 }

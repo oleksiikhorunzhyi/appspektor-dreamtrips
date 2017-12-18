@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.GetTransactionRequestPilotAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.TransactionThrstActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.TransactionThrstCreator;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 

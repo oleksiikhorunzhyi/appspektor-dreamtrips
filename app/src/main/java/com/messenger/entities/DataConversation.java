@@ -23,6 +23,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
    @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME) public static final Uri CONTENT_URI = MessengerDatabase
          .buildUri(TABLE_NAME);
 
+   @SuppressWarnings("MemberName")
    @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE) @PrimaryKey @Column String _id;
    @Column String ownerId;
    @Column String subject;
@@ -35,6 +36,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
    @Column long lastActiveDate;
    @Column long clearTime;
 
+   @SuppressWarnings("PMD.UnnecessaryConstructor")
    public DataConversation() {}
 
    public DataConversation(Conversation conversation) {
@@ -155,8 +157,12 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       DataConversation that = (DataConversation) o;
 
@@ -166,15 +172,15 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
    @Override
    public String toString() {
-      return "Conversation{" +
-            "_id='" + _id + '\'' +
-            ", ownerId='" + ownerId + '\'' +
-            ", subject='" + subject + '\'' +
-            ", avatar='" + avatar + '\'' +
-            ", status='" + status + '\'' +
-            ", type='" + type + '\'' +
-            ", unreadMessageCount=" + unreadMessageCount +
-            '}';
+      return "Conversation{"
+            + "_id='" + _id + '\''
+            + ", ownerId='" + ownerId + '\''
+            + ", subject='" + subject + '\''
+            + ", avatar='" + avatar + '\''
+            + ", status='" + status + '\''
+            + ", type='" + type + '\''
+            + ", unreadMessageCount=" + unreadMessageCount
+            + '}';
    }
 
    @Override
@@ -213,9 +219,6 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
       private long clearDate;
       private int unreadMessageCount = 0;
       private long leftTime;
-
-      public Builder() {
-      }
 
       public Builder id(String val) {
          id = val;

@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.config.service.command.Configuration
 
 public class UpdateRequirementStorage implements ActionStorage<Configuration> {
 
-   private SnappyRepository snappyRepository;
+   private final SnappyRepository snappyRepository;
 
    public UpdateRequirementStorage(SnappyRepository snappyRepository) {
       this.snappyRepository = snappyRepository;

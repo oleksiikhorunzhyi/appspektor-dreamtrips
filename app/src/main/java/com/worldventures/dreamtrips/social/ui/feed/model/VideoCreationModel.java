@@ -18,7 +18,9 @@ public abstract class VideoCreationModel {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj == null || !(obj instanceof VideoCreationModel)) return false;
+      if (obj == null || !(obj instanceof VideoCreationModel)) { //NOPMD
+         return false;
+      }
       VideoCreationModel videoCreationModel = (VideoCreationModel) obj;
       return videoCreationModel.uri().equals(uri());
    }

@@ -12,7 +12,7 @@ import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.facebook.FacebookHelper;
 import com.worldventures.core.modules.facebook.model.FacebookAlbum;
 import com.worldventures.core.modules.facebook.model.FacebookAlbumsGraph;

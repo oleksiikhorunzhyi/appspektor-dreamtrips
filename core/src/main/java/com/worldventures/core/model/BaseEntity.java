@@ -12,10 +12,15 @@ import java.io.Serializable;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class BaseEntity implements Serializable, Parcelable {
 
+   @TaggedFieldSerializer.Tag(0) protected int id;
+
    public BaseEntity() {
+      //do nothing
    }
 
-   @TaggedFieldSerializer.Tag(0) protected int id;
+   protected BaseEntity(int id) {
+      this.id = id;
+   }
 
    public int getId() {
       return id;

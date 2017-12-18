@@ -34,6 +34,7 @@ public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable
 
    @Override
    public void onToolbarMenuPrepared(Menu menu) {
+      //do nothing
    }
 
    @Override
@@ -43,10 +44,12 @@ public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable
 
    @Override
    public void onNewViewState() {
+      //do nothing
    }
 
    @Override
    public void applyViewState() {
+      //do nothing
    }
 
    @Override

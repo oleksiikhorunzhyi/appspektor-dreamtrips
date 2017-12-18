@@ -51,7 +51,7 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
    }
 
    public void continueAction() {
-      this.user = appSessionHolder.get().get().getUser();
+      this.user = appSessionHolder.get().get().user();
       if (!ReviewStorage.exists(context, String.valueOf(user.getId()), merchant.id())) {
          view.sendToReview(merchant);
       }

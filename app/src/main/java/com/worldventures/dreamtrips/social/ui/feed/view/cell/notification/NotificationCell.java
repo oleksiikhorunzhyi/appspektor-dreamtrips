@@ -13,25 +13,26 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.utils.TimeUtils;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractCell;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.item.Links;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFullscreenFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
    @Optional @InjectView(R.id.notification_time) TextView notificationTime;
    @Optional @InjectView(R.id.notification_header_image) SimpleDraweeView notificationImage;
 
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> profileRouteCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> profileFragmentClassProvider;
    @Inject SessionHolder appSessionHolder;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject Router router;
@@ -65,14 +66,16 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
 
    @Override
    protected void syncUIStateWithModel() {
-      if (!appSessionHolder.get().isPresent()) return;
+      if (!appSessionHolder.get().isPresent()) {
+         return;
+      }
 
       User firstUser = getModelObject().getLinks().getUsers().get(0);
       notificationAvatar.setImageURI(Uri.parse(firstUser.getAvatar().getThumb()));
       notificationAvatar.setup(firstUser, injectorProvider.get());
       notificationOwner.setText(firstUser.getFullName());
 
-      int currentAccountId = appSessionHolder.get().get().getUser().getId();
+      int currentAccountId = appSessionHolder.get().get().user().getId();
       notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources(), currentAccountId)));
       notificationTime.setText(TimeUtils.getRelativeTimeSpanString(itemView.getResources(),
             getModelObject().getCreatedAt().getTime()));
@@ -80,10 +83,13 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
       if (getModelObject().getType() == Type.UNDEFINED || getModelObject().getType() == Type.POST) {
          notificationImage.setVisibility(View.GONE);
       } else {
+
          notificationImage.setVisibility(View.VISIBLE);
          String url = getModelObject().previewImage(itemView.getResources());
 
-         if (url != null) notificationImage.setImageURI(Uri.parse(url));
+         if (url != null) {
+            notificationImage.setImageURI(Uri.parse(url));
+         }
       }
 
       itemView.setOnClickListener(v -> open(getModelObject()));
@@ -91,9 +97,13 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
    }
 
    private void open(FeedItem item) {
-      if (item.getType() != Type.UNDEFINED) openByType(item.getType(), item.getAction());
-      else if (item.getAction() != null) openByAction(getModelObject().getLinks(), item.getAction());
-      else Timber.w("Can't open event model by type or action");
+      if (item.getType() != Type.UNDEFINED) {
+         openByType(item.getType(), item.getAction());
+      } else if (item.getAction() != null) {
+         openByAction(getModelObject().getLinks(), item.getAction());
+      } else {
+         Timber.w("Can't open event model by type or action");
+      }
    }
 
    private void openByType(Type type, FeedItem.Action action) {
@@ -112,6 +122,8 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
          case POST:
             openDetails();
             break;
+         default:
+            break;
       }
    }
 
@@ -121,18 +133,20 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
          case SEND_REQUEST:
          case ACCEPT_REQUEST:
             openProfile(links.getUsers().get(0));
+         default:
+            break;
       }
    }
 
    private void openProfile(User user) {
-      router.moveTo(profileRouteCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(profileFragmentClassProvider.provideFragmentClass(user.getId()), NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(user))
             .build());
    }
 
    private void openDetails() {
-      router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+      router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
@@ -140,8 +154,8 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
 
    private void openFullscreenPhoto() {
       List<BaseMediaEntity> items = new ArrayList<>();
-      items.add((new PhotoMediaEntity((Photo) getModelObject().getItem())));
-      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+      items.add(new PhotoMediaEntity((Photo) getModelObject().getItem()));
+      router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()
                   .mediaEntityList(items)
                   .build())

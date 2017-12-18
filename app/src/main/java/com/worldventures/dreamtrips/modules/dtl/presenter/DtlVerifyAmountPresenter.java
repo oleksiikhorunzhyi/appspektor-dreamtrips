@@ -28,7 +28,8 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> {}));
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> {
+      }));
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
@@ -37,6 +38,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
                view.attachTransaction(transaction, merchant.asMerchantAttributes().defaultCurrency());
                view.attachDtPoints(Double.valueOf(transaction.getPoints()).intValue());
             }, apiErrorViewAdapter::handleError);
+      view.setMinimalAmount(merchant.earnPointsMinSpendLocalCurrency(), merchant.asMerchantAttributes().defaultCurrency());
 
    }
 
@@ -71,5 +73,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
       void openScanReceipt(DtlTransaction dtlTransaction);
 
       void openScanQr(DtlTransaction dtlTransaction);
+
+      void setMinimalAmount(double minimalAmount, Currency currency);
    }
 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketFullscreenBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketViewPagerBundle;
@@ -55,7 +54,7 @@ public class BucketPhotoViewPagerFragment extends BaseImageViewPagerFragment<Buc
       @Override
       protected List<FragmentItem> getItems() {
          return Queryable.from(bucketPhotos)
-               .map(photo -> new FragmentItem(Route.BUCKET_PHOTO_FULLSCREEN, "", new BucketFullscreenBundle(bucketItem, photo)))
+               .map(photo -> new FragmentItem(BucketPhotoFullscreenFragment.class, "", new BucketFullscreenBundle(bucketItem, photo)))
                .toList();
       }
    }

@@ -1,11 +1,11 @@
 package com.worldventures.core.modules.picker.presenter.gallery;
 
 
-import com.worldventures.core.modules.picker.viewmodel.GalleryMediaPickerViewModel;
 import com.worldventures.core.modules.picker.presenter.base.BaseMediaPickerPresenter;
 import com.worldventures.core.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.core.modules.picker.util.strategy.VideoPickLimitStrategy;
 import com.worldventures.core.modules.picker.view.gallery.GalleryMediaPickerView;
+import com.worldventures.core.modules.picker.viewmodel.GalleryMediaPickerViewModel;
 
 public interface GalleryMediaPickerPresenter extends BaseMediaPickerPresenter<GalleryMediaPickerView, GalleryMediaPickerViewModel> {
 

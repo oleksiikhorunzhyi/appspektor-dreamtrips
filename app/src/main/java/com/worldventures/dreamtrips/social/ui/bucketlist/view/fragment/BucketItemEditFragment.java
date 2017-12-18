@@ -18,15 +18,19 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.DateTimeUtils;
+import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketViewPagerBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -39,6 +43,8 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.BucketHoriz
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -46,7 +52,11 @@ import icepick.State;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
+@ComponentPresenter.ComponentTitle(R.string.bucket_list_edit_header)
 public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle> implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @Optional @InjectView(R.id.done) ImageView imageViewDone;
    @Optional @InjectView(R.id.bucket_header) ViewGroup bucketHeader;
@@ -65,7 +75,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-      if (isTabletLandscape()) return;
+      if (isTabletLandscape()) {
+         return;
+      }
       //
       if (menu != null) {
          menu.clear();
@@ -79,7 +91,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
       if (getArgs().isLock()) {
          OrientationUtil.lockOrientation(getActivity());
       }
-      if (bucketHeader != null) bucketHeader.getBackground().mutate().setAlpha(255);
+      if (bucketHeader != null) {
+         bucketHeader.getBackground().mutate().setAlpha(255);
+      }
       initAutoCompleteDate();
    }
 
@@ -130,7 +144,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    protected BucketItemEditPresenter createPresenter(Bundle savedInstanceState) {
-      return new BucketItemEditPresenter(getArgs());
+      BucketBundle args = getArgs();
+      return new BucketItemEditPresenter(args.getType(), args.getBucketItem(), args.getOwnerId());
    }
 
    @Override
@@ -147,7 +162,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    protected void setupPhotoCellCallbacks() {
       bucketPhotosView.enableAddPhotoCell(model -> {
          if (isVisibleOnScreen()) {
-            showMediaPicker();
+            getPresenter().openPickerRequired();
          }
       });
       bucketPhotosView.setPhotoCellDelegate(new BucketPhotoUploadCellDelegate() {
@@ -193,7 +208,9 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
       };
       spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerCategory);
       int categoryPosition = categorySelectedPosition == null ? items.indexOf(selectedItem) : categorySelectedPosition;
-      spinnerCategory.setSelection(categoryPosition);
+      if (categoryPosition != -1) {
+         spinnerCategory.setSelection(categoryPosition);
+      }
    }
 
    private void initAutoCompleteDate() {
@@ -237,8 +254,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public String getTags() {
-      return editTextTags.getText().toString();
+   public List<String> getTags() {
+      return ProjectTextUtils.getListFromString(editTextTags.getText().toString());
    }
 
    @Override
@@ -249,8 +266,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public String getPeople() {
-      return editTextPeople.getText().toString();
+   public List<String> getPeople() {
+      return ProjectTextUtils.getListFromString(editTextPeople.getText().toString());
    }
 
    @Override
@@ -278,6 +295,20 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    @Override
    public String getDescription() {
       return editTextDescription.getText().toString();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    @Override
@@ -314,7 +345,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    @Override
    public void openFullscreen(BucketViewPagerBundle data) {
-      router.moveTo(Route.BUCKET_FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+      router.moveTo(BucketPhotoViewPagerFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(data)
             .build());

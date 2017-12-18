@@ -8,14 +8,15 @@ import com.worldventures.core.janet.ValueCommandAction;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class MapInfoReadyAction extends ValueCommandAction<Pair<LatLng, Integer>> {
+public final class MapInfoReadyAction extends ValueCommandAction<Pair<LatLng, Integer>> {
 
    public static MapInfoReadyAction create(LatLng coordinates, int height) {
       return new MapInfoReadyAction(coordinates, height);
    }
 
-   public MapInfoReadyAction(LatLng coordinates, int height) {
+   private MapInfoReadyAction(LatLng coordinates, int height) {
       super(new Pair<>(coordinates, height));
    }
 
 }
+

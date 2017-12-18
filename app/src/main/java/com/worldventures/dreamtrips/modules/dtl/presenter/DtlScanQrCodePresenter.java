@@ -121,7 +121,9 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
    }
 
    private void tryLogInvalidQr(String scannedCode) {
-      if (scannedCode.matches("^[a-zA-Z0-9]+$")) return;
+      if (scannedCode.matches("^[a-zA-Z0-9]+$")) {
+         return;
+      }
       Crashlytics.log("Invalid QR code scanned: " + scannedCode);
       Crashlytics.logException(new InvalidParameterException("Invalid QR code scan detected"));
    }
@@ -132,8 +134,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(action -> {
-                     if (action.getResult() != null) {
-                        if (view != null) view.openScanReceipt(action.getResult());
+                     if (action.getResult() != null && view != null) {
+                        view.openScanReceipt(action.getResult());
                      }
                   }));
    }
@@ -166,6 +168,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
       transactionInteractor.transactionActionPipe()
             .send(DtlTransactionAction.save(action.getMerchant(), ImmutableDtlTransaction.copyOf(action.getTransaction())
                   .withDtlTransactionResult(action.getResult())));
+
       eventBus.postSticky(new DtlTransactionSucceedEvent(action.getTransaction()));
       view.finish();
       transactionInteractor.earnPointsActionPipe().clearReplays();
@@ -206,6 +209,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
          case WAITING_FOR_NETWORK:
             view.noConnection();
             break;
+         default:
+            break;
       }
    }
 
@@ -231,6 +236,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                      break;
                   case WAITING_FOR_NETWORK:
                      view.noConnection();
+                  default:
+                     break;
                }
             }, apiErrorViewAdapter::handleError);
    }
@@ -253,9 +260,13 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
    @Override
    public void dropView() {
       super.dropView();
-      if (eventBus.isRegistered(this)) eventBus.unregister(this);
+      if (eventBus.isRegistered(this)) {
+         eventBus.unregister(this);
+      }
       transactionInteractor.earnPointsActionPipe().clearReplays();
-      if (transferObserver != null) transferObserver.setTransferListener(null);
+      if (transferObserver != null) {
+         transferObserver.setTransferListener(null);
+      }
    }
 
    public interface View extends RxView, InformView {

@@ -10,8 +10,8 @@ import io.techery.mappery.MapperyContext;
 public class TransactionResponseConverter implements Converter<GetTransactionResponseSdk, GetTransactionResponse> {
 
    @Override
-   public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.GetTransactionResponseSdk> sourceClass() {
-      return com.worldventures.dreamtrips.api.dtl.merchants.model.GetTransactionResponseSdk.class;
+   public Class<GetTransactionResponseSdk> sourceClass() {
+      return GetTransactionResponseSdk.class;
    }
 
    @Override
@@ -20,7 +20,7 @@ public class TransactionResponseConverter implements Converter<GetTransactionRes
    }
 
    @Override
-   public GetTransactionResponse convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.GetTransactionResponseSdk pilot) {
+   public GetTransactionResponse convert(MapperyContext mapperyContext, GetTransactionResponseSdk pilot) {
       return ImmutableGetTransactionResponse.builder()
             .transactionId(pilot.transactionId())
             .merchantId(pilot.merchantId())
@@ -36,4 +36,5 @@ public class TransactionResponseConverter implements Converter<GetTransactionRes
             .tax(pilot.tax())
             .tip(pilot.tip())
             .build();
-   }}
+   }
+}

@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 
 import timber.log.Timber;
 
-public class FragmentHelper {
+public final class FragmentHelper {
 
    private FragmentHelper() {
    }

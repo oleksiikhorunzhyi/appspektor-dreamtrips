@@ -5,33 +5,33 @@ import android.support.v7.widget.RecyclerView;
 
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
 
-    LinearLayoutManager layoutManager;
+   LinearLayoutManager layoutManager;
 
-    /**
-     * Supporting only LinearLayoutManager for now.
-     *
-     * @param layoutManager
-     */
-    public PaginationScrollListener(LinearLayoutManager layoutManager) {
-        this.layoutManager = layoutManager;
-    }
+   /**
+    * Supporting only LinearLayoutManager for now.
+    *
+    * @param layoutManager
+    */
+   public PaginationScrollListener(LinearLayoutManager layoutManager) {
+      this.layoutManager = layoutManager;
+   }
 
-    @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        super.onScrolled(recyclerView, dx, dy);
+   @Override
+   public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+      super.onScrolled(recyclerView, dx, dy);
 
-        int visibleItemCount = layoutManager.getChildCount();
-        int totalItemCount = layoutManager.getItemCount();
-        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+      int visibleItemCount = layoutManager.getChildCount();
+      int totalItemCount = layoutManager.getItemCount();
+      int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-        if ((!isLoading() && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) && firstVisibleItemPosition >= 0) {
-               loadMoreItems();
-        }
+      if ((!isLoading() && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) && firstVisibleItemPosition >= 0) {
+         loadMoreItems();
+      }
 
-    }
+   }
 
-    protected abstract void loadMoreItems();
+   protected abstract void loadMoreItems();
 
-    public abstract boolean isLoading();
+   public abstract boolean isLoading();
 
 }

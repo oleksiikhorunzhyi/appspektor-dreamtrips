@@ -2,10 +2,12 @@ package com.worldventures.core.storage.complex_objects;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.worldventures.core.model.session.GsonAdaptersUserSession;
 import com.worldventures.core.storage.ObjectStorage;
 import com.worldventures.core.storage.preferences.ObjectPreferenceStorage;
 import com.worldventures.core.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.core.utils.DateTimeDeserializer;
+import com.worldventures.core.utils.DateTimeSerializer;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -18,8 +20,12 @@ public class ComplexObjectStorage<T> implements ObjectStorage<T> {
    private final Type type;
    private Optional<T> cachedInstance = Optional.absent();
 
-   {
-      gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateTimeDeserializer()).create();
+   { //NOPMD
+      gson = new GsonBuilder()
+            .registerTypeAdapter(Date.class, new DateTimeSerializer())
+            .registerTypeAdapter(Date.class, new DateTimeDeserializer())
+            .registerTypeAdapterFactory(new GsonAdaptersUserSession())
+            .create();
    }
 
    public ComplexObjectStorage(SimpleKeyValueStorage storage, String key, Class<T> objectClass) {
@@ -48,9 +54,11 @@ public class ComplexObjectStorage<T> implements ObjectStorage<T> {
 
          if (value.isPresent()) {
             T item;
-            if (typeClass != null) item = this.gson.fromJson(value.get(), typeClass);
-            else if (type != null) item = this.gson.fromJson(value.get(), type);
-            else throw new IllegalStateException("Neither type or typeClass is set to deserialize");
+            if (typeClass != null) { item = this.gson.fromJson(value.get(), typeClass); } else if (type != null) {
+               item = this.gson.fromJson(value.get(), type);
+            } else {
+               throw new IllegalStateException("Neither type or typeClass is set to deserialize");
+            }
             cachedInstance = Optional.of(item);
          }
       }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UpdateFeedEntityStorageOperation implements ListStorageOperation<FeedItem<FeedEntity>> {
 
-   private FeedEntity feedEntity;
+   private final FeedEntity feedEntity;
 
    public UpdateFeedEntityStorageOperation(FeedEntity feedEntity) {
       this.feedEntity = feedEntity;

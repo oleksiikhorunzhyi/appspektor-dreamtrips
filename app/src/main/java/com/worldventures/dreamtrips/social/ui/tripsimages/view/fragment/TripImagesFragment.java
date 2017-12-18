@@ -11,26 +11,29 @@ import android.widget.Button;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.ViewUtils;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.UploadingPostsSectionCell;
-import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.VideoMediaEntity;
@@ -44,13 +47,19 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.VideoMediaTi
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_trip_list_images)
+@ComponentPresenter.ComponentTitle(R.string.trip_images)
 public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFragmentWithArgs<T, TripImagesArgs>
       implements TripImagesPresenter.View, SelectablePagerFragment {
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @InjectView(R.id.recyclerView) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipeLayout) SwipeRefreshLayout refreshLayout;
@@ -141,21 +150,34 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void openFullscreen(boolean lastPageReached, int currentItemPosition) {
-      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN,
-            NavigationConfigBuilder.forActivity()
-                  .manualOrientationActivity(true)
-                  .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                  .data(TripImagesFullscreenArgs.builder()
-                        .tripImagesArgs(getArgs())
-                        .lastPageReached(lastPageReached)
-                        .currentItemPosition(currentItemPosition)
-                        .build())
-                  .build());
+      router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(TripImagesFullscreenArgs.builder()
+                  .tripImagesArgs(getArgs())
+                  .lastPageReached(lastPageReached)
+                  .currentItemPosition(currentItemPosition)
+                  .build())
+            .build());
    }
 
    @OnClick(R.id.fab_photo)
    public void actionPhoto() {
       getPresenter().addPhotoClicked();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    @Override
@@ -189,6 +211,14 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
             }
             return super.areItemsTheSame(oldItemPosition, newItemPosition);
          }
+
+         @Override
+         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            if (adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity && items.get(newItemPosition) instanceof PhotoMediaEntity) {
+               return false;
+            }
+            return true;
+         }
       });
       adapter.setItemsNoNotify(items);
       diffResult.dispatchUpdatesTo(adapter);
@@ -217,8 +247,10 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void openCreatePhoto(MediaPickerAttachment mediaAttachment) {
-      if (isCreatePhotoAlreadyAttached()) return;
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+      if (isCreatePhotoAlreadyAttached()) {
+         return;
+      }
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .containerId(R.id.container_details_floating)
@@ -232,6 +264,6 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    private boolean isCreatePhotoAlreadyAttached() {
       return Queryable.from(getActivity().getSupportFragmentManager().getFragments())
-            .firstOrDefault(fragment -> fragment instanceof CreateFeedPostFragment) != null;
+            .firstOrDefault(fragment -> fragment instanceof CreateEntityFragment) != null;
    }
 }

@@ -48,6 +48,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
       this(context, null);
    }
 
+   @SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
    public BaseMediaPickerLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
       super(context, attrs);
       initView();
@@ -99,7 +100,7 @@ public abstract class BaseMediaPickerLayout<P extends BaseMediaPickerPresenter, 
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
       getPresenter().attachView(this);
-      if (onAttachedListener != null) onAttachedListener.onAttached();
+      if (onAttachedListener != null) { onAttachedListener.onAttached(); }
    }
 
    @Override

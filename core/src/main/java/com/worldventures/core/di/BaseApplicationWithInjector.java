@@ -1,5 +1,7 @@
 package com.worldventures.core.di;
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.worldventures.core.janet.Injector;
@@ -37,6 +39,12 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
       List<Object> result = new ArrayList<>();
       result.add(getApplicationModule());
       return result;
+   }
+
+   @Override
+   protected void attachBaseContext(Context base) {
+      super.attachBaseContext(base);
+      MultiDex.install(this);
    }
 
    protected abstract Object getApplicationModule();

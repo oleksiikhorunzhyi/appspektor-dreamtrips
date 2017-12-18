@@ -6,7 +6,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.janet.cache.CacheResultWrapper
 import com.worldventures.core.model.User
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate

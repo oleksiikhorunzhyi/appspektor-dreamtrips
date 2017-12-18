@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.R;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class DialogFactory {
+public final class DialogFactory {
 
    private DialogFactory() {}
 
@@ -32,7 +32,9 @@ public class DialogFactory {
       dialog.setConfirmText(textButton);
       dialog.setCancelable(cancellable);
       dialog.setCanceledOnTouchOutside(true);
-      if (content != null) dialog.setContentText(content);
+      if (content != null) {
+         dialog.setContentText(content);
+      }
       return dialog;
    }
 }

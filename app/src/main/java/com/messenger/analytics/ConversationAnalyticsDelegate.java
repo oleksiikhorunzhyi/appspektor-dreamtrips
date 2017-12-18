@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 public class ConversationAnalyticsDelegate {
 
-   private AnalyticsInteractor analyticsInteractor;
+   private final AnalyticsInteractor analyticsInteractor;
 
    @Inject
    public ConversationAnalyticsDelegate(AnalyticsInteractor analyticsInteractor) {
@@ -61,6 +61,8 @@ public class ConversationAnalyticsDelegate {
       boolean isTripChat = ConversationHelper.isTripChat(conversation);
       if (isTripChat) {
          return chatWithHost ? AnalyticsType.TRIP_CHAT_WITH_HOST : AnalyticsType.TRIP_CHAT;
-      } else return AnalyticsType.GROUP_CHAT;
+      } else {
+         return AnalyticsType.GROUP_CHAT;
+      }
    }
 }

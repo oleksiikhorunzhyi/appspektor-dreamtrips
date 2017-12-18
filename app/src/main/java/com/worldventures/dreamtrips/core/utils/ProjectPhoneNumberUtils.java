@@ -4,6 +4,7 @@ import android.os.Build;
 import android.telephony.PhoneNumberUtils;
 
 public final class ProjectPhoneNumberUtils {
+
    private ProjectPhoneNumberUtils() {}
 
    public static String normalizeNumber(String phoneNumber) {

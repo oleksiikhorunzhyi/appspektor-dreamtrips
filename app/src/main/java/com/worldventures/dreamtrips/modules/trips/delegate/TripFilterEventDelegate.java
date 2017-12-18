@@ -9,7 +9,7 @@ import rx.Observable;
 
 public class TripFilterEventDelegate extends EventDelegate<TripsFilterData> {
 
-   private SnappyRepository snappyRepository;
+   private final SnappyRepository snappyRepository;
 
    private TripsFilterData tripsFilterData;
 
@@ -24,7 +24,9 @@ public class TripFilterEventDelegate extends EventDelegate<TripsFilterData> {
    }
 
    public Observable<TripsFilterData> last() {
-      if (tripsFilterData != null) return Observable.just(tripsFilterData);
+      if (tripsFilterData != null) {
+         return Observable.just(tripsFilterData);
+      }
       tripsFilterData = new TripsFilterData();
       CachedTripFilters cachedTripFilters = snappyRepository.getTripFilters();
       if (cachedTripFilters != null) {

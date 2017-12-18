@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 
 public class DtlTransactionSucceedEvent {
 
-   private DtlTransaction dtlTransaction;
+   private final DtlTransaction dtlTransaction;
 
    public DtlTransactionSucceedEvent(DtlTransaction dtlTransaction) {
       this.dtlTransaction = dtlTransaction;

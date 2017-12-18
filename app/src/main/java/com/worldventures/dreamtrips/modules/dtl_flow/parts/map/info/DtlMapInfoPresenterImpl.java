@@ -70,9 +70,12 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
                   .send(DtlAnalyticsCommand.create(new MerchantFromSearchEvent(query))));
    }
 
-   private @Nullable LatLng mapCoordinates() {
+   private @Nullable
+   LatLng mapCoordinates() {
       final Coordinates coordinates = merchant.coordinates();
-      if (coordinates == null) return null;
+      if (coordinates == null) {
+         return null;
+      }
       return new LatLng(coordinates.lat(), coordinates.lng());
    }
 
@@ -94,6 +97,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
 
    @Override
    public boolean hasPendingReview() {
-      return (merchant.reviewSummary().userHasPendingReview() && Integer.parseInt(merchant.reviewSummary().total()) < 1);
+      return (merchant.reviewSummary().userHasPendingReview() && Integer.parseInt(merchant.reviewSummary()
+            .total()) < 1);
    }
 }

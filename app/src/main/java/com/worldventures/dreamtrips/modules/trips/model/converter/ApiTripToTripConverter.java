@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.trips.model.Price;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.Schedule;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import io.techery.mappery.MapperyContext;
@@ -27,10 +28,16 @@ public abstract class ApiTripToTripConverter<T extends Trip> implements Converte
       tripModel.setUid(trip.uid());
       tripModel.setLiked(trip.liked());
       tripModel.setLikesCount(trip.likes());
+      if (trip.comments() != null) {
+         tripModel.setComments(mapperyContext.convert(trip.comments(), Comment.class));
+      }
+      tripModel.setCommentsCount(trip.commentsCount());
       tripModel.setTripId(trip.tripId());
       tripModel.setName(trip.name());
       tripModel.setDescription(trip.description());
-      if (trip.images() != null)  tripModel.setImages(mapperyContext.convert(trip.images(), TripImage.class));
+      if (trip.images() != null) {
+         tripModel.setImages(mapperyContext.convert(trip.images(), TripImage.class));
+      }
       tripModel.setAvailable(trip.available());
       tripModel.setFeatured(trip.featured());
       tripModel.setPlatinum(trip.platinum());
@@ -39,8 +46,12 @@ public abstract class ApiTripToTripConverter<T extends Trip> implements Converte
       tripModel.setRewardsLimit(trip.rewardsLimit());
       tripModel.setSoldOut(trip.soldOut());
       tripModel.setLocation(location(trip.location()));
-      if (trip.region() != null) tripModel.setRegion(mapperyContext.convert(trip.region(), RegionModel.class));
-      if (trip.activities() != null) tripModel.setActivities(mapperyContext.convert(trip.activities(), ActivityModel.class));
+      if (trip.region() != null) {
+         tripModel.setRegion(mapperyContext.convert(trip.region(), RegionModel.class));
+      }
+      if (trip.activities() != null) {
+         tripModel.setActivities(mapperyContext.convert(trip.activities(), ActivityModel.class));
+      }
       tripModel.setDuration(trip.duration());
       tripModel.setHasMultipleDates(trip.hasMultipleDates());
       tripModel.setDates(dates(trip.dates()));

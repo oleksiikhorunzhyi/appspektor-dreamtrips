@@ -1,23 +1,29 @@
 package com.worldventures.dreamtrips.modules.common.view.viewpager;
 
 import android.os.Parcelable;
-
-import com.worldventures.dreamtrips.core.navigation.Route;
+import android.support.v4.app.Fragment;
 
 public class FragmentItem {
-   public final Route route;
    public final String title;
-   private Parcelable args;
+   private final Class<? extends Fragment> fragmentClazz;
+   private final Parcelable args;
 
-   public FragmentItem(Route route, String title) {
-      this.route = route;
-      this.title = title;
+   public FragmentItem(Class<? extends Fragment> fragmentClazz) {
+      this(fragmentClazz, null);
    }
 
-   public FragmentItem(Route route, String title, Parcelable args) {
-      this.route = route;
+   public FragmentItem(Class<? extends Fragment> fragmentClazz, String title) {
+      this(fragmentClazz, title, null);
+   }
+
+   public FragmentItem(Class<? extends Fragment> fragmentClazz, String title, Parcelable args) {
       this.title = title;
+      this.fragmentClazz = fragmentClazz;
       this.args = args;
+   }
+
+   public Class<? extends Fragment> getFragmentClazz() {
+      return fragmentClazz;
    }
 
    public Parcelable getArgs() {

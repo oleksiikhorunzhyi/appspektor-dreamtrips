@@ -98,7 +98,6 @@
    <string name="library">Pustaka</string>
 
 
-
    <string name="nav_back">Pergi balik</string>
 
    <string name="logout_component">Log keluar</string>
@@ -148,6 +147,18 @@
 
    <string name="beta_label">Beta</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">Perlukan kebenaran untuk membaca penstoran untuk mencadangkan kandungan media kepada anda</string>
+
+   <string name="permission_location_for_attach_location_on_post">Akses kepada perkhidmatan lokasi diperlukan untuk menentukan lokasi semasa anda.</string>
+   <string name="no_permission_location_for_attach_location_on_post">Tidak dapat menentukan lokasi anda kerana perkhidmatan lokasi anda tidak dibuka.</string>
+   <string name="permission_location_for_localization_web_page">Membenarkan akses ke lokasi anda untuk memaparkan kandungan dalam bahasa yang sesuai.</string>
+   <string name="no_permission_location_for_localization_web_page">Tidak boleh mendapatkan bahasa kerana perkhidmatan lokasi tidak dibuka.</string>
+   <string name="permission_to_read_contacts">Akses untuk membaca buku kontak diperlukan untuk membuat senarai jemputan.</string>
+   <string name="no_permission_to_read_contacts">Tidak boleh mengakses untuk mencadangkan orang, kerana anda menolak kebenaran akses untuk membaca buku kontak.</string>
+   <string name="permission_to_write_contacts">Perlukan akses kepada buku kontak untuk menambah kontak baru.</string>
+   <string name="no_permission_to_write_contacts">Tidak dapat menambah kontak baru, kerana anda menolak kebenaran akses untuk menambah buku kontak.</string>
+   <string name="permission_to_read_phone_storage">Perlukan akses ke peranti simpanan kamera untuk memaparkan foto anda.</string>
+   <string name="no_permission_to_read_phone_storage">Tidak dapat memuatkan foto anda</string>
+   <string name="no_camera_permission_for_photo_picker">Tidak dapat membuka kamera tanpa kebenaran.</string>
+
 </resources>

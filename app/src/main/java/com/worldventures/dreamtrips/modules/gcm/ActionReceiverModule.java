@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.social.ui.friends.notification.FriendRejectA
 import dagger.Module;
 
 @Module(
-      injects = {FriendRejectActionReceiver.class,},
+      injects = {FriendRejectActionReceiver.class},
       complete = false,
       library = true)
 public class ActionReceiverModule {}

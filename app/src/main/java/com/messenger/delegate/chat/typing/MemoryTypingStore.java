@@ -12,9 +12,10 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class MemoryTypingStore implements TypingStore {
-   private PublishSubject<TypingModel> typingUserPublishSubject = PublishSubject.create();
 
-   public List<TypingModel> typingModels = new CopyOnWriteArrayList<>();
+   private final PublishSubject<TypingModel> typingUserPublishSubject = PublishSubject.create();
+
+   private final List<TypingModel> typingModels = new CopyOnWriteArrayList<>();
 
    @Override
    public Observable<List<String>> getTypingUsers(@NonNull String conversationId) {
@@ -61,7 +62,9 @@ public class MemoryTypingStore implements TypingStore {
       List<TypingModel> deletedTypingModels = new ArrayList<>();
       synchronized (this) {
          for (TypingModel typing : typingModels) {
-            if (userId.equals(typing.getUserId())) deletedTypingModels.add(typing);
+            if (userId.equals(typing.getUserId())) {
+               deletedTypingModels.add(typing);
+            }
          }
       }
       remove(deletedTypingModels);

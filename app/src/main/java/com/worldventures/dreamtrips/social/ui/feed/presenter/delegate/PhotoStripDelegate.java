@@ -1,20 +1,21 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
 import com.worldventures.core.janet.Injector;
+import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
-import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.picker.service.PickImageDelegate;
+import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.core.ui.util.permission.PermissionSubscriber;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
-import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
 
 import io.techery.janet.Command;
@@ -27,18 +28,20 @@ import timber.log.Timber;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.worldventures.core.ui.util.permission.PermissionConstants.CAMERA_PERMISSIONS;
-import static com.worldventures.core.ui.util.permission.PermissionConstants.STORE_PERMISSIONS;
+import static com.worldventures.core.ui.util.permission.PermissionConstants.READ_STORAGE_PERMISSION;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class PhotoStripDelegate {
 
    private static final int PHOTO_STRIP_COUNT_LIMIT = 20;
 
-   private Injector injector;
-   private MediaPickerInteractor mediaPickerInteractor;
-   private AppConfigurationInteractor appConfigurationInteractor;
-   private PickImageDelegate pickImageDelegate;
-   private CapturedRowMediaHelper capturedRowMediaHelper;
-   private PermissionDispatcher permissionDispatcher;
+   private final PermissionUtils permissionUtils;
+   private final Injector injector;
+   private final MediaPickerInteractor mediaPickerInteractor;
+   private final AppConfigurationInteractor appConfigurationInteractor;
+   private final PickImageDelegate pickImageDelegate;
+   private final CapturedRowMediaHelper capturedRowMediaHelper;
+   private final PermissionDispatcher permissionDispatcher;
 
    private int pickPhotoMaxCount;
    private int pickVideoMaxCount;
@@ -55,13 +58,15 @@ public class PhotoStripDelegate {
    private int videoMaxLength;
 
    public PhotoStripDelegate(Injector injector, MediaPickerInteractor mediaPickerInteractor, AppConfigurationInteractor appConfigurationInteractor,
-         PickImageDelegate pickImageDelegate, CapturedRowMediaHelper capturedRowMediaHelper, PermissionDispatcher permissionDispatcher) {
+         PickImageDelegate pickImageDelegate, CapturedRowMediaHelper capturedRowMediaHelper, PermissionDispatcher permissionDispatcher,
+         PermissionUtils permissionUtils) {
       this.injector = injector;
       this.mediaPickerInteractor = mediaPickerInteractor;
       this.appConfigurationInteractor = appConfigurationInteractor;
       this.pickImageDelegate = pickImageDelegate;
       this.capturedRowMediaHelper = capturedRowMediaHelper;
       this.permissionDispatcher = permissionDispatcher;
+      this.permissionUtils = permissionUtils;
    }
 
    public void setMaxPickLimits(int pickPhotoMaxCount, int pickVideoMaxCount) {
@@ -70,8 +75,9 @@ public class PhotoStripDelegate {
    }
 
    public void maintainPhotoStrip(PhotoStripView view, Observable.Transformer viewStopper, boolean videoEnabled) {
-      if (pickPhotoMaxCount == 0 || pickVideoMaxCount == 0)
+      if (pickPhotoMaxCount == 0 || pickVideoMaxCount == 0) {
          throw new RuntimeException("Setting limits before maintaining photo strip is required");
+      }
 
       this.videoEnabled = videoEnabled;
 
@@ -88,7 +94,7 @@ public class PhotoStripDelegate {
    }
 
    public void startLoadMedia() {
-      requestPermissions(STORE_PERMISSIONS, true);
+      requestPermissions(READ_STORAGE_PERMISSION, true);
    }
 
    private void loadMedia() {
@@ -174,11 +180,15 @@ public class PhotoStripDelegate {
    }
 
    private void openPhotoPickerRequired() {
-      if (!checkAddNewMediaException()) openPickerAction.call();
+      if (!checkAddNewMediaException()) {
+         openPickerAction.call();
+      }
    }
 
    private void openCameraRequired() {
-      if (checkAddNewMediaException()) return;
+      if (checkAddNewMediaException()) {
+         return;
+      }
 
       requestPermissions(CAMERA_PERMISSIONS, false);
    }
@@ -279,24 +289,27 @@ public class PhotoStripDelegate {
    }
 
    private void permissionsDenied(String[] permissions) {
-      if (permissions == STORE_PERMISSIONS) {
+      if (permissionUtils.equals(permissions, READ_STORAGE_PERMISSION)) {
          photoStrip.setVisibility(GONE);
       }
    }
 
    private void permissionRational(String[] permissions) {
       photoStrip.askUserForPermissions(permissions, (askedPermissions, answer) -> {
-         if (askedPermissions == STORE_PERMISSIONS) {
-            if (answer) requestPermissions(STORE_PERMISSIONS, false);
-            else permissionsDenied(STORE_PERMISSIONS);
+         if (permissionUtils.equals(askedPermissions, READ_STORAGE_PERMISSION)) {
+            if (answer) {
+               requestPermissions(READ_STORAGE_PERMISSION, false);
+            } else {
+               permissionsDenied(READ_STORAGE_PERMISSION);
+            }
          }
       });
    }
 
    private void permissionsGranted(String[] permissions) {
-      if (permissions == STORE_PERMISSIONS) {
+      if (permissionUtils.equals(permissions, READ_STORAGE_PERMISSION)) {
          loadMedia();
-      } else if (permissions == CAMERA_PERMISSIONS) {
+      } else if (permissionUtils.equals(permissions, CAMERA_PERMISSIONS)) {
          openCamera();
       }
    }
@@ -328,7 +341,9 @@ public class PhotoStripDelegate {
    }
 
    private boolean checkTwoMediaTypeException(MediaPickerModel model) {
-      if (!model.isChecked()) return false;
+      if (!model.isChecked()) {
+         return false;
+      }
 
       if ((model.getType() == MediaPickerModel.Type.VIDEO && photoAvailableLimit < pickPhotoMaxCount)
             || (model.getType() == MediaPickerModel.Type.PHOTO && videoAvailableLimit < pickVideoMaxCount)) {

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
@@ -24,9 +28,9 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
+import com.worldventures.dreamtrips.social.ui.activity.ShowableComponent;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -52,12 +56,14 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.base.BaseFeedCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.FeedCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
+import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.CirclesFilterPopupWindow;
+import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
-import com.worldventures.dreamtrips.social.ui.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.util.ActivityLifecycleHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,6 +84,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
+   @Inject @ForApplication Context applicationContext;
 
    @InjectView(R.id.posting_header) View postingHeader;
    @InjectView(R.id.additional_info_container) View additionalInfoContainer;
@@ -90,7 +97,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    private ContentObserver contentObserver;
    private PublishSubject<Void> contentObserverSubject = PublishSubject.create();
 
-   private StatePaginatedRecyclerViewManager recyclerViewManager;
+   private FocusableStatePaginatedRecyclerViewManager recyclerViewManager;
    private Bundle savedInstanceState;
 
    private MaterialDialog blockingProgressDialog;
@@ -104,7 +111,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    @Override
    public void onConfigurationChanged(Configuration newConfig) {
       super.onConfigurationChanged(newConfig);
-      setupUi();
+
+      if ((getActivity() instanceof ShowableComponent)) {
+         ActivityLifecycleHelper.runTaskAfterShown((Application) applicationContext, (ShowableComponent) getActivity(), this::setupUi);
+      } else {
+         throw new RuntimeException("You should use this fragment only with ShowableComponent");
+      }
    }
 
    @Override
@@ -133,7 +145,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
       // TODO: 2/23/17 put pagination logic into common set of presenter interfaces and view delegates
       // when feed storage refactoring is merged
-      recyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+      recyclerViewManager = new FocusableStatePaginatedRecyclerViewManager(rootView.findViewById(R.id.recyclerView),
+            rootView.findViewById(R.id.swipe_container));
       recyclerViewManager.init(adapter, savedInstanceState);
       recyclerViewManager.setOnRefreshListener(this);
       recyclerViewManager.setPaginationListener(() -> {
@@ -166,7 +179,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void onResume() {
       super.onResume();
       startAutoplayVideos();
-      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe().send(ActiveFeedRouteCommand.update(Route.FEED));
+      activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
+            .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.FEED));
    }
 
    @Override
@@ -209,7 +223,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
          case R.id.action_search:
             fragmentWithFeedDelegate.openHashtagSearch();
             return true;
-
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -297,13 +312,18 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    @Override
-   public void refreshFeedItems(List<FeedItem> feedItems, List<PostCompoundOperationModel> uploadingPostsList,
+   public void refreshFeedItems(@NonNull List<FeedItem> feedItems,
+         @Nullable List<PostCompoundOperationModel> uploadingPostsList,
          boolean shouldShowSuggestions) {
       List feedModels = new ArrayList();
-      processSuggestedPhotosItems(shouldShowSuggestions, feedModels);
-      processUploadsInProgressItems(new UploadingPostsList(uploadingPostsList), feedModels);
+      if (shouldShowSuggestions) {
+         feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
+      }
+      if (uploadingPostsList != null && !uploadingPostsList.isEmpty()) {
+         feedModels.add(new UploadingPostsList(uploadingPostsList));
+      }
       processFeedItems(feedItems, feedModels);
-      fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.stateRecyclerView);
+      fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
    }
 
@@ -312,17 +332,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.notifyDataSetChanged(recyclerViewManager.findFocusedPosition());
    }
 
-   private void processSuggestedPhotosItems(boolean shouldShowSuggestions, List feedModels) {
-      if (shouldShowSuggestions) {
-         feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
-      }
-   }
-
-   private void processUploadsInProgressItems(UploadingPostsList uploadingPostsList, List feedModels) {
-      if (!uploadingPostsList.getPhotoPosts().isEmpty()) {
-         feedModels.add(uploadingPostsList);
-      }
-   }
 
    private void processFeedItems(List<FeedItem> feedItems, List feedModels) {
       int feedItemsSize = feedItems == null ? 0 : feedItems.size();
@@ -359,7 +368,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override
@@ -404,7 +415,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private void actionFilter() {
-      if (getActivity().findViewById(R.id.action_filter) == null && getCollapseView() == null) return;
+      if (getActivity().findViewById(R.id.action_filter) == null && getCollapseView() == null) {
+         return;
+      }
 
       getPresenter().actionFilter();
    }
@@ -430,9 +443,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private View getCollapseView() {
-      Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
+      Toolbar toolbar = getActivity().findViewById(R.id.toolbar_actionbar);
 
-      if (toolbar == null) return null;
+      if (toolbar == null) {
+         return null;
+      }
 
       View collapseView = null;
       for (int i = 0; i < toolbar.getChildCount(); i++) {

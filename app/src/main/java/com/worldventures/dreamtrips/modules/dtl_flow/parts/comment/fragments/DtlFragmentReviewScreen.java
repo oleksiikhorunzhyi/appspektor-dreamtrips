@@ -4,69 +4,69 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface DtlFragmentReviewScreen extends DtlScreen {
 
-    void showSnackbarMessage(String message);
+   void showSnackbarMessage(String message);
 
-    void showDialogMessage(String message);
+   void showDialogMessage(String message);
 
-    void enableInputs();
+   void enableInputs();
 
-    void disableInputs();
+   void disableInputs();
 
-    void onBackClick();
+   void onBackClick();
 
-    boolean isFromListReview();
+   boolean isFromListReview();
 
-    int getSizeComment();
+   int getSizeComment();
 
-    int getRatingBar();
+   int getRatingBar();
 
-    boolean isMinimumCharacterWrote();
+   boolean isMinimumCharacterWrote();
 
-    boolean isMaximumCharacterWrote();
+   boolean isMaximumCharacterWrote();
 
-    void finish();
+   void finish();
 
-    void onRefreshSuccess();
+   void onRefreshSuccess();
 
-    void onRefreshProgress();
+   void onRefreshProgress();
 
-    void onRefreshError(String error);
+   void onRefreshError(String error);
 
-    void showEmpty(boolean isShow);
+   void showEmpty(boolean isShow);
 
-    void sendPostReview();
+   void sendPostReview();
 
-    boolean isVerified();
+   boolean isVerified();
 
-    String getFingerprintId();
+   String getFingerprintId();
 
-    void showErrorUnknown();
+   void showErrorUnknown();
 
-    void showErrorLimitReached();
+   void showErrorLimitReached();
 
-    void showNoInternetMessage();
+   void showNoInternetMessage();
 
-    void showProfanityError();
+   void showProfanityError();
 
-    void showErrorMaxMessage();
+   void showErrorMaxMessage();
 
-    void setBoldStyleText();
+   void setBoldStyleText();
 
-    void setInputChars(int charCounter);
+   void setInputChars(int charCounter);
 
-    void setMaxLengthText(int maxValue);
+   void setMaxLengthText(int maxValue);
 
-    void setNormalStyleText();
+   void setNormalStyleText();
 
-    void unrecognizedError();
+   void unrecognizedError();
 
-    void validateCodeMessage(String message);
+   void validateCodeMessage(String message);
 
-    void onPostClick();
+   void onPostClick();
 
-    boolean isAvailableToPost();
+   boolean isAvailableToPost();
 
-    void disablePost();
+   void disablePost();
 
-    void enablePost();
+   void enablePost();
 }

@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
@@ -54,7 +53,7 @@ public class TripDetailsViewInjector extends TripViewInjector {
          }
       };
 
-      Queryable.from(filteredImages).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGE_PAGER, "")));
+      Queryable.from(filteredImages).forEachR(photo -> adapter.add(new FragmentItem(TripImagePagerFragment.class)));
 
       if (viewPagerGallery != null) {
          viewPagerGallery.setAdapter(adapter);
@@ -79,7 +78,9 @@ public class TripDetailsViewInjector extends TripViewInjector {
          addToBucketItem.setIcon(iconBucket);
          addToBucketItem.setEnabled(!tripModel.isInBucketList());
       }
-      if (textViewDescription != null) textViewDescription.setText(Html.fromHtml(tripModel.getDescription()));
+      if (textViewDescription != null) {
+         textViewDescription.setText(Html.fromHtml(tripModel.getDescription()));
+      }
    }
 
    public int getCurrentActivePhotoPosition() {

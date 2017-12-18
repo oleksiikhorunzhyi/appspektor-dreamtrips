@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.facebook.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.core.modules.facebook.FacebookHelper;
 import com.worldventures.core.modules.facebook.model.FacebookAlbum;
 import com.worldventures.core.modules.facebook.service.FacebookInteractor;
 import com.worldventures.core.modules.facebook.service.command.GetAlbumsCommand;
 import com.worldventures.core.modules.picker.service.MediaPickerFacebookService;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.List;
 

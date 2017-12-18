@@ -7,7 +7,7 @@ import android.webkit.CookieSyncManager;
 
 public class DTCookieManager {
 
-   private Context context;
+   private final Context context;
 
    public DTCookieManager(Context context) {
       this.context = context;

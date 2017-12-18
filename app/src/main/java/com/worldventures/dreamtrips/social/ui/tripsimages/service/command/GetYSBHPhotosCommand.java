@@ -5,7 +5,7 @@ import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.ysbh.GetYSBHPhotosHttpAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
@@ -60,8 +60,9 @@ public class GetYSBHPhotosCommand extends CommandWithError<List<YSBHPhoto>> impl
 
    @Override
    protected void run(CommandCallback<List<YSBHPhoto>> callback) throws Throwable {
-      if (fromCache && cachedItems != null) callback.onSuccess(cachedItems);
-      else {
+      if (fromCache && cachedItems != null) {
+         callback.onSuccess(cachedItems);
+      } else {
          janet.createPipe(GetYSBHPhotosHttpAction.class)
                .createObservableResult(new GetYSBHPhotosHttpAction(page, PER_PAGE))
                .map(GetYSBHPhotosHttpAction::response)
@@ -94,6 +95,9 @@ public class GetYSBHPhotosCommand extends CommandWithError<List<YSBHPhoto>> impl
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
       cacheBundle.put(YsbhPhotoStorage.RELOAD, page == 1);
       cacheBundle.put(YsbhPhotoStorage.LOAD_MORE, page != 1);
-      return ImmutableCacheOptions.builder().params(cacheBundle).build();
+      return ImmutableCacheOptions.builder()
+            .saveToCache(!fromCache)
+            .params(cacheBundle)
+            .build();
    }
 }

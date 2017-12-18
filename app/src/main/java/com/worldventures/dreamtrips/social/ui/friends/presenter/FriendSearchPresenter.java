@@ -43,7 +43,9 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
       if (query.length() < 3) {
          if (users.size() > 0) {
             onUsersLoaded(new ArrayList<>());
-            if (view != null) view.updateEmptyCaption(R.string.start_searching);
+            if (view != null) {
+               view.updateEmptyCaption(R.string.start_searching);
+            }
          }
          return;
       }
@@ -89,7 +91,9 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
 
    @Override
    public void scrolled(int totalItemCount, int lastVisible) {
-      if (query.length() < 3) return;
+      if (query.length() < 3) {
+         return;
+      }
       super.scrolled(totalItemCount, lastVisible);
    }
 

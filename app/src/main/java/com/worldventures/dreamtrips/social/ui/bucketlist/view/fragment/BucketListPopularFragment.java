@@ -30,6 +30,8 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHe
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
 
+import java.util.List;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_bucket_popular)
@@ -121,7 +123,7 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
       searchView.setOnQueryTextListener(onQueryTextListener);
    }
 
-   private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+   private final SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
          return false;
@@ -136,21 +138,52 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
    };
 
    @Override
-   public FilterableArrayListAdapter<PopularBucketItem> getAdapter() {
-      return adapter;
+   public int getItemsCount() {
+      return adapter.getCount();
+   }
+
+   @Override
+   public void setItems(List<PopularBucketItem> items) {
+      adapter.clear();
+      adapter.setItems(items);
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void setFilteredItems(List<PopularBucketItem> items) {
+      adapter.setFilteredItems(items);
+   }
+
+   @Override
+   public void flushFilter() {
+      adapter.flushFilter();
+   }
+
+   @Override
+   public void removeItem(PopularBucketItem item) {
+      adapter.remove(item);
+   }
+
+   @Override
+   public void notifyItemsChanged() {
+      adapter.notifyDataSetChanged();
    }
 
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
       stateDelegate.restoreStateIfNeeded();
    }
@@ -171,7 +204,7 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
 
    @Override
    public void onCellClicked(PopularBucketItem model) {
-
+      //do nothing
    }
 
    @Override

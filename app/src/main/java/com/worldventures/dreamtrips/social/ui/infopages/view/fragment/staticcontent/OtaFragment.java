@@ -6,8 +6,9 @@ import android.view.View;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.OtaPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.OtaViewedAction;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Layout(R.layout.fragment_webview_with_overlay)
 @MenuResource(R.menu.menu_mock)
-public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
+public class OtaFragment extends AuthorizedStaticInfoFragment<AuthorizedStaticInfoPresenter, UrlBundle> {
 
    @Override
    protected String getURL() {
@@ -25,7 +26,7 @@ public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      getPresenter().track(Route.OTA);
+      analyticsInteractor.analyticsActionPipe().send(new OtaViewedAction());
    }
 
    @Override

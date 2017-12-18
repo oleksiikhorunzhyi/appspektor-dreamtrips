@@ -9,6 +9,7 @@ public class YSBHPhoto implements Parcelable {
    private String title;
 
    public YSBHPhoto() {
+      //do nothing
    }
 
    public int getId() {
@@ -53,9 +54,13 @@ public class YSBHPhoto implements Parcelable {
 
    public static final Creator<YSBHPhoto> CREATOR = new Creator<YSBHPhoto>() {
       @Override
-      public YSBHPhoto createFromParcel(Parcel source) {return new YSBHPhoto(source);}
+      public YSBHPhoto createFromParcel(Parcel source) {
+         return new YSBHPhoto(source);
+      }
 
       @Override
-      public YSBHPhoto[] newArray(int size) {return new YSBHPhoto[size];}
+      public YSBHPhoto[] newArray(int size) {
+         return new YSBHPhoto[size];
+      }
    };
 }

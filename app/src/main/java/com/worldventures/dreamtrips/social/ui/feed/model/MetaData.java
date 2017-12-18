@@ -15,6 +15,7 @@ public class MetaData implements Parcelable {
    List<Hashtag> hashtags;
 
    public MetaData() {
+      //do nothing
    }
 
    protected MetaData(Parcel in) {

@@ -15,7 +15,6 @@ import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
@@ -100,7 +99,7 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
 
    @Override
    public void openFullscreen(List<Inspiration> photos, double randomSeed, boolean lastPageReached, int selectedItemIndex) {
-      router.moveTo(Route.INSPIRE_PAGER_IMAGES,
+      router.moveTo(InspireMeViewPagerFragment.class,
             NavigationConfigBuilder.forActivity()
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                   .data(new InspireMeViewPagerArgs(photos, randomSeed, lastPageReached, selectedItemIndex))
@@ -124,7 +123,9 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
 
    @Override
    public void updatePhotos(List<Inspiration> items, boolean forceUpdate) {
-      if (forceUpdate) adapter.clear();
+      if (forceUpdate) {
+         adapter.clear();
+      }
 
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BaseDiffUtilCallback(adapter.getItems(), items));
       adapter.setItemsNoNotify(items);

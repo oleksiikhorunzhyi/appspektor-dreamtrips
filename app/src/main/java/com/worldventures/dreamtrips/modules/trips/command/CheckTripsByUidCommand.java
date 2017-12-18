@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 
 import java.util.List;

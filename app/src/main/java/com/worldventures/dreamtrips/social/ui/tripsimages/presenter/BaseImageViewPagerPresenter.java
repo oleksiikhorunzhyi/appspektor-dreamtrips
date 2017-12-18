@@ -34,8 +34,9 @@ public abstract class BaseImageViewPagerPresenter<VT extends BaseImageViewPagerP
    protected abstract List<FragmentItem> getItems();
 
    public void pageSelected(int position) {
-      if (!lastPageReached && !loading && getCurrentItemsSize() - position < LOAD_THRESHOLD)
+      if (!lastPageReached && !loading && getCurrentItemsSize() - position < LOAD_THRESHOLD) {
          loadMore();
+      }
    }
 
    protected int getCurrentItemsSize() {

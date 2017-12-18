@@ -33,7 +33,6 @@ import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -49,11 +48,18 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersIn
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantWorkingHoursInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstScanReceiptFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstTransactionSucceedFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -169,12 +175,16 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @OnClick(R.id.tv_read_all_review)
    public void onClickReadAllReviews() {
-      if (!mTvReadAllReviews.getText().toString().isEmpty()) getPresenter().showAllReviews();
+      if (!mTvReadAllReviews.getText().toString().isEmpty()) {
+         getPresenter().showAllReviews();
+      }
    }
 
    @OnClick(R.id.layout_rating_reviews_detail)
    void onClickRatingsReview() {
-      if (!deviceInfoProvider.isTablet()) getPresenter().onClickRatingsReview(merchant);
+      if (!deviceInfoProvider.isTablet()) {
+         getPresenter().onClickRatingsReview(merchant);
+      }
    }
 
    @OnClick(R.id.order_from_menu)
@@ -194,9 +204,15 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    protected void onDetachedFromWindow() {
-      if (merchantDataInflater != null) merchantDataInflater.release();
-      if (merchantInfoInflater != null) merchantInfoInflater.release();
-      if (merchantHoursInflater != null) merchantHoursInflater.release();
+      if (merchantDataInflater != null) {
+         merchantDataInflater.release();
+      }
+      if (merchantInfoInflater != null) {
+         merchantInfoInflater.release();
+      }
+      if (merchantHoursInflater != null) {
+         merchantHoursInflater.release();
+      }
       activityResultDelegate.removeListener(this);
       super.onDetachedFromWindow();
    }
@@ -208,10 +224,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       merchantInfoInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
       merchantHoursInflater.applyMerchantAttributes(merchant.asMerchantAttributes());
 
-      if (ViewUtils.isTabletLandscape(getContext()))
+      if (ViewUtils.isTabletLandscape(getContext())) {
          ((TextView) toolbar.findViewById(R.id.tv_merchant_name_title)).setText(merchant.displayName());
-      else
+      } else {
          toolbar.setTitle(merchant.displayName());
+      }
 
       setContacts();
       setLocation();
@@ -273,9 +290,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
                contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
                contactView.setText(contact.text);
 
-               if (MerchantHelper.contactCanBeResolved(contact, getActivity())) RxView.clicks(contactView)
-                     .compose(RxLifecycleAndroid.bindView(contactView))
-                     .subscribe(aVoid -> onContactClick(contact));
+               if (MerchantHelper.contactCanBeResolved(contact, getActivity())) {
+                  RxView.clicks(contactView)
+                        .compose(RxLifecycleAndroid.bindView(contactView))
+                        .subscribe(aVoid -> onContactClick(contact));
+               }
 
                additionalContainer.addView(contactView);
             });
@@ -283,7 +302,9 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    private void setLocation() {
       ImageTextItem contact = ImageTextItemFactory.create(getContext(), merchant, ImageTextItem.Type.ADDRESS);
-      if (contact != null) merchantAddress.setText(contact.text);
+      if (contact != null) {
+         merchantAddress.setText(contact.text);
+      }
    }
 
    protected TextView inflateContactView() {
@@ -292,8 +313,11 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private void onContactClick(ImageTextItem contact) {
-      if (contact.type.equals(ImageTextItem.Type.ADDRESS)) getPresenter().routeToMerchantRequested(contact.intent);
-      else getContext().startActivity(contact.intent);
+      if (contact.type.equals(ImageTextItem.Type.ADDRESS)) {
+         getPresenter().routeToMerchantRequested(contact.intent);
+      } else {
+         getContext().startActivity(contact.intent);
+      }
    }
 
    public void bindMap(GoogleMap map) {
@@ -314,13 +338,19 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       View pay = ButterKnife.findById(this, R.id.merchant_details_pay);
       View estimate = ButterKnife.findById(this, R.id.merchant_details_estimate_points);
 
-      if (earn != null)
-         RxView.clicks(earn).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
-      if (estimate != null) RxView.clicks(estimate)
-            .compose(RxLifecycleAndroid.bindView(this))
-            .subscribe(aVoid -> getPresenter().onEstimationClick());
-      if (pay != null)
+      if (earn != null) {
+         RxView.clicks(earn)
+               .compose(RxLifecycleAndroid.bindView(this))
+               .subscribe(aVoid -> getPresenter().onCheckInClicked());
+      }
+      if (estimate != null) {
+         RxView.clicks(estimate)
+               .compose(RxLifecycleAndroid.bindView(this))
+               .subscribe(aVoid -> getPresenter().onEstimationClick());
+      }
+      if (pay != null) {
          RxView.clicks(pay).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onClickPay());
+      }
    }
 
    private void setReviews() {
@@ -345,7 +375,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void showEstimationDialog(PointsEstimationDialogBundle data) {
       getPresenter().trackPointEstimator();
-      router.moveTo(Route.DTL_POINTS_ESTIMATION, NavigationConfigBuilder.forDialog()
+      router.moveTo(DtlPointsEstimationFragment.class, NavigationConfigBuilder.forDialog()
             .data(data)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .build());
@@ -353,13 +383,13 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void openSuggestMerchant(MerchantIdBundle data) {
-      router.moveTo(Route.ENROLL_MERCHANT, NavigationConfigBuilder.forActivity().data(data).build());
+      router.moveTo(EnrollMerchantFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
    }
 
    @Override
    public void openTransaction(Merchant merchant, DtlTransaction dtlTransaction) {
       router.moveTo(
-            merchant.useThrstFlow() ? Route.DTL_THRST_SCAN_RECEIPT : Route.DTL_SCAN_RECEIPT,
+            merchant.useThrstFlow() ? DtlThrstScanReceiptFragment.class : DtlScanReceiptFragment.class,
             NavigationConfigBuilder.forActivity()
                   .data(new MerchantBundle(merchant))
                   .build()
@@ -368,37 +398,32 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void showSucceed(Merchant merchant, DtlTransaction dtlTransaction) {
-      router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
+      router.moveTo(DtlTransactionSucceedFragment.class, NavigationConfigBuilder.forDialog()
             .data(new MerchantBundle(merchant))
             .build());
    }
 
    @Override
    public void showThrstSucceed(Merchant merchant, String earnedPoints, String totalPoints) {
-      router.moveTo(Route.DTL_THRST_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
+      router.moveTo(DtlThrstTransactionSucceedFragment.class, NavigationConfigBuilder.forDialog()
             .data(new ThrstPaymentCompletedBundle(merchant, earnedPoints, totalPoints))
             .build());
    }
 
    @Override
    public void setTransaction(DtlTransaction dtlTransaction, boolean isThrstTransaction) {
+      if (isThrstTransaction) {
+         // there is no separate checked in state for thrst transaction
+         return;
+      }
       Button earn = ButterKnife.findById(this, R.id.merchant_details_earn);
       TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
-
-      if (earn != null) earn.setText(dtlTransaction != null ? thrstFlow(earn) : getTextNormalFlow(earn));
-      if (!isThrstTransaction){
-         if (checkedIn != null) ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+      if (earn != null) {
+         earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
       }
-   }
-
-   private int getTextNormalFlow(Button earn) {
-      ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonGreenTheme);
-      return R.string.dtl_check_in;
-   }
-
-   private int thrstFlow(Button earn) {
-      ViewUtils.setTextAppearance(getContext(), earn, R.style.DtlButtonPurpleTheme);
-      return R.string.dtl_merchant_earn_points;
+      if (checkedIn != null) {
+         ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+      }
    }
 
    @Override
@@ -408,7 +433,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
          getPresenter().trackSharing(type);
 
-         router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(shareBundle).build());
+         router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(shareBundle).build());
       }).show();
    }
 
@@ -436,22 +461,32 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void enableCheckinAndPayButtons() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
-      if (earn != null) earn.setEnabled(true);
+      if (earn != null) {
+         earn.setEnabled(true);
+      }
       View pay = ButterKnife.findById(this, R.id.merchant_details_pay);
-      if (pay != null) pay.setEnabled(true);
+      if (pay != null) {
+         pay.setEnabled(true);
+      }
    }
 
    @Override
    public void disableCheckinAndPayButtons() {
       View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
-      if (earn != null) earn.setEnabled(false);
+      if (earn != null) {
+         earn.setEnabled(false);
+      }
       View pay = ButterKnife.findById(this, R.id.merchant_details_pay);
-      if (pay != null) pay.setEnabled(false);
+      if (pay != null) {
+         pay.setEnabled(false);
+      }
    }
 
    @Override
    public void showMerchantMap(@Nullable Intent intent) {
-      if (intent != null) getContext().startActivity(intent);
+      if (intent != null) {
+         getContext().startActivity(intent);
+      }
    }
 
    @Override
@@ -475,6 +510,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
                // The user was asked to change settings, but chose not to
                getPresenter().locationNotGranted();
                break;
+            default:
+               break;
          }
          return true;
       }
@@ -484,21 +521,27 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void showThrstFlowButton() {
       View payBtn = ButterKnife.findById(this, R.id.merchant_details_pay);
-      if (null == payBtn) return;
+      if (null == payBtn) {
+         return;
+      }
       payBtn.setVisibility(VISIBLE);
    }
 
    @Override
    public void showEarnFlowButton() {
       View earnBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
-      if (null == earnBtn) return;
+      if (null == earnBtn) {
+         return;
+      }
       earnBtn.setVisibility(VISIBLE);
    }
 
    @Override
-   public void hideEarnFlowButton(){
+   public void hideEarnFlowButton() {
       View payBtn = ButterKnife.findById(this, R.id.merchant_details_earn);
-      if (payBtn != null) payBtn.setVisibility(View.GONE);
+      if (payBtn != null) {
+         payBtn.setVisibility(View.GONE);
+      }
    }
 
    @Override
@@ -538,9 +581,13 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       ViewUtils.setViewVisibility(this.perks, perkVisibility);
       ViewUtils.setViewVisibility(this.points, pointVisibility);
 
-      if (perkVisibility == View.VISIBLE) this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
+      if (perkVisibility == View.VISIBLE) {
+         this.perks.setText(getContext().getString(R.string.perks_formatted, perks));
+      }
 
-      if (merchant.asMerchantAttributes() == null) return;
+      if (merchant.asMerchantAttributes() == null) {
+         return;
+      }
 
       if (merchant.asMerchantAttributes().useThrstFlow()) {
          ViewUtils.setViewVisibility(this.payInApp, View.VISIBLE);

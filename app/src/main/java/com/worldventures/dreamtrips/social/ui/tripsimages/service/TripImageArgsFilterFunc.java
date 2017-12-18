@@ -8,7 +8,7 @@ import rx.functions.Func1;
 
 public class TripImageArgsFilterFunc implements Func1<ActionState<BaseMediaCommand>, Boolean> {
 
-   private TripImagesArgs currentArgs;
+   private final TripImagesArgs currentArgs;
 
    public TripImageArgsFilterFunc(TripImagesArgs currentArgs) {
       this.currentArgs = currentArgs;

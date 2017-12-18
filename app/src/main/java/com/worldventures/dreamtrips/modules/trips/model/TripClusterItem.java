@@ -5,7 +5,7 @@ import com.google.maps.android.clustering.ClusterItem;
 
 public class TripClusterItem implements ClusterItem {
 
-   private Pin pin;
+   private final Pin pin;
 
    public TripClusterItem(Pin pin) {
       this.pin = pin;

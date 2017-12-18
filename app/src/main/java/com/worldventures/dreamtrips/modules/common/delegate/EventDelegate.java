@@ -8,15 +8,15 @@ import rx.subjects.Subject;
  * Base class for usage with event bus like logic.
  * Instances can be provided through DI as singleton.
  */
-public class EventDelegate<Event> {
+public class EventDelegate<T> {
 
-   protected final Subject<Event, Event> publishSubject = PublishSubject.<Event>create().toSerialized();
+   protected final Subject<T, T> publishSubject = PublishSubject.<T>create().toSerialized();
 
-   public void post(Event event) {
+   public void post(T event) {
       publishSubject.onNext(event);
    }
 
-   public Observable<Event> getObservable() {
+   public Observable<T> getObservable() {
       return publishSubject;
    }
 }

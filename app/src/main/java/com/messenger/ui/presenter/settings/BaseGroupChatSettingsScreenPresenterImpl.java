@@ -20,7 +20,7 @@ import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.util.WalletFilesUtils;
+import com.worldventures.wallet.util.WalletFilesUtils;
 
 import java.util.List;
 
@@ -65,7 +65,9 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
          if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
             getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
             // TODO: 9/26/17 remove from wallet
-         } else cropImageDelegate.cropImage(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel));
+         } else {
+            cropImageDelegate.cropImage(WalletFilesUtils.convertPickedPhotoToUri(photoPickerModel));
+         }
       });
    }
 
@@ -115,5 +117,9 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl extends BaseChatS
    @Override
    public void applyNewChatSubject(String subject) {
       throw new IllegalStateException("Method was not implemented");
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+
    }
 }

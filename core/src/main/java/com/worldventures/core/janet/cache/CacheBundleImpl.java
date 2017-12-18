@@ -4,7 +4,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class CacheBundleImpl implements CacheBundle {
-   private Map<String, Object> internalParams = new ConcurrentHashMap<>();
+
+   private final Map<String, Object> internalParams = new ConcurrentHashMap<>();
 
    public <T> void put(String label, T param) {
       internalParams.put(label, param);

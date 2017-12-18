@@ -37,7 +37,9 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
       Icepick.saveInstanceState(this, outState);
-      if (presenter != null) this.presenter.saveInstanceState(outState);
+      if (presenter != null) {
+         this.presenter.saveInstanceState(outState);
+      }
    }
 
    @Override
@@ -98,22 +100,26 @@ public abstract class BaseDialogFragmentWithPresenter<T extends Presenter> exten
 
    @Override
    public void informUser(int stringId) {
-      if (isAdded() && getView() != null) Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
+      if (isAdded() && getView() != null) {
+         Snackbar.make(getView(), stringId, Snackbar.LENGTH_SHORT).show();
+      }
    }
 
    @Override
    public void informUser(String string) {
-      if (isAdded() && getView() != null) Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).show();
+      if (isAdded() && getView() != null) {
+         Snackbar.make(getView(), string, Snackbar.LENGTH_SHORT).show();
+      }
    }
 
    @Override
    public void showOfflineAlert() {
-
+      //do nothing
    }
 
    @Override
    public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
-
+      //do nothing
    }
 
    @Override

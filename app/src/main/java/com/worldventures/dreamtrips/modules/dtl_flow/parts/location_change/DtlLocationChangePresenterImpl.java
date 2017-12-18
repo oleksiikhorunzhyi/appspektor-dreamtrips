@@ -61,12 +61,14 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    @State ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
    @State ArrayList<DtlLocation> dtlNearbyLocations = new ArrayList<>();
    @State boolean toolbarInitialized;
+   @State String merchantQuery;
 
    private Subscription locationRequestNoFallback;
    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
 
-   public DtlLocationChangePresenterImpl(Context context, Injector injector) {
+   public DtlLocationChangePresenterImpl(Context context, Injector injector, String merchantQuery) {
       super(context);
+      this.merchantQuery = merchantQuery;
       injector.inject(this);
    }
 
@@ -100,11 +102,16 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    private void connectToolbarCollapses() {
       getView().provideDtlToolbarCollapsesObservable()
             .compose(bindView())
-            .subscribe(aVoid -> navigateToPath(DtlMerchantsPath.getDefault()));
+            .subscribe(aVoid -> applySearchAndOpenMerchantsPath());
       // below: treat merchant search input focus gain as location search exit (collapsing)
       getView().provideMerchantInputFocusLossObservable()
             .compose(bindView())
-            .subscribe(aVoid -> navigateToPath(DtlMerchantsPath.getDefault()));
+            .subscribe(aVoid -> applySearchAndOpenMerchantsPath());
+   }
+
+   private void applySearchAndOpenMerchantsPath() {
+      filterDataInteractor.applySearch(getView().getMerchantsSearchQuery());
+      navigateToPath(DtlMerchantsPath.getDefault());
    }
 
    private void connectToolbarLocationSearch(Observable<DtlLocation> dtlLocationObservable) {
@@ -124,8 +131,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             .observeSuccessWithReplay()
             .take(1)
             .map(FilterDataAction::getResult)
-            .map(FilterData::searchQuery), Pair::new).take(1).subscribe(pair -> {
-         getView().updateToolbarTitle(pair.first, pair.second);
+            .map(FilterData::getMerchantType), Pair::new).take(1).subscribe(pair -> {
+         getView().updateToolbarTitle(pair.first, pair.second, merchantQuery);
          toolbarInitialized = true;
       });
       return locationObservable;
@@ -136,7 +143,9 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             .compose(bindViewIoToMainComposer())
             .timeout(10L, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
             .subscribe(this::onLocationObtained, throwable -> {
-               if (throwable instanceof TimeoutException) getView().hideProgress();
+               if (throwable instanceof TimeoutException) {
+                  getView().hideProgress();
+               }
             });
    }
 
@@ -157,6 +166,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
             break;
          case SEARCH:
             break;
+         default:
+            break;
       }
    }
 
@@ -164,8 +175,9 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    public void loadNearMeRequested() {
       screenMode = ScreenMode.AUTO_NEAR_ME;
 
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
+      }
 
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
@@ -224,8 +236,9 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
    @Override
    public void onLocationResolutionGranted() {
-      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+      if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed()) {
          locationRequestNoFallback.unsubscribe();
+      }
 
       gpsLocationDelegate.requestLocationUpdate()
             .compose(bindViewIoToMainComposer())
@@ -244,9 +257,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     * @param e exception that {@link LocationDelegate} returned
     */
    private void onLocationError(Throwable e) {
-      if (e instanceof LocationDelegate.LocationException)
+      if (e instanceof LocationDelegate.LocationException) {
          getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-      else onLocationResolutionDenied();
+      } else {
+         onLocationResolutionDenied();
+      }
    }
 
    private void connectNearbyLocations() {
@@ -260,7 +275,9 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
    }
 
    private void onLocationLoadedError(NearbyLocationAction action, Throwable throwable) {
-      if(throwable instanceof CancelException) return;
+      if (throwable instanceof CancelException) {
+         return;
+      }
       getView().informUser(action.getErrorMessage());
       getView().hideProgress();
    }
@@ -292,7 +309,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
       analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(LocationSearchEvent.create(location)));
       locationInteractor.changeSourceLocation(location);
-      navigateToPath(DtlMerchantsPath.getDefault());
+      applySearchAndOpenMerchantsPath();
    }
 
    /**

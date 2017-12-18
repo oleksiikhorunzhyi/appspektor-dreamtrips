@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.flags
 
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.flagging.model.FlagReason
 import com.worldventures.dreamtrips.api.flagging.model.ImmutableFlagReason
@@ -19,7 +19,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.junit.Assert
 import rx.observers.TestSubscriber
-import java.util.*
+import java.util.ArrayList
 import kotlin.test.assertEquals
 
 class FlagsInteractorSpek : BaseSpec({

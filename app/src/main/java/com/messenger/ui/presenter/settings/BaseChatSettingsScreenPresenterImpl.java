@@ -90,6 +90,8 @@ public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettings
          case ERROR:
             getView().showError(getViewState().getError());
             break;
+         default:
+            break;
       }
    }
 
@@ -151,6 +153,8 @@ public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettings
          case R.id.action_overflow:
             // overflow menu click, do nothing, wait for actual actions clicks
             return true;
+         default:
+            break;
       }
       return false;
    }

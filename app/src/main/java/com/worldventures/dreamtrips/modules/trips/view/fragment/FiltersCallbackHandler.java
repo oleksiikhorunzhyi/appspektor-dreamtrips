@@ -39,6 +39,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(ActivityModel.class, new ThemeCell.Delegate() {
          @Override
          public void onCellClicked(ActivityModel model) {
+            //do nothing
          }
 
          @Override
@@ -52,6 +53,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(RegionModel.class, new RegionCell.Delegate() {
          @Override
          public void onCellClicked(RegionModel model) {
+            //do nothing
          }
 
          @Override
@@ -65,6 +67,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(FilterModel.class, new FilterRangeBarsCell.Delegate() {
          @Override
          public void onCellClicked(FilterModel model) {
+            //do nothing
          }
 
          @Override
@@ -88,6 +91,7 @@ public class FiltersCallbackHandler {
          }
 
          public void onCellClicked(RegionHeaderModel model) {
+            //do nothing
          }
 
          @Override
@@ -101,6 +105,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(ThemeHeaderModel.class, new HeaderThemeCell.Delegate() {
          @Override
          public void onCellClicked(ThemeHeaderModel model) {
+            //do nothing
          }
 
          @Override
@@ -119,7 +124,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(FilterSoldOutModel.class, new SoldOutCell.Delegate() {
          @Override
          public void onCellClicked(FilterSoldOutModel model) {
-
+            //do nothing
          }
 
          @Override
@@ -133,6 +138,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(FilterFavoriteModel.class, new FavoritesCell.Delegate() {
          @Override
          public void onCellClicked(FilterFavoriteModel model) {
+            //do nothing
          }
 
          @Override
@@ -146,6 +152,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(FilterRecentlyAddedModel.class, new FilterRecentlyAddedCell.Delegate() {
          @Override
          public void onCellClicked(FilterRecentlyAddedModel model) {
+            //do nothing
          }
 
          @Override
@@ -159,6 +166,7 @@ public class FiltersCallbackHandler {
       adapter.registerDelegate(DateFilterItem.class, new DateCell.Delegate() {
          @Override
          public void onCellClicked(DateFilterItem model) {
+            //do nothing
          }
 
          @Override

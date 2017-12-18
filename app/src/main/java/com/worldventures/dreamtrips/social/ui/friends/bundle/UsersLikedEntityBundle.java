@@ -6,8 +6,8 @@ import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 
 public class UsersLikedEntityBundle extends BaseUsersBundle {
 
-   private FeedEntity feedEntity;
-   private int likersCount;
+   private final FeedEntity feedEntity;
+   private final int likersCount;
 
    public UsersLikedEntityBundle(FeedEntity feedEntity, int likersCount) {
       this.feedEntity = feedEntity;
@@ -38,9 +38,13 @@ public class UsersLikedEntityBundle extends BaseUsersBundle {
 
    public static final Creator<UsersLikedEntityBundle> CREATOR = new Creator<UsersLikedEntityBundle>() {
       @Override
-      public UsersLikedEntityBundle createFromParcel(Parcel source) {return new UsersLikedEntityBundle(source);}
+      public UsersLikedEntityBundle createFromParcel(Parcel source) {
+         return new UsersLikedEntityBundle(source);
+      }
 
       @Override
-      public UsersLikedEntityBundle[] newArray(int size) {return new UsersLikedEntityBundle[size];}
+      public UsersLikedEntityBundle[] newArray(int size) {
+         return new UsersLikedEntityBundle[size];
+      }
    };
 }

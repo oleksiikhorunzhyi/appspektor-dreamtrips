@@ -48,11 +48,9 @@ public class BaseDialogFragment extends InjectingDialogFragment {
     */
    protected void dismissIfShown(FragmentManager fragmentManager, String tag) {
       Fragment frag = fragmentManager.findFragmentByTag(tag);
-      if (frag != null) {
-         if (frag instanceof DialogFragment) {
-            ((DialogFragment) frag).dismiss();
-            fragmentManager.beginTransaction().remove(frag).commit();
-         }
+      if (frag instanceof DialogFragment) {
+         ((DialogFragment) frag).dismiss();
+         fragmentManager.beginTransaction().remove(frag).commit();
       }
    }
 }

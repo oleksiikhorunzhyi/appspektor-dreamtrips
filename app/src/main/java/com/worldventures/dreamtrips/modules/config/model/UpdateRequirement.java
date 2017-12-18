@@ -10,6 +10,7 @@ public class UpdateRequirement {
    private long timeStamp;
 
    public UpdateRequirement() {
+      //do nothing
    }
 
    public UpdateRequirement(String appVersion, long timeStamp) {

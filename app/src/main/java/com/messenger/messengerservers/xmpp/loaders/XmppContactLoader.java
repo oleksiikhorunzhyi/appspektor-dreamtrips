@@ -21,6 +21,7 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class XmppContactLoader implements ContactsLoader {
+
    private final Observable<Roster> rosterObservable;
 
    public XmppContactLoader(XmppServerFacade facade) {
@@ -32,7 +33,7 @@ public class XmppContactLoader implements ContactsLoader {
       return rosterObservable.flatMap(RosterObservable::create);
    }
 
-   private static class RosterObservable implements Observable.OnSubscribe<List<MessengerUser>> {
+   private final static class RosterObservable implements Observable.OnSubscribe<List<MessengerUser>> {
 
       private final Roster roster;
 
@@ -53,13 +54,17 @@ public class XmppContactLoader implements ContactsLoader {
             subscriber.onError(exception);
          }
 
-         if (subscriber.isUnsubscribed()) return;
+         if (subscriber.isUnsubscribed()) {
+            return;
+         }
          subscriber.onNext(obtainUsersFromRoster());
          subscriber.onCompleted();
       }
 
       private void loadRosterIfNeed() throws ConnectionException, InterruptedException {
-         if (roster.isLoaded()) return;
+         if (roster.isLoaded()) {
+            return;
+         }
          try {
             roster.reloadAndWait();
          } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {

@@ -11,7 +11,8 @@ import android.widget.ImageView;
 import com.worldventures.dreamtrips.R;
 
 public class SimpleImageArrayAdapter extends ArrayAdapter<Integer> {
-   private Integer[] images;
+
+   private final Integer[] images;
 
    public SimpleImageArrayAdapter(Context context, Integer[] images) {
       super(context, android.R.layout.simple_spinner_item, images);

@@ -33,7 +33,7 @@ public class UnreadMessagesDelegate {
    }
 
    private String getUsername() {
-      return sessionHolder.get().get().getUsername();
+      return sessionHolder.get().get().username();
    }
 
    public void bind(String conversationId) {
@@ -45,7 +45,9 @@ public class UnreadMessagesDelegate {
 
    // // TODO: 7/10/17 unused method
    public void tryMarkAsReadMessage(DataMessage lastMessage) {
-      if (MessageHelper.isUserMessage(lastMessage) && lastMessage.getStatus() == MessageStatus.READ) return;
+      if (MessageHelper.isUserMessage(lastMessage) && lastMessage.getStatus() == MessageStatus.READ) {
+         return;
+      }
       conversationObservable.take(1)
             .flatMap(conversation -> chatObservable.filter(chat -> ConversationHelper.isPresent(conversation)))
             .flatMap(chat -> chat.sendReadStatus(lastMessage.getId()))

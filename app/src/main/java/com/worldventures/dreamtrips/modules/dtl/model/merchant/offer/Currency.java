@@ -23,7 +23,8 @@ public abstract class Currency implements Serializable {
 
    public abstract String name();
 
-   @Value.Default public Boolean isDefault() {
+   @Value.Default
+   public Boolean isDefault() {
       return Boolean.FALSE;
    }
 

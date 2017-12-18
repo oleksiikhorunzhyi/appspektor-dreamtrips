@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddItemsStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
-import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperationFactory;
+import com.worldventures.dreamtrips.modules.common.list_storage.operation.RefreshStorageOperation;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -17,7 +18,7 @@ import rx.Observable;
 
 public class HashtagFeedStorageDelegate extends BaseFeedStorageDelegate<HashtagFeedStorageCommand> {
 
-   private HashtagInteractor hashtagInteractor;
+   private final HashtagInteractor hashtagInteractor;
 
    private String hashtag;
 
@@ -36,12 +37,12 @@ public class HashtagFeedStorageDelegate extends BaseFeedStorageDelegate<HashtagF
             hashtagInteractor.getRefreshFeedsByHashtagsPipe()
                   .observeSuccess()
                   .map(refresh -> refresh.getResult())
-                  .map(ListStorageOperationFactory::refreshItemsOperation),
+                  .map(RefreshStorageOperation::new),
 
             hashtagInteractor.getLoadNextFeedsByHashtagsPipe()
                   .observeSuccess()
                   .map(loadNext -> loadNext.getResult())
-                  .map(ListStorageOperationFactory::addItemsOperation));
+                  .map(AddItemsStorageOperation::new));
    }
 
    public void setHashtag(String hashtag) {

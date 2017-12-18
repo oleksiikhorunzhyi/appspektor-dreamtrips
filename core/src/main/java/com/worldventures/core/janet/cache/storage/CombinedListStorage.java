@@ -8,8 +8,8 @@ import java.util.List;
 
 public abstract class CombinedListStorage<T> implements Storage<List<T>>, ClearableStorage {
 
-   private Storage<List<T>> memoryStorage;
-   private Storage<List<T>> diskStorage;
+   private final Storage<List<T>> memoryStorage;
+   private final Storage<List<T>> diskStorage;
 
    public CombinedListStorage(Storage<List<T>> memoryStorage, Storage<List<T>> diskStorage) {
       this.memoryStorage = memoryStorage;
@@ -34,7 +34,7 @@ public abstract class CombinedListStorage<T> implements Storage<List<T>>, Cleara
    @Override
    public void clearMemory() {
       if (memoryStorage instanceof ClearableStorage) {
-         ((ClearableStorage)memoryStorage).clearMemory();
+         ((ClearableStorage) memoryStorage).clearMemory();
       }
    }
 }

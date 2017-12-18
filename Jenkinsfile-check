@@ -1,10 +1,11 @@
 #!/usr/bin/env groovy
 
 def buildParams = [:]
-def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', '')
+def utils = fileLoader.fromGit('jenkins-pipeline-job-utils.groovy', 'git@repos.wvholdings.com:mobile/pipeline-helper-scripts-android.git', 'master', '5ee47e5e-00fb-43a5-9ccd-f5aa5a5310ee', 'android')
 def notifier = utils.notifiers.gitlab(this)
 utils.runBuild('android', notifier) {
    stage('prepare build') {
+      println "Environment: ${env.getEnvironment()}"
       buildParams = generateParams()
       println buildParams
    }
@@ -21,42 +22,73 @@ utils.runBuild('android', notifier) {
                    shallow: true,
                    depth  : 1000,
                    noTags : true,
-                   timeout: 30]
+                   timeout: 30],
+                  [$class: 'PreBuildMerge', options:
+                        [fastForwardMode: 'FF',
+                         mergeRemote: 'origin',
+                         mergeStrategy: 'default',
+                         mergeTarget: "${env.gitlabTargetBranch}"]
+                  ]
             ]
       ])
    }
    stage("danger") {
+      env.DANGER_GITLAB_API_BASE_URL='https://repos.wvholdings.com/api/v4'
       env.CHANGE_URL = "${env.gitlabSourceRepoHomepage}/merge_requests/${env.gitlabMergeRequestId}"
       utils.scripts.bash("rvm install 2.3.1 && rvm use 2.3.1 && gem install bundler && bundle install && bundle update")
       utils.scripts.bash("bundle exec danger --danger_id=pr_linter --fail-on-errors=true")
    }
    stage('lint') {
-      def error
-      def message
-      try {
-         def outputs = utils.scripts.bash("./gradlew ${buildParams.LINT_TASK}")
-         def matcher = (outputs =~ /(Lint found .+\R)/)
-         message = matcher.find() ? "${matcher.group(0).trim()}." : "Lint checks successfully passed."
-      } catch (e) {
-         error = e
-         message = "Lint checks failed."
-         println "${buildParams.LINT_TASK} was failed"
+      def errors = []
+      def results = []
+      for (def params : buildParams.LINT_REPORT_PARAMS) {
+         try {
+            def outputs = utils.scripts.bash("./gradlew ${params.task}")
+            def matcher = (outputs =~ /(Lint found .+\R)/)
+            def message = matcher.find() ? "${matcher.group(0).trim()}." : 'Lint checks successfully passed.'
+            results << "${params.name} ${message} ${createLintReportLink(params.name)}."
+         } catch (e) {
+            errors << e
+            results << "${params.name} Lint checks failed."
+            println "${params.task} was failed"
+         }
+         def reportPath = "${params.folder}/${params.fileName}"
+         if (fileExists(reportPath)) {
+            publishLintResult(params.folder, params.fileName, params.name)
+         } else {
+            println "Cannot publish lint result! $reportPath doesn't exist"
+         }
       }
-      def reportPath = buildParams.LINT_REPORT_FOLDER + '/' + buildParams.LINT_REPORT_FILE_HTML;
-      if (fileExists(reportPath)) {
-         println "Try to publishHTML"
-         publishHTML(target: [
-               allowMissing         : false,
-               alwaysLinkToLastBuild: false,
-               keepAll              : true,
-               reportDir            : buildParams.LINT_REPORT_FOLDER,
-               reportFiles          : buildParams.LINT_REPORT_FILE_HTML,
-               reportName           : "Lint Result"
-         ])
-         androidLint pattern: "${buildParams.LINT_REPORT_FOLDER}/${buildParams.LINT_REPORT_FILE_XML}"
+      notifier.comment(createLintComment(results))
+      if (!errors.isEmpty()) throw errors[0]
+   }
+   stage('code analysis') {
+      def errors = new ArrayList()
+      runWithErrors(errors) {
+         utils.scripts.gradlew "checkstyle"
       }
-      notifier.comment(createLintComment(message))
-      if (error != null) throw error
+      runWithErrors(errors) {
+         utils.scripts.gradlew "pmd"
+      }
+      runWithErrors(errors) {
+         utils.scripts.gradlew "lintKotlin"
+      }
+      runWithErrors(errors) {
+         utils.scripts.gradlew "detektCheck"
+      }
+      //checkstyle report
+      step([$class: "CheckStylePublisher", pattern: "**/reports/**/*.xml", healthy: "5", unHealthy: "10"])
+      //pmd report
+      step([$class: "PmdPublisher", pattern: "**/reports/pmd/pmd.xml"])
+      if (!errors.isEmpty()) {
+         def firstError = errors[0]
+         def sb = StringBuilder.newInstance()
+         sb.append("Code analysis failed. See reports: ")
+         sb.append(createReportLink("Checkstyle", "checkstyleResult")).append(", ")
+         sb.append(createReportLink("PMD", "pmdResult"))
+         notifier.comment(sb.toString())
+         throw firstError
+      }
    }
    stage('tests') {
       for (String task : buildParams.TEST_TASKS)
@@ -110,22 +142,46 @@ def Map generateParams() {
    }
 
    def lintReportName = "external${buildParams.FLAVOR}StageDebug"
-   buildParams.LINT_TASK = "lintExternal${buildParams.FLAVOR}StageDebug"
    buildParams.ASSEMBLE_TASK = "assembleExternal${buildParams.FLAVOR}StageDebug"
 
    buildParams.TEST_REPORT_FOLDER = 'app/build/test-results'
    buildParams.TEST_REPORT_PATTERN = '**/*.xml'
 
-   buildParams.LINT_REPORT_FOLDER = 'app/build/reports'
-   buildParams.LINT_REPORT_FILE_HTML = "lint-results-${lintReportName}.html"
-   buildParams.LINT_REPORT_FILE_XML = "lint-results-${lintReportName}.xml"
+   buildParams.LINT_REPORT_PARAMS = [
+         [task: "core:lintDebug", folder: 'core/build/reports', fileName: 'lint-results-debug.html', name: 'Core Module'],
+         [task: "wallet:lintDebug", folder: 'wallet/build/reports', fileName: 'lint-results-debug.html', name: 'Wallet Module'],
+         [task: "app:lintExternal${buildParams.FLAVOR}StageDebug", folder: 'app/build/reports', fileName: "lint-results-${lintReportName}.html", name: 'App Module'],
+   ]
 
    return buildParams
 }
 
 @NonCPS
-def String createLintComment(String message) {
-   return "${message} [You can see Lint Report](${BUILD_URL}Lint_Result/)."
+def String createReportLink(String label, String subPath) {
+   return "[$label](${BUILD_URL}${subPath})"
+}
+
+@NonCPS
+def String createLintReportLink(String moduleName) {
+   return createReportLink("You can see Lint Report", "${moduleName.replace(' ' as char, '_' as char)}_Lint_Result")
+}
+
+@NonCPS
+def String createLintComment(List<String> messages) {
+   return messages.collect { it -> "- $it \n" }.join('')
+}
+
+@NonCPS
+def void publishLintResult(String folder, String fileName, String moduleName) {
+   println "Try to publishHTML"
+   publishHTML(target: [
+         allowMissing         : false,
+         alwaysLinkToLastBuild: false,
+         keepAll              : true,
+         reportDir            : folder,
+         reportFiles          : fileName,
+         reportName           : "$moduleName Lint Result"
+   ])
 }
 
 @NonCPS
@@ -138,4 +194,12 @@ def String testFolderFromTask(String testTask) {
    def wrapperFolder = testTask + (testTask.contains("UnitTest") ? "" : "UnitTest")
    def taskFolder = "**"
    return "${wrapperFolder}/${taskFolder}"
+}
+
+def void runWithErrors(Collection errors, Closure<Void> job) {
+   try {
+      job()
+   } catch (Exception ignored) {
+      errors.add(ignored)
+   }
 }

@@ -28,6 +28,7 @@ import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.model.PickerIrregularPhotoModel;
@@ -40,10 +41,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Action1;
 import rx.functions.Action2;
 
 public class PhotoStripView extends LinearLayout {
+
+   @Inject PermissionUtils permissionUtils;
 
    private static final long TRANSITION_ANIMATE_DURATION = 1000L;
    private static final long SHOWING_MESSAGE_DURATION = 3000L;
@@ -54,6 +59,7 @@ public class PhotoStripView extends LinearLayout {
 
    private Injector injector;
    private EventListener eventListener;
+   private OnVisibilityChangedListener visibilityListener;
 
    private int errorPlankHeight;
 
@@ -78,10 +84,13 @@ public class PhotoStripView extends LinearLayout {
 
    public void setInjector(Injector injector) {
       this.injector = injector;
+      injector.inject(this);
       initializeAdapter();
    }
 
    private void init(@Nullable AttributeSet attrs) {
+      permissionUtils = new PermissionUtils();
+
       Context context = getContext();
       setOrientation(VERTICAL);
       setBackground(new ColorDrawable(getColor(android.R.color.transparent)));
@@ -137,7 +146,9 @@ public class PhotoStripView extends LinearLayout {
 
       mediaAdapter.registerCell(PickerIrregularPhotoModel.class, PhotoStripButtonCell.class);
       mediaAdapter.registerDelegate(PickerIrregularPhotoModel.class, model -> {
-         if (eventListener == null) return;
+         if (eventListener == null) {
+            return;
+         }
          if (((PickerIrregularPhotoModel) model).getType() == PickerIrregularPhotoModel.CAMERA) {
             eventListener.openCameraRequired();
          } else {
@@ -157,8 +168,9 @@ public class PhotoStripView extends LinearLayout {
    }
 
    public void showMedia(Collection<MediaPickerModel> photos) {
-      if (mediaAdapter == null)
+      if (mediaAdapter == null) {
          throw new RuntimeException("You should provide injector first");
+      }
 
       List items = new ArrayList(photos);
       PickerIrregularPhotoModel cameraItem = new PickerIrregularPhotoModel(PickerIrregularPhotoModel.CAMERA,
@@ -175,7 +187,9 @@ public class PhotoStripView extends LinearLayout {
       MediaPickerModelImpl updatedItem = (MediaPickerModelImpl) updatedModel;
 
       for (Object item : mediaAdapter.getItems()) {
-         if (!(item instanceof MediaPickerModelImpl)) continue;
+         if (!(item instanceof MediaPickerModelImpl)) {
+            continue;
+         }
 
          MediaPickerModelImpl notUpdatedModel = (MediaPickerModelImpl) item;
          if (updatedItem.getFileName().equals(notUpdatedModel.getFileName())) {
@@ -208,10 +222,14 @@ public class PhotoStripView extends LinearLayout {
          }
 
          @Override
-         public void onAnimationCancel(Animator animation) {}
+         public void onAnimationCancel(Animator animation) {
+            //do nothing
+         }
 
          @Override
-         public void onAnimationRepeat(Animator animation) {}
+         public void onAnimationRepeat(Animator animation) {
+            //do nothing
+         }
       });
       animation.start();
    }
@@ -228,12 +246,16 @@ public class PhotoStripView extends LinearLayout {
                   case 1:
                      cameraAction.call(MediaPickerModel.Type.VIDEO);
                      break;
+                  default:
+                     break;
                }
             }).show();
    }
 
    public void askUserForPermissions(String[] permissions, Action2<String[], Boolean> userAnswerListener) {
-      if (permissions != PermissionConstants.STORE_PERMISSIONS) return;
+      if (!permissionUtils.equals(permissions, PermissionConstants.READ_STORAGE_PERMISSION)) {
+         return;
+      }
 
       new MaterialDialog.Builder(getContext())
             .content(R.string.photo_strip_read_storage_permission_explanation)
@@ -243,6 +265,18 @@ public class PhotoStripView extends LinearLayout {
             .onNegative((materialDialog, dialogAction) -> userAnswerListener.call(permissions, false))
             .cancelable(false)
             .show();
+   }
+
+   public void setVisibilityListener(OnVisibilityChangedListener visibilityListener) {
+      this.visibilityListener = visibilityListener;
+   }
+
+   @Override
+   public void setVisibility(int visibility) {
+      super.setVisibility(visibility);
+      if (visibilityListener != null) {
+         visibilityListener.onVisibilityChanged();
+      }
    }
 
    public interface EventListener {
@@ -255,6 +289,11 @@ public class PhotoStripView extends LinearLayout {
 
       void openCameraRequired();
    }
+
+   public interface OnVisibilityChangedListener {
+      void onVisibilityChanged();
+   }
+
 
 }
 

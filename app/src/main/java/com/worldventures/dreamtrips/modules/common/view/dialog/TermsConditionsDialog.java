@@ -23,6 +23,8 @@ import com.worldventures.dreamtrips.core.utils.HeaderProvider;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
 
+import java.util.Collections;
+
 import javax.inject.Inject;
 
 import butterknife.InjectView;
@@ -59,7 +61,9 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
       termsContent.setWebViewClient(new WebViewClient() {
          @Override
          public void onPageFinished(WebView view, String url) {
-            if (termsContent == null || btnRetry == null || onErrorReceived) return;
+            if (termsContent == null || btnRetry == null || onErrorReceived) {
+               return;
+            }
 
             onPageShown = true;
             termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
@@ -82,7 +86,9 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          @Override
          public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
-            if (onPageShown) return;
+            if (onPageShown) {
+               return;
+            }
             onErrorReceived = true;
             if (termsContent != null && btnRetry != null) {
                termsContent.setVisibility(View.GONE);
@@ -95,7 +101,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (url.startsWith(MailTo.MAILTO_SCHEME) && getActivity() != null) {
                String mailTo = url.substring(MailTo.MAILTO_SCHEME.length());
-               getActivity().startActivity(IntentUtils.newEmailIntent("", "", mailTo));
+               getActivity().startActivity(IntentUtils.newEmailIntent("", "", Collections.singletonList(mailTo)));
                return true;
             }
             return false;

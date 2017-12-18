@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.worldventures.core.modules.picker.model.MediaPickerModel;
-import com.worldventures.core.modules.picker.util.MediaCapturingRouter;
 import com.worldventures.core.modules.picker.command.ImageCapturedCommand;
 import com.worldventures.core.modules.picker.command.MediaCaptureCanceledCommand;
 import com.worldventures.core.modules.picker.command.VideoCapturedCommand;
+import com.worldventures.core.modules.picker.model.MediaPickerModel;
+import com.worldventures.core.modules.picker.util.MediaCapturingRouter;
 
 import icepick.Icepick;
 import icepick.State;
@@ -60,6 +60,8 @@ public class PickImageDelegate {
                mediaPickerInteractor.mediaCaptureCanceledPipe()
                      .send(new MediaCaptureCanceledCommand(MediaPickerModel.Type.VIDEO));
             }
+            break;
+         default:
             break;
       }
    }

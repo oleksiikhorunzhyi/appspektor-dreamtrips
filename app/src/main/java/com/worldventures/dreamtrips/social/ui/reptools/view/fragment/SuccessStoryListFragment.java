@@ -19,7 +19,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -28,6 +27,7 @@ import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryLis
 import com.worldventures.dreamtrips.social.ui.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.social.ui.reptools.view.cell.SuccessStoryCell;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -47,7 +47,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
 
    private FilterableArrayListAdapter<SuccessStory> adapter;
-   private WeakHandler weakHandler = new WeakHandler();
+   private final WeakHandler weakHandler = new WeakHandler();
 
    @Override
    protected SuccessStoryListPresenter createPresenter(Bundle savedInstanceState) {
@@ -68,13 +68,26 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
 
    @OnClick(R.id.iv_filter)
    public void onActionFilter() {
+      getPresenter().onShowFilterRequired();
+   }
+
+   @Override
+   public void showFilterDialog(boolean showFavorites) {
       View menuItemView = getActivity().findViewById(R.id.iv_filter);
       PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
       popupMenu.inflate(R.menu.menu_success_stories_filter);
-      boolean isFavorites = getPresenter().isFilterFavorites();
-      popupMenu.getMenu().getItem(isFavorites ? 1 : 0).setChecked(true);
+      popupMenu.getMenu().getItem(showFavorites ? 1 : 0).setChecked(true);
       popupMenu.setOnMenuItemClickListener((menuItem) -> {
-         getPresenter().reloadWithFilter(menuItem.getItemId());
+         switch (menuItem.getItemId()) {
+            case R.id.action_show_all:
+               getPresenter().reloadWithFilter(false);
+               break;
+            case R.id.action_show_favorites:
+               getPresenter().reloadWithFilter(true);
+               break;
+            default:
+               break;
+         }
          return false;
       });
       popupMenu.show();
@@ -83,7 +96,9 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    @Override
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
-      if (outState == null || search == null) return;
+      if (outState == null || search == null) {
+         return;
+      }
       outState.putBoolean(EXTRA_IS_SEARCH_ICONIFIED, search.isIconified());
       outState.putBoolean(EXTRA_IS_SEARCH_FOCUSED, search.isFocused());
    }
@@ -91,9 +106,13 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    @Override
    public void onViewStateRestored(Bundle savedInstanceState) {
       super.onViewStateRestored(savedInstanceState);
-      if (savedInstanceState == null) return;
+      if (savedInstanceState == null) {
+         return;
+      }
       search.setIconified(savedInstanceState.getBoolean(EXTRA_IS_SEARCH_ICONIFIED, true));
-      if (savedInstanceState.getBoolean(EXTRA_IS_SEARCH_FOCUSED, false)) search.requestFocus();
+      if (savedInstanceState.getBoolean(EXTRA_IS_SEARCH_FOCUSED, false)) {
+         search.requestFocus();
+      }
    }
 
    @Override
@@ -153,7 +172,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    @Override
    public void setItems(List<SuccessStory> items) {
       adapter.clear();
-      adapter.addItems(items);
+      adapter.addItems(new ArrayList<>(items));
       adapter.notifyDataSetChanged();
    }
 
@@ -175,7 +194,9 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
          openFirst();
       });
    }
@@ -186,17 +207,21 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    }
 
    private void openFirst() {
-      if (refreshLayout != null) weakHandler.post(() -> {
-         if (isTabletLandscape() && adapter.getCount() > 0) {
-            getPresenter().openFirst(adapter.getItem(0));
-         }
-      });
+      if (refreshLayout != null) {
+         weakHandler.post(() -> {
+            if (isTabletLandscape() && adapter.getCount() > 0) {
+               getPresenter().openFirst(adapter.getItem(0));
+            }
+         });
+      }
    }
 
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
@@ -209,14 +234,14 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    public void openStory(Bundle bundle) {
       if (isTabletLandscape()) {
          bundle.putBoolean(SuccessStoryDetailsFragment.EXTRA_SLAVE, true);
-         router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forFragment()
+         router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(true)
                .fragmentManager(getChildFragmentManager())
                .containerId(R.id.detail_container)
                .data(bundle)
                .build());
       } else {
-         router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forActivity().data(bundle).build());
+         router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forActivity().data(bundle).build());
       }
 
    }

@@ -1,7 +1,6 @@
 package com.worldventures.core.modules.picker.command;
 
 
-
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
@@ -9,7 +8,7 @@ import rx.Observable;
 @CommandAction
 public class ImageCapturedCommand extends Command<String> {
 
-   private String filePath;
+   private final String filePath;
 
    public ImageCapturedCommand(String filePath) {
       this.filePath = filePath;

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      >
+
+   <data>
+
+      <variable
+            name="profile"
+            type="com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel"
+            />
+
+   </data>
+
+   <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         android:paddingLeft="@dimen/spacing_normal"
+         android:paddingRight="@dimen/spacing_normal"
+         >
+
+      <include
+            layout="@layout/wallet_include_user_phone"
+            app:profile="@{profile}"
+            />
+
+   </LinearLayout>
+</layout>

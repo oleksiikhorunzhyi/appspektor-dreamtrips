@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.core.janet;
 import android.content.Context;
 import android.util.Pair;
 
+import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
-import com.worldventures.core.janet.CommandWithError;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,9 @@ public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
 
       Pair<BaseHttpAction, Throwable> errorPair = obtainHttpException(holder, e);
       //we intercept http errors and not from login (only login is nor authorized)
-      if (errorPair == null || !(errorPair.first instanceof AuthorizedHttpAction)) return parentResult;
+      if (errorPair == null || !(errorPair.first instanceof AuthorizedHttpAction)) {
+         return parentResult;
+      }
 
       Throwable cause = errorPair.second;
 
@@ -54,7 +56,7 @@ public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
       return parentResult;
    }
 
-   private static String obtainErrorMessage (ActionHolder holder, Throwable cause) {
+   private static String obtainErrorMessage(ActionHolder holder, Throwable cause) {
       if (holder.action() instanceof CommandWithError) {
          //humanized error message is already set in parent class
          return ((CommandWithError) holder.action()).getErrorMessage();
@@ -64,7 +66,9 @@ public class DreamTripsCommandServiceWrapper extends DreamTripsCommandService {
    }
 
    private void notifyListener(boolean noInternet, String path, String errorMessage) {
-      if (failListener != null) failListener.onFail(noInternet, path, errorMessage);
+      if (failListener != null) {
+         failListener.onFail(noInternet, path, errorMessage);
+      }
    }
 
    public interface HttpFailListener {

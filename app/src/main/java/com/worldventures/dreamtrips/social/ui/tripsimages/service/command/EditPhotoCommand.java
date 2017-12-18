@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.photos.UpdatePhotoHttpAction;
 import com.worldventures.dreamtrips.api.photos.model.PhotoUpdateParams;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;

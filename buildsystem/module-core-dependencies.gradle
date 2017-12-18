@@ -1,0 +1,165 @@
+ext {
+   janetHttpVersion = '1.3.1'
+   mobileSdkVersion = '1.2.4'
+   okhttp3Version = '3.5.0'
+   googleLibrariesVersion = '26.1.0'
+   googleServicesVersion = '11.2.0'
+   mosbyVersion = '2.0.0'
+
+   def jodaTimeVersion = '2.9.9'
+   def spekVersion = '1.1.2'
+   def dataBindingCompilerVersion = '3.0.0-rc1'
+
+   coreDependencies = [:]
+
+   coreDependencies.repos = [
+         { o -> o.jcenter() },
+         { o -> o.google() },
+         { o -> o.maven { url 'https://jitpack.io' } },
+         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },
+         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/libs-snapshot' } },
+         { o -> o.maven { url 'https://maven.fabric.io/public' } },
+         { o -> o.maven { url 'https://clojars.org/repo/' } }, // icepick
+   ]
+
+   //modules
+   coreDependencies.modules = [
+         janetExt: [api: project(":janet-extensions")],
+   ]
+
+   coreDependencies.lang = [
+         kotlin: [api: "org.jetbrains.kotlin:kotlin-stdlib:$project.ext.pluginDependencies.versions.kotlin"],
+   ]
+
+   coreDependencies.ui = [
+         googleCardView           : [impl: "com.android.support:cardview-v7:${googleLibrariesVersion}"], // resolve version conflicts
+         googleAnnotations        : [impl: "com.android.support:support-annotations:${googleLibrariesVersion}"],
+         googlePercent            : [impl: "com.android.support:percent:${googleLibrariesVersion}"],
+
+         //widgets
+         fabbutton                : [impl: 'mbanje.kurt:fabbutton:1.2.5-SNAPSHOT@aar'],
+         googleDesign             : [impl: "com.android.support:design:${googleLibrariesVersion}"],
+         googleAppcompat7         : [impl: "com.android.support:appcompat-v7:${googleLibrariesVersion}"],
+         customtabs               : [impl: "com.android.support:customtabs:${googleLibrariesVersion}"], // resolve version conflicts: facebook uses v25.0.0
+         constraintlayout         : [impl: 'com.android.support.constraint:constraint-layout:1.0.2'],
+         operationActionSubscriber: [api: 'com.github.techery:OperationActionSubscriber:1.0.4'],
+         materialDialogsCore      : [impl: 'com.github.afollestad.material-dialogs:core:0.8.6.2'],
+         circleindicator          : [impl: 'me.relex:circleindicator:1.2.2@aar'],
+
+         fresco                   : [impl: 'com.facebook.fresco:fresco:1.1.0'],
+         frescoOkhttp             : [impl: 'com.facebook.fresco:imagepipeline-okhttp3:1.1.0'],
+
+         // mosby
+         mosbyMvp                 : [impl: "com.hannesdorfmann.mosby:mvp:$mosbyVersion"],
+         mosbyCommon              : [impl: "com.hannesdorfmann.mosby:mvp-common:$mosbyVersion"],
+
+         // view state
+         icepick                  : [impl: 'frankiesardo:icepick:3.2.0'],
+         icepickProcessor         : [a: 'frankiesardo:icepick-processor:3.2.0'],
+
+         ucrop                    : [impl: 'com.yalantis:ucrop:2.2.0'],
+         databindingCompiler      : [a: "com.android.databinding:compiler:${dataBindingCompilerVersion}"],
+   ]
+
+   // rx
+   def rxjavaVersion = '1.3.0'
+   def rxbinding = '1.0.1'
+   def rxlifecycle = '1.0'
+   coreDependencies.rx = [
+         rxjava               : [api: "io.reactivex:rxjava:$rxjavaVersion"],
+         rxandroid            : [api: 'io.reactivex:rxandroid:1.2.1'],
+
+         rxbinding            : [api: "com.jakewharton.rxbinding:rxbinding:$rxbinding"],
+         rxbindingSupportV4   : [api: "com.jakewharton.rxbinding:rxbinding-support-v4:$rxbinding"],
+         rxbindingSupportV7   : [api: "com.jakewharton.rxbinding:rxbinding-appcompat-v7:$rxbinding"],
+
+         rxlifecycle          : [api: "com.trello:rxlifecycle-android:$rxlifecycle"],
+         rxlifecycleComponents: [api: "com.trello:rxlifecycle-components:$rxlifecycle"],
+   ]
+   coreDependencies.domain = [
+         kryo     : [api: 'com.esotericsoftware.kryo:kryo:2.24.0'],
+         objenesis: [api: 'org.objenesis:objenesis:2.5'],
+         snappydb : [api: 'com.snappydb:snappydb-lib:0.5.2'],
+         mappery  : [api: 'com.github.techery:mappery:0.0.2'],
+   ]
+   def immutablesVersion = '2.5.5'
+   coreDependencies.immutables = [
+         immutables         : [p: "org.immutables:value:$immutablesVersion"],
+         immutablesProcessor: [a: "org.immutables:value:$immutablesVersion"],
+         immutablesBuilder  : [p: "org.immutables:builder:$immutablesVersion"],
+         immutablesGson     : [p: "org.immutables:gson:$immutablesVersion"],
+   ]
+
+   coreDependencies.networking = [
+         // client & converter
+         okhttpUrlConnection3     : [api: "com.squareup.okhttp3:okhttp-urlconnection:$okhttp3Version"],
+         okhttpLoggingInterceptor3: [api: "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"],
+
+         // janet base
+         janetCore                : [api: 'com.github.techery:janet:1.0.7'],
+         janetCommand             : [api: 'com.github.techery:janet-command:1.0.5'],
+         // janet http
+         janetHttpService         : [api: "com.github.techery.janet-http:service:$janetHttpVersion"],
+         janetHttpClient          : [api: "com.github.techery.janet-http:client-okhttp3:$janetHttpVersion"],
+         janetHttpConverter       : [api: 'com.github.techery.janet-converters:gson:1.1.1'],
+
+         // API
+         mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
+         mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.35-RELEASE-1.25-SNAPSHOT', config: {
+            changing = true
+         }],
+   ]
+
+   coreDependencies.util = [
+         jodaTimeAndroidDebug  : [debugApi: "net.danlew:android.joda:$jodaTimeVersion"],
+         jodaTimeAndroidRelease: [releaseApi: "net.danlew:android.joda:$jodaTimeVersion"],
+         timber                : [api: 'com.jakewharton.timber:timber:4.6.0'],
+         collectionsQuery      : [api: 'com.innahema:collections-query:0.2.9'],
+         multidex              : [api: 'com.android.support:multidex:1.0.1'],
+         jetbrainsAnnotations  : [p: 'org.jetbrains:annotations:13.0'],
+         gson                  : [api: 'com.google.code.gson:gson:2.7'],
+
+         // oauth sdk
+         facebook              : [api: 'com.facebook.android:facebook-android-sdk:4.18.0'],
+
+         // play service
+         googleMaps            : [api: "com.google.android.gms:play-services-maps:${googleServicesVersion}"],
+         googleLocation        : [api: "com.google.android.gms:play-services-location:${googleServicesVersion}"],
+
+         weakHandler           : [api: 'com.badoo.mobile:android-weak-handler:1.1'],
+   ]
+
+   coreDependencies.analytics = [
+         apptentive : [impl: 'com.apptentive:apptentive-android:3.4.0@aar'],
+         crashlytics: [api: 'com.crashlytics.sdk.android:crashlytics:2.7.0@aar', config: { transitive = true }],
+         newrelic   : [api: 'com.newrelic.agent.android:android-agent:5.8.4'],
+   ]
+
+   def daggerVersion = '1.2.2'
+   coreDependencies.di = [
+         dagger           : [api: "com.squareup.dagger:dagger:$daggerVersion"],
+         daggerProcessor  : [a: "com.squareup.dagger:dagger-compiler:$daggerVersion"],
+         daggerAnnotations: [api: 'javax.annotation:jsr250-api:1.0'],
+         daggerProguard   : [rap: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+   ]
+
+   coreDependencies.test = [
+         spekApi           : [testImpl: "org.jetbrains.spek:spek-api:$spekVersion"],
+         spekEngine        : [testImpl: "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"],
+
+         junit             : [testImpl: 'junit:junit:4.12'],
+         junitRunner       : [testImpl: 'org.junit.platform:junit-platform-runner:1.0.0-M4'],
+         junitRunnerJupiter: [testImpl: 'org.junit.jupiter:junit-jupiter-api:5.0.0-M4'],
+
+         assertj           : [testImpl: 'org.assertj:assertj-core:1.7.1'],
+         mockito           : [testImpl: 'org.mockito:mockito-core:2.7.22'],
+
+         kotlinReflect     : [testImpl: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.versions.kotlin"],
+         kotlinTest        : [testImpl: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.versions.kotlin"],
+         kotlinMockito     : [testImpl: 'com.nhaarman:mockito-kotlin:1.5.0'],
+         kotlinRx          : [testImpl: 'io.reactivex:rxkotlin:0.55.0'],
+
+         jodaTime          : [testImpl: "joda-time:joda-time:$jodaTimeVersion"],
+   ]
+}

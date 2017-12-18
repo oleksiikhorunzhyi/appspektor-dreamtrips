@@ -28,32 +28,58 @@ public abstract class Merchant implements Serializable {
    public abstract MerchantType type();
    public abstract PartnerStatus partnerStatus();
    public abstract String displayName();
-   @Nullable public abstract String address();
-   @Nullable public abstract String city();
-   @Nullable public abstract String state();
-   @Nullable public abstract String country();
-   @Nullable public abstract Coordinates coordinates();
-   @Nullable public abstract String description();
-   @Nullable public abstract Integer budget();
-   @Nullable public abstract Double distance();
-   @Nullable public abstract String zip();
-   @Nullable public abstract Double rating();
-   @Nullable public abstract String phone();
-   @Nullable public abstract String email();
-   @Nullable public abstract String website();
-   @Nullable public abstract List<Currency> currencies();
-   @Nullable public abstract List<Offer> offers();
-   @Nullable public abstract String timeZone();
-   @Nullable public abstract List<ThinAttribute> categories();
-   @Nullable public abstract List<ThinAttribute> amenities();
-   @Nullable public abstract List<MerchantMedia> images();
-   @Nullable public abstract List<OperationDay> operationDays();
-   @Nullable public abstract List<Disclaimer> disclaimers();
-   @Nullable public abstract Reviews reviews();
-   @Nullable public abstract Boolean useThrstFlow();
-   @Nullable public abstract String thrstFullCapabilityUrl();
+   @Nullable
+   public abstract String address();
+   @Nullable
+   public abstract String city();
+   @Nullable
+   public abstract String state();
+   @Nullable
+   public abstract String country();
+   @Nullable
+   public abstract Coordinates coordinates();
+   @Nullable
+   public abstract String description();
+   @Nullable
+   public abstract Integer budget();
+   @Nullable
+   public abstract Double distance();
+   @Nullable
+   public abstract String zip();
+   @Nullable
+   public abstract Double rating();
+   @Nullable
+   public abstract String phone();
+   @Nullable
+   public abstract String email();
+   @Nullable
+   public abstract String website();
+   @Nullable
+   public abstract List<Currency> currencies();
+   @Nullable
+   public abstract List<Offer> offers();
+   @Nullable
+   public abstract String timeZone();
+   @Nullable
+   public abstract List<ThinAttribute> categories();
+   @Nullable
+   public abstract List<ThinAttribute> amenities();
+   @Nullable
+   public abstract List<MerchantMedia> images();
+   @Nullable
+   public abstract List<OperationDay> operationDays();
+   @Nullable
+   public abstract List<Disclaimer> disclaimers();
+   @Nullable
+   public abstract Reviews reviews();
+   @Nullable
+   public abstract Boolean useThrstFlow();
+   @Nullable
+   public abstract String thrstFullCapabilityUrl();
+   public abstract Double earnPointsMinSpendLocalCurrency();
 
-   @Value.Derived public MerchantAttributes asMerchantAttributes() {
+   @Value.Derived
+   public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);
    }
 }

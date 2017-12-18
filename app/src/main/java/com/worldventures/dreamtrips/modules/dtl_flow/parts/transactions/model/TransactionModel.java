@@ -19,8 +19,12 @@ public class TransactionModel implements Parcelable {
    private Date transactionDate;
    private ThrstPaymentStatus thrstPaymentStatus;
    private boolean isTrhstTransaction;
+   private String currencySymbol;
+   private String currenyCode;
 
-   public TransactionModel() { }
+   public TransactionModel() {
+      // empty
+   }
 
    public void setId(String id) {
       this.id = id;
@@ -126,10 +130,30 @@ public class TransactionModel implements Parcelable {
       isTrhstTransaction = trhstTransaction;
    }
 
+   public void setCurrencySymbol(String currencySymbol) {
+      this.currencySymbol = currencySymbol;
+   }
+
+   public String getCurrencySymbol() {
+      return currencySymbol;
+   }
+
+   public void setCurrenyCode(String currenyCode) {
+      this.currenyCode = currenyCode;
+   }
+
+   public String getCurrenyCode() {
+      return currenyCode;
+   }
+
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
 
       TransactionModel that = (TransactionModel) o;
 
@@ -144,6 +168,7 @@ public class TransactionModel implements Parcelable {
    public enum ThrstPaymentStatus {
       INITIATED,
       SUCCESSFUL,
+      REFUNDED,
       UNKNOWN
    }
 

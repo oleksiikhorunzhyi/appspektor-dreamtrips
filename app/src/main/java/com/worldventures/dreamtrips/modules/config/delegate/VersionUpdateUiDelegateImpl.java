@@ -14,8 +14,8 @@ import timber.log.Timber;
 
 public class VersionUpdateUiDelegateImpl implements VersionUpdateUiDelegate {
 
-   private Activity activity;
-   private SnappyRepository snappyRepository;
+   private final Activity activity;
+   private final SnappyRepository snappyRepository;
 
    public VersionUpdateUiDelegateImpl(Activity activity, SnappyRepository snappyRepository) {
       this.activity = activity;
@@ -24,7 +24,9 @@ public class VersionUpdateUiDelegateImpl implements VersionUpdateUiDelegate {
 
    @Override
    public void showOptionalUpdateDialog(long timestamp) {
-      if (BuildConfig.QA_AUTOMATION_MODE_ENABLED) return;
+      if (BuildConfig.QA_AUTOMATION_MODE_ENABLED) {
+         return;
+      }
       String dateFormatted = DateUtils.formatDateTime(activity, timestamp,
             DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR);
       String message = activity.getString(R.string.app_update_alert_optional_update_message, dateFormatted);
@@ -44,7 +46,9 @@ public class VersionUpdateUiDelegateImpl implements VersionUpdateUiDelegate {
 
    @Override
    public void showForceUpdateDialog() {
-      if (BuildConfig.QA_AUTOMATION_MODE_ENABLED) return;
+      if (BuildConfig.QA_AUTOMATION_MODE_ENABLED) {
+         return;
+      }
       new MaterialDialog.Builder(activity)
             .title(R.string.app_update_alert_title)
             .positiveText(R.string.app_update_alert_pos_button)

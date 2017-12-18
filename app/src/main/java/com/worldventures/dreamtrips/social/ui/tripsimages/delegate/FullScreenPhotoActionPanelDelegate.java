@@ -72,7 +72,9 @@ public class FullScreenPhotoActionPanelDelegate {
    }
 
    public void setLocation(Location photoLocation) {
-      if (photoLocation == null) return;
+      if (photoLocation == null) {
+         return;
+      }
       String locationString = photoLocation.getName();
       location.setVisibility(TextUtils.isEmpty(locationString) ? View.GONE : View.VISIBLE);
       location.setText(locationString);

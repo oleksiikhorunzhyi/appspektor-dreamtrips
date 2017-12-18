@@ -12,13 +12,12 @@ import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.ViewFeedEntityAction;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -29,6 +28,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.custom.FeedActionPanelVi
 import com.worldventures.dreamtrips.social.ui.feed.view.util.ActionPanelViewShareHandler;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.UsersLikedItemFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import javax.inject.Inject;
@@ -68,10 +68,9 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
       //
       actionView.setState(getModelObject(), isMineItem(getModelObject()));
       actionView.setOnLikeIconClickListener(feedItem -> cellDelegate.onLikeItem(getModelObject()));
-      actionView.setOnLikersClickListener(feedItem -> {
-         navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem(),
-               feedItem.getItem().getLikesCount()));
-      });
+      actionView.setOnLikersClickListener(feedItem ->
+            navigationWrapper.navigate(UsersLikedItemFragment.class, new UsersLikedEntityBundle(feedItem.getItem(),
+                  feedItem.getItem().getLikesCount())));
       actionView.setOnCommentIconClickListener(feedItem -> cellDelegate.onCommentItem(getModelObject()));
       actionView.setOnMoreClickListener(feedItem -> onMore());
       actionView.setOnDeleteClickListener(feedItem -> onDelete());
@@ -84,7 +83,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
       //
       if (likersPanel != null) {
          likersPanelHelper.setup(likersPanel, getModelObject().getItem());
-         likersPanel.setOnClickListener(v -> navigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
+         likersPanel.setOnClickListener(v -> navigationWrapper.navigate(UsersLikedItemFragment.class,
                new UsersLikedEntityBundle(getModelObject().getItem(), getModelObject().getItem().getLikesCount())));
       }
 
@@ -93,9 +92,11 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
 
    private boolean isMineItem(FeedItem feedItem) {
       Optional<UserSession> userSessionOptional = sessionHolder.get();
-      if (feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent()) return false;
+      if (feedItem.getItem().getOwner() == null || !userSessionOptional.isPresent()) {
+         return false;
+      }
 
-      int accountId = userSessionOptional.get().getUser().getId();
+      int accountId = userSessionOptional.get().user().getId();
       int ownerId = feedItem.getItem().getOwner().getId();
       return accountId == ownerId;
    }
@@ -128,7 +129,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem, DELEGATE extends BaseF
    }
 
    protected void onMore() {
-
+      //do nothing
    }
 
    public interface FeedCellDelegate<ITEM> extends CellDelegate<ITEM> {

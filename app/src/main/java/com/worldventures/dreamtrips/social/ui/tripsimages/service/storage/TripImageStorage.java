@@ -10,23 +10,26 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetMem
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetUsersMediaCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesAddedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesRemovedCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.UserImagesRemovedCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEntity>>, ClearableStorage {
+
    public static final String PARAM_ARGS = "args";
    public static final String RELOAD = "RELOAD";
    public static final String LOAD_MORE = "LOAD_MORE";
    public static final String REMOVE_ITEMS = "REMOVE_ITEM";
    public static final String LOAD_LATEST = "LOAD_LATEST";
 
-   private Map<TripImagesArgs, MemoryStorage<List<BaseMediaEntity>>> map = new ConcurrentHashMap<>();
+   private final Map<TripImagesArgs, MemoryStorage<List<BaseMediaEntity>>> map = new ConcurrentHashMap<>();
 
    @Override
    public void clearMemory() {
@@ -46,19 +49,28 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
       }
 
       if (params.get(RELOAD)) {
-         storage.save(params, data);
+         storage.save(params, new ArrayList<>(data));
       } else if (params.get(LOAD_MORE)) {
-         List<BaseMediaEntity> cachedItems = storage.get(params);
+         List<BaseMediaEntity> cachedItems = fetchCache(storage, params);
          cachedItems.addAll(data);
          storage.save(params, cachedItems);
       } else if (params.get(LOAD_LATEST)) {
-         List<BaseMediaEntity> cachedItems = storage.get(params);
+         List<BaseMediaEntity> cachedItems = fetchCache(storage, params);
          cachedItems.addAll(0, data);
          storage.save(params, cachedItems);
       } else if (params.get(REMOVE_ITEMS)) {
-         List<BaseMediaEntity> cachedItems = storage.get(params);
+         List<BaseMediaEntity> cachedItems = fetchCache(storage, params);
          cachedItems.removeAll(data);
          storage.save(params, cachedItems);
+      }
+   }
+
+   private List<BaseMediaEntity> fetchCache(MemoryStorage<List<BaseMediaEntity>> storage, @Nullable CacheBundle params) {
+      List<BaseMediaEntity> cachedItems = storage.get(params);
+      if (cachedItems != null) {
+         return new ArrayList<>(cachedItems);
+      } else {
+         return new ArrayList<>();
       }
    }
 
@@ -70,12 +82,13 @@ public class TripImageStorage implements MultipleActionStorage<List<BaseMediaEnt
          storage = new MemoryStorage<>();
          map.put(args, storage);
       }
-      return storage.get(params);
+
+      return fetchCache(storage, params);
    }
 
    @Override
    public List<Class<? extends CachedAction>> getActionClasses() {
       return Arrays.asList(GetMemberMediaCommand.class, GetUsersMediaCommand.class,
-            MemberImagesAddedCommand.class, MemberImagesRemovedCommand.class);
+            MemberImagesAddedCommand.class, MemberImagesRemovedCommand.class, UserImagesRemovedCommand.class);
    }
 }

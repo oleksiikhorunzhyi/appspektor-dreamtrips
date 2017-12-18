@@ -21,7 +21,7 @@ public class ApptentiveTracker extends Tracker {
 
    public ApptentiveTracker(Application application, String apiKey, boolean qaAutomationModeEnabled) {
       this.qaAutomationModeEnabled = qaAutomationModeEnabled;
-      if (!qaAutomationModeEnabled) Apptentive.register(application, apiKey);
+      if (!qaAutomationModeEnabled) { Apptentive.register(application, apiKey); }
    }
 
    @Override
@@ -36,12 +36,12 @@ public class ApptentiveTracker extends Tracker {
    }
 
    public void onStart(@Nullable Activity activity) {
-      if (qaAutomationModeEnabled || checkNullAndWarn(activity)) return;
+      if (qaAutomationModeEnabled || checkNullAndWarn(activity)) { return; }
       this.activity = new WeakReference<>(activity);
    }
 
    public void onStop(@Nullable Activity activity) {
-      if (qaAutomationModeEnabled || checkNullAndWarn(activity)) return;
+      if (qaAutomationModeEnabled || checkNullAndWarn(activity)) { return; }
    }
 
    @Override
@@ -56,7 +56,7 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void trackEvent(String category, String action, Map<String, Object> data) {
-      if (qaAutomationModeEnabled|| activity == null) return;
+      if (qaAutomationModeEnabled || activity == null) { return; }
 
       Activity activity = this.activity.get();
       if (activity != null) {

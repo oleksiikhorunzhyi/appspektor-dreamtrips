@@ -8,6 +8,7 @@ public class SelectableDataUser {
    private boolean selectionEnabled;
 
    public SelectableDataUser() {
+      //do nothing
    }
 
    public SelectableDataUser(DataUser dataUser, boolean selected, boolean selectionEnabled) {

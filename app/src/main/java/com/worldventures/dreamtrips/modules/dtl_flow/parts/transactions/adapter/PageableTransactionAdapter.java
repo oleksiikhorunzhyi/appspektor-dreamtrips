@@ -12,6 +12,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.CurrencyUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,6 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    private List<AdapterItem> items = new ArrayList<>();
    private boolean loaderIsShowing;
 
-   // View Types
    private static final int ITEM = 0;
    private static final int LOADING = 1;
 
@@ -50,6 +50,8 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
             View viewLoading = inflater.inflate(R.layout.view_dtl_item_loading, parent, false);
             viewHolder = new PageableTransactionAdapter.LoadingVH(viewLoading);
             break;
+         default:
+            break;
       }
       return viewHolder;
    }
@@ -60,6 +62,8 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          case ITEM:
             final PageableTransactionAdapter.ViewHolder recyclerViewHolder = (PageableTransactionAdapter.ViewHolder) holder;
             recyclerViewHolder.bind(items.get(position).transactionModel);
+            break;
+         default:
             break;
       }
    }
@@ -79,7 +83,9 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       for (TransactionModel model : transactionsList) {
          this.items.add(AdapterItem.forTransaction(model));
       }
-      if (loaderIsShowing) items.add(loader);
+      if (loaderIsShowing) {
+         items.add(loader);
+      }
       notifyDataSetChanged();
    }
 
@@ -95,13 +101,17 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    }
 
    public void addLoadingFooter() {
-      if (!items.contains(loader)) items.add(loader);
+      if (!items.contains(loader)) {
+         items.add(loader);
+      }
       loaderIsShowing = true;
       notifyDataSetChanged();
    }
 
    public void removeLoadingFooter() {
-      if (items.contains(loader)) items.remove(loader);
+      if (items.contains(loader)) {
+         items.remove(loader);
+      }
       loaderIsShowing = false;
       notifyDataSetChanged();
    }
@@ -129,13 +139,19 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
       public TextView earnedPoints;
       public ImageView earnedPointsIcon;
       public TextView transactionDate;
+      public TextView subtotal;
+      public Context context;
+      public ImageView statusImageView;
 
       public ViewHolder(View itemView) {
          super(itemView);
+         this.context = itemView.getContext();
          merchantName = itemView.findViewById(R.id.merchant_name);
          earnedPoints = itemView.findViewById(R.id.earned_points);
          earnedPointsIcon = itemView.findViewById(R.id.earned_points_icon);
          transactionDate = itemView.findViewById(R.id.transaction_date);
+         statusImageView = itemView.findViewById(R.id.imageViewStatus);
+         subtotal = itemView.findViewById(R.id.subtotal);
       }
 
       public void bind(TransactionModel transactionModel) {
@@ -143,8 +159,31 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          earnedPoints.setText(getEarnedPointText(transactionModel.getEarnedPoints()));
          earnedPointsIcon.setVisibility(View.VISIBLE);
          earnedPointsIcon.setBackgroundResource(R.drawable.dt_points_big_icon);
+         setPaymentStatusIcon(transactionModel);
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
+         subtotal.setText(context.getString(R.string.dtl_subtotal,
+               CurrencyUtils.toCurrency(transactionModel.getSubTotalAmount(), transactionModel.getCurrenyCode(),
+                     transactionModel.getCurrencySymbol())));
+      }
+
+      private void setPaymentStatusIcon(TransactionModel transactionModel) {
+         if (transactionModel.isTrhstTransaction()) {
+            switch (transactionModel.getThrstPaymentStatus()) {
+               case SUCCESSFUL:
+               case INITIATED:
+                  statusImageView.setImageResource(R.drawable.check_succes_pilot);
+                  break;
+               case REFUNDED:
+                  statusImageView.setImageResource(R.drawable.check_refund_pilot);
+                  break;
+               default:
+                  statusImageView.setImageResource(R.drawable.check_error_pilot);
+                  break;
+            }
+         } else {
+            statusImageView.setImageBitmap(null);
+         }
       }
 
       private String getEarnedPointText(int earnedPoints) {
@@ -160,4 +199,3 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
    }
 
 }
-

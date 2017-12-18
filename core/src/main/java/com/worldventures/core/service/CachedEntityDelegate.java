@@ -14,9 +14,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class CachedEntityDelegate {
 
-   private CachedEntityInteractor cachedEntityInteractor;
-
-   private List<DownloadCachedModelCommand> downloadFileCommandList = new ArrayList<>();
+   private final CachedEntityInteractor cachedEntityInteractor;
+   private final List<DownloadCachedModelCommand> downloadFileCommandList = new ArrayList<>();
 
    public CachedEntityDelegate(CachedEntityInteractor cachedEntityInteractor) {
       this.cachedEntityInteractor = cachedEntityInteractor;
@@ -24,9 +23,9 @@ public class CachedEntityDelegate {
             .observe()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DownloadCachedModelCommand>()
-               .onStart(startedCommand -> downloadFileCommandList.add(startedCommand))
-               .onSuccess(successCommand -> downloadFileCommandList.remove(successCommand))
-               .onFail((failedCommand, throwable) -> downloadFileCommandList.remove(failedCommand)));
+                  .onStart(startedCommand -> downloadFileCommandList.add(startedCommand))
+                  .onSuccess(successCommand -> downloadFileCommandList.remove(successCommand))
+                  .onFail((failedCommand, throwable) -> downloadFileCommandList.remove(failedCommand)));
    }
 
    public void cancelCaching(CachedModel cachedModel, String path) {

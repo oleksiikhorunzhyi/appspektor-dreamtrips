@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import rx.Observable;
 
-public class MapObservableFactory {
+public final class MapObservableFactory {
 
    private MapObservableFactory() {
       throw new RuntimeException("No instance");

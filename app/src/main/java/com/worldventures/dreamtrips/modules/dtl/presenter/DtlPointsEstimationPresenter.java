@@ -23,7 +23,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimationPresenter.View> {
 
-   public static final String BILL_TOTAL = "billTotal";
+   public static final String BILL_TOTAL = "bill_total";
    private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
 
    protected final Merchant merchant;
@@ -38,8 +38,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, () -> view.hideProgress()));
+      apiErrorViewAdapter.setView(new ProxyApiErrorView(view, view::hideProgress));
       view.showCurrency(merchant.asMerchantAttributes().defaultCurrency());
+      view.setMinimalAmount(merchant.earnPointsMinSpendLocalCurrency(), merchant.asMerchantAttributes().defaultCurrency());
       bindApiJob();
    }
 
@@ -51,7 +52,10 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
                   .onFail((action, exception) -> {
                      if (action.errorResponse() != null) {
                         String reason = action.errorResponse().reasonFor(BILL_TOTAL);
-                        if (reason != null) view.showError(reason);
+                        if (reason != null) {
+                           view.showError(reason);
+                           return;
+                        }
                      }
                      apiErrorViewAdapter.handleError(action, exception);
                   })
@@ -59,7 +63,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    }
 
    public void onCalculateClicked(String userInput) {
-      if (!validateInput(userInput)) return;
+      if (!validateInput(userInput)) {
+         return;
+      }
 
       analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(merchant.asMerchantAttributes())));
@@ -97,5 +103,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
       void showEstimatedPoints(int value);
 
       void showCurrency(Currency currency);
+
+      void setMinimalAmount(double minimalAmount, Currency currency);
    }
 }

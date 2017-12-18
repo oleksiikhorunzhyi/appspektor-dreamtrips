@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.gcm.service;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.UnsubscribeFromPushCommand;
+import com.worldventures.dreamtrips.modules.gcm.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotificationsCommand;
 
 import io.techery.janet.ActionPipe;
@@ -9,8 +9,8 @@ import rx.schedulers.Schedulers;
 
 public class SubscribeToPushNotificationsInteractor {
 
-   private ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe;
-   private ActionPipe<UnsubscribeFromPushCommand> unsubscribeFromPushCommandActionPipe;
+   private final ActionPipe<SubscribeToPushNotificationsCommand> subscribeToPushNotificationsActionPipe;
+   private final ActionPipe<UnsubscribeFromPushCommand> unsubscribeFromPushCommandActionPipe;
 
    public SubscribeToPushNotificationsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       subscribeToPushNotificationsActionPipe = sessionActionPipeCreator.createPipe(SubscribeToPushNotificationsCommand.class, Schedulers

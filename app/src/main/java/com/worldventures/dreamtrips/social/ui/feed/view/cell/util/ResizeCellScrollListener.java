@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.ResizeableCell;
 
 public class ResizeCellScrollListener extends RecyclerView.OnScrollListener {
 
-   private LinearLayoutManager layoutManager;
+   private final LinearLayoutManager layoutManager;
    private Pair<Integer, Integer> checkedRange = new Pair<>(-1, -1);
 
    public void onConfigChanged() {
@@ -25,6 +25,11 @@ public class ResizeCellScrollListener extends RecyclerView.OnScrollListener {
    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
       int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
       int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+
+      if (firstVisibleItemPosition == -1) {
+         checkedRange = new Pair<>(-1, -1);
+         return;
+      }
 
       for (int position = firstVisibleItemPosition; position <= lastVisibleItemPosition; position++) {
          View view = layoutManager.findViewByPosition(position);

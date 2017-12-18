@@ -4,7 +4,7 @@ import com.worldventures.core.janet.cache.CacheBundleImpl;
 import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.core.janet.cache.CachedAction;
 import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.multimedia.GetMultimediaHttpAction;
 import com.worldventures.dreamtrips.api.multimedia.ImmutableMultimediaPaginatedParams;
@@ -53,8 +53,9 @@ public class GetMemberMediaCommand extends BaseMediaCommand implements Injectabl
 
    @Override
    protected void run(CommandCallback<List<BaseMediaEntity>> callback) throws Throwable {
-      if (fromCache) callback.onSuccess(cachedItems);
-      else {
+      if (fromCache) {
+         callback.onSuccess(cachedItems);
+      } else {
          janet.createPipe(GetMultimediaHttpAction.class)
                .createObservableResult(new GetMultimediaHttpAction(ImmutableMultimediaPaginatedParams.builder()
                      .before(before)
@@ -86,6 +87,7 @@ public class GetMemberMediaCommand extends BaseMediaCommand implements Injectabl
       cacheBundle.put(TripImageStorage.REMOVE_ITEMS, false);
       return ImmutableCacheOptions.builder()
             .params(cacheBundle)
+            .saveToCache(!fromCache)
             .build();
    }
 

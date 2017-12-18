@@ -1,4 +1,5 @@
 package com.worldventures.core.modules.picker.viewmodel;
+
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.util.adapter.MediaPickerHolderFactory;
@@ -7,7 +8,7 @@ import com.worldventures.core.modules.picker.util.adapter.MediaPickerHolderFacto
 public abstract class BaseMediaPickerViewModel implements MediaPickerModel {
    private MediaPickerAttachment.Source source;
 
-   public  abstract int type(MediaPickerHolderFactory typeFactory);
+   public abstract int type(MediaPickerHolderFactory typeFactory);
 
    public abstract void setPickedTime(long pickedTime);
 

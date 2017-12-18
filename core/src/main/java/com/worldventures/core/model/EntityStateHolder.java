@@ -38,12 +38,12 @@ public final class EntityStateHolder<T> implements Serializable {
 
    @Override
    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o) { return true; }
+      if (o == null || getClass() != o.getClass()) { return false; }
 
       EntityStateHolder<?> that = (EntityStateHolder<?>) o;
 
-      if (entity != null ? !entity.equals(that.entity) : that.entity != null) return false;
+      if (entity != null ? !entity.equals(that.entity) : that.entity != null) { return false; }
       return state == that.state;
 
    }

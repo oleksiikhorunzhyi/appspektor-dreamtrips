@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
-public class ImageTextItemFactory {
+public final class ImageTextItemFactory {
 
    private ImageTextItemFactory() {
       throw new IllegalArgumentException("no instance");
@@ -26,12 +26,16 @@ public class ImageTextItemFactory {
             return create(context, merchant.phone(), R.drawable.phone_icon, IntentUtils.newDialerIntent(merchant.phone()), type);
          case WEBSITE_URL:
             return create(context, merchant.website(), R.drawable.website_icon, IntentUtils.browserIntent(merchant.website()), type);
+         default:
+            break;
       }
       return null;
    }
 
    private static ImageTextItem create(Context context, String contact, @DrawableRes int icon, Intent intent, ImageTextItem.Type type) {
-      if (TextUtils.isEmpty(contact)) return null;
+      if (TextUtils.isEmpty(contact)) {
+         return null;
+      }
       return new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type);
    }
 }

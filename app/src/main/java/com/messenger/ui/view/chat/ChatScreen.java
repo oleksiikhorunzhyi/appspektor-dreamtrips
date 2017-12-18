@@ -10,12 +10,13 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.view.layout.MessengerScreen;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
 import java.util.List;
 
 import rx.Observable;
 
-public interface ChatScreen extends MessengerScreen {
+public interface ChatScreen extends MessengerScreen, PermissionUIComponent {
 
    void showLoading();
 
@@ -31,7 +32,7 @@ public interface ChatScreen extends MessengerScreen {
 
    void showMessages(Cursor cursor);
 
-   void showAttachmentMenu(AttachmentMenuItem[] items);
+   void showAttachmentMenu(AttachmentMenuItem... items);
 
    void showRetrySendMessageDialog(DataMessage dataMessage);
 
@@ -61,7 +62,7 @@ public interface ChatScreen extends MessengerScreen {
 
    void dismissProgressDialog();
 
-   void showErrorMessage(@StringRes int error_no_connection);
+   void showErrorMessage(@StringRes int errorNoConnectionRes);
 
    void showPicker();
 }

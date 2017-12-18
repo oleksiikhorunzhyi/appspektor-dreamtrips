@@ -8,11 +8,11 @@ import android.widget.TextView;
 import com.worldventures.core.model.ShareType;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.FullscreenYsbhPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ImageryView;
@@ -61,7 +61,9 @@ public class FullscreenYsbhFragment extends BaseFragmentWithArgs<FullscreenYsbhP
 
    @Override
    public void onDestroyView() {
-      if (imageryView != null && imageryView.getController() != null) imageryView.getController().onDetach();
+      if (imageryView != null && imageryView.getController() != null) {
+         imageryView.getController().onDetach();
+      }
       super.onDestroyView();
    }
 
@@ -71,7 +73,7 @@ public class FullscreenYsbhFragment extends BaseFragmentWithArgs<FullscreenYsbhP
       data.setImageUrl(imageUrl);
       data.setText(text);
       data.setShareType(type);
-      router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(data).build());
+      router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
    }
 
    @OnClick(R.id.iv_share)

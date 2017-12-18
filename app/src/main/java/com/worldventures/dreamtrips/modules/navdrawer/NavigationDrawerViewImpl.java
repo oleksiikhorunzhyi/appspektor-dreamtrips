@@ -91,7 +91,9 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
 
    @Override
    public void setUser(User user) {
-      if (ViewUtils.isLandscapeOrientation(getContext())) return;
+      if (ViewUtils.isLandscapeOrientation(getContext())) {
+         return;
+      }
       //
       if (adapter.setHeader(createNavigationHeader(user))) {
          adapter.notifyItemInserted(0);
@@ -139,17 +141,23 @@ public class NavigationDrawerViewImpl extends LinearLayout implements Navigation
    public void setCurrentComponent(ComponentDescription newComponent) {
       recyclerView.post(() -> {
          currentComponent = newComponent;
-         if (adapter != null) adapter.selectComponent(newComponent);
+         if (adapter != null) {
+            adapter.selectComponent(newComponent);
+         }
       });
    }
 
    @Override
    public void setNotificationCount(int count) {
-      if (adapter != null) adapter.setNotificationCount(count);
+      if (adapter != null) {
+         adapter.setNotificationCount(count);
+      }
    }
 
    @Override
    public void setUnreadMessagesCount(int count) {
-      if (adapter != null) adapter.setUnreadMessageCount(count);
+      if (adapter != null) {
+         adapter.setUnreadMessageCount(count);
+      }
    }
 }

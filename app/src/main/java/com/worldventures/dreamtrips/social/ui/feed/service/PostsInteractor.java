@@ -15,14 +15,14 @@ import rx.schedulers.Schedulers;
 
 public class PostsInteractor {
 
-   private ActionPipe<CreatePostCommand> createPostPipe;
-   private ActionPipe<PostCreatedCommand> postCreatedPipe;
-   private ActionPipe<CreatePhotosCommand> createPhotosPipe;
-   private ActionPipe<CreateVideoCommand> createVideoPipe;
-   private ActionPipe<EditPostCommand> editPostPipe;
-   private ActionPipe<DeletePostCommand> deletePostPipe;
-   private ActionPipe<CreatePostCompoundOperationCommand> createPostCompoundOperationPipe;
-   private ActionPipe<ProcessAttachmentsAndPost> ProcessAttachmentsAndPostPipe;
+   private final ActionPipe<CreatePostCommand> createPostPipe;
+   private final ActionPipe<PostCreatedCommand> postCreatedPipe;
+   private final ActionPipe<CreatePhotosCommand> createPhotosPipe;
+   private final ActionPipe<CreateVideoCommand> createVideoPipe;
+   private final ActionPipe<EditPostCommand> editPostPipe;
+   private final ActionPipe<DeletePostCommand> deletePostPipe;
+   private final ActionPipe<CreatePostCompoundOperationCommand> createPostCompoundOperationPipe;
+   private final ActionPipe<ProcessAttachmentsAndPost> ProcessAttachmentsAndPostPipe;
 
    public PostsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       createPostPipe = sessionActionPipeCreator.createPipe(CreatePostCommand.class, Schedulers.io());

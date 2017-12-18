@@ -16,13 +16,31 @@ import java.util.List;
 @Value.Immutable
 @Gson.TypeAdapters
 public interface ThrstTransactionResponse extends Serializable {
-   @SerializedName("Results") @Nullable List<DetailTransactionThrst> results();
-   @SerializedName("TotalRecords") @Nullable Integer totalRecords();
-   @SerializedName("RowsPerPage") @Nullable Integer rowsPerPage();
-   @SerializedName("PageNumber") @Nullable Integer pageNumber();
-   @SerializedName("TotalPages") @Nullable Integer totalPages();
-   @SerializedName("IsFirstPage") @Nullable Boolean isFirstPage();
-   @SerializedName("IsLastPage") @Nullable Boolean isLastPage();
-   @SerializedName("HasPreviousPage") @Nullable Boolean hasPreviousPage();
-   @SerializedName("HasNextPage") @Nullable Boolean hasNextPage();
+   @SerializedName("Results")
+   @Nullable
+   List<DetailTransactionThrst> results();
+   @SerializedName("TotalRecords")
+   @Nullable
+   Integer totalRecords();
+   @SerializedName("RowsPerPage")
+   @Nullable
+   Integer rowsPerPage();
+   @SerializedName("PageNumber")
+   @Nullable
+   Integer pageNumber();
+   @SerializedName("TotalPages")
+   @Nullable
+   Integer totalPages();
+   @SerializedName("IsFirstPage")
+   @Nullable
+   Boolean isFirstPage();
+   @SerializedName("IsLastPage")
+   @Nullable
+   Boolean isLastPage();
+   @SerializedName("HasPreviousPage")
+   @Nullable
+   Boolean hasPreviousPage();
+   @SerializedName("HasNextPage")
+   @Nullable
+   Boolean hasNextPage();
 }

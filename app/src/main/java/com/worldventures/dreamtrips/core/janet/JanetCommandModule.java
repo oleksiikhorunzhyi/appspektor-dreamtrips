@@ -11,7 +11,7 @@ import com.worldventures.core.modules.video.service.command.ResetCachedModelsInP
 import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.core.service.command.DeleteCachedModelCommand;
 import com.worldventures.core.service.command.DownloadCachedModelCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.UnsubscribeFromPushCommand;
+import com.worldventures.dreamtrips.modules.gcm.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.common.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.command.ClearStoragesCommand;
@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotifi
 import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlJanetCommandModule;
 import com.worldventures.dreamtrips.social.di.SocialJanetCommandModule;
-import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
 
 import dagger.Module;
 

@@ -49,7 +49,9 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    public void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
       Icepick.saveInstanceState(this, outState);
-      if (presenter != null) this.presenter.saveInstanceState(outState);
+      if (presenter != null) {
+         this.presenter.saveInstanceState(outState);
+      }
    }
 
 

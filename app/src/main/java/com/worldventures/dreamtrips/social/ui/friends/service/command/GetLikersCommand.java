@@ -44,7 +44,7 @@ public class GetLikersCommand extends GetUsersCommand {
          feedEntity.setFirstLikerName(null);
       } else {
          User userWhoLiked = Queryable.from(users)
-               .firstOrDefault(user -> user.getId() != sessionHolder.get().get().getUser().getId());
+               .firstOrDefault(user -> user.getId() != sessionHolder.get().get().user().getId());
          feedEntity.setFirstLikerName(userWhoLiked != null ? userWhoLiked.getFullName() : null);
       }
    }

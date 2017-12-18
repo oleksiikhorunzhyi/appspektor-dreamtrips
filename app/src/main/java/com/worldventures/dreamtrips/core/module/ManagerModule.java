@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.service.InitializerInteractor;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerImagesProcessedEventDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -86,7 +87,8 @@ public class ManagerModule {
 
    @Singleton
    @Provides
-   MerchantsFacadeInteractor provideMerchantsFacadeInteractor(MerchantsRequestSourceInteractor merchantsRequestSourceInteractor, FilterDataInteractor filterDataInteractor, MerchantsInteractor merchantsInteractor, DtlLocationInteractor locationInteractor) {
+   MerchantsFacadeInteractor provideMerchantsFacadeInteractor(MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
+         FilterDataInteractor filterDataInteractor, MerchantsInteractor merchantsInteractor, DtlLocationInteractor locationInteractor) {
       return new MerchantsFacadeInteractor(merchantsRequestSourceInteractor, filterDataInteractor, merchantsInteractor, locationInteractor);
    }
 
@@ -161,5 +163,11 @@ public class ManagerModule {
    @Provides(type = Provides.Type.SET)
    LogoutAction provideCookieManagerLogoutAction(DTCookieManager cookieManager) {
       return cookieManager::clearCookies;
+   }
+
+   @Provides
+   @Singleton
+   UserNotificationInteractor provideUserNotificationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new UserNotificationInteractor(sessionActionPipeCreator);
    }
 }

@@ -5,16 +5,17 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantStaticPageProvider;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMerchantPresenter;
+import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMerchantViewedAction;
 
 import javax.inject.Inject;
 
 @Layout(R.layout.fragment_webview)
-public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<MerchantIdBundle> {
+public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<AuthorizedStaticInfoPresenter, MerchantIdBundle> {
 
    @Inject MerchantStaticPageProvider merchantStaticPageProvider;
 
@@ -38,6 +39,6 @@ public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<Merchan
    @Override
    protected void trackViewFromViewPagerIfNeeded() {
       super.trackViewFromViewPagerIfNeeded();
-      getPresenter().track(Route.ENROLL_MERCHANT);
+      analyticsInteractor.analyticsActionPipe().send(new EnrollMerchantViewedAction(getUserId()));
    }
 }

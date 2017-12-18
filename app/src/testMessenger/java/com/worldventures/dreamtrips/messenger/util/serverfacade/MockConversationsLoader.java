@@ -9,7 +9,7 @@ import rx.Observable;
 
 public class MockConversationsLoader implements ConversationsLoader {
 
-   private List<Conversation> conversations;
+   private final List<Conversation> conversations;
 
    public MockConversationsLoader(List<Conversation> conversations) {
       this.conversations = conversations;

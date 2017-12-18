@@ -14,14 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.ImagePresenterClickEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.fragment.FragmentUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
@@ -117,7 +116,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
    @Override
    protected T createPresenter(Bundle savedInstanceState) {
-      return (T) new BucketItemDetailsPresenter(getArgs());
+      BucketBundle args = getArgs();
+      return (T) new BucketItemDetailsPresenter(args.getType(), args.getBucketItem(), args.getOwnerId());
    }
 
    @Override
@@ -257,13 +257,14 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
 
    @Override
    public void done() {
-      if (getActivity() instanceof SocialComponentActivity && !ViewUtils.isLandscapeOrientation(getActivity()))
+      if (getActivity() instanceof SocialComponentActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
          getActivity().onBackPressed();
+      }
    }
 
    @Override
    public void openFullscreen(BucketViewPagerBundle data) {
-      router.moveTo(Route.BUCKET_FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+      router.moveTo(BucketPhotoViewPagerFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(data)
             .build());
@@ -287,7 +288,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
       this.photos.clear();
       this.photos.addAll(newPhotos);
       adapter.clear();
-      Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(Route.TRIP_IMAGE_PAGER, "")));
+      Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(TripImagePagerFragment.class)));
 
       // initialize once, initializing with empty list in view pager causes crash
       if (!photos.isEmpty() && !viewPagerIndicatorInitialized) {

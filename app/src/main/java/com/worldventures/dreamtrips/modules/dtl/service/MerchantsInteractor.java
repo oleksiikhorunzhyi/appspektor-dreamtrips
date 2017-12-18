@@ -76,8 +76,8 @@ public class MerchantsInteractor {
                      .take(1)
                      .filter(LocationCommand::isResultDefined)
                      .map(LocationCommand::getResult)
-                     .filter(dtlLocation -> dtlLocation.locationSourceType() == LocationSourceType.FROM_MAP ||
-                           dtlLocation.locationSourceType() == LocationSourceType.NEAR_ME)
+                     .filter(dtlLocation -> dtlLocation.locationSourceType() == LocationSourceType.FROM_MAP
+                           || dtlLocation.locationSourceType() == LocationSourceType.NEAR_ME)
                      .subscribe(dtlLocation ->
                            dtlLocationInteractor.changeFacadeLocation(buildManualLocation(thinMerchant, dtlLocation))
                      );

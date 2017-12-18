@@ -87,7 +87,9 @@ public class PickLocationViewImpl extends MvpLinearLayout<PickLocationView, Pick
    @Override
    protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
-      if (map != null) map.clear();
+      if (map != null) {
+         map.clear();
+      }
    }
 
    @NonNull

@@ -10,8 +10,8 @@ import rx.schedulers.Schedulers;
 
 public class AppConfigurationInteractor {
 
-   private ActionPipe<LoadConfigurationCommand> versionCheckActionPipe;
-   private ActionPipe<ConfigurationCommand> configurationCommandActionPipe;
+   private final ActionPipe<LoadConfigurationCommand> versionCheckActionPipe;
+   private final ActionPipe<ConfigurationCommand> configurationCommandActionPipe;
 
    public AppConfigurationInteractor(Janet janet) {
       versionCheckActionPipe = janet.createPipe(LoadConfigurationCommand.class, Schedulers.io());

@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.social.trips
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.entity.model.EntityHolder
 import com.worldventures.dreamtrips.api.trip.model.Trip
 import com.worldventures.dreamtrips.api.trip.model.TripWithDetails
-import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand

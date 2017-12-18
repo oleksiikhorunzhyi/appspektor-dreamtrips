@@ -17,11 +17,10 @@ public class IrregularPhotoPickerViewModel extends GalleryMediaPickerViewModel {
    public static final int CAMERA = 1;
    public static final int FACEBOOK = 2;
 
-   private int iconRes;
-   private int titleRes;
-   private int colorRes;
-
-   private int attachType;
+   private final int iconRes;
+   private final int titleRes;
+   private final int colorRes;
+   private final int attachType;
 
    public IrregularPhotoPickerViewModel(@AttachType int attachType, @DrawableRes int iconRes, @StringRes int titleRes, @ColorRes int colorRes) {
       this.attachType = attachType;

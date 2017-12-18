@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 public class FeedBundle implements Parcelable {
 
-   protected FeedBundle(Parcel in) {
+   protected FeedBundle(Parcel in) { //NOPMD
+      //do nothing
    }
 
    public static final Creator<FeedBundle> CREATOR = new Creator<FeedBundle>() {
@@ -27,5 +28,6 @@ public class FeedBundle implements Parcelable {
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
+      //do nothing
    }
 }

@@ -19,7 +19,7 @@ public class UploadBucketPhotoInMemoryStorage implements ActionStorage<List<Enti
       ClearableStorage {
    public static final String BUCKET_ID_PARAM = "bucket_id";
 
-   private Map<String, List<EntityStateHolder<BucketPhoto>>> mapOfBucketPhoto = new ArrayMap<>();
+   private final Map<String, List<EntityStateHolder<BucketPhoto>>> mapOfBucketPhoto = new ArrayMap<>();
 
    @Override
    public synchronized void save(@Nullable CacheBundle params, List<EntityStateHolder<BucketPhoto>> listOfPhotoEntityStateHolder) {

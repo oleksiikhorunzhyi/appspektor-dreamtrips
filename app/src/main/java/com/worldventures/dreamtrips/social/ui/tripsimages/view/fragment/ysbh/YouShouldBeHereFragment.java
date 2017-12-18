@@ -15,7 +15,7 @@ import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
@@ -107,11 +107,11 @@ public class YouShouldBeHereFragment extends BaseFragment<YouShouldBeHerePresent
 
    @Override
    public void openFullscreen(List<YSBHPhoto> photos, boolean lastPageReached, int selectedItemIndex) {
-      router.moveTo(Route.YSBH_PAGER_IMAGES,
-            NavigationConfigBuilder.forActivity()
-                  .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                  .data(new YsbhPagerArgs(photos, lastPageReached, selectedItemIndex))
-                  .build());
+      router.moveTo(YsbhViewPagerFragment.class, NavigationConfigBuilder
+            .forActivity()
+            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .data(new YsbhPagerArgs(photos, lastPageReached, selectedItemIndex))
+            .build());
    }
 
    @Override

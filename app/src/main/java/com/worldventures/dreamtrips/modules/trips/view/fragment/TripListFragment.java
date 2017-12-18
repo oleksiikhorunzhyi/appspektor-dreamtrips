@@ -23,7 +23,6 @@ import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
@@ -37,6 +36,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHe
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -102,18 +102,20 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             int itemCount = recyclerView.getLayoutManager().getItemCount();
             int lastVisibleItemPosition = layout.findLastVisibleItemPosition();
-            if (lastVisibleItemPosition == itemCount - 1)
+            if (lastVisibleItemPosition == itemCount - 1) {
                getPresenter().scrolled();
+            }
          }
       });
    }
 
    private void showFilters() {
       Fragment filtersFragment = getFragmentManager().findFragmentById(R.id.container_filters);
-      if (filtersFragment != null && filtersFragment.getClass().getName().equals(Route.TRIP_FILTERS.getClazzName()))
+      if (filtersFragment != null && filtersFragment.getClass().getName().equals(FiltersFragment.class.getName())) {
          return;
+      }
 
-      router.moveTo(Route.TRIP_FILTERS, NavigationConfigBuilder.forFragment()
+      router.moveTo(FiltersFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .containerId(R.id.container_filters)
             .fragmentManager(getFragmentManager())
@@ -192,6 +194,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          case R.id.action_map:
             getPresenter().openMap();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -222,14 +226,18 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
       stateDelegate.restoreStateIfNeeded();
    }
@@ -271,7 +279,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @Override
    public void openMap() {
-      router.moveTo(Route.MAP, NavigationConfigBuilder.forFragment()
+      router.moveTo(TripMapFragment.class, NavigationConfigBuilder.forFragment()
             .fragmentManager(getFragmentManager())
             .containerId(R.id.container_main)
             .backStackEnabled(true)
@@ -295,7 +303,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @Override
    public void moveToTripDetails(TripModel model) {
-      router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
+      router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create()
                   .visible(false)
                   .build())

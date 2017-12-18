@@ -75,6 +75,8 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
             }
 
             return true;
+         default:
+            break;
       }
       return false;
    }

@@ -12,12 +12,13 @@ import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.cell.AbstractCell;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketItemEditFragment;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
@@ -37,21 +38,30 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.LoaderCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.uploading.UploadingPostsSectionCell;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CreateEntityFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.EditPhotoFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.EditPostFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedListAdditionalInfoFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.FriendSearchFragment;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.FriendsMainFragment;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.ReloadFeedCell;
+import com.worldventures.dreamtrips.social.ui.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoBundle;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
 import java.util.List;
 
+@SuppressWarnings("PMD.GodClass") //TODO: Resolve this PMD error
 public class FragmentWithFeedDelegate {
 
-   private Router router;
-   private FeedAspectRatioHelper feedAspectRatioHelper;
+   private final Router router;
+   private final FeedAspectRatioHelper feedAspectRatioHelper;
 
    private BaseDelegateAdapter adapter;
 
@@ -92,12 +102,12 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel &&
-                  items.get(newItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel) {
+            if (adapter.getItem(oldItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel
+                  && items.get(newItemPosition) instanceof SuggestedPhotosCell.SuggestedPhotoModel) {
                return true;
             }
-            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList &&
-                  items.get(newItemPosition) instanceof UploadingPostsList) {
+            if (adapter.getItem(oldItemPosition) instanceof UploadingPostsList
+                  && items.get(newItemPosition) instanceof UploadingPostsList) {
                return true;
             }
             return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
@@ -105,8 +115,8 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof FeedItem &&
-                  items.get(newItemPosition) instanceof FeedItem) {
+            if (adapter.getItem(oldItemPosition) instanceof FeedItem
+                  && items.get(newItemPosition) instanceof FeedItem) {
                FeedItem oldItem = (FeedItem) adapter.getItem(oldItemPosition);
                FeedItem newItem = (FeedItem) items.get(newItemPosition);
                return oldItem.contentSame(newItem);
@@ -143,16 +153,22 @@ public class FragmentWithFeedDelegate {
          int firstBunchSize = focusedItemIndex;
          int lastBunchSize = adapter.getCount() - focusedItemIndex - 1;
 
-         if (firstBunchSize != 0) adapter.notifyItemRangeChanged(0, firstBunchSize);
+         if (firstBunchSize != 0) {
+            adapter.notifyItemRangeChanged(0, firstBunchSize);
+         }
          adapter.notifyItemChanged(focusedItemIndex);
-         if (lastBunchSize != 0) adapter.notifyItemRangeChanged(focusedItemIndex + 1, lastBunchSize);
+         if (lastBunchSize != 0) {
+            adapter.notifyItemRangeChanged(focusedItemIndex + 1, lastBunchSize);
+         }
       } else {
          notifyDataSetChanged();
       }
    }
 
    public void notifyItemChanged(FeedItem feedItem) {
-      if (feedItem == null) return;
+      if (feedItem == null) {
+         return;
+      }
       int size = adapter.getItems().size();
       for (int i = 0; i < size; i++) {
          Object object = adapter.getItems().get(i);
@@ -169,7 +185,9 @@ public class FragmentWithFeedDelegate {
     */
    public void resetTranslatedStatus() {
       Queryable.from(adapter.getItems()).forEachR(item -> {
-         if (item instanceof FeedItem) ((FeedItem) item).getItem().setTranslated(false);
+         if (item instanceof FeedItem) {
+            ((FeedItem) item).getItem().setTranslated(false);
+         }
       });
       notifyDataSetChanged();
    }
@@ -191,23 +209,23 @@ public class FragmentWithFeedDelegate {
    ////////////////////////////////////////
 
    public void openAccountProfile(User account) {
-      router.moveTo(Route.ACCOUNT_PROFILE, NavigationConfigBuilder.forActivity()
+      router.moveTo(AccountFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(new UserBundle(account))
             .build());
    }
 
    public void openFriends(FriendMainBundle bundle) {
-      router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity().data(bundle).build());
+      router.moveTo(FriendsMainFragment.class, NavigationConfigBuilder.forActivity().data(bundle).build());
    }
 
    public void openTextualPostEdit(FragmentManager fragmentManager, TextualPost textualPost) {
       @IdRes int containerId = R.id.container_details_floating;
-      router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forRemoval()
+      router.moveTo(EditPostFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(containerId)
             .fragmentManager(fragmentManager)
             .build());
-      router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forFragment()
+      router.moveTo(EditPostFragment.class, NavigationConfigBuilder.forFragment()
             .containerId(containerId)
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
@@ -217,11 +235,11 @@ public class FragmentWithFeedDelegate {
 
    public void openPhotoEdit(FragmentManager fragmentManager, Photo photo) {
       @IdRes int containerId = R.id.container_details_floating;
-      router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
+      router.moveTo(EditPhotoFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(containerId)
             .fragmentManager(fragmentManager)
             .build());
-      router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forFragment()
+      router.moveTo(EditPhotoFragment.class, NavigationConfigBuilder.forFragment()
             .containerId(containerId)
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
@@ -229,55 +247,50 @@ public class FragmentWithFeedDelegate {
             .build());
    }
 
-   public void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle) {
-      router.moveTo(route, NavigationConfigBuilder.forActivity().data(foreignBucketBundle).build());
+   public void openBucketList(Class<? extends BucketTabsFragment> clazz, ForeignBucketTabsBundle foreignBucketBundle) {
+      router.moveTo(clazz, NavigationConfigBuilder.forActivity().data(foreignBucketBundle).build());
    }
 
    public void openBucketEdit(FragmentManager fragmentManager, boolean isTabletLandscape, BucketBundle bucketBundle) {
       @IdRes int containerId = R.id.container_details_floating;
       bucketBundle.setLock(true);
       if (isTabletLandscape) {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
+         router.moveTo(BucketItemEditFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(true)
                .containerId(containerId)
                .fragmentManager(fragmentManager)
                .data(bucketBundle)
                .build());
       } else {
-         router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
+         router.moveTo(BucketItemEditFragment.class, NavigationConfigBuilder.forActivity().data(bucketBundle).build());
       }
-   }
-
-   public void openTripImages(Route route, TripImagesArgs tripImagesBundle) {
-      router.moveTo(route, NavigationConfigBuilder.forActivity().data(tripImagesBundle).build());
    }
 
    public void openComments(FeedItem feedItem, boolean isVisible, boolean isTabletLandscape) {
       if (isVisible) {
-         Route detailsRoute = Route.FEED_ITEM_DETAILS;
          FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder().feedItem(feedItem)
                .showAdditionalInfo(true)
                .openKeyboard(true);
          if (isTabletLandscape) {
             bundleBuilder.slave(true);
          }
-         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+         router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
                .data(bundleBuilder.build()).build());
       }
    }
 
    public void openFriendsSearch() {
-      router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
+      router.moveTo(FriendSearchFragment.class, NavigationConfigBuilder.forActivity()
             .data(new FriendGlobalSearchBundle(""))
             .build());
    }
 
    public void openPost(FragmentManager fragmentManager) {
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_details_floating)
             .fragmentManager(fragmentManager)
             .build());
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
             .data(new CreateEntityBundle(false, CreateEntityBundle.Origin.FEED))
@@ -286,11 +299,11 @@ public class FragmentWithFeedDelegate {
    }
 
    public void openSharePhoto(FragmentManager fragmentManager, CreateEntityBundle bundle) {
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forRemoval()
             .containerId(R.id.container_details_floating)
             .fragmentManager(fragmentManager)
             .build());
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
             .containerId(R.id.container_details_floating)
@@ -299,7 +312,7 @@ public class FragmentWithFeedDelegate {
    }
 
    public void openFeedAdditionalInfo(FragmentManager fragmentManager, User account) {
-      router.moveTo(Route.FEED_LIST_ADDITIONAL_INFO, NavigationConfigBuilder.forFragment()
+      router.moveTo(FeedListAdditionalInfoFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(fragmentManager)
             .containerId(R.id.additional_info_container)
@@ -308,14 +321,14 @@ public class FragmentWithFeedDelegate {
    }
 
    public void hideAdditonalInfo(FragmentManager fragmentManager) {
-      router.moveTo(Route.FEED_LIST_ADDITIONAL_INFO, NavigationConfigBuilder.forRemoval()
+      router.moveTo(FeedListAdditionalInfoFragment.class, NavigationConfigBuilder.forRemoval()
             .fragmentManager(fragmentManager)
             .containerId(R.id.additional_info_container)
             .build());
    }
 
    public void openHashtagSearch() {
-      router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
+      router.moveTo(HashtagFeedFragment.class, NavigationConfigBuilder.forActivity()
             .data(null)
             .manualOrientationActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())

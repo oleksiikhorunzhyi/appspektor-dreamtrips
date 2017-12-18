@@ -17,6 +17,8 @@ import dagger.ObjectGraph;
 
 public abstract class InjectingFragment extends Fragment implements ConfigurableFragment, Injector {
 
+   private MenuResource menuResource;
+
    @Override
    public void onAttach(Context context) {
       super.onAttach(context);
@@ -44,8 +46,6 @@ public abstract class InjectingFragment extends Fragment implements Configurable
       setupMenuIfNeed();
    }
 
-   private MenuResource menuResource;
-
    private void setupMenuIfNeed() {
       menuResource = this.getClass().getAnnotation(MenuResource.class);
       setHasOptionsMenu(menuResource != null);
@@ -63,10 +63,11 @@ public abstract class InjectingFragment extends Fragment implements Configurable
    }
 
    protected void onMenuInflated(Menu menu) {
-
+      //do nothing
    }
 
    @Override
    public void afterCreateView(View rootView) {
+      //do nothing
    }
 }

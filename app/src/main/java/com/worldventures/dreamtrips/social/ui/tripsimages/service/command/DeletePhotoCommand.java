@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.photos.DeletePhotoHttpAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;

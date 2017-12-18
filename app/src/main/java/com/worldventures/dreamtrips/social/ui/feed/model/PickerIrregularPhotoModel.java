@@ -14,11 +14,10 @@ public class PickerIrregularPhotoModel {
    public static final int FACEBOOK = 2;
    public static final int LIBRARY = 3;
 
-   private int iconRes;
-   private int titleRes;
-   private int colorRes;
-
-   private int attachType;
+   private final int iconRes;
+   private final int titleRes;
+   private final int colorRes;
+   private final int attachType;
 
    public PickerIrregularPhotoModel(@AttachType int attachType, @DrawableRes int iconRes, @StringRes int titleRes, @ColorRes int colorRes) {
       this.attachType = attachType;

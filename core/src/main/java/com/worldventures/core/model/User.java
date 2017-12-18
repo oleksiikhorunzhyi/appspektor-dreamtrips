@@ -2,6 +2,7 @@ package com.worldventures.core.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class User extends BaseEntity implements Parcelable {
 
+   @SuppressWarnings("PMD.UnusedPrivateField")
    private static final String RBS_SUBSCRIPTION = "RBS";   //rep
    private static final String DTM_SUBSCRIPTION = "DTM";   //member
    private static final String DTS_SUBSCRIPTION = "DTS";   //standard
@@ -54,9 +56,9 @@ public class User extends BaseEntity implements Parcelable {
     */
    private List<String> subscriptions;
 
-   @SerializedName("circles") List<Circle> circles;
+   @SerializedName("circles") private List<Circle> circles;
 
-   @SerializedName("mutuals") MutualFriends mutualFriends;
+   @SerializedName("mutuals") private MutualFriends mutualFriends;
 
    private transient boolean avatarUploadInProgress;
    private transient boolean coverUploadInProgress;
@@ -78,7 +80,7 @@ public class User extends BaseEntity implements Parcelable {
    }
 
    public String getCirclesString() {
-      if (circles == null || circles.size() == 0) return "";
+      if (circles == null || circles.isEmpty()) { return ""; }
       return TextUtils.join(", ", Queryable.from(circles).map(Circle::getName).toList());
    }
 
@@ -86,7 +88,11 @@ public class User extends BaseEntity implements Parcelable {
       this.circles = circles;
    }
 
+   @NonNull
    public List<Circle> getCircles() {
+      if (circles == null) {
+         circles = new ArrayList<>();
+      }
       return circles;
    }
 
@@ -307,6 +313,7 @@ public class User extends BaseEntity implements Parcelable {
       private String thumb;
 
       public Avatar() {
+         super();
       }
 
       private Avatar(Parcel in) {
@@ -358,6 +365,7 @@ public class User extends BaseEntity implements Parcelable {
       private int count;
 
       public MutualFriends() {
+         super();
       }
 
       public MutualFriends(int count) {

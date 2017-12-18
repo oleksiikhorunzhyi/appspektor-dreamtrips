@@ -165,6 +165,8 @@ public class UploadingPostCell extends FrameLayout {
          case FAILED_PROCESSING:
             updateAccordingToFailedProcessingState();
             break;
+         default:
+            break;
       }
    }
 
@@ -358,6 +360,8 @@ public class UploadingPostCell extends FrameLayout {
             break;
          case FAILED:
             cellDelegate.onUploadRetryClicked(compoundOperationModel);
+            break;
+         default:
             break;
       }
    }

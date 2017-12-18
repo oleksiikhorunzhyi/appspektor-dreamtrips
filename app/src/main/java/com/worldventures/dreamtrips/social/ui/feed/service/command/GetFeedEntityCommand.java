@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketItemHttpAction;
 import com.worldventures.dreamtrips.api.multimedia.GetVideoHttpAction;
@@ -74,6 +74,8 @@ public class GetFeedEntityCommand extends CommandWithError<FeedEntity> implement
                   .map(GetVideoHttpAction::response)
                   .map(video -> mappery.convert(video, Video.class))
                   .subscribe(callback::onSuccess, callback::onFail);
+            break;
+         default:
             break;
       }
    }

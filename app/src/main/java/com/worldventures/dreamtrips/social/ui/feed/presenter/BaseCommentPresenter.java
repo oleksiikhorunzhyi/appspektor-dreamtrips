@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.service.analytics.CommentAction;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.CommentAction;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -58,7 +58,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
       super.takeView(view);
       view.setLikePanel(feedEntity);
 
-      if (isNeedCheckCommentsWhenStart()) checkCommentsAndLikesToLoad();
+      if (isNeedCheckCommentsWhenStart()) {
+         checkCommentsAndLikesToLoad();
+      }
 
       subscribeToCommentDeletion();
       subscribeToCommentCreation();
@@ -92,7 +94,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    protected void checkCommentsAndLikesToLoad() {
-      if (loadInitiated) return;
+      if (loadInitiated) {
+         return;
+      }
       //
       loadComments();
       loadInitiated = true;
@@ -138,16 +142,24 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
    }
 
    @Override
-   public void onLikeItem(FeedItem feedItem) {}
+   public void onLikeItem(FeedItem feedItem) {
+      //do nothing
+   }
 
    @Override
-   public void onDownloadImage(String url) {}
+   public void onDownloadImage(String url) {
+      //do nothing
+   }
 
    @Override
-   public void onTranslateFeedEntity(FeedEntity translatableItem) {}
+   public void onTranslateFeedEntity(FeedEntity translatableItem) {
+      //do nothing
+   }
 
    @Override
-   public void onShowOriginal(FeedEntity translatableItem) {}
+   public void onShowOriginal(FeedEntity translatableItem) {
+      //do nothing
+   }
 
    @Override
    public void onCommentItem(FeedItem feedItem) {
@@ -249,7 +261,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
    private void updateEntityComments(Comment comment) {
       int commentIndex = feedEntity.getComments().indexOf(comment);
-      if (commentIndex != -1) feedEntity.getComments().set(commentIndex, comment);
+      if (commentIndex != -1) {
+         feedEntity.getComments().set(commentIndex, comment);
+      }
    }
 
    public interface View extends RxView, FlagDelegate.View {

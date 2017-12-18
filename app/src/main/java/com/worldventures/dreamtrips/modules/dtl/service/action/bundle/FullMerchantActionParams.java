@@ -11,8 +11,10 @@ public interface FullMerchantActionParams extends HttpActionParams {
 
    String merchantId();
 
-   @Nullable String offerId();
+   @Nullable
+   String offerId();
 
-   @Nullable DtlLocation location();
+   @Nullable
+   DtlLocation location();
 
 }

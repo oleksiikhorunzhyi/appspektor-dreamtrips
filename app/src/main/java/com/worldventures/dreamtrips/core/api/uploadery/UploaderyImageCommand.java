@@ -2,9 +2,10 @@ package com.worldventures.dreamtrips.core.api.uploadery;
 
 import android.content.Context;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.infopages.StaticPageProvider;
 import com.worldventures.core.service.UriPathProvider;
+import com.worldventures.core.service.command.BaseUploadImageCommand;
 import com.worldventures.core.utils.HttpUploaderyException;
 import com.worldventures.dreamtrips.api.uploadery.UploadImageHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
@@ -36,7 +37,9 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
    protected void run(CommandCallback<T> callback) {
       getFileObservable(fileUri).flatMap(this::upload)
             .doOnNext(action -> {
-               if (action.status == ActionState.Status.PROGRESS) callback.onProgress(action.progress);
+               if (action.status == ActionState.Status.PROGRESS) {
+                  callback.onProgress(action.progress);
+               }
             })
             .compose(nextAction())
             .subscribe(callback::onSuccess, throwable -> callback.onFail(new HttpUploaderyException(throwable)));

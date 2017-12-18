@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.service.analytics;
 import android.text.TextUtils;
 
 import com.worldventures.core.service.analytics.AdobeTracker;
-import com.worldventures.core.service.analytics.AnalyticsEvent;
+import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
@@ -25,6 +25,8 @@ public class ViewTripDetailsAnalyticAction extends BaseAnalyticsAction {
       this.filters = filterData.getFilterAnalyticString();
       this.regionFilters = filterData.getAcceptedRegionsAnalyticString();
       this.themeFilters = filterData.getAcceptedActivitiesAnalyticString();
-      if (!TextUtils.isEmpty(searchQuery)) this.searchQuery = searchQuery;
+      if (!TextUtils.isEmpty(searchQuery)) {
+         this.searchQuery = searchQuery;
+      }
    }
 }

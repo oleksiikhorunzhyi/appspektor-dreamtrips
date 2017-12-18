@@ -5,7 +5,6 @@ import android.widget.TextView;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstTransactionSucceedPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 
 import javax.inject.Inject;
 
@@ -81,7 +81,7 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
       new ShareDialog(getContext(), type -> {
          getPresenter().trackSharing(type);
          ShareBundle shareBundle = MerchantHelper.buildShareBundle(getContext(), merchant, type);
-         router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(shareBundle).build());
+         router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(shareBundle).build());
       }).show();
    }
 

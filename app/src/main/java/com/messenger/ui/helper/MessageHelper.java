@@ -5,7 +5,7 @@ import com.messenger.messengerservers.model.Message;
 
 import static com.messenger.messengerservers.constant.MessageType.MESSAGE;
 
-public class MessageHelper {
+public final class MessageHelper {
 
    private MessageHelper() {
    }

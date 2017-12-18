@@ -133,8 +133,10 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
    protected BaseAdapter createSpinnerAdapter() {
       Resources res = getResources();
-      List<ChatTypeItem> listItems = Arrays.asList(new ChatTypeItem(ChatTypeItem.ALL_CHATS, res.getString(R.string.conversation_list_spinner_item_all_chats)), new ChatTypeItem(ChatTypeItem.GROUP_CHATS, res
-            .getString(R.string.conversation_list_spinner_item_group_chats)));
+      List<ChatTypeItem> listItems = Arrays.asList(
+            new ChatTypeItem(ChatTypeItem.ALL_CHATS, res.getString(R.string.conversation_list_spinner_item_all_chats)),
+            new ChatTypeItem(ChatTypeItem.GROUP_CHATS, res.getString(R.string.conversation_list_spinner_item_group_chats))
+      );
       ArrayAdapter<ChatTypeItem> adapter = new ArrayAdapter<ChatTypeItem>(getContext(), R.layout.spinner_item_action_bar, listItems) {
          @Override
          public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -215,6 +217,8 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
                break;
             case 1:
                getPresenter().onTurnOffNotificationsButtonPressed(conversation);
+               break;
+            default:
                break;
          }
          swipeableAdapterManager.closeAllItems();

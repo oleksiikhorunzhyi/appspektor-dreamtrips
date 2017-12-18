@@ -1,7 +1,7 @@
 package com.worldventures.core.modules.video.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.model.VideoCategory;
 import com.worldventures.core.modules.video.service.storage.MediaModelStorage;

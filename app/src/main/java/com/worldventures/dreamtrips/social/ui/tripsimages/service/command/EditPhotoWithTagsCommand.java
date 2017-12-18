@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -42,13 +42,17 @@ public class EditPhotoWithTagsCommand extends CommandWithError<Photo> implements
                return photo;
             })
             .flatMap(photo -> {
-               if (addedTags.isEmpty()) return Observable.just(photo);
+               if (addedTags.isEmpty()) {
+                  return Observable.just(photo);
+               }
                return tripImagesInteractor.addPhotoTagsActionPipe()
                      .createObservableResult(new AddPhotoTagsCommand(uid, addedTags))
                      .map(result -> photo);
             })
             .flatMap(photo -> {
-               if (removedTags.isEmpty()) return Observable.just(photo);
+               if (removedTags.isEmpty()) {
+                  return Observable.just(photo);
+               }
                List<Integer> userIds = Queryable.from(removedTags)
                      .concat(photo.getPhotoTags())
                      .map(photoTag -> photoTag

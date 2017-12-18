@@ -9,6 +9,7 @@ public class Coordinates implements Parcelable {
    private double lng;
 
    public Coordinates() {
+      //do nothing
    }
 
    public Coordinates(double lat, double lng) {

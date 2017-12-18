@@ -11,14 +11,17 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,6 +32,7 @@ import butterknife.OnClick;
 
 @SuppressLint("DefaultLocale")
 @Layout(R.layout.fragment_verify_amount)
+@ComponentPresenter.ComponentTitle(R.string.dtl_verify_amount)
 public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantBundle> implements DtlVerifyAmountPresenter.View {
 
    @InjectView(R.id.dt_points) TextView dtPoints;
@@ -36,7 +40,8 @@ public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmo
    @InjectView(R.id.receipt) SimpleDraweeView receipt;
    @InjectView(R.id.info) TextView info;
    //
-   @Inject @Named(RouteCreatorModule.DTL_TRANSACTION) RouteCreator<DtlTransaction> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.DTL_TRANSACTION)
+   FragmentClassProvider<DtlTransaction> fragmentClassProvider;
    //
    private DtlEnrollWizard dtlEnrollWizard;
 
@@ -48,7 +53,7 @@ public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmo
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
+      dtlEnrollWizard = new DtlEnrollWizard(router, fragmentClassProvider);
    }
 
    @Override
@@ -94,4 +99,12 @@ public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmo
    public void attachDtPoints(int count) {
       dtPoints.setText(String.format("+%dpt", count));
    }
+
+   @Override
+   public void setMinimalAmount(double minimalAmount, Currency currency) {
+      String minAmount = String.format(Locale.US, "%.2f", minimalAmount);
+      info.setText(getString(R.string.dtl_estimator_explanation_to_earn_points, String.format("%s%s %s", currency.prefix(),
+            minAmount, currency.suffix())));
+   }
+
 }

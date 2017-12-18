@@ -11,14 +11,16 @@ import com.innahema.collections.query.functions.Action1;
 
 public class TextViewLinkHandler extends LinkMovementMethod {
 
-   private Action1<String> onLinkClick;
+   private final Action1<String> onLinkClick;
 
    public TextViewLinkHandler(Action1<String> onLinkClick) {
       this.onLinkClick = onLinkClick;
    }
 
    public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
-      if (event.getAction() != MotionEvent.ACTION_UP) return super.onTouchEvent(widget, buffer, event);
+      if (event.getAction() != MotionEvent.ACTION_UP) {
+         return super.onTouchEvent(widget, buffer, event);
+      }
 
       int x = (int) event.getX();
       int y = (int) event.getY();
@@ -34,8 +36,8 @@ public class TextViewLinkHandler extends LinkMovementMethod {
       int off = layout.getOffsetForHorizontal(line, x);
 
       URLSpan[] link = buffer.getSpans(off, off, URLSpan.class);
-      if (link.length != 0) {
-         if (onLinkClick != null) onLinkClick.apply(link[0].getURL());
+      if (link.length != 0 && onLinkClick != null) {
+         onLinkClick.apply(link[0].getURL());
       }
       return true;
    }

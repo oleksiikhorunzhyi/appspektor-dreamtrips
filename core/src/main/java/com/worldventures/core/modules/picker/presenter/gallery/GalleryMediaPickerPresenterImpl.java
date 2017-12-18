@@ -2,21 +2,21 @@ package com.worldventures.core.modules.picker.presenter.gallery;
 
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
+import com.worldventures.core.modules.picker.command.GetVideoDurationCommand;
+import com.worldventures.core.modules.picker.command.VideoCapturedCommand;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
 import com.worldventures.core.modules.picker.presenter.base.BaseMediaPickerPresenterImpl;
-import com.worldventures.core.modules.picker.command.GetMediaFromGalleryCommand;
+import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
+import com.worldventures.core.modules.picker.service.PickImageDelegate;
 import com.worldventures.core.modules.picker.util.strategy.PhotoPickLimitStrategy;
 import com.worldventures.core.modules.picker.util.strategy.VideoPickLimitStrategy;
 import com.worldventures.core.modules.picker.view.gallery.GalleryMediaPickerView;
 import com.worldventures.core.modules.picker.viewmodel.GalleryMediaPickerViewModel;
 import com.worldventures.core.modules.picker.viewmodel.GalleryPhotoPickerViewModel;
 import com.worldventures.core.modules.picker.viewmodel.GalleryVideoPickerViewModel;
-import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
-import com.worldventures.core.modules.picker.service.PickImageDelegate;
-import com.worldventures.core.modules.picker.command.GetVideoDurationCommand;
-import com.worldventures.core.modules.picker.command.VideoCapturedCommand;
 import com.worldventures.core.ui.util.permission.PermissionConstants;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.core.ui.util.permission.PermissionSubscriber;
@@ -73,7 +73,7 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
    }
 
    void checkPermissions(Action0 permissionsGrantedAction) {
-      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_STORE_PERMISSIONS)
+      permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
             .compose(getView().lifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

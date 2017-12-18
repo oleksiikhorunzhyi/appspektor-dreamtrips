@@ -4,7 +4,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.utils.delegate.DrawerOpenedEventDelegate;
+import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
@@ -104,7 +104,9 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
       Pin holder = Queryable.from(pins)
             .firstOrDefault(pin -> pin.getCoordinates().getLat() == marker.getPosition().latitude
                   && pin.getCoordinates().getLng() == marker.getPosition().longitude);
-      if (holder == null) return;
+      if (holder == null) {
+         return;
+      }
 
       List<String> tripUids = holder.getTripUids();
       tripMapInteractor.checkTripsByUidPipe()
@@ -208,7 +210,9 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
                   .onSuccess(action -> onTripsLoaded(action.getItems()))
                   .onFail((action, e) -> {
                      Timber.e(e, action.getErrorMessage());
-                     if (!action.hasValidCachedItems()) view.removeTripsPopupInfo();
+                     if (!action.hasValidCachedItems()) {
+                        view.removeTripsPopupInfo();
+                     }
                      handleError(action, e);
                   }));
    }

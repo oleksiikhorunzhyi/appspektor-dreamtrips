@@ -12,7 +12,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
 
-   void updateToolbarSearchCaption(@Nullable String searchCaption);
+   void updateToolbarSearchQuery(@Nullable String searchQuery);
 
    void setRefreshedItems(List<ThinMerchant> merchants);
 
@@ -64,7 +64,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
    int getMerchantType();
 
-   void loadMerchantsAndAmenities(List<String> merchantType , int stringResource);
+   void loadMerchantsAndAmenities(List<String> merchantType, int stringResource);
 
    void showNoTransactionMessage();
 

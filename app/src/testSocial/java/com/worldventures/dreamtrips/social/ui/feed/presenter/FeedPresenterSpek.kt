@@ -1,18 +1,31 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter
 
 import com.messenger.util.UnreadConversationObservable
-import com.nhaarman.mockito_kotlin.*
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.anyArray
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
 import com.worldventures.core.modules.picker.model.PhotoPickerModel
-import com.worldventures.dreamtrips.AssertUtil
+import com.worldventures.core.test.AssertUtil
+import com.worldventures.core.ui.util.permission.PermissionDispatcher
+import com.worldventures.core.ui.util.permission.PermissionsResult
 import com.worldventures.dreamtrips.BaseSpec.Companion.anyString
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.*
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutableTextPostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody
+import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
@@ -46,7 +59,8 @@ import org.mockito.internal.verification.VerificationModeFactory
 import rx.Observable
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
 
 class FeedPresenterSpek : PresenterBaseSpec({
    describe("Feed Presenter") {
@@ -143,16 +157,16 @@ class FeedPresenterSpek : PresenterBaseSpec({
       }
 
       describe("Refresh feed") {
-         it("Refresh feed succeeds, view should update loading status and finishLoading, SuggestPhotoCommand should be sent") {
-            val testSubscriber = TestSubscriber<ActionState<SuggestedPhotoCommand>>()
-            suggestedPhotoInteractor.suggestedPhotoCommandActionPipe.observe().subscribe(testSubscriber)
+         it("Refresh feed succeeds, view should update loading status and finishLoading and check permission to suggest user's photos") {
+            var permissionObservable = Observable.just(PermissionsResult(-1, null, 1))
+            whenever(permissionDispatcher.requestPermission(anyArray(), ArgumentMatchers.anyBoolean())).thenReturn(permissionObservable)
 
             presenter.subscribeRefreshFeeds()
             feedInteractor.refreshAccountFeedPipe.send(GetAccountFeedCommand.Refresh("circleId"))
 
             verify(view, VerificationModeFactory.times(1)).updateLoadingStatus(false)
             verify(view, VerificationModeFactory.times(1)).finishLoading()
-            testSubscriber.assertValueCount(1)
+            verify(permissionDispatcher, times(1)).requestPermission(anyArray(), ArgumentMatchers.anyBoolean())
          }
       }
 
@@ -190,9 +204,10 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
       describe("Feed user interactions") {
          it("Should updateRequestCounts when menu inflated") {
+            presenter.subscribeFriendsNotificationsCount()
             presenter.menuInflated()
 
-            verify(view, VerificationModeFactory.times(1)).setRequestsCount(0)
+            verify(view, VerificationModeFactory.times(1)).setRequestsCount(1)
             verify(view, VerificationModeFactory.times(1)).setUnreadConversationCount(0)
          }
 
@@ -288,7 +303,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             suggestedPhotoInteractor.suggestedPhotoCommandActionPipe.send(SuggestedPhotoCommand())
 
             assert(presenter.shouldShowSuggestionItems == true)
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, true)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, null, true)
          }
 
          it("Suggested photos collection should be clear, suggestedPhotoCellHelper should call reset and call refreshFeedItems") {
@@ -296,7 +311,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
             assert(presenter.shouldShowSuggestionItems == false)
             verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).reset()
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, null, false)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, null, false)
          }
 
          it("Should call sync of suggestedPhotoCellHelper") {
@@ -322,10 +337,9 @@ class FeedPresenterSpek : PresenterBaseSpec({
          }
 
          it("Should update friend reauests counter") {
-            doReturn(Observable.just(null)).whenever(notificationCountEventDelegate).getObservable()
-            doReturn(1).whenever(snappy).getFriendsRequestsCount()
-
             presenter.subscribeFriendsNotificationsCount()
+
+            userNotificationInteractor.notificationCountChangedPipe().send(NotificationCountChangedCommand())
 
             verify(view, VerificationModeFactory.times(1)).setRequestsCount(1)
          }
@@ -360,7 +374,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
             compoundOperationsInteractor.compoundOperationsPipe().send(QueryCompoundOperationsCommand())
 
             assert(presenter.postUploads.containsAll(postCompoundOperations))
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(null, presenter.postUploads, false)
+            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, presenter.postUploads, false)
          }
       }
    }
@@ -373,6 +387,8 @@ class FeedPresenterSpek : PresenterBaseSpec({
       lateinit var circlesInteractor: CirclesInteractor
       lateinit var assetStatusInteractor: PingAssetStatusInteractor
       lateinit var suggestedPhotoInteractor: SuggestedPhotoInteractor
+      lateinit var userNotificationInteractor: UserNotificationInteractor
+      lateinit var permissionDispatcher: PermissionDispatcher
 
       val feedActionHandlerDelegate: FeedActionHandlerDelegate = mock()
       val snappy: SnappyRepository = mock()
@@ -381,7 +397,6 @@ class FeedPresenterSpek : PresenterBaseSpec({
       val translationDelegate: TranslationDelegate = mock()
       val suggestedPhotoCellHelper: SuggestedPhotoCellPresenterHelper = mock()
       val unreadConversationObservable: UnreadConversationObservable = mock()
-      val notificationCountEventDelegate: NotificationCountEventDelegate = mock()
       val uploadingPresenterDelegate: UploadingPresenterDelegate = mock()
 
       val circles = provideCircles()
@@ -400,6 +415,8 @@ class FeedPresenterSpek : PresenterBaseSpec({
             addContract(BaseContract.of(GetAccountFeedCommand.Refresh::class.java).result(feedItems))
             addContract(BaseContract.of(GetAccountFeedCommand.LoadNext::class.java).result(feedItems))
             addContract(BaseContract.of(SuggestedPhotoCommand::class.java).result(true))
+            addContract(BaseContract.of(NotificationCountChangedCommand::class.java)
+                  .result(NotificationCountChangedCommand.NotificationCounterResult(1, 1, 1)))
          }.build()
 
          val janet = Janet.Builder().addService(service).build()
@@ -408,6 +425,8 @@ class FeedPresenterSpek : PresenterBaseSpec({
          assetStatusInteractor = PingAssetStatusInteractor(SessionActionPipeCreator(janet))
          suggestedPhotoInteractor = SuggestedPhotoInteractor(SessionActionPipeCreator(janet))
          circlesInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
+         userNotificationInteractor = UserNotificationInteractor(SessionActionPipeCreator(janet))
+         permissionDispatcher = mock()
 
          prepareInjector().apply {
             registerProvider(SnappyRepository::class.java, { snappy })
@@ -421,21 +440,15 @@ class FeedPresenterSpek : PresenterBaseSpec({
             registerProvider(TranslationDelegate::class.java, { translationDelegate })
             registerProvider(SuggestedPhotoCellPresenterHelper::class.java, { suggestedPhotoCellHelper })
             registerProvider(UnreadConversationObservable::class.java, { unreadConversationObservable })
-            registerProvider(NotificationCountEventDelegate::class.java, { notificationCountEventDelegate })
+            registerProvider(UserNotificationInteractor::class.java, { userNotificationInteractor })
             registerProvider(UploadingPresenterDelegate::class.java, { uploadingPresenterDelegate })
             registerProvider(CompoundOperationsInteractor::class.java, { compoundOperationsInteractor })
+            registerProvider(PermissionDispatcher::class.java, { permissionDispatcher})
 
             inject(presenter)
          }
 
          presenter.takeView(view)
-      }
-
-      fun providePhotoPickerModel(): PhotoPickerModel {
-         val model = PhotoPickerModel()
-         model.absolutePath = "dfsaasdfasdf"
-         model.dateTaken = 100L
-         return model
       }
 
       fun provideCompoundOperation(): PostCompoundOperationModel<PostBody> {

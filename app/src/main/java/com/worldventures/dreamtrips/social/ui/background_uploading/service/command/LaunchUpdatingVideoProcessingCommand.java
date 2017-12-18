@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.PerformUpdateVideoStatusCommand;
 
@@ -18,9 +18,6 @@ public class LaunchUpdatingVideoProcessingCommand extends Command<Void> implemen
    private static final long TIMEOUT_FOR_WAIT_ANY_COMMAND = 100L;
 
    @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
-
-   public LaunchUpdatingVideoProcessingCommand() {
-   }
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {

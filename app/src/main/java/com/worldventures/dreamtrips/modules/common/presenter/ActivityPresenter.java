@@ -64,10 +64,8 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
       reLoginInteractor.loginHttpActionPipe().observe()
             .compose(bindViewToMainComposer())
             .subscribe(state -> {
-               if (state.status == ActionState.Status.FAIL) {
-                  if (isLoginError(state.exception)) {
-                     logout();
-                  }
+               if (state.status == ActionState.Status.FAIL && isLoginError(state.exception)) {
+                  logout();
                }
             });
    }
@@ -77,7 +75,8 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
             .observeWithReplay()
             .compose(bindUntilPauseIoToMainComposer())
             .subscribe(new ActionStateSubscriber<ConfigurationCommand>()
-                  .onProgress((command, integer) -> processUpdateRequirement(command.getResult().getUpdateRequirement()))
+                  .onProgress((command, integer) -> processUpdateRequirement(command.getResult()
+                        .getUpdateRequirement()))
                   .onSuccess(command -> processUpdateRequirement(command.getResult().getUpdateRequirement()))
                   .onFail((versionCheckAction, throwable) ->
                         Timber.w(throwable, "Could not check latest app version")));
@@ -90,7 +89,9 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    private boolean isLoginError(Throwable error) {
-      if (error == null) return false;
+      if (error == null) {
+         return false;
+      }
       if (error instanceof HttpException) { // for janet-http
          HttpException cause = (HttpException) error;
          return cause.getResponse() != null && cause.getResponse().getStatus() == 422;
@@ -117,7 +118,7 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    private void checkTermsAndConditionFromHolder() {
       Optional<UserSession> userSession = appSessionHolder.get();
       if (userSession.isPresent()) {
-         checkTermsAndConditions(userSession.get().getUser());
+         checkTermsAndConditions(userSession.get().user());
       }
    }
 
@@ -136,7 +137,9 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
    }
 
    private boolean checkTermsAndConditions(User user) {
-      if (user == null || user.isTermsAccepted() || !canShowTermsDialog()) return true;
+      if (user == null || user.isTermsAccepted() || !canShowTermsDialog()) {
+         return true;
+      }
       isTermsShown = true;
       view.showTermsDialog();
       return false;

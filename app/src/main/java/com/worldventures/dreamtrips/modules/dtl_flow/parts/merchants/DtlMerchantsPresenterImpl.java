@@ -128,13 +128,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
-            .map(FilterData::searchQuery)
-            .subscribe(getView()::updateToolbarSearchCaption);
-      filterDataInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
-            .take(1)
-            .compose(bindViewIoToMainComposer())
-            .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
             .doOnCompleted(getView()::connectToggleUpdate)
             .subscribe(getView()::toggleOffersOnly);
@@ -149,8 +142,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
-            .map(FilterData::getMerchantType)
-            .subscribe(getView()::updateMerchantType);
+            .subscribe(filterData -> {
+               getView().updateMerchantType(filterData.getMerchantType());
+               getView().updateToolbarSearchQuery(filterData.searchQuery());
+            });
    }
 
    private void connectFullMerchantLoading() {
@@ -184,12 +179,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    void onStartMerchantsLoad(MerchantsAction action) {
-      if (action.isRefresh()) getView().clearMerchants();
+      if (action.isRefresh()) {
+         getView().clearMerchants();
+      }
    }
 
    void onMerchantsLoaded(MerchantsAction action) {
-      if (action.isRefresh()) getView().onRefreshSuccess();
-      else getView().onLoadNextSuccess();
+      if (action.isRefresh()) {
+         getView().onRefreshSuccess();
+      } else {
+         getView().onLoadNextSuccess();
+      }
 
       setItemsOrRedirect(action.merchants());
    }
@@ -205,14 +205,22 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    void onMerchantsLoading(MerchantsAction action, Integer progress) {
-      if (action.isRefresh()) getView().onRefreshProgress();
-      else getView().onLoadNextProgress();
+      if (action.isRefresh()) {
+         getView().onRefreshProgress();
+      } else {
+         getView().onLoadNextProgress();
+      }
    }
 
    void onMerchantsLoadingError(MerchantsAction action, Throwable throwable) {
-      if (!action.isRefresh()) getView().setRefreshedItems(action.merchants());
-      if (action.isRefresh()) getView().onRefreshError(action.getErrorMessage());
-      else getView().onLoadNextError();
+      if (!action.isRefresh()) {
+         getView().setRefreshedItems(action.merchants());
+      }
+      if (action.isRefresh()) {
+         getView().onRefreshError(action.getErrorMessage());
+      } else {
+         getView().onLoadNextError();
+      }
    }
 
    private void connectSelections() {
@@ -223,14 +231,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    private void setItemsOrRedirect(List<ThinMerchant> items) {
-      if (items.isEmpty()) onEmptyMerchantsLoaded();
-      else getView().setRefreshedItems(items);
+      if (items.isEmpty()) {
+         onEmptyMerchantsLoaded();
+      } else {
+         getView().setRefreshedItems(items);
+      }
    }
 
    protected void onSuccessMerchantLoad(FullMerchantAction action) {
       getView().hideBlockingProgress();
       ReviewStorage.updateReviewsPosted(getContext(),
-            String.valueOf(appSessionHolder.get().get().getUser().getId()),
+            String.valueOf(appSessionHolder.get().get().user().getId()),
             action.getMerchantId(),
             action.getResult().reviews().userHasPendingReview());
       if (!action.getFromRating()) {
@@ -260,11 +271,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    @Override
    public void offersOnlySwitched(boolean isOffersOnly) {
       filterDataInteractor.applyOffersOnly(isOffersOnly);
-   }
-
-   @Override
-   public void onLoadMerchantsType(List<String> merchantType) {
-      filterDataInteractor.applyMerchantTypes(merchantType);
    }
 
    @Override
@@ -323,8 +329,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void locationChangeRequested() {
-      navigateToPath(new DtlLocationChangePath());
+   public void locationChangeRequested(String merchantQuery) {
+      navigateToPath(new DtlLocationChangePath(merchantQuery));
    }
 
    @Override
@@ -339,13 +345,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
    @Override
    public void onToggleExpand(boolean expand, ThinMerchant merchant) {
-      if (!expand) return;
+      if (!expand) {
+         return;
+      }
       sendAnalyticsAction(new MerchantsListingExpandEvent(merchant.asMerchantAttributes()));
    }
 
    @Override
    public void onRetryMerchantClick() {
-      if (actionParamsHolder == null) return;
+      if (actionParamsHolder == null) {
+         return;
+      }
 
       fullMerchantInteractor.load(actionParamsHolder);
    }
@@ -382,7 +392,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
          getView().clearMerchants();
          getView().showEmpty(true);
          getView().showNoMerchantsCaption(isFilterDefault, isOffersOnly);
-      } else navigateToPath(new DtlLocationChangePath());
+      } else {
+         navigateToPath(new DtlLocationChangePath());
+      }
    }
 
    private boolean isAllowRedirect(boolean isFilterDefault) {
@@ -420,7 +432,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    protected void onToggleSelection(ToggleMerchantSelectionAction action) {
-      if (action.isClearSelection()) getView().clearSelection();
-      else getView().toggleSelection(action.getResult());
+      if (action.isClearSelection()) {
+         getView().clearSelection();
+      } else {
+         getView().toggleSelection(action.getResult());
+      }
    }
 }

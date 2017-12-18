@@ -103,7 +103,9 @@ public class PhotoTagHolder extends RelativeLayout {
       SuggestionTagView view = new SuggestionTagView(getContext());
       view.setTagListener(tagSuggestionActionListener);
       addTagView(view, photoTag, 0);
-      if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag);
+      if (!isSuggestionHelpExists()) {
+         addSuggestionHelp(photoTag);
+      }
    }
 
    protected void addCreationTagView(float x, float y) {
@@ -252,17 +254,23 @@ public class PhotoTagHolder extends RelativeLayout {
 
    protected void removeUncompletedViews() {
       View view = getChildAt(getChildCount() - 1);
-      if (view instanceof CreationTagView) removeView(view);
+      if (view instanceof CreationTagView) {
+         removeView(view);
+      }
    }
 
    protected CreationTagView getCreationTagView() {
       View view = getChildAt(getChildCount() - 1);
-      if (view instanceof CreationTagView) return (CreationTagView) view;
+      if (view instanceof CreationTagView) {
+         return (CreationTagView) view;
+      }
       return null;
    }
 
    private PhotoTag findNextSuggestion(TagPosition pos) {
-      if (!isSuggestionViewExists() || index++ > 100) return null;
+      if (!isSuggestionViewExists() || index++ > 100) {
+         return null;
+      }
       //
       float cX = getCenterX(pos);
       float cY = getCenterY(pos);
@@ -280,7 +288,9 @@ public class PhotoTagHolder extends RelativeLayout {
             }
          }
       }
-      if (result == null) return findTagOnNextLine(pos);
+      if (result == null) {
+         return findTagOnNextLine(pos);
+      }
       //
       return result;
    }

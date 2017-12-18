@@ -12,13 +12,14 @@ import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
-import com.worldventures.core.ui.view.DividerItemDecoration;
+import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
+import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.DescriptionCreatorPresenter;
@@ -36,6 +37,7 @@ import timber.log.Timber;
 
 @Layout(R.layout.fragment_description_creator)
 @MenuResource(R.menu.menu_add_post_description)
+@ComponentPresenter.ComponentTitle(R.string.add_text)
 public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<DescriptionCreatorPresenter, DescriptionBundle> implements DescriptionCreatorPresenter.View {
 
    @Inject @ForActivity Injector injector;
@@ -128,6 +130,8 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
             getPresenter().done(description.getText().toString());
             router.back();
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -150,12 +154,16 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
 
    @Override
    public void showSuggestionProgress() {
-      if (suggestions != null) suggestions.showProgress();
+      if (suggestions != null) {
+         suggestions.showProgress();
+      }
    }
 
    @Override
    public void hideSuggestionProgress() {
-      if (suggestions != null) suggestions.hideProgress();
+      if (suggestions != null) {
+         suggestions.hideProgress();
+      }
    }
 
    private DividerItemDecoration dividerItemDecoration() {

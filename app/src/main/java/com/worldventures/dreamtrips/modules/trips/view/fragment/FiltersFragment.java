@@ -116,7 +116,9 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
 
    @Override
    public void fillData(List data) {
-      if (recyclerView != null) recyclerView.setVisibility(View.VISIBLE);
+      if (recyclerView != null) {
+         recyclerView.setVisibility(View.VISIBLE);
+      }
       arrayListAdapter.clear();
       arrayListAdapter.addItems(data);
    }

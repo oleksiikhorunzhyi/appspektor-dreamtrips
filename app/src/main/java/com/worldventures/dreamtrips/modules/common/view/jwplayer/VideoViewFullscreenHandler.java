@@ -56,8 +56,11 @@ public class VideoViewFullscreenHandler {
 
    private void swapFullscreen() {
       isFullscreen = !isFullscreen;
-      if (isFullscreen) onFullscreenRequested();
-      else onFullscreenExitRequested();
+      if (isFullscreen) {
+         onFullscreenRequested();
+      } else {
+         onFullscreenExitRequested();
+      }
    }
 
    public boolean canResizeVideoContainer(int width, int height) {
@@ -93,7 +96,9 @@ public class VideoViewFullscreenHandler {
       showSystemUI();
       JWPlayerView jwPlayerView = videoPlayerHolder.getJwPlayerView();
 
-      if (jwPlayerView != null) jwPlayerView.destroySurface();
+      if (jwPlayerView != null) {
+         jwPlayerView.destroySurface();
+      }
       detachFromFullscreenContainer();
       if (jwPlayerView != null) {
          jwPlayerView.initializeSurface();

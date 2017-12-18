@@ -38,8 +38,11 @@ public class ThinMerchantsAdapter extends BaseDelegateAdapter {
    }
 
    public void toggle(boolean expand, ThinMerchant merchant) {
-      if (expand) expandedMerchantIds.add(merchant.id());
-      else expandedMerchantIds.remove(merchant.id());
+      if (expand) {
+         expandedMerchantIds.add(merchant.id());
+      } else {
+         expandedMerchantIds.remove(merchant.id());
+      }
 
       updateItem(merchant);
    }

@@ -2,19 +2,19 @@ package com.worldventures.dreamtrips.social.infopages.service
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.dreamtrips.AssertUtil
-import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.api.documents.model.DocumentType
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.janet.cache.CacheBundle
 import com.worldventures.core.janet.cache.storage.KeyValuePaginatedDiskStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage
 import com.worldventures.core.janet.cache.storage.KeyValueStorage
-import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.core.modules.infopages.model.Document
 import com.worldventures.core.modules.infopages.service.DocumentsInteractor
 import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand
 import com.worldventures.core.modules.infopages.service.storage.DocumentsStorage
+import com.worldventures.core.test.AssertUtil
+import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.documents.model.DocumentType
+import com.worldventures.dreamtrips.core.janet.cache.storage.KeyValuePaginatedMemoryStorage
+import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet

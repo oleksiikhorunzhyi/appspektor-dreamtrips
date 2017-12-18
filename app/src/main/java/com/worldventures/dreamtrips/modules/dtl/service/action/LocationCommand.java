@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlUndefinedLocat
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class LocationCommand extends ValueCommandAction<DtlLocation> {
+public final class LocationCommand extends ValueCommandAction<DtlLocation> {
 
    public static LocationCommand change(DtlLocation location) {
       return new LocationCommand(location);

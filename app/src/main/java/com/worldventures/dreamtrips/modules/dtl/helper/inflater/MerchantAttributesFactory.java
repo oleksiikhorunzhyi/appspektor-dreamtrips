@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
 
-public class MerchantAttributesFactory {
+public final class MerchantAttributesFactory {
 
-   private MerchantAttributesFactory(){}
+   private MerchantAttributesFactory() {}
 
    public static MerchantAttributes create(Merchant merchant) {
       return ImmutableMerchantAttributes.builder()

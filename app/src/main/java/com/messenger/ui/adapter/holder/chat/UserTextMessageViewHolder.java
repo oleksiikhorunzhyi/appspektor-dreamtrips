@@ -55,6 +55,8 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder {
          case REVERTED:
             setNotTranslated();
             break;
+         default:
+            break;
       }
    }
 

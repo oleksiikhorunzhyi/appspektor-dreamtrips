@@ -31,7 +31,7 @@
                android:layout_height="wrap_content"
                >
 
-            <at.markushi.ui.ActionView
+            <ImageView
                   android:id="@+id/dtlToolbarActionView"
                   android:layout_width="@dimen/dtlt_action_view_size"
                   android:layout_height="@dimen/dtlt_action_view_size"
@@ -39,11 +39,10 @@
                   android:layout_marginTop="@dimen/dtlt_action_view_vertical_margin"
                   android:layout_marginRight="@dimen/dtlt_action_view_side_margin"
                   android:layout_marginBottom="@dimen/dtlt_action_view_vertical_margin"
-                  android:padding="0dp"
                   android:layout_gravity="center"
-                  app:av_color="@android:color/white"
-                  app:av_action="drawer"
+                  android:src="@drawable/ic_menu_hamburger"
                   />
+
          </FrameLayout>
 
          <android.support.v7.widget.AppCompatEditText

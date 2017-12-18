@@ -19,12 +19,12 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.flags.view.FlagView;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
+import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ScaleImageView;
 
 import butterknife.InjectView;
@@ -115,7 +115,9 @@ public class MessageImageFullscreenFragment extends BaseFragmentWithArgs<Message
 
    @Override
    public void onDestroyView() {
-      if (imageryView != null && imageryView.getController() != null) imageryView.getController().onDetach();
+      if (imageryView != null && imageryView.getController() != null) {
+         imageryView.getController().onDetach();
+      }
       super.onDestroyView();
    }
 
@@ -125,7 +127,7 @@ public class MessageImageFullscreenFragment extends BaseFragmentWithArgs<Message
       data.setImageUrl(imageUrl);
       data.setText(text == null ? "" : text);
       data.setShareType(type);
-      router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity().data(data).build());
+      router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
    }
 
    @Optional

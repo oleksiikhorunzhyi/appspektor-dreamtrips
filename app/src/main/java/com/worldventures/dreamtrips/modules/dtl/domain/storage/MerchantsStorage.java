@@ -8,11 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class MerchantsStorage extends PaginatedMemoryStorage<ThinMerchant> implements ActionStorage<List<ThinMerchant>> {
-
-   @Inject public MerchantsStorage() {}
 
    @Override
    public Class<? extends CachedAction> getActionClass() {

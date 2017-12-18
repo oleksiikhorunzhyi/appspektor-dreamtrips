@@ -72,8 +72,7 @@ public class EditPhotoTagsPresenter extends Presenter<EditPhotoTagsPresenter.Vie
       currentTags.addAll(photoTags);
       currentTags.addAll(locallyAddedTags);
       currentTags.removeAll(locallyDeletedTags);
-      List<PhotoTag> notIntersectingSuggestions =
-            PhotoTag.findSuggestionsNotIntersectingWithTags(suggestions, new ArrayList<>(currentTags));
+      List<PhotoTag> notIntersectingSuggestions = PhotoTag.findSuggestionsNotIntersectingWithTags(suggestions, new ArrayList<>(currentTags));
       photoTagHolderManager.addSuggestionTagViews(notIntersectingSuggestions,
             suggestion -> photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion));
    }

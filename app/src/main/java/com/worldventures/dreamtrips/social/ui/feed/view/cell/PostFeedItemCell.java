@@ -10,7 +10,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.utils.ImageUtils;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
@@ -29,10 +28,13 @@ import com.worldventures.dreamtrips.social.ui.feed.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.collage.CollageView;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.HashtagFeedFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.TripImagesFullscreenFragment;
 import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
@@ -67,7 +69,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    private VideoInfoInjector videoInfoInjector = new VideoInfoInjector();
 
    private Subscription configurationSubscription;
-   private Route activeCellRoute;
+   private FeedCellListWidthProvider.FeedType activeFeedType;
    private boolean displayingInList;
 
    public PostFeedItemCell(View view) {
@@ -83,7 +85,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
          configurationSubscription = configurationInteractor.configurationActionPipe()
                .observeSuccess().subscribe(configurationCommand -> {
                   // happens when there is another feed opened on the top of this one
-                  if (getCurrentRoute() != activeCellRoute) return;
+                  if (getCurrentRoute() != activeFeedType) {
+                     return;
+                  }
                   List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
                   if (attachments != null && attachments.size() > 0) {
                      if (attachments.get(0).getItem() instanceof Photo) {
@@ -114,7 +118,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
          return;
       }
 
-      boolean ownPost = textualPost.getOwner().getId() == sessionHolder.get().get().getUser().getId();
+      boolean ownPost = textualPost.getOwner().getId() == sessionHolder.get().get().user().getId();
       boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(sessionHolder, textualPost.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguage());
@@ -202,7 +206,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private int getCellListWidth() {
-      return feedCellListWidthProvider.getFeedCellWidth(activeCellRoute);
+      return feedCellListWidthProvider.getFeedCellWidth(activeFeedType);
    }
 
    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
@@ -214,7 +218,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void processTags(List<FeedEntityHolder> attachments) {
-      if (tag != null) tag.setVisibility(hasTags(attachments) ? View.VISIBLE : View.GONE);
+      if (tag != null) {
+         tag.setVisibility(hasTags(attachments) ? View.VISIBLE : View.GONE);
+      }
    }
 
    private boolean hasTags(List<FeedEntityHolder> attachments) {
@@ -223,7 +229,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void openFullscreenPhotoList(int position) {
-      router.moveTo(Route.TRIP_IMAGES_FULLSCREEN, NavigationConfigBuilder.forActivity()
+      router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
             .data(TripImagesFullscreenArgs.builder()
                   .currentItemPosition(position)
                   .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())
@@ -240,14 +246,14 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    }
 
    private void openFeedItemDetails() {
-      router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+      router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .manualOrientationActivity(true)
             .data(new FeedItemDetailsBundle.Builder().feedItem(getModelObject()).showAdditionalInfo(true).build())
             .build());
    }
 
    private void openHashtagFeeds(@NotNull String hashtag) {
-      router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
+      router.moveTo(HashtagFeedFragment.class, NavigationConfigBuilder.forActivity()
             .data(new HashtagFeedBundle(hashtag))
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
@@ -293,11 +299,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    @Override
    public void afterInject() {
       super.afterInject();
-      activeCellRoute = getCurrentRoute();
+      activeFeedType = getCurrentRoute();
       videoInfoInjector.init(activity, itemView);
    }
 
-   private Route getCurrentRoute() {
+   private FeedCellListWidthProvider.FeedType getCurrentRoute() {
       return activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
             .createObservableResult(ActiveFeedRouteCommand.fetch()).toBlocking().single().getResult();
    }

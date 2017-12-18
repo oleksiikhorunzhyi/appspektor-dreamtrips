@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action.http;
 
+import com.worldventures.core.janet.BaseThirdPartyHttpAction;
 import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.transactions.ThrstTransactionResponse;
-import com.worldventures.dreamtrips.wallet.service.lostcard.command.http.BaseThirdPartyHttpAction;
 
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;

@@ -10,7 +10,7 @@ import java.io.File;
 
 public class CachedModelHelper {
 
-   private FilePathProvider filePathProvider;
+   private final FilePathProvider filePathProvider;
 
    public CachedModelHelper(FilePathProvider filePathProvider) {
       this.filePathProvider = filePathProvider;
@@ -22,6 +22,10 @@ public class CachedModelHelper {
 
    public boolean isCachedPodcast(CachedModel cachedModel) {
       return new File(getFileForStorage(Environment.DIRECTORY_PODCASTS, cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
+   }
+
+   public String getPodcastPath(CachedModel entity) {
+      return getFileForStorage(Environment.DIRECTORY_PODCASTS, entity.getUrl());
    }
 
    public String getFilePath(String url) {
@@ -39,7 +43,7 @@ public class CachedModelHelper {
    }
 
    public String getFileName(String url) {
-      return url.substring(url.lastIndexOf("/") + 1);
+      return url.substring(url.lastIndexOf('/') + 1);
    }
 
 }

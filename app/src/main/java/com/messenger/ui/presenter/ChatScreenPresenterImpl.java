@@ -52,9 +52,11 @@ import com.messenger.util.PickLocationDelegate;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.MediaPickerModelImpl;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -93,6 +95,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
    @Inject LoadConversationDelegate loadConversationDelegate;
    @Inject ChatExtensionInteractor chatExtensionInteractor;
    @Inject ChatEventInteractor chatEventInteractor;
+   @Inject PickerPermissionChecker pickerPermissionChecker;
+   @Inject PermissionUtils permissionUtils;
 
    protected String conversationId;
 
@@ -110,6 +114,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      registerPermissionCallbacks();
       flaggingPresenter = getView().getFlaggingView().getPresenter();
 
       notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
@@ -189,7 +194,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             .skip(1)
             .compose(bindViewIoToMainComposer())
             .subscribe(changedToPresent -> {
-               if (changedToPresent) messagesPaginationDelegate.loadFirstPage();
+               if (changedToPresent) {
+                  messagesPaginationDelegate.loadFirstPage();
+               }
             });
    }
 
@@ -332,8 +339,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
    public boolean sendMessage(String message) {
       String finalMessage = message.trim();
 
-      if (TextUtils.isEmpty(finalMessage)) return false;
-      else {
+      if (TextUtils.isEmpty(finalMessage)) {
+         return false;
+      } else {
          chatMessageManager.sendMessage(conversationId, message);
          return true;
       }
@@ -421,6 +429,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                      }
                   });
             return true;
+         default:
+            break;
       }
       return false;
    }
@@ -454,7 +464,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             pickLocationDelegate.pickLocation();
             break;
          case AttachmentMenuItem.IMAGE:
-            getView().showPicker();
+            pickerPermissionChecker.checkPermission();
+            break;
+         default:
             break;
       }
    }
@@ -556,7 +568,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
    @Override
    public void applyViewState() {
-      if (!isViewAttached()) return;
+      if (!isViewAttached()) {
+         return;
+      }
 
       ChatScreen chatScreen = getView();
       ChatLayoutViewState viewState = getViewState();
@@ -570,7 +584,35 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
          case ERROR:
             chatScreen.showError(viewState.getError());
             break;
+         default:
+            break;
       }
    }
 
+   ///////////////////////////////////////////////////////////////////////////
+   // Permissions
+   ///////////////////////////////////////////////////////////////////////////
+
+   private void registerPermissionCallbacks() {
+      pickerPermissionChecker.registerCallback(
+            () -> {
+               if (getView() != null) {
+                  getView().showPicker();
+               }
+            }, () -> {
+               if (getView() != null) {
+                  getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS);
+               }
+            }, () -> {
+               if (getView() != null) {
+                  getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS);
+               }
+            });
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
+   }
 }

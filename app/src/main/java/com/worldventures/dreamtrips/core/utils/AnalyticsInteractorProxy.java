@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.core.utils;
 
 
-import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
+import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class AnalyticsInteractorProxy {
 
-   private AnalyticsInteractor analyticsInteractor;
-   private List<BaseAnalyticsAction> capturedAnalytics;
+   private final AnalyticsInteractor analyticsInteractor;
+   private final List<BaseAnalyticsAction> capturedAnalytics;
 
    public AnalyticsInteractorProxy(AnalyticsInteractor analyticsInteractor) {
       this.analyticsInteractor = analyticsInteractor;

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.worldventures.core.model.ShareType;
 import com.worldventures.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEnt
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.social.ui.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
@@ -31,8 +32,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.Trip
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.TripImageShareAnalyticsEvent;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoTagsCommand;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DownloadImageCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TranslatePhotoCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.DownloadImageDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoBundle;
 
 import java.io.IOException;
@@ -51,8 +52,9 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
    @Inject TripImagesInteractor tripImagesInteractor;
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
    @Inject TranslationFeedInteractor translationFeedInteractor;
-   private FlagDelegate flagDelegate;
+   @Inject DownloadImageDelegate downloadImageDelegate;
 
+   private FlagDelegate flagDelegate;
    private Photo photo;
 
    public FullscreenPhotoPresenter(Photo photo) {
@@ -71,13 +73,16 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
       setupTranslationState();
       subscribeToTranslation();
       feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
-      view.setPhoto(photo);
+      // we have null image path when getting photo from push notification, wait until entity is loaded by UID then
+      if (photo.getImagePath() != null) {
+         view.setPhoto(photo);
+      }
       loadEntity();
    }
 
    private void setupTranslationState() {
-      boolean ownPost = photo.getOwner() != null &&
-            photo.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+      boolean ownPost = photo.getOwner() != null
+            && photo.getOwner().getId() == appSessionHolder.get().get().user().getId();
       boolean emptyPostText = TextUtils.isEmpty(photo.getTitle());
       boolean ownLanguage = LocaleHelper.isOwnLanguage(appSessionHolder, photo.getLanguage());
       boolean emptyPostLanguage = TextUtils.isEmpty(photo.getLanguage());
@@ -128,7 +133,7 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
 
    public void onCommentsAction() {
       new NavigationWrapperFactory().componentOrDialogNavigationWrapper(router, fm, view)
-            .navigate(Route.COMMENTS, new CommentsBundle(photo, false, true));
+            .navigate(CommentableFragment.class, new CommentsBundle(photo, false, true));
    }
 
    public void onLikeAction() {
@@ -175,7 +180,9 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
 
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
-      if (!photo.equals(updatedFeedEntity)) return;
+      if (!photo.equals(updatedFeedEntity)) {
+         return;
+      }
       photo = (Photo) updatedFeedEntity;
       view.setPhoto(photo);
       setupTranslationState();
@@ -199,11 +206,7 @@ public class FullscreenPhotoPresenter extends Presenter<FullscreenPhotoPresenter
    public void onShareOptionChosen(@ShareType String type) {
       if (type.equals(ShareType.EXTERNAL_STORAGE)) {
          if (view.isVisibleOnScreen()) {
-            tripImagesInteractor.downloadImageActionPipe()
-                  .createObservable(new DownloadImageCommand(photo.getImagePath()))
-                  .compose(bindViewToMainComposer())
-                  .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
-                        .onFail(this::handleError));
+            downloadImageDelegate.downloadImage(photo.getImagePath(), bindView(), this::handleError);
          }
       } else {
          view.openShare(photo.getImagePath(), photo.getTitle(), type);

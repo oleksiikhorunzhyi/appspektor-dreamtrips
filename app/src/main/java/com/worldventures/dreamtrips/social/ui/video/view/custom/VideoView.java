@@ -126,7 +126,9 @@ public class VideoView extends FrameLayout implements VideoContainerView {
 
    public void setVideo(Video newVideo, boolean resizeVideoContainer) {
       if (playerView != null && video != null && video.getUploadId().equals(newVideo.getUploadId())
-            && resizeVideoContainer == this.resizeVideoContainer) return;
+            && resizeVideoContainer == this.resizeVideoContainer) {
+         return;
+      }
 
       this.video = newVideo;
       this.defaultStreamUri = video.getHdUrl();
@@ -248,9 +250,15 @@ public class VideoView extends FrameLayout implements VideoContainerView {
       });
 
       playerView.addOnTimeListener((currentTime, duration) -> {
-         if (playerView == null) return;
-         if (currentTime > 0) loadingProgressBar.setVisibility(GONE);
-         if (ignoreProgressUpdates) return;
+         if (playerView == null) {
+            return;
+         }
+         if (currentTime > 0) {
+            loadingProgressBar.setVisibility(GONE);
+         }
+         if (ignoreProgressUpdates) {
+            return;
+         }
          setProgressInSeekbar(currentTime);
          setTimeLeft(currentTime);
       });
@@ -302,7 +310,9 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    private void clear(boolean resetProgressBarState) {
       resetUiState(resetProgressBarState);
       application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
-      if (playerView == null) return;
+      if (playerView == null) {
+         return;
+      }
       playerView.stop();
       videoPlayerHolder.detachJwPlayerFromContainer();
       playerView = null;
@@ -334,9 +344,13 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    public void resizeView(int width) {
-      if (playerView != null) playerView.destroySurface();
+      if (playerView != null) {
+         playerView.destroySurface();
+      }
       setVideoThumbnailInternal(width);
-      if (playerView != null) playerView.initializeSurface();
+      if (playerView != null) {
+         playerView.initializeSurface();
+      }
    }
 
    private void setVideoThumbnail() {
@@ -370,7 +384,9 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    public void setMute(boolean mute) {
       this.mute = mute;
       refreshMuteButtonState();
-      if (playerView != null) playerView.setMute(mute);
+      if (playerView != null) {
+         playerView.setMute(mute);
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -435,11 +451,15 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    void onQualityButtonClick() {
       if (currentStreamUri.equals(video.getHdUrl())) {
          currentStreamUri = video.getSdUrl();
-         if (playerView != null) playerView.setCurrentQuality(0);
+         if (playerView != null) {
+            playerView.setCurrentQuality(0);
+         }
          videoQualityButton.setText(STREAM_NAME_SD);
       } else {
          currentStreamUri = video.getHdUrl();
-         if (playerView != null) playerView.setCurrentQuality(1);
+         if (playerView != null) {
+            playerView.setCurrentQuality(1);
+         }
          videoQualityButton.setText(STREAM_NAME_HD);
       }
    }
@@ -452,7 +472,9 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    private void resetUiState(boolean resetProgressBar) {
       loadingProgressBar.setVisibility(GONE);
       videoThumbnailContainer.setVisibility(VISIBLE);
-      if (resetProgressBar) seekBar.setProgress(0);
+      if (resetProgressBar) {
+         seekBar.setProgress(0);
+      }
       refreshDurationInfo();
       showPlayButton();
    }
@@ -466,7 +488,9 @@ public class VideoView extends FrameLayout implements VideoContainerView {
    }
 
    public void hide() {
-      if (windowedContainer != null) windowedContainer.setVisibility(GONE);
+      if (windowedContainer != null) {
+         windowedContainer.setVisibility(GONE);
+      }
       setVisibility(GONE);
    }
 

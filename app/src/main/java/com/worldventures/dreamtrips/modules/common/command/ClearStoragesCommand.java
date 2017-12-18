@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.command;
 import com.worldventures.core.janet.cache.storage.ActionStorage;
 import com.worldventures.core.janet.cache.storage.ClearableStorage;
 import com.worldventures.core.janet.cache.storage.Storage;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 
 import java.util.Set;
@@ -27,7 +27,9 @@ public class ClearStoragesCommand extends Command<Void> implements InjectableAct
 
    private void cleanStorageSet(Set<? extends Storage> storageSet) {
       for (Storage storage : storageSet) {
-         if (storage instanceof ClearableStorage) ((ClearableStorage) storage).clearMemory();
+         if (storage instanceof ClearableStorage) {
+            ((ClearableStorage) storage).clearMemory();
+         }
       }
    }
 }

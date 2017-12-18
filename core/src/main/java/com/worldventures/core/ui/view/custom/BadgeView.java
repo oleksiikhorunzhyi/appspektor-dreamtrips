@@ -13,15 +13,10 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewParent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
-import android.widget.TabWidget;
 
 import com.worldventures.core.R;
 
@@ -42,9 +37,6 @@ public class BadgeView extends AppCompatTextView {
    private static Animation fadeIn;
    private static Animation fadeOut;
 
-   private Context context;
-   private View target;
-
    private int badgePosition;
    private int badgeMarginH;
    private int badgeMarginV;
@@ -54,64 +46,27 @@ public class BadgeView extends AppCompatTextView {
 
    private ShapeDrawable badgeBg;
 
-   private int targetTabIndex;
-
    public BadgeView(Context context) {
-      this(context, (AttributeSet) null, android.R.attr.textViewStyle);
+      this(context, null);
    }
 
    public BadgeView(Context context, AttributeSet attrs) {
-      this(context, attrs, android.R.attr.textViewStyle);
+      this(context, attrs, 0);
    }
 
-   /**
-    * Constructor -
-    * <p>
-    * create a new BadgeView instance attached to a target {@link android.view.View}.
-    *
-    * @param context context for this view.
-    * @param target  the View to attach the badge to.
-    */
-   public BadgeView(Context context, View target) {
-      this(context, null, android.R.attr.textViewStyle, target, 0);
+   public BadgeView(Context context, AttributeSet attrs, int defStyleAttr) {
+      super(context, attrs, defStyleAttr);
+      init(context, attrs);
    }
 
-   /**
-    * Constructor -
-    * <p>
-    * create a new BadgeView instance attached to a target {@link android.widget.TabWidget}
-    * tab at a given index.
-    *
-    * @param context context for this view.
-    * @param target  the TabWidget to attach the badge to.
-    * @param index   the position of the tab within the target.
-    */
-   public BadgeView(Context context, TabWidget target, int index) {
-      this(context, null, android.R.attr.textViewStyle, target, index);
-   }
-
-   public BadgeView(Context context, AttributeSet attrs, int defStyle) {
-      this(context, attrs, defStyle, null, 0);
-   }
-
-   public BadgeView(Context context, AttributeSet attrs, int defStyle, View target, int tabIndex) {
-      super(context, attrs, defStyle);
-      init(context, attrs, target, tabIndex);
-   }
-
-   private void init(Context context, @Nullable AttributeSet attrs, View target, int tabIndex) {
-
-      this.context = context;
-      this.target = target;
-      this.targetTabIndex = tabIndex;
-
+   private void init(Context context, @Nullable AttributeSet attrs) {
       // apply defaults
       badgeMarginH = dipToPixels(DEFAULT_MARGIN_DIP);
       badgeMarginV = badgeMarginH;
 
 
       if (attrs != null) {
-         TypedArray arr = getContext().obtainStyledAttributes(attrs, R.styleable.BadgeView);
+         TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.BadgeView);
          badgeColor = arr.getColor(R.styleable.BadgeView_background_color, DEFAULT_BADGE_COLOR);
          arr.recycle();
       } else {
@@ -133,48 +88,7 @@ public class BadgeView extends AppCompatTextView {
 
       isShown = false;
 
-      if (this.target != null) {
-         applyTo(this.target);
-      } else {
-         show();
-      }
-
-   }
-
-   private void applyTo(View target) {
-
-      LayoutParams lp = target.getLayoutParams();
-      ViewParent parent = target.getParent();
-      FrameLayout container = new FrameLayout(context);
-
-      if (target instanceof TabWidget) {
-
-         // set target to the relevant tab child container
-         target = ((TabWidget) target).getChildTabViewAt(targetTabIndex);
-         this.target = target;
-
-         ((ViewGroup) target).addView(container, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-         this.setVisibility(View.GONE);
-         container.addView(this);
-
-      } else {
-
-         // TODO verify that parent is indeed a ViewGroup
-         ViewGroup group = (ViewGroup) parent;
-         int index = group.indexOfChild(target);
-
-         group.removeView(target);
-         group.addView(container, index, lp);
-
-         container.addView(target);
-
-         this.setVisibility(View.GONE);
-         container.addView(this);
-
-         group.invalidate();
-
-      }
+      show();
 
    }
 
@@ -338,13 +252,6 @@ public class BadgeView extends AppCompatTextView {
    }
 
    /**
-    * Returns the target View this badge has been attached to.
-    */
-   public View getTarget() {
-      return target;
-   }
-
-   /**
     * Is this badge currently visible in the UI?
     */
    @Override
@@ -424,8 +331,6 @@ public class BadgeView extends AppCompatTextView {
 
    private int dipToPixels(int dip) {
       Resources r = getResources();
-      float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, r.getDisplayMetrics());
-      return (int) px;
+      return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, r.getDisplayMetrics());
    }
-
 }

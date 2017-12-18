@@ -10,9 +10,9 @@ import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
+import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -38,9 +38,11 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVideoPresenter, Video>
       implements FullscreenVideoPresenter.View {
 
+   private static final long VIDEO_PLAY_DELAY = 500L;
+
    @Inject Router router;
    @Inject @ForActivity Injector injector;
-   @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+   @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject SocialViewPagerState socialViewPagerState;
 
    @InjectView(R.id.videoView) VideoView videoView;
@@ -85,7 +87,7 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
 
    @Override
    public void openUser(UserBundle bundle) {
-      router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
             .data(bundle)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build());
@@ -121,16 +123,16 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
    public void setUserVisibleHint(boolean isVisibleToUser) {
       super.setUserVisibleHint(isVisibleToUser);
       if (isVisibleToUser) {
-         if (videoView == null) {
-            handler.postDelayed(this::playVideo, 500);
-         } else {
-            playVideo();
-         }
+         playVideo();
       }
    }
 
    private void playVideo() {
-      videoView.playVideo();
+      if (videoView == null) {
+         handler.postDelayed(this::playVideo, VIDEO_PLAY_DELAY);
+      } else {
+         videoView.playVideo();
+      }
    }
 
    @Override

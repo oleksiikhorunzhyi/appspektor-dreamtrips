@@ -16,9 +16,9 @@ import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.worldventures.core.janet.Injector;
-import com.worldventures.core.ui.util.permission.PermissionConstants;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
-import com.worldventures.core.ui.util.permission.PermissionSubscriber;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
@@ -36,6 +36,8 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
 
    @Inject PermissionDispatcher permissionDispatcher;
    @Inject ConversationAvatarInteractor conversationAvatarInteractor;
+   @Inject PickerPermissionChecker pickerPermissionChecker;
+   @Inject PermissionUtils permissionUtils;
 
    public GroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
       super(context, injector, conversationId);
@@ -44,6 +46,7 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
    @Override
    public void onAttachedToWindow() {
       super.onAttachedToWindow();
+      registerPermissionCallbacks();
       cropImageDelegate.getCroppedImagesStream().compose(bindView()).subscribe(notification -> {
          if (notification.isOnNext()) {
             onAvatarCropped(conversationId, notification.getValue());
@@ -83,7 +86,7 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
    public boolean onToolbarMenuItemClick(MenuItem item) {
       switch (item.getItemId()) {
          case R.id.action_change_chat_avatar:
-            openPicker();
+            pickerPermissionChecker.checkPermission();
             return true;
          case R.id.action_remove_chat_avatar:
             onRemoveAvatar();
@@ -91,7 +94,8 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
          case R.id.action_edit_chat_name:
             onEditChatName();
             return true;
-
+         default:
+            break;
       }
       return super.onToolbarMenuItemClick(item);
    }
@@ -101,7 +105,9 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
       super.applyViewState();
       ChatSettingsViewState viewState = getViewState();
       ChatSettingsViewState.UploadingState uploadingState = getViewState().getUploadAvatar();
-      if (uploadingState == null) return;
+      if (uploadingState == null) {
+         return;
+      }
       if (uploadingState == ChatSettingsViewState.UploadingState.UPLOADING) {
          getView().showChangingAvatarProgressBar();
       } else {
@@ -119,12 +125,6 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
    private void onEditChatName() {
       conversationObservable.map(DataConversation::getSubject)
             .subscribe(subject -> getView().showSubjectDialog(subject));
-   }
-
-   public void openPicker() {
-      permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
-            .compose(bindView())
-            .subscribe(new PermissionSubscriber().onPermissionGrantedAction(() -> getView().openPicker()));
    }
 
    @Override
@@ -180,5 +180,28 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
    public void onDetachedFromWindow() {
       super.onDetachedFromWindow();
       cropImageDelegate.destroy();
+   }
+
+   private void registerPermissionCallbacks() {
+      pickerPermissionChecker.registerCallback(
+            () -> {
+               if (getView() != null) {
+                  getView().openPicker();
+               }
+            }, () -> {
+               if (getView() != null) {
+                  getView().showPermissionDenied(PickerPermissionChecker.PERMISSIONS);
+               }
+            }, () -> {
+               if (getView() != null) {
+                  getView().showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS);
+               }
+            });
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 }

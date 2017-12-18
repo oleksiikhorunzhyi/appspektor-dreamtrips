@@ -6,10 +6,6 @@ import android.util.AttributeSet;
 
 public class SelectionListenerEditText extends AppCompatEditText {
 
-   public interface SelectionListener {
-      void onSelectionChange(int selStart, int selEnd);
-   }
-
    private SelectionListener selectionListener;
 
    public SelectionListenerEditText(Context context) {
@@ -30,5 +26,9 @@ public class SelectionListenerEditText extends AppCompatEditText {
       if (selectionListener != null) {
          selectionListener.onSelectionChange(selStart, selEnd);
       }
+   }
+
+   public interface SelectionListener {
+      void onSelectionChange(int selStart, int selEnd);
    }
 }

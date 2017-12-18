@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
-import com.messenger.di.MessengerActivityModule;
 import com.worldventures.core.ui.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.core.module.LegacyActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -14,7 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.config.ConfigurationActivityModule;
-import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlLegacyActivityModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
@@ -67,12 +66,11 @@ public abstract class LegacyBaseActivity extends BaseActivity {
       modules.add(new FriendsModule());
       modules.add(new FeedActivityModule());
       modules.add(new SettingsModule());
-      modules.add(new MessengerActivityModule());
-      modules.add(new DtlActivityModule());
       modules.add(new LocationPickerModule());
       modules.add(new ConfigurationActivityModule());
       modules.add(new SocialCommonActivityModule());
       modules.add(new LegacyActivityModule(this));
+      modules.add(new DtlLegacyActivityModule());
       return modules;
    }
 
@@ -82,7 +80,9 @@ public abstract class LegacyBaseActivity extends BaseActivity {
 
    @Override
    public void onBackPressed() {
-      if (handleBackPressed()) return;
+      if (handleBackPressed()) {
+         return;
+      }
       FragmentManager fm = getSupportFragmentManager();
 
       if (fm.getBackStackEntryCount() > 1) {
@@ -94,12 +94,14 @@ public abstract class LegacyBaseActivity extends BaseActivity {
    }
 
    private boolean checkChildFragments(FragmentManager fragmentManager) {
-      if (fragmentManager.getFragments() != null) for (Fragment fragment : fragmentManager.getFragments()) {
-         if (fragment != null && fragment.isVisible()) {
-            FragmentManager childFm = fragment.getChildFragmentManager();
-            if (!checkChildFragments(childFm) && childFm.getBackStackEntryCount() > 0) {
-               childFm.popBackStack();
-               return true;
+      if (fragmentManager.getFragments() != null) {
+         for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment != null && fragment.isVisible()) {
+               FragmentManager childFm = fragment.getChildFragmentManager();
+               if (!checkChildFragments(childFm) && childFm.getBackStackEntryCount() > 0) {
+                  childFm.popBackStack();
+                  return true;
+               }
             }
          }
       }
@@ -108,17 +110,18 @@ public abstract class LegacyBaseActivity extends BaseActivity {
    }
 
    protected void onTopLevelBackStackPopped() {
-      if (getSupportFragmentManager().getBackStackEntryCount() == 0) finish();
+      if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+         finish();
+      }
    }
 
    @Override
    public boolean onOptionsItemSelected(MenuItem item) {
-      switch (item.getItemId()) {
-         case android.R.id.home:
-            finish();
-            return true;
-         default:
-            return super.onOptionsItemSelected(item);
+      if (item.getItemId() == android.R.id.home) {
+         finish();
+         return true;
+      } else {
+         return super.onOptionsItemSelected(item);
       }
    }
 

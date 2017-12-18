@@ -2,11 +2,10 @@ package com.worldventures.dreamtrips.social.di;
 
 import android.support.annotation.DrawableRes;
 
-import com.techery.spares.module.EventDelegateModule;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.modules.config.ConfigurationModule;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
@@ -47,19 +46,19 @@ import dagger.Provides;
 public class SocialAppModule {
 
    public static final String FEED = "FEED";
-   public static final String NOTIFICATIONS = Route.NOTIFICATIONS.name();
-   public static final String TRIPS = Route.TRIPLIST.name();
-   public static final String MAP_TRIPS = Route.MAP.name();
-   public static final String OTA = Route.OTA.name();
-   public static final String TRIP_IMAGES = Route.TRIP_TAB_IMAGES.name();
-   public static final String MEMBERSHIP = Route.MEMBERSHIP.name();
-   public static final String BUCKETLIST = Route.BUCKET_TABS.name();
+   public static final String NOTIFICATIONS = "NOTIFICATIONS";
+   public static final String TRIPS = "TRIPS";
+   public static final String MAP_TRIPS = "MAP_TRIPS";
+   public static final String OTA = "OTA";
+   public static final String TRIP_IMAGES = "TRIP_IMAGES";
+   public static final String MEMBERSHIP = "MEMBERSHIP";
+   public static final String BUCKETLIST = "BUCKET_TABS";
    public static final String ACCOUNT_PROFILE = "ACCOUNT_PROFILE";
-   public static final String HELP = Route.HELP.name();
-   public static final String TERMS = Route.LEGAL_TERMS.name();
-   public static final String SETTINGS = Route.SETTINGS.name();
-   public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
-   public static final String REP_TOOLS = Route.REP_TOOLS.name();
+   public static final String HELP = "HELP";
+   public static final String TERMS = "LEGAL_TERMS";
+   public static final String SETTINGS = "SETTINGS";
+   public static final String SEND_FEEDBACK = "SEND_FEEDBACK";
+   public static final String REP_TOOLS = "REP_TOOLS";
    public static final String LOGOUT = "Logout";
 
    public static final String MALAYSIYA_COUNTRY_CODE = "my";
@@ -78,7 +77,7 @@ public class SocialAppModule {
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMembershipComponent() {
       return new ComponentDescription.Builder()
-            .key(Route.MEMBERSHIP.name())
+            .key(MEMBERSHIP)
             .navMenuTitle(R.string.membership)
             .toolbarTitle(R.string.membership)
             .icon(R.drawable.ic_membership)
@@ -233,7 +232,7 @@ public class SocialAppModule {
 
    @DrawableRes
    private int getLogo(SessionHolder sessionHolder) {
-      String countryCode = sessionHolder.get().get().getUser().getCountryCode();
+      String countryCode = sessionHolder.get().get().user().getCountryCode();
       if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
          return R.drawable.dt_action_bar_logo_skyzone;
       }

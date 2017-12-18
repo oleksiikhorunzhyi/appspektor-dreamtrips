@@ -31,7 +31,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 public abstract class DraggableArrayListAdapter<V> extends BaseDelegateAdapter<V> implements DraggableItemAdapter<DraggableArrayListAdapter.DraggableCell> {
 
    private MoveListener moveListener;
-   private SparseBooleanArray dragMarkers;
+   private final SparseBooleanArray dragMarkers;
 
    public DraggableArrayListAdapter(Context context, Injector injector) {
       super(context, injector);

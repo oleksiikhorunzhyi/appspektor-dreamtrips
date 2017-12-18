@@ -74,7 +74,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    }
 
    @OnClick(R.id.payment_done_button)
-   public void onDoneClick(){
+   public void onDoneClick() {
       getPresenter().onDoneClick();
    }
 
@@ -89,7 +89,9 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    @Override
    public void hideBackIcon() {
       ActionBar actionBar = ((SocialComponentActivity) getActivity()).getSupportActionBar();
-      if (actionBar == null) return;
+      if (actionBar == null) {
+         return;
+      }
 
       actionBar.setHomeButtonEnabled(false);
       actionBar.setDisplayHomeAsUpEnabled(false);
@@ -106,7 +108,7 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
    }
 
    @Override
-   public void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount){
+   public void setChargeMoney(double money, double subTotal, double taxAmount, double tipAmount) {
       mMoneyCharged.setText(CurrencyUtils.toCurrency(money));
       tvSubTotal.setText(CurrencyUtils.toCurrency(subTotal));
       tvTax.setText(CurrencyUtils.toCurrency(taxAmount));

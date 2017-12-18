@@ -2,7 +2,10 @@ package com.worldventures.core.service.analytics;
 
 import com.newrelic.agent.android.NewRelic;
 
-public class MonitoringHelper {
+public final class MonitoringHelper {
+
+   private MonitoringHelper() {
+   }
 
    public static void startInteractionName(Object interactor) {
       NewRelic.startInteraction(getInteractionName(interactor));

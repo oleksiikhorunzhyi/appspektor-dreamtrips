@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Utils {
+public final class Utils {
+
+   private Utils() {
+   }
 
    public static void copyToClipboard(Context context, CharSequence sequence) {
       ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);

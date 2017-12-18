@@ -10,8 +10,8 @@ import io.techery.mappery.MapperyContext;
 public class TransactionThrstConverter implements Converter<TransactionDetailsThrst, TransactionDetails> {
 
     @Override
-    public Class<com.worldventures.dreamtrips.api.dtl.merchants.model.TransactionDetailsThrst> sourceClass() {
-        return com.worldventures.dreamtrips.api.dtl.merchants.model.TransactionDetailsThrst.class;
+    public Class<TransactionDetailsThrst> sourceClass() {
+        return TransactionDetailsThrst.class;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class TransactionThrstConverter implements Converter<TransactionDetailsTh
     }
 
     @Override
-    public TransactionDetails convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.TransactionDetailsThrst errors) {
+    public TransactionDetails convert(MapperyContext mapperyContext, TransactionDetailsThrst errors) {
         return ImmutableTransactionDetails.builder()
                 .transactionId(errors.transactionId())
                 .creditedAmount(errors.creditedAmount())

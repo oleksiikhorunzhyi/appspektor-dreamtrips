@@ -15,6 +15,8 @@ import java.io.Serializable;
 @Value.Immutable
 public interface ReviewImages extends Serializable {
 
-   @Nullable String normalUrl();
-   @Nullable String thumbnailUrl();
+   @Nullable
+   String normalUrl();
+   @Nullable
+   String thumbnailUrl();
 }

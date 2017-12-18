@@ -5,14 +5,14 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.ui.helper.ConversationHelper;
-import com.worldventures.core.janet.dagger.InjectableAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import rx.Observable;
 
-public abstract class BaseChatAction<Result> extends Command<Result> implements InjectableAction {
+public abstract class BaseChatAction<R> extends Command<R> implements InjectableAction {
    protected final DataConversation conversation;
 
    @Inject MessengerServerFacade messengerServerFacade;

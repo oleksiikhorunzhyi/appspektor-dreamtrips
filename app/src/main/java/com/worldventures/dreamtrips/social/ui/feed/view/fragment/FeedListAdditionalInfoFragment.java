@@ -19,7 +19,7 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
+
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.NestedLinearLayoutM
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.FeedFriendCell;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserActionDelegate;
+import com.worldventures.dreamtrips.social.ui.friends.view.fragment.FriendSearchFragment;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.view.ProfileViewUtils;
 
@@ -68,7 +69,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
 
-      if (friendsView == null) return;
+      if (friendsView == null) {
+         return;
+      }
       //
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -112,14 +115,18 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
       // timeout was set according to the issue:
       // https://code.google.com/p/android/issues/detail?id=77712
       handler.postDelayed(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       }, 100);
    }
 
    @Override
    public void finishLoading() {
       handler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
    }
 
@@ -134,7 +141,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
 
    @Override
    public void hideBlockingProgress() {
-      if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+      if (blockingProgressDialog != null) {
+         blockingProgressDialog.dismiss();
+      }
    }
 
    @Override
@@ -160,14 +169,14 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
 
    @Override
    public void openUser(UserBundle bundle) {
-      router.moveTo(routeCreator.createRoute(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .data(bundle)
             .build());
    }
 
    private void openPost() {
-      router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+      router.moveTo(CreateEntityFragment.class, NavigationConfigBuilder.forFragment()
             .backStackEnabled(false)
             .fragmentManager(getActivity().getSupportFragmentManager())
             .data(new CreateEntityBundle(false, CreateEntityBundle.Origin.FEED))
@@ -176,7 +185,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
    }
 
    protected void openSearch() {
-      router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
+      router.moveTo(FriendSearchFragment.class, NavigationConfigBuilder.forActivity()
             .data(new FriendGlobalSearchBundle(""))
             .build());
    }

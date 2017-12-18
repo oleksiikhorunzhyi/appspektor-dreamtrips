@@ -38,14 +38,14 @@ public class AttachmentDAO extends BaseAttachmentDAO<DataAttachment> {
    }
 
    public Observable<DataAttachment> getAttachmentById(String attachmentId) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataAttachment.TABLE_NAME + " " +
-            "WHERE " + DataAttachment$Table._ID + "=?").withSelectionArgs(new String[]{attachmentId}).build();
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataAttachment.TABLE_NAME + " "
+            + "WHERE " + DataAttachment$Table._ID + "=?").withSelectionArgs(new String[]{attachmentId}).build();
       return query(q, DataAttachment.CONTENT_URI).compose(DaoTransformers.toEntity(DataAttachment.class));
    }
 
    public Observable<DataAttachment> getAttachmentByMessageId(String messageId) {
-      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataAttachment.TABLE_NAME + " " +
-            "WHERE " + DataAttachment$Table.MESSAGEID + "=?").withSelectionArgs(new String[]{messageId}).build();
+      RxContentResolver.Query q = new RxContentResolver.Query.Builder(null).withSelection("SELECT * FROM " + DataAttachment.TABLE_NAME + " "
+            + "WHERE " + DataAttachment$Table.MESSAGEID + "=?").withSelectionArgs(new String[]{messageId}).build();
       return query(q, DataAttachment.CONTENT_URI).compose(DaoTransformers.toEntity(DataAttachment.class));
    }
 

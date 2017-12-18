@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantAttributes;
@@ -27,23 +26,39 @@ public abstract class ThinMerchant implements Serializable {
    public abstract MerchantType type();
    public abstract PartnerStatus partnerStatus();
    public abstract String displayName();
-   @Nullable public abstract Coordinates coordinates();
-   @Nullable public abstract String city();
-   @Nullable public abstract String state();
-   @Nullable public abstract String country();
-   @Nullable public abstract Integer budget();
-   @Nullable public abstract Double rating();
-   @Nullable public abstract Double distance();
-   @Nullable public abstract List<Offer> offers();
-   @Nullable public abstract String timeZone();
-   @Nullable public abstract List<ThinAttribute> categories();
-   @Nullable public abstract List<MerchantMedia> images();
-   @Nullable public abstract List<OperationDay> operationDays();
-   @Nullable public abstract ReviewSummary reviewSummary();
-   @Nullable public abstract Boolean useThrstFlow();
-   @Nullable public abstract String thrstFullCapabilityUrl();
+   @Nullable
+   public abstract Coordinates coordinates();
+   @Nullable
+   public abstract String city();
+   @Nullable
+   public abstract String state();
+   @Nullable
+   public abstract String country();
+   @Nullable
+   public abstract Integer budget();
+   @Nullable
+   public abstract Double rating();
+   @Nullable
+   public abstract Double distance();
+   @Nullable
+   public abstract List<Offer> offers();
+   @Nullable
+   public abstract String timeZone();
+   @Nullable
+   public abstract List<ThinAttribute> categories();
+   @Nullable
+   public abstract List<MerchantMedia> images();
+   @Nullable
+   public abstract List<OperationDay> operationDays();
+   @Nullable
+   public abstract ReviewSummary reviewSummary();
+   @Nullable
+   public abstract Boolean useThrstFlow();
+   @Nullable
+   public abstract String thrstFullCapabilityUrl();
 
-   @Value.Derived public MerchantAttributes asMerchantAttributes() {
+   @Value.Derived
+   public MerchantAttributes asMerchantAttributes() {
       return MerchantAttributesFactory.create(this);
    }
 }

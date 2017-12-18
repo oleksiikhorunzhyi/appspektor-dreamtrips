@@ -6,7 +6,6 @@ import android.widget.ImageView;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.social.ui.feed.model.VideoFeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRouteCommand;
@@ -36,7 +35,7 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
    private VideoInfoInjector videoInfoInjector = new VideoInfoInjector();
 
    private Subscription configurationSubscription;
-   private Route activeCellRoute;
+   private FeedCellListWidthProvider.FeedType activeFeedType;
    private boolean displayingInList;
 
    public VideoFeedItemDetailsCell(View view) {
@@ -52,7 +51,7 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
    public void afterInject() {
       super.afterInject();
       videoInfoInjector.init(activity, itemView);
-      activeCellRoute = getCurrentRoute();
+      activeFeedType = getCurrentRoute();
    }
 
    @Override
@@ -67,13 +66,13 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
       }
    }
 
-   private Route getCurrentRoute() {
+   private FeedCellListWidthProvider.FeedType getCurrentRoute() {
       return activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
             .createObservableResult(ActiveFeedRouteCommand.fetch()).toBlocking().single().getResult();
    }
 
    private int getCellListWidth() {
-      return feedCellListWidthProvider.getFeedCellWidth(activeCellRoute);
+      return feedCellListWidthProvider.getFeedCellWidth(activeFeedType);
    }
 
    @Override

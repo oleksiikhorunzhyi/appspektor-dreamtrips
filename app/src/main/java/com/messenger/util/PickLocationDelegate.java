@@ -16,11 +16,9 @@ import timber.log.Timber;
 
 public class PickLocationDelegate {
 
-   private WeakReference<Activity> activity;
-
-   private Handler handler = new Handler();
-
-   private PublishSubject<Notification<Location>> pickedLocationsStream = PublishSubject.create();
+   private final WeakReference<Activity> activity;
+   private final Handler handler = new Handler();
+   private final PublishSubject<Notification<Location>> pickedLocationsStream = PublishSubject.create();
 
    public PickLocationDelegate(Activity activity) {
       Timber.d("Location pick location delegate constructor with activity %s", activity);

@@ -2,14 +2,13 @@ package com.messenger.ui.module;
 
 import android.content.Context;
 
-import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
 
 import rx.Observable;
 
 public abstract class ModulePresenterImpl<V extends ModuleView> implements ModulePresenter<V> {
 
-   private V view;
+   private final V view;
 
    public ModulePresenterImpl(V view) {
       this.view = view;
@@ -26,10 +25,12 @@ public abstract class ModulePresenterImpl<V extends ModuleView> implements Modul
 
    @Override
    public void onParentViewAttachedToWindow() {
+      //do nothing
    }
 
    @Override
    public void onParentViewDetachedFromWindow() {
+      //do nothing
    }
 
    protected Context getContext() {

@@ -19,17 +19,15 @@ public class FlaggingProvider extends IQProvider<FlagMessageIQ> {
       boolean done = false;
       while (!done) {
          int eventType = parser.next();
-         switch (eventType) {
-            case XmlPullParser.START_TAG:
-               String elementName = parser.getName();
-               if (TextUtils.equals(FlagMessageIQ.MESSAGE_ELEMENT_NAME, elementName)) {
-                  String messageId = parser.getAttributeValue("", FlagMessageIQ.MESSAGE_ID_ATTRIBUTE);
-                  String result = parser.getAttributeValue("", FlagMessageIQ.RESULT_ATTRIBUTE);
-                  flagMessageIQ.setMessageId(messageId);
-                  flagMessageIQ.setResult(result);
-                  done = true;
-               }
-               break;
+         if (eventType == XmlPullParser.START_TAG) {
+            String elementName = parser.getName();
+            if (TextUtils.equals(FlagMessageIQ.MESSAGE_ELEMENT_NAME, elementName)) {
+               String messageId = parser.getAttributeValue("", FlagMessageIQ.MESSAGE_ID_ATTRIBUTE);
+               String result = parser.getAttributeValue("", FlagMessageIQ.RESULT_ATTRIBUTE);
+               flagMessageIQ.setMessageId(messageId);
+               flagMessageIQ.setResult(result);
+               done = true;
+            }
 
          }
       }

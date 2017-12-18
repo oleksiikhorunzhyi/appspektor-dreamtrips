@@ -5,16 +5,12 @@ import android.app.Activity;
 import com.messenger.ui.inappnotifications.appmsg.AppMsg;
 import com.messenger.ui.widget.inappnotification.BaseInAppNotificationView;
 import com.messenger.ui.widget.inappnotification.InAppNotificationViewListener;
-import com.worldventures.dreamtrips.App;
 
 public class AppNotificationImpl implements AppNotification {
 
    private static final int SHOWING_DURATION = 3000;
    private static final int PRIORITY_NORMAL = 0;
    private int currentMessagePriority = PRIORITY_NORMAL;
-
-   public AppNotificationImpl(App app) {
-   }
 
    @Override
    public void show(Activity activity, BaseInAppNotificationView view, final InAppNotificationEventListener listener) {

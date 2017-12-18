@@ -17,7 +17,7 @@
          android:orientation="horizontal"
          >
 
-      <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+      <com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView
             android:id="@+id/sdv_avatar"
             android:layout_width="45dp"
             android:layout_height="45dp"

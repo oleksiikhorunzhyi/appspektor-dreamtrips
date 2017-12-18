@@ -1,16 +1,17 @@
 package com.worldventures.dreamtrips.social.ui.profile.presenter
 
 import com.nhaarman.mockito_kotlin.*
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.User
 import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.modules.video.utils.CachedModelHelper
 import com.worldventures.core.service.DownloadFileInteractor
-import com.worldventures.dreamtrips.common.Injector
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager
+import com.worldventures.dreamtrips.util.SocialCropImageManager
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand
@@ -23,6 +24,7 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.AccountTimel
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand
+import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.Contract
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
@@ -42,7 +44,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestBody()) {
       val socialCropImageManager = SocialCropImageManager()
       lateinit var authInteractor: AuthInteractor
       lateinit var profileInteractor: ProfileInteractor
-      var notificationCountEventDelegate: NotificationCountEventDelegate = NotificationCountEventDelegate()
+      lateinit var userNotificationInteractor: UserNotificationInteractor
       val snappyDb = mock<SnappyRepository>()
       val accountTimelineStorageDelegate: AccountTimelineStorageDelegate = mock()
 
@@ -77,9 +79,10 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestBody()) {
                }
 
                it("should update badge count on notification count change") {
-                  setup()
+                  setup(BaseContract.of(NotificationCountChangedCommand::class.java)
+                        .result(NotificationCountChangedCommand.NotificationCounterResult(1, 1, 1)))
                   presenter.subscribeNotificationsBadgeUpdates()
-                  notificationCountEventDelegate.post(Object())
+                  userNotificationInteractor.notificationCountChangedPipe().send(NotificationCountChangedCommand())
 
                   verify(view).updateBadgeCount(any())
                }
@@ -224,6 +227,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestBody()) {
          compoundOperationsInteractor = CompoundOperationsInteractor(pipeCreator, Schedulers.immediate())
          pingAssetStatusInteractor = PingAssetStatusInteractor(pipeCreator)
          authInteractor = AuthInteractor(pipeCreator)
+         userNotificationInteractor = UserNotificationInteractor(pipeCreator)
          profileInteractor = ProfileInteractor(pipeCreator, makeSessionHolder(USER_ID))
 
          injector.registerProvider(DownloadFileInteractor::class.java, { downloadFileInteractor })
@@ -232,7 +236,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestBody()) {
          injector.registerProvider(MediaPickerEventDelegate::class.java, { mediaPickerEventDelegate })
          injector.registerProvider(SocialCropImageManager::class.java, { socialCropImageManager })
          injector.registerProvider(AuthInteractor::class.java, { authInteractor })
-         injector.registerProvider(NotificationCountEventDelegate::class.java, { notificationCountEventDelegate })
+         injector.registerProvider(UserNotificationInteractor::class.java, { userNotificationInteractor })
          injector.registerProvider(SnappyRepository::class.java, { snappyDb })
          injector.registerProvider(UploadingPresenterDelegate::class.java, { mock() })
          injector.registerProvider(AccountTimelineStorageDelegate::class.java, { accountTimelineStorageDelegate })

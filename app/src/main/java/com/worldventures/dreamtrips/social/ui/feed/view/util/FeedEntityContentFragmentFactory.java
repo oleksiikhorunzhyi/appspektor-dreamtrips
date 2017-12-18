@@ -1,44 +1,43 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.util;
 
 import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsRouteCreator;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.creator.BucketDetailsFragmentClassProvider;
+import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
 
 public class FeedEntityContentFragmentFactory {
 
-   private final RouteCreator bucketRouteCreator;
+   private final FragmentClassProvider bucketFragmentClassProvider;
 
    public FeedEntityContentFragmentFactory(SessionHolder sessionHolder) {
-      this.bucketRouteCreator = new BucketDetailsRouteCreator(sessionHolder);
+      this.bucketFragmentClassProvider = new BucketDetailsFragmentClassProvider(sessionHolder);
    }
 
-   public Pair<Route, Parcelable> create(FeedEntityHolder holder) {
-      FeedEntityHolder.Type type = holder.getType();
-
-      Route route = null;
+   public Pair<Class<? extends Fragment>, Parcelable> create(FeedEntityHolder holder) {
+      Class<? extends Fragment> routeClazz = null;
       Parcelable args = null;
-      switch (type) {
+      switch (holder.getType()) {
          case UNDEFINED:
             //now is not used.
             break;
          case TRIP:
-            route = Route.DETAILED_TRIP;
+            routeClazz = TripDetailsFragment.class;
             args = new TripDetailsBundle((TripModel) holder.getItem());
             break;
          case BUCKET_LIST_ITEM:
             User user = holder.getItem().getOwner();
             int userId = user != null ? user.getId() : 0;
-            route = bucketRouteCreator.createRoute(userId);
+            routeClazz = bucketFragmentClassProvider.provideFragmentClass(userId);
             BucketBundle bucketBundle = new BucketBundle();
             BucketItem item = (BucketItem) holder.getItem();
             bucketBundle.setType(item.getType());
@@ -46,7 +45,9 @@ public class FeedEntityContentFragmentFactory {
             bucketBundle.setOwnerId(userId);
             args = bucketBundle;
             break;
+         default:
+            break;
       }
-      return new Pair<>(route, args);
+      return new Pair<>(routeClazz, args);
    }
 }

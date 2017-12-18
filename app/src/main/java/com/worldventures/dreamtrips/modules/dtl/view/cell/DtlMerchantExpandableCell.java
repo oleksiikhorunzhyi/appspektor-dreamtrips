@@ -34,10 +34,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationalHoursUtils;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.delegates.MerchantCellDelegate;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.ValidateReviewUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 
 import java.util.List;
 
@@ -117,7 +115,9 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
 
    private void setImage(List<MerchantMedia> mediaList) {
       MerchantMedia media = Queryable.from(mediaList).firstOrDefault();
-      if (media == null) return;
+      if (media == null) {
+         return;
+      }
       //
       merchantCoverImage.setImageUrl(media.getImagePath());
    }
@@ -141,12 +141,15 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
                .provideFormattedOperationalTime(itemView.getContext(), false))
                .compose(RxLifecycleAndroid.bindView(itemView))
                .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
-      } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
+      } else {
+         ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
+      }
    }
 
    private void setOffersSection() {
-      if (!getModelObject().asMerchantAttributes().hasOffers()) ViewUtils.setViewVisibility(offersContainer, View.GONE);
-      else {
+      if (!getModelObject().asMerchantAttributes().hasOffers()) {
+         ViewUtils.setViewVisibility(offersContainer, View.GONE);
+      } else {
          ViewUtils.setViewVisibility(offersContainer, View.VISIBLE);
          int perksNumber = getModelObject().asMerchantAttributes().offersCount(OfferType.PERK);
          setOfferBadges(perksNumber, getModelObject().offers().size() - perksNumber);
@@ -168,8 +171,9 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
          ViewUtils.setViewVisibility(this.points, View.VISIBLE);
       }
 
-      if (perkVisibility == View.VISIBLE) this.perks.setText(itemView.getContext()
-            .getString(R.string.perks_formatted, perks));
+      if (perkVisibility == View.VISIBLE) {
+         this.perks.setText(itemView.getContext().getString(R.string.perks_formatted, perks));
+      }
    }
 
    private void setToggleView() {
@@ -186,8 +190,11 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
          expandedContainer.setVisibility(View.VISIBLE);
          expandedContainer.removeAllViews();
          Queryable.from(getModelObject().offers()).forEachR(offer -> {
-            if (offer.type() == OfferType.PERK) bindPerkCell(offer, expandedContainer);
-            else bindPointsCell(offer, expandedContainer);
+            if (offer.type() == OfferType.PERK) {
+               bindPerkCell(offer, expandedContainer);
+            } else {
+               bindPointsCell(offer, expandedContainer);
+            }
          });
       } else {
          expandedContainer.setVisibility(View.GONE);
@@ -231,13 +238,18 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
       if (MerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
          ViewUtils.setTextOrHideView(expirationBar, MerchantHelper.
                getOfferExpiringCaption(itemView.getContext(), offer, LocaleHelper.getDefaultLocale()));
-      } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
+      } else {
+         ViewUtils.setViewVisibility(View.GONE, expirationBar);
+      }
       //
       title.setText(offer.title()); // description
       //
       List<OperationDay> operationDays = offer.operationDays(); // operation days
-      if (operationDays == null) return;
-      String concatDays = OperationalHoursUtils.concatOperationDays(operationDays, itemView.getResources().getString(R.string.everyday));
+      if (operationDays == null) {
+         return;
+      }
+      String concatDays = OperationalHoursUtils.concatOperationDays(operationDays, itemView.getResources()
+            .getString(R.string.everyday));
       operationDaysCaption.setText(concatDays);
       //
       setSelection(cellView);
@@ -269,7 +281,7 @@ public class DtlMerchantExpandableCell extends BaseAbstractDelegateCell<Immutabl
    }
 
    private User getUser() {
-      return appSessionHolder.get().get().getUser();
+      return appSessionHolder.get().get().user();
    }
 
    private boolean isReviewCached() {

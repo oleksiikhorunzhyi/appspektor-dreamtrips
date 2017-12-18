@@ -23,8 +23,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class CreatePhotosCommand extends MappableApiActionCommand<CreatePhotosHttpAction, List<Photo>, Photo> {
 
-   private List<PhotoAttachment> attachments;
-   private Location location;
+   private final List<PhotoAttachment> attachments;
+   private final Location location;
 
    public CreatePhotosCommand(PostWithPhotoAttachmentBody postWithAttachmentBody) {
       this.attachments = postWithAttachmentBody.attachments();

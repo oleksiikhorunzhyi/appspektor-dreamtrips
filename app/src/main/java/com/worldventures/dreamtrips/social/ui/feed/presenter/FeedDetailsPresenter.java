@@ -21,18 +21,19 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.Delete
 
 import javax.inject.Inject;
 
+import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends BaseCommentPresenter<V>
       implements FeedEditEntityPresenter, FeedEntityHolder {
-
-   protected FeedItem feedItem;
 
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
    @Inject FeedActionHandlerDelegate feedActionHandlerDelegate;
    @Inject TripsInteractor tripsInteractor;
    @Inject BucketInteractor bucketInteractor;
    @Inject FeedInteractor feedInteractor;
+
+   @State FeedItem feedItem;
 
    public FeedDetailsPresenter(FeedItem feedItem) {
       super(feedItem.getItem());
@@ -63,17 +64,20 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
 
    private void loadFullEventInfo() {
       //TODO trip details is requested from other place, all this hierarchy should be refactored
-      if (!isTrip())
+      if (!isTrip()) {
          feedInteractor.getFeedEntityPipe()
                .createObservable(new GetFeedEntityCommand(feedEntity.getUid(), feedItem.getType()))
                .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<GetFeedEntityCommand>()
                      .onSuccess(getFeedEntityCommand -> updateFullEventInfo(getFeedEntityCommand.getResult()))
                      .onFail(this::handleError));
+      }
    }
 
    protected void updateFullEventInfo(FeedEntity updatedFeedEntity) {
-      if (!feedEntity.equals(updatedFeedEntity)) return;
+      if (!feedEntity.equals(updatedFeedEntity)) {
+         return;
+      }
       feedEntity = updatedFeedEntity;
       feedEntity.setComments(null);
       feedItem.setItem(feedEntity);

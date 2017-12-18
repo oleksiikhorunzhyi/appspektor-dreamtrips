@@ -9,7 +9,6 @@ import android.webkit.WebViewClient;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlThankYouScreenFragment;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 
 import butterknife.InjectView;
@@ -44,11 +44,11 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
       webView.init();
       webView.setWebChromeClient(new WebChromeClient());
       webView.setWebViewClient(new WebViewClient());
-      String executeThrstJs = "<script type='text/javascript'>javascript:(function () { " +
-            "document.cookie = " + cookieString + ";\n" +
-            "console.log(document.cookie);" +
-            "window.location.href = '" + receiptUrl + "';\n" +
-            "})()</script>";
+      String executeThrstJs = "<script type='text/javascript'>javascript:(function () { "
+            + "document.cookie = " + cookieString + ";\n"
+            + "console.log(document.cookie);"
+            + "window.location.href = '" + receiptUrl + "';\n"
+            + "})()</script>";
       webView.loadDataWithBaseURL(receiptUrl, executeThrstJs, "text/html", "utf-8", null);
 
       webView.setJavascriptCallbackListener(message ->
@@ -78,7 +78,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
 
    private void goToDtlPaymentPath(boolean isPaid, GetTransactionResponse response) {
       router.moveTo(
-            Route.DTL_THRST_THANK_YOU_SCREEN,
+            DtlThankYouScreenFragment.class,
             NavigationConfigBuilder.forFragment()
                   .containerId(R.id.container_main)
                   .backStackEnabled(true)

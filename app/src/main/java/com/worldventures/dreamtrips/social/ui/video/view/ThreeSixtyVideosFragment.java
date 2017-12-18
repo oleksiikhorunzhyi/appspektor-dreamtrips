@@ -101,14 +101,18 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    @Override
    public void startLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(true);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(true);
+         }
       });
    }
 
    @Override
    public void finishLoading() {
       weakHandler.post(() -> {
-         if (refreshLayout != null) refreshLayout.setRefreshing(false);
+         if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+         }
       });
    }
 
@@ -118,14 +122,20 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
          List featuredObjects = Queryable.from(videos)
                .filter(element -> element instanceof Video && ((Video) element).isFeatured())
                .toList();
-         if (adapterFeatured != null) adapterFeatured.setItems(featuredObjects);
+         if (adapterFeatured != null) {
+            adapterFeatured.setItems(featuredObjects);
+         }
 
          List recentObjects = Queryable.from(videos)
                .filter(element -> element instanceof Video && ((Video) element).isRecent())
                .toList();
-         if (adapterRecent != null) adapterRecent.setItems(recentObjects);
+         if (adapterRecent != null) {
+            adapterRecent.setItems(recentObjects);
+         }
       } else {
-         if (adapterAll != null) adapterAll.setItems(videos);
+         if (adapterAll != null) {
+            adapterAll.setItems(videos);
+         }
       }
    }
 
@@ -167,17 +177,17 @@ public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideos
    }
 
    @Override
-   public void onDownloadVideo(Video video) {
+   public void onDownloadMedia(Video video) {
       getPresenter().downloadVideo(video);
    }
 
    @Override
-   public void onDeleteVideo(Video video) {
+   public void onDeleteMedia(Video video) {
       getPresenter().deleteCachedVideo(video);
    }
 
    @Override
-   public void onCancelCachingVideo(Video video) {
+   public void onCancelCachingMedia(Video video) {
       getPresenter().cancelCachingVideo(video);
    }
 

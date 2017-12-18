@@ -10,6 +10,7 @@ public class Document implements Parcelable {
    private String url;
 
    public Document() {
+      super();
    }
 
    public Document(String name, String originalName, String url) {
@@ -48,9 +49,13 @@ public class Document implements Parcelable {
 
    public static final Creator<Document> CREATOR = new Creator<Document>() {
       @Override
-      public Document createFromParcel(Parcel source) {return new Document(source);}
+      public Document createFromParcel(Parcel source) {
+         return new Document(source);
+      }
 
       @Override
-      public Document[] newArray(int size) {return new Document[size];}
+      public Document[] newArray(int size) {
+         return new Document[size];
+      }
    };
 }

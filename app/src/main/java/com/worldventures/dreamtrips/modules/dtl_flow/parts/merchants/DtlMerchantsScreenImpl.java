@@ -115,13 +115,17 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       refreshLayout.setOnRefreshListener(() -> getPresenter().refresh());
       refreshLayout.setEnabled(true);
 
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.setTransactionsButtonListener(() -> onClickTransaction());
 
    }
 
    private void initDtlToolbar() {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
 
       RxDtlToolbar.actionViewClicks(dtlToolbar)
             .throttleFirst(250L, TimeUnit.MILLISECONDS)
@@ -139,7 +143,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
             .skip(1)
             .compose(RxLifecycleAndroid.bindView(this))
             .filter(Boolean::booleanValue) // only true -> only focus gains
-            .subscribe(aBoolean -> getPresenter().locationChangeRequested());
+            .subscribe(aBoolean -> getPresenter().locationChangeRequested(dtlToolbar.getSearchQuery()));
       RxDtlToolbar.filterButtonClicks(dtlToolbar)
             .compose(RxLifecycleAndroid.bindView(this))
             .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
@@ -254,8 +258,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void showhMerchantsError() {
-      if (!delegate.isItemsPresent()) errorView.setVisibility(VISIBLE);
-      else loadNextMerchantsError(true);
+      if (!delegate.isItemsPresent()) {
+         errorView.setVisibility(VISIBLE);
+      } else {
+         loadNextMerchantsError(true);
+      }
    }
 
    private void hideRefreshMerchantsError() {
@@ -267,8 +274,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void loadNextMerchantsError(boolean show) {
-      if (show) delegate.addItem(MerchantsErrorCell.INSTANCE);
-      else delegate.removeItem(MerchantsErrorCell.INSTANCE);
+      if (show) {
+         delegate.addItem(MerchantsErrorCell.INSTANCE);
+      } else {
+         delegate.removeItem(MerchantsErrorCell.INSTANCE);
+      }
    }
 
    private void refreshProgress(boolean isShow) {
@@ -276,25 +286,34 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void loadNextProgress(boolean isLoading) {
-      if (isLoading) delegate.addItem(ProgressCell.INSTANCE);
-      else delegate.removeItem(ProgressCell.INSTANCE);
+      if (isLoading) {
+         delegate.addItem(ProgressCell.INSTANCE);
+      } else {
+         delegate.removeItem(ProgressCell.INSTANCE);
+      }
    }
 
    @Override
    public void setFilterButtonState(boolean isDefault) {
-      if (dtlToolbar != null) dtlToolbar.setFilterEnabled(!isDefault);
+      if (dtlToolbar != null) {
+         dtlToolbar.setFilterEnabled(!isDefault);
+      }
    }
 
    @Override
    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.setLocationCaption(DtlToolbarHelper.provideLocationCaption(getResources(), dtlLocation));
    }
 
    @Override
-   public void updateToolbarSearchCaption(@Nullable String searchCaption) {
-      if (dtlToolbar == null) return;
-      dtlToolbar.setSearchCaption(searchCaption);
+   public void updateToolbarSearchQuery(@Nullable String searchQuery) {
+      if (dtlToolbar == null) {
+         return;
+      }
+      dtlToolbar.setSearchQuery(searchQuery);
    }
 
    @Override
@@ -305,7 +324,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void connectToggleUpdate() {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
 
       RxDtlToolbar.offersOnlyToggleChanges(dtlToolbar)
             .compose(RxLifecycleAndroid.bindView(this))
@@ -323,8 +344,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       if (!isFilterDefault) {
          captionId = R.string.merchants_no_results;
       } else {
-         captionId =
-               isOffersOnly ? R.string.merchants_no_results_offers_only : R.string.dtl_location_no_merchants_caption;
+         captionId = isOffersOnly ? R.string.merchants_no_results_offers_only : R.string.dtl_location_no_merchants_caption;
       }
       noMerchantsCaption.setText(captionId);
    }
@@ -357,7 +377,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void toggleOffersOnly(boolean enabled) {
-      if (dtlToolbar == null) return;
+      if (dtlToolbar == null) {
+         return;
+      }
       dtlToolbar.toggleOffersOnly(enabled);
    }
 
@@ -380,7 +402,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    @Override
    public void toggleSelection(ThinMerchant merchant) {
       int index = delegate.getItems().indexOf(merchant);
-      if (index != -1) selectionManager.toggleSelection(index);
+      if (index != -1) {
+         selectionManager.toggleSelection(index);
+      }
       scrollingManager.scrollToPosition(index);
    }
 
@@ -391,7 +415,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
    @Override
    public void applyViewState(DtlMerchantsState state) {
-      if (state == null) return;
+      if (state == null) {
+         return;
+      }
       delegate.setExpandedMerchants(state.getExpandedMerchantIds());
    }
 
@@ -419,7 +445,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
    }
 
    private void hideErrorIfNeed() {
-      if (errorDialog != null && errorDialog.isShowing()) errorDialog.dismiss();
+      if (errorDialog != null && errorDialog.isShowing()) {
+         errorDialog.dismiss();
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -454,7 +482,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
       ViewUtils.setTextColor((Button) filterSpa, MerchantTypeUtil.filterMerchantColor(filterSpa));
 
       if (stringResource != 0 && dtlToolbar != null) {
-         dtlToolbar.setSearchCaption(getContext().getResources().getString(stringResource));
+         dtlToolbar.setSearchHint(getContext().getResources().getString(stringResource));
       }
    }
 

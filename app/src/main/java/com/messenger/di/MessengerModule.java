@@ -7,6 +7,7 @@ import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.NotificationDataFactory;
 import com.messenger.notification.UnhandledMessageWatcher;
+import com.messenger.storage.MessengerDatabase;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.synchmechanism.MessengerSyncDelegate;
 import com.messenger.ui.adapter.SwipeableContactsAdapter;
@@ -15,11 +16,12 @@ import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.AppNotificationImpl;
-import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
@@ -28,14 +30,14 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import timber.log.Timber;
 
 @Module(
       includes = {MessengerServerModule.class, MessengerStorageModule.class, MessengerDelegateModule.class, MessengerTypingManagerModule.class},
       injects = {GroupConversationViewHolder.class, OneToOneConversationViewHolder.class, ClosedGroupConversationViewHolder.class,
             // adapters
             SwipeableContactsAdapter.class,
-
-            GroupChatEventDelegate.class,},
+            GroupChatEventDelegate.class},
       complete = false, library = true)
 public class MessengerModule {
 
@@ -69,7 +71,7 @@ public class MessengerModule {
 
    @Provides
    public AppNotification provideInAppNotification(App app) {
-      return new AppNotificationImpl(app);
+      return new AppNotificationImpl();
    }
 
    @Provides
@@ -78,5 +80,17 @@ public class MessengerModule {
          ChatMessagesEventDelegate chatMessagesEventDelegate, OpenedConversationTracker openedConversationTracker,
          NotificationDataFactory notificationDataFactory) {
       return new UnhandledMessageWatcher(appNotification, chatMessagesEventDelegate, openedConversationTracker, notificationDataFactory);
+   }
+
+   @Provides(type = Provides.Type.SET)
+   LogoutAction messengerDisconnectLogoutAction(MessengerConnector messengerConnector, Context context) {
+      return () -> {
+         messengerConnector.disconnect();
+         try {
+            FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
+         } catch (Throwable e) {
+            Timber.w(e, "Messenger DB is not cleared");
+         }
+      };
    }
 }

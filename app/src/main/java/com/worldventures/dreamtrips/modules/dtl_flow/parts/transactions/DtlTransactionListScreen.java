@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions;
 
 import com.worldventures.dreamtrips.modules.common.listener.ScrollEventListener;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.transactions.DetailTransactionThrst;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.views.TransactionView;

@@ -12,20 +12,25 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.techery.spares.utils.ui.SoftInputUtil;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.core.modules.infopages.model.FeedbackType;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.SendFeedbackPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -37,6 +42,9 @@ import rx.subjects.PublishSubject;
 @Layout(R.layout.fragment_send_feedback)
 @MenuResource(R.menu.menu_send_feedback)
 public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> implements SendFeedbackPresenter.View {
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
 
    @InjectView(R.id.spinner) Spinner spinner;
    @InjectView(R.id.tv_message) EditText message;
@@ -113,6 +121,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
                getPresenter().sendFeedback(id, message.getText().toString());
             }
             break;
+         default:
+            break;
       }
       return super.onOptionsItemSelected(item);
    }
@@ -159,7 +169,9 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
 
    @Override
    public void changeDoneButtonState(boolean enable) {
-      if (doneButtonMenuItem != null) doneButtonMenuItem.setEnabled(enable);
+      if (doneButtonMenuItem != null) {
+         doneButtonMenuItem.setEnabled(enable);
+      }
    }
 
    @Override
@@ -188,6 +200,20 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    @OnClick(R.id.feedback_add_photos)
    void onAddPhotosClicked() {
       getPresenter().onShowMediaPicker();
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    @Override
@@ -231,6 +257,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
                      break;
                   case 1:
                      getPresenter().onRemoveAttachment(attachmentHolder);
+                     break;
+                  default:
                      break;
                }
             }).show();

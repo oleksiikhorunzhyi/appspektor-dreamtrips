@@ -7,7 +7,7 @@ import rx.Observable;
 
 public class MockFlagMessageLoader implements FlagMessageLoader {
 
-   private Observable.OnSubscribe<FlagMessageDTO> onSubscribe;
+   private final Observable.OnSubscribe<FlagMessageDTO> onSubscribe;
 
    public MockFlagMessageLoader(Observable.OnSubscribe<FlagMessageDTO> onSubscribe) {
       this.onSubscribe = onSubscribe;

@@ -13,7 +13,7 @@ public class SmartCardAboutViewModel extends BaseObservable {
    private String cardsStored;
    private String cardsAvailable;
    private String appVersion;
-   private SmartCardFirmware smartCardFirmware;
+   private SmartCardFirmware smartCardFirmware; // todo remove domain model
 
    @Bindable
    public String getSmartCardUserFullName() {

@@ -109,12 +109,12 @@ public class LegacyActivityModule {
          featureManager.with(Feature.WALLET, () -> activeComponents.add(SmartCardModule.WALLET));
       }
       featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
-      featureManager.with(Feature.SOCIAL, () ->activeComponents.add(SocialAppModule.NOTIFICATIONS));
+      featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.NOTIFICATIONS));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerModule.MESSENGER));
       featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(SocialAppModule.OTA));
-      featureManager.with(Feature.TRIP_IMAGES, () -> activeComponents.add(SocialAppModule.TRIP_IMAGES));
+      activeComponents.add(SocialAppModule.TRIP_IMAGES);
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(SocialAppModule.MEMBERSHIP));
-      featureManager.with(Feature.BUCKET_LIST, () -> activeComponents.add(SocialAppModule.BUCKETLIST));
+      activeComponents.add(SocialAppModule.BUCKETLIST);
       activeComponents.add(SocialAppModule.ACCOUNT_PROFILE);
       featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(SocialAppModule.REP_TOOLS));
       activeComponents.add(SocialAppModule.SETTINGS);

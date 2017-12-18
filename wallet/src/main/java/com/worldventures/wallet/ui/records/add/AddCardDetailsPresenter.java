@@ -1,11 +1,10 @@
 package com.worldventures.wallet.ui.records.add;
 
-import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.ui.common.base.WalletPresenter;
 
 public interface AddCardDetailsPresenter extends WalletPresenter<AddCardDetailsScreen> {
 
-   HttpErrorHandlingUtil httpErrorHandlingUtil();
+   void fetchRecordViewModel();
 
    void goBack();
 

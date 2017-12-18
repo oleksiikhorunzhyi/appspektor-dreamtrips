@@ -46,8 +46,8 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
       observePayCardsInfo();
 
       smartCardInteractor.activeSmartCardPipe().send(new ActiveSmartCardCommand());
-      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.fetch());
-      recordInteractor.cardsListPipe().send(RecordListCommand.fetch());
+      smartCardInteractor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.Companion.fetch());
+      recordInteractor.cardsListPipe().send(RecordListCommand.Companion.fetch());
 
       trackScreen();
    }
@@ -58,7 +58,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
             .map(Command::getResult)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(smartCard -> getView().setSmartCardId(smartCard.smartCardId()));
+            .subscribe(smartCard -> getView().setSmartCardId(smartCard.getSmartCardId()));
       smartCardInteractor.smartCardFirmwarePipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
@@ -77,7 +77,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
             .filter(aboutSmartCardData -> aboutSmartCardData != null)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(aboutSmartCardData -> getView().setSmartCardFirmware(aboutSmartCardData.smartCardFirmware()));
+            .subscribe(aboutSmartCardData -> getView().setSmartCardFirmware(aboutSmartCardData.getSmartCardFirmware()));
    }
 
    private void restoreCachedFWInfo(SmartCardFirmware smartCardFirmware) {
@@ -102,7 +102,7 @@ public class AboutPresenterImpl extends WalletPresenterImpl<AboutScreen> impleme
    }
 
    @SuppressWarnings("ConstantConditions")
-   private void bindCardList(List<Record> records) {
+   private void bindCardList(List<? extends Record> records) {
       getView().onProvidePayCardInfo(records.size(), WalletConstants.MAX_CARD_LIMIT - records.size());
    }
 

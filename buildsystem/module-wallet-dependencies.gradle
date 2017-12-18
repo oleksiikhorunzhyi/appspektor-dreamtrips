@@ -19,7 +19,6 @@ ext {
    walletDependencies.presentation = [
          conductor           : [impl: "com.bluelinelabs:conductor:$conductorVersion"],
          conductorSupport    : [impl: "com.bluelinelabs:conductor-support:$conductorVersion"],
-         conductorRxLifecycle: [impl: "com.bluelinelabs:conductor-rxlifecycle:$conductorVersion"],
    ]
 
    walletDependencies.media = [
@@ -31,7 +30,7 @@ ext {
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
          // beacons
          altBeacon                : [impl: 'org.altbeacon:android-beacon-library:2.12.2'],
-         slf4                     : [impl: 'com.github.bright:slf4android:0.1.3'],
+         slf4                     : [debugImpl: 'com.github.bright:slf4android:0.1.3'],
          reactivenetwork          : [impl: 'com.github.pwittchen:reactivenetwork:0.5.2'],
    ]
 
@@ -47,5 +46,4 @@ ext {
    ]
 
    coreDependencies.di.each { walletDependencies.annotationProcessor << it }
-   coreDependencies.immutables.each { walletDependencies.annotationProcessor << it }
 }

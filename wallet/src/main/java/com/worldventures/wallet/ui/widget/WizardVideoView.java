@@ -87,7 +87,7 @@ public class WizardVideoView extends PercentFrameLayout implements TextureView.S
       try {
          mediaPlayer.setDataSource(getContext(), videoUri);
       } catch (IOException e) {
-         Timber.e(e, "");
+         Timber.e(e);
       }
       mediaPlayer.setOnPreparedListener(MediaPlayer::start);
       mediaPlayer.setSurface(surface);

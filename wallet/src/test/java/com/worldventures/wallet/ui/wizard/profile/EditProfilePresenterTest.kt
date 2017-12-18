@@ -6,7 +6,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.wallet.domain.entity.ImmutableSmartCardUser
+import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.SmartCardUserDataInteractor
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
@@ -14,8 +14,8 @@ import com.worldventures.wallet.service.WalletSocialInfoProvider
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.SetupUserDataCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
-import com.worldventures.wallet.service.command.profile.RetryHttpUploadUpdatingCommand
-import com.worldventures.wallet.service.command.profile.RevertSmartCardUserUpdatingCommand
+import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
+import com.worldventures.wallet.service.profile.RevertSmartCardUserUpdatingCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.wallet.ui.common.BasePresenterTest
 import com.worldventures.wallet.ui.common.InteractorBuilder
@@ -61,6 +61,8 @@ class EditProfilePresenterTest : BasePresenterTest<WizardEditProfileScreen, Wiza
    override fun setup() {
       val deviceConnectionDelegate: WalletDeviceConnectionDelegate = MockDeviceConnectionDelegate()
       val socialInfoProvider: WalletSocialInfoProvider = mock()
+      whenever(socialInfoProvider.firstName()).thenReturn("firstName")
+      whenever(socialInfoProvider.lastName()).thenReturn("lastName")
 
       val analyticsInteractor = interactorBuilder.createInteractor(WalletAnalyticsInteractor::class)
       val wizardInteractor = interactorBuilder.createInteractor(WizardInteractor::class)
@@ -81,6 +83,7 @@ class EditProfilePresenterTest : BasePresenterTest<WizardEditProfileScreen, Wiza
    }
 
    @Test
+   @Throws(Throwable::class)
    fun testSaveUserWithoutFirstName() {
       val profile = ProfileViewModel()
       profile.firstName = ""
@@ -94,6 +97,7 @@ class EditProfilePresenterTest : BasePresenterTest<WizardEditProfileScreen, Wiza
    }
 
    @Test
+   @Throws(Throwable::class)
    fun testSaveUserWithoutLastName() {
       val profile = ProfileViewModel()
       profile.firstName = "TestFirst"
@@ -107,12 +111,11 @@ class EditProfilePresenterTest : BasePresenterTest<WizardEditProfileScreen, Wiza
    }
 
    @Test
+   @Throws(Throwable::class)
    fun testSaveUserCorrectUser() {
-      contractSetupUserData.result(ImmutableSmartCardUser.builder()
-            .firstName("TestFirst")
-            .lastName("Test Last")
-            .phoneNumber(null)
-            .build())
+      contractSetupUserData.result(SmartCardUser(
+            firstName = "TestFirst",
+            lastName = "Test Last"))
 
       val profile = ProfileViewModel()
       profile.firstName = "TestFirst"

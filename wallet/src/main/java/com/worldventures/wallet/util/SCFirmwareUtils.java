@@ -17,7 +17,7 @@ public final class SCFirmwareUtils {
    private SCFirmwareUtils() {}
 
    public static String smartCardFirmwareVersion(@Nullable SmartCardFirmware firmware) {
-      return firmware != null ? firmware.nordicAppVersion() : "";
+      return firmware != null ? firmware.getNordicAppVersion() : "";
    }
 
    public static boolean isNewFirmwareAvailable(String currentVersion, String availableVersion) {
@@ -30,14 +30,14 @@ public final class SCFirmwareUtils {
 
    public static boolean chargerRequired(@Nullable SmartCardFirmware firmware) {
       if (firmware != null) {
-         int firmwareVersion = firmwareVersionStringToInt(firmware.nordicAppVersion());
+         int firmwareVersion = firmwareVersionStringToInt(firmware.getNordicAppVersion());
          return firmwareVersion == 0 || firmwareVersion == SUPPORTED_CHARGER_ACTION_VERSION_FW;
       }
       return false;
    }
 
    public static boolean supportOnCardAnalytics(@Nullable SmartCardFirmware firmware) {
-      return firmware != null && firmwareVersionStringToInt(firmware.nordicAppVersion()) >= SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW;
+      return firmware != null && firmwareVersionStringToInt(firmware.getNordicAppVersion()) >= SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW;
    }
 
    private static int firmwareVersionStringToInt(@Nullable String firmwareVersion) {

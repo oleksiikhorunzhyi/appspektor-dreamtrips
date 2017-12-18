@@ -4,9 +4,9 @@ import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.wallet.service.command.SetupUserDataCommand;
+import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
-import com.worldventures.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.wallet.service.provisioning.PinOptionalCommand;
 import com.worldventures.wallet.service.provisioning.ProvisioningModeCommand;
@@ -27,7 +27,6 @@ public final class WizardInteractor {
    private final ActionPipe<StartPinSetupAction> startPinSetupPipe;
    private final ActionPipe<CancelPinSetupAction> cancelPinSetupPipe;
    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
-   private final ActionPipe<WizardCheckCommand> checksPipe;
    private final ActionPipe<GetSmartCardStatusCommand> getSmartCardStatusCommandActionPipe;
 
    private final ActionPipe<ReAssignCardCommand> reAssignCardPipe;
@@ -35,6 +34,7 @@ public final class WizardInteractor {
    private final ActionPipe<WizardCompleteCommand> completePipe;
    private final ActionPipe<ProvisioningModeCommand> provisioningStatePipe;
    private final ActionPipe<PinOptionalCommand> pinOptionalActionPipe;
+   private final ActionPipe<FetchTermsAndConditionsCommand> termsAndConditionsPipe;
 
    public WizardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       createAndConnectPipe = sessionActionPipeCreator.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
@@ -44,7 +44,6 @@ public final class WizardInteractor {
       pinSetupFinishedPipe = sessionActionPipeCreator.createPipe(PinSetupFinishedEvent.class, Schedulers.io());
       startPinSetupPipe = sessionActionPipeCreator.createPipe(StartPinSetupAction.class, Schedulers.io());
       cancelPinSetupPipe = sessionActionPipeCreator.createPipe(CancelPinSetupAction.class, Schedulers.io());
-      checksPipe = sessionActionPipeCreator.createPipe(WizardCheckCommand.class, Schedulers.io());
 
       reAssignCardPipe = sessionActionPipeCreator.createPipe(ReAssignCardCommand.class, Schedulers.io());
       getSmartCardStatusCommandActionPipe = sessionActionPipeCreator.createPipe(GetSmartCardStatusCommand.class, Schedulers
@@ -53,6 +52,7 @@ public final class WizardInteractor {
       completePipe = sessionActionPipeCreator.createPipe(WizardCompleteCommand.class, Schedulers.io());
       provisioningStatePipe = sessionActionPipeCreator.createPipe(ProvisioningModeCommand.class, Schedulers.io());
       pinOptionalActionPipe = sessionActionPipeCreator.createPipe(PinOptionalCommand.class, Schedulers.io());
+      termsAndConditionsPipe = sessionActionPipeCreator.createPipe(FetchTermsAndConditionsCommand.class, Schedulers.io());
    }
 
    public ActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
@@ -83,10 +83,6 @@ public final class WizardInteractor {
       return reAssignCardPipe;
    }
 
-   public ActionPipe<WizardCheckCommand> checksPipe() {
-      return checksPipe;
-   }
-
    public ActionPipe<WizardCompleteCommand> completePipe() {
       return completePipe;
    }
@@ -101,5 +97,9 @@ public final class WizardInteractor {
 
    public ActionPipe<PinOptionalCommand> pinOptionalActionPipe() {
       return pinOptionalActionPipe;
+   }
+
+   public ActionPipe<FetchTermsAndConditionsCommand> getTermsAndConditionsPipe() {
+      return termsAndConditionsPipe;
    }
 }

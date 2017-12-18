@@ -33,7 +33,7 @@ public class ConnectionErrorPresenterImpl extends WalletPresenterImpl<Connection
       smartCardInteractor.deviceStatePipe()
             .observeSuccessWithReplay()
             .throttleLast(1, TimeUnit.SECONDS)
-            .map(command -> command.getResult().connectionStatus())
+            .map(command -> command.getResult().getConnectionStatus())
             .distinctUntilChanged()
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())

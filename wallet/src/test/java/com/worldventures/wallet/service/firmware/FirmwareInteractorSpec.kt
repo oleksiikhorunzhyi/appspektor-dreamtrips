@@ -1,8 +1,8 @@
 package com.worldventures.wallet.service.firmware
 
 import com.worldventures.wallet.BaseSpec
-import com.worldventures.wallet.model.TestFirmware
-import com.worldventures.wallet.model.TestFirmwareUpdateData
+import com.worldventures.wallet.model.createTestFirmwareUpdateData
+import com.worldventures.wallet.model.createTestSmartCardFirmware
 import com.worldventures.wallet.service.WalletBluetoothService
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -68,11 +68,8 @@ class FirmwareInteractorSpec : BaseSpec({
          }
       }
 
-      fun mockFirmwareRepository(scId: String): FirmwareRepository {
-         return TestFirmwareRepositry(
-               TestFirmwareUpdateData(scId, true, false, false, TestFirmware())
-         )
-      }
+      private fun mockFirmwareRepository(scId: String): FirmwareRepository
+            = TestFirmwareRepositry(createTestFirmwareUpdateData(scId, createTestSmartCardFirmware()))
 
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1)))

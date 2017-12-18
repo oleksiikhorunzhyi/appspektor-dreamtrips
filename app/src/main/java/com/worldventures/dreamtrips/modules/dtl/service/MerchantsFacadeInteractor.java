@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.RequestSourceType
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.MerchantsActionParams;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.functions.Func2;
 
@@ -37,6 +39,10 @@ public class MerchantsFacadeInteractor {
 
    private void connectFilterData() {
       filterDataInteractor.filterDataPipe().observeSuccessWithReplay()
+            // TODO Fix this
+            // Avoid multiple calls to server. As location source and search string cannot be updated simultaneously,
+            // updating them separately triggers 2 calls respectively unless we put throttle
+            .throttleLast(100, TimeUnit.MILLISECONDS)
             .subscribe(filterDataAction -> requestMerchants());
    }
 

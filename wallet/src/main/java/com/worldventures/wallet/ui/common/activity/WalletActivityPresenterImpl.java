@@ -42,9 +42,9 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
             .createObservableResult(new ActiveSmartCardCommand())
             .compose(view.bindUntilDetach())
             .map(Command::getResult)
-            .filter(smartCard -> smartCard.cardStatus().isActive())
+            .filter(smartCard -> smartCard.getCardStatus().isActive())
             .flatMap(smartCard -> interactor.connectActionPipe()
-                  .createObservable(new ConnectSmartCardCommand(smartCard.smartCardId())))
+                  .createObservable(new ConnectSmartCardCommand(smartCard.getSmartCardId())))
             .subscribe(connectAction -> Timber.i("Success connection to Smart Card"),
                   throwable -> Timber.e(throwable, "Connect to Smart Card on Wallet enter"));
    }
@@ -73,9 +73,9 @@ public class WalletActivityPresenterImpl extends MvpBasePresenter<WalletActivity
    }
 
    private void auxiliaryDisconnectSmartCard() {
-      interactor.deviceStatePipe().createObservableResult(DeviceStateCommand.fetch())
+      interactor.deviceStatePipe().createObservableResult(DeviceStateCommand.Companion.fetch())
             .map(DeviceStateCommand::getResult)
-            .filter(smartCardStatus -> smartCardStatus.connectionStatus().isConnected())
+            .filter(smartCardStatus -> smartCardStatus.getConnectionStatus().isConnected())
             .subscribe(smartCardStatus -> interactor.disconnectPipe().send(new DisconnectAction()),
                   throwable -> Timber.e(throwable, "Disconnect on Wallet exit"));
    }

@@ -35,7 +35,7 @@ public class DeleteRecordCommand extends Command<Void> implements InjectableActi
       janet.createPipe(DeleteRecordAction.class)
             .createObservableResult(new DeleteRecordAction(Integer.valueOf(recordId)))
             .flatMap(aVoid -> recordInteractor.cardsListPipe()
-                  .createObservableResult(RecordListCommand.remove(recordId)))
+                  .createObservableResult(RecordListCommand.Companion.remove(recordId)))
             .map(deleteRecordAction -> (Void) null)
             .subscribe(callback::onSuccess, callback::onFail);
    }

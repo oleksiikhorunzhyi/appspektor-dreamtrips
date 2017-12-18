@@ -23,9 +23,7 @@ public class PersistentSnappyModule {
    PersistentSnappyRepositoryImpl persistentSnappyRepositoryImpl(Context appContext, SnappyCrypter snappyCrypter,
          DefaultSnappyOpenHelper defaultSnappyOpenHelper, WalletSocialInfoProvider socialInfoProvider) {
       return new PersistentSnappyRepositoryImpl(appContext, snappyCrypter, defaultSnappyOpenHelper.provideExecutorService(),
-            () -> socialInfoProvider.hasUser() ? String.valueOf(socialInfoProvider.userId()
-                  .toString()
-                  .hashCode()) : null);
+            () -> socialInfoProvider.hasUser() ? String.valueOf(Integer.valueOf(socialInfoProvider.userId()).hashCode()) : null);
    }
 
    @Provides

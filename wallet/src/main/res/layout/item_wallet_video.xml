@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:fresco="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
       >
 
    <android.support.v7.widget.CardView
@@ -9,7 +10,7 @@
          android:layout_height="wrap_content"
          android:layout_gravity="center"
          android:layout_margin="@dimen/spacing_small"
-         fresco:cardCornerRadius="@dimen/spacing_tiny"
+         app:cardCornerRadius="@dimen/spacing_tiny"
          >
 
       <FrameLayout
@@ -23,9 +24,9 @@
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:layout_gravity="center_horizontal"
-               fresco:actualImageScaleType="centerCrop"
-               fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-               fresco:placeholderImageScaleType="fitXY"
+               app:actualImageScaleType="centerCrop"
+               app:placeholderImage="@drawable/ic_image_placeholder"
+               app:placeholderImageScaleType="fitXY"
                />
 
          <ImageView
@@ -35,6 +36,7 @@
                android:layout_gravity="center"
                android:scaleType="centerInside"
                android:src="@drawable/ic_wallet_video_play"
+               tools:ignore="ContentDescription"
                />
 
          <LinearLayout

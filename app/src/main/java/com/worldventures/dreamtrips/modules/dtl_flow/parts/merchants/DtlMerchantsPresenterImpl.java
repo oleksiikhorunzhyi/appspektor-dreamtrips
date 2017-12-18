@@ -128,13 +128,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
-            .map(FilterData::searchQuery)
-            .subscribe(getView()::updateToolbarSearchCaption);
-      filterDataInteractor.filterDataPipe()
-            .observeSuccessWithReplay()
-            .take(1)
-            .compose(bindViewIoToMainComposer())
-            .map(FilterDataAction::getResult)
             .map(FilterData::isOffersOnly)
             .doOnCompleted(getView()::connectToggleUpdate)
             .subscribe(getView()::toggleOffersOnly);
@@ -149,8 +142,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
             .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
-            .map(FilterData::getMerchantType)
-            .subscribe(getView()::updateMerchantType);
+            .subscribe(filterData -> {
+               getView().updateMerchantType(filterData.getMerchantType());
+               getView().updateToolbarSearchQuery(filterData.searchQuery());
+            });
    }
 
    private void connectFullMerchantLoading() {
@@ -279,11 +274,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void onLoadMerchantsType(List<String> merchantType) {
-      filterDataInteractor.applyMerchantTypes(merchantType);
-   }
-
-   @Override
    public void loadAmenities(List<String> merchantType) {
       attributesInteractor.requestAmenities(merchantType);
    }
@@ -339,8 +329,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    @Override
-   public void locationChangeRequested() {
-      navigateToPath(new DtlLocationChangePath());
+   public void locationChangeRequested(String merchantQuery) {
+      navigateToPath(new DtlLocationChangePath(merchantQuery));
    }
 
    @Override

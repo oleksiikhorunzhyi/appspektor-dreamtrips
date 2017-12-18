@@ -12,6 +12,8 @@ import com.worldventures.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.wallet.ui.settings.general.reset.FactoryResetView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 import io.techery.janet.operationsubscriber.view.OperationView;
@@ -22,10 +24,11 @@ public interface CardListScreen extends WalletScreen, FactoryResetView {
    int ERROR_DIALOG_NO_INTERNET_CONNECTION = 2;
    int ERROR_DIALOG_NO_SMARTCARD_CONNECTION = 3;
 
+   @Retention(RetentionPolicy.SOURCE)
    @IntDef({ERROR_DIALOG_FULL_SMARTCARD, ERROR_DIALOG_NO_INTERNET_CONNECTION, ERROR_DIALOG_NO_SMARTCARD_CONNECTION})
    @interface ErrorDialogType {}
 
-   void showRecordsInfo(ArrayList<BaseViewModel> result);
+   void showRecordsInfo(ArrayList<BaseViewModel<?>> result);
 
    void setDefaultSmartCard();
 

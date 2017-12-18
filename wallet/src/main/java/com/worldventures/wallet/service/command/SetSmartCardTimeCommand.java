@@ -24,7 +24,7 @@ public class SetSmartCardTimeCommand extends Command<Void> implements Injectable
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       smartCardInteractor.smartCardFirmwarePipe()
-            .createObservableResult(SmartCardFirmwareCommand.fetch())
+            .createObservableResult(SmartCardFirmwareCommand.Companion.fetch())
             .map(SmartCardFirmwareCommand::getResult)
             .doOnNext(firmware -> {
                if (SCFirmwareUtils.supportOnCardAnalytics(firmware)) {

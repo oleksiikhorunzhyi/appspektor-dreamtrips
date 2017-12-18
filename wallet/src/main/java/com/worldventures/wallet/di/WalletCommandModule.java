@@ -33,15 +33,14 @@ import com.worldventures.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.wallet.service.command.http.CreateNxtSessionCommand;
-import com.worldventures.wallet.service.command.http.CreateRecordCommand;
 import com.worldventures.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
-import com.worldventures.wallet.service.command.profile.UpdateProfileModule;
-import com.worldventures.wallet.service.command.profile.UpdateSmartCardUserCommand;
+import com.worldventures.wallet.service.profile.UpdateProfileModule;
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 import com.worldventures.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.wallet.service.command.record.DeleteRecordCommand;
@@ -65,7 +64,6 @@ import com.worldventures.wallet.service.command.uploadery.SmartCardUploaderyComm
 import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
-import com.worldventures.wallet.service.command.wizard.WizardCheckCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
 
 import dagger.Module;
@@ -89,7 +87,6 @@ import dagger.Module;
             DefaultRecordIdCommand.class,
             ActivateSmartCardCommand.class,
             CreateAndConnectToCardCommand.class,
-            WizardCheckCommand.class,
             AddRecordCommand.class,
             SetDefaultCardOnDeviceCommand.class,
             SetPaymentCardAction.class,
@@ -108,7 +105,6 @@ import dagger.Module;
             GetDisplayTypeCommand.class,
             RestoreDefaultDisplayTypeCommand.class,
             ValidateDisplayTypeDataCommand.class,
-            CreateRecordCommand.class,
             AssociateCardUserCommand.class,
             WizardCompleteCommand.class,
             FetchFirmwareInfoCommand.class,
@@ -143,5 +139,5 @@ import dagger.Module;
             AddDummyRecordCommand.class,
       },
       complete = false, library = true)
-public class WalletCommandModule {}
+class WalletCommandModule {}
 

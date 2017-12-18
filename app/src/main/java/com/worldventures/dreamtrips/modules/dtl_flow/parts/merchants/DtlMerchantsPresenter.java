@@ -16,7 +16,7 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
 
    void onRetryDialogDismiss();
 
-   void locationChangeRequested();
+   void locationChangeRequested(String merchantQuery);
 
    void applySearch(String query);
 
@@ -31,8 +31,6 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
    void mapClicked();
 
    void offersOnlySwitched(boolean isOffersOnly);
-
-   void onLoadMerchantsType(List<String> merchantType);
 
    void loadAmenities(List<String> merchantType);
 

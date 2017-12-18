@@ -67,7 +67,7 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    private Observable<Void> disassociateCardUserServer(SmartCard smartCard) {
       return apiLibJanet.createPipe(DisassociateCardUserHttpAction.class, Schedulers.io())
             .createObservableResult(
-                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.smartCardId()), smartCard.deviceId()))
+                  new DisassociateCardUserHttpAction(Long.parseLong(smartCard.getSmartCardId()), smartCard.getDeviceId()))
             .map(disassociateCardUserHttpAction -> (Void) null)
             .onErrorResumeNext(this::handleDisassociateError);
    }
@@ -83,8 +83,8 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
 
    private Observable<UnAssignUserAction> disassociateCardUser() {
       return walletJanet.createPipe(DeviceStateCommand.class)
-            .createObservableResult(DeviceStateCommand.fetch())
-            .map(command -> command.getResult().connectionStatus().isConnected())
+            .createObservableResult(DeviceStateCommand.Companion.fetch())
+            .map(command -> command.getResult().getConnectionStatus().isConnected())
             .flatMap(connected -> connected ? walletJanet.createPipe(UnAssignUserAction.class)
                   .createObservableResult(new UnAssignUserAction()) : Observable.just(null));
    }

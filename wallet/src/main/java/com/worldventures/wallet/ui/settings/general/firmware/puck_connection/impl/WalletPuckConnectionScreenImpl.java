@@ -72,7 +72,7 @@ public class WalletPuckConnectionScreenImpl extends WalletBaseController<WalletP
    @Override
    public void userPhoto(@Nullable SmartCardUserPhoto photo) {
       if (photo != null) {
-         userPhoto.setImageURI(photo.uri());
+         userPhoto.setImageURI(photo.getUri());
       } // // TODO: 5/23/17 add place holder
    }
 }

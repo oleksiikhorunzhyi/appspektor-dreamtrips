@@ -32,6 +32,8 @@ import com.worldventures.wallet.ui.settings.general.firmware.install.WalletInsta
 import com.worldventures.wallet.ui.settings.general.firmware.install.WalletInstallFirmwareScreen;
 import com.worldventures.wallet.ui.widget.WalletProgressWidget;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import io.techery.janet.operationsubscriber.view.ComposableOperationView;
@@ -105,7 +107,7 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
 
    @Override
    public void showInstallingStatus(int currentStep, int totalSteps, int progress) {
-      progressStatusLabel.setText(String.format("%d%%", progress));
+      progressStatusLabel.setText(String.format(Locale.US, "%d%%", progress));
       installStep.setText(getString(R.string.wallet_firmware_install_sub_text, currentStep, totalSteps));
    }
 

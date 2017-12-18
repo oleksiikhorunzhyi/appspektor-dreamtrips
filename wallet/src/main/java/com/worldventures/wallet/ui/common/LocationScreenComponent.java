@@ -40,7 +40,7 @@ public class LocationScreenComponent {
                   status.startResolutionForResult(activity, REQUEST_CODE);
                }
             } catch (IntentSender.SendIntentException e) {
-               Timber.e(e, "");
+               Timber.e(e);
             }
             break;
       }

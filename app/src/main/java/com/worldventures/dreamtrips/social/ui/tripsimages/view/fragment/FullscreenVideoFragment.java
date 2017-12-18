@@ -40,6 +40,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVideoPresenter, Video>
       implements FullscreenVideoPresenter.View {
 
+   private static final long VIDEO_PLAY_DELAY = 500L;
+
    @Inject Router router;
    @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject @ForActivity Injector injector;

@@ -46,6 +46,11 @@ public class TransactionStatusInjector {
       showToServerTextView.setVisibility(View.VISIBLE);
    }
 
+   public void showRefundedMessage() {
+      showFailureMessage();
+      statusImage.setImageDrawable(getDrawableFromResource(R.drawable.check_refund_pilot));
+   }
+
    private String getTextFromResource(int id) { return context.getString(id); }
 
    private Drawable getDrawableFromResource(int id) { return ContextCompat.getDrawable(context, id); }

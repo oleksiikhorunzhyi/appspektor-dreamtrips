@@ -9,7 +9,7 @@
       <import type="android.view.View" />
 
       <variable
-            name="lastLocation"
+            name="viewModel"
             type="com.worldventures.wallet.ui.settings.security.lostcard.model.PopupLastLocationViewModel"
             />
 
@@ -17,17 +17,12 @@
             name="directionClick"
             type="android.view.View.OnClickListener"
             />
-
-      <variable
-            name="visible"
-            type="Boolean"
-            />
    </data>
 
    <android.support.v7.widget.CardView
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:visibility="@{visible ? View.VISIBLE : View.GONE}"
+         android:visibility="@{viewModel.visible ? View.VISIBLE : View.GONE}"
          >
 
       <android.support.constraint.ConstraintLayout
@@ -42,11 +37,11 @@
                android:layout_marginStart="36dp"
                android:layout_marginTop="8dp"
                android:maxLines="1"
-               android:text="@{lastLocation.place}"
+               android:text="@{viewModel.place}"
                android:textColor="#222222"
                android:textSize="14sp"
                android:textStyle="bold"
-               android:visibility="@{lastLocation.place.isEmpty() ? View.GONE : View.VISIBLE}"
+               android:visibility="@{viewModel.place.isEmpty() ? View.GONE : View.VISIBLE}"
                app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toBottomOf="@+id/textView13"
                tools:text="Subway, Food"
@@ -58,7 +53,7 @@
                android:layout_marginStart="36dp"
                android:layout_marginTop="0dp"
                android:maxLines="2"
-               android:text="@{lastLocation.address}"
+               android:text="@{viewModel.address}"
                android:textColor="#222222"
                android:textSize="14sp"
                app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +98,7 @@
                android:id="@+id/last_connected_label"
                style="@style/SettingsText.Secondary"
                android:layout_marginStart="36dp"
-               android:text="@{lastLocation.lastConnectedDate}"
+               android:text="@{viewModel.lastConnectedDate}"
                android:textColor="#929292"
                android:textSize="14sp"
                app:layout_constraintStart_toStartOf="parent"

@@ -22,7 +22,7 @@ import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsScreen;
-import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSource;
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
 import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
 import com.worldventures.wallet.util.WalletFeatureHelper;
@@ -158,12 +158,12 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .map(Command::getResult)
-            .subscribe(this::bindSmartCardUser, throwable -> Timber.e(throwable, ""));
+            .subscribe(this::bindSmartCardUser, Timber::e);
    }
 
    private void bindSmartCardUser(SmartCardUser it) {
-      getView().setPreviewPhoto(it.userPhoto());
-      getView().setUserName(it.firstName(), it.middleName(), it.lastName());
+      getView().setPreviewPhoto(it.getUserPhoto());
+      getView().setUserName(it.getFirstName(), it.getMiddleName(), it.getLastName());
    }
 
    private void observeFirmwareUpdates() {
@@ -176,7 +176,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    }
 
    private void toggleFirmwareBargeOrVersion(@Nullable FirmwareUpdateData firmwareUpdateData) {
-      if (firmwareUpdateData != null && firmwareUpdateData.updateAvailable()) {
+      if (firmwareUpdateData != null && firmwareUpdateData.isUpdateAvailable()) {
          getView().firmwareUpdateCount(1);
          getView().showFirmwareBadge();
          firmwareUpdateNavigatorAction = () -> getNavigator().goStartFirmwareInstall();
@@ -188,11 +188,11 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
 
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
       smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.fetch())
+            .createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
-                  .onSuccess(command -> action.call(command.getResult().connectionStatus()))
+                  .onSuccess(command -> action.call(command.getResult().getConnectionStatus()))
             );
    }
 

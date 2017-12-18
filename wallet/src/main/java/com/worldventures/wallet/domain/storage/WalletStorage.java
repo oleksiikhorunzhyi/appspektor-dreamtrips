@@ -9,6 +9,8 @@ import com.worldventures.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.wallet.domain.entity.record.SyncRecordsStatus;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
@@ -21,6 +23,7 @@ public interface WalletStorage {
 
    void saveSmartCard(SmartCard smartCard);
 
+   @Nullable
    SmartCard getSmartCard();
 
    void deleteSmartCard();
@@ -45,6 +48,7 @@ public interface WalletStorage {
 
    void saveSmartCardFirmware(SmartCardFirmware smartCardFirmware);
 
+   @Nullable
    SmartCardFirmware getSmartCardFirmware();
 
    void deleteSmartCardFirmware();

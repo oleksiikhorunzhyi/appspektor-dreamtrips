@@ -30,7 +30,7 @@ public class BeaconEvent {
    @Override
    public String toString() {
       return "BeaconEvent{"
-            + "smartCardId='" + smartCardId + '\''
+            + "getSmartCardId='" + smartCardId + '\''
             + ", enteredRegion=" + enteredRegion
             + '}';
    }

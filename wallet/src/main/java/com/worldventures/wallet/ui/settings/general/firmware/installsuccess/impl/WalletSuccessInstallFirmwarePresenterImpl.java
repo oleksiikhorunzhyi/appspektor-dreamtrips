@@ -28,7 +28,7 @@ public class WalletSuccessInstallFirmwarePresenterImpl extends WalletPresenterIm
       super.attachView(view);
       sendAnalyticAction();
       final FirmwareUpdateData firmwareUpdateData = getView().getFirmwareUpdateData();
-      getView().setSubTitle(firmwareUpdateData.firmwareInfo().firmwareVersion());
+      getView().setSubTitle(firmwareUpdateData.getFirmwareInfo().firmwareVersion());
    }
 
    private void sendAnalyticAction() {
@@ -38,7 +38,7 @@ public class WalletSuccessInstallFirmwarePresenterImpl extends WalletPresenterIm
 
    @Override
    public void finishUpdateFlow() {
-      if (getView().getFirmwareUpdateData().factoryResetRequired()) {
+      if (getView().getFirmwareUpdateData().isFactoryResetRequired()) {
          getNavigator().finish();
       } else {
          getNavigator().goBack();

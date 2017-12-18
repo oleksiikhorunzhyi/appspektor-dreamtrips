@@ -130,6 +130,7 @@
    <dimen name="dtl_transaction_screen_item_line_separator_height">1dp</dimen>
    <dimen name="dtl_transaction_screen_item_earned_points_checker_margin_left">4dp</dimen>
    <dimen name="dtl_transaction_screen_item_transaction_status_icon_margin">4dp</dimen>
+   <dimen name="dtl_transaction_screen_item_transaction_status_icon_size">30dp</dimen>
 
    <dimen name="dtl_transaction_screen_margin">8dp</dimen>
    <dimen name="dtl_transaction_screen_margin_big">10dp</dimen>

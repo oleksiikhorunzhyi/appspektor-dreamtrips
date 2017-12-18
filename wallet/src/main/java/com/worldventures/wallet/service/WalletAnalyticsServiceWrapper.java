@@ -35,7 +35,7 @@ public class WalletAnalyticsServiceWrapper extends ActionServiceWrapper {
          try {
             notifyListeners(AnalyticsService.getAction(holder));
          } catch (IllegalAccessException e) {
-            Timber.e(e, "");
+            Timber.e(e);
          }
       }
 

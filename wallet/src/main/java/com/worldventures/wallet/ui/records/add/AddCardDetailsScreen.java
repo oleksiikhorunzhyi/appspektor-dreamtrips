@@ -12,7 +12,7 @@ public interface AddCardDetailsScreen extends WalletScreen {
 
    void setCardBank(RecordViewModel record);
 
-   void setCardName(String cardName);
+   void setCardName(CharSequence cardName);
 
    Observable<String> getCardNicknameObservable();
 
@@ -32,5 +32,5 @@ public interface AddCardDetailsScreen extends WalletScreen {
 
    OperationView<AddRecordCommand> provideOperationAddRecord();
 
-   RecordViewModel getRecordViewModel();
+   RecordBundle getRecordBundle();
 }

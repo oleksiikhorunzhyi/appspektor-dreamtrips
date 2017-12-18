@@ -38,7 +38,7 @@
             android:layout_gravity="center"
             >
 
-         <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+         <com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView
                android:id="@+id/user_photo"
                android:layout_width="84dp"
                android:layout_height="84dp"

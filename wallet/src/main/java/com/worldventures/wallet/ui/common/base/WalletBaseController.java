@@ -14,10 +14,13 @@ import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
 
 import dagger.ObjectGraph;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public abstract class WalletBaseController<V extends WalletScreen, P extends WalletPresenter> extends PresentableController<V, P> implements WalletScreen {
+
+   private final PublishSubject<Void> detachStopper = PublishSubject.create();
    private WalletScreenDelegate walletScreenDelegate;
 
    public WalletBaseController() {
@@ -62,6 +65,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    @Override
    protected void onDetach(@NonNull View view) {
+      detachStopper.onNext(null);
       super.onDetach(view);
       final InputMethodManager inputManager = (InputMethodManager) view.getContext()
             .getSystemService(INPUT_METHOD_SERVICE);
@@ -70,7 +74,7 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    @Override
    public <T> Observable.Transformer<T, T> bindUntilDetach() {
-      return bindToLifecycle();
+      return input -> input.takeUntil(detachStopper);
    }
 
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);

@@ -17,8 +17,8 @@ import timber.log.Timber;
 @Deprecated
 public class DtlApiErrorViewAdapter {
 
-   private final Context context;
-   private final HttpErrorHandlingUtil errorHandlingUtils;
+   protected final Context context;
+   protected final HttpErrorHandlingUtil errorHandlingUtils;
    private ApiErrorView view;
 
    public DtlApiErrorViewAdapter(Context context, HttpErrorHandlingUtil errorHandlingUtils) {

@@ -11,10 +11,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +34,11 @@ public class DtlToolbar extends LinearLayout {
    protected List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
    protected List<TransactionButtonListener> transactionButtonListeners = new ArrayList<>();
 
-   protected String searchQuery;
+   protected String searchQuery = "";
+   protected String searchHint = "";
    protected FocusedMode focusedMode;
    protected String locationTitle;
    protected String defaultEmptySearchCaption;
-   protected String currentSelectedFilter;
 
    public DtlToolbar(Context context, AttributeSet attrs) {
       super(context, attrs);
@@ -66,12 +65,7 @@ public class DtlToolbar extends LinearLayout {
 
    @CallSuper
    protected void initAttributes(AttributeSet attrs) {
-      String selectedMerchantFilter = DtlMerchantsScreenImpl.currentSelectedFilter;
-      if (selectedMerchantFilter == null) {
-         defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
-      } else {
-         defaultEmptySearchCaption = selectedMerchantFilter;
-      }
+      defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
    }
 
    protected void bindSearchQueryPersisting() {
@@ -81,21 +75,25 @@ public class DtlToolbar extends LinearLayout {
    }
 
    protected void updateToolbarCaptions() {
-      merchantSearchInput.setText("");
-      if (TextUtils.isEmpty(searchQuery)) {
-         merchantSearchInput.setHint(defaultEmptySearchCaption);
-      } else {
-         if (searchQuery.equals(getContext().getString(R.string.filter_merchant_dining))) {
-            searchQuery = defaultEmptySearchCaption;
-         }
-         merchantSearchInput.setHint(searchQuery);
-      }
-      locationSearchInput.setText(locationTitle);
+      String hint = getHint();
+      merchantSearchInput.setHint(hint);
+      merchantSearchInput.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
+
+      locationSearchInput.setHint(locationTitle);
       locationSearchInput.selectAll();
+   }
+
+   protected String getHint() {
+      return TextUtils.isEmpty(searchHint) ? defaultEmptySearchCaption : searchHint;
    }
 
    public AppCompatEditText getLocationSearchInput() {
       return locationSearchInput;
+   }
+
+   public void setSearchQuery(String searchQuery) {
+      this.searchQuery = searchQuery;
+      updateToolbarCaptions();
    }
 
    public void setCaptions(String searchQuery, String locationTitle) {
@@ -109,8 +107,14 @@ public class DtlToolbar extends LinearLayout {
       updateToolbarCaptions();
    }
 
-   public void setSearchCaption(String searchCaption) {
-      this.searchQuery = searchCaption;
+   public void resetLocationCaption() {
+      locationSearchInput.setText("");
+      locationTitle = "";
+      updateToolbarCaptions();
+   }
+
+   public void setSearchHint(String searchHint) {
+      this.searchHint = searchHint;
       updateToolbarCaptions();
    }
 
@@ -151,6 +155,10 @@ public class DtlToolbar extends LinearLayout {
       onMerchantSearchInputClicked();
    }
 
+   public String getSearchQuery() {
+      return searchQuery;
+   }
+
    protected void initState() {
       focusedMode = FocusedMode.UNDEFINED;
       patchInputFields();
@@ -173,7 +181,7 @@ public class DtlToolbar extends LinearLayout {
       }
       // due to possible bug in EditText - hint not saved after rotation. Fix below:
       if (TextUtils.isEmpty(searchQuery) || TextUtils.isEmpty(merchantSearchInput.getHint())) {
-         merchantSearchInput.setHint(defaultEmptySearchCaption);
+         merchantSearchInput.setHint(getHint());
       }
    }
 

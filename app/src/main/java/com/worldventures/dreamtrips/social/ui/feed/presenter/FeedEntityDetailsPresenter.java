@@ -23,10 +23,8 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
    }
 
    public void onEntityShownInCell(FeedItem feedItem) {
+      // for bucket list tablet landscape orientation (slave mode)
       Pair<Class<? extends Fragment>, Parcelable> entityData = fragmentFactory.create(feedItem);
-      /**
-       * for bucket list tablet landscape orientation (slave mode)
-       */
       if (feedItem.getType() == FeedEntityHolder.Type.BUCKET_LIST_ITEM) {
          ((BucketBundle) entityData.second).setSlave(isSlave);
       }

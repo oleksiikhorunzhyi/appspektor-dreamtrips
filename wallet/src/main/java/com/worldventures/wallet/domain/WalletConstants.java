@@ -8,4 +8,5 @@ public class WalletConstants {
    public static final int AUTO_SYNC_PERIOD_MINUTES = 10;
    public static final int SMART_CARD_DEFAULT_DISPLAY_TYPE = SetHomeDisplayTypeAction.DISPLAY_NAME_ONLY;
 
+   public static final int WALLET_FEEDBACK_MAX_PHOTOS_ATTACHMENT = 5;
 }

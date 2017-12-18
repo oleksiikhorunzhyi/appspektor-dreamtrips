@@ -11,7 +11,7 @@ public interface MapPresenter {
 
    void trackDirectionsClick();
 
-   void onMapPrepared();
+   void fetchLastKnownLocation();
 
    void retryFetchAddressWithPlaces(FetchAddressWithPlacesCommand fetchAddressWithPlacesCommand);
 }

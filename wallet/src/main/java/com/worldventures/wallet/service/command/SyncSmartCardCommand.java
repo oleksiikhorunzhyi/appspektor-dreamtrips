@@ -39,7 +39,7 @@ public class SyncSmartCardCommand extends Command<Void> implements InjectableAct
    @NonNull
    private Func1<SyncRecordsCommand, Observable<Void>> processSmartCardAnalytics() {
       return syncRecordsCommand -> smartCardInteractor.smartCardFirmwarePipe()
-            .createObservableResult(SmartCardFirmwareCommand.fetch())
+            .createObservableResult(SmartCardFirmwareCommand.Companion.fetch())
             .map(SmartCardFirmwareCommand::getResult)
             .flatMap(firmware -> {
                if (SCFirmwareUtils.supportOnCardAnalytics(firmware)) {

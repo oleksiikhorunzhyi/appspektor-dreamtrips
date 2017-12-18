@@ -42,12 +42,12 @@ public class CardGroupHeaderModel extends BaseViewModel<DashboardHolderTypeFacto
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeInt(this.name == null ? -1 : this.name.ordinal());
+      dest.writeInt(this.name.ordinal());
    }
 
-   protected CardGroupHeaderModel(Parcel in) {
-      int tmpName = in.readInt();
-      this.name = tmpName == -1 ? null : CommonCardViewModel.StackType.values()[tmpName];
+   private CardGroupHeaderModel(Parcel in) {
+      this.name = CommonCardViewModel.StackType.values()[in.readInt()];
+      this.modelId = name.toString();
    }
 
    public static final Creator<CardGroupHeaderModel> CREATOR = new Creator<CardGroupHeaderModel>() {

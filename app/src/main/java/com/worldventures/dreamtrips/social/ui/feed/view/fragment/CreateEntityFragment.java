@@ -4,8 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
+import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
+import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.AnimationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -19,25 +23,30 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.CreateEntityPresent
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.VideoCreationCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 
-public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
+@Layout(R.layout.layout_post)
+public class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
       implements CreateEntityPresenter.View {
+
+   @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
+   @Inject PermissionUtils permissionUtils;
+
+   @InjectView(R.id.photo_strip) PhotoStripView photoStripView;
 
    @State boolean pickerDisabled;
    @State boolean imageFromArgsAlreadyAttached;
-
-   @InjectView(R.id.photo_strip) PhotoStripView photoStripView;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
 
-      RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) photosList.getLayoutParams();
-      params.bottomMargin = (int) getResources().getDimension(R.dimen.photo_strip_item_size);
-      photosList.setLayoutParams(params);
+      updatePhotoListMargins();
+      photoStripView.setVisibilityListener(this::updatePhotoListMargins);
 
       adapter.registerDelegate(ImmutableVideoCreationModel.class, new VideoCreationCellDelegate() {
          @Override
@@ -50,6 +59,12 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
       });
    }
 
+   private void updatePhotoListMargins() {
+      RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) photosList.getLayoutParams();
+      params.bottomMargin = photoStripView.getVisibility() == View.VISIBLE ? (int) getResources().getDimension(R.dimen.photo_strip_item_size) : 0;
+      photosList.setLayoutParams(params);
+   }
+
    @Override
    public void onViewCreated(View view, Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
@@ -59,6 +74,16 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
    @Override
    protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
       return new CreateEntityPresenter(getArgs().getOrigin());
+   }
+
+   @Override
+   public void onResume() {
+      super.onResume();
+      if (getArgs() != null && getArgs().isShowPickerImmediately()) {
+         getPresenter().showMediaPicker();
+         getArgs().setShowPickerImmediately(true);
+      }
+      updatePickerState();
    }
 
    @Override
@@ -107,6 +132,20 @@ public abstract class CreateEntityFragment extends ActionEntityFragment<CreateEn
 
    protected void updatePickerState() {
       image.setEnabled(!pickerDisabled);
+   }
+
+   @Override
+   public void showPermissionDenied(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showPermissionDenied(getView());
+      }
+   }
+
+   @Override
+   public void showPermissionExplanationText(String[] permissions) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionUiHandler.showRational(getContext(), answer -> getPresenter().recheckPermission(permissions, answer));
+      }
    }
 
    @Override

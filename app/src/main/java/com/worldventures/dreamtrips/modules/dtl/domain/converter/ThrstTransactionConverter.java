@@ -33,6 +33,8 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
       transactionModel.setTransactionDate(detailTransactionThrst.date());
       transactionModel.setThrstPaymentStatus(mapPaymentStatus(detailTransactionThrst.paymentStatus()));
       transactionModel.setTrhstTransaction(detailTransactionThrst.isThrstTransaction());
+      transactionModel.setCurrencySymbol(detailTransactionThrst.currencySymbol());
+      transactionModel.setCurrenyCode(detailTransactionThrst.currencyCode());
       return transactionModel;
    }
 
@@ -50,6 +52,8 @@ public class ThrstTransactionConverter implements Converter<DetailTransactionThr
             return TransactionModel.ThrstPaymentStatus.INITIATED;
          case SUCCESSFUL:
             return TransactionModel.ThrstPaymentStatus.SUCCESSFUL;
+         case REFUNDED:
+            return TransactionModel.ThrstPaymentStatus.REFUNDED;
          case UNKNOWN:
          default:
             return TransactionModel.ThrstPaymentStatus.UNKNOWN;

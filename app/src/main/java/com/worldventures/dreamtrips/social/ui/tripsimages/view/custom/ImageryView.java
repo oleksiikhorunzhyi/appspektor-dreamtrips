@@ -45,7 +45,7 @@ public class ImageryView extends ScaleImageView {
             @Override
             public void onGlobalLayout() {
                getViewTreeObserver().removeOnGlobalLayoutListener(this);
-               loadImageInternal(imageUrl);
+               loadImage(imageUrl); // because sometime getMeasuredWidth() is still 0
             }
          });
       }

@@ -58,7 +58,7 @@ public class WalletHelpDocumentsPresenterImpl extends WalletPresenterImpl<Wallet
                   .create());
    }
 
-   private ArrayList<WalletDocumentModel> convert(List<Document> documents) {
+   private ArrayList<WalletDocumentModel> convert(List<? extends Document> documents) {
       return (ArrayList<WalletDocumentModel>) Queryable.from(documents).map(WalletDocumentModel::new).toList();
    }
 

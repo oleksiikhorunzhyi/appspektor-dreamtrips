@@ -49,6 +49,10 @@ public abstract class DetailTransactionThrst implements Serializable {
    @SerializedName("Tip")
    @Nullable
    public abstract Double tip();
+   @SerializedName("CurrencySymbol")
+   public abstract String currencySymbol();
+   @SerializedName("CurrencyCode")
+   public abstract String currencyCode();
 
    @SerializedName("PaymentStatus")
    @Nullable
@@ -64,6 +68,7 @@ public abstract class DetailTransactionThrst implements Serializable {
    public enum PaymentStatus {
       @SerializedName("INITIATED")INITIATED,
       @SerializedName("SUCCESSFUL")SUCCESSFUL,
+      @SerializedName("REFUNDED")REFUNDED,
       UNKNOWN
    }
 }

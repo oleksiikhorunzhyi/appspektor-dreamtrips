@@ -10,7 +10,7 @@ public class CardUserPhoneToSmartCardUserPhoneConverter implements Converter<Car
 
    @Override
    public SmartCardUserPhone convert(MapperyContext mapperyContext, CardUserPhone cardUserPhone) {
-      return SmartCardUserPhone.of(cardUserPhone.code(), cardUserPhone.number());
+      return new SmartCardUserPhone(cardUserPhone.code(), cardUserPhone.number());
    }
 
    @Override

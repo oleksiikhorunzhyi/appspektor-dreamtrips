@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.impl;
 
-
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -74,7 +73,7 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
    public void smartCardGeneralStatus(@Nullable SmartCardFirmware version, int batteryLevel, Date lastSync) {
       final StringBuilder builder = new StringBuilder();
       if (version != null) {
-         builder.append(getString(R.string.wallet_card_settings_version, version.nordicAppVersion())).append("\n");
+         builder.append(getString(R.string.wallet_card_settings_version, version.getNordicAppVersion())).append("\n");
       }
       builder.append(getString(R.string.wallet_card_settings_battery_level, batteryLevel)).append("\n");
       // TODO: 5/5/17 Implement this ffs

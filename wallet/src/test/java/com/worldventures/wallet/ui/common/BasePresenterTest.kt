@@ -9,8 +9,8 @@ import org.junit.Before
 
 abstract class BasePresenterTest<V : WalletScreen, P : WalletPresenter<V>> : BaseTest() {
 
-   lateinit var navigator: Navigator
-   lateinit var viewPresenterBinder: ViewPresenterBinder<V, P>
+   protected lateinit var navigator: Navigator
+   private lateinit var viewPresenterBinder: ViewPresenterBinder<V, P>
 
    @Before
    fun beforeTest() {

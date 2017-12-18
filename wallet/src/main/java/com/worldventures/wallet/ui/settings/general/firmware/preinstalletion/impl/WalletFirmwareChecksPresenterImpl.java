@@ -73,8 +73,8 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
 
             (firmwareInfoCommand, bluetoothEnabled, deviceStateCommand, cardInChargerEvent) ->
                   processResults(firmwareInfoCommand.getResult(),
-                        deviceStateCommand.getResult().connectionStatus(),
-                        deviceStateCommand.getResult().batteryLevel(),
+                        deviceStateCommand.getResult().getConnectionStatus(),
+                        deviceStateCommand.getResult().getBatteryLevel(),
                         bluetoothEnabled,
                         cardInChargerEvent.inCharger)
       ).compose(getView().bindUntilDetach())
@@ -82,7 +82,7 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
             .subscribe(this::updateViewStates);
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
-      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.fetch());
+      smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.fetch());
       smartCardInteractor.fetchBatteryLevelPipe().send(new FetchBatteryLevelCommand());
    }
 
@@ -103,11 +103,11 @@ public class WalletFirmwareChecksPresenterImpl extends WalletPresenterImpl<Walle
          int batteryLevel, boolean bluetoothEnabled, boolean cardInCharger) {
 
       if (bluetoothEnabled && connectionStatus == ConnectionStatus.DISCONNECTED) {
-         smartCardInteractor.connectActionPipe().send(new ConnectSmartCardCommand(data.smartCardId()));
+         smartCardInteractor.connectActionPipe().send(new ConnectSmartCardCommand(data.getSmartCardId()));
       }
 
       return new FirmwareChecksState(bluetoothEnabled, connectionStatus.isConnected(),
-            cardIsCharged(batteryLevel, cardInCharger), chargerRequired(data.currentFirmwareVersion()), cardInCharger);
+            cardIsCharged(batteryLevel, cardInCharger), chargerRequired(data.getCurrentFirmwareVersion()), cardInCharger);
    }
 
    private void updateViewStates(FirmwareChecksState checksState) {

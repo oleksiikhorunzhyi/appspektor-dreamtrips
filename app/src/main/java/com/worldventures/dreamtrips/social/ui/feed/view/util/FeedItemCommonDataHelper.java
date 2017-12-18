@@ -12,7 +12,7 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 

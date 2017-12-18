@@ -45,6 +45,8 @@ public final class DateTimeUtils {
    public static final String TRIP_FILTER_ANALYTIC_DATE_FORMAT = "MM-dd-yyyy";
    public static final String REVIEWS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
    public static final String TRANSACTION_DATE_FORMAT = "MM-dd-yyyy";
+   public static final String TRANSACTION_DATE_FORMAT_FULL = "MM-dd-yyyy HH:mm";
+
    public static final String UTC = "UTC";
 
    private DateTimeUtils() {

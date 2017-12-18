@@ -25,7 +25,8 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
          view.showTransactionFailedMessage();
       }
       view.hideReviewMerchant();
-      view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()), thrstPaymentBundle.getSubTotalAmount(), thrstPaymentBundle.getTaxAmount(), thrstPaymentBundle.getTipAmount());
+      view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()), thrstPaymentBundle.getSubTotalAmount(),
+            thrstPaymentBundle.getTaxAmount(), thrstPaymentBundle.getTipAmount());
       view.setEarnedPoints(Integer.valueOf(thrstPaymentBundle.getEarnedPoints()));
       view.setReceiptURL(thrstPaymentBundle.getReceiptURL());
       view.showDoneButton();

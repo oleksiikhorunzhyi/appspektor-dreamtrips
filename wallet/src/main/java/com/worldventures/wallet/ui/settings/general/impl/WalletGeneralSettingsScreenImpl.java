@@ -108,7 +108,7 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
    @Override
    public void setPreviewPhoto(@Nullable SmartCardUserPhoto photo) {
       if (photo != null) {
-         profilePhoto.setImageURI(photo.uri());
+         profilePhoto.setImageURI(photo.getUri());
       } //// TODO: 5/23/17 add placeholder
    }
 

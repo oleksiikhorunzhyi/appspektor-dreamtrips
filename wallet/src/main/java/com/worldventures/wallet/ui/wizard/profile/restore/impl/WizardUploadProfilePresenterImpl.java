@@ -12,7 +12,6 @@ import com.worldventures.wallet.service.command.SmartCardUserCommand;
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
-import com.worldventures.wallet.ui.wizard.pin.proposal.PinProposalAction;
 import com.worldventures.wallet.ui.wizard.profile.restore.WizardUploadProfilePresenter;
 import com.worldventures.wallet.ui.wizard.profile.restore.WizardUploadProfileScreen;
 
@@ -52,7 +51,7 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
                   .onSuccess(command -> onUserSetupSuccess(command.getResult()))
                   .onFail((command, throwable) -> {
                      getView().showRetryDialog();
-                     Timber.e(throwable, "");
+                     Timber.e(throwable);
                   })
                   .create());
    }
@@ -78,9 +77,10 @@ public class WizardUploadProfilePresenterImpl extends WalletPresenterImpl<Wizard
    private void onUserSetupSuccess(SmartCardUser user) {
       analyticsInteractor.walletAnalyticsPipe()
             .send(new WalletAnalyticsCommand(
-                  user.userPhoto() != null ? PhotoWasSetAction.methodDefault() : PhotoWasSetAction.noPhoto())
+                  user.getUserPhoto() != null ? PhotoWasSetAction.Companion.methodDefault() : PhotoWasSetAction.Companion
+                        .noPhoto())
             );
-
-      getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
+      //getNavigator().goPinProposalUserSetup(PinProposalAction.WIZARD);
+      getNavigator().goWizardAssignUser(getView().getProvisionMode());
    }
 }

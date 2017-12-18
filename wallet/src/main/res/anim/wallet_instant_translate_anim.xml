@@ -2,5 +2,4 @@
       android:duration="0"
       android:fromYDelta="0"
       android:interpolator="@android:anim/decelerate_interpolator"
-      android:toYDelta="0"
-      />
+      android:toYDelta="0" />

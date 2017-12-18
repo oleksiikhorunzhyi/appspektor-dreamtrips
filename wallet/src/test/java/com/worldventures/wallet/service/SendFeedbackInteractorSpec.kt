@@ -12,7 +12,7 @@ import com.worldventures.core.service.DeviceInfoProvider
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.core.utils.AppVersionNameBuilder
 import com.worldventures.wallet.BaseSpec
-import com.worldventures.wallet.domain.entity.ImmutableSmartCard
+import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand
 import io.techery.janet.ActionService
@@ -42,8 +42,7 @@ class SendFeedbackInteractorSpec : BaseSpec({
 }) {
    companion object {
       val deviceInfoProvider: DeviceInfoProvider = mock()
-      val smartCard = ImmutableSmartCard.builder().smartCardId("1")
-            .cardStatus(SmartCard.CardStatus.ACTIVE).build()
+      val smartCard = SmartCard(smartCardId = "1", cardStatus = CardStatus.ACTIVE, deviceId = "2303")
       val smartcardJanet = Janet.Builder()
             .addService(MockCommandActionService.Builder()
                   .actionService(CommandActionService())

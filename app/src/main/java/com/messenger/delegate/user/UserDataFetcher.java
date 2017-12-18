@@ -1,6 +1,5 @@
 package com.messenger.delegate.user;
 
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -10,6 +9,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.core.model.User;
+import com.worldventures.core.utils.BadgeHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,15 +21,16 @@ import io.techery.janet.Janet;
 import rx.Observable;
 
 class UserDataFetcher {
-   private static final String HOST_BADGE = "DreamTrips Host";
 
    private final ActionPipe<GetShortProfilesCommand> shortProfilesPipe;
    private final UsersDAO usersDAO;
+   private final BadgeHelper badgeHelper;
 
    @Inject
-   public UserDataFetcher(Janet janet, UsersDAO usersDAO) {
+   public UserDataFetcher(Janet janet, UsersDAO usersDAO, BadgeHelper badgeHelper) {
       this.usersDAO = usersDAO;
       this.shortProfilesPipe = janet.createPipe(GetShortProfilesCommand.class);
+      this.badgeHelper = badgeHelper;
    }
 
    Observable<List<DataUser>> fetchUserData(List<MessengerUser> messengerUsers) {
@@ -68,7 +69,7 @@ class UserDataFetcher {
       user.setSocialId(socialUser.getId());
       user.setFirstName(socialUser.getFirstName());
       user.setLastName(socialUser.getLastName());
-      user.setHost(hasHostBadge(socialUser.getBadges()));
+      user.setHost(badgeHelper.hasTripChatHost(socialUser));
       user.setOnline(messengerUser.isOnline());
       user.setFriend(messengerUser.getType() != null ? true : null);
 
@@ -82,17 +83,5 @@ class UserDataFetcher {
       }
       user.setAvatarUrl(socialUser.getAvatar() == null ? null : socialUser.getAvatar().getThumb());
       return user;
-   }
-
-   private boolean hasHostBadge(@Nullable List<String> badges) {
-      if (badges == null || badges.isEmpty()) {
-         return false;
-      }
-      for (String badge : badges) {
-         if (TextUtils.equals(badge, HOST_BADGE)) {
-            return true;
-         }
-      }
-      return false;
    }
 }

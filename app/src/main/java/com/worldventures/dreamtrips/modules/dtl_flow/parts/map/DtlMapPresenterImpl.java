@@ -233,8 +233,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             .take(1)
             .compose(bindViewIoToMainComposer())
             .map(FilterDataAction::getResult)
-            .map(FilterData::searchQuery)
-            .subscribe(getView()::updateToolbarSearchCaption);
+            .subscribe(filterData
+                  -> getView().updateToolbarSearchCaption(filterData.getMerchantType(), filterData.searchQuery()));
    }
 
    private void tryHideMyLocationButton(boolean hide) {
@@ -252,8 +252,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    @Override
-   public void setMerchantType(List<String> merchantType, String searchQuery) {
-      filterDataInteractor.searchMerchantType(merchantType, searchQuery);
+   public void setMerchantType(List<String> merchantType) {
+      filterDataInteractor.searchMerchantType(merchantType);
    }
 
    @Override
@@ -391,8 +391,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
    }
 
    @Override
-   public void locationChangeRequested() {
-      History history = History.single(new DtlLocationChangePath());
+   public void locationChangeRequested(String merchantQuery) {
+      History history = History.single(new DtlLocationChangePath(merchantQuery));
       Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
    }
 

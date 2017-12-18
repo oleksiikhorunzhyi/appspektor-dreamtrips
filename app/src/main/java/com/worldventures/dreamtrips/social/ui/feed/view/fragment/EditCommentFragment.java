@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
@@ -73,6 +74,8 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
 
    @Override
    public void setImageURI(Uri uri) {
+      final int size = getResources().getDimensionPixelSize(R.dimen.avatar_size);
+      userPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, userPhoto.getController(), size));
       userPhoto.setImageURI(uri);
    }
 

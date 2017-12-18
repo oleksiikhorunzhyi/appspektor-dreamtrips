@@ -18,7 +18,8 @@ public class ThrstPaymentBundle implements Parcelable {
    private final double tipAmount;
 
    public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount,
-         String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount, double taxAmount, double tipAmount) {
+         String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount,
+         double taxAmount, double tipAmount) {
       this.merchant = merchant;
       this.isPaid = isPaid;
       this.totalAmount = totalAmount;

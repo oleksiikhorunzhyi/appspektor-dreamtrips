@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryLis
 import com.worldventures.dreamtrips.social.ui.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.social.ui.reptools.view.cell.SuccessStoryCell;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -67,13 +68,26 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
 
    @OnClick(R.id.iv_filter)
    public void onActionFilter() {
+      getPresenter().onShowFilterRequired();
+   }
+
+   @Override
+   public void showFilterDialog(boolean showFavorites) {
       View menuItemView = getActivity().findViewById(R.id.iv_filter);
       PopupMenu popupMenu = new PopupMenu(getActivity(), menuItemView);
       popupMenu.inflate(R.menu.menu_success_stories_filter);
-      boolean isFavorites = getPresenter().isFilterFavorites();
-      popupMenu.getMenu().getItem(isFavorites ? 1 : 0).setChecked(true);
+      popupMenu.getMenu().getItem(showFavorites ? 1 : 0).setChecked(true);
       popupMenu.setOnMenuItemClickListener((menuItem) -> {
-         getPresenter().reloadWithFilter(menuItem.getItemId());
+         switch (menuItem.getItemId()) {
+            case R.id.action_show_all:
+               getPresenter().reloadWithFilter(false);
+               break;
+            case R.id.action_show_favorites:
+               getPresenter().reloadWithFilter(true);
+               break;
+            default:
+               break;
+         }
          return false;
       });
       popupMenu.show();
@@ -158,7 +172,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    @Override
    public void setItems(List<SuccessStory> items) {
       adapter.clear();
-      adapter.addItems(items);
+      adapter.addItems(new ArrayList<>(items));
       adapter.notifyDataSetChanged();
    }
 

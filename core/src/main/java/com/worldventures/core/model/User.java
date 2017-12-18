@@ -2,6 +2,7 @@ package com.worldventures.core.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
@@ -87,7 +88,11 @@ public class User extends BaseEntity implements Parcelable {
       this.circles = circles;
    }
 
+   @NonNull
    public List<Circle> getCircles() {
+      if (circles == null) {
+         circles = new ArrayList<>();
+      }
       return circles;
    }
 

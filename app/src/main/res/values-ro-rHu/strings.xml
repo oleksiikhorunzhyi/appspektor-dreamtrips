@@ -98,7 +98,6 @@
    <string name="library">Bibliotecă</string>
 
 
-
    <string name="nav_back">Înapoi</string>
 
    <string name="logout_component">Deconectare</string>
@@ -148,6 +147,8 @@
 
    <string name="beta_label">Beta</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">Avem nevoie de permisiune pentru a accesa spațiul de stocare, pentru a vă sugera conținutul media</string>
+
+   
+
 </resources>

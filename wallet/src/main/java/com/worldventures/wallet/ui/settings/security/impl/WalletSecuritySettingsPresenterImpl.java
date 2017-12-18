@@ -143,21 +143,21 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
 
    private void stealthModeFailed() {
       //noinspection ConstantConditions
-      smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
+      smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
-                  .onSuccess(command -> getView().stealthModeStatus(command.getResult().stealthMode())));
+                  .onSuccess(command -> getView().stealthModeStatus(command.getResult().getStealthMode())));
    }
 
    @Override
    public void lockStatusFailed() {
       //noinspection ConstantConditions
-      smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.fetch())
+      smartCardInteractor.deviceStatePipe().createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
-                  .onSuccess(command -> getView().lockStatus(command.getResult().lock())));
+                  .onSuccess(command -> getView().lockStatus(command.getResult().getLock())));
    }
 
    private void observeStealthModeController(WalletSecuritySettingsScreen view) {
@@ -175,11 +175,11 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
    private void bindSmartCard(SmartCardStatus status) {
       WalletSecuritySettingsScreen view = getView();
       //noinspection all
-      view.lockStatus(status.lock());
+      view.lockStatus(status.getLock());
 
-      view.stealthModeStatus(status.stealthMode());
-      view.disableDefaultPaymentValue(status.disableCardDelay());
-      view.autoClearSmartCardValue(status.clearFlyeDelay());
+      view.stealthModeStatus(status.getStealthMode());
+      view.disableDefaultPaymentValue(status.getDisableCardDelay());
+      view.autoClearSmartCardValue(status.getClearFlyeDelay());
    }
 
    @Override
@@ -219,11 +219,11 @@ public class WalletSecuritySettingsPresenterImpl extends WalletPresenterImpl<Wal
 
    private void fetchConnectionStatus(Action1<ConnectionStatus> action) {
       smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.fetch())
+            .createObservable(DeviceStateCommand.Companion.fetch())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new ActionStateSubscriber<DeviceStateCommand>()
-                  .onSuccess(command -> action.call(command.getResult().connectionStatus()))
+                  .onSuccess(command -> action.call(command.getResult().getConnectionStatus()))
             );
    }
 

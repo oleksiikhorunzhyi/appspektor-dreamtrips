@@ -12,30 +12,23 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.trello.rxlifecycle.android.RxLifecycleAndroid;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import at.markushi.ui.ActionView;
-import at.markushi.ui.action.CloseAction;
-import at.markushi.ui.action.DrawerAction;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icepick;
@@ -53,7 +46,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
 
    @InjectView(R.id.dtlToolbarLayout) ViewGroup dtlToolbarLayout;
    @InjectView(R.id.dtlToolbarActionViewLayout) ViewGroup actionViewLayout;
-   @InjectView(R.id.dtlToolbarActionView) ActionView actionView;
+   @InjectView(R.id.dtlToolbarActionView) ImageView actionView;
    @InjectView(R.id.dtlToolbarLocationSearchLayout) ViewGroup locationSearchLayout;
    @InjectView(R.id.dtlToolbarNavigationLayout) ViewGroup dtlNavigationControl;
    @InjectView(R.id.dtlToolbarNavigationIcon) ImageView dtlToolbarNavigationIcon;
@@ -94,7 +87,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       collapsed = true;
       updateToolbarCaptions();
       animateCollapsing();
-      patchInputFields();
       Queryable.from(collapseListeners).forEachR(listener -> listener.onCollapsed());
    }
 
@@ -127,14 +119,14 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       patchInputFields();
       if (collapsed) {
          locationSearchLayout.setVisibility(GONE);
-         actionView.setAction(new DrawerAction(), false);
+         actionView.setImageResource(R.drawable.ic_menu_hamburger);
          if (!showNavigation) {
             actionViewLayout.setVisibility(INVISIBLE);
          }
       } else {
          locationSearchLayout.setVisibility(VISIBLE);
          actionViewLayout.setVisibility(VISIBLE);
-         actionView.setAction(new CloseAction(), false);
+         actionView.setImageResource(R.drawable.ic_close_light);
       }
       dtlToolbarNavigationIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), navigationIconResource));
       dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
@@ -153,7 +145,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
     * Deals with focus in our input fields during collapsing/expanding <br />
     * to mimic native Toolbar's SearchView behaviour.
     *
-    * @param collapsed boolean indicating whether new state is collapsed
     */
    protected void patchInputFields() {
       if (collapsed) {
@@ -178,36 +169,31 @@ public class ExpandableDtlToolbar extends DtlToolbar {
 
    @Override
    protected void updateToolbarCaptions() {
+      String hint = getHint();
       if (collapsed) {
-         String searchQueryTitle = TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
-         if (TextUtils.isEmpty(searchQuery)) {
-            merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
+         hint += " " + locationTitle;
+      }
+      merchantSearchInput.setHint(hint);
+
+      if (!TextUtils.isEmpty(searchQuery)) {
+         String query = this.searchQuery;
+         if (collapsed) {
+            query += " " + locationTitle;
+            merchantSearchInput.setHint(query);
          } else {
-            merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
+            merchantSearchInput.setText(query);
          }
-      } else {
-         if (TextUtils.isEmpty(searchQuery)) {
-            merchantSearchInput.setHint(defaultEmptySearchCaption);
-         }
-         if (!merchantSearchInput.hasFocus() || merchantSearchInput.getText().toString().isEmpty()) {
-            merchantSearchInput.setText(searchQuery);
-         }
+      }
+
+      if (!collapsed) {
          locationSearchInput.setText(locationTitle);
          locationSearchInput.selectAll();
       }
    }
 
-   private SpannableStringBuilder prepareSpannedTopCaption(String searchQuery, String locationTitle) {
-      final SpannableStringBuilder stringBuilder = new SpannableStringBuilder(searchQuery + " " + locationTitle);
-      final ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources()
-            .getColor(R.color.dtlt_input_hint_color));
-      stringBuilder.setSpan(colorSpan, searchQuery.length(), stringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-      return stringBuilder;
-   }
-
    private void animateExpanding() {
       if (showNavigation) {
-         actionView.setAction(new CloseAction());
+         actionView.setImageResource(R.drawable.ic_close_light);
       } else {
          actionViewLayout.setVisibility(VISIBLE);
          Animator revealNavigationAnimator = ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 0F, 1F);
@@ -226,7 +212,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
 
    private void animateCollapsing() {
       if (showNavigation) {
-         actionView.setAction(new DrawerAction());
+         actionView.setImageResource(R.drawable.ic_menu_hamburger);
       } else {
          Animator hideNavigationAnimator = ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 1F, 0F);
          hideNavigationAnimator.addListener(new AnimatorListenerAdapter() {
@@ -263,9 +249,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
    protected void onMerchantSearchInputClicked() {
       if (collapsed) {
          expand();
-      } else {
-         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-         imm.hideSoftInputFromWindow(merchantSearchInput.getWindowToken(), 0);
       }
    }
 

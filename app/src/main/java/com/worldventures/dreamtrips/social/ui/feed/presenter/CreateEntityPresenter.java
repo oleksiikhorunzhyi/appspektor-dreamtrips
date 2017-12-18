@@ -3,10 +3,13 @@ package com.worldventures.dreamtrips.social.ui.feed.presenter;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.modules.picker.helper.PickerPermissionChecker;
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment;
 import com.worldventures.core.modules.picker.model.MediaPickerModel;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.model.VideoPickerModel;
+import com.worldventures.core.ui.util.permission.PermissionUtils;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
@@ -27,6 +30,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ProcessAttach
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CreatePhotoCreationItemCommand;
+import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,14 +55,24 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    @Inject PostsInteractor postsInteractor;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
    @Inject PhotoStripDelegate photoStripDelegate;
+   @Inject PickerPermissionChecker pickerPermissionChecker;
+   @Inject PermissionUtils permissionUtils;
 
    @State int postInProgressId;
 
-   private int locallyProcessingImagesCount;
    private int videoLengthLimit;
 
    public CreateEntityPresenter(CreateEntityBundle.Origin origin) {
       this.origin = origin;
+   }
+
+   @Override
+   public void onInjected() {
+      super.onInjected();
+      pickerPermissionChecker.registerCallback(
+            () -> view.showMediaPicker(getRemainingPhotosCount(), getRemainVideoCount(), videoLengthLimit),
+            () -> view.showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
+            () -> view.showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
    }
 
    @Override
@@ -95,6 +109,13 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                            .send(SharePostAction.createPostAction(command.getResult()));
                      closeView();
                   }));
+   }
+
+   @Override
+   protected void updateDescription() {
+      if (origin == CreateEntityBundle.Origin.FEED) {
+         super.updateDescription();
+      }
    }
 
    public void initialPhotoStripDelegate() {
@@ -135,7 +156,13 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    public void showMediaPicker() {
-      view.showMediaPicker(getRemainingPhotosCount(), getRemainVideoCount(), videoLengthLimit);
+      pickerPermissionChecker.checkPermission();
+   }
+
+   public void recheckPermission(String[] permissions, boolean userAnswer) {
+      if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
+         pickerPermissionChecker.recheckPermission(userAnswer);
+      }
    }
 
    private void subscribeToVideoLength() {
@@ -200,6 +227,11 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
          return;
       }
 
+      if (!cachedCreationItems.isEmpty() && mediaPickerAttachment.hasVideo() ||
+            (selectedVideoPathUri != null && mediaPickerAttachment.hasImages())) {
+         view.informUser(R.string.picker_two_media_type_error);
+         return;
+      }
       view.setEnabledImagePicker(false);
       if (mediaPickerAttachment.hasImages()) {
          attachImages(mediaPickerAttachment.getChosenImages());
@@ -209,7 +241,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    private void attachImages(List<PhotoPickerModel> chosenImages) {
-      locallyProcessingImagesCount++;
       invalidateDynamicViews();
       Observable.from(chosenImages)
             .flatMap(this::convertPhotoCreationItem)
@@ -219,7 +250,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    private void onFinishedImageProcessing(List<PhotoCreationItem> newImages) {
-      locallyProcessingImagesCount--;
       cachedCreationItems.addAll(newImages);
       view.attachPhotos(newImages);
       recognizeFaces(newImages);
@@ -259,7 +289,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       view = null;
    }
 
-   public interface View extends ActionEntityPresenter.View {
+   public interface View extends ActionEntityPresenter.View, PermissionUIComponent {
       void setEnabledImagePicker(boolean enabled);
 
       void showMediaPicker(int photoPickLimit, int videoPickLimit, int maxVideoDuration);

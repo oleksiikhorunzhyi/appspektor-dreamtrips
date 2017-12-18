@@ -19,7 +19,7 @@ public class WalletSocialInfoProviderImpl implements WalletSocialInfoProvider {
    }
 
    @Override
-   public Integer userId() {
+   public int userId() {
       return hasUser() ? sessionHolder.get().get().user().getId() : 0;
    }
 

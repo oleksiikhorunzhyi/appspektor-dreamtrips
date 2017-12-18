@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.wallet.analytics.CardDetailsAction;
+import com.worldventures.wallet.analytics.ChangeDefaultCardAction;
 import com.worldventures.wallet.analytics.PaycardAnalyticsCommand;
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.domain.entity.ConnectionStatus;
@@ -28,7 +29,10 @@ import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.records.detail.CardDetailsPresenter;
 import com.worldventures.wallet.ui.records.detail.CardDetailsScreen;
 import com.worldventures.wallet.ui.records.detail.RecordDetailViewModel;
+import com.worldventures.wallet.util.WalletRecordUtil;
 import com.worldventures.wallet.util.WalletValidateHelper;
+
+import java.util.List;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
@@ -37,10 +41,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
-
-import static com.worldventures.wallet.analytics.ChangeDefaultCardAction.forBankCard;
-import static com.worldventures.wallet.util.WalletRecordUtil.equalsRecordId;
-import static com.worldventures.wallet.util.WalletRecordUtil.findRecord;
 
 public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScreen> implements CardDetailsPresenter {
 
@@ -76,7 +76,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private void observeSaveCardData(CardDetailsScreen view) {
       recordInteractor.updateRecordPipe()
             .observe()
-            .filter(state -> equalsRecordId(recordDetailViewModel.getRecordId(), state.action.getRecord()))
+            .filter(state -> WalletRecordUtil.Companion.equalsRecordId(recordDetailViewModel.getRecordId(), state.action
+                  .getRecord()))
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(view.provideOperationSaveCardData()).create());
@@ -109,7 +110,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void trackScreen() {
       fetchRecord(recordDetailViewModel.getRecordId(), record -> analyticsInteractor.paycardAnalyticsPipe()
-            .send(new PaycardAnalyticsCommand(new CardDetailsAction(record.nickName()), record)));
+            .send(new PaycardAnalyticsCommand(new CardDetailsAction(record.getNickname()), record)));
    }
 
    private void connectToDeleteCardPipe() {
@@ -131,7 +132,8 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationSetDefaultOnDevice())
                   .onSuccess(command -> getView()
-                        .defaultCardChanged(equalsRecordId(recordDetailViewModel.getRecordId(), command.getResult())))
+                        .defaultCardChanged(WalletRecordUtil.Companion.equalsRecordId(recordDetailViewModel.getRecordId(), command
+                              .getResult())))
                   .create());
    }
 
@@ -241,7 +243,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
    private void trackSetAsDefault() {
       fetchRecord(recordDetailViewModel.getRecordId(),
             record -> analyticsInteractor.walletAnalyticsPipe()
-                  .send(new WalletAnalyticsCommand(forBankCard(record))));
+                  .send(new WalletAnalyticsCommand(new ChangeDefaultCardAction(record))));
    }
 
    public void goBack() {
@@ -250,25 +252,26 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void nicknameUpdated(String nickName) {
       fetchRecord(recordDetailViewModel.getRecordId(),
-            record -> recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickName(record, nickName)));
+            record -> recordInteractor.updateRecordPipe()
+                  .send(UpdateRecordCommand.Companion.updateNickname(record, nickName)));
    }
 
    private void fetchRecord(@NonNull String recordId, @NonNull Action1<Record> recordAction) {
       recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.fetch())
-            .map(command -> findRecord(command.getResult(), recordId))
+            .createObservableResult(RecordListCommand.Companion.fetch())
+            .map(command -> WalletRecordUtil.Companion.findRecord((List<Record>) command.getResult(), recordId))
             .compose(getView().bindUntilDetach())
-            .subscribe(recordAction, throwable -> Timber.e(throwable, ""));
+            .subscribe(recordAction, Timber::e);
    }
 
    private void fetchConnectionStats(Action1<ConnectionStatus> action) {
       smartCardInteractor.deviceStatePipe()
-            .createObservableResult(DeviceStateCommand.fetch())
+            .createObservableResult(DeviceStateCommand.Companion.fetch())
             .map(Command::getResult)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .map(SmartCardStatus::connectionStatus)
-            .subscribe(action, throwable -> Timber.e(throwable, ""));
+            .map(SmartCardStatus::getConnectionStatus)
+            .subscribe(action, Timber::e);
    }
 
    private void fetchDefaultRecord(Action1<Record> action) {
@@ -280,13 +283,13 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
                   return Observable.just(null);
                } else {
                   return recordInteractor.cardsListPipe()
-                        .createObservableResult(RecordListCommand.fetch())
-                        .map(command -> findRecord(command.getResult(), defaultId));
+                        .createObservableResult(RecordListCommand.Companion.fetch())
+                        .map(command -> WalletRecordUtil.Companion.findRecord((List<Record>) command.getResult(), defaultId));
                }
             })
             .onErrorReturn(null)
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(action, throwable -> Timber.e(throwable, ""));
+            .subscribe(action, Timber::e);
    }
 }

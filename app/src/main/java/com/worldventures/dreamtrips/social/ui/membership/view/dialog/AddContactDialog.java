@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.membership.view.dialog;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,48 +11,34 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
-import com.worldventures.dreamtrips.social.ui.membership.model.Member;
 
 import butterknife.ButterKnife;
+import rx.functions.Action3;
 
 import static com.worldventures.dreamtrips.util.ValidationUtils.isEmailValid;
 
 public class AddContactDialog {
 
+   private View btn;
+   private String emailError;
    private MaterialEditText etName;
    private MaterialEditText etPhone;
    private MaterialEditText etEmail;
-   private View btn;
-   private final MaterialDialog md;
-   private Callback callback;
-   private String emailError;
+   private final MaterialDialog materialDialog;
+   private Action3<String, String, String> callback;
 
    public AddContactDialog(Context context) {
-      md = new MaterialDialog.Builder(context).title(R.string.add_contact)
+      materialDialog = new MaterialDialog.Builder(context).title(R.string.add_contact)
             .customView(R.layout.dialog_add_contact, true)
             .positiveText(R.string.add)
-            .callback(new MaterialDialog.ButtonCallback() {
-               @Override
-               public void onPositive(MaterialDialog dialog) {
-                  if (callback != null) {
-                     Member member = new Member();
-                     member.setId(String.valueOf(System.currentTimeMillis()));
-                     member.setName(etName.getText().toString());
-                     member.setEmail(etEmail.getText().toString());
-                     member.setPhone(etPhone.getText().toString());
-                     callback.add(member);
-                  }
-               }
-            })
+            .onPositive((dialog, which) -> callback.call(etName.getText().toString(), etEmail.getText().toString(),
+                  etPhone.getText().toString()))
             .build();
-
-
    }
 
-   public void show(Callback callback) {
+   public void show(@NonNull Action3<String, String, String> callback) {
       this.callback = callback;
-      md.show();
-
+      materialDialog.show();
       TextWatcherAdapter watcher = new TextWatcherAdapter() {
          @Override
          public void afterTextChanged(Editable s) {
@@ -73,19 +60,14 @@ public class AddContactDialog {
          }
       };
 
-      etName = ButterKnife.findById(md, R.id.et_name);
-      etPhone = ButterKnife.findById(md, R.id.et_phone);
-      etEmail = ButterKnife.findById(md, R.id.et_email);
-      btn = ButterKnife.findById(md, R.id.buttonDefaultPositive);
+      etName = ButterKnife.findById(materialDialog, R.id.et_name);
+      etPhone = ButterKnife.findById(materialDialog, R.id.et_phone);
+      etEmail = ButterKnife.findById(materialDialog, R.id.et_email);
+      btn = ButterKnife.findById(materialDialog, R.id.buttonDefaultPositive);
       btn.setEnabled(false);
 
       etName.addTextChangedListener(watcher);
       etPhone.addTextChangedListener(watcher);
       etEmail.addTextChangedListener(watcher);
    }
-
-   public interface Callback {
-      void add(Member member);
-   }
-
 }

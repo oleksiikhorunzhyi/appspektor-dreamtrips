@@ -6,7 +6,6 @@ import android.content.Context;
 
 import com.messenger.di.MessengerModule;
 import com.messenger.util.UnreadConversationObservable;
-import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.component.ComponentsConfig;
 import com.worldventures.core.component.RootComponentsProvider;
@@ -20,10 +19,10 @@ import com.worldventures.core.ui.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.router.RouterImpl;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
@@ -98,10 +97,9 @@ public class LegacyActivityModule {
 
    @Provides
    @Singleton
-   NavigationDrawerPresenter provideNavDrawerPresenter(SessionHolder appSessionHolder, SnappyRepository db,
-         UnreadConversationObservable unreadObservable, AuthInteractor authInteractor,
-         NotificationCountEventDelegate notificationCountEventDelegate) {
-      return new NavigationDrawerPresenter(appSessionHolder, db, unreadObservable, authInteractor, notificationCountEventDelegate);
+   NavigationDrawerPresenter provideNavDrawerPresenter(SessionHolder sessionHolder, UnreadConversationObservable unreadObservable,
+         AuthInteractor authInteractor, UserNotificationInteractor userNotificationInteractor) {
+      return new NavigationDrawerPresenter(sessionHolder, unreadObservable, authInteractor, userNotificationInteractor);
    }
 
    @Provides
@@ -117,17 +115,17 @@ public class LegacyActivityModule {
       if (!ViewUtils.isTablet(context)) {
          featureManager.with(Feature.WALLET, () -> activeComponents.add(SmartCardModule.WALLET));
       }
+      featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.NOTIFICATIONS));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerModule.MESSENGER));
-      featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
       featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(SocialAppModule.OTA));
       activeComponents.add(SocialAppModule.TRIP_IMAGES);
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(SocialAppModule.MEMBERSHIP));
       activeComponents.add(SocialAppModule.BUCKETLIST);
       activeComponents.add(SocialAppModule.ACCOUNT_PROFILE);
       featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(SocialAppModule.REP_TOOLS));
-      activeComponents.add(SocialAppModule.SEND_FEEDBACK);
       activeComponents.add(SocialAppModule.SETTINGS);
+      activeComponents.add(SocialAppModule.SEND_FEEDBACK);
       activeComponents.add(SocialAppModule.HELP);
       activeComponents.add(SocialAppModule.TERMS);
       activeComponents.add(SocialAppModule.MAP_TRIPS);

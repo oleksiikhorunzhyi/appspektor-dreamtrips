@@ -33,7 +33,6 @@ import io.techery.janet.smartcard.client.SmartCardClient;
 
 @Module(includes = {
       WalletActionStorageModule.class,
-      WalletApiTypeAdapterModule.class,
 }, library = true, complete = false)
 public class WalletJanetModule {
 

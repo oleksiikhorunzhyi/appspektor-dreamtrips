@@ -19,6 +19,7 @@
          style="@style/WalletTheme.ContentContainerStyle"
          android:layout_marginTop="80dp"
          >
+
       <TextView
             style="@style/WalletTheme.HeaderTextStyle"
             android:id="@+id/label_setup_is_complete"

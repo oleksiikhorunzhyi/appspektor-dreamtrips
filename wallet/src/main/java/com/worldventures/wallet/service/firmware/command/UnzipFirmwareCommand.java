@@ -1,7 +1,5 @@
 package com.worldventures.wallet.service.firmware.command;
 
-import org.immutables.value.Value;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -47,12 +45,7 @@ public class UnzipFirmwareCommand extends Command<UnzipFirmwareCommand.FirmwareB
          puckAtmel = getFileInDir(unzippedPath + File.separator + PUCK_ATMEL_FOLDER);
          appAtmel = getFileInDir(unzippedPath + File.separator + APP_ATMEL_FOLDER);
          booloaderNordic = getFileInDir(unzippedPath + File.separator + BOOTLOADER_NORDIC_FOLDER);
-         FirmwareBundle firmwareBundle = ImmutableFirmwareBundle.builder()
-               .appAtmel(appAtmel)
-               .appNordic(appNordic)
-               .puckAtmel(puckAtmel)
-               .booloaderNordic(booloaderNordic)
-               .build();
+         FirmwareBundle firmwareBundle = new FirmwareBundle(appNordic, puckAtmel, appAtmel, booloaderNordic);
          callback.onSuccess(firmwareBundle);
       } catch (IllegalArgumentException e) {
          callback.onFail(new InvalidFirmwareException("Firmware zip bad format: some files are missing", e));
@@ -113,15 +106,33 @@ public class UnzipFirmwareCommand extends Command<UnzipFirmwareCommand.FirmwareB
       return files[0];
    }
 
-   @Value.Immutable
-   interface FirmwareBundle {
+   static class FirmwareBundle {
+      private final File appNordic;
+      private final File puckAtmel;
+      private final File appAtmel;
+      private final File booloaderNordic;
 
-      File appNordic();
+      FirmwareBundle(File appNordic, File puckAtmel, File appAtmel, File booloaderNordic) {
+         this.appNordic = appNordic;
+         this.puckAtmel = puckAtmel;
+         this.appAtmel = appAtmel;
+         this.booloaderNordic = booloaderNordic;
+      }
 
-      File puckAtmel();
+      File appNordic() {
+         return appNordic;
+      }
 
-      File appAtmel();
+      File puckAtmel() {
+         return puckAtmel;
+      }
 
-      File booloaderNordic();
+      File appAtmel() {
+         return appAtmel;
+      }
+
+      File booloaderNordic() {
+         return booloaderNordic;
+      }
    }
 }

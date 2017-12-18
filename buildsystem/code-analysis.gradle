@@ -99,6 +99,7 @@ detekt {
    profile("main") {
       config = "$project.rootDir/quality/detekt/detekt.yml"
       baseline = "$project.rootDir/quality/detekt/baseline.xml"
+      plugins = "$project.rootDir/quality/detekt/detekt-techery-extensions.jar"
       input = "$projectDir/src"
       output = "$projectDir/build/reports/detekt"
       outputName = "detekt"

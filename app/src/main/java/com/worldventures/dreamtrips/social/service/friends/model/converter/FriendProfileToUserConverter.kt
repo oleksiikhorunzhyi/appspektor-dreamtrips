@@ -24,7 +24,7 @@ class FriendProfileToUserConverter : Converter<FriendProfile, User> {
          company = source.company()
          avatar = context.convert(source.avatar(), User.Avatar::class.java)
          relationship = source.relationship()?.let { context.convert(it, User.Relationship::class.java) }
-         circles = source.circles()?.let { context.convert(it, Circle::class.java) }
+         circles = source.circles()?.let { context.convert(it, Circle::class.java) } ?: mutableListOf()
          mutualFriends = source.mutuals()?.let { context.convert(it, User.MutualFriends::class.java) }
       }
    }

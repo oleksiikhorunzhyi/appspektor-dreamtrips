@@ -103,10 +103,11 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void onTrackingStateFetched(boolean state) {
-      if (state && (!locationService.isEnabled() || !locationService.isPermissionGranted())) {
+      boolean shouldRequestPermission = state && (!locationService.isEnabled() || !locationService.isPermissionGranted());
+      if (shouldRequestPermission) {
          requestLocationPermissions(true);
       }
-      applyTrackingStatusForUI(state);
+      applyTrackingStatusForUI(state, !shouldRequestPermission);
    }
 
    private void observeCheckingSwitcher() {
@@ -140,8 +141,8 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
                   }));
    }
 
-   private void applyTrackingStatusForUI(boolean isTrackingEnabled) {
-      getView().switcherEnable(true);
+   private void applyTrackingStatusForUI(boolean isTrackingEnabled, boolean enableSwitcher) {
+      getView().switcherEnable(enableSwitcher);
       getView().setTrackingSwitchStatus(isTrackingEnabled);
       getView().setMapEnabled(isTrackingEnabled);
    }
@@ -158,7 +159,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    @Override
    public void disableTrackingCanceled() {
-      applyTrackingStatusForUI(true);
+      applyTrackingStatusForUI(true, true);
    }
 
    @Override
@@ -184,7 +185,6 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void applyTrackingStatus(boolean enableTracking) {
-      getView().switcherEnable(true);
       smartCardLocationInteractor.updateTrackingStatusPipe().send(new UpdateTrackingStatusCommand(enableTracking));
    }
 

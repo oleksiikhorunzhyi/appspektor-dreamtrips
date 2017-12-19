@@ -79,7 +79,6 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       else
          null
 
-   @Suppress("UnsafeCast")
    override val displayOptionsSource: DisplayOptionsSource
       get() = args.getSerializable(PARAM_KEY_DISPLAY_OPTIONS_SOURCE) as DisplayOptionsSource
 
@@ -104,7 +103,6 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
 
    override fun supportHttpConnectionStatusLabel(): Boolean = false
 
-   @Suppress("UnsafeCast")
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       setupToolbar(view)

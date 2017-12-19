@@ -48,8 +48,6 @@ potential-bugs:
     active: false
   UnsafeCallOnNullableType:
     active: true
-  UnsafeCast:
-    active: true
 
 performance:
   active: true
@@ -160,10 +158,10 @@ style:
     active: true
   MagicNumber:
     active: true
-    ignoreNumbers: '-1,0,1,2'
-    ignoreHashCodeFunction: false
+    ignoreNumbers: '-1,0,1,2,100'
+    ignoreHashCodeFunction: true
     ignorePropertyDeclaration: false
-    ignoreAnnotation: false
+    ignoreAnnotation: true
   WildcardImport:
     # ktlint checks better
     active: false
@@ -204,3 +202,9 @@ migration:
     # your.package.Class: new.package.or.Class
     # for example:
     # io.gitlab.arturbosch.detekt.api.Rule: io.gitlab.arturbosch.detekt.rule.Rule
+
+TecheryRuleSet:
+  UnsafeCast:
+    active: true
+    whitelistReceiver: 'Context#getSystemService Bundle#getSerializable Parcel#readSerializable'
+    whitelistTarget: 'Injector'

@@ -117,6 +117,7 @@ public class DtlDetailsPresenterImplTest {
             .categories(null)
             .amenities(null)
             .reviews(withReview ? getReviews(countReview) : null)
+            .earnPointsMinSpendLocalCurrency(0d)
             .build();
    }
 

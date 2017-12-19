@@ -3,7 +3,7 @@ ext {
    pluginDependencies.versions = [
          java  : '1.8',
          kotlin: '1.2.0',
-         detekt: '1.0.0.RC5'
+         detekt: '1.0.0.RC5-6'
    ]
    pluginDependencies.repos = [
          { o -> o.jcenter() },

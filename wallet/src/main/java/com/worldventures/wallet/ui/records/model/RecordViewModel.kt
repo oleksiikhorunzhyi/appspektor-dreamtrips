@@ -15,7 +15,6 @@ class RecordViewModel(
       val recordType: RecordType
 ) : Parcelable {
 
-   @Suppress("UnsafeCast")
    private constructor(`in`: Parcel) : this(
          id = `in`.readString(),
          cvvLength = `in`.readInt(),

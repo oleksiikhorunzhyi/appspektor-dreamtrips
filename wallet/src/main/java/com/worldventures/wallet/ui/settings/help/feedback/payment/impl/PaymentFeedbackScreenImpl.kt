@@ -102,7 +102,6 @@ class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, 
       super.onRestoreViewState(view, savedViewState)
    }
 
-   @Suppress("UnsafeCast")
    private fun initAttachments() {
       binding.incAdditionalInfo!!.feedbackAttachments.setPhotoCellDelegate { onFeedbackAttachmentClicked(it) }
       binding.incAdditionalInfo!!.feedbackAttachments.init(context as Injector)

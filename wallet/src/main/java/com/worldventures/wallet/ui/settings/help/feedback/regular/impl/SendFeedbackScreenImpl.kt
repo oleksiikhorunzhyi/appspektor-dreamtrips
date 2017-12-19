@@ -46,7 +46,6 @@ class SendFeedbackScreenImpl(args: Bundle) : BaseFeedbackScreenImpl<SendFeedback
    override val feedbackMessage: String
       get() = etFeedbackMessage.text.toString()
 
-   @Suppress("UnsafeCast")
    override val feedbackType: FeedbackType
       get() = args.getSerializable(KEY_FEEDBACK_TYPE) as FeedbackType
 
@@ -102,7 +101,6 @@ class SendFeedbackScreenImpl(args: Bundle) : BaseFeedbackScreenImpl<SendFeedback
       presenter!!.fetchAttachments()
    }
 
-   @Suppress("UnsafeCast")
    private fun initAttachments() {
       feedbackAttachments.setPhotoCellDelegate { onFeedbackAttachmentClicked(it) }
       feedbackAttachments.init(context as Injector)

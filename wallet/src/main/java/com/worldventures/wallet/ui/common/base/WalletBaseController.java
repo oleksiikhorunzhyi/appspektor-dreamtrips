@@ -2,6 +2,7 @@ package com.worldventures.wallet.ui.common.base;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,9 +41,18 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
 
    @SuppressWarnings("ResourceType")
    protected void onFinishInflate(View view) {
+      final Object module = screenModule();
       ObjectGraph objectGraph = (ObjectGraph) view.getContext().getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
+      if (module != null) {
+         objectGraph = objectGraph.plus(module);
+      }
       objectGraph.inject(this);
       this.walletScreenDelegate = WalletScreenDelegate.create(view, supportConnectionStatusLabel(), supportHttpConnectionStatusLabel());
+   }
+
+   @Nullable
+   protected Object screenModule() {
+      return null;
    }
 
    @Override

@@ -1,6 +1,6 @@
 package com.worldventures.wallet.ui.records.connectionerror.impl;
 
-
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,5 +42,11 @@ public class ConnectionErrorScreenImpl extends WalletBaseController<ConnectionEr
    @Override
    public ConnectionErrorPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new ConnectionErrorScreenModule();
    }
 }

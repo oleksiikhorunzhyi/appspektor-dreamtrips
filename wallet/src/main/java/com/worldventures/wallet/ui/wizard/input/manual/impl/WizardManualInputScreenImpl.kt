@@ -91,4 +91,6 @@ class WizardManualInputScreenImpl : WalletBaseController<WizardManualInputScreen
    }
 
    override fun getPresenter() = viewPresenter
+
+   override fun screenModule(): Any? = WizardManualInputScreenModule()
 }

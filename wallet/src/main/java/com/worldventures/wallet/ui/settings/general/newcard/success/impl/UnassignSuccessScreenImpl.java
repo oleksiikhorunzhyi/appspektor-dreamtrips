@@ -1,6 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.newcard.success.impl;
 
-
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,5 +45,11 @@ public class UnassignSuccessScreenImpl extends WalletBaseController<UnassignSucc
    @Override
    public UnassignSuccessPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new UnassignSuccessScreenModule();
    }
 }

@@ -65,4 +65,6 @@ class WizardCheckingScreenImpl : WalletBaseController<WizardCheckingScreen, Wiza
    }
 
    override fun getPresenter() = screenPresenter
+
+   override fun screenModule(): Any? = WizardCheckingScreenModule()
 }

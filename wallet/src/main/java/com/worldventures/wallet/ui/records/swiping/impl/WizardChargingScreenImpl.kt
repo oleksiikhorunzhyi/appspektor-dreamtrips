@@ -123,4 +123,6 @@ class WizardChargingScreenImpl : WalletBaseController<WizardChargingScreen, Wiza
       swipingAnimations.stopAnimations()
       super.onDetach(view)
    }
+
+   override fun screenModule(): Any? = WizardChargingScreenModule()
 }

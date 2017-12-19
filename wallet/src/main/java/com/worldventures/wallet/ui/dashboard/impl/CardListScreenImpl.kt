@@ -422,6 +422,8 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
 
    override fun supportHttpConnectionStatusLabel() = true
 
+   override fun screenModule(): Any? = CardListScreenModule()
+
    companion object {
       private val KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE"
       private val VISIBLE_SCALE = 0.64

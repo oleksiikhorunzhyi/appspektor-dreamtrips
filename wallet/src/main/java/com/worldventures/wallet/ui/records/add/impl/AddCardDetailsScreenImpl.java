@@ -255,4 +255,9 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
       setCardName(etCardNickname.getText());
    }
 
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new AddCardDetailsScreenModule();
+   }
 }

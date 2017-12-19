@@ -1,5 +1,7 @@
 package com.worldventures.wallet.ui.settings.security.clear.records.impl;
 
+import android.support.annotation.Nullable;
+
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.ui.settings.security.clear.common.base.WalletBaseClearDelayScreenImpl;
 import com.worldventures.wallet.ui.settings.security.clear.records.WalletAutoClearCardsPresenter;
@@ -29,5 +31,11 @@ public class WalletAutoClearCardsScreenImpl extends WalletBaseClearDelayScreenIm
    @Override
    protected int getSuccessMessage() {
       return R.string.wallet_settings_clear_flye_card_delay_updated;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletAutoClearCardsScreenModule();
    }
 }

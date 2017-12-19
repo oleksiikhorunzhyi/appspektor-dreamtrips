@@ -1,6 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.firmware.start.impl;
 
-
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,4 +78,10 @@ public class StartFirmwareInstallScreenImpl extends WalletBaseController<StartFi
    private final Action1<PrepareForUpdateCommand> positivePreparingAction = cmd -> getPresenter().prepareForUpdate();
 
    private final Action1<PrepareForUpdateCommand> negativePreparingAction = cmd -> getPresenter().finish();
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new StartFirmwareInstallScreenModule();
+   }
 }

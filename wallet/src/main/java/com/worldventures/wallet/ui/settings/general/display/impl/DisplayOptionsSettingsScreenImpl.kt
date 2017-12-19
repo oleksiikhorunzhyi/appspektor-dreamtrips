@@ -320,6 +320,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       super.onRestoreViewState(view, savedViewState)
    }
 
+   override fun screenModule(): Any? = DisplayOptionsSettingsScreenModule()
+
    companion object {
 
       fun create(source: DisplayOptionsSource): DisplayOptionsSettingsScreenImpl = create(null, source)

@@ -151,4 +151,10 @@ public class WalletOfflineModeSettingsScreenImpl extends WalletBaseController<Wa
    public WalletOfflineModeSettingsPresenter getPresenter() {
       return presenter;
    }
+
+   @android.support.annotation.Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletOfflineModeSettingsScreenModule();
+   }
 }

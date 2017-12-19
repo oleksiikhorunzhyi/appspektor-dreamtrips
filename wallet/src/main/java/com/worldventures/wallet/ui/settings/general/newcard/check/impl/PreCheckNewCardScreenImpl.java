@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.settings.general.newcard.check.impl;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,5 +123,11 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new PreCheckNewCardScreenModule();
    }
 }

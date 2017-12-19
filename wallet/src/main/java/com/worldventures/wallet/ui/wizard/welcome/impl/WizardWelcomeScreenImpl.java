@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,5 +138,11 @@ public class WizardWelcomeScreenImpl extends WalletBaseController<WizardWelcomeS
    @Override
    public WizardWelcomePresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WizardWelcomeScreenModule();
    }
 }

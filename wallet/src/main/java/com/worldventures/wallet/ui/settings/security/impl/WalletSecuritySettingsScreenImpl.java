@@ -2,6 +2,7 @@ package com.worldventures.wallet.ui.settings.security.impl;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -242,5 +243,11 @@ public class WalletSecuritySettingsScreenImpl extends WalletBaseController<Walle
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletSecuritySettingsScreenModule();
    }
 }

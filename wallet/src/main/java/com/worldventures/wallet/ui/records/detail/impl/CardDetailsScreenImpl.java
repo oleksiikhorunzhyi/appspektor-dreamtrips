@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.Observable.OnPropertyChangedCallback;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -262,5 +263,11 @@ public class CardDetailsScreenImpl extends WalletBaseController<CardDetailsScree
    @Override
    public CardDetailsPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new CardDetailsScreenModule();
    }
 }

@@ -257,7 +257,6 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
       return false;
    }
 
-
    @Override
    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
       super.onSaveViewState(view, outState);
@@ -271,5 +270,11 @@ public class WalletHelpVideoScreenImpl extends WalletBaseController<WalletHelpVi
       super.onRestoreViewState(view, savedViewState);
       setVideos(savedViewState.getParcelableArrayList(STATE_KEY_VIDEOS));
       setVideoLocales((ArrayList<VideoLocale>) savedViewState.getSerializable(STATE_KEY_VIDEO_LOCALES));
+   }
+
+   @android.support.annotation.Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletHelpVideoScreenModule();
    }
 }

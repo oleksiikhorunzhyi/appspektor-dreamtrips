@@ -139,4 +139,6 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
       scanner?.visibility = View.VISIBLE
       if (changeType.isEnter) presenter.requestCamera()
    }
+
+   override fun screenModule(): Any? = WizardScanBarcodeScreenModule()
 }

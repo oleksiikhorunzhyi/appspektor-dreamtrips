@@ -101,4 +101,10 @@ public class WalletSettingsScreenImpl extends WalletBaseController<WalletSetting
    public WalletSettingsPresenter getPresenter() {
       return presenter;
    }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletSettingsScreenModule();
+   }
 }

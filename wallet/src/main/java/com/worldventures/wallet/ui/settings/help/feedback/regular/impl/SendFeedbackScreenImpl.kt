@@ -197,6 +197,8 @@ class SendFeedbackScreenImpl(args: Bundle) : BaseFeedbackScreenImpl<SendFeedback
       return true
    }
 
+   override fun screenModule(): Any? = SendFeedbackScreenModule()
+
    companion object {
 
       private val KEY_FEEDBACK_TYPE = "key_feedback_type"

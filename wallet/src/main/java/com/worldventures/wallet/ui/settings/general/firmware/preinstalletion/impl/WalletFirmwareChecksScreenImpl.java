@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.settings.general.firmware.preinstalletion.impl;
 
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,5 +104,11 @@ public class WalletFirmwareChecksScreenImpl extends WalletBaseController<WalletF
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletFirmwareChecksScreenModule();
    }
 }

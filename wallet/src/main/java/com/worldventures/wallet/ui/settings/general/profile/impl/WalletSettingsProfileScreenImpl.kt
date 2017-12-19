@@ -258,4 +258,6 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    override fun supportConnectionStatusLabel() = true
 
    override fun supportHttpConnectionStatusLabel() = true
+
+   override fun screenModule(): Any? = WalletSettingsProfileScreenModule()
 }

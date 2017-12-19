@@ -149,4 +149,10 @@ public class WalletNewFirmwareAvailableScreenImpl extends WalletBaseController<W
    public WalletNewFirmwareAvailablePresenter getPresenter() {
       return presenter;
    }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletNewFirmwareAvailableScreenModule();
+   }
 }

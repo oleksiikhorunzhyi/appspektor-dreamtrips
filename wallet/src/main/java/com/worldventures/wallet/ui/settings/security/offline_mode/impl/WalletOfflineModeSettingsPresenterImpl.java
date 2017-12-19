@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.security.offline_mode.impl;
 
-
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.analytics.settings.SettingsOfflineModeScreenAction;
 import com.worldventures.wallet.analytics.settings.SettingsOfflineModeStateChangeAction;

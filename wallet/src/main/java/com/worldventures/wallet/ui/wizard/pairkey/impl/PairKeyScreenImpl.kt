@@ -91,6 +91,8 @@ class PairKeyScreenImpl private constructor(args: Bundle?) : WalletBaseControlle
 
    override fun supportHttpConnectionStatusLabel() = false
 
+   override fun screenModule(): Any? = PairKeyScreenModule()
+
    companion object {
 
       private val KEY_PROVISION_MODE = "key_provision_mode"

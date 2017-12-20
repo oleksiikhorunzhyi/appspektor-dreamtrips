@@ -102,9 +102,7 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
    }
 
    override fun pauseVideo() {
-      if (simpleExoPlayerView.player != null) {
-         simpleExoPlayerView.player.playWhenReady = false
-      }
+      if (simpleExoPlayerView.player != null) simpleExoPlayerView.player.playWhenReady = false
    }
 
    override fun attachPlayer(player: SimpleExoPlayer) {
@@ -144,6 +142,8 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
 
    fun isVideoFinished() = simpleExoPlayerView.player?.playbackState == Player.STATE_ENDED
 
+   fun resetProgress() = simpleExoPlayerView.player?.seekTo(0)
+
    override fun detachPlayer() {
       videoHolder.currentVideoView = null
       simpleExoPlayerView.player = null
@@ -165,9 +165,7 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
       fullScreenButton.visibility = View.GONE
    }
 
-   private fun goFullscreen() {
-      context.startActivity(Intent(context, FullscreenViewActivity::class.java))
-   }
+   private fun goFullscreen() = context.startActivity(Intent(context, FullscreenViewActivity::class.java))
 
    private fun switchMute(videoConfig: DTVideoConfig) {
       if (simpleExoPlayerView.player == null) return

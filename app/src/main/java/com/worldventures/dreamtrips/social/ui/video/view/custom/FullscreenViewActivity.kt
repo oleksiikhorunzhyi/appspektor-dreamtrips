@@ -21,6 +21,9 @@ class FullscreenViewActivity : LegacyBaseActivity() {
          if (dtVideoView.isVideoFinished()) dtVideoView.videoFinished()
          finish()
       }
-      dtVideoView.videoFinishedFunction = { }
+      dtVideoView.videoFinishedFunction = {
+         dtVideoView.pauseVideo()
+         dtVideoView.resetProgress()
+      }
    }
 }

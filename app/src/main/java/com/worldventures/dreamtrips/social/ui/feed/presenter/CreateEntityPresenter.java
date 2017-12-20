@@ -166,7 +166,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    private void subscribeToVideoLength() {
-      appConfigurationInteractor.configurationCommandActionPipe()
+      appConfigurationInteractor.getConfigurationPipe()
             .createObservableResult(new ConfigurationCommand())
             .compose(bindViewToMainComposer())
             .map(ConfigurationCommand::getVideoMaxLength)

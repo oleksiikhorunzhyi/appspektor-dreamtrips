@@ -15,6 +15,6 @@ public class AppConfigurationInitializer implements AppInitializer {
 
    @Override
    public void initialize(Injector injector) {
-      appConfigurationInteractor.loadConfigurationPipe().send(new LoadConfigurationCommand());
+      appConfigurationInteractor.getLoadConfigPipe().send(new LoadConfigurationCommand());
    }
 }

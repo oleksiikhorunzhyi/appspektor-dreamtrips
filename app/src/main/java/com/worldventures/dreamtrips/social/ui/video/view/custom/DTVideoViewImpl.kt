@@ -42,11 +42,13 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
 
    var fullscreen: Boolean = false
       set(value) {
-         if (fullscreen) fullScreenButton.setImageResource(R.drawable.ic_video_fullscreen_collapse)
+         field = value
+         if (value) fullScreenButton.setImageResource(R.drawable.ic_video_fullscreen_collapse)
          else fullScreenButton.setImageResource(R.drawable.ic_video_fullscreen)
       }
 
    var fullscreenExitFunction: () -> Unit = {}
+   var videoFinishedFunction: (() -> Unit)? = null
 
    constructor(context: Context) : super(context)
 
@@ -125,14 +127,22 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
          }
 
          override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            if (playbackState == Player.STATE_ENDED) {
-               detachPlayer()
-               showThumbnail()
-               videoHolder.currentVideoConfig = null
+            if (isVideoFinished()) {
+               val tempFunc = videoFinishedFunction
+               if (tempFunc != null) tempFunc.invoke()
+               else videoFinished()
             }
          }
       })
    }
+
+   fun videoFinished() {
+      detachPlayer()
+      showThumbnail()
+      videoHolder.currentVideoConfig = null
+   }
+
+   fun isVideoFinished() = simpleExoPlayerView.player?.playbackState == Player.STATE_ENDED
 
    override fun detachPlayer() {
       videoHolder.currentVideoView = null

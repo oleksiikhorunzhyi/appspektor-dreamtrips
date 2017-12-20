@@ -27,7 +27,6 @@ import com.worldventures.wallet.domain.storage.disk.RecordsStorage
 import com.worldventures.wallet.model.TestApiSmartCardDetails
 import com.worldventures.wallet.model.TestApiUpdateCardUserData
 import com.worldventures.wallet.model.createTestSmartCard
-import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
 import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand
@@ -72,15 +71,6 @@ class WizardInteractorSpec : BaseSpec({
       context("SmartCard wizard flow") {
          beforeEachTest {
             lostCardStorage = mock()
-         }
-         it("should be to save of SmartCard") {
-            val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
-            janet.createPipe(CreateAndConnectToCardCommand::class.java)
-                  .createObservable(CreateAndConnectToCardCommand(MOCK_BARCODE))
-                  .subscribe(testSubscriber)
-
-            AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(mockDb, times(1)).saveSmartCard(any())
          }
 
          it("should be associate SmartCard and save SmartCardDetails to mediaModelStorage") {

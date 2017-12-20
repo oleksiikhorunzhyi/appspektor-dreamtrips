@@ -137,7 +137,7 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
    override fun onChangeEnded(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
       super.onChangeEnded(changeHandler, changeType)
       scanner?.visibility = View.VISIBLE
-      if (changeType.isEnter) presenter.requestCamera()
+      if (changeType.isEnter && isAttached) presenter.requestCamera()
    }
 
    override fun screenModule(): Any? = WizardScanBarcodeScreenModule()

@@ -7,43 +7,39 @@ import com.worldventures.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.wallet.ui.common.navigation.Navigator
 import com.worldventures.wallet.ui.wizard.pairkey.PairView
 import com.worldventures.wallet.ui.wizard.records.SyncAction
-
 import io.techery.janet.helper.ActionStateSubscriber
 import rx.android.schedulers.AndroidSchedulers
 
 internal abstract class PairDelegate private constructor(
       protected val navigator: Navigator,
-      protected val smartCardInteractor: SmartCardInteractor,
-      internal val provisioningMode: ProvisioningMode) {
+      protected val smartCardInteractor: SmartCardInteractor) {
 
    abstract fun prepareView(view: PairView)
 
-   abstract fun navigateOnNextScreen(view: PairView)
+   abstract fun cardConnected(view: PairView, smartCardId: String)
 
-   private class NewDeviceDelegate internal constructor(navigator: Navigator,
-                                                        smartCardInteractor: SmartCardInteractor,
-                                                        provisioningMode: ProvisioningMode)
-      : PairDelegate(navigator, smartCardInteractor, provisioningMode) {
+   private class NewDeviceDelegate(navigator: Navigator, smartCardInteractor: SmartCardInteractor)
+      : PairDelegate(navigator, smartCardInteractor) {
 
       override fun prepareView(view: PairView) {
          view.hideBackButton()
       }
 
-      override fun navigateOnNextScreen(view: PairView) {
+      override fun cardConnected(view: PairView, smartCardId: String) {
          navigator.goSyncRecordsPath(SyncAction.TO_DEVICE)
       }
    }
 
-   private class SetupDelegate internal constructor(navigator: Navigator,
-                                                    smartCardInteractor: SmartCardInteractor,
-                                                    provisioningMode: ProvisioningMode)
-      : PairDelegate(navigator, smartCardInteractor, provisioningMode) {
+   private class SetupDelegate(navigator: Navigator,
+                               smartCardInteractor: SmartCardInteractor,
+                               private val provisioningMode: ProvisioningMode)
+      : PairDelegate(navigator, smartCardInteractor) {
 
       override fun prepareView(view: PairView) {
          view.showBackButton()
       }
 
-      override fun navigateOnNextScreen(view: PairView) {
+      override fun cardConnected(view: PairView, smartCardId: String) {
          smartCardInteractor.smartCardUserPipe()
                .createObservable(SmartCardUserCommand.fetch())
                .compose(view.bindUntilDetach())
@@ -66,7 +62,7 @@ internal abstract class PairDelegate private constructor(
 
       fun create(mode: ProvisioningMode, navigator: Navigator, smartCardInteractor: SmartCardInteractor): PairDelegate {
          return if (mode == ProvisioningMode.SETUP_NEW_DEVICE) {
-            NewDeviceDelegate(navigator, smartCardInteractor, mode)
+            NewDeviceDelegate(navigator, smartCardInteractor)
          } else { // ProvisioningMode.STANDARD or ProvisioningMode.SETUP_NEW_CARD
             SetupDelegate(navigator, smartCardInteractor, mode)
          }

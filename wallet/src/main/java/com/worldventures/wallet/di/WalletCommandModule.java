@@ -12,7 +12,6 @@ import com.worldventures.wallet.analytics.tokenization.TokenizationAnalyticsLoca
 import com.worldventures.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.wallet.service.command.FactoryResetCommand;
 import com.worldventures.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.wallet.service.command.FetchCardPropertiesCommand;
@@ -86,7 +85,6 @@ import dagger.Module;
             SetupUserDataCommand.class,
             DefaultRecordIdCommand.class,
             ActivateSmartCardCommand.class,
-            CreateAndConnectToCardCommand.class,
             AddRecordCommand.class,
             SetDefaultCardOnDeviceCommand.class,
             SetPaymentCardAction.class,

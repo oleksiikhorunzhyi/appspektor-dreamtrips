@@ -92,7 +92,6 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @Override
    public void onViewCreated(View view, Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
-
       if (mediaPickerShown) {
          openPicker(videoDuration);
       }
@@ -209,8 +208,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void onStop() {
-      super.onStop();
+   public void onDestroy() {
+      super.onDestroy();
       //fix memory leak after rotation
       if (mediaPickerDialog != null) {
          mediaPickerDialog.dismiss();

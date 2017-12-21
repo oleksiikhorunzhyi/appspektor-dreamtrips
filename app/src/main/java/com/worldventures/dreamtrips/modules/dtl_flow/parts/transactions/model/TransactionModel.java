@@ -19,6 +19,8 @@ public class TransactionModel implements Parcelable {
    private Date transactionDate;
    private ThrstPaymentStatus thrstPaymentStatus;
    private boolean isTrhstTransaction;
+   private String currencySymbol;
+   private String currenyCode;
 
    public TransactionModel() {
       // empty
@@ -126,6 +128,22 @@ public class TransactionModel implements Parcelable {
 
    public void setTrhstTransaction(boolean trhstTransaction) {
       isTrhstTransaction = trhstTransaction;
+   }
+
+   public void setCurrencySymbol(String currencySymbol) {
+      this.currencySymbol = currencySymbol;
+   }
+
+   public String getCurrencySymbol() {
+      return currencySymbol;
+   }
+
+   public void setCurrenyCode(String currenyCode) {
+      this.currenyCode = currenyCode;
+   }
+
+   public String getCurrenyCode() {
+      return currenyCode;
    }
 
    @Override

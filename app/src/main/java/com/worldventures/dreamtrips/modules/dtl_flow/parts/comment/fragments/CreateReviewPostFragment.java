@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRequestReviewParams;
 
@@ -684,4 +685,8 @@ public class CreateReviewPostFragment extends CreateReviewEntityFragment impleme
       Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.BACKWARD);
    }
 
+   @OnClick(R.id.comment_input_container)
+   void onCommentContainerClick() {
+      SoftInputUtil.showSoftInputMethod(mComment);
+   }
 }

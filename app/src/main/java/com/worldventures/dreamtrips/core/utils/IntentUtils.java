@@ -20,10 +20,14 @@ public final class IntentUtils {
    public static Intent newEmailIntent(String subject, String body, List<String> addresses) {
       Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
 
-      if (addresses != null && addresses.size() == 1) {
-         intent.putExtra(Intent.EXTRA_EMAIL, addresses.get(0));
-      } else {
-         intent.putExtra(Intent.EXTRA_BCC, addresses.get(0));
+      if (addresses != null) {
+         String[] array = new String[addresses.size()];
+         addresses.toArray(array);
+         if (addresses.size() == 1) {
+            intent.putExtra(Intent.EXTRA_EMAIL, array);
+         } else {
+            intent.putExtra(Intent.EXTRA_BCC, array);
+         }
       }
       intent.putExtra(Intent.EXTRA_SUBJECT, subject);
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {

@@ -34,8 +34,8 @@ public class DtlToolbar extends LinearLayout {
    protected List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
    protected List<TransactionButtonListener> transactionButtonListeners = new ArrayList<>();
 
-   protected String searchQuery;
-   protected String searchHint;
+   protected String searchQuery = "";
+   protected String searchHint = "";
    protected FocusedMode focusedMode;
    protected String locationTitle;
    protected String defaultEmptySearchCaption;

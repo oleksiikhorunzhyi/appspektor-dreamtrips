@@ -8,7 +8,7 @@ ext {
 
    def jodaTimeVersion = '2.9.9'
    def spekVersion = '1.1.2'
-   def dataBindingCompilerVersion = '3.0.0-rc1'
+   def dataBindingCompilerVersion = '3.0.1'
 
    coreDependencies = [:]
 
@@ -106,7 +106,7 @@ ext {
          // API
          mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.32-SOCIAL-DEV-SNAPSHOT', config: {
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.35-RELEASE-1.25-SNAPSHOT', config: {
             changing = true
          }],
    ]

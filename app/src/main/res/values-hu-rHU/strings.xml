@@ -98,7 +98,6 @@
    <string name="library">Könyvtár</string>
 
 
-
    <string name="nav_back">Vissza</string>
 
    <string name="logout_component">Kijelentkezés</string>
@@ -148,6 +147,18 @@
 
    <string name="beta_label">Béta</string>
 
-
    <string name="photo_strip_read_storage_permission_explanation">A tárhely beolvasásához és médiatartalom ajánlásához engedélyre van szükség</string>
+
+   <string name="permission_location_for_attach_location_on_post">Hozzáférés szükséges a helymeghatározás szolgáltatáshoz a helyzeted meghatározásához</string>
+   <string name="no_permission_location_for_attach_location_on_post">A helyzeted nem meghatározható mivel nincs hozzáférés a helymeghatározó szolgáltatáshoz</string>
+   <string name="permission_location_for_localization_web_page">Engedélyezd a helyzetedet, hogy a megfelelő nyelven mutassuk a tartalmat</string>
+   <string name="no_permission_location_for_localization_web_page">Nincs meg a nyelv, mivel nincs hozzáférés a helymeghatározó szolgáltatáshoz</string>
+   <string name="permission_to_read_contacts">Hozzáférés szükséges a kapcsolatokhoz, hogy elkészítsük a meghívó listát</string>
+   <string name="no_permission_to_read_contacts">Nem tudunk embereket javasolni, mivel visszautasítottad a kapcsolatok olvasását</string>
+   <string name="permission_to_write_contacts">Új kapcsolat hozzáadáshoz hozzáférés szükséges a kapcsolatokhoz</string>
+   <string name="no_permission_to_write_contacts">Nem tudjuk hozzáadni az új kapcsolatot, mivel nem engedélyezted a kapcsolatok írását</string>
+   <string name="permission_to_read_phone_storage">Hozzáférés szükséges a képtárhoz a képek megmutatásához</string>
+   <string name="no_permission_to_read_phone_storage">Nem lehet betölteni a fényképeidet</string>
+   <string name="no_camera_permission_for_photo_picker">Engedély nélkül nem tudjuk megnyitni a kamerát</string>
+
 </resources>

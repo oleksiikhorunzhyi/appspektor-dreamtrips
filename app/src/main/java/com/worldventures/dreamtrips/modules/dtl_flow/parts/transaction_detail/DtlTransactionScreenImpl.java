@@ -96,9 +96,10 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       thrstBilledAmountLabelsContainer.setVisibility(GONE);
       nonThrstBilledAmountLabelsContainer.setVisibility(VISIBLE);
 
-      tvNonThrstSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount()));
+      tvNonThrstSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount(), transactionModel.getCurrenyCode(),
+            transactionModel.getCurrencySymbol()));
       tvNonThrstEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
-      tvNonThrstTransactionDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
+      tvNonThrstTransactionDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT_FULL));
 
       hideReviewsOnTablets();
    }
@@ -122,10 +123,14 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
             break;
       }
 
-      tvTotal.setText(CurrencyUtils.toCurrency(transaction.getTotalAmount()));
-      tvSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount()));
-      tvTax.setText(CurrencyUtils.toCurrency(transaction.getTax()));
-      tvTip.setText(CurrencyUtils.toCurrency(transaction.getTip()));
+      tvTotal.setText(CurrencyUtils.toCurrency(transaction.getTotalAmount(), transactionModel.getCurrenyCode(),
+            transactionModel.getCurrencySymbol()));
+      tvSubTotal.setText(CurrencyUtils.toCurrency(transaction.getSubTotalAmount(), transactionModel.getCurrenyCode(),
+            transactionModel.getCurrencySymbol()));
+      tvTax.setText(CurrencyUtils.toCurrency(transaction.getTax(), transactionModel.getCurrenyCode(),
+            transactionModel.getCurrencySymbol()));
+      tvTip.setText(CurrencyUtils.toCurrency(transaction.getTip(), transactionModel.getCurrenyCode(),
+            transactionModel.getCurrencySymbol()));
       tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
       tvEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
 

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -11,16 +10,17 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.GraphicUtils;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 
 import java.text.DecimalFormat;
 
@@ -62,9 +62,8 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
 
    @Override
    public void setupView(User user) {
-      userPhoto.post(() -> setUserPhotoAndCover(user));
       userPhoto.setup(user, injectorProvider.get());
-      userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
+      setUserPhotoAndCover(user);
       userName.setText(user.getFullName());
       companyName.setText(user.getCompany());
       viewProfile.setVisibility(View.VISIBLE);
@@ -80,13 +79,17 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
    }
 
    private void setUserPhotoAndCover(User user) {
+      // views dimensions might be zero, wait for measure
       if (!ProjectTextUtils.isEmpty(user.getAvatar().getThumb())) {
-         userPhoto.setController(GraphicUtils.provideFrescoResizingController(user.getAvatar().getThumb(),
-               userPhoto.getController(), userPhoto.getWidth(), userPhoto.getHeight()));
+         ViewUtils.runTaskAfterMeasure(userPhoto, () ->
+            userPhoto.setController(GraphicUtils.provideFrescoResizingController(user.getAvatar().getThumb(),
+                  userPhoto.getController(), userPhoto.getWidth(), userPhoto.getHeight())));
       }
+
       if (!ProjectTextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
-         userCover.setController(GraphicUtils.provideFrescoResizingController(user.getBackgroundPhotoUrl(),
-               userCover.getController(), userCover.getWidth(), userCover.getHeight()));
+         ViewUtils.runTaskAfterMeasure(userCover, () ->
+            userCover.setController(GraphicUtils.provideFrescoResizingController(user.getBackgroundPhotoUrl(),
+                  userCover.getController(), userCover.getWidth(), userCover.getHeight())));
       }
    }
 

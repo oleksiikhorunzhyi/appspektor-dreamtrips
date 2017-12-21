@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
    <string name="dtl_local">Local</string>
-   <string name="dtl_subtotal">Subtotal: $%.2f</string>
+   <string name="dtl_subtotal">Subtotal: %s</string>
    <string name="dtl_locations_title">Select location</string>
    <string name="dtl_locations_try_search">We could not locate a City close to you.\nTry our city search</string>
    <string name="dtl_near_me_caption">near me</string>
@@ -53,7 +53,6 @@
    <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
    <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
    <string name="dtl_wait_for_earn">Wait… Earning points</string>
-   <string name="dtl_estimator_explanation">Points are calculated based on minimum amount spent at merchant and day of the week</string>
    <string name="dtl_photo_upload_error">Upload error. If problem persists please contact Member Services</string>
    <string name="dtl_open_now">Open now</string>
    <string name="dtl_closed_now">Closed now</string>
@@ -190,4 +189,6 @@
    <string name="transaction_view_your_receipt">View your receipt</string>
    <string name="transaction_review_merchant">Review Merchant</string>
    <string name="transaction_sub_total_amount_no_semicolon">Sub Total Amount</string>
+   <string name="dtl_estimator_explanation_to_earn_points">Points are calculated based on minimum amount spent at merchant and day of the week. To earn points the minimum amount should be %s</string>
+   <string name="dtl_estimator_error_title">Error</string>
 </resources>

@@ -29,9 +29,6 @@ import com.worldventures.dreamtrips.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.markushi.ui.ActionView;
-import at.markushi.ui.action.CloseAction;
-import at.markushi.ui.action.DrawerAction;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icepick;
@@ -49,7 +46,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
 
    @InjectView(R.id.dtlToolbarLayout) ViewGroup dtlToolbarLayout;
    @InjectView(R.id.dtlToolbarActionViewLayout) ViewGroup actionViewLayout;
-   @InjectView(R.id.dtlToolbarActionView) ActionView actionView;
+   @InjectView(R.id.dtlToolbarActionView) ImageView actionView;
    @InjectView(R.id.dtlToolbarLocationSearchLayout) ViewGroup locationSearchLayout;
    @InjectView(R.id.dtlToolbarNavigationLayout) ViewGroup dtlNavigationControl;
    @InjectView(R.id.dtlToolbarNavigationIcon) ImageView dtlToolbarNavigationIcon;
@@ -122,14 +119,14 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       patchInputFields();
       if (collapsed) {
          locationSearchLayout.setVisibility(GONE);
-         actionView.setAction(new DrawerAction(), false);
+         actionView.setImageResource(R.drawable.ic_menu_hamburger);
          if (!showNavigation) {
             actionViewLayout.setVisibility(INVISIBLE);
          }
       } else {
          locationSearchLayout.setVisibility(VISIBLE);
          actionViewLayout.setVisibility(VISIBLE);
-         actionView.setAction(new CloseAction(), false);
+         actionView.setImageResource(R.drawable.ic_close_light);
       }
       dtlToolbarNavigationIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), navigationIconResource));
       dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
@@ -148,7 +145,6 @@ public class ExpandableDtlToolbar extends DtlToolbar {
     * Deals with focus in our input fields during collapsing/expanding <br />
     * to mimic native Toolbar's SearchView behaviour.
     *
-    * @param collapsed boolean indicating whether new state is collapsed
     */
    protected void patchInputFields() {
       if (collapsed) {
@@ -197,7 +193,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
 
    private void animateExpanding() {
       if (showNavigation) {
-         actionView.setAction(new CloseAction());
+         actionView.setImageResource(R.drawable.ic_close_light);
       } else {
          actionViewLayout.setVisibility(VISIBLE);
          Animator revealNavigationAnimator = ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 0F, 1F);
@@ -216,7 +212,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
 
    private void animateCollapsing() {
       if (showNavigation) {
-         actionView.setAction(new DrawerAction());
+         actionView.setImageResource(R.drawable.ic_menu_hamburger);
       } else {
          Animator hideNavigationAnimator = ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 1F, 0F);
          hideNavigationAnimator.addListener(new AnimatorListenerAdapter() {

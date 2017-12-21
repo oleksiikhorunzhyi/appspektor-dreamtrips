@@ -59,8 +59,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    @Inject PermissionUtils permissionUtils;
 
    @State int postInProgressId;
-
-   private int videoLengthLimit;
+   @State int videoLengthLimit;
 
    public CreateEntityPresenter(CreateEntityBundle.Origin origin) {
       this.origin = origin;
@@ -70,7 +69,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    public void onInjected() {
       super.onInjected();
       pickerPermissionChecker.registerCallback(
-            () -> view.showMediaPicker(getRemainingPhotosCount(), getRemainVideoCount(), videoLengthLimit),
+            this::showPickerSkipPermission,
             () -> view.showPermissionDenied(PickerPermissionChecker.PERMISSIONS),
             () -> view.showPermissionExplanationText(PickerPermissionChecker.PERMISSIONS));
    }
@@ -157,6 +156,10 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
    public void showMediaPicker() {
       pickerPermissionChecker.checkPermission();
+   }
+
+   public void showPickerSkipPermission() {
+      view.showMediaPicker(getRemainingPhotosCount(), getRemainVideoCount(), videoLengthLimit);
    }
 
    public void recheckPermission(String[] permissions, boolean userAnswer) {

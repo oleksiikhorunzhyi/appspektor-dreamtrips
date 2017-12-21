@@ -246,7 +246,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
             if (adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity && items.get(newItemPosition) instanceof PhotoMediaEntity) {
                return false;
             }
-            return true;
+            return super.areContentsTheSame(oldItemPosition, newItemPosition);
          }
       });
       adapter.setItemsNoNotify(items);

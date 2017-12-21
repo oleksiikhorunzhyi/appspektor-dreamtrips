@@ -1,7 +1,5 @@
 package com.worldventures.wallet.ui.wizard.assign.impl;
 
-
-import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.service.RecordInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
@@ -24,21 +22,18 @@ public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAss
    private final WizardInteractor wizardInteractor;
    private final RecordInteractor recordInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
    private final WalletFeatureHelper walletFeatureHelper;
 
    private WizardAssignDelegate wizardAssignDelegate;
 
    public WizardAssignUserPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WizardInteractor wizardInteractor, RecordInteractor recordInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil,
-         WalletFeatureHelper walletFeatureHelper) {
+         WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.wizardInteractor = wizardInteractor;
       this.recordInteractor = recordInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
       this.walletFeatureHelper = walletFeatureHelper;
    }
 
@@ -69,10 +64,5 @@ public class WizardAssignUserPresenterImpl extends WalletPresenterImpl<WizardAss
             .subscribe(OperationActionSubscriber.forView(getView().provideOperationView())
                   .onSuccess(command -> wizardAssignDelegate.onAssignUserSuccess(getView()))
                   .create());
-   }
-
-   @Override
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
    }
 }

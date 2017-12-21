@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.assign.impl
 
-import com.worldventures.core.utils.HttpErrorHandlingUtil
 import com.worldventures.wallet.service.RecordInteractor
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
@@ -19,9 +18,8 @@ class WizardAssignUserScreenModule {
    fun provideWizardAssignUserPresenter(navigator: Navigator, deviceConnectionDelegate: WalletDeviceConnectionDelegate,
                                         smartCardInteractor: SmartCardInteractor, wizardInteractor: WizardInteractor,
                                         recordInteractor: RecordInteractor, analyticsInteractor: WalletAnalyticsInteractor,
-                                        httpErrorHandlingUtil: HttpErrorHandlingUtil,
                                         walletFeatureHelper: WalletFeatureHelper): WizardAssignUserPresenter {
       return WizardAssignUserPresenterImpl(navigator, deviceConnectionDelegate, smartCardInteractor,
-            wizardInteractor, recordInteractor, analyticsInteractor, httpErrorHandlingUtil, walletFeatureHelper)
+            wizardInteractor, recordInteractor, analyticsInteractor, walletFeatureHelper)
    }
 }

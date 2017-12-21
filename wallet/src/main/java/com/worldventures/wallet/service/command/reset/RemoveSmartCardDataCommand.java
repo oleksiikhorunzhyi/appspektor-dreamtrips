@@ -47,6 +47,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    private void deletePaymentsData() {
       recordsStorage.deleteAllRecords();
       recordsStorage.deleteDefaultRecordId();
+      recordsStorage.saveOfflineModeState(false);
    }
 
    private void deleteUserData() {

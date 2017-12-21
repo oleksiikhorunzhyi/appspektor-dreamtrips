@@ -100,7 +100,7 @@ public class CardDetailsPresenterImpl extends WalletPresenterImpl<CardDetailsScr
 
    private void fetchOfflineModeState(Action1<Boolean> action) {
       smartCardInteractor.offlineModeStatusPipe()
-            .createObservable(OfflineModeStatusCommand.fetch())
+            .createObservable(OfflineModeStatusCommand.Companion.fetch())
             .filter(actionState -> actionState.status == ActionState.Status.SUCCESS)
             .map(actionState -> actionState.action.getResult())
             .compose(getView().bindUntilDetach())

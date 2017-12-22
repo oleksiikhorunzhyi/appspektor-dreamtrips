@@ -19,7 +19,7 @@ public class ConnectSmartCardCommand extends Command<Void> implements Injectable
 
    @Inject @Named(JANET_WALLET) Janet janet;
 
-   private final String smartCardId;
+   public final String smartCardId;
 
    public ConnectSmartCardCommand(String smartCardId) {
       this.smartCardId = smartCardId;

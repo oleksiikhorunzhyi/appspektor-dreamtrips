@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-
+import android.widget.Toast
 import com.worldventures.wallet.R
-import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand
+import com.worldventures.wallet.service.command.ConnectSmartCardCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
@@ -19,11 +19,9 @@ import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressV
 import com.worldventures.wallet.ui.wizard.pairkey.PairKeyPresenter
 import com.worldventures.wallet.ui.wizard.pairkey.PairKeyScreen
 import com.worldventures.wallet.util.SmartCardConnectException
-
-import javax.inject.Inject
-
 import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.OperationView
+import javax.inject.Inject
 
 class PairKeyScreenImpl private constructor(args: Bundle?) : WalletBaseController<PairKeyScreen, PairKeyPresenter>(args), PairKeyScreen {
 
@@ -32,7 +30,7 @@ class PairKeyScreenImpl private constructor(args: Bundle?) : WalletBaseControlle
 
    @Inject internal lateinit var screenPresenter: PairKeyPresenter
 
-   private lateinit var operationView: OperationView<CreateAndConnectToCardCommand>
+   private lateinit var operationView: OperationView<ConnectSmartCardCommand>
 
    constructor() : this(null)
 
@@ -44,7 +42,7 @@ class PairKeyScreenImpl private constructor(args: Bundle?) : WalletBaseControlle
 
       operationView = ComposableOperationView(
             SimpleDialogProgressView(context, R.string.wallet_loading, false),
-            ErrorViewFactory.builder<CreateAndConnectToCardCommand>()
+            ErrorViewFactory.builder<ConnectSmartCardCommand>()
                   .addProvider(SimpleDialogErrorViewProvider(
                         context,
                         SmartCardConnectException::class.java,
@@ -53,7 +51,7 @@ class PairKeyScreenImpl private constructor(args: Bundle?) : WalletBaseControlle
                   ).build())
    }
 
-   override fun provideOperationCreateAndConnect(): OperationView<CreateAndConnectToCardCommand> = operationView
+   override fun provideOperationCreateAndConnect(): OperationView<ConnectSmartCardCommand> = operationView
 
    @Suppress("UnsafeCast")
    override val provisionMode: ProvisioningMode
@@ -90,6 +88,10 @@ class PairKeyScreenImpl private constructor(args: Bundle?) : WalletBaseControlle
    override fun supportConnectionStatusLabel() = false
 
    override fun supportHttpConnectionStatusLabel() = false
+
+   override fun showPairingError() {
+      Toast.makeText(context, R.string.wallet_wizard_pairing_screen_error, Toast.LENGTH_LONG).show()
+   }
 
    override fun screenModule(): Any? = PairKeyScreenModule()
 

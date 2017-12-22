@@ -383,6 +383,7 @@
    <string name="wallet_wizard_pair_key_instruction">Check the front of your Smart Card and proceed to next step.</string>
    <string name="wallet_wizard_check_from_of_card">Check Front of Smart Card</string>
    <string name="wallet_wizard_assigning_msg">Assigning your Smart Card to this device in our system.</string>
+   <string name="wallet_wizard_pairing_screen_error">Try to turn on your Smart Card again.</string>
 
    <!-- Connection Error screen -->
    <string name="wallet_connection_error_message_label">Cannot Connect to Smart Card</string>

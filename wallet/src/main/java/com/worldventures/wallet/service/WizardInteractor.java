@@ -2,7 +2,6 @@ package com.worldventures.wallet.service;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.wallet.service.command.ActivateSmartCardCommand;
-import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
@@ -20,7 +19,6 @@ import rx.schedulers.Schedulers;
 
 public final class WizardInteractor {
 
-   private final ActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
    private final ActionPipe<SetupUserDataCommand> setupUserDataPipe;
 
    private final ReadActionPipe<PinSetupFinishedEvent> pinSetupFinishedPipe;
@@ -37,7 +35,6 @@ public final class WizardInteractor {
    private final ActionPipe<FetchTermsAndConditionsCommand> termsAndConditionsPipe;
 
    public WizardInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      createAndConnectPipe = sessionActionPipeCreator.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
       setupUserDataPipe = sessionActionPipeCreator.createPipe(SetupUserDataCommand.class, Schedulers.io());
       activateSmartCardPipe = sessionActionPipeCreator.createPipe(ActivateSmartCardCommand.class, Schedulers.io());
 
@@ -53,10 +50,6 @@ public final class WizardInteractor {
       provisioningStatePipe = sessionActionPipeCreator.createPipe(ProvisioningModeCommand.class, Schedulers.io());
       pinOptionalActionPipe = sessionActionPipeCreator.createPipe(PinOptionalCommand.class, Schedulers.io());
       termsAndConditionsPipe = sessionActionPipeCreator.createPipe(FetchTermsAndConditionsCommand.class, Schedulers.io());
-   }
-
-   public ActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
-      return createAndConnectPipe;
    }
 
    public ActionPipe<SetupUserDataCommand> setupUserDataPipe() {

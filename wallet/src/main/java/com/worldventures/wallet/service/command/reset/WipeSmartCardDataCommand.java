@@ -8,7 +8,7 @@ import com.worldventures.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.wallet.service.command.device.DeviceStateCommand;
-import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
+import com.worldventures.wallet.util.WalletFeatureHelper;
 
 import java.net.HttpURLConnection;
 
@@ -31,6 +31,7 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    @Inject @Named(JANET_WALLET) Janet walletJanet;
    @Inject Janet apiLibJanet;
    @Inject SmartCardLocationInteractor smartCardLocationInteractor;
+   @Inject WalletFeatureHelper featureHelper;
 
    private final ResetOptions factoryResetOptions;
 
@@ -93,9 +94,7 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    }
 
    private Observable<Void> clearSmartCardSettings() {
-      return smartCardLocationInteractor.updateTrackingStatusPipe()
-            .createObservableResult(new UpdateTrackingStatusCommand(false))
-            .map(disassociateCardUserHttpAction -> (Void) null);
+      return featureHelper.clearSettings(smartCardLocationInteractor);
    }
 
    private Observable<RemoveSmartCardDataCommand> removeSmartCardData() {

@@ -3,6 +3,7 @@ package com.worldventures.wallet.util;
 import android.content.Context;
 
 import com.worldventures.wallet.domain.entity.SmartCardUser;
+import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.wallet.ui.settings.WalletSettingsScreen;
@@ -39,4 +40,6 @@ public interface WalletFeatureHelper {
    void finishRegularProvisioning(Navigator navigator);
 
    boolean pinFunctionalityAvailable();
+
+   Observable<Void> clearSettings(SmartCardLocationInteractor interactor);
 }

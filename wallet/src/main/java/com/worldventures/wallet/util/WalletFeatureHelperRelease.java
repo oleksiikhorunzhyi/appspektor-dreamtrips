@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.service.RecordInteractor;
+import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.command.RecordListCommand;
 import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
@@ -118,6 +119,11 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    @Override
    public boolean pinFunctionalityAvailable() {
       return false;
+   }
+
+   @Override
+   public Observable<Void> clearSettings(SmartCardLocationInteractor interactor) {
+      return Observable.just(null);
    }
 
    private void invalidateDivider(LinearLayout container) {

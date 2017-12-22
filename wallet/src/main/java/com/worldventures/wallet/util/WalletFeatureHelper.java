@@ -2,7 +2,6 @@ package com.worldventures.wallet.util;
 
 import android.content.Context;
 
-import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
@@ -30,10 +29,6 @@ public interface WalletFeatureHelper {
    boolean addingCardIsNotSupported();
 
    boolean offlineModeState(boolean isOfflineMode);
-
-   Observable<Void> onUserAssigned(SmartCardUser user);
-
-   void onUserFetchedFromServer(SmartCardUser user);
 
    boolean isSampleCardMode();
 

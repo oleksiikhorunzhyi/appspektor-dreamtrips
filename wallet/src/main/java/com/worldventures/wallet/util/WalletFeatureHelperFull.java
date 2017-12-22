@@ -2,7 +2,6 @@ package com.worldventures.wallet.util;
 
 import android.content.Context;
 
-import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
@@ -55,16 +54,6 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    @Override
    public boolean offlineModeState(boolean isOfflineMode) {
       return isOfflineMode;
-   }
-
-   @Override
-   public Observable<Void> onUserAssigned(SmartCardUser user) {
-      return Observable.just(null);
-   }
-
-   @Override
-   public void onUserFetchedFromServer(SmartCardUser user) {
-      // do nothing
    }
 
    @Override

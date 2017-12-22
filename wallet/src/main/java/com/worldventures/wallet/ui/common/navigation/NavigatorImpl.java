@@ -258,7 +258,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goWizardAssignUser(ProvisioningMode provisioningMode) {
-      withoutLast(WizardAssignUserScreenImpl.create(provisioningMode));
+      withoutLast(WizardAssignUserScreenImpl.Companion.create(provisioningMode));
    }
 
    @Override

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
 import com.worldventures.wallet.service.provisioning.ProvisioningMode;
@@ -32,6 +33,7 @@ public class WizardAssignUserScreenImpl extends WalletBaseController<WizardAssig
    private WalletProgressWidget assignProgress;
 
    @Inject WizardAssignUserPresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    public static WizardAssignUserScreenImpl create(ProvisioningMode provisioningMode) {
       final Bundle args = new Bundle();
@@ -74,7 +76,7 @@ public class WizardAssignUserScreenImpl extends WalletBaseController<WizardAssig
    public OperationView<WizardCompleteCommand> provideOperationView() {
       return new ComposableOperationView<>(new WalletProgressView<>(assignProgress),
             ErrorViewFactory.<WizardCompleteCommand>builder()
-                  .addProvider(new HttpErrorViewProvider<>(getContext(), getPresenter().httpErrorHandlingUtil(),
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
                         command -> getPresenter().onWizardComplete(),
                         command -> getPresenter().onWizardCancel()))
                   .build());
@@ -82,7 +84,7 @@ public class WizardAssignUserScreenImpl extends WalletBaseController<WizardAssig
 
    @Override
    public ProvisioningMode getProvisionMode() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_PROVISION_MODE))
+      return !getArgs().isEmpty() && getArgs().containsKey(KEY_PROVISION_MODE)
             ? (ProvisioningMode) getArgs().getSerializable(KEY_PROVISION_MODE)
             : null;
    }

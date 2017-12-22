@@ -42,7 +42,7 @@ public class HttpErrorViewProvider<T> implements ErrorViewProvider<T> {
    @Override
    @Nullable
    public ErrorView<T> create(T t, @Nullable Throwable parentThrowable, Throwable throwable) {
-      throwable = throwable instanceof HttpServiceException ? throwable.getCause() : throwable;
+      throwable = throwable.getCause();
 
       boolean parentIsJanetException = parentThrowable instanceof JanetActionException;
 

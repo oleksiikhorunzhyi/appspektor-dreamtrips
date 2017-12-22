@@ -87,7 +87,7 @@ class TestInputBarcodeDelegate : BaseTest() {
       verify(view, times(0)).showErrorCardIsAssignedDialog()
       verify(navigator, times(0)).goExistingDeviceDetected(anyOrNull())
       verify(navigator, times(0)).goWizardEditProfile(eq(ProvisioningMode.STANDARD))
-      verify(navigator, times(1)).goWizardUploadProfile(eq(ProvisioningMode.STANDARD))
+      verify(navigator, times(1)).goCardList()
    }
 
    @Test

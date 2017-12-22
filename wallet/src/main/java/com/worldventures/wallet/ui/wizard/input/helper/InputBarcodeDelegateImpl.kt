@@ -34,11 +34,11 @@ class InputBarcodeDelegateImpl(private val navigator: Navigator,
    override fun init(inputDelegateView: InputDelegateView) {
       wizardInteractor.smartCardStatusCommandActionPipe
             .observe()
-            .compose<ActionState<GetSmartCardStatusCommand>>(inputDelegateView.bindUntilDetach<ActionState<GetSmartCardStatusCommand>>())
+            .compose(inputDelegateView.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(inputDelegateView.provideOperationFetchCardStatus())
                   .onSuccess { command -> handleSmartCardStatus(inputDelegateView, command) }
-                  .onFail { _, throwable -> Timber.e(throwable, "") }
+                  .onFail { _, throwable -> Timber.e(throwable) }
                   .create())
 
       smartCardInteractor.fetchAssociatedSmartCard()
@@ -55,7 +55,7 @@ class InputBarcodeDelegateImpl(private val navigator: Navigator,
    }
 
    private fun fetchAssociatedSmartCard() {
-      smartCardInteractor.fetchAssociatedSmartCard().send(FetchAssociatedSmartCardCommand())
+      smartCardInteractor.fetchAssociatedSmartCard().send(FetchAssociatedSmartCardCommand(skipLocalData = true))
    }
 
    override fun retryAssignedToCurrentDevice() {
@@ -64,7 +64,7 @@ class InputBarcodeDelegateImpl(private val navigator: Navigator,
 
    private fun handleSmartCardUserExisting(smartCardUser: SmartCardUser?) {
       if (smartCardUser != null) {
-         navigator.goWizardUploadProfile(ProvisioningMode.STANDARD)
+         navigator.goCardList()
       } else {
          navigator.goWizardEditProfile(ProvisioningMode.STANDARD)
       }

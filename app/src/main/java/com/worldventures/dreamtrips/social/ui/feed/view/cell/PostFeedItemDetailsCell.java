@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
@@ -65,8 +66,19 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
          imagesList.setAdapter(adapter);
       }
       dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
-      if (videoPlayerHolder.inFullscreen()) {
-         playVideoIfNeeded();
+      if (!displayingInList) {
+         List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
+         if (attachments.get(0).getItem() instanceof Video) {
+            Video video = (Video) getModelObject().getItem().getAttachments().get(0).getItem();
+            if (playerExistsAndCurrentItemIsSame(video)) {
+               if (videoPlayerHolder.inFullscreen()) {
+                  switchFromFullscreen();
+               } else {
+                  reattachVideo();
+                  dtVideoView.pauseVideo();
+               }
+            }
+         }
       }
    }
 

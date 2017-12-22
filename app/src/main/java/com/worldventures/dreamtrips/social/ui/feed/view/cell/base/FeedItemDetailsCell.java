@@ -8,13 +8,12 @@ import com.worldventures.core.janet.Injector;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
-
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.ViewFeedEntityAction;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedViewInjector;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FeedItemCommonDataHelper;

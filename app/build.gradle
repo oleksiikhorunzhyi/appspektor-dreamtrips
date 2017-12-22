@@ -167,7 +167,7 @@ android {
    }
    dexOptions {
       javaMaxHeapSize "4g"
-      preDexLibraries = project.ext.androidConfig.preDex
+      // preDexLibraries = project.ext.androidConfig.preDex // multidex fails when predex is disabled
    }
    lintOptions {
       xmlReport false

@@ -12,8 +12,7 @@ import javax.inject.Inject
 
 class YSBHPresenter : Presenter<YSBHPresenter.View>() {
 
-   private var previousScrolledTotal = 0
-   internal var loading = true
+   internal var loading = false
    internal var lastPageReached = false
 
    @JvmField @State var currentItems = ArrayList<YSBHPhoto>()
@@ -37,11 +36,6 @@ class YSBHPresenter : Presenter<YSBHPresenter.View>() {
                      loading = true
                      view.startLoading()
                   }
-                  .onFail { getYSBHPhotosCommand, throwable ->
-                     loading = false
-                     view.finishLoading()
-                     handleError(getYSBHPhotosCommand, throwable)
-                  }
                   .onSuccess { getYSBHPhotosCommand ->
                      view.finishLoading()
                      loading = false
@@ -52,6 +46,11 @@ class YSBHPresenter : Presenter<YSBHPresenter.View>() {
                      }
                      currentItems.addAll(getYSBHPhotosCommand.result)
                      view.updatePhotos(currentItems)
+                  }
+                  .onFail { getYSBHPhotosCommand, throwable ->
+                     loading = false
+                     view.finishLoading()
+                     handleError(getYSBHPhotosCommand, throwable)
                   })
    }
 
@@ -65,18 +64,10 @@ class YSBHPresenter : Presenter<YSBHPresenter.View>() {
       analyticsInteractor.analyticsActionPipe().send(TripImageItemViewEvent(entity.id.toString()))
    }
 
-   fun scrolled(visibleItemCount: Int, totalItemCount: Int, firstVisibleItem: Int) {
-      if (totalItemCount > previousScrolledTotal) {
-         loading = false
-         previousScrolledTotal = totalItemCount
+   fun loadNext() {
+      if (lastPageReached || loading || currentItems.isEmpty()) {
+         return
       }
-      if (!lastPageReached && !loading && currentItems.size > 0
-            && totalItemCount - visibleItemCount <= firstVisibleItem + VISIBLE_THRESHOLD) {
-         loadNext()
-      }
-   }
-
-   internal fun loadNext() {
       loading = true
       tripImagesInteractor.ysbhPhotosPipe
             .send(GetYSBHPhotosCommand.commandForPage(currentItems.size / GetYSBHPhotosCommand.PER_PAGE + 1))
@@ -90,10 +81,5 @@ class YSBHPresenter : Presenter<YSBHPresenter.View>() {
       fun openFullscreen(photos: List<YSBHPhoto>?, lastPageReached: Boolean, selectedItemIndex: Int)
 
       fun updatePhotos(photoList: List<YSBHPhoto>)
-   }
-
-   companion object {
-
-      const val VISIBLE_THRESHOLD = 5
    }
 }

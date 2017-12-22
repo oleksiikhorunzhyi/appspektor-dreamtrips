@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
@@ -15,7 +14,6 @@ import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
@@ -25,6 +23,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YSBHPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.YsbhPagerArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.YsbhPhotoCell;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.util.GridLayoutManagerPaginationDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,8 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_images_list)
 public class YSBHFragment extends BaseFragment<YSBHPresenter>
       implements YSBHPresenter.View, SelectablePagerFragment {
+
+   public static final int VISIBLE_THRESHOLD = 5;
 
    @InjectView(R.id.recyclerView) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipeLayout) SwipeRefreshLayout refreshLayout;
@@ -59,7 +60,8 @@ public class YSBHFragment extends BaseFragment<YSBHPresenter>
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       initAdapter();
-      initRecyclerView();
+      recyclerView.addOnScrollListener(new GridLayoutManagerPaginationDelegate(getPresenter()::loadNext,
+            VISIBLE_THRESHOLD));
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
    }
@@ -86,18 +88,6 @@ public class YSBHFragment extends BaseFragment<YSBHPresenter>
    protected int getSpanCount() {
       boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
       return landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
-   }
-
-   private void initRecyclerView() {
-      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int visibleCount = recyclerView.getChildCount();
-            int totalCount = layoutManager.getItemCount();
-            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-            getPresenter().scrolled(visibleCount, totalCount, firstVisibleItemPosition);
-         }
-      });
    }
 
    @Override

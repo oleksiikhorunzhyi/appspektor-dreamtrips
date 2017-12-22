@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me.InspireMePresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.InspireMeViewPagerArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.InspirationPhotoCell;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.util.GridLayoutManagerPaginationDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_images_list)
 public class InspireMeFragment extends BaseFragment<InspireMePresenter> implements InspireMePresenter.View, SelectablePagerFragment {
+
+   public static final int VISIBLE_THRESHOLD = 5;
 
    @InjectView(R.id.recyclerView) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipeLayout) SwipeRefreshLayout refreshLayout;
@@ -56,7 +59,8 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       initAdapter();
-      initRecyclerView();
+      recyclerView.addOnScrollListener(new GridLayoutManagerPaginationDelegate(getPresenter()::loadNext,
+            VISIBLE_THRESHOLD));
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
    }
@@ -83,18 +87,6 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
    protected int getSpanCount() {
       boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
       return landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
-   }
-
-   private void initRecyclerView() {
-      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int visibleCount = recyclerView.getChildCount();
-            int totalCount = layoutManager.getItemCount();
-            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-            getPresenter().scrolled(visibleCount, totalCount, firstVisibleItemPosition);
-         }
-      });
    }
 
    @Override

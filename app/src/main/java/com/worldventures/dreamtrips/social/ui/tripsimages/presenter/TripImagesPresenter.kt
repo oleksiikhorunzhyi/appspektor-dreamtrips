@@ -57,7 +57,7 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
    @Inject internal lateinit var pickerPermissionChecker: PickerPermissionChecker
    @Inject internal lateinit var permissionUtils: PermissionUtils
 
-   internal var loading = true
+   internal var loading = false
    internal var lastPageReached = false
    internal var memberImagesAreRefreshing: Boolean = false
    private var previousScrolledTotal = 0
@@ -91,17 +91,6 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
    }
 
    fun onItemClick(entity: BaseMediaEntity<*>) = view.openFullscreen(lastPageReached, currentItems.indexOf(entity))
-
-   fun scrolled(visibleItemCount: Int, totalItemCount: Int, firstVisibleItem: Int) {
-      if (totalItemCount > previousScrolledTotal) {
-         loading = false
-         previousScrolledTotal = totalItemCount
-      }
-      if (!lastPageReached && !loading && !currentItems.isEmpty()
-            && totalItemCount - visibleItemCount <= firstVisibleItem + VISIBLE_THRESHOLD) {
-         loadNext()
-      }
-   }
 
    fun recheckPermission(permissions: Array<String>, userAnswer: Boolean) {
       if (permissionUtils.equals(permissions, PickerPermissionChecker.PERMISSIONS)) {
@@ -144,7 +133,10 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
    internal fun refreshImages() = tripImagesInteractor.baseTripImagesPipe
             .send(tripImagesCommandFactory.provideCommand(tripImagesArgs))
 
-   internal fun loadNext() {
+   fun loadNext() {
+      if (lastPageReached || loading || currentItems.isEmpty()) {
+         return
+      }
       loading = true
       tripImagesInteractor.baseTripImagesPipe
             .send(tripImagesCommandFactory.provideLoadMoreCommand(tripImagesArgs, currentItems))
@@ -175,6 +167,7 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
    }
 
    private fun itemsUpdated(baseMediaCommand: BaseMediaCommand) {
+      Timber.d("Load -- loaded")
       loading = false
       lastPageReached = baseMediaCommand.lastPageReached()
       if (baseMediaCommand.fromCacheOnly || baseMediaCommand.result != null) {
@@ -351,9 +344,5 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
       fun hideCreateImageButton()
 
       fun openCreatePhoto(mediaAttachment: MediaPickerAttachment)
-   }
-
-   companion object {
-      const val VISIBLE_THRESHOLD = 15
    }
 }

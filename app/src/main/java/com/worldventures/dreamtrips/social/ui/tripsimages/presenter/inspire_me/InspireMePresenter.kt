@@ -13,8 +13,7 @@ import javax.inject.Inject
 class InspireMePresenter : Presenter<InspireMePresenter.View>() {
 
    internal var randomSeed: Double = 0.0
-   private var previousScrolledTotal = 0
-   var loading = true
+   var loading = false
    var lastPageReached = false
 
    @JvmField @State internal var currentItems = arrayListOf<Inspiration>()
@@ -69,18 +68,10 @@ class InspireMePresenter : Presenter<InspireMePresenter.View>() {
    fun onItemClick(entity: Inspiration) = view.openFullscreen(currentItems,
          randomSeed, lastPageReached, currentItems.indexOf(entity))
 
-   fun scrolled(visibleItemCount: Int, totalItemCount: Int, firstVisibleItem: Int) {
-      if (totalItemCount > previousScrolledTotal) {
-         loading = false
-         previousScrolledTotal = totalItemCount
+   fun loadNext() {
+      if (lastPageReached || loading || currentItems.isEmpty()) {
+         return
       }
-      if (!lastPageReached && !loading && currentItems.size > 0
-            && totalItemCount - visibleItemCount <= firstVisibleItem + VISIBLE_THRESHOLD) {
-         loadNext()
-      }
-   }
-
-   internal fun loadNext() {
       loading = true
       tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(randomSeed,
             currentItems.size / GetInspireMePhotosCommand.PER_PAGE + 1))
@@ -94,9 +85,5 @@ class InspireMePresenter : Presenter<InspireMePresenter.View>() {
       fun finishLoading()
 
       fun updatePhotos(photoList: List<Inspiration>)
-   }
-
-   companion object {
-      const val VISIBLE_THRESHOLD = 5
    }
 }

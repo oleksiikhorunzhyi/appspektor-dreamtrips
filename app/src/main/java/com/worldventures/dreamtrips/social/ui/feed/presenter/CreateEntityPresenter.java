@@ -77,7 +77,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    @Override
    public void takeView(V view) {
       super.takeView(view);
-      initialPhotoStripDelegate();
+      initPhotoStripDelegate();
       if (postInProgressId != 0) {
          view.setEnabledImagePicker(false);
          view.disableButton();
@@ -117,11 +117,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
       }
    }
 
-   public void initialPhotoStripDelegate() {
+   public void initPhotoStripDelegate() {
       photoStripDelegate.setMaxPickLimits(MAX_PHOTOS_COUNT, MAX_VIDEO_COUNT);
       photoStripDelegate.maintainPhotoStrip(view.getPhotoStrip(), bindView(), true);
       photoStripDelegate.setActions(this::mediaPickerModelChanged, this::showMediaPicker);
       photoStripDelegate.startLoadMedia();
+      photoStripDelegate.subscribeToCameraSubscriptions();
    }
 
    private void mediaPickerModelChanged(MediaPickerModel model) {
@@ -155,6 +156,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    public void showMediaPicker() {
+      photoStripDelegate.unsubscribeFromCameraSubscriptions();
       pickerPermissionChecker.checkPermission();
    }
 

@@ -28,7 +28,11 @@ public class GetVideoDurationCommand extends Command<Long> implements Injectable
       MediaMetadataRetriever retriever = new MediaMetadataRetriever();
       retriever.setDataSource(context, uri);
       String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-      callback.onSuccess(Long.parseLong(duration));
+      if (duration != null) {
+         callback.onSuccess(Long.parseLong(duration));
+      } else {
+         callback.onFail(new IllegalStateException("Failed to get video duration"));
+      }
    }
 
    public Uri getUri() {

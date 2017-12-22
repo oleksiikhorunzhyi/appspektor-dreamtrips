@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.social.ui.feed.model.VideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.VideoCreationCellDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.PhotoStripView;
-import com.worldventures.wallet.util.TimberLogger;
 
 import javax.inject.Inject;
 

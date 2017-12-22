@@ -79,13 +79,12 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
          toolbar.setBackgroundColor(Color.WHITE);
          tvTitle.setVisibility(View.VISIBLE);
          tvTitle.setText(transaction.getMerchantName());
+         toolbar.setNavigationIcon(R.drawable.back_icon_black);
       } else {
          toolbar.setTitle(transaction.getMerchantName());
-         toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
-         toolbar.setNavigationOnClickListener(view -> {
-            Flow.get(getContext()).goBack();
-         });
+         toolbar.setNavigationIcon(R.drawable.back_icon);
       }
+      toolbar.setNavigationOnClickListener(view -> Flow.get(getContext()).goBack());
 
       transactionStatusInjector = new TransactionStatusInjector(getActivity(), this);
    }

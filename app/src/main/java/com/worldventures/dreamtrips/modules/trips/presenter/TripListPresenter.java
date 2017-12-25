@@ -74,7 +74,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
                   .map(state -> state.action.getItems()),
             (configuration, trips) -> {
                List<Object> items = new ArrayList<>();
-               if (configuration.getTravelBannerRequirement() != null) {
+               if (configuration.getTravelBannerRequirement() != null
+                     && configuration.getTravelBannerRequirement().getEnabled()) {
                   items.add(configuration.getTravelBannerRequirement());
                }
                items.addAll(trips);

@@ -47,7 +47,9 @@ class ConfigurationConverter : Converter<com.worldventures.dreamtrips.api.config
       category?.let {
          val title = getConfigSettingByName(it.configSettings(), CONFIG_TRAVEL_BANNER_TITLE)
          val url = getConfigSettingByName(it.configSettings(), CONFIG_TRAVEL_BANNER_URL)
-         if (title != null && url != null) return TravelBannerRequirement(title.value(), url.value())
+         val enabled = getConfigSettingByName(it.configSettings(), CONFIG_TRAVEL_BANNER_ENABLED)
+         if (title != null && url != null && enabled != null) return TravelBannerRequirement(title.value(), url.value(),
+               java.lang.Boolean.parseBoolean(enabled.value()))
       }
       return null
    }
@@ -71,6 +73,7 @@ class ConfigurationConverter : Converter<com.worldventures.dreamtrips.api.config
       private val CONFIG_NAME_VIDEO_LENGTH = "android_max_selectable_video_duration"
       private val CONFIG_TRAVEL_BANNER_TITLE = "travel_banner_title"
       private val CONFIG_TRAVEL_BANNER_URL = "travel_banner_url"
+      private val CONFIG_TRAVEL_BANNER_ENABLED = "travel_banner_enabled"
       private val MILLISECONDS_IN_SECOND = 1000
    }
 }

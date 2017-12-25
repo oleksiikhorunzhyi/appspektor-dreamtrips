@@ -103,5 +103,7 @@
 
    <!--Transactions -->
    <color name="transaction_text_color">#4a4a4a</color>
+   <color name="transaction_amount_red_color">#ed0925</color>
+   <color name="transaction_amount_green_color">#22b14c</color>
 
 </resources>

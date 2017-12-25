@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,9 +166,29 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
          setPaymentStatusIcon(transactionModel);
          transactionDate.setText(DateTimeUtils.convertDateToString(transactionModel.getTransactionDate(),
                DateTimeUtils.TRANSACTION_DATE_FORMAT));
-         subtotal.setText(context.getString(R.string.dtl_subtotal,
-               CurrencyUtils.toCurrency(transactionModel.getSubTotalAmount(), transactionModel.getCurrenyCode(),
-                     transactionModel.getCurrencySymbol())));
+         formatSubtotal(transactionModel);
+      }
+
+      private void formatSubtotal(TransactionModel transactionModel) {
+         final String subtotalValue = CurrencyUtils.toCurrency(transactionModel.getSubTotalAmount(),
+               transactionModel.getCurrenyCode(), transactionModel.getCurrencySymbol());
+         final String subtotalCaption = context.getString(R.string.dtl_subtotal, subtotalValue);
+
+         if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED) {
+            final int spanStartPosition = subtotalCaption.indexOf(subtotalValue);
+            final int spanEndPosition = subtotalCaption.length();
+            final int colorRes = transactionModel.getTotalAmount() < 0D ?
+                  R.color.transaction_amount_red_color : R.color.transaction_amount_green_color;
+            final int color = ContextCompat.getColor(context, colorRes);
+
+            Spannable colored = new SpannableString(subtotalCaption);
+            colored.setSpan(new ForegroundColorSpan(color), spanStartPosition, spanEndPosition,
+                  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            subtotal.setText(colored, TextView.BufferType.SPANNABLE);
+         } else {
+            subtotal.setText(subtotalCaption);
+         }
       }
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {

@@ -27,6 +27,9 @@ class PairKeyPresenterImpl(navigator: Navigator,
 
    override fun attachView(view: PairKeyScreen) {
       super.attachView(view)
+      smartCardInteractor.disconnectPipe().clearReplays()
+      smartCardInteractor.connectionActionPipe().clearReplays()
+
       this.pairDelegate = PairDelegate.create(getView().provisionMode, navigator, smartCardInteractor)
       pairDelegate.prepareView(getView())
       analyticsInteractor.walletAnalyticsPipe().send(WalletAnalyticsCommand(CheckFrontAction()))
@@ -52,9 +55,17 @@ class PairKeyPresenterImpl(navigator: Navigator,
             .compose(ActionPipeCacheWiper(smartCardInteractor.connectActionPipe()))
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(view.provideOperationCreateAndConnect())
-                  .onSuccess { pairingHelper.onConnect(it.smartCardId) }
-                  .create())
+            .subscribe(OperationActionSubscriber.forView(view.provideOperationCreateAndConnect()).create())
+
+      smartCardInteractor.connectionActionPipe()
+            .observeSuccessWithReplay()
+            .compose(view.bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+               pairingHelper.onConnect(it.params().cardId().toString())
+               smartCardInteractor.connectionActionPipe().clearReplays()
+            }
+
    }
 
    private fun observeDisconnect() {

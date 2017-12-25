@@ -76,6 +76,7 @@
    <string name="wallet_wizard_finish_title">Finishing Set Up</string>
    <string name="wallet_wizard_setup_complete_label">Set up is almost complete. </string>
    <string name="wallet_wizard_finish_label">When finished you will be able to add credit and debit cards.</string>
+   <string name="wallet_wizard_finish_error_sample_cards">Failed to add Sample Card.</string>
 
    <!--splash-->
    <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>

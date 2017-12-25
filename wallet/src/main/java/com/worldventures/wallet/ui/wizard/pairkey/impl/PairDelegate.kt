@@ -1,7 +1,10 @@
 package com.worldventures.wallet.ui.wizard.pairkey.impl
 
+import com.worldventures.wallet.domain.entity.CardStatus
+import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.service.SmartCardInteractor
+import com.worldventures.wallet.service.command.ActiveSmartCardCommand
 import com.worldventures.wallet.service.command.SmartCardUserCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.wallet.ui.common.navigation.Navigator
@@ -40,8 +43,9 @@ internal abstract class PairDelegate private constructor(
       }
 
       override fun cardConnected(view: PairView, smartCardId: String) {
-         smartCardInteractor.smartCardUserPipe()
-               .createObservable(SmartCardUserCommand.fetch())
+         smartCardInteractor.activeSmartCardPipe()
+               .createObservableResult(ActiveSmartCardCommand(SmartCard(smartCardId = smartCardId, cardStatus = CardStatus.IN_PROVISIONING)))
+               .flatMap { smartCardInteractor.smartCardUserPipe().createObservable(SmartCardUserCommand.fetch()) }
                .compose(view.bindUntilDetach())
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(ActionStateSubscriber<SmartCardUserCommand>()

@@ -8,10 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.worldventures.wallet.R;
-import com.worldventures.wallet.domain.entity.SmartCardUser;
-import com.worldventures.wallet.service.RecordInteractor;
-import com.worldventures.wallet.service.command.RecordListCommand;
-import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
+import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.wallet.ui.settings.WalletSettingsScreen;
@@ -20,20 +17,10 @@ import com.worldventures.wallet.ui.settings.security.WalletSecuritySettingsScree
 
 import java.util.List;
 
-import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import rx.Observable;
 import rx.functions.Action0;
 
 public class WalletFeatureHelperRelease implements WalletFeatureHelper {
-
-   private final Janet janet;
-   private final RecordInteractor recordInteractor;
-
-   public WalletFeatureHelperRelease(Janet walletJanet, RecordInteractor recordInteractor) {
-      this.janet = walletJanet;
-      this.recordInteractor = recordInteractor;
-   }
 
    @Override
    public void prepareSettingsScreen(WalletSettingsScreen view) {
@@ -85,27 +72,6 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    }
 
    @Override
-   public Observable<Void> onUserAssigned(SmartCardUser user) {
-      return janet.createPipe(AddDummyRecordCommand.class)
-            .createObservableResult(new AddDummyRecordCommand(user, false))
-            .map(c -> (Void) null)
-            .onErrorReturn(throwable -> null);
-   }
-
-   @Override
-   public void onUserFetchedFromServer(SmartCardUser user) {
-      recordInteractor.cardsListPipe()
-            .createObservableResult(RecordListCommand.Companion.fetch())
-            .map(Command::getResult)
-            .subscribe(list -> {
-               if (list == null || list.isEmpty()) {
-                  janet.createPipe(AddDummyRecordCommand.class)
-                        .send(new AddDummyRecordCommand(user, true));
-               }
-            });
-   }
-
-   @Override
    public boolean isSampleCardMode() {
       return true;
    }
@@ -118,6 +84,11 @@ public class WalletFeatureHelperRelease implements WalletFeatureHelper {
    @Override
    public boolean pinFunctionalityAvailable() {
       return false;
+   }
+
+   @Override
+   public Observable<Void> clearSettings(SmartCardLocationInteractor interactor) {
+      return Observable.just(null);
    }
 
    private void invalidateDivider(LinearLayout container) {

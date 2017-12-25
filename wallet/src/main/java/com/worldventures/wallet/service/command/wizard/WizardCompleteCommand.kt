@@ -12,7 +12,6 @@ import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.command.SmartCardUserCommand
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
 import com.worldventures.wallet.service.command.uploadery.SmartCardUploaderyCommand
-import com.worldventures.wallet.util.WalletFeatureHelper
 import io.techery.janet.Command
 import io.techery.janet.Janet
 import io.techery.janet.command.annotations.CommandAction
@@ -31,7 +30,6 @@ class WizardCompleteCommand : Command<Void>(), InjectableAction {
    @Inject lateinit var interactor: SmartCardInteractor
    @Inject lateinit var walletStorage: WalletStorage
    @Inject lateinit var mapperyContext: MapperyContext
-   @Inject lateinit var featureHelper: WalletFeatureHelper
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Void>) {
@@ -41,7 +39,6 @@ class WizardCompleteCommand : Command<Void>(), InjectableAction {
             .flatMap { user ->
                walletJanet.createPipe(AssociateCardUserCommand::class.java)
                      .createObservableResult(AssociateCardUserCommand(smartCard.smartCardId, createRequestData(user)))
-                     .flatMap { featureHelper.onUserAssigned(user) }
             }
             .subscribe({ callback.onSuccess(null) }, { callback.onFail(it) })
    }

@@ -67,6 +67,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    RecyclerViewStateDelegate stateDelegate;
 
    private WeakHandler weakHandler;
+   private GridLayoutManager layoutManager;
 
    @State boolean searchOpened;
 
@@ -88,8 +89,8 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       stateDelegate.setRecyclerView(recyclerView);
-      GridLayoutManager layout = new GridLayoutManager(getActivity(), getSpanCount());
-      recyclerView.setLayoutManager(layout);
+      layoutManager = new GridLayoutManager(getActivity(), getSpanCount());
+      recyclerView.setLayoutManager(layoutManager);
       recyclerView.setEmptyView(emptyView);
 
       adapter = new BaseDelegateAdapter<>(getActivity(), this);
@@ -120,7 +121,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          @Override
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             int itemCount = recyclerView.getLayoutManager().getItemCount();
-            int lastVisibleItemPosition = layout.findLastVisibleItemPosition();
+            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
             if (lastVisibleItemPosition == itemCount - 1) {
                getPresenter().scrolled();
             }
@@ -263,6 +264,15 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @Override
    public void itemsChanged(List<Object> items) {
+      layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+         @Override
+         public int getSpanSize(int position) {
+            if (adapter.getItem(position) instanceof TravelBannerRequirement) {
+               return getSpanCount();
+            }
+            return 1;
+         }
+      });
       adapter.clearAndUpdateItems(items);
    }
 

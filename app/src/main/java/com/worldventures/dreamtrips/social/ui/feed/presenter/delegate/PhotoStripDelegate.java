@@ -101,6 +101,7 @@ public class PhotoStripDelegate {
    private void loadMedia() {
       mediaPickerInteractor.getMediaFromGalleryPipe()
             .createObservableResult(new GetMediaFromGalleryCommand(videoEnabled, PHOTO_STRIP_COUNT_LIMIT))
+            .take(1)
             .compose(bindIoToMain(stopper))
             .map(Command::getResult)
             .subscribe(photoStrip::showMedia, throwable -> Timber.e(throwable, "Error during retrieving media from phone storage"));

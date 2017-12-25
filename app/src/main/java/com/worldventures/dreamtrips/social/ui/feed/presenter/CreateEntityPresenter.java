@@ -111,13 +111,19 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    @Override
+   public void dropView() {
+      super.dropView();
+      photoStripDelegate.unsubscribeFromCameraSubscriptions();
+   }
+
+   @Override
    protected void updateDescription() {
       if (origin == CreateEntityBundle.Origin.FEED) {
          super.updateDescription();
       }
    }
 
-   public void initPhotoStripDelegate() {
+   private void initPhotoStripDelegate() {
       photoStripDelegate.setMaxPickLimits(MAX_PHOTOS_COUNT, MAX_VIDEO_COUNT);
       photoStripDelegate.maintainPhotoStrip(view.getPhotoStrip(), bindView(), true);
       photoStripDelegate.setActions(this::mediaPickerModelChanged, this::showMediaPicker);

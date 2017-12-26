@@ -24,7 +24,10 @@ android {
             includeCompileClasspath = false
          }
       }
+
+      vectorDrawables.useSupportLibrary = true
    }
+
 
    dataBinding {
       enabled = true

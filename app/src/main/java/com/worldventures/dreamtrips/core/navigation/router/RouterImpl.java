@@ -8,8 +8,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 
 import com.crashlytics.android.Crashlytics;
+import com.worldventures.core.ui.view.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
+import com.worldventures.dreamtrips.social.ui.activity.ConfigChangesAwareComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.TransparentSocialComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
@@ -53,8 +55,12 @@ public class RouterImpl implements Router {
       ActivityRouter activityRouter = new ActivityRouter(activity);
       Bundle args = getArgs(config);
       args.putSerializable(ComponentPresenter.FRAGMENT_CLAZZ, fragmentClazz);
-      activityRouter.startActivityWithArgs(config.getTransparentBackground() ? TransparentSocialComponentActivity.class
-            : SocialComponentActivity.class, args, config.getFlags());
+
+      Class<? extends InjectingActivity> clazz = config.isManualOrientationActivity()
+            ? ConfigChangesAwareComponentActivity.class
+            : config.getTransparentBackground() ? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
+
+      activityRouter.startActivityWithArgs(clazz, args, config.getFlags());
       if (config.animationConfig != null) {
          activity.overridePendingTransition(config.animationConfig.getAnimationEnter(), config.animationConfig.getAnimationExit());
       }

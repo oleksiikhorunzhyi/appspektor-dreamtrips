@@ -155,6 +155,7 @@ public class NotificationCell extends BaseAbstractCell<FeedItem> {
       List<BaseMediaEntity> items = new ArrayList<>();
       items.add(new PhotoMediaEntity((Photo) getModelObject().getItem()));
       router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .mediaEntityList(items)
                   .build())

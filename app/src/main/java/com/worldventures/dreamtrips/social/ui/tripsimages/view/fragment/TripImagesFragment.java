@@ -166,6 +166,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    public void openFullscreen(boolean lastPageReached, int currentItemPosition) {
       router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .tripImagesArgs(getArgs())
                   .lastPageReached(lastPageReached)

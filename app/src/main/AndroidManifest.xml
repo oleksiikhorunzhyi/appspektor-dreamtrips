@@ -244,7 +244,19 @@
             android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             />
+      <activity
+            android:name=".social.ui.activity.ConfigChangesAwareComponentActivity"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".social.ui.activity.SocialMainActivity"
+               />
 
+      </activity>
       <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true"

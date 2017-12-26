@@ -208,6 +208,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private void openFullscreenPhotoList(int position) {
       router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .currentItemPosition(position)
                   .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())

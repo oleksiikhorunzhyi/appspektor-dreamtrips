@@ -25,7 +25,7 @@ public class BannerCell extends BaseAbstractDelegateCell<TravelBannerRequirement
       banner.setText(getModelObject().getTitle());
    }
 
-   @OnClick(R.id.banner_text)
+   @OnClick(R.id.banner_container)
    void onBannerClick() {
       cellDelegate.onCellClicked(getModelObject());
    }

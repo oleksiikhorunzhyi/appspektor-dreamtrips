@@ -8,6 +8,8 @@ import com.worldventures.wallet.ui.common.navigation.Navigator
 import com.worldventures.wallet.ui.wizard.checking.WizardCheckingPresenter
 import com.worldventures.wallet.ui.wizard.checking.WizardCheckingScreen
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 class WizardCheckingPresenterImpl(navigator: Navigator,
                                   deviceConnectionDelegate: WalletDeviceConnectionDelegate,
@@ -40,16 +42,16 @@ class WizardCheckingPresenterImpl(navigator: Navigator,
    private fun observeBluetoothAndNetwork(view: WizardCheckingScreen) {
       Observable.combineLatest(
             bluetoothService.observeEnablesState()
-                  .startWith(bluetoothService.isEnable)
-                  .doOnNext { value -> view.bluetoothEnable(value) },
+                  .startWith(bluetoothService.isEnable),
             networkDelegate.observeConnectedState()
-                  .startWith(networkDelegate.isAvailable)
-                  .doOnNext { value -> view.networkAvailable(value) },
-            { bluetooth, internet ->
-               view.buttonEnable(bluetooth and internet)
-               true
-            })
+                  .startWith(networkDelegate.isAvailable),
+            { bluetooth, internet -> Pair<Boolean, Boolean>(bluetooth, internet)})
             .compose(view.bindUntilDetach())
-            .subscribe()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ pair ->
+               view.buttonEnable(pair.first && pair.second)
+               view.bluetoothEnable(pair.first)
+               view.networkAvailable(pair.second)
+            }, {t -> Timber.e(t) })
    }
 }

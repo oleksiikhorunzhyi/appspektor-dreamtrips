@@ -43,8 +43,6 @@ android {
 
    lintOptions {
       xmlReport false
-      // todo fix it
-      disable 'RestrictedApi', 'MissingPermission', 'WrongViewCast'
    }
 
    compileOptions {

@@ -227,7 +227,7 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       }
    }
 
-   override fun pickPhoto(initialPhotoUrl: String) {
+   override fun pickPhoto(initialPhotoUrl: String?) {
       onChoosePhotoClick(initialPhotoUrl)
    }
 

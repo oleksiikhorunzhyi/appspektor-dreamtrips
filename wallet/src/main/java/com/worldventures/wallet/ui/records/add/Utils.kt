@@ -39,6 +39,7 @@ fun toRecord(bundle: RecordBundle) = Record(
       cvv = bundle.cvv,
       track1 = bundle.t1,
       track2 = bundle.t2,
+      track3 = bundle.t3,
       bankName = bundle.bankName,
       financialService = bundle.financialService.toDomainFinancialService(),
       recordType = bundle.cardType.toDomainRecordType(),

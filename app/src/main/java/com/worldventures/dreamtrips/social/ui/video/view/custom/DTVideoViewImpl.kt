@@ -42,11 +42,13 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
 
    var fullscreen: Boolean = false
       set(value) {
-         if (fullscreen) fullScreenButton.setImageResource(R.drawable.ic_video_fullscreen_collapse)
+         field = value
+         if (value) fullScreenButton.setImageResource(R.drawable.ic_video_fullscreen_collapse)
          else fullScreenButton.setImageResource(R.drawable.ic_video_fullscreen)
       }
 
    var fullscreenExitFunction: () -> Unit = {}
+   var videoFinishedFunction: (() -> Unit)? = null
 
    constructor(context: Context) : super(context)
 
@@ -100,9 +102,7 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
    }
 
    override fun pauseVideo() {
-      if (simpleExoPlayerView.player != null) {
-         simpleExoPlayerView.player.playWhenReady = false
-      }
+      if (simpleExoPlayerView.player != null) simpleExoPlayerView.player.playWhenReady = false
    }
 
    override fun attachPlayer(player: SimpleExoPlayer) {
@@ -125,14 +125,24 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
          }
 
          override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            if (playbackState == Player.STATE_ENDED) {
-               detachPlayer()
-               showThumbnail()
-               videoHolder.currentVideoConfig = null
+            if (isVideoFinished()) {
+               val tempFunc = videoFinishedFunction
+               if (tempFunc != null) tempFunc.invoke()
+               else videoFinished()
             }
          }
       })
    }
+
+   fun videoFinished() {
+      detachPlayer()
+      showThumbnail()
+      videoHolder.currentVideoConfig = null
+   }
+
+   fun isVideoFinished() = simpleExoPlayerView.player?.playbackState == Player.STATE_ENDED
+
+   fun resetProgress() = simpleExoPlayerView.player?.seekTo(0)
 
    override fun detachPlayer() {
       videoHolder.currentVideoView = null
@@ -155,9 +165,7 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
       fullScreenButton.visibility = View.GONE
    }
 
-   private fun goFullscreen() {
-      context.startActivity(Intent(context, FullscreenViewActivity::class.java))
-   }
+   private fun goFullscreen() = context.startActivity(Intent(context, FullscreenViewActivity::class.java))
 
    private fun switchMute(videoConfig: DTVideoConfig) {
       if (simpleExoPlayerView.player == null) return

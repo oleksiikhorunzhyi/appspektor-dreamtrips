@@ -92,7 +92,6 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @Override
    public void onViewCreated(View view, Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
-
       if (mediaPickerShown) {
          openPicker(videoDuration);
       }
@@ -167,6 +166,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    public void openFullscreen(boolean lastPageReached, int currentItemPosition) {
       router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .tripImagesArgs(getArgs())
                   .lastPageReached(lastPageReached)
@@ -209,8 +209,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void onStop() {
-      super.onStop();
+   public void onDestroy() {
+      super.onDestroy();
       //fix memory leak after rotation
       if (mediaPickerDialog != null) {
          mediaPickerDialog.dismiss();
@@ -247,7 +247,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
             if (adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity && items.get(newItemPosition) instanceof PhotoMediaEntity) {
                return false;
             }
-            return true;
+            return super.areContentsTheSame(oldItemPosition, newItemPosition);
          }
       });
       adapter.setItemsNoNotify(items);

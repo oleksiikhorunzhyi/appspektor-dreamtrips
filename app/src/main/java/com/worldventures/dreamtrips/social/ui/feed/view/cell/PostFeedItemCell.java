@@ -67,7 +67,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
    private FeedCellListWidthProvider feedCellListWidthProvider;
 
    private FeedCellListWidthProvider.FeedType activeFeedType;
-   private boolean displayingInList;
+   protected boolean displayingInList;
 
    public PostFeedItemCell(View view) {
       super(view);
@@ -208,6 +208,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
 
    private void openFullscreenPhotoList(int position) {
       router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .currentItemPosition(position)
                   .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())
@@ -292,18 +293,30 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, BaseFeed
       List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
       if (attachments.get(0).getItem() instanceof Video) {
          Video video = (Video) getModelObject().getItem().getAttachments().get(0).getItem();
-         if (videoPlayerHolder.getCurrentVideoConfig() != null
-               && video.getUid().equals(videoPlayerHolder.getCurrentVideoConfig().getUid())) {
+         if (playerExistsAndCurrentItemIsSame(video)) {
             if (videoPlayerHolder.inFullscreen()) {
-               videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList
-                     || videoPlayerHolder.getCurrentVideoConfig().getMute());
+               switchFromFullscreen();
             } else {
-               videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList);
+               reattachVideo();
             }
          } else {
             dtVideoView.playVideo(new DTVideoConfig(video.getUid(), displayingInList, video.getQualities(), 0));
          }
       }
+   }
+
+   protected boolean playerExistsAndCurrentItemIsSame(Video video) {
+      return videoPlayerHolder.getCurrentVideoConfig() != null
+            && video.getUid().equals(videoPlayerHolder.getCurrentVideoConfig().getUid());
+   }
+
+   protected void reattachVideo() {
+      videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList);
+   }
+
+   protected void switchFromFullscreen() {
+      videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList
+            || videoPlayerHolder.getCurrentVideoConfig().getMute());
    }
 
    @Override

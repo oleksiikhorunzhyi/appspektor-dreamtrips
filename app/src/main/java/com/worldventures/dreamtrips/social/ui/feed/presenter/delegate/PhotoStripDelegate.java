@@ -52,7 +52,8 @@ public class PhotoStripDelegate {
    private Action0 openPickerAction;
    private boolean videoEnabled;
 
-   private Subscription cameraSubscription;
+   private Subscription cameraPhotoSubscription;
+   private Subscription cameraVideoSubscription;
    private int videoAvailableLimit;
    private int photoAvailableLimit;
    private int videoMaxLength;
@@ -100,6 +101,7 @@ public class PhotoStripDelegate {
    private void loadMedia() {
       mediaPickerInteractor.getMediaFromGalleryPipe()
             .createObservableResult(new GetMediaFromGalleryCommand(videoEnabled, PHOTO_STRIP_COUNT_LIMIT))
+            .take(1)
             .compose(bindIoToMain(stopper))
             .map(Command::getResult)
             .subscribe(photoStrip::showMedia, throwable -> Timber.e(throwable, "Error during retrieving media from phone storage"));
@@ -213,34 +215,36 @@ public class PhotoStripDelegate {
             subscribeToCapturedPhoto();
          } else {
             doWithMaxLength(maxDuration -> {
-               subscribeToCapturedVideo(maxDuration);
+               subscribeToCapturedVideo();
                pickImageDelegate.recordVideo(maxDuration);
             });
          }
       });
    }
 
-   private void subscribeToCapturedVideo(int videoLengthLimit) {
-      cameraSubscription = capturedRowMediaHelper.videoModelFromCameraObservable()
+   private void subscribeToCapturedVideo() {
+      cameraVideoSubscription = capturedRowMediaHelper.videoModelFromCameraObservable()
             .compose(bindIoToMain(stopper))
             .subscribe(videoPickerModel -> {
-               if (!checkMaxVideoLengthException(videoPickerModel, videoLengthLimit)) {
-                  videoPickerModel.setChecked(true);
-                  videoPickerModel.setSource(MediaPickerAttachment.Source.CAMERA);
-                  newMediaAction.call(videoPickerModel);
-               }
-               unsubscribeCameraSubscription();
+               doWithMaxLength(videoLengthLimit -> {
+                  if (!checkMaxVideoLengthException(videoPickerModel, videoLengthLimit)) {
+                     videoPickerModel.setChecked(true);
+                     videoPickerModel.setSource(MediaPickerAttachment.Source.CAMERA);
+                     newMediaAction.call(videoPickerModel);
+                  }
+               });
+               unsubscribeFromCameraSubscriptions();
             });
    }
 
    private void subscribeToCapturedPhoto() {
-      cameraSubscription = capturedRowMediaHelper.photoModelFromCameraObservable()
+      cameraPhotoSubscription = capturedRowMediaHelper.photoModelFromCameraObservable()
             .compose(bindIoToMain(stopper))
             .subscribe(photoPickerModel -> {
                photoPickerModel.setChecked(true);
                photoPickerModel.setSource(MediaPickerAttachment.Source.CAMERA);
                newMediaAction.call(photoPickerModel);
-               unsubscribeCameraSubscription();
+               unsubscribeFromCameraSubscriptions();
             });
    }
 
@@ -248,13 +252,22 @@ public class PhotoStripDelegate {
       mediaPickerInteractor.mediaCaptureCanceledPipe()
             .observeSuccess()
             .compose(bindIoToMain(stopper))
-            .subscribe(type -> unsubscribeCameraSubscription());
+            .subscribe(type -> unsubscribeFromCameraSubscriptions());
    }
 
-   private void unsubscribeCameraSubscription() {
-      if (cameraSubscription != null && !cameraSubscription.isUnsubscribed()) {
-         cameraSubscription.unsubscribe();
-         cameraSubscription = null;
+   public void subscribeToCameraSubscriptions() {
+      subscribeToCapturedVideo();
+      subscribeToCapturedPhoto();
+   }
+
+   public void unsubscribeFromCameraSubscriptions() {
+      if (cameraPhotoSubscription != null && !cameraPhotoSubscription.isUnsubscribed()) {
+         cameraPhotoSubscription.unsubscribe();
+         cameraPhotoSubscription = null;
+      }
+      if (cameraVideoSubscription != null && !cameraVideoSubscription.isUnsubscribed()) {
+         cameraVideoSubscription.unsubscribe();
+         cameraVideoSubscription = null;
       }
    }
 

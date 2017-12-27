@@ -17,6 +17,13 @@ class FullscreenViewActivity : LegacyBaseActivity() {
       videoPlayerHolder.switchToFullscreenView(dtVideoView, false)
 
       dtVideoView.fullscreen = true
-      dtVideoView.fullscreenExitFunction = { finish() }
+      dtVideoView.fullscreenExitFunction = {
+         if (dtVideoView.isVideoFinished()) dtVideoView.videoFinished()
+         finish()
+      }
+      dtVideoView.videoFinishedFunction = {
+         dtVideoView.pauseVideo()
+         dtVideoView.resetProgress()
+      }
    }
 }

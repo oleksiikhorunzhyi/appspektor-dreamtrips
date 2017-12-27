@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,15 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
             recyclerView.scrollBy(0, 1);
          }
       });
+
+      removePreviousAdditionalFragment();
+   }
+
+   private void removePreviousAdditionalFragment() {
+      Fragment fragment = additionalInfoFragment();
+      if (!isTabletLandscape() && fragment != null) {
+         getChildFragmentManager().beginTransaction().remove(fragment).commitNow();
+      }
    }
 
    private void updateStickyInputContainerState() {
@@ -168,7 +178,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    private void showAdditionalInfoIfNeeded() {
       User user = feedItem.getItem().getOwner();
       showAdditionalContainerIfNeeded();
-      if (!isAdditionalInfoFragmentAttached() && isShowAdditionalInfo()) {
+      if (additionalInfoFragment() == null && isShowAdditionalInfo()) {
          router.moveTo(FeedItemAdditionalInfoFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())
@@ -193,9 +203,8 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       return getArgs().shouldShowAdditionalInfo() && !getPresenter().isTrip() && isTabletLandscape();
    }
 
-   private boolean isAdditionalInfoFragmentAttached() {
-      return getActivity().getSupportFragmentManager()
-            .findFragmentById(R.id.comments_additional_info_container) != null;
+   private Fragment additionalInfoFragment() {
+      return getChildFragmentManager().findFragmentById(R.id.comments_additional_info_container);
    }
 
    @Override

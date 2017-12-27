@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
+import timber.log.Timber;
 
 @Layout(R.layout.layout_post)
 public class CreateEntityFragment extends ActionEntityFragment<CreateEntityPresenter, CreateEntityBundle>
@@ -39,7 +40,10 @@ public class CreateEntityFragment extends ActionEntityFragment<CreateEntityPrese
    @InjectView(R.id.photo_strip) PhotoStripView photoStripView;
 
    @State boolean pickerDisabled;
+   @State protected boolean mediaPickerShown;
    @State boolean imageFromArgsAlreadyAttached;
+
+   private MediaPickerDialog mediaPickerDialog;
 
    @Override
    public void afterCreateView(View rootView) {
@@ -69,6 +73,18 @@ public class CreateEntityFragment extends ActionEntityFragment<CreateEntityPrese
    public void onViewCreated(View view, Bundle savedInstanceState) {
       super.onViewCreated(view, savedInstanceState);
       attachImages();
+      if (mediaPickerShown) {
+         getPresenter().showPickerSkipPermission();
+      }
+   }
+
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
+      //fix memory leak after rotation
+      if (mediaPickerDialog != null) {
+         mediaPickerDialog.dismiss();
+      }
    }
 
    @Override
@@ -150,8 +166,13 @@ public class CreateEntityFragment extends ActionEntityFragment<CreateEntityPrese
 
    @Override
    public void showMediaPicker(int photoPickLimit, int videoPickLimit, int maxVideoDuration) {
-      final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
-      mediaPickerDialog.setOnDoneListener(getPresenter()::attachMedia);
+      mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerShown = true;
+      mediaPickerDialog.setOnDoneListener(media -> {
+         Timber.d("Media attached, %s", media);
+         getPresenter().attachMedia(media);
+         mediaPickerShown = false;
+      });
       mediaPickerDialog.show(photoPickLimit, videoPickLimit, maxVideoDuration);
    }
 

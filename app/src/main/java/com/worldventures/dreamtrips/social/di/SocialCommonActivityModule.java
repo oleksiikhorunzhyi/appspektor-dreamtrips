@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmen
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.social.ui.activity.ConfigChangesAwareComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.activity.TransparentSocialComponentActivity;
@@ -23,6 +24,7 @@ import dagger.Provides;
       SocialMainActivity.class,
       ShareFragment.class,
       SocialComponentActivity.class,
+      ConfigChangesAwareComponentActivity.class,
       TransparentSocialComponentActivity.class,
       ComponentPresenter.class,
       ProgressDialogFragment.class,

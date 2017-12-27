@@ -57,8 +57,13 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
       updateVideoHeight(getModelObject().getItem());
       dtVideoView.setThumbnail(getModelObject().getItem().getThumbnail());
       dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
-      if (videoPlayerHolder.inFullscreen()) {
-         playVideoIfNeeded();
+      if (!displayingInList && playerExistsAndCurrentItemIsSame(getModelObject().getItem())) {
+         if (videoPlayerHolder.inFullscreen()) {
+            switchFromFullscreen();
+         } else {
+            reattachVideoView();
+            dtVideoView.pauseVideo();
+         }
       }
    }
 
@@ -96,17 +101,29 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
 
    private void playVideoIfNeeded() {
       Video video = getModelObject().getItem();
-      if (videoPlayerHolder.getCurrentVideoConfig() != null
-            && video.getUid().equals(videoPlayerHolder.getCurrentVideoConfig().getUid())) {
+      if (playerExistsAndCurrentItemIsSame(video)) {
          if (videoPlayerHolder.inFullscreen()) {
-            videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList);
+            switchFromFullscreen();
          } else {
-            videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList
-                  || videoPlayerHolder.getCurrentVideoConfig().getMute());
+            reattachVideoView();
          }
       } else {
          dtVideoView.playVideo(new DTVideoConfig(video.getUid(), displayingInList, video.getQualities(), 0));
       }
+   }
+
+   private void switchFromFullscreen() {
+      videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList);
+   }
+
+   private boolean playerExistsAndCurrentItemIsSame(Video video) {
+      return videoPlayerHolder.getCurrentVideoConfig() != null
+            && video.getUid().equals(videoPlayerHolder.getCurrentVideoConfig().getUid());
+   }
+
+   private void reattachVideoView() {
+      videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList
+            || videoPlayerHolder.getCurrentVideoConfig().getMute());
    }
 
    @Override

@@ -63,17 +63,17 @@ class ConfigurationConverter : Converter<com.worldventures.dreamtrips.api.config
    override fun targetClass() = Configuration::class.java
 
    companion object {
-      private val SCOPE_NAME = "APPLICATION"
-      private val CATEGORY_NAME_VERSION = "version"
-      private val CATEGORY_NAME_VIDEO = "video"
-      private val CATEGORY_BANNER = "travel_banner"
+      val SCOPE_NAME = "APPLICATION"
+      val CATEGORY_NAME_VERSION = "version"
+      val CATEGORY_NAME_VIDEO = "video"
+      val CATEGORY_BANNER = "travel_banner"
 
-      private val CONFIG_NAME_ANDROID_VERSION = "android_version"
-      private val CONFIG_NAME_ANDROID_DATE = "android_date"
-      private val CONFIG_NAME_VIDEO_LENGTH = "android_max_selectable_video_duration"
-      private val CONFIG_TRAVEL_BANNER_TITLE = "travel_banner_title"
-      private val CONFIG_TRAVEL_BANNER_URL = "travel_banner_url"
-      private val CONFIG_TRAVEL_BANNER_ENABLED = "travel_banner_enabled"
-      private val MILLISECONDS_IN_SECOND = 1000
+      val CONFIG_NAME_ANDROID_VERSION = "android_version"
+      val CONFIG_NAME_ANDROID_DATE = "android_date"
+      val CONFIG_NAME_VIDEO_LENGTH = "android_max_selectable_video_duration"
+      val CONFIG_TRAVEL_BANNER_TITLE = "travel_banner_title"
+      val CONFIG_TRAVEL_BANNER_URL = "travel_banner_url"
+      val CONFIG_TRAVEL_BANNER_ENABLED = "travel_banner_enabled"
+      val MILLISECONDS_IN_SECOND = 1000
    }
 }

@@ -10,34 +10,28 @@ import com.worldventures.dreamtrips.social.service.friends.interactor.command.Ge
 import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetMutualFriendsCommand
 import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetRequestsCommand
 import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.UserPaginationCommand
 import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.ChangeCirclesCommand
+import com.worldventures.dreamtrips.social.service.friends.storage.command.UserStorageCommand
 
 import javax.inject.Inject
 
-import io.techery.janet.ActionPipe
 import rx.schedulers.Schedulers
 
 class FriendsInteractor @Inject constructor(sessionActionPipeCreator: SessionActionPipeCreator) {
-   val deleteRequestPipe: ActionPipe<DeleteFriendRequestCommand>
-         = sessionActionPipeCreator.createPipe(DeleteFriendRequestCommand::class.java, Schedulers.io())
-   val acceptRequestPipe: ActionPipe<ActOnFriendRequestCommand.Accept>
-         = sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Accept::class.java, Schedulers.io())
-   val rejectRequestPipe: ActionPipe<ActOnFriendRequestCommand.Reject>
-         = sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Reject::class.java, Schedulers.io())
-   val acceptAllPipe: ActionPipe<AcceptAllFriendRequestsCommand>
-         = sessionActionPipeCreator.createPipe(AcceptAllFriendRequestsCommand::class.java, Schedulers.io())
-   val removeFriendPipe: ActionPipe<RemoveFriendCommand>
-         = sessionActionPipeCreator.createPipe(RemoveFriendCommand::class.java, Schedulers.io())
-   val addFriendPipe: ActionPipe<AddFriendCommand>
-         = sessionActionPipeCreator.createPipe(AddFriendCommand::class.java, Schedulers.io())
-   val friendsPipe: ActionPipe<GetFriendsCommand>
-         = sessionActionPipeCreator.createPipe(GetFriendsCommand::class.java, Schedulers.io())
-   val likersPipe: ActionPipe<GetLikersCommand>
-         = sessionActionPipeCreator.createPipe(GetLikersCommand::class.java, Schedulers.io())
-   val mutualFriendsPipe: ActionPipe<GetMutualFriendsCommand>
-         = sessionActionPipeCreator.createPipe(GetMutualFriendsCommand::class.java, Schedulers.io())
-   val searchUsersPipe: ActionPipe<GetSearchUsersCommand>
-         = sessionActionPipeCreator.createPipe(GetSearchUsersCommand::class.java, Schedulers.io())
-   val requestsPipe: ActionPipe<GetRequestsCommand>
-         = sessionActionPipeCreator.createPipe(GetRequestsCommand::class.java, Schedulers.io())
+   val deleteRequestPipe = sessionActionPipeCreator.createPipe(DeleteFriendRequestCommand::class.java, Schedulers.io())
+   val acceptRequestPipe = sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Accept::class.java, Schedulers.io())
+   val rejectRequestPipe = sessionActionPipeCreator.createPipe(ActOnFriendRequestCommand.Reject::class.java, Schedulers.io())
+   val acceptAllPipe = sessionActionPipeCreator.createPipe(AcceptAllFriendRequestsCommand::class.java, Schedulers.io())
+   val removeFriendPipe = sessionActionPipeCreator.createPipe(RemoveFriendCommand::class.java, Schedulers.io())
+   val addFriendPipe = sessionActionPipeCreator.createPipe(AddFriendCommand::class.java, Schedulers.io())
+   val friendsPipe = sessionActionPipeCreator.createPipe(GetFriendsCommand::class.java, Schedulers.io())
+   val likersPipe = sessionActionPipeCreator.createPipe(GetLikersCommand::class.java, Schedulers.io())
+   val mutualFriendsPipe = sessionActionPipeCreator.createPipe(GetMutualFriendsCommand::class.java, Schedulers.io())
+   val searchUsersPipe = sessionActionPipeCreator.createPipe(GetSearchUsersCommand::class.java, Schedulers.io())
+   val requestsPipe = sessionActionPipeCreator.createPipe(GetRequestsCommand::class.java, Schedulers.io())
+   val userPaginationPipe = sessionActionPipeCreator.createPipe(UserPaginationCommand::class.java)
+   val storageCommand = sessionActionPipeCreator.createPipe(UserStorageCommand::class.java)
+   val changeCirclePipe = sessionActionPipeCreator.createPipe(ChangeCirclesCommand::class.java)
 }

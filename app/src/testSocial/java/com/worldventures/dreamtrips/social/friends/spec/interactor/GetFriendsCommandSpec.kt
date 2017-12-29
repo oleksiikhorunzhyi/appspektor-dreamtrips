@@ -44,7 +44,7 @@ class GetFriendsCommandSpec : BaseSpec({
          }
 
          it("Should inform that pagination can be proceed") {
-            AssertUtil.assertActionSuccess(sendCommand(2)) { it.result.size > 0 }
+            AssertUtil.assertActionSuccess(sendCommand(2)) { it.result.isNotEmpty() }
          }
       }
 

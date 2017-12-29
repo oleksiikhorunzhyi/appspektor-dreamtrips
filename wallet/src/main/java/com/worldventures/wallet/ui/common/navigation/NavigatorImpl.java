@@ -82,6 +82,7 @@ import com.worldventures.wallet.ui.wizard.records.SyncAction;
 import com.worldventures.wallet.ui.wizard.records.finish.impl.PaymentSyncFinishScreenImpl;
 import com.worldventures.wallet.ui.wizard.records.sync.impl.SyncRecordsScreenImpl;
 import com.worldventures.wallet.ui.wizard.splash.impl.WizardSplashScreenImpl;
+import com.worldventures.wallet.ui.wizard.termsandconditionals.AgreementMode;
 import com.worldventures.wallet.ui.wizard.termsandconditionals.impl.WizardTermsScreenImpl;
 import com.worldventures.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectScreenImpl;
 import com.worldventures.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
@@ -202,8 +203,13 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
+   public void goWizardAffidavit() {
+      single(WizardTermsScreenImpl.Companion.create(AgreementMode.AFFIDAVIT));
+   }
+
+   @Override
    public void goWizardTerms() {
-      single(new WizardTermsScreenImpl());
+      single(WizardTermsScreenImpl.Companion.create(AgreementMode.TAC));
    }
 
    @Override

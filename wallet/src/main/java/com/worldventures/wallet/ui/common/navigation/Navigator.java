@@ -55,6 +55,8 @@ public interface Navigator {
 
    void goWizardChecks();
 
+   void goWizardAffidavit();
+
    void goWizardTerms();
 
    void goWizardSplash();

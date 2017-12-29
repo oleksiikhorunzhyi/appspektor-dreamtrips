@@ -80,7 +80,11 @@
 
    <!--splash-->
    <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
-   <string name="wallet_wizard_splash_accept_user_agreement">Please accept the user agreement.</string>
+
+   <!--agreements-->
+   <string name="wallet_wizard_splash_accept_head">Please accept the %1$s.</string>
+   <string name="wallet_wizard_splash_accept_tail_agreement">user agreement</string>
+   <string name="wallet_wizard_splash_accept_tail_affidavit">Affidavit\'s conditions</string>
 
    <string name="wallet_wizard_scan_proposal">Scan the barcode on the back of your Smart Card.</string>
    <string name="wallet_wizard_scan_start_btn">Scan Barcode</string>
@@ -247,6 +251,7 @@
    <string name="wallet_charging_swiping_screen_notes">Be sure your Smart Card is turned on\nand the charger LED is on.</string>
    <string name="wallet_wizard_charging_swipe_error">Incorrect card reading. Try again</string>
    <string name="wallet_terms_and_conditions_header">User Agreement</string>
+   <string name="wallet_affidavit_header">Beta Affidavit</string>
    <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
    <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve user agreement</string>
    <string name="wallet_add_card_swipe_success">Successfully swipe. Loading&#8230;</string>

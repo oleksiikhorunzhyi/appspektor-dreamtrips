@@ -23,9 +23,7 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDet
 import com.worldventures.dreamtrips.social.domain.mapping.CircleConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FeedMetaDataConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ImageConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.InspirationModelsConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.MemberImageConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagsParamsConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.PhotoUpdateParamsConverter;
@@ -133,12 +131,6 @@ public class SocialMappingModule {
    @Singleton
    Converter provideTripImageConverter() {
       return new TripImageConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideMemberImageConverter() {
-      return new MemberImageConverter();
    }
 
    @Provides(type = Provides.Type.SET)
@@ -404,12 +396,6 @@ public class SocialMappingModule {
    @Singleton
    Converter provideSuccessStoryConverter() {
       return new SuccessStoryConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideImageConverter() {
-      return new ImageConverter();
    }
 
    @Provides(type = Provides.Type.SET)

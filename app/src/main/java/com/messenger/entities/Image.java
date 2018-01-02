@@ -1,14 +1,10 @@
-package com.worldventures.dreamtrips.social.ui.tripsimages.model;
+package com.messenger.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.esotericsoftware.kryo.DefaultSerializer;
-import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-
 import java.io.Serializable;
 
-@DefaultSerializer(CompatibleFieldSerializer.class)
 public class Image implements Parcelable, Serializable {
 
    public static final Creator<Image> CREATOR = new Creator<Image>() {

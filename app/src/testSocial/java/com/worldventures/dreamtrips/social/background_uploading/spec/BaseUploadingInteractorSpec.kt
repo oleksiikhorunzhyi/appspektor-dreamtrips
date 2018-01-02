@@ -25,7 +25,7 @@ import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
 import rx.schedulers.Schedulers
-import java.util.*
+import java.util.ArrayList
 
 abstract class BaseUploadingInteractorSpec(spekBody: SpecBody.() -> Unit) : BaseSpec(spekBody) {
    companion object {
@@ -63,8 +63,8 @@ abstract class BaseUploadingInteractorSpec(spekBody: SpecBody.() -> Unit) : Base
       }
 
       fun mockPhoto(): Photo {
-         val photo: Photo = mock()
-         whenever(photo.location).thenReturn(Location())
+         val photo = Photo()
+         photo.location = Location()
          return photo
       }
 

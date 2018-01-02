@@ -22,17 +22,18 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCall
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
-import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YouShouldBeHerePresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YSBHPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.YsbhPagerArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.YsbhPhotoCell;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_images_list)
-public class YouShouldBeHereFragment extends BaseFragment<YouShouldBeHerePresenter>
-      implements YouShouldBeHerePresenter.View, SelectablePagerFragment {
+public class YSBHFragment extends BaseFragment<YSBHPresenter>
+      implements YSBHPresenter.View, SelectablePagerFragment {
 
    @InjectView(R.id.recyclerView) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipeLayout) SwipeRefreshLayout refreshLayout;
@@ -100,8 +101,8 @@ public class YouShouldBeHereFragment extends BaseFragment<YouShouldBeHerePresent
    }
 
    @Override
-   protected YouShouldBeHerePresenter createPresenter(Bundle savedInstanceState) {
-      return new YouShouldBeHerePresenter();
+   protected YSBHPresenter createPresenter(Bundle savedInstanceState) {
+      return new YSBHPresenter();
    }
 
 
@@ -110,7 +111,7 @@ public class YouShouldBeHereFragment extends BaseFragment<YouShouldBeHerePresent
       router.moveTo(YsbhViewPagerFragment.class, NavigationConfigBuilder
             .forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-            .data(new YsbhPagerArgs(photos, lastPageReached, selectedItemIndex))
+            .data(new YsbhPagerArgs(new ArrayList<>(photos), lastPageReached, selectedItemIndex))
             .build());
    }
 

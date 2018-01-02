@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
@@ -25,6 +24,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me.I
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.InspireMeViewPagerArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.InspirationPhotoCell;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -102,7 +102,7 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
       router.moveTo(InspireMeViewPagerFragment.class,
             NavigationConfigBuilder.forActivity()
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                  .data(new InspireMeViewPagerArgs(photos, randomSeed, lastPageReached, selectedItemIndex))
+                  .data(new InspireMeViewPagerArgs(new ArrayList<>(photos), randomSeed, lastPageReached, selectedItemIndex))
                   .build());
    }
 
@@ -122,11 +122,7 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
    }
 
    @Override
-   public void updatePhotos(List<Inspiration> items, boolean forceUpdate) {
-      if (forceUpdate) {
-         adapter.clear();
-      }
-
+   public void updatePhotos(List<Inspiration> items) {
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BaseDiffUtilCallback(adapter.getItems(), items));
       adapter.setItemsNoNotify(items);
       diffResult.dispatchUpdatesTo(adapter);

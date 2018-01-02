@@ -5,7 +5,9 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEnt
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetVideoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 
 import javax.inject.Inject;
@@ -24,6 +26,8 @@ public class FeedInteractor {
    private final ActionPipe<GetAccountTimelineCommand.Refresh> refreshAccountTimelinePipe;
    private final ActionPipe<GetAccountTimelineCommand.LoadNext> loadNextAccountTimelinePipe;
    private final ActionPipe<GetFeedEntityCommand> getFeedEntityPipe;
+   private final ActionPipe<GetPhotoCommand> getPhotoCommandPipe;
+   private final ActionPipe<GetVideoCommand> getVideoCommandPipe;
    private final ActionPipe<DeleteVideoCommand> deleteVideoPipe;
    private final ActionPipe<ChangeFeedEntityLikedStatusCommand> changeFeedEntityLikedStatusPipe;
 
@@ -42,6 +46,8 @@ public class FeedInteractor {
       loadNextAccountTimelinePipe = sessionActionPipeCreator.createPipe(GetAccountTimelineCommand.LoadNext.class,
             Schedulers.io());
       getFeedEntityPipe = sessionActionPipeCreator.createPipe(GetFeedEntityCommand.class, Schedulers.io());
+      getPhotoCommandPipe = sessionActionPipeCreator.createPipe(GetPhotoCommand.class, Schedulers.io());
+      getVideoCommandPipe = sessionActionPipeCreator.createPipe(GetVideoCommand.class, Schedulers.io());
       changeFeedEntityLikedStatusPipe = sessionActionPipeCreator.createPipe(ChangeFeedEntityLikedStatusCommand.class,
             Schedulers.io());
       deleteVideoPipe = sessionActionPipeCreator.createPipe(DeleteVideoCommand.class, Schedulers.io());
@@ -73,6 +79,14 @@ public class FeedInteractor {
 
    public ActionPipe<GetFeedEntityCommand> getFeedEntityPipe() {
       return getFeedEntityPipe;
+   }
+
+   public ActionPipe<GetPhotoCommand> getPhotoCommandPipe() {
+      return getPhotoCommandPipe;
+   }
+
+   public ActionPipe<GetVideoCommand> getVideoCommandPipe() {
+      return getVideoCommandPipe;
    }
 
    public ActionPipe<DeleteVideoCommand> deleteVideoPipe() {

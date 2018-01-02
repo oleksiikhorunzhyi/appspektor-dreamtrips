@@ -80,14 +80,14 @@ public class FeedEntityHolderDelegate {
                   .onSuccess(deletePostCommand -> feedEntityHolder.deleteFeedEntity(deletePostCommand.getResult()))
                   .onFail(errorAction::call));
 
-      tripImagesInteractor.editPhotoWithTagsCommandActionPipe()
+      tripImagesInteractor.getEditPhotoWithTagsCommandActionPipe()
             .observeWithReplay()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<EditPhotoWithTagsCommand>()
                   .onSuccess(deletePhotoCommand -> feedEntityHolder.updateFeedEntity(deletePhotoCommand.getResult()))
                   .onFail(errorAction::call));
 
-      tripImagesInteractor.deletePhotoPipe()
+      tripImagesInteractor.getDeletePhotoPipe()
             .observe()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()

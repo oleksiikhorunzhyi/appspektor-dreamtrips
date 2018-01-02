@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.podcast_player.service;
 
 import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendProgressAnalyticsIfNeed;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.SendProgressAnalyticsIfNeed;
 
 import javax.inject.Inject;
 

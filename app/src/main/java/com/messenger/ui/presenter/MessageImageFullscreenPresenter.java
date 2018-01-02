@@ -76,7 +76,7 @@ public class MessageImageFullscreenPresenter extends Presenter<MessageImageFulls
          return;
       }
       if (type.equals(ShareType.EXTERNAL_STORAGE)) {
-         tripImagesInteractor.downloadImageActionPipe()
+         tripImagesInteractor.getDownloadImageActionPipe()
                .createObservable(new DownloadImageCommand(photoAttachment.getUrl()))
                .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<DownloadImageCommand>()

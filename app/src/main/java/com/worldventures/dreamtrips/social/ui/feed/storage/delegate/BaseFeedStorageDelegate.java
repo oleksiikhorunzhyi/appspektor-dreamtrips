@@ -72,7 +72,7 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
                   .map(PostCreatedCommand::getFeedItem)
                   .map(AddToBeginningIfNotExistsStorageOperation::new),
 
-            tripImagesInteractor.deletePhotoPipe().observeSuccess()
+            tripImagesInteractor.getDeletePhotoPipe().observeSuccess()
                   .map(DeletePhotoCommand::getResult)
                   .map(UidItem::getUid)
                   .map(this::deleteItemOperation),
@@ -91,7 +91,7 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
                   .map(EditPostCommand::getResult)
                   .map(this::updateItemOperation),
 
-            tripImagesInteractor.editPhotoWithTagsCommandActionPipe().observeSuccess()
+            tripImagesInteractor.getEditPhotoWithTagsCommandActionPipe().observeSuccess()
                   .map(EditPhotoWithTagsCommand::getResult)
                   .map(this::updateItemOperation),
 

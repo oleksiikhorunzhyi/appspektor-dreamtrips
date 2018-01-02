@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.WatchVideoAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.reptools.view.fragment.TrainingVideosFragment;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.SendProgressAnalyticsIfNeed;
 import com.worldventures.dreamtrips.social.ui.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment;
 import com.worldventures.janet.injection.InjectableAction;

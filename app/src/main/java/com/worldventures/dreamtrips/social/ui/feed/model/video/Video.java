@@ -48,6 +48,10 @@ public class Video extends BaseFeedEntity implements Parcelable {
       return createdAt;
    }
 
+   public String getUploadId() {
+      return uploadId;
+   }
+
    public void setUploadId(String uploadId) {
       this.uploadId = uploadId;
    }

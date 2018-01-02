@@ -9,11 +9,7 @@ public class YSBHPhotoConverter implements Converter<com.worldventures.dreamtrip
 
    @Override
    public YSBHPhoto convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.ysbh.model.YSBHPhoto apiPhoto) {
-      YSBHPhoto ysbhPhoto = new YSBHPhoto();
-      ysbhPhoto.setId(apiPhoto.id());
-      ysbhPhoto.setTitle(apiPhoto.title());
-      ysbhPhoto.setUrl(apiPhoto.image().url());
-      return ysbhPhoto;
+      return new YSBHPhoto(apiPhoto.id(), apiPhoto.image().url(), apiPhoto.title());
    }
 
    @Override

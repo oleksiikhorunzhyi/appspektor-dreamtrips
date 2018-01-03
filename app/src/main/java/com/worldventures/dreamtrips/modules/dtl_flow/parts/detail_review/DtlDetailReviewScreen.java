@@ -21,4 +21,8 @@ public interface DtlDetailReviewScreen extends DtlScreen {
    String getMerchantId();
 
    boolean isFromListReview();
+
+   void showFlaggingSuccess();
+
+   void showFlaggingError();
 }

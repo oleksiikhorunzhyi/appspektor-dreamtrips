@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.config.ConfigurationModule;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
+import com.worldventures.dreamtrips.social.di.friends.UserAppModule;
 import com.worldventures.dreamtrips.social.ui.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.FeedAppModule;
@@ -40,6 +41,7 @@ import dagger.Provides;
             SocialInitializerModule.class,
             SocialMappingModule.class,
             SocialSnappyModule.class,
+            UserAppModule.class
       }
 )
 public class SocialAppModule {

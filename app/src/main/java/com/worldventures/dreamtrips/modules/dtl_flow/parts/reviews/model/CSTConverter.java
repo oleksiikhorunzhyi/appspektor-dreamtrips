@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 
+import org.joda.time.Period;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,73 +24,75 @@ public class CSTConverter {
 
       String info = "";
       Calendar calendar = getCorrectTime(timeWrote);
-      if (null != calendar) {
-         Calendar localCalendar = Calendar.getInstance();
-         Resources res = context.getResources();
-         int time = getDifferenceTime(localCalendar, calendar, Calendar.YEAR);
-         //Year
-         if (time > 0) {
-            if (time == 1) {
-               info = String.format(res.getString(R.string.year_ago_text), time);
-            } else {
-               info = String.format(res.getString(R.string.years_ago_text), time);
-            }
-
-         } else {
-            //Month
-            time = getDifferenceTime(localCalendar, calendar, Calendar.MONTH);
-            if (time > 0) {
-               if (time == 1) {
-                  info = String.format(res.getString(R.string.month_ago_text), time);
-               } else {
-                  info = String.format(res.getString(R.string.months_ago_text), time);
-               }
-
-            } else {
-               //Week
-               time = getDifferenceTime(localCalendar, calendar, Calendar.DAY_OF_WEEK_IN_MONTH);
-               if (time > 0) {
-                  if (time == 1) {
-                     info = String.format(res.getString(R.string.week_ago_text), time);
-                  } else {
-                     info = String.format(res.getString(R.string.weeks_ago_text), time);
-                  }
-               } else {
-                  //days
-                  time = getDifferenceTime(localCalendar, calendar, Calendar.DAY_OF_MONTH);
-                  if (time > 0) {
-                     if (time == 1) {
-                        info = String.format(res.getString(R.string.day_ago_text), time);
-                     } else {
-                        info = String.format(res.getString(R.string.days_ago_text), time);
-                     }
-                  } else {
-                     //hours
-                     time = getDifferenceTime(localCalendar, calendar, Calendar.HOUR_OF_DAY);
-                     if (time > 0) {
-                        if (time == 1) {
-                           info = String.format(res.getString(R.string.hour_ago_text), time);
-                        } else {
-                           info = String.format(res.getString(R.string.hours_ago_text), time);
-                        }
-                     } else {
-                        //min
-                        time = getDifferenceTime(localCalendar, calendar, Calendar.MINUTE);
-                        if (time > 0) {
-                           info = String.format(res.getString(R.string.min_ago_text), time);
-                        } else {
-                           //seg
-                           time = getDifferenceTime(localCalendar, calendar, Calendar.SECOND);
-                           if (time > 0) {
-                              info = String.format(res.getString(R.string.sec_ago_text), time);
-                           }
-                        }
-                     }
-                  }
-               } //dia
-            } //weeks
-         } //month
+      if (calendar == null) {
+         return info;
       }
+
+      Period period = new Period(calendar.getTimeInMillis(), Calendar.getInstance().getTimeInMillis());
+
+      Resources res = context.getResources();
+      //Year
+      int timeUnit = period.getYears();
+      if (timeUnit > 0) {
+         if (timeUnit == 1) {
+            info = String.format(res.getString(R.string.year_ago_text), timeUnit);
+         } else {
+            info = String.format(res.getString(R.string.years_ago_text), timeUnit);
+         }
+      } else {
+         //Month
+         timeUnit = period.getMonths();
+         if (timeUnit > 0) {
+            if (timeUnit == 1) {
+               info = String.format(res.getString(R.string.month_ago_text), timeUnit);
+            } else {
+               info = String.format(res.getString(R.string.months_ago_text), timeUnit);
+            }
+         } else {
+            //Week
+            timeUnit = period.getWeeks();
+            if (timeUnit > 0) {
+               if (timeUnit == 1) {
+                  info = String.format(res.getString(R.string.week_ago_text), timeUnit);
+               } else {
+                  info = String.format(res.getString(R.string.weeks_ago_text), timeUnit);
+               }
+            } else {
+               //days
+               timeUnit = period.getDays();
+               if (timeUnit > 0) {
+                  if (timeUnit == 1) {
+                     info = String.format(res.getString(R.string.day_ago_text), timeUnit);
+                  } else {
+                     info = String.format(res.getString(R.string.days_ago_text), timeUnit);
+                  }
+               } else {
+                  //hours
+                  timeUnit = period.getHours();
+                  if (timeUnit > 0) {
+                     if (timeUnit == 1) {
+                        info = String.format(res.getString(R.string.hour_ago_text), timeUnit);
+                     } else {
+                        info = String.format(res.getString(R.string.hours_ago_text), timeUnit);
+                     }
+                  } else {
+                     //min
+                     timeUnit = period.getMinutes();
+                     if (timeUnit > 0) {
+                        info = String.format(res.getString(R.string.min_ago_text), timeUnit);
+                     } else {
+                        //seg
+                        timeUnit = period.getSeconds();
+                        if (timeUnit > 0) {
+                           info = String.format(res.getString(R.string.sec_ago_text), timeUnit);
+                        }
+                     }
+                  }
+               }
+            } //dia
+         } //weeks
+      } //month
+
       return info;
    }
 
@@ -106,9 +110,5 @@ public class CSTConverter {
          Timber.e(e.getMessage());
       }
       return calendar;
-   }
-
-   private int getDifferenceTime(@NonNull Calendar localTime, @NonNull Calendar commentTime, int typeToCompare) {
-      return localTime.get(typeToCompare) - commentTime.get(typeToCompare);
    }
 }

@@ -34,8 +34,8 @@ public class VideoLocaleAdapter extends ArrayAdapter<VideoLocale> {
          view = layoutInflater.inflate(R.layout.item_wallet_video_locale, parent, false);
 
          holder = new ViewHolder();
-         holder.tvName = (TextView) view.findViewById(R.id.tv_name);
-         holder.ivFlag = (SimpleDraweeView) view.findViewById(R.id.iv_flag);
+         holder.tvName = view.findViewById(R.id.tv_name);
+         holder.ivFlag = view.findViewById(R.id.iv_flag);
 
          view.setTag(holder);
       } else {

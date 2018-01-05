@@ -40,7 +40,7 @@ class InspireMeViewPagerPresenterSpec : PresenterBaseSpec({
          setup(stubArgs(stubPhotos()), Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotos))
 
          presenter.subscribeToNewItems()
-         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.cachedCommand())
+         tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(RANDOM_SEED, 1))
 
          assertFalse(presenter.lastPageReached)
          assertFalse(presenter.loading)
@@ -53,7 +53,7 @@ class InspireMeViewPagerPresenterSpec : PresenterBaseSpec({
          setup(stubArgs(stubPhotos()), Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotos))
 
          presenter.subscribeToNewItems()
-         tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.cachedCommand())
+         tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(RANDOM_SEED, 1))
 
          assertTrue(presenter.lastPageReached)
          assertFalse(presenter.loading)
@@ -100,6 +100,8 @@ class InspireMeViewPagerPresenterSpec : PresenterBaseSpec({
 
 }) {
    companion object {
+
+      const val RANDOM_SEED = 0.1
 
       lateinit var presenter: InspireMeViewPagerPresenter
       lateinit var view: BaseImageViewPagerPresenter.View

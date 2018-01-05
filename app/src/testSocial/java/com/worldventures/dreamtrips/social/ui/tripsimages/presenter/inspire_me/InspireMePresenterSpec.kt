@@ -87,7 +87,7 @@ class InspireMePresenterSpec : PresenterBaseSpec({
          verify(view).finishLoading()
       }
 
-      xit("should load photos and refresh photos, last page reached") {
+      it("should load photos and refresh photos, last page reached") {
          val stubPhotosForSecondPage = stubPhotosForLastPage()
          val contract = Contract.of(GetInspireMePhotosCommand::class.java).result(stubPhotosForSecondPage)
          setup(contract)

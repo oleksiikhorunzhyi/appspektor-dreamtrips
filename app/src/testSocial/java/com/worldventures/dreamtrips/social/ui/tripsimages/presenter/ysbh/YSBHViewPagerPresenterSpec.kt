@@ -39,7 +39,7 @@ class YSBHViewPagerPresenterSpec : PresenterBaseSpec ({
          setup(stubArgs(stubPhotos()), Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotos))
 
          presenter.subscribeToNewItems()
-         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.cachedCommand())
+         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(1))
 
          assertFalse(presenter.lastPageReached)
          assertFalse(presenter.loading)
@@ -52,7 +52,7 @@ class YSBHViewPagerPresenterSpec : PresenterBaseSpec ({
          setup(stubArgs(stubPhotos()), Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotos))
 
          presenter.subscribeToNewItems()
-         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.cachedCommand())
+         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(1))
 
          assertTrue(presenter.lastPageReached)
          assertFalse(presenter.loading)

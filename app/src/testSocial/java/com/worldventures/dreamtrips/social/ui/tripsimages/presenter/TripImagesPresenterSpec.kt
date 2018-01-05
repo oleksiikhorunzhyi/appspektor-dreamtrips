@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.BaseMe
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetMemberMediaCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetUsersMediaCommand
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.ImmutablePaginationParams
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs
 import io.techery.janet.ActionState
@@ -43,6 +44,7 @@ import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 import java.util.ArrayList
+import java.util.Date
 
 class TripImagesPresenterSpec : PresenterBaseSpec({
    describe("Trip images presenter") {
@@ -140,7 +142,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec({
 
             presenter.currentItems = ArrayList()
             presenter.subscribeToTripImages()
-            tripImagesInteractor.baseTripImagesPipe.send(GetMemberMediaCommand(args, false)
+            tripImagesInteractor.baseTripImagesPipe.send(GetUsersMediaCommand(args, paginationParams)
                   .apply { isReload = true })
 
             assert(presenter.currentItems.isNotEmpty())
@@ -157,7 +159,8 @@ class TripImagesPresenterSpec : PresenterBaseSpec({
 
             presenter.currentItems = ArrayList()
             presenter.subscribeToTripImages()
-            tripImagesInteractor.baseTripImagesPipe.send(GetMemberMediaCommand(args, false)
+
+            tripImagesInteractor.baseTripImagesPipe.send(GetUsersMediaCommand(args, paginationParams)
                   .apply { isLoadMore = true })
 
             assert(presenter.currentItems.isNotEmpty())
@@ -174,7 +177,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec({
 
             presenter.currentItems = ArrayList()
             presenter.subscribeToTripImages()
-            tripImagesInteractor.baseTripImagesPipe.send(GetMemberMediaCommand(args, false)
+            tripImagesInteractor.baseTripImagesPipe.send(GetUsersMediaCommand(args, paginationParams)
                   .apply { isReload = false; isLoadMore = true })
 
             assert(presenter.currentItems.isNotEmpty())
@@ -242,6 +245,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec({
       val stubTextualPost = stubTextualPost()
       val stubPostCompoundOperationModel = provideCompoundOperation()
       val postCompoundOperations = listOf(stubPostCompoundOperationModel)
+      val paginationParams: GetMemberMediaCommand.PaginationParams = ImmutablePaginationParams.builder().before(Date()).perPage((PAGE_SIZE)).build()
 
       lateinit var presenter: TripImagesPresenter
       lateinit var view: TripImagesPresenter.View

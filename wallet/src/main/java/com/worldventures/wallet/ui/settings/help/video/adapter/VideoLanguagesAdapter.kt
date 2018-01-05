@@ -22,6 +22,7 @@ class VideoLanguagesAdapter(context: Context, private val data: List<VideoLangua
       return currentView
    }
 
+   @Suppress("UnsafeCast")
    private fun prepareView(view: View?, parent: ViewGroup): Pair<View, ViewHolder> {
       return if (view == null) {
          val newView = layoutInflater.inflate(R.layout.item_wallet_video_language, parent, false)

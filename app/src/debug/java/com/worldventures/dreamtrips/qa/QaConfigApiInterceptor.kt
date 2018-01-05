@@ -23,7 +23,10 @@ internal class QaConfigApiInterceptor(
          apiHosts.transactions.host() -> qaConfig.transactionsUrl
          else -> null
       })
-      newHost?.let { url.host(it.host()) }
+      newHost?.let {
+         url.host(it.host())
+         url.port(it.port())
+      }
 
       qaConfig.sessionId?.let { headers.add("X-Session-id", it) }
 

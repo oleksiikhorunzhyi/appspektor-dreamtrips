@@ -8,10 +8,8 @@ ext {
 
    moduleDependencies.repos = [
          { it.maven { url 'http://dl.bintray.com/techery/android' } },
-         { it.maven { url 'http://dl.bintray.com/populov/maven' } },
          { it.maven { url 'http://dl.bintray.com/amulyakhare/maven' } },
          { it.maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' } },
-         { it.maven { url 'https://mvn.jwplayer.com/content/repositories/releases/' } },
          { it.maven { url 'http://repository.jetbrains.com/all' } },
          { it.flatDir { dirs 'libs' } }
    ]
@@ -66,8 +64,6 @@ ext {
    ]
    // media
    moduleDependencies.media = [
-         ijkPlayer     : [impl: 'io.techery:ijkmediaplayer:0.4.0@aar'],
-         ijkWidget     : [impl: 'io.techery:ijkmediawidget:0.4.0@aar'],
          barcodescanner: [impl: 'me.dm7.barcodescanner:zxing:1.9'],
          picasso       : [impl: 'com.squareup.picasso:picasso:2.5.2'],
    ]

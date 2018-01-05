@@ -15,6 +15,10 @@ public class Quality implements Parcelable, Serializable {
       this.url = url;
    }
 
+   public Quality(String url) {
+      this(null, url);
+   }
+
    protected Quality(Parcel in) {
       name = in.readString();
       url = in.readString();

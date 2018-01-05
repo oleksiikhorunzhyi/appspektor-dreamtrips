@@ -128,7 +128,7 @@ public class WalletHelpVideoPresenterImpl extends WalletPresenterImpl<WalletHelp
    @Override
    public void onPlayVideo(WalletVideoModel videoModel) {
       final Uri videoUri = helpVideoDelegate.playVideo(videoModel);
-      getNavigator().goVideoPlayer(videoUri, videoModel.getVideo().getVideoName(),
+      getNavigator().goVideoPlayer(videoUri, videoModel.getVideo().getUid(), videoModel.getVideo().getVideoName(),
             getClass(), helpVideoDelegate.obtainVideoLanguage(videoModel));
    }
 

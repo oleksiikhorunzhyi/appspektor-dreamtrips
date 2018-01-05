@@ -27,8 +27,8 @@ import com.worldventures.wallet.ui.records.detail.impl.CardDetailsEnterAnimHandl
 import com.worldventures.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
 import com.worldventures.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.wallet.ui.settings.general.about.impl.AboutScreenImpl;
-import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSettingsScreenImpl;
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.firmware.download.impl.WalletDownloadFirmwareScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.install.impl.WalletInstallFirmwareScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.installsuccess.impl.WalletSuccessInstallFirmwareScreenImpl;
@@ -494,8 +494,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage) {
-      coreNavigator.goVideoPlayer(uri, videoName, launchComponent, videoLanguage);
+   public void goVideoPlayer(Uri uri, String uid, String videoName, Class launchComponent, String videoLanguage) {
+      coreNavigator.goVideoPlayer(uri, uid, videoName, launchComponent, videoLanguage);
    }
 
    @Override

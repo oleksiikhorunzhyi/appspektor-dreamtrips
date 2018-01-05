@@ -175,7 +175,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
          parse = Uri.parse(cachedModelHelper.getFilePath(videoEntity.getUrl()));
       }
 
-      activityRouter.openPlayerActivity(parse, video.getVideoName(), obtainVideoLanguage(video), getClass());
+      activityRouter.openPlayerActivity(parse, video.getUid(), video.getVideoName(), obtainVideoLanguage(video), getClass());
 
       sendVideoStartedPlayingAnalytics(video);
    }

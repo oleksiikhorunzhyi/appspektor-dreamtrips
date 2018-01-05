@@ -144,6 +144,10 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
 
    fun resetProgress() = simpleExoPlayerView.player?.seekTo(0)
 
+   fun getVideoDuration() = if (simpleExoPlayerView.player != null) simpleExoPlayerView.player.duration else 0
+
+   fun getCurrentPosition() = if (simpleExoPlayerView.player != null) simpleExoPlayerView.player.currentPosition else 0
+
    override fun detachPlayer() {
       videoHolder.currentVideoView = null
       simpleExoPlayerView.player = null
@@ -158,7 +162,12 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
       videoHolder.currentVideoConfig = videoConfig
       if (videoConfig.mute) muteButton.setImageResource(R.drawable.ic_player_muted)
       else muteButton.setImageResource(R.drawable.ic_player_unmuted)
-      qualitySwitchTextView.text = videoConfig.qualities[videoConfig.selectedQualityPosition].name.toUpperCase()
+
+      if (videoConfig.qualities.size == 1) {
+         findViewById<View>(R.id.video_view_quality_text_view_container).visibility = View.GONE
+      } else {
+         qualitySwitchTextView.text = videoConfig.qualities[videoConfig.selectedQualityPosition].name.toUpperCase()
+      }
    }
 
    fun hideFullscreenButton() {

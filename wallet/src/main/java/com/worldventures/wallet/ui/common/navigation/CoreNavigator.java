@@ -11,7 +11,7 @@ public interface CoreNavigator {
 
    void goFeedBackImageAttachments(int position, List<FeedbackImageAttachment> attachments);
 
-   void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage);
+   void goVideoPlayer(Uri uri, String uid, String videoName, Class launchComponent, String videoLanguage);
 
    void openLoginActivity();
 }

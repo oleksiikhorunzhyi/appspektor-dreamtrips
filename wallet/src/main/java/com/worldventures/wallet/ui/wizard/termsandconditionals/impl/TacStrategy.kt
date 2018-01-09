@@ -7,16 +7,14 @@ import com.worldventures.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
 import com.worldventures.wallet.ui.common.navigation.Navigator
-import com.worldventures.wallet.ui.wizard.termsandconditionals.AgreementStrategy
 import com.worldventures.wallet.ui.wizard.termsandconditionals.WizardTermsScreen
 import io.techery.janet.operationsubscriber.OperationActionSubscriber
 import rx.android.schedulers.AndroidSchedulers
 
-
 class TacStrategy(private val analyticsInteractor: WalletAnalyticsInteractor,
-                  private val wizardInteractor: WizardInteractor): AgreementStrategy {
+                  private val wizardInteractor: WizardInteractor) : AgreementDelegate {
 
-   override fun init() {
+   override fun trackScreen() {
       analyticsInteractor.walletAnalyticsPipe().send(WalletAnalyticsCommand(TermsAction()))
    }
 

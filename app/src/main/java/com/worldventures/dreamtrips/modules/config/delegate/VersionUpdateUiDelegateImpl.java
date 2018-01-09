@@ -9,6 +9,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.qa.QaAppConfig;
 
 import timber.log.Timber;
 
@@ -16,15 +17,17 @@ public class VersionUpdateUiDelegateImpl implements VersionUpdateUiDelegate {
 
    private final Activity activity;
    private final SnappyRepository snappyRepository;
+   private final QaAppConfig qaAppConfig;
 
-   public VersionUpdateUiDelegateImpl(Activity activity, SnappyRepository snappyRepository) {
+   public VersionUpdateUiDelegateImpl(Activity activity, SnappyRepository snappyRepository, QaAppConfig qaAppConfig) {
       this.activity = activity;
       this.snappyRepository = snappyRepository;
+      this.qaAppConfig = qaAppConfig;
    }
 
    @Override
    public void showOptionalUpdateDialog(long timestamp) {
-      if (BuildConfig.QA_AUTOMATION_MODE_ENABLED) {
+      if (!qaAppConfig.getEnableBlockingInteractions()) {
          return;
       }
       String dateFormatted = DateUtils.formatDateTime(activity, timestamp,
@@ -46,7 +49,7 @@ public class VersionUpdateUiDelegateImpl implements VersionUpdateUiDelegate {
 
    @Override
    public void showForceUpdateDialog() {
-      if (BuildConfig.QA_AUTOMATION_MODE_ENABLED) {
+      if (!qaAppConfig.getEnableBlockingInteractions()) {
          return;
       }
       new MaterialDialog.Builder(activity)

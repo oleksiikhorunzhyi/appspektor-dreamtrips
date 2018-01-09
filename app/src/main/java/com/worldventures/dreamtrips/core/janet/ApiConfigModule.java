@@ -6,8 +6,6 @@ import com.worldventures.dreamtrips.api.api_common.service.MonolithConfigData;
 import com.worldventures.dreamtrips.core.janet.api_lib.MonolithAuthData;
 import com.worldventures.dreamtrips.core.janet.api_lib.MonolithAuthDataProvider;
 import com.worldventures.dreamtrips.core.janet.api_lib.MonolithConfigDataProvider;
-import com.worldventures.dreamtrips.core.janet.cache.storage.TempSessionIdProvider;
-import com.worldventures.dreamtrips.core.janet.cache.storage.TempSessionIdProviderImpl;
 import com.worldventures.dreamtrips.mobilesdk.AuthProviders;
 import com.worldventures.dreamtrips.mobilesdk.ConfigProviders;
 import com.worldventures.dreamtrips.mobilesdk.ImmutableAuthProviders;
@@ -51,9 +49,4 @@ public class ApiConfigModule {
             .build();
    }
 
-   @Singleton
-   @Provides
-   TempSessionIdProvider tempSessionIdProvider() {
-      return new TempSessionIdProviderImpl();
-   }
 }

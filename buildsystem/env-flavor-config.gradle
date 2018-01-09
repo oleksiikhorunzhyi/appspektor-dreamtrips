@@ -79,12 +79,8 @@ ext {
          "$flavors.codes.integration"                                           : [
                appParams: [
                      api: [
-                           DreamTripsApi    : [String: (project.hasProperty('api_endpoint') ? "\"${project.getProperties().get('api_endpoint')}\""
-                                 : '"http://techery-dt-integration.techery.io/"')
-                           ],
-                           UPLOADERY_API_URL: [String: (project.hasProperty('api_uploadery') ? "\"${project.getProperties().get('api_uploadery')}\""
-                                 : '"http://techery-dt-integration-uploadery.techery.io"')
-                           ],
+                           DreamTripsApi    : [String: ('"http://techery-dt-integration.techery.io/"')],
+                           UPLOADERY_API_URL: [String: ('"http://techery-dt-integration-uploadery.techery.io"')],
                      ],
                ]
          ],

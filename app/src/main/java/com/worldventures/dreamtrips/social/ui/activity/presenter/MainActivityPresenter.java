@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.activity.presenter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
+import com.worldventures.dreamtrips.qa.QaConfig;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.LaunchUpdatingVideoProcessingCommand;
 
@@ -15,6 +15,7 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
    @Inject RootComponentsProvider rootComponentsProvider;
    @Inject PingAssetStatusInteractor pingAssetStatusInteractor;
+   @Inject QaConfig qaConfig;
 
    @Override
    public void takeView(View view) {
@@ -25,10 +26,8 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
 
    private void checkGoogleServices() {
       int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-      if (code != ConnectionResult.SUCCESS) {
-         if (!BuildConfig.QA_AUTOMATION_MODE_ENABLED) {
-            GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
-         }
+      if (code != ConnectionResult.SUCCESS && qaConfig.getApp().getEnableBlockingInteractions()) {
+         GooglePlayServicesUtil.getErrorDialog(code, activity, 0).show();
       } else {
          activityRouter.startService(RegistrationIntentService.class);
       }

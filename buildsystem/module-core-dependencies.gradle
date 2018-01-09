@@ -141,7 +141,8 @@ ext {
          dagger           : [api: "com.squareup.dagger:dagger:$daggerVersion"],
          daggerProcessor  : [a: "com.squareup.dagger:dagger-compiler:$daggerVersion"],
          daggerAnnotations: [api: 'javax.annotation:jsr250-api:1.0'],
-         daggerProguard   : [rap: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+         daggerProguard   : [rapAndroid: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+         // daggerProguard doesn't play nice with kap, so using java annotation processor instead
    ]
 
    coreDependencies.test = [

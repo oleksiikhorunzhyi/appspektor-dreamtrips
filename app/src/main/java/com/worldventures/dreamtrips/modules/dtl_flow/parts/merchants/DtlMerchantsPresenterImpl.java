@@ -37,10 +37,10 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableTransactionDetailActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
@@ -418,7 +418,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    public void navigateToCommentRating(Merchant merchant) {
-      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+      Flow.get(getContext()).set(new DtlReviewPath(merchant));
    }
 
    public void navigateToRatingList(Merchant merchant) {

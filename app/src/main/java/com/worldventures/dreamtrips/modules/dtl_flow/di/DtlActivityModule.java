@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.di;
 import com.google.gson.TypeAdapterFactory;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.module.FlowActivityModule;
-import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantMapInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
@@ -21,7 +20,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.MerchantWorkingHoursAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewDescription;
@@ -55,6 +53,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.Master
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsScreenImpl;
@@ -119,6 +120,8 @@ import dagger.Provides;
             DtlReviewsScreenImpl.class,
             DtlCommentReviewScreenImpl.class,
             DtlCommentReviewPresenterImpl.class,
+            DtlReviewScreenImpl.class,
+            DtlReviewPresenterImpl.class,
             DtlDetailReviewPresenterImpl.class,
             DtlDetailReviewScreenImpl.class,
             PostReviewDescription.class,
@@ -139,7 +142,7 @@ public class DtlActivityModule {
                   .registerSubtype(DtlFullscreenImagePath.class)
                   .registerSubtype(DtlLocationsPath.class)
                   .registerSubtype(DtlMerchantsPath.class)
-                  .registerSubtype(DtlCommentReviewPath.class)
+                  .registerSubtype(DtlReviewPath.class)
                   .registerSubtype(DtlLocationChangePath.class)
                   .registerSubtype(DtlLocationsSearchPath.class)
                   .registerSubtype(DtlStartPath.class)

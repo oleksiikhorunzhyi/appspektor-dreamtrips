@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.SendEmailAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TakeScreenshotAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
 
 import javax.inject.Inject;
@@ -82,7 +82,7 @@ public class DtlTransactionPresenterImpl extends DtlPresenterImpl<DtlTransaction
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<FullMerchantAction>()
                   .onStart(fullMerchantAction -> getView().showLoading())
-                  .onSuccess(action -> Flow.get(getContext()).set(new DtlCommentReviewPath(action.getResult())))
+                  .onSuccess(action -> Flow.get(getContext()).set(new DtlReviewPath(action.getResult())))
                   .onFail((fullMerchantAction, throwable) -> getView().showCouldNotShowMerchantDialog())
                   .onFinish(fullMerchantAction -> getView().hideLoading()));
       merchantsInteractor.load(transaction.getMerchantId());

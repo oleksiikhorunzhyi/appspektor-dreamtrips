@@ -51,8 +51,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAct
 import com.worldventures.dreamtrips.modules.dtl.service.action.GetPayInAppVideoCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
@@ -384,7 +384,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void goToCommentReview() {
-      Path path = new DtlCommentReviewPath(merchant);
+      Path path = new DtlReviewPath(merchant);
       History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
       historyBuilder.push(path);
       Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
@@ -396,7 +396,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       if (ReviewStorage.exists(getContext(), String.valueOf(user.getId()), merchant.id())) {
          getView().userHasPendingReview();
       } else {
-         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant));
+         Flow.get(getContext()).set(new DtlReviewPath(merchant));
       }
    }
 

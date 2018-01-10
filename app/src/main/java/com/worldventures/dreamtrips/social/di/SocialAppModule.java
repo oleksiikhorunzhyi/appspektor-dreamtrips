@@ -206,7 +206,7 @@ public class SocialAppModule {
             .key(HELP)
             .navMenuTitle(R.string.help)
             .toolbarTitle(R.string.help)
-            .icon(R.drawable.ic_help)
+            .icon(R.drawable.ic_help_selector)
             .fragmentClass(HelpFragment.class)
             .build();
    }

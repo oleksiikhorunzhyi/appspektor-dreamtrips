@@ -1,17 +1,15 @@
-package com.worldventures.wallet.service.impl
+package com.worldventures.core.service.location
 
 import android.location.Location
-import com.google.android.gms.location.LocationSettingsResult
-import com.worldventures.wallet.service.location.WalletDetectLocationService
 import rx.Observable
 
-class MockWalletLocationService(private val location: Location? = null) : WalletDetectLocationService {
+class MockDetectLocationService(private val location: Location? = null) : DetectLocationService {
 
    override fun isPermissionGranted(): Boolean = true
 
    override fun isEnabled(): Boolean = true
 
-   override fun fetchLastKnownLocationSettings(): Observable<LocationSettingsResult> = Observable.empty()
+   override fun fetchLastKnownLocationSettings(): Observable<SettingsResult> = Observable.empty()
 
    override fun observeLocationSettingState(): Observable<Boolean> = Observable.just(true)
 

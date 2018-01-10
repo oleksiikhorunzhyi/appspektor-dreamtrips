@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.janet.JanetUploaderyModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.repository.SnappyModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlAppModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
@@ -45,7 +46,6 @@ import dagger.Provides;
             ManagerModule.class,
             //
             ApiModule.class,
-            AmazonModule.class,
             //
             FragmentClassProviderModule.class,
             //
@@ -77,6 +77,8 @@ import dagger.Provides;
             FacebookAppModule.class,
             OldMediaPickerModule.class,
             SocialAppModule.class,
+            //
+            DtlAppModule.class,
       },
       library = true,
       complete = false,

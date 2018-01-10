@@ -5,7 +5,7 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
-import com.worldventures.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.core.service.location.DetectLocationService;
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 
 import io.techery.janet.Command;
@@ -18,7 +18,7 @@ public class LocationTrackingManager {
    private final SmartCardInteractor smartCardInteractor;
    private final SmartCardLocationInteractor locationInteractor;
    private final AuthInteractor authInteractor;
-   private final WalletDetectLocationService locationService;
+   private final DetectLocationService locationService;
    private final LostCardManager lostCardManager;
    private final SessionHolder sessionHolder;
 
@@ -26,7 +26,7 @@ public class LocationTrackingManager {
    private Subscription reloginSubscription;
 
    LocationTrackingManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         WalletDetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager,
+         DetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager,
          SessionHolder sessionHolder) {
       this.smartCardInteractor = smartCardInteractor;
       this.locationInteractor = locationInteractor;

@@ -1,4 +1,4 @@
-package com.worldventures.wallet.service.location;
+package com.worldventures.core.service.location;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

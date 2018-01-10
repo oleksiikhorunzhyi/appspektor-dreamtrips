@@ -13,7 +13,7 @@ import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.SmartCardLocationInteractor
 import com.worldventures.wallet.service.command.reset.WipeSmartCardDataCommand
-import com.worldventures.wallet.service.impl.MockWalletLocationService
+import com.worldventures.core.service.location.MockDetectLocationService
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand
 import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand
 import com.worldventures.wallet.ui.common.BaseTest
@@ -45,7 +45,7 @@ class LocationTrackingManagerTest : BaseTest() {
    private val sessionHolder: SessionHolder = mock()
 
    private fun createLocationTrackingManager(lostCardManager: LostCardManager) = LocationTrackingManager(
-         smartCardInteractor, locationInteractor, MockWalletLocationService(), authInteractor, lostCardManager,
+         smartCardInteractor, locationInteractor, MockDetectLocationService(), authInteractor, lostCardManager,
          sessionHolder)
 
    private fun createUserSession() {

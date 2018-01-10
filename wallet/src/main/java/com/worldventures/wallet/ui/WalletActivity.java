@@ -88,7 +88,7 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
    public Object getSystemService(@NonNull String name) {
       if (WalletCropImageService.SERVICE_NAME.equals(name)) {
          return cropImageService;
-      } else if (LocationScreenComponent.COMPONENT_NAME.equals(name)) {
+      } else if (LocationScreenComponent.Companion.getCOMPONENT_NAME().equals(name)) {
          return locationSettingsService;
       }
       return super.getSystemService(name);

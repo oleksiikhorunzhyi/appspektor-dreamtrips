@@ -3,7 +3,7 @@ ext {
    mobileSdkVersion = '1.2.4'
    okhttp3Version = '3.5.0'
    googleLibrariesVersion = '26.1.0'
-   googleServicesVersion = '11.2.0'
+   googleServicesVersion = '11.8.0'
    mosbyVersion = '2.0.0'
 
    def jodaTimeVersion = '2.9.9'

@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -29,9 +27,9 @@ import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.custom.ToucheableMapView;
 import com.worldventures.core.ui.view.fragment.FragmentHelper;
+import com.worldventures.core.utils.GoogleApiCheckUtilKt;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
@@ -117,14 +115,14 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
    @Override
    public void afterCreateView(View rootView) {
-      mapView = (ToucheableMapView) rootView.findViewById(R.id.map);
-      if (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) != ConnectionResult.SUCCESS) {
-         mapView.setVisibility(View.GONE);
-         noGoogleContainer.setVisibility(View.VISIBLE);
-      } else {
+      mapView = rootView.findViewById(R.id.map);
+      GoogleApiCheckUtilKt.checkAvailability(getContext(), () -> {
          MapsInitializer.initialize(rootView.getContext());
          mapView.onCreate(mapBundle);
-      }
+      }, errorCode -> {
+         mapView.setVisibility(View.GONE);
+         noGoogleContainer.setVisibility(View.VISIBLE);
+      });
       initMap();
    }
 

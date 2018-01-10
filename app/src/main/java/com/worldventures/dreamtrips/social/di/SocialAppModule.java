@@ -4,6 +4,8 @@ import android.support.annotation.DrawableRes;
 
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.config.ConfigurationModule;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
@@ -233,9 +235,12 @@ public class SocialAppModule {
 
    @DrawableRes
    private int getLogo(SessionHolder sessionHolder) {
-      String countryCode = sessionHolder.get().get().user().getCountryCode();
-      if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
-         return R.drawable.dt_action_bar_logo_skyzone;
+      Optional<UserSession> sessionOptional = sessionHolder.get();
+      if (sessionOptional.isPresent()) {
+         String countryCode = sessionOptional.get().user().getCountryCode();
+         if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
+            return R.drawable.dt_action_bar_logo_skyzone;
+         }
       }
       return R.drawable.dt_action_bar_logo;
    }

@@ -149,7 +149,7 @@ def Map generateParams(boolean isPullRequest, boolean isInternalOnly) {
          break
       case ~/^smart-card\/.+/:
          params << [
-               streamFlavor  : params.comment.contains("-smartcard mocked") ? "Smartcardmock" : "Smartcardnxtid",
+               streamFlavor  : params.comment.contains("-smartcard emulator") ? "Smartcardemulmode" : "Smartcardnxtid",
                hockeyAppId   : "427d6a383bcf44e698227ea31c778d3b",
                hockeyAppTeams: [qaTeam, "77191"]
          ]

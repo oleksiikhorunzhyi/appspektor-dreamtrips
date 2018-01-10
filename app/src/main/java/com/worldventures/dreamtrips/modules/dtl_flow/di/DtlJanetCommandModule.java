@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.transactions.GsonAdaptersDetailTransactionThrst;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.transactions.GsonAdaptersThrstTransactionResponse;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AttributesAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ClearMerchantsStorageAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
@@ -22,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.TakeScreenshotAct
 import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UploadReceiptCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.http.PostReviewHttpCommand;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,7 +39,7 @@ import dagger.Provides;
             MerchantsAction.class,
             NearbyLocationAction.class,
             ReviewMerchantsAction.class,
-            AddReviewAction.class,
+            PostReviewHttpCommand.class,
             FlaggingReviewAction.class,
             UrlTokenAction.class,
             TransactionPilotAction.class,

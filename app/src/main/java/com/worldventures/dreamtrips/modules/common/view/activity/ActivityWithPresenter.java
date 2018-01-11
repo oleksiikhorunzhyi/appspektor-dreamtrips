@@ -13,8 +13,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.command.ConfigurationCommand;
 
 import javax.inject.Inject;
 
@@ -28,7 +26,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
    private final PublishSubject<ActivityEvent> lifecycleSubject = PublishSubject.create();
    private boolean isPaused;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
-   @Inject ConfigurationInteractor configurationInteractor;
 
    public PM getPresentationModel() {
       return presenter;
@@ -53,7 +50,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
          this.presenter.saveInstanceState(outState);
       }
    }
-
 
    @Override
    protected void afterCreateView(Bundle savedInstanceState) {
@@ -94,7 +90,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
 
    @Override
    public void initConnectionOverlay(Observable<ConnectionState> connectionStateObservable, Observable<Void> stopper) {
-
    }
 
    @Override
@@ -153,7 +148,6 @@ public abstract class ActivityWithPresenter<PM extends ActivityPresenter> extend
       super.onConfigurationChanged(newConfig);
       presenter.onConfigurationChanged(newConfig);
       getResources().updateConfiguration(newConfig, getResources().getDisplayMetrics());
-      configurationInteractor.configurationActionPipe().send(new ConfigurationCommand(newConfig));
    }
 
    @Override

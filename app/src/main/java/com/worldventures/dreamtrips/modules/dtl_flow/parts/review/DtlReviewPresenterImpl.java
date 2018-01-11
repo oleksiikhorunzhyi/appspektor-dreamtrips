@@ -58,6 +58,12 @@ public class DtlReviewPresenterImpl extends DtlPresenterImpl<DtlReviewScreen,Vie
    }
 
    @Override
+   public void onMediaRemoved(PhotoPickerModel attachment) {
+      attachedPhotos.remove(attachment);
+      getView().removeImage(attachment);
+   }
+
+   @Override
    public int getRemainingPhotosCount() {
       return MAX_PHOTOS_COUNT - attachedPhotos.size();
    }

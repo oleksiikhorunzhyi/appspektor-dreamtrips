@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.review.util;
 
-
 import android.text.Editable;
 import android.widget.EditText;
 

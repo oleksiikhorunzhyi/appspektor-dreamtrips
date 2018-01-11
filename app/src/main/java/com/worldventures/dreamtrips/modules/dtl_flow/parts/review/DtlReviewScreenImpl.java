@@ -15,6 +15,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.core.modules.picker.model.PhotoPickerModel;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
@@ -31,7 +32,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.http.error.except
 import com.worldventures.dreamtrips.modules.dtl.service.action.http.error.exception.UnknownPostException;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PhotoReviewPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.common.ActionProgressView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.common.ActionSuccessView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.common.SimpleSweetDialogErrorView;
@@ -39,7 +39,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.common.SweetDialogErr
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.common.SweetDialogHttpErrorViewProvider;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.common.SweetDialogParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.cell.DtlReviewCell;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.adapter.DtlReviewCell;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.adapter.ReviewPostItemDecorator;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.util.CommentAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.util.CommentParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPath;
@@ -94,6 +95,12 @@ public class DtlReviewScreenImpl extends DtlLayout<DtlReviewScreen, DtlReviewPre
    }
 
    @Override
+   protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      OrientationUtil.lockOrientation(getActivity()); // TODO :: discuss about this hack
+   }
+
+   @Override
    protected void onPostAttachToWindowView() {
       super.onPostAttachToWindowView();
       toolbarView.setNavigationIcon(R.drawable.back_icon);
@@ -106,10 +113,10 @@ public class DtlReviewScreenImpl extends DtlLayout<DtlReviewScreen, DtlReviewPre
       commentView.setFilters(new InputFilter[]{new InputFilter.LengthFilter(commentParams.maxSize())});
 
       photoAdapter = new BaseDelegateAdapter<>(getContext(), injector);
-      photoAdapter.registerCell(PhotoPickerModel.class, DtlReviewCell.class, this::onPhotoRemove);
+      photoAdapter.registerCell(PhotoPickerModel.class, DtlReviewCell.class, item -> getPresenter().onMediaRemoved(item));
 
       attachmentListView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-      attachmentListView.addItemDecoration(new PhotoReviewPostCreationItemDecorator());
+      attachmentListView.addItemDecoration(new ReviewPostItemDecorator());
       attachmentListView.setAdapter(photoAdapter);
       backStackDelegate.addListener(this);
    }
@@ -117,6 +124,7 @@ public class DtlReviewScreenImpl extends DtlLayout<DtlReviewScreen, DtlReviewPre
    @Override
    protected void onDetachedFromWindow() {
       backStackDelegate.removeListener(this);
+      OrientationUtil.unlockOrientation(getActivity());
       super.onDetachedFromWindow();
    }
 
@@ -169,8 +177,9 @@ public class DtlReviewScreenImpl extends DtlLayout<DtlReviewScreen, DtlReviewPre
       photoAdapter.addItems(images);
    }
 
-   private void onPhotoRemove(PhotoPickerModel item) {
-      photoAdapter.remove(item);
+   @Override
+   public void removeImage(PhotoPickerModel image) {
+      photoAdapter.remove(image);
    }
 
    private void onProgress(Boolean showing) {

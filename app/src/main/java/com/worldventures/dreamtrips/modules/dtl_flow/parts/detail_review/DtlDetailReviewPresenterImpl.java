@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableSdkFlagg
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Errors;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -144,18 +143,6 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
       } catch (Exception e) {
          e.printStackTrace();
       }
-   }
-
-   private void onMerchantsLoaded(AddReviewAction action) {
-      getView().onRefreshSuccess();
-   }
-
-   private void onMerchantsLoading(AddReviewAction action, Integer progress) {
-      getView().onRefreshProgress();
-   }
-
-   private void onMerchantsLoadingError(AddReviewAction action, Throwable throwable) {
-      getView().onRefreshError(throwable.getMessage());
    }
 
    public String getIpAddress() {

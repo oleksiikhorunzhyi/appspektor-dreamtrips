@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.review.util;
 
-
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSettings;
 

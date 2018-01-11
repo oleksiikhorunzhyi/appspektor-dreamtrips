@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
@@ -31,7 +30,6 @@ public class MerchantsInteractor {
 
    private final ActionPipe<MerchantsAction> thinMerchantsPipe;
    private final ActionPipe<ReviewMerchantsAction> reviewsMerchantsPipe;
-   private final ActionPipe<AddReviewAction> addReviewsPipe;
    private final ActionPipe<PostReviewHttpCommand> postReviewPipe;
    private final ActionPipe<FlaggingReviewAction> addFlaggingPipe;
    private final ActionPipe<UrlTokenAction> addUrlTokenPipe;
@@ -48,7 +46,6 @@ public class MerchantsInteractor {
 
       this.thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
       this.reviewsMerchantsPipe = sessionActionPipeCreator.createPipe(ReviewMerchantsAction.class, Schedulers.io());
-      this.addReviewsPipe = sessionActionPipeCreator.createPipe(AddReviewAction.class, Schedulers.io());
       this.postReviewPipe = sessionActionPipeCreator.createPipe(PostReviewHttpCommand.class, Schedulers.io());
       this.addFlaggingPipe = sessionActionPipeCreator.createPipe(FlaggingReviewAction.class, Schedulers.io());
       this.addUrlTokenPipe = sessionActionPipeCreator.createPipe(UrlTokenAction.class, Schedulers.io());
@@ -100,11 +97,6 @@ public class MerchantsInteractor {
 
    public ActionPipe<ReviewMerchantsAction> reviewsMerchantsHttpPipe() {
       return reviewsMerchantsPipe;
-   }
-
-   // TODO Remove after new implementation
-   public ActionPipe<AddReviewAction> addReviewsHttpPipe() {
-      return addReviewsPipe;
    }
 
    public ActionPipe<PostReviewHttpCommand> reviewHttpPipe() {

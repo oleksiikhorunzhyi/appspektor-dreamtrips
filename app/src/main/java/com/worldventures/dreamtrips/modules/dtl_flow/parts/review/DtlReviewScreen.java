@@ -16,4 +16,6 @@ public interface DtlReviewScreen extends DtlScreen {
    PostReviewActionParams provideReviewParams();
 
    void attachImages(List<PhotoPickerModel> images);
+
+   void removeImage(PhotoPickerModel image);
 }

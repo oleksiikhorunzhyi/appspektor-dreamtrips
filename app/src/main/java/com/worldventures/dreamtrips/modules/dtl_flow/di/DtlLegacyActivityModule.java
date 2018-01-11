@@ -17,12 +17,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstScanReceip
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlThrstTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.ActionReviewEntityFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewEntityPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPostFragment;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewCreationTextCell;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.helpers.PhotoReviewPostCreationCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlThankYouScreenFragment;
 
 import dagger.Module;
@@ -46,13 +40,7 @@ import dagger.Module;
             DtlThrstFlowFragment.class,
             DtlThrstFlowPresenter.class,
             DtlThankYouScreenFragment.class,
-            DtlThrstThankYouScreenPresenter.class,
-            CreateReviewEntityPresenter.class,
-            PhotoReviewPostCreationCell.class,
-            PostReviewCreationTextCell.class,
-            ActionReviewEntityFragment.class,
-            CreateReviewPostFragment.class,
-            CreateReviewEntityFragment.class,
+            DtlThrstThankYouScreenPresenter.class
       },
       complete = false, library = true)
 public class DtlLegacyActivityModule {

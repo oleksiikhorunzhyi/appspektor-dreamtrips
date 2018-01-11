@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.common;
 
-
 import android.view.View;
 
 import com.worldventures.wallet.ui.common.helper2.progress.ViewProgressView;

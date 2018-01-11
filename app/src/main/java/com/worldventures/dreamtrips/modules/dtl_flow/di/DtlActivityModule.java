@@ -20,9 +20,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.WorkingHoursCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.MerchantWorkingHoursAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.adapter.ThinMerchantsAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewScreenImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.PostReviewDescription;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.detail_review.DtlDetailReviewScreenImpl;
@@ -118,13 +115,10 @@ import dagger.Provides;
             ThinMerchantsAdapter.class,
             DtlReviewsPresenterImpl.class,
             DtlReviewsScreenImpl.class,
-            DtlCommentReviewScreenImpl.class,
-            DtlCommentReviewPresenterImpl.class,
             DtlReviewScreenImpl.class,
             DtlReviewPresenterImpl.class,
             DtlDetailReviewPresenterImpl.class,
             DtlDetailReviewScreenImpl.class,
-            PostReviewDescription.class,
             OfferWithReviewView.class,
             DtlTransactionListScreenImpl.class,
             DtlTransactionListPresenterImpl.class,

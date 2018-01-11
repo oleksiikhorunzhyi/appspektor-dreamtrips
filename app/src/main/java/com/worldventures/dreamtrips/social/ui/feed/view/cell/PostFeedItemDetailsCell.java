@@ -66,7 +66,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
          imagesList.setAdapter(adapter);
       }
       dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
-      if (!displayingInList) {
+      if (!displayingInList && !dtVideoView.isVideoInProgress()) {
          List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
          if (attachments.get(0).getItem() instanceof Video) {
             Video video = (Video) getModelObject().getItem().getAttachments().get(0).getItem();

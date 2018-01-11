@@ -142,6 +142,8 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
 
    fun isVideoFinished() = simpleExoPlayerView.player?.playbackState == Player.STATE_ENDED
 
+   fun isVideoInProgress() = simpleExoPlayerView.player?.playWhenReady == true
+
    fun resetProgress() = simpleExoPlayerView.player?.seekTo(0)
 
    fun getVideoDuration() = if (simpleExoPlayerView.player != null) simpleExoPlayerView.player.duration else 0

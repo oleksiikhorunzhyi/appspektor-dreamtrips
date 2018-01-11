@@ -15,6 +15,16 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AcceptAllFriendRequestsCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.DeleteFriendRequestCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetMutualFriendsCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetRequestsCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.social.service.invites.AddContactCommand;
 import com.worldventures.dreamtrips.social.service.invites.CreateFilledInviteCommand;
 import com.worldventures.dreamtrips.social.service.invites.GetInviteTemplatesCommand;
@@ -65,17 +75,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidI
 import com.worldventures.dreamtrips.social.ui.feed.service.command.UnlikeEntityCommand;
 import com.worldventures.dreamtrips.social.ui.flags.command.FlagItemCommand;
 import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.AcceptAllFriendRequestsCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.DeleteFriendRequestCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetMutualFriendsCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetRequestsCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPodcastsCommand;
 import com.worldventures.dreamtrips.social.ui.podcast_player.service.SendPodcastAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand;
@@ -103,6 +103,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSB
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TranslatePhotoCommand;
+import com.worldventures.dreamtrips.social.ui.video.service.command.DetermineHeadersCommand;
+import com.worldventures.dreamtrips.social.ui.video.service.command.SortVideo360CategoriesCommand;
 
 import javax.inject.Singleton;
 
@@ -218,6 +220,8 @@ import dagger.Provides;
       FlagItemCommand.class,
       GetFlagsCommand.class,
       AddContactCommand.class,
+      DetermineHeadersCommand.class,
+      SortVideo360CategoriesCommand.class,
 }, complete = false, library = true)
 public class SocialJanetCommandModule {
 

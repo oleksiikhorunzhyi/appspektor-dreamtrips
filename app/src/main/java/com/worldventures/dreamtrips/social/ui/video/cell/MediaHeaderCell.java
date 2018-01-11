@@ -6,15 +6,21 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.worldventures.core.modules.video.model.VideoLanguage;
+import com.worldventures.core.modules.video.model.VideoLocale;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.video.cell.delegate.VideoHeaderDelegate;
+import com.worldventures.dreamtrips.social.util.ViewUtilsKt;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 @Layout(R.layout.adapter_media_header)
 public class MediaHeaderCell extends BaseAbstractDelegateCell<MediaHeader, VideoHeaderDelegate> {
@@ -26,29 +32,35 @@ public class MediaHeaderCell extends BaseAbstractDelegateCell<MediaHeader, Video
 
    public MediaHeaderCell(View view) {
       super(view);
+
+      header.setTextColor(ViewUtilsKt.getColor(itemView, R.color.white));
    }
 
    @Override
    protected void syncUIStateWithModel() {
-      if (TextUtils.isEmpty(getModelObject().getTitle())) {
+      MediaHeader mediaHeader = getModelObject();
+      VideoLocale videoLocale = mediaHeader.getVideoLocale();
+      VideoLanguage videoLanguage = mediaHeader.getVideoLanguage();
+
+      if (TextUtils.isEmpty(mediaHeader.getTitle())) {
          header.setText(itemView.getContext().getString(R.string.recently_added));
       } else {
-         header.setText(getModelObject().getTitle());
+         header.setText(mediaHeader.getTitle());
       }
 
-      header.setTextColor(itemView.getResources().getColor(R.color.white));
-      language.setVisibility(getModelObject().getShowLanguage() ? View.VISIBLE : View.INVISIBLE);
-
-      if (getModelObject().getVideoLocale() != null) {
+      if (videoLocale != null && videoLanguage != null) {
          final int flagWidth = flag.getResources().getDimensionPixelSize(R.dimen.locale_flag_size_width);
          final int flagHeight = flag.getResources().getDimensionPixelSize(R.dimen.locale_flag_size_width);
-         flag.setController(GraphicUtils.provideFrescoResizingController(getModelObject().getVideoLocale().getImage(),
-               flag.getController(), flagWidth, flagHeight));
-         flag.setContentDescription(getModelObject().getVideoLocale().getCountry());
-         languageCaption.setText(getModelObject().getVideoLanguage().getTitle());
+
+         flag.setController(GraphicUtils.provideFrescoResizingController(videoLocale.getImage(), flag.getController(),
+               flagWidth, flagHeight));
+         flag.setContentDescription(videoLocale.getCountry());
+         languageCaption.setText(videoLanguage.getTitle());
       } else {
          flag.setImageURI(Uri.EMPTY);
       }
+
+      language.setVisibility(mediaHeader.getShowLanguage() ? VISIBLE : INVISIBLE);
    }
 
    @OnClick(R.id.wrapper_spinner_language)

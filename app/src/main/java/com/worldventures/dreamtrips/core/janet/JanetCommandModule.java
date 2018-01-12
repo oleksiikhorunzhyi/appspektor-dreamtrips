@@ -11,14 +11,13 @@ import com.worldventures.core.modules.video.service.command.ResetCachedModelsInP
 import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.core.service.command.DeleteCachedModelCommand;
 import com.worldventures.core.service.command.DownloadCachedModelCommand;
-import com.worldventures.dreamtrips.modules.gcm.command.UnsubscribeFromPushCommand;
-import com.worldventures.dreamtrips.modules.common.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlJanetCommandModule;
+import com.worldventures.dreamtrips.modules.gcm.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.social.di.SocialJanetCommandModule;
 
 import dagger.Module;
@@ -29,7 +28,6 @@ import dagger.Module;
       SocialJanetCommandModule.class,
 }, injects = {
       CopyFileCommand.class,
-      AcceptTermsCommand.class,
       TripsFilterDataCommand.class,
       InitializeCommand.class,
       SubscribeToPushNotificationsCommand.class,

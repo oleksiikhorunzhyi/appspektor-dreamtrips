@@ -5,6 +5,7 @@ import com.worldventures.core.modules.UtilModule;
 import com.worldventures.core.modules.auth.AuthModule;
 import com.worldventures.core.modules.facebook.FacebookAppModule;
 import com.worldventures.core.modules.infopages.SupportModule;
+import com.worldventures.core.modules.legal.LegalModule;
 import com.worldventures.core.modules.picker.MediaPickerAppModule;
 import com.worldventures.core.modules.settings.SettingsModule;
 import com.worldventures.core.modules.video.MediaModule;
@@ -28,6 +29,7 @@ import dagger.Module;
             MediaPickerAppModule.class,
             UtilModule.class,
             DetectLocationModule.class,
+            LegalModule.class,
       }
 )
 public class CoreModule {

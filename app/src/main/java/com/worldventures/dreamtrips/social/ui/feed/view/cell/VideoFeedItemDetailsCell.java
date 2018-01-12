@@ -57,7 +57,7 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
       updateVideoHeight(getModelObject().getItem());
       dtVideoView.setThumbnail(getModelObject().getItem().getThumbnail());
       dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
-      if (!displayingInList && playerExistsAndCurrentItemIsSame(getModelObject().getItem())) {
+      if (!displayingInList && playerExistsAndCurrentItemIsSame(getModelObject().getItem()) && !dtVideoView.isVideoInProgress()) {
          if (videoPlayerHolder.inFullscreen()) {
             switchFromFullscreen();
          } else {
@@ -113,7 +113,8 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
    }
 
    private void switchFromFullscreen() {
-      videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList);
+      videoPlayerHolder.switchFromFullscreen(dtVideoView, displayingInList
+            || videoPlayerHolder.getCurrentVideoConfig().getMute());
    }
 
    private boolean playerExistsAndCurrentItemIsSame(Video video) {
@@ -122,8 +123,7 @@ public class VideoFeedItemDetailsCell extends FeedItemDetailsCell<VideoFeedItem,
    }
 
    private void reattachVideoView() {
-      videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList
-            || videoPlayerHolder.getCurrentVideoConfig().getMute());
+      videoPlayerHolder.reattachVideoView(dtVideoView, displayingInList);
    }
 
    @Override

@@ -45,13 +45,13 @@ class WizardCheckingPresenterImpl(navigator: Navigator,
                   .startWith(bluetoothService.isEnable),
             networkDelegate.observeConnectedState()
                   .startWith(networkDelegate.isAvailable),
-            { bluetooth, internet -> Pair<Boolean, Boolean>(bluetooth, internet)})
+            { bluetooth, internet -> Pair<Boolean, Boolean>(bluetooth, internet) })
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ pair ->
                view.buttonEnable(pair.first && pair.second)
                view.bluetoothEnable(pair.first)
                view.networkAvailable(pair.second)
-            }, {t -> Timber.e(t) })
+            }, { t -> Timber.e(t) })
    }
 }

@@ -288,7 +288,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goCardDetails(CommonCardViewModel recordViewModel, TransitionModel transitionModel) {
-      go(CardDetailsScreenImpl.create(recordViewModel),
+      go(CardDetailsScreenImpl.Companion.create(recordViewModel),
             new CardDetailsEnterAnimHandler(transitionModel), new FadeChangeHandler());
    }
 

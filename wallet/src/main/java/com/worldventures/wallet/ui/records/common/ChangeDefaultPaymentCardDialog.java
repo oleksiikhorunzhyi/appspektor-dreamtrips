@@ -1,4 +1,4 @@
-package com.worldventures.wallet.ui.dialog;
+package com.worldventures.wallet.ui.records.common;
 
 import android.app.Dialog;
 import android.content.Context;

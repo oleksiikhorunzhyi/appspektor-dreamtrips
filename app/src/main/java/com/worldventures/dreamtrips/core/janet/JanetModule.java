@@ -17,6 +17,7 @@ import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
+import com.worldventures.dreamtrips.qa.AutomationQaConfigModule;
 import com.worldventures.dreamtrips.social.ui.background_uploading.VideoMicroserviceModule;
 
 import com.worldventures.janet.injection.CommandInjector;

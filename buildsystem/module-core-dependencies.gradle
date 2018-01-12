@@ -3,7 +3,7 @@ ext {
    mobileSdkVersion = '1.2.4'
    okhttp3Version = '3.5.0'
    googleLibrariesVersion = '26.1.0'
-   googleServicesVersion = '11.6.0'
+   googleServicesVersion = '11.8.0'
    mosbyVersion = '2.0.0'
 
    def jodaTimeVersion = '2.9.9'
@@ -141,7 +141,8 @@ ext {
          dagger           : [api: "com.squareup.dagger:dagger:$daggerVersion"],
          daggerProcessor  : [a: "com.squareup.dagger:dagger-compiler:$daggerVersion"],
          daggerAnnotations: [api: 'javax.annotation:jsr250-api:1.0'],
-         daggerProguard   : [rap: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+         daggerProguard   : [rapAndroid: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+         // daggerProguard doesn't play nice with kap, so using java annotation processor instead
    ]
 
    coreDependencies.test = [

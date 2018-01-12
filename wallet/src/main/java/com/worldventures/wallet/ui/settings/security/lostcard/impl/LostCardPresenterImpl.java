@@ -10,8 +10,8 @@ import com.worldventures.wallet.analytics.locatecard.action.LocateDisabledAnalyt
 import com.worldventures.wallet.analytics.locatecard.action.LocateEnabledAnalyticsAction;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
-import com.worldventures.wallet.service.location.SettingsResult;
-import com.worldventures.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.core.service.location.SettingsResult;
+import com.worldventures.core.service.location.DetectLocationService;
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.wallet.ui.common.LocationScreenComponent;
@@ -31,18 +31,18 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    private final PermissionDispatcher permissionDispatcher;
    private final SmartCardLocationInteractor smartCardLocationInteractor;
-   private final WalletDetectLocationService locationService;
+   private final DetectLocationService locationService;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final LocationScreenComponent locationScreenComponent;
 
    public LostCardPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          PermissionDispatcher permissionDispatcher,
-         SmartCardLocationInteractor smartCardLocationInteractor, WalletDetectLocationService walletDetectLocationService,
+         SmartCardLocationInteractor smartCardLocationInteractor, DetectLocationService detectLocationService,
          LocationScreenComponent locationScreenComponent, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, deviceConnectionDelegate);
       this.permissionDispatcher = permissionDispatcher;
       this.smartCardLocationInteractor = smartCardLocationInteractor;
-      this.locationService = walletDetectLocationService;
+      this.locationService = detectLocationService;
       this.locationScreenComponent = locationScreenComponent;
       this.analyticsInteractor = analyticsInteractor;
    }

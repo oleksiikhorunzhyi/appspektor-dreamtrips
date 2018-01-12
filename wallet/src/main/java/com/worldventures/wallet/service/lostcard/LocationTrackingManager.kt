@@ -3,8 +3,8 @@ package com.worldventures.wallet.service.lostcard
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.modules.auth.service.AuthInteractor
+import com.worldventures.core.service.location.DetectLocationService
 import com.worldventures.wallet.service.SmartCardLocationInteractor
-import com.worldventures.wallet.service.location.WalletDetectLocationService
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand
 import io.techery.janet.Command
 import rx.Observable
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class LocationTrackingManager internal constructor(private val locationInteractor: SmartCardLocationInteractor,
                                                    private val smartCardIdHelper: SmartCardIdHelper,
-                                                   private val locationService: WalletDetectLocationService,
+                                                   private val locationService: DetectLocationService,
                                                    private val authInteractor: AuthInteractor,
                                                    private val lostCardManager: LostCardManager,
                                                    private val sessionHolder: SessionHolder) {

@@ -1,12 +1,10 @@
-package com.worldventures.wallet.service.impl
+package com.worldventures.core.service.location
 
 import android.location.Location
-import com.worldventures.wallet.service.location.SettingsResult
-import com.worldventures.wallet.service.location.WalletDetectLocationService
 import rx.Observable
 import rx.subjects.PublishSubject
 
-class MockWalletLocationService(private val location: Location? = null) : WalletDetectLocationService {
+class MockDetectLocationService(private val location: Location? = null) : DetectLocationService {
 
    private val settingsStateSubject = PublishSubject.create<Boolean>()
 

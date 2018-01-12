@@ -1,4 +1,4 @@
-package com.worldventures.wallet.service.location
+package com.worldventures.core.service.location
 
 import android.Manifest
 import android.content.Context
@@ -15,7 +15,7 @@ import rx.Observable.unsafeCreate
 
 private const val INTERVAL = 4500
 
-class AndroidDetectLocationService(private val context: Context) : WalletDetectLocationService {
+internal class AndroidDetectLocationService(private val context: Context) : DetectLocationService {
 
    @Suppress("UnsafeCast")
    private val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager

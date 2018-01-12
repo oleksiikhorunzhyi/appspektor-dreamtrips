@@ -369,7 +369,6 @@ class SmartCardInteractorSpec : BaseSpec({
       fun createMappery(): MapperyContext = Mappery.Builder()
             .map(Record::class.java).to(io.techery.janet.smartcard.model.Record::class.java, WalletRecordToSmartCardRecordConverter())
             .map(io.techery.janet.smartcard.model.Record::class.java).to(Record::class.java, SmartCardRecordToWalletRecordConverter())
-
             .build()
 
       fun loadDefaultCardId(): TestSubscriber<ActionState<DefaultRecordIdCommand>> {

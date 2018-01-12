@@ -8,6 +8,7 @@ import com.worldventures.core.modules.infopages.SupportModule;
 import com.worldventures.core.modules.picker.MediaPickerAppModule;
 import com.worldventures.core.modules.settings.SettingsModule;
 import com.worldventures.core.modules.video.MediaModule;
+import com.worldventures.core.service.location.DetectLocationModule;
 
 import dagger.Module;
 
@@ -25,7 +26,8 @@ import dagger.Module;
             MediaModule.class,
             SettingsModule.class,
             MediaPickerAppModule.class,
-            UtilModule.class
+            UtilModule.class,
+            DetectLocationModule.class,
       }
 )
 public class CoreModule {

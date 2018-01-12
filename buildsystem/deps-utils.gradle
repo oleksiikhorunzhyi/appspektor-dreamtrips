@@ -21,7 +21,11 @@ ext {
             testImpl   : 'testImplementation',
             p          : 'compileOnly',
             a          : 'kapt',
+            dap        : 'kaptDebug',
             rap        : 'kaptRelease',
+            aAndroid   : 'annotationProcessor',
+            dapAndroid : 'debugAnnotationProcessor',
+            rapAndroid : 'releaseAnnotationProcessor',
       ]
       def CONFIG_KEY = 'config'
       deps.each {

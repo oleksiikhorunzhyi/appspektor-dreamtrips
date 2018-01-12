@@ -1,10 +1,10 @@
-package com.worldventures.wallet.service.location;
+package com.worldventures.core.service.location;
 
 import android.location.Location;
 
 import rx.Observable;
 
-public interface WalletDetectLocationService {
+public interface DetectLocationService {
 
    boolean isPermissionGranted();
 

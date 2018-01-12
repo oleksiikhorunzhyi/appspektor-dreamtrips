@@ -3,11 +3,13 @@ package com.worldventures.wallet.ui.common
 import android.app.Activity
 import android.content.IntentSender
 import com.google.android.gms.common.api.ResolvableApiException
-import com.worldventures.wallet.service.location.SettingsResult
+import com.worldventures.core.service.location.SettingsResult
+
+import java.lang.ref.WeakReference
+
 import rx.Observable
 import rx.subjects.PublishSubject
 import timber.log.Timber
-import java.lang.ref.WeakReference
 
 class LocationScreenComponent(activity: Activity) {
 
@@ -57,7 +59,7 @@ class LocationScreenComponent(activity: Activity) {
 
    companion object {
 
-      val COMPONENT_NAME = "com.worldventures.wallet.service.location.LocationSettingsService"
+      val COMPONENT_NAME = "com.worldventures.core.service.location.LocationSettingsService"
 
       private val REQUEST_CODE = 0xFF01
    }

@@ -1,4 +1,4 @@
-package com.worldventures.wallet.service.location
+package com.worldventures.core.service.location
 
 import com.google.android.gms.location.LocationSettingsResponse
 

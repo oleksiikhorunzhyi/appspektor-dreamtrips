@@ -117,7 +117,11 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
             transactionStatusInjector.showSuccessMessage();
             break;
          case REFUNDED:
-            transactionStatusInjector.showRefundedMessage();
+            if (transactionModel.getSubTotalAmount() < 0D) {
+               transactionStatusInjector.showRefundedMessage();
+            } else {
+               transactionStatusInjector.showSuccessMessage();
+            }
             break;
          default:
             transactionStatusInjector.showFailureMessage();
@@ -137,12 +141,11 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
 
       final int pointsCaptionFormatResId;
 
-      if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED) {
+      if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED &&
+            transactionModel.getSubTotalAmount() < 0D) {
          pointsCaptionFormatResId = R.string.dtl_transaction_adjusted_points;
 
-         final int colorResId = transactionModel.getTotalAmount() < 0D ?
-               R.color.transaction_amount_red_color : R.color.transaction_amount_green_color;
-         final int highlightColor = ContextCompat.getColor(getContext(), colorResId);
+         final int highlightColor = ContextCompat.getColor(getContext(), R.color.transaction_amount_red_color);
          tvTotal.setTextColor(highlightColor);
          tvSubTotal.setTextColor(highlightColor);
          tvTax.setTextColor(highlightColor);

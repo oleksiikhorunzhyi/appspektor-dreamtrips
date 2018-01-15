@@ -174,12 +174,11 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
                transactionModel.getCurrenyCode(), transactionModel.getCurrencySymbol());
          final String subtotalCaption = context.getString(R.string.dtl_subtotal, subtotalValue);
 
-         if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED) {
+         if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED &&
+               transactionModel.getTotalAmount() < 0D) {
             final int spanStartPosition = subtotalCaption.indexOf(subtotalValue);
             final int spanEndPosition = subtotalCaption.length();
-            final int colorRes = transactionModel.getTotalAmount() < 0D ?
-                  R.color.transaction_amount_red_color : R.color.transaction_amount_green_color;
-            final int color = ContextCompat.getColor(context, colorRes);
+            final int color = ContextCompat.getColor(context, R.color.transaction_amount_red_color);
 
             Spannable colored = new SpannableString(subtotalCaption);
             colored.setSpan(new ForegroundColorSpan(color), spanStartPosition, spanEndPosition,
@@ -193,18 +192,26 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
 
       private void setPaymentStatusIcon(TransactionModel transactionModel) {
          if (transactionModel.isTrhstTransaction()) {
+            int iconRes;
+
             switch (transactionModel.getThrstPaymentStatus()) {
                case SUCCESSFUL:
                case INITIATED:
-                  statusImageView.setImageResource(R.drawable.check_succes_pilot);
+                  iconRes = R.drawable.check_succes_pilot;
                   break;
                case REFUNDED:
-                  statusImageView.setImageResource(R.drawable.check_refund_pilot);
+                  if (transactionModel.getTotalAmount() < 0D) {
+                     iconRes = R.drawable.check_refund_pilot;
+                  } else {
+                     iconRes = R.drawable.check_succes_pilot;
+                  }
                   break;
                default:
-                  statusImageView.setImageResource(R.drawable.check_error_pilot);
+                  iconRes = R.drawable.check_error_pilot;
                   break;
             }
+
+            statusImageView.setImageResource(iconRes);
          } else {
             statusImageView.setImageBitmap(null);
          }

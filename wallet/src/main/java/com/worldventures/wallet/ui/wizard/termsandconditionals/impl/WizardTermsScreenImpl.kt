@@ -21,7 +21,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.worldventures.wallet.R
-import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
+import com.worldventures.wallet.service.command.http.FetchSmartCardAgreementsCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.helper2.progress.ViewProgressView
 import com.worldventures.wallet.ui.wizard.termsandconditionals.AgreementMode
@@ -79,11 +79,7 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
 
             contentLoaded = true
             pb.visibility = GONE
-            if (agreementMode == AgreementMode.AFFIDAVIT && url != view.originalUrl) {
-               agreeBtn.visibility = VISIBLE
-            } else if (agreementMode == AgreementMode.TAC) {
-               agreeBtn.visibility = VISIBLE
-            }
+            agreeBtn.visibility = VISIBLE
          }
 
          @TargetApi(Build.VERSION_CODES.M)
@@ -163,8 +159,8 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
       buildErrorDialog(MaterialDialog.SingleButtonCallback { _, _ -> presenter.loadTerms() })
    }
 
-   override fun termsOperationView(): OperationView<FetchTermsAndConditionsCommand> {
-      return ComposableOperationView<FetchTermsAndConditionsCommand>(ViewProgressView(pb), null, this)
+   override fun termsOperationView(): OperationView<FetchSmartCardAgreementsCommand> {
+      return ComposableOperationView<FetchSmartCardAgreementsCommand>(ViewProgressView(pb), null, this)
    }
 
    private fun buildErrorDialog(retryAction: MaterialDialog.SingleButtonCallback) {
@@ -175,7 +171,7 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
             .show()
    }
 
-   override fun showError(p0: FetchTermsAndConditionsCommand?, throwable: Throwable?) {
+   override fun showError(p0: FetchSmartCardAgreementsCommand?, throwable: Throwable?) {
       failedToLoadTerms()
    }
 

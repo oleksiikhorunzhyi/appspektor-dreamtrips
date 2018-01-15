@@ -38,6 +38,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
       walletStorage.deleteSmartCardFirmware();
       walletStorage.deleteSmartCard();
       walletStorage.deleteTermsAndConditions();
+      walletStorage.deleteSmartCardAffidavit();
       walletStorage.deletePinOptionChoice();
       walletStorage.deleteSmartCardDisplayType();
       lostCardRepository.clear();

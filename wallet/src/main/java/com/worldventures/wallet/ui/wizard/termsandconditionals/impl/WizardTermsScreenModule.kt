@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.termsandconditionals.impl
 
-import com.worldventures.core.modules.infopages.StaticPageProvider
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate
@@ -16,9 +15,8 @@ class WizardTermsScreenModule {
    fun provideWizardTermsPresenter(navigator: Navigator,
                                    deviceConnectionDelegate: WalletDeviceConnectionDelegate,
                                    analyticsInteractor: WalletAnalyticsInteractor,
-                                   wizardInteractor: WizardInteractor,
-                                   staticPageProvider: StaticPageProvider): WizardTermsPresenter {
+                                   wizardInteractor: WizardInteractor): WizardTermsPresenter {
       return WizardTermsPresenterImpl(navigator, deviceConnectionDelegate,
-            AppAgreementStrategy(analyticsInteractor, wizardInteractor, staticPageProvider))
+            AppAgreementStrategy(analyticsInteractor, wizardInteractor))
    }
 }

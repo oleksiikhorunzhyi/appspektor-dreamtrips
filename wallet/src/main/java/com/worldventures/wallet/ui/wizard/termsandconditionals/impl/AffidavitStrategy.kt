@@ -1,16 +1,16 @@
 package com.worldventures.wallet.ui.wizard.termsandconditionals.impl
 
-import com.worldventures.core.modules.infopages.StaticPageProvider
+import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.ui.common.navigation.Navigator
-import com.worldventures.wallet.ui.wizard.termsandconditionals.WizardTermsScreen
+import com.worldventures.wallet.ui.wizard.termsandconditionals.AgreementMode
 
-class AffidavitStrategy(private val staticPageProvider: StaticPageProvider) : AgreementDelegate {
-
-   override fun loadAgreements(view: WizardTermsScreen) {
-      view.showTerms(staticPageProvider.smartcardAffidavitUrl)
-   }
+class AffidavitStrategy(wizardInteractor: WizardInteractor) : AgreementDelegate(wizardInteractor) {
 
    override fun agreementsAccepted(navigator: Navigator) {
       navigator.goWizardTerms()
+   }
+
+   override fun provideAgreementDocumentType(): AgreementMode {
+      return AgreementMode.AFFIDAVIT
    }
 }

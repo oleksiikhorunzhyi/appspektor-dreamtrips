@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.termsandconditionals.impl
 
-import com.worldventures.core.modules.infopages.StaticPageProvider
 import com.worldventures.wallet.service.WalletAnalyticsInteractor
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.ui.wizard.termsandconditionals.AgreementMode
@@ -11,12 +10,11 @@ interface AgreementStrategy {
 }
 
 internal class AppAgreementStrategy(private val analyticsInteractor: WalletAnalyticsInteractor,
-                                    private val wizardInteractor: WizardInteractor,
-                                    private val staticPageProvider: StaticPageProvider) : AgreementStrategy {
+                                    private val wizardInteractor: WizardInteractor) : AgreementStrategy {
 
    override fun create(mode: AgreementMode): AgreementDelegate {
       return when (mode) {
-         AgreementMode.AFFIDAVIT -> AffidavitStrategy(staticPageProvider)
+         AgreementMode.AFFIDAVIT -> AffidavitStrategy(wizardInteractor)
          AgreementMode.TAC -> TacStrategy(analyticsInteractor, wizardInteractor)
       }
    }

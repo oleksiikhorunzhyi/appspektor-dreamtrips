@@ -3,7 +3,7 @@ package com.worldventures.wallet.service;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.wallet.service.command.SetupUserDataCommand;
-import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.wallet.service.command.http.FetchSmartCardAgreementsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
@@ -34,7 +34,7 @@ public final class WizardInteractor {
    private final ActionPipe<WizardCompleteCommand> completePipe;
    private final ActionPipe<ProvisioningModeCommand> provisioningStatePipe;
    private final ActionPipe<PinOptionalCommand> pinOptionalActionPipe;
-   private final ActionPipe<FetchTermsAndConditionsCommand> termsAndConditionsPipe;
+   private final ActionPipe<FetchSmartCardAgreementsCommand> fetchSmartCardAgreementsPipe;
 
    public WizardInteractor(SessionActionPipeCreator pipeCreator) {
       setupUserDataPipe = pipeCreator.createPipe(SetupUserDataCommand.class, Schedulers.io());
@@ -52,7 +52,7 @@ public final class WizardInteractor {
       completePipe = pipeCreator.createPipe(WizardCompleteCommand.class, Schedulers.io());
       provisioningStatePipe = pipeCreator.createPipe(ProvisioningModeCommand.class, Schedulers.io());
       pinOptionalActionPipe = pipeCreator.createPipe(PinOptionalCommand.class, Schedulers.io());
-      termsAndConditionsPipe = pipeCreator.createPipe(FetchTermsAndConditionsCommand.class, Schedulers.io());
+      fetchSmartCardAgreementsPipe = pipeCreator.createPipe(FetchSmartCardAgreementsCommand.class, Schedulers.io());
    }
 
    public ActionPipe<SetupUserDataCommand> setupUserDataPipe() {
@@ -95,8 +95,8 @@ public final class WizardInteractor {
       return pinOptionalActionPipe;
    }
 
-   public ActionPipe<FetchTermsAndConditionsCommand> getTermsAndConditionsPipe() {
-      return termsAndConditionsPipe;
+   public ActionPipe<FetchSmartCardAgreementsCommand> fetchSmartCardAgreementsPipe() {
+      return fetchSmartCardAgreementsPipe;
    }
 
    public ActionPipe<AddDummyRecordCommand> getAddDummyPipe() {

@@ -33,7 +33,7 @@ import com.worldventures.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.wallet.service.command.http.FetchFirmwareInfoCommand;
-import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.wallet.service.command.http.FetchSmartCardAgreementsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
@@ -95,7 +95,7 @@ import dagger.Module;
             FetchCardPropertiesCommand.class,
             FetchFirmwareVersionCommand.class,
             SetLockStateCommand.class,
-            FetchTermsAndConditionsCommand.class,
+            FetchSmartCardAgreementsCommand.class,
             GetCustomerSupportContactCommand.class,
             SmartCardFeedbackCommand.class,
             CustomerSupportFeedbackCommand.class,

@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUse
 import com.worldventures.wallet.BaseSpec
 import com.worldventures.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
 import com.worldventures.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
+import com.worldventures.wallet.domain.entity.SmartCardAgreement
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.domain.storage.WalletStorage
@@ -28,7 +29,7 @@ import com.worldventures.wallet.model.TestApiSmartCardDetails
 import com.worldventures.wallet.model.TestApiUpdateCardUserData
 import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
-import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
+import com.worldventures.wallet.service.command.http.FetchSmartCardAgreementsCommand
 import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.wallet.service.lostcard.LostCardRepository
 import com.worldventures.wallet.util.CachedPhotoUtil
@@ -90,9 +91,9 @@ class WizardInteractorSpec : BaseSpec({
          }
 
          it("should be save TermsAndConditions to mediaModelStorage") {
-            val testSubscriber: TestSubscriber<ActionState<FetchTermsAndConditionsCommand>> = TestSubscriber()
-            janet.createPipe(FetchTermsAndConditionsCommand::class.java)
-                  .createObservable(FetchTermsAndConditionsCommand())
+            val testSubscriber: TestSubscriber<ActionState<FetchSmartCardAgreementsCommand>> = TestSubscriber()
+            janet.createPipe(FetchSmartCardAgreementsCommand::class.java)
+                  .createObservable(FetchSmartCardAgreementsCommand.termsAndConditions())
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
@@ -169,7 +170,7 @@ class WizardInteractorSpec : BaseSpec({
 
       fun createMockDb(): WalletStorage {
          val repository: WalletStorage = spy()
-         whenever(repository.walletTermsAndConditions).thenReturn(com.worldventures.wallet.domain.entity.TermsAndConditions("", "1"))
+         whenever(repository.walletTermsAndConditions).thenReturn(SmartCardAgreement("", "1"))
          return repository
       }
 

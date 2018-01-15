@@ -13,8 +13,7 @@ import com.worldventures.wallet.service.beacon.BeaconClient;
 import com.worldventures.wallet.service.beacon.BeaconLoggerModule;
 import com.worldventures.wallet.service.beacon.WalletBeaconClient;
 import com.worldventures.wallet.service.beacon.WalletBeaconLogger;
-import com.worldventures.wallet.service.location.AndroidDetectLocationService;
-import com.worldventures.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.core.service.location.DetectLocationService;
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand;
 import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesCommand;
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand;
@@ -50,12 +49,6 @@ public class LostCardModule {
 
    @Singleton
    @Provides
-   WalletDetectLocationService detectLocationService(Context appContext) {
-      return new AndroidDetectLocationService(appContext);
-   }
-
-   @Singleton
-   @Provides
    LocationSyncManager jobScheduler(SmartCardLocationInteractor locationInteractor) {
       return new LocationSyncManager(locationInteractor);
    }
@@ -76,7 +69,7 @@ public class LostCardModule {
    @Singleton
    @Provides
    LocationTrackingManager trackingManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
-         WalletDetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager, SessionHolder sessionHolder) {
+         DetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager, SessionHolder sessionHolder) {
       return new LocationTrackingManager(smartCardInteractor, locationInteractor, locationService, authInteractor,
             lostCardManager, sessionHolder);
    }

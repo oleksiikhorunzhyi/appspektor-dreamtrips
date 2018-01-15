@@ -41,8 +41,8 @@ import com.worldventures.wallet.service.SmartCardSyncManager
 import com.worldventures.wallet.service.TestSchedulerProvider
 import com.worldventures.wallet.service.beacon.StubWalletBeaconLogger
 import com.worldventures.wallet.service.beacon.WalletBeaconLogger
-import com.worldventures.wallet.service.impl.MockWalletLocationService
-import com.worldventures.wallet.service.location.WalletDetectLocationService
+import com.worldventures.core.service.location.MockDetectLocationService
+import com.worldventures.core.service.location.DetectLocationService
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand
 import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesCommand
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand
@@ -94,7 +94,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          firmwareInteractor = createFirmwareInteractor(janet)
          recordInteractor = createRecordInteractor(janet)
          smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
-         walletDetectLocationService = createWalletDetectLocationService()
+         detectLocationService = createWalletDetectLocationService()
          locationStorage = mockLostCardStorage()
 
          janet.connectToSmartCardSdk()
@@ -178,7 +178,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var mockDb: WalletStorage
       lateinit var mappery: MapperyContext
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
-      lateinit var walletDetectLocationService: WalletDetectLocationService
+      lateinit var detectLocationService: DetectLocationService
       lateinit var smartCardInteractor: SmartCardInteractor
       lateinit var firmwareInteractor: FirmwareInteractor
       lateinit var recordInteractor: RecordInteractor
@@ -215,7 +215,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
-         daggerCommandActionService.registerProvider(WalletDetectLocationService::class.java) { walletDetectLocationService }
+         daggerCommandActionService.registerProvider(DetectLocationService::class.java) { detectLocationService }
          daggerCommandActionService.registerProvider(LostCardRepository::class.java) { locationStorage }
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
@@ -283,7 +283,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
 
-      fun createWalletDetectLocationService(): WalletDetectLocationService = MockWalletLocationService(mockLocation())
+      fun createWalletDetectLocationService(): DetectLocationService = MockDetectLocationService(mockLocation())
 
       private fun mockLocation(): Location {
          val location: Location = mock()

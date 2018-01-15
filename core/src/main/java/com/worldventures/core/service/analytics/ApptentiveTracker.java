@@ -17,11 +17,11 @@ public class ApptentiveTracker extends Tracker {
    public static final String TRACKER_KEY = "apptentive_tracker";
 
    private WeakReference<Activity> activity;
-   private final boolean qaAutomationModeEnabled;
+   private final boolean enabled;
 
-   public ApptentiveTracker(Application application, String apiKey, boolean qaAutomationModeEnabled) {
-      this.qaAutomationModeEnabled = qaAutomationModeEnabled;
-      if (!qaAutomationModeEnabled) { Apptentive.register(application, apiKey); }
+   public ApptentiveTracker(Application application, String apiKey, boolean enabled) {
+      this.enabled = enabled;
+      if (enabled) { Apptentive.register(application, apiKey); }
    }
 
    @Override
@@ -31,17 +31,16 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void onCreate(@Nullable Activity activity) {
-      boolean trackerEnabled = !qaAutomationModeEnabled;
-      Timber.v("enabled: " + trackerEnabled);
+      Timber.v("enabled: " + enabled);
    }
 
    public void onStart(@Nullable Activity activity) {
-      if (qaAutomationModeEnabled || checkNullAndWarn(activity)) { return; }
+      if (checkNullAndWarn(activity)) { return; }
       this.activity = new WeakReference<>(activity);
    }
 
    public void onStop(@Nullable Activity activity) {
-      if (qaAutomationModeEnabled || checkNullAndWarn(activity)) { return; }
+      if (checkNullAndWarn(activity)) { return; }
    }
 
    @Override
@@ -56,7 +55,7 @@ public class ApptentiveTracker extends Tracker {
 
    @Override
    public void trackEvent(String category, String action, Map<String, Object> data) {
-      if (qaAutomationModeEnabled || activity == null) { return; }
+      if (activity == null) { return; }
 
       Activity activity = this.activity.get();
       if (activity != null) {

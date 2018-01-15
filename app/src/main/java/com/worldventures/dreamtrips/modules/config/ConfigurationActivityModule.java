@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateDelegat
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegate;
 import com.worldventures.dreamtrips.modules.config.delegate.VersionUpdateUiDelegateImpl;
 import com.worldventures.dreamtrips.modules.config.util.VersionComparator;
+import com.worldventures.dreamtrips.qa.QaConfig;
 
 import javax.inject.Singleton;
 
@@ -29,7 +30,7 @@ public class ConfigurationActivityModule {
 
    @Provides
    @Singleton
-   VersionUpdateUiDelegate provideVersionUpdateUiDelegate(Activity activity, SnappyRepository snappyRepository) {
-      return new VersionUpdateUiDelegateImpl(activity, snappyRepository);
+   VersionUpdateUiDelegate provideVersionUpdateUiDelegate(Activity activity, SnappyRepository snappyRepository, QaConfig qaConfig) {
+      return new VersionUpdateUiDelegateImpl(activity, snappyRepository, qaConfig.getApp());
    }
 }

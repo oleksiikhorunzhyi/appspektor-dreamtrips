@@ -31,7 +31,7 @@ import com.worldventures.wallet.service.WalletNetworkService;
 import com.worldventures.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.wallet.service.WizardInteractor;
 import com.worldventures.wallet.service.command.settings.WalletSettingsInteractor;
-import com.worldventures.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.core.service.location.DetectLocationService;
 import com.worldventures.wallet.service.lostcard.LocationTrackingManager;
 import com.worldventures.wallet.ui.WalletActivity;
 import com.worldventures.wallet.ui.common.LocationScreenComponent;
@@ -610,11 +610,11 @@ public class WalletActivityModule {
    @Provides
    LostCardPresenter provideLostCardPresenter(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          PermissionDispatcher permissionDispatcher, SmartCardLocationInteractor smartCardLocationInteractor,
-         WalletDetectLocationService walletDetectLocationService, Activity activity, WalletAnalyticsInteractor analyticsInteractor) {
+         DetectLocationService detectLocationService, Activity activity, WalletAnalyticsInteractor analyticsInteractor) {
       //noinspection all
       return new LostCardPresenterImpl(navigator, deviceConnectionDelegate, permissionDispatcher,
-            smartCardLocationInteractor, walletDetectLocationService,
-            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.COMPONENT_NAME), analyticsInteractor);
+            smartCardLocationInteractor, detectLocationService,
+            (LocationScreenComponent) activity.getSystemService(LocationScreenComponent.Companion.getCOMPONENT_NAME()), analyticsInteractor);
    }
 
    @Provides

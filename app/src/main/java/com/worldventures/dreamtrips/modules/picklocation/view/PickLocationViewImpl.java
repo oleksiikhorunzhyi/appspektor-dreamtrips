@@ -115,9 +115,6 @@ public class PickLocationViewImpl extends MvpLinearLayout<PickLocationView, Pick
          this.map = map;
          MapsInitializer.initialize(getContext());
          map.setMyLocationEnabled(true);
-         map.setOnMyLocationChangeListener(location -> {
-            showLocationMarker(new LatLng(location.getLatitude(), location.getLongitude()));
-         });
          MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
          getPresenter().onMapInitialized(map);
       });

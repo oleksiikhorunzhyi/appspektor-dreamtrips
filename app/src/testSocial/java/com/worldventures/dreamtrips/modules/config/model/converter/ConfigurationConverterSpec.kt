@@ -27,7 +27,7 @@ class ConfigurationConverterSpec : BaseSpec({
          assert(convertedConfiguration.updateRequirement != null)
          convertedConfiguration.updateRequirement?.let {
             assert(it.appVersion == MOCK_VERSION)
-            assert(it.timeStamp == MOCK_TIMESTAMP)
+            assert(it.timeStamp == MOCK_TIMESTAMP * ConfigurationConverter.MILLISECONDS_IN_SECOND)
          }
          assert(convertedConfiguration.videoRequirement.videoMaxLength == MOCK_LENGTH)
       }

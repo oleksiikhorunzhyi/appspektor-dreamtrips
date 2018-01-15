@@ -56,6 +56,7 @@ class DetermineHeadersCommand(val type: HeaderType, val videoCategories: List<Vi
       return categories
    }
 
+   @Suppress("all")
    private fun trainingOrHelpHeaders(): ArrayList<Any> {
       val categories = ArrayList<Any>()
       videoCategories.forEachIndexed { index, category ->
@@ -64,11 +65,12 @@ class DetermineHeadersCommand(val type: HeaderType, val videoCategories: List<Vi
       }
 
       if (categories.isNotEmpty()) {
-         val firstHeader = categories[0] as MediaHeader
-         firstHeader.videoLocale = mediaModelStorage.lastSelectedVideoLocale
-         firstHeader.videoLanguage = mediaModelStorage.lastSelectedVideoLanguage
+         if (categories[0] is MediaHeader) {
+            val firstHeader = categories[0] as MediaHeader
+            firstHeader.videoLocale = mediaModelStorage.lastSelectedVideoLocale
+            firstHeader.videoLanguage = mediaModelStorage.lastSelectedVideoLanguage
+         }
       }
-
       return categories
    }
 }

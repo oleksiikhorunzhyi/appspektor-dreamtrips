@@ -123,13 +123,6 @@ class TrainingVideosPresenterSpec : PresenterBaseSpec({
          }
       }
 
-      it("Play video: should open video player") {
-         setup()
-
-         presenter.onPlayVideo(stubVideo())
-         verify(activityRouter).openPlayerActivity(anyOrNull(), any(), any(), any())
-      }
-
       it("Delete cached video: should remove cache") {
          setup()
          presenter.deleteAccepted(cachedModel)

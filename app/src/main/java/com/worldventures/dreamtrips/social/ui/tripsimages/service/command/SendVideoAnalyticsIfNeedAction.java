@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.WatchVideoAnalyticAction;
-import com.worldventures.dreamtrips.social.ui.reptools.presenter.TrainingVideosPresenter;
-import com.worldventures.dreamtrips.social.ui.video.presenter.HelpVideosPresenter;
-import com.worldventures.dreamtrips.social.ui.video.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.social.ui.reptools.view.fragment.TrainingVideosFragment;
+import com.worldventures.dreamtrips.social.ui.video.view.HelpVideosFragment;
+import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
@@ -57,13 +57,13 @@ public class SendVideoAnalyticsIfNeedAction extends SendProgressAnalyticsIfNeed<
    }
 
    private String chooseAnalyticNamespace() {
-      if (launchComponent.equals(HelpVideosPresenter.class)) {
+      if (launchComponent.equals(HelpVideosFragment.class)) {
          return WatchVideoAnalyticAction.HELP_VIDEO_NAMESPASE;
       }
-      if (launchComponent.equals(PresentationVideosPresenter.class)) {
+      if (launchComponent.equals(PresentationVideosFragment.class)) {
          return WatchVideoAnalyticAction.MEMBERSHIP_VIDEOS_NAMESPASE;
       }
-      if (launchComponent.equals(TrainingVideosPresenter.class)) {
+      if (launchComponent.equals(TrainingVideosFragment.class)) {
          return WatchVideoAnalyticAction.REPTOOLS_TRAINING_VIDEOS_NAMESPASE;
       }
       return null;

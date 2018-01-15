@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.worldventures.core.modules.video.model.Video;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.SelectablePagerFragment;
@@ -43,28 +44,43 @@ public class ThreeSixtyVideosFragment extends VideoBaseFragment<ThreeSixtyVideos
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
 
-      adapterAll = new BaseDelegateAdapter<>(getActivity(), this);
-      adapterAll.registerCell(Video.class, Video360Cell.class);
-      adapterAll.registerDelegate(Video.class, this);
-      adapterAll.registerCell(MediaHeader.class, MediaHeaderCell.class);
-      recyclerViewAll.setAdapter(adapterAll);
-      recyclerViewAll.setLayoutManager(new LinearLayoutManager(getActivity()));
+      if (recyclerViewAll != null) {
+         adapterAll = new BaseDelegateAdapter<>(getActivity(), this);
+         adapterAll.registerCell(Video.class, Video360Cell.class);
+         adapterAll.registerDelegate(Video.class, this);
+         adapterAll.registerCell(MediaHeader.class, MediaHeaderCell.class);
 
-      adapterRecent = new BaseDelegateAdapter<>(getActivity(), this);
-      adapterRecent.registerCell(Video.class, Video360SmallCell.class);
-      adapterRecent.registerDelegate(Video.class, this);
-      recyclerViewRecent.setAdapter(adapterRecent);
-      recyclerViewRecent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+         recyclerViewAll.setAdapter(adapterAll);
+      }
 
-      adapterFeatured = new BaseDelegateAdapter<>(getActivity(), this);
-      adapterFeatured.registerCell(Video.class, Video360Cell.class);
-      adapterFeatured.registerCell(Video.class, Video360Cell.class);
-      adapterFeatured.registerDelegate(Video.class, this);
-      recyclerViewFeatured.setAdapter(adapterFeatured);
-      recyclerViewFeatured.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+      if (recyclerViewRecent != null) {
+         adapterRecent = new BaseDelegateAdapter<>(getActivity(), this);
+         adapterRecent.registerCell(Video.class, Video360SmallCell.class);
+         adapterRecent.registerDelegate(Video.class, this);
+         recyclerViewFeatured.setAdapter(adapterFeatured);
 
-      refreshLayout.setOnRefreshListener(this);
-      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+         adapterFeatured = new BaseDelegateAdapter<>(getActivity(), this);
+         adapterFeatured.registerCell(Video.class, Video360Cell.class);
+         adapterFeatured.registerDelegate(Video.class, this);
+         recyclerViewRecent.setAdapter(adapterRecent);
+      }
+
+      this.refreshLayout.setOnRefreshListener(this);
+      this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+
+      setUpRecyclerViews();
+   }
+
+   private void setUpRecyclerViews() {
+      if (ViewUtils.isLandscapeOrientation(getActivity())) {
+         LinearLayoutManager linearLayoutManagerFeatured = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+         LinearLayoutManager linearLayoutManagerRecent = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+         recyclerViewFeatured.setLayoutManager(linearLayoutManagerFeatured);
+         recyclerViewRecent.setLayoutManager(linearLayoutManagerRecent);
+      } else {
+         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+         recyclerViewAll.setLayoutManager(linearLayoutManager);
+      }
    }
 
    @Override

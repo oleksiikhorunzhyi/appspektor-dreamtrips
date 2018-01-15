@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.video.view;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -7,10 +8,10 @@ import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.model.Video;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.social.ui.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.social.ui.video.presenter.VideoBasePresenter;
-import com.worldventures.dreamtrips.social.ui.video.view.util.VideoDialogHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -18,9 +19,12 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-public abstract class VideoBaseFragment<T extends VideoBasePresenter> extends BaseFragment<T> implements VideoBasePresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
+import static com.worldventures.dreamtrips.social.ui.video.view.util.VideoViewFunctionsKt.showDialog;
 
-   @Inject VideoDialogHelper videoDialogHelper;
+public abstract class VideoBaseFragment<T extends VideoBasePresenter> extends BaseFragment<T> implements VideoBasePresenter.View,
+      SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
+
+   @Inject ActivityRouter activityRouter;
 
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
 
@@ -42,13 +46,13 @@ public abstract class VideoBaseFragment<T extends VideoBasePresenter> extends Ba
 
    @Override
    public void onDeleteAction(@NotNull CachedModel cacheEntity) {
-      videoDialogHelper.showDialog(getContext(), R.string.delete_cached_video_title, R.string.delete_cached_video_text, R.string.delete_photo_positiove, R.string.delete_photo_negative,
+      showDialog(getContext(), R.string.delete_cached_video_title, R.string.delete_cached_video_text, R.string.delete_photo_positiove, R.string.delete_photo_negative,
             () -> getPresenter().deleteAccepted(cacheEntity));
    }
 
    @Override
    public void onCancelCaching(@NotNull CachedModel cacheEntity) {
-      videoDialogHelper.showDialog(getContext(), R.string.cancel_cached_video_title, R.string.cancel_cached_video_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative,
+      showDialog(getContext(), R.string.cancel_cached_video_title, R.string.cancel_cached_video_text, R.string.cancel_photo_positiove, R.string.cancel_photo_negative,
             () -> getPresenter().cancelCachingAccepted(cacheEntity));
    }
 
@@ -68,6 +72,11 @@ public abstract class VideoBaseFragment<T extends VideoBasePresenter> extends Ba
             refreshLayout.setRefreshing(false);
          }
       });
+   }
+
+   @Override
+   public void openPlayer(@NotNull Uri uri, @NotNull String videoName, @NotNull String language) {
+      activityRouter.openPlayerActivity(uri, videoName, language, this.getClass());
    }
 
    @Override

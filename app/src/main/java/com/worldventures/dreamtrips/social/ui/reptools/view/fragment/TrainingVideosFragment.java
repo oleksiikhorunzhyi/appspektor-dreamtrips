@@ -20,20 +20,17 @@ import com.worldventures.dreamtrips.social.ui.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.social.ui.video.cell.VideoCell;
 import com.worldventures.dreamtrips.social.ui.video.cell.delegate.VideoHeaderDelegate;
 import com.worldventures.dreamtrips.social.ui.video.view.VideoBaseFragment;
-import com.worldventures.dreamtrips.social.ui.video.view.util.LayoutManagerProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
+
+import static com.worldventures.dreamtrips.social.ui.video.view.util.VideoViewFunctionsKt.provideGridLayoutManager;
 
 @Layout(R.layout.fragment_presentation_videos)
 public class TrainingVideosFragment extends VideoBaseFragment<TrainingVideosPresenter>
       implements TrainingVideosPresenter.View {
-
-   @Inject LayoutManagerProvider layoutManagerProvider;
 
    @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
@@ -73,7 +70,7 @@ public class TrainingVideosFragment extends VideoBaseFragment<TrainingVideosPres
       adapter.registerDelegate(MediaHeader.class, provideVideoHeaderDelegate());
 
       recyclerView.setAdapter(adapter);
-      recyclerView.setLayoutManager(layoutManagerProvider.forPresentation(getContext(), adapter));
+      recyclerView.setLayoutManager(provideGridLayoutManager(getContext(), adapter));
       recyclerView.setEmptyView(emptyView);
 
       refreshLayout.setOnRefreshListener(this);
@@ -88,7 +85,9 @@ public class TrainingVideosFragment extends VideoBaseFragment<TrainingVideosPres
          }
 
          @Override
-         public void onCellClicked(MediaHeader model) {}
+         public void onCellClicked(MediaHeader model) {
+            // ignore click event
+         }
       };
    }
 

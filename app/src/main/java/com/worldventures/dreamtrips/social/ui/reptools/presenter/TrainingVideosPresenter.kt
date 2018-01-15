@@ -56,7 +56,7 @@ open class TrainingVideosPresenter : VideoBasePresenter<TrainingVideosPresenter.
                   })
    }
 
-   fun loadVideos(videoLanguage: VideoLanguage) {
+   private fun loadVideos(videoLanguage: VideoLanguage) {
       memberVideosInteractor.memberVideosPipe.
             createObservableResult(GetMemberVideosCommand.forRepVideos(videoLanguage))
             .flatMap {

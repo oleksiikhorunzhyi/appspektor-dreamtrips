@@ -60,9 +60,11 @@ open class ThreeSixtyVideosPresenter : VideoBasePresenter<ThreeSixtyVideosPresen
             .compose(bindViewToMainComposer())
             .subscribe {
                view.finishLoading()
-               view.setItems(ArrayList(it.all), ArrayList(it.featured), ArrayList(it.recent))
+               view.setItems(obtainArrayList(it.all), obtainArrayList(it.featured), obtainArrayList(it.recent))
             }
    }
+
+   private fun obtainArrayList(items: List<Any>?) = if (items != null) ArrayList(items) else null
 
    fun loadVideos() = memberVideosInteractor.memberVideosPipe.send(GetMemberVideosCommand.forThreeSixtyVideos())
 

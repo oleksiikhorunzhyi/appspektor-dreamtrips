@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.ui.video.presenter
 
 import android.content.pm.PackageManager
 import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.anyOrNull
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.times
@@ -87,13 +86,6 @@ class PresentationVideosPresenterSpec : PresenterBaseSpec({
             verify(permissionDispatcher).requestPermission(PermissionConstants.WRITE_EXTERNAL_STORAGE, false)
             verify(cachedEntityDelegate).startCaching(any(), any())
          }
-      }
-
-      it("Play video: should open video player") {
-         setup()
-
-         presenter.onPlayVideo(stubVideo())
-         verify(activityRouter).openPlayerActivity(anyOrNull(), any(), any(), any())
       }
 
       it("Delete cached video: should remove cache") {

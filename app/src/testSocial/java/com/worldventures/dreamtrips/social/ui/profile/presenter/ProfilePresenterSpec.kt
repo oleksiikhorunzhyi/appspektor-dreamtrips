@@ -1,6 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.profile.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.anyOrNull
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.User
 import com.worldventures.core.model.session.SessionHolder
@@ -31,7 +36,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
 
    abstract class TestBody<P : ProfilePresenter<V>, V : ProfilePresenter.View> {
       val USER_ID = 1100
-      val USER =User(USER_ID)
+      val USER = User(USER_ID)
       var sessionHolder = makeSessionHolder(USER_ID)
 
       lateinit var presenter: P

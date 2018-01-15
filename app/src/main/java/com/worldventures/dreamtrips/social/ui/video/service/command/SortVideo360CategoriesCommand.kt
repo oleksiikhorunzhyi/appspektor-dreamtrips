@@ -13,6 +13,7 @@ class SortVideo360CategoriesCommand(private val items: List<Any>) : Command<Resu
 
    @Inject lateinit var context: Context
 
+   @Suppress("all")
    override fun run(callback: CommandCallback<Result>) {
       var allList: List<Any>? = null
       var featuredList: List<Video>? = null

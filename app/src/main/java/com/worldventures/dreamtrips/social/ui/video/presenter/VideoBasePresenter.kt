@@ -36,8 +36,8 @@ abstract class VideoBasePresenter<V : VideoBasePresenter.View> : Presenter<V>() 
             cachedEntityInteractor.downloadCachedModelPipe.observe(),
             cachedEntityInteractor.deleteCachedModelPipe.observe())
             .compose(bindViewToMainComposer())
-            .map { (it.action as CachedEntityCommand).cachedModel.uuid }
-            .subscribe(view::notifyItemChanged)
+            .map { (it.action as? CachedEntityCommand)?.cachedModel?.uuid }
+            .subscribe { it?.let { view.notifyItemChanged(it) } }
    }
 
    open fun onPlayVideo(video: Video) {
@@ -47,7 +47,7 @@ abstract class VideoBasePresenter<V : VideoBasePresenter.View> : Presenter<V>() 
          parse = Uri.parse(cachedModelHelper.getFilePath(videoEntity.url))
       }
 
-      activityRouter.openPlayerActivity(parse, video.videoName, obtainVideoLanguage(video), javaClass)
+      view.openPlayer(parse, video.videoName, obtainVideoLanguage(video))
    }
 
    fun downloadVideoRequired(video: Video) {
@@ -68,9 +68,7 @@ abstract class VideoBasePresenter<V : VideoBasePresenter.View> : Presenter<V>() 
 
    open fun cancelCachingAccepted(entity: CachedModel) = cachedEntityDelegate.cancelCaching(entity, getPathForCache(entity))
 
-   protected open fun obtainVideoLanguage(video: Video): String {
-      return if (!TextUtils.isEmpty(video.language)) video.language else ABSENT_VIDEO_LANGUAGE
-   }
+   open fun obtainVideoLanguage(video: Video) = if (!TextUtils.isEmpty(video.language)) video.language else ABSENT_VIDEO_LANGUAGE
 
    private fun getPathForCache(entity: CachedModel) = cachedModelHelper.getFilePath(entity.url)
 
@@ -84,5 +82,7 @@ abstract class VideoBasePresenter<V : VideoBasePresenter.View> : Presenter<V>() 
       fun onDeleteAction(entity: CachedModel)
 
       fun onCancelCaching(entity: CachedModel)
+
+      fun openPlayer(url: Uri, videoName: String, language: String)
    }
 }

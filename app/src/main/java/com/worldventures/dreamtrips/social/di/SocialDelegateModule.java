@@ -11,8 +11,6 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.EditPhotoTags
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.MediaRefresher;
-import com.worldventures.dreamtrips.social.ui.video.view.util.LayoutManagerProvider;
-import com.worldventures.dreamtrips.social.ui.video.view.util.VideoDialogHelper;
 import com.worldventures.dreamtrips.util.SocialCropImageManager;
 
 import javax.inject.Singleton;
@@ -56,18 +54,6 @@ public class SocialDelegateModule {
    @Singleton
    PostLocationPickerCallback providePostLocationPickerCallback() {
       return new PostLocationPickerCallback();
-   }
-
-   @Provides
-   @Singleton
-   LayoutManagerProvider providerLayoutManagerProvider() {
-      return new LayoutManagerProvider();
-   }
-
-   @Provides
-   @Singleton
-   VideoDialogHelper providerVideoDialogHelper() {
-      return new VideoDialogHelper();
    }
 
    @Provides

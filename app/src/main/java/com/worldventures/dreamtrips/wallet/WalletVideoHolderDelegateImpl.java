@@ -17,10 +17,12 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
 
    @Override
    public void sendPlayVideoAction(WalletVideoModel video) {
+      //do nothing
    }
 
    @Override
    public void sendMembershipVideoAction(WalletVideoModel video) {
+      //do nothing
    }
 
    @Override

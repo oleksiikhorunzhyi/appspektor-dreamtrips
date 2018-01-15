@@ -14,22 +14,19 @@ import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.social.ui.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.social.ui.video.cell.VideoCell;
 import com.worldventures.dreamtrips.social.ui.video.presenter.PresentationVideosPresenter;
-import com.worldventures.dreamtrips.social.ui.video.view.util.LayoutManagerProvider;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
+
+import static com.worldventures.dreamtrips.social.ui.video.view.util.VideoViewFunctionsKt.provideGridLayoutManager;
 
 @Layout(R.layout.fragment_presentation_videos)
 public class PresentationVideosFragment extends VideoBaseFragment<PresentationVideosPresenter>
       implements PresentationVideosPresenter.View {
-
-   @Inject LayoutManagerProvider layoutManagerProvider;
 
    @InjectView(R.id.lv_items) protected EmptyRecyclerView recyclerView;
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
@@ -66,7 +63,7 @@ public class PresentationVideosFragment extends VideoBaseFragment<PresentationVi
       adapter.registerCell(MediaHeader.class, MediaHeaderLightCell.class);
 
       recyclerView.setAdapter(adapter);
-      recyclerView.setLayoutManager(layoutManagerProvider.forPresentation(getContext(), adapter));
+      recyclerView.setLayoutManager(provideGridLayoutManager(getContext(), adapter));
       recyclerView.setEmptyView(emptyView);
 
       refreshLayout.setOnRefreshListener(this);

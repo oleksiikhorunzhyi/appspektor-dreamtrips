@@ -261,10 +261,6 @@
             />
 
       <service
-            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
-            android:enabled="true"
-            />
-      <service
             android:name=".social.ui.podcast_player.playback.PodcastService"
             android:exported="false"
             />

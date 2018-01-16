@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesAr
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesFullscreenArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.FullscreenPhotoFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.FullscreenVideoFragment;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
 
    @Override
    public void pageSelected(int position) {
-      videoPlayerHolder.clearCurrent();
+      videoPlayerHolder.releaseCurrentVideo();
       super.pageSelected(position);
    }
 

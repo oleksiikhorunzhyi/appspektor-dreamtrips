@@ -41,7 +41,6 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.You
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.YsbhViewPagerFragment;
 import com.worldventures.dreamtrips.social.ui.video.presenter.ThreeSixtyVideosPresenter;
 import com.worldventures.dreamtrips.social.ui.video.view.ThreeSixtyVideosFragment;
-import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
 import javax.inject.Singleton;
 
@@ -94,8 +93,6 @@ import dagger.Provides;
             TripPhotoFullscreenFragment.class,
             EditPhotoTagsPresenter.class,
             EditPhotoTagsFragment.class,
-
-            VideoView.class,
       },
       complete = false,
       library = true)

@@ -141,7 +141,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    }
 
    private void startAutoplayVideos() {
-      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilPauseComposer());
    }
 
    private void onSuggestionClicked(String suggestion) {

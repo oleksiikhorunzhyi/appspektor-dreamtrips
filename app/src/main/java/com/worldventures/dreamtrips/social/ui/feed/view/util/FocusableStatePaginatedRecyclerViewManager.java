@@ -20,8 +20,12 @@ import rx.subjects.PublishSubject;
 
 public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRecyclerViewManager {
 
+   private static final int SCROLL_DEBOUNCE_TIMEOUT = 250;
    private final PublishSubject<Integer> scrollStateSubject = PublishSubject.create();
+
    private Subscription scrollStateAutoplaySubscription;
+
+   private Focusable lastFocusedItem = null;
 
    public FocusableStatePaginatedRecyclerViewManager(StateRecyclerView stateRecyclerView, SwipeRefreshLayout swipeContainer) {
       super(stateRecyclerView, swipeContainer);
@@ -36,7 +40,19 @@ public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRe
    public void findFirstCompletelyVisibleItemPosition() {
       Focusable focusableViewHolder = findNearestFocusableViewHolder();
       if (focusableViewHolder != null) {
+         if (focusableViewHolder == lastFocusedItem) {
+            return;
+         }
+         unFocusLastFocusedItem();
+         lastFocusedItem = focusableViewHolder;
          focusableViewHolder.onFocused();
+      }
+   }
+
+   public void unFocusLastFocusedItem() {
+      if (lastFocusedItem != null) {
+         lastFocusedItem.onUnfocused();
+         lastFocusedItem = null;
       }
    }
 
@@ -53,7 +69,7 @@ public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRe
       stopAutoplayVideos();
       scrollStateAutoplaySubscription = scrollStateSubject
             .startWith(getStateRecyclerView().getScrollState())
-            .debounce(1, TimeUnit.SECONDS)
+            .debounce(SCROLL_DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
             .filter(state -> state == RecyclerView.SCROLL_STATE_IDLE)
             .compose(stopper)
             .observeOn(AndroidSchedulers.mainThread())
@@ -62,6 +78,7 @@ public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRe
 
    public void stopAutoplayVideos() {
       if (scrollStateAutoplaySubscription != null && !scrollStateAutoplaySubscription.isUnsubscribed()) {
+         unFocusLastFocusedItem();
          scrollStateAutoplaySubscription.unsubscribe();
       }
    }

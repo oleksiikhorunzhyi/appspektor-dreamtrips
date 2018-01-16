@@ -22,6 +22,8 @@ public interface MediaPickerDialogView extends MvpView {
 
    int getPickLimit();
 
+   int getVideoDurationLimit();
+
    int getRequestId();
 
    <T> Observable.Transformer<T, T> lifecycle();

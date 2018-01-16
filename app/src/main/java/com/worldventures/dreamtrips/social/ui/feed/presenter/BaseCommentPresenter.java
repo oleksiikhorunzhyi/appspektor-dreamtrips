@@ -21,8 +21,8 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.GetCommentsCo
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
 
 import java.util.List;
 

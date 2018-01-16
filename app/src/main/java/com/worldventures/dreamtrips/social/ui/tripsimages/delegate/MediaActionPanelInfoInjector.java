@@ -19,6 +19,7 @@ import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.functions.Action0;
 
 public class MediaActionPanelInfoInjector {
 
@@ -27,6 +28,7 @@ public class MediaActionPanelInfoInjector {
    @InjectView(R.id.tv_date) TextView date;
    @InjectView(R.id.tv_likes_count) TextView likesCount;
    @InjectView(R.id.tv_comments_count) TextView commentsCount;
+   @InjectView(R.id.iv_comment) ImageView commentButton;
    @InjectView(R.id.iv_like) ImageView like;
    @InjectView(R.id.flag) FlagView flag;
    @InjectView(R.id.edit) ImageView edit;
@@ -83,5 +85,33 @@ public class MediaActionPanelInfoInjector {
 
    public void setLiked(boolean isLiked) {
       like.setSelected(isLiked);
+   }
+
+   public void setLikeAction(Action0 action) {
+      like.setOnClickListener(view -> action.call());
+   }
+
+   public void setLikesCountAction(Action0 action) {
+      likesCount.setOnClickListener(view -> action.call());
+   }
+
+   public void setCommentsCountAction(Action0 action) {
+      commentsCount.setOnClickListener(view -> action.call());
+   }
+
+   public void setFlagAction(Action0 action) {
+      flag.setOnClickListener(view -> action.call());
+   }
+
+   public void setEditAction(Action0 action) {
+      edit.setOnClickListener(view -> action.call());
+   }
+
+   public void setCommentButtonAction(Action0 action) {
+      commentButton.setOnClickListener(view -> action.call());
+   }
+
+   public ImageView getEditButton() {
+      return edit;
    }
 }

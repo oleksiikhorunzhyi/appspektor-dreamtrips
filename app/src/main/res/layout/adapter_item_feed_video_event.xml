@@ -22,19 +22,12 @@
 
          <include layout="@layout/adapter_item_feed_header" />
 
-         <FrameLayout
-               android:id="@+id/video_windowed_container"
+         <com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl
+               android:id="@+id/videoAttachment"
                android:layout_width="match_parent"
-               android:layout_height="match_parent">
-
-            <com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView
-                  android:id="@+id/videoAttachment"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:visibility="gone"
-                  />
-
-         </FrameLayout>
+               android:layout_height="wrap_content"
+               android:visibility="visible"
+               />
 
          <include layout="@layout/adapter_item_feed_footer" />
 

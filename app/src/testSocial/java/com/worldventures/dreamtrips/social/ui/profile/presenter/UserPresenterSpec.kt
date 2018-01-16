@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInter
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.UserTimelineStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.UserTimelineStorageDelegate
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand

@@ -44,8 +44,8 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.SuggestedPhot
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.FeedStorageDelegate
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -148,7 +148,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
 
          it("Should send GetCirclesCommand") {
             val testSubscriber = TestSubscriber<ActionState<GetCirclesCommand>>()
-            circlesInteractor.pipe().observe().subscribe(testSubscriber)
+            circlesInteractor.pipe.observe().subscribe(testSubscriber)
 
             presenter.updateCircles()
 

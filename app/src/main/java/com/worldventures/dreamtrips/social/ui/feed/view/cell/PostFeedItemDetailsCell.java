@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity;
@@ -59,16 +60,31 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
 
    @Override
    protected void syncUIStateWithModel() {
+      super.syncUIStateWithModel();
       imagesList.setLayoutManager(layout);
       if (adapter != imagesList.getAdapter()) {
          imagesList.setAdapter(adapter);
       }
-
-      super.syncUIStateWithModel();
+      dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
+      if (!displayingInList && !dtVideoView.isVideoInProgress()) {
+         List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
+         if (attachments.get(0).getItem() instanceof Video) {
+            Video video = (Video) getModelObject().getItem().getAttachments().get(0).getItem();
+            if (playerExistsAndCurrentItemIsSame(video)) {
+               if (videoPlayerHolder.inFullscreen()) {
+                  switchFromFullscreen();
+               } else {
+                  reattachVideo();
+                  dtVideoView.pauseVideo();
+               }
+            }
+         }
+      }
    }
 
    private void openFullsreenPhoto(Photo model) {
       router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .currentItemPosition(getPositionOfPhoto(model))
                   .mediaEntityList(Queryable.from(getModelObject().getItem().getAttachments())
@@ -84,7 +100,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
             .build());
    }
 
-   protected int getPositionOfPhoto(Photo model) {
+   private int getPositionOfPhoto(Photo model) {
       int result = 0;
       List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
       for (int i = 0; i < attachments.size(); i++) {
@@ -115,5 +131,11 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
    @Override
    protected void onMore() {
       showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
+   }
+
+   @Override
+   public void clearResources() {
+      super.clearResources();
+      dtVideoView.pauseVideo();
    }
 }

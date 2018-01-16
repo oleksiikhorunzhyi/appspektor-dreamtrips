@@ -143,6 +143,13 @@ public class FeedItemCell<ITEM extends FeedItem, DELEGATE extends BaseFeedCell.F
    }
 
    @Override
+   public void onUnfocused() {
+      if (feedItemDetailsCell instanceof Focusable) {
+         ((Focusable) feedItemDetailsCell).onUnfocused();
+      }
+   }
+
+   @Override
    public boolean canFocus() {
       return feedItemDetailsCell instanceof Focusable && ((Focusable) feedItemDetailsCell).canFocus();
    }

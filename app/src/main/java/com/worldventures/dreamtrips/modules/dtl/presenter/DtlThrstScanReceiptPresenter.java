@@ -32,7 +32,6 @@ import javax.inject.Inject;
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
 import timber.log.Timber;
 
 public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanReceiptPresenter.View> {
@@ -79,22 +78,23 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(Command::getResult)
-            .subscribe(dtlTransaction -> locationInteractor.locationSourcePipe()
-                  .observeSuccessWithReplay()
-                  .take(1)
-                  .compose(bindViewIoToMainComposer())
-                  .flatMap(command -> {
-                     // TODO Remove this check once we have progress dialogs and error handling on this screen
-                     if (dtlTransaction.getUploadTask() == null ||
-                           TextUtils.isEmpty(dtlTransaction.getUploadTask().getOriginUrl())) {
-                        return Observable.error(new Exception("Upload task is null or receipt URL is empty"));
-                     }
-                     return merchantInteractor.urlTokenThrstHttpPipe()
-                           .createObservable(getUrlTokenAction(command.getResult(), dtlTransaction));
-                  })
-                  .subscribe(new ActionStateSubscriber<UrlTokenAction>()
-                        .onSuccess(this::onThrstSuccess)
-                        .onFail(this::onThrstError)));
+            .subscribe(dtlTransaction -> {
+               // TODO Remove this check once we have progress dialogs and error handling on this screen
+               if (dtlTransaction.getUploadTask() == null ||
+                     TextUtils.isEmpty(dtlTransaction.getUploadTask().getOriginUrl())) {
+                  return;
+               }
+
+               locationInteractor.locationSourcePipe()
+                     .observeSuccessWithReplay()
+                     .take(1)
+                     .compose(bindViewIoToMainComposer())
+                     .flatMap(command -> merchantInteractor.urlTokenThrstHttpPipe()
+                           .createObservable(getUrlTokenAction(command.getResult(), dtlTransaction)))
+                     .subscribe(new ActionStateSubscriber<UrlTokenAction>()
+                           .onSuccess(this::onThrstSuccess)
+                           .onFail(this::onThrstError));
+            });
    }
 
    @NonNull

@@ -165,29 +165,16 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
 
    @Override
    public void photoUploadError() {
-      showImageUploadError(sweetAlertDialog -> {
-         sweetAlertDialog.dismiss();
-         getPresenter().photoUploadFailed();
-      });
-   }
-
-   @Override
-   public void noConnection() {
-      showImageUploadError(sweetAlertDialog -> {
-         sweetAlertDialog.dismissWithAnimation();
-         startCamera();
-      });
-   }
-
-   private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
       if (alertDialog != null && alertDialog.isShowing()) {
          return;
       }
-      //
       alertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE).setTitleText(getString(R.string.alert))
             .setContentText(getString(R.string.dtl_photo_upload_error))
             .setConfirmText(getString(R.string.ok))
-            .setConfirmClickListener(onSweetClickListener);
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.dismiss();
+               getPresenter().photoUploadFailed();
+            });
       alertDialog.setCancelable(false);
       alertDialog.show();
    }

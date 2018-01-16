@@ -44,9 +44,6 @@ ext {
    ]
    // services
    moduleDependencies.services = [
-         // amazon
-         amazonCore  : [impl: 'com.amazonaws:aws-android-sdk-core:2.2.6'],
-         amazonS3    : [impl: 'com.amazonaws:aws-android-sdk-s3:2.2.6'],
          // google
          googleGcm   : [impl: "com.google.android.gms:play-services-gcm:${googleServicesVersion}"],
          googleVision: [impl: "com.google.android.gms:play-services-vision:${googleServicesVersion}"],

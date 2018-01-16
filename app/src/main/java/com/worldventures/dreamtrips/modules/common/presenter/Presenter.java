@@ -13,7 +13,6 @@ import com.worldventures.core.service.ConnectionInfoProvider;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand;
@@ -43,7 +42,6 @@ public class Presenter<VT extends Presenter.View> {
    @Inject protected SessionHolder appSessionHolder;
    @Inject protected AnalyticsInteractor analyticsInteractor;
    @Inject protected FeatureManager featureManager;
-   @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
    @Inject OfflineWarningDelegate offlineWarningDelegate;
    @Inject protected OfflineErrorInteractor offlineErrorInteractor;
    @Inject ConnectionInfoProvider connectionInfoProvider;

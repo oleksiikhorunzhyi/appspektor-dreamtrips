@@ -30,6 +30,7 @@ import com.worldventures.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.wallet.service.command.SyncSmartCardCommand;
+import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCommand;
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.wallet.service.command.http.FetchFirmwareInfoCommand;
@@ -96,6 +97,7 @@ import dagger.Module;
             FetchFirmwareVersionCommand.class,
             SetLockStateCommand.class,
             FetchSmartCardAgreementsCommand.class,
+            AcceptSmartCardAgreementsCommand.class,
             GetCustomerSupportContactCommand.class,
             SmartCardFeedbackCommand.class,
             CustomerSupportFeedbackCommand.class,

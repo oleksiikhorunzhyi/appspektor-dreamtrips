@@ -200,7 +200,7 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
    override fun onDestroyView(view: View) {
       super.onDestroyView(view)
       webView.webViewClient = null
-      webView.destroy()
+//      webView.destroy()
    }
 
    override fun screenModule() = WizardTermsScreenModule()

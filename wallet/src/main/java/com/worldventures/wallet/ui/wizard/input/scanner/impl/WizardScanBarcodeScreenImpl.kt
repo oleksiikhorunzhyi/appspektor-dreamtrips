@@ -14,6 +14,7 @@ import com.google.zxing.Result
 import com.worldventures.core.utils.HttpErrorHandlingUtil
 import com.worldventures.wallet.R
 import com.worldventures.wallet.service.command.SmartCardUserCommand
+import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
@@ -108,6 +109,19 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
             ErrorViewFactory.builder<SmartCardUserCommand>()
                   .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
                         { presenter.retryAssignedToCurrentDevice() }) { /*nothing*/ }
+                  ).build()
+      )
+   }
+
+   override fun provideOperationAcceptAgreements(): OperationView<AcceptSmartCardAgreementsCommand> {
+      return ComposableOperationView(
+            SimpleDialogProgressView(context, R.string.wallet_loading, false),
+            ErrorViewFactory.builder<AcceptSmartCardAgreementsCommand>()
+                  .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
+                        { command -> presenter.retryAgreementsAccept(command.smartCardStatus, command.smartCardId) },
+                        { presenter.handleAcceptanceCancelled() },
+                        R.string.wallet_wizard_acceptance_error,
+                        R.string.wallet_common_backend_error_message)
                   ).build()
       )
    }

@@ -5,7 +5,6 @@ import com.worldventures.wallet.domain.entity.SmartCard;
 import com.worldventures.wallet.domain.entity.SmartCardAgreement;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
-import com.worldventures.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.wallet.domain.entity.record.SyncRecordsStatus;
 

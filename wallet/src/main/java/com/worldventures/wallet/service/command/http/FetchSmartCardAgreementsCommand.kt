@@ -11,7 +11,6 @@ import io.techery.janet.command.annotations.CommandAction
 import rx.Observable
 import javax.inject.Inject
 
-
 @CommandAction
 class FetchSmartCardAgreementsCommand private constructor(
       private val func: () -> String,

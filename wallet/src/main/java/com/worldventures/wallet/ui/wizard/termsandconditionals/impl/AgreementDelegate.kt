@@ -26,7 +26,7 @@ abstract class AgreementDelegate(private val wizardInteractor: WizardInteractor)
    }
 
    private fun createAgreementAction(): FetchSmartCardAgreementsCommand {
-      return when(provideAgreementDocumentType()) {
+      return when (provideAgreementDocumentType()) {
          AgreementMode.TAC -> FetchSmartCardAgreementsCommand.termsAndConditions()
          AgreementMode.AFFIDAVIT -> FetchSmartCardAgreementsCommand.affidavit()
       }

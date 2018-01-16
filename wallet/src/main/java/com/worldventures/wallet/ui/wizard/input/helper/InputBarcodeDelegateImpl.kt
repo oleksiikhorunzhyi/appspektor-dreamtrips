@@ -5,6 +5,7 @@ import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.SmartCardUserCommand
+import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
@@ -25,6 +26,18 @@ class InputBarcodeDelegateImpl(private val navigator: Navigator,
 
    override fun retry(barcode: String) {
       fetchCardStatus(barcode)
+   }
+
+   override fun retryAgreementsAccept(smartCardStatus: SmartCardStatus, smartCardId: String) {
+      acceptSmartCardAgreements(smartCardStatus, smartCardId)
+   }
+
+   override fun handleAcceptanceCancelled() {
+      navigator.returnWalletStart()
+   }
+
+   private fun acceptSmartCardAgreements(smartCardStatus: SmartCardStatus, smartCardId: String) {
+      wizardInteractor.acceptSmartCardAgreementsPipe().send(AcceptSmartCardAgreementsCommand(smartCardId, smartCardStatus))
    }
 
    private fun fetchCardStatus(barcode: String) {
@@ -51,6 +64,14 @@ class InputBarcodeDelegateImpl(private val navigator: Navigator,
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(inputDelegateView.provideOperationFetchSmartCardUser())
                   .onSuccess { command -> handleSmartCardUserExisting(command.result) }
+                  .create())
+
+      wizardInteractor.acceptSmartCardAgreementsPipe()
+            .observe()
+            .compose(inputDelegateView.bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(OperationActionSubscriber.forView(inputDelegateView.provideOperationAcceptAgreements())
+                  .onSuccess { command -> handleAcceptableStatus(command.smartCardStatus, command.smartCardId) }
                   .create())
    }
 
@@ -84,12 +105,23 @@ class InputBarcodeDelegateImpl(private val navigator: Navigator,
    }
 
    private fun handleSmartCardStatus(inputDelegateView: InputDelegateView, command: GetSmartCardStatusCommand) {
-      when (command.result) {
-         SmartCardStatus.ASSIGNED_TO_CURRENT_DEVICE -> fetchAssociatedSmartCard()
-         SmartCardStatus.UNASSIGNED -> cardIsUnassigned(command.smartCardId)
-         SmartCardStatus.ASSIGNED_TO_ANOTHER_DEVICE -> cardAssignToAnotherDevice(command.smartCardId)
+      val status: SmartCardStatus = command.result
+      if (status == SmartCardStatus.ASSIGNED_TO_CURRENT_DEVICE
+            || status == SmartCardStatus.UNASSIGNED
+            || status == SmartCardStatus.ASSIGNED_TO_ANOTHER_DEVICE) {
+         acceptSmartCardAgreements(status, command.smartCardId)
+      } else when (status) {
          SmartCardStatus.ASSIGNED_TO_ANOTHER_USER -> inputDelegateView.showErrorCardIsAssignedDialog()
          else -> fetchAssociatedSmartCard()
+      }
+   }
+
+   private fun handleAcceptableStatus(smartCardStatus: SmartCardStatus, smartCardId: String) {
+      when (smartCardStatus) {
+         SmartCardStatus.ASSIGNED_TO_CURRENT_DEVICE -> fetchAssociatedSmartCard()
+         SmartCardStatus.UNASSIGNED -> cardIsUnassigned(smartCardId)
+         SmartCardStatus.ASSIGNED_TO_ANOTHER_DEVICE -> cardAssignToAnotherDevice(smartCardId)
+         else -> throw IllegalArgumentException("SmartCard status cannot differ from defined above at this point")
       }
    }
 }

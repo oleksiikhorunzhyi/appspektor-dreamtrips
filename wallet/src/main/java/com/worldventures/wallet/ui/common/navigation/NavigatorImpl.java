@@ -64,6 +64,7 @@ import com.worldventures.wallet.ui.settings.security.clear.records.impl.WalletAu
 import com.worldventures.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
 import com.worldventures.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
+import com.worldventures.wallet.ui.start.impl.WalletStartScreenImpl;
 import com.worldventures.wallet.ui.wizard.assign.impl.WizardAssignUserScreenImpl;
 import com.worldventures.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
 import com.worldventures.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
@@ -121,6 +122,11 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void finish() {
       routerLazy.get().getActivity().finish();
+   }
+
+   @Override
+   public void returnWalletStart() {
+      single(new WalletStartScreenImpl());
    }
 
    @Override
@@ -209,7 +215,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goWizardTerms() {
-      single(WizardTermsScreenImpl.Companion.create(AgreementMode.TAC));
+      go(WizardTermsScreenImpl.Companion.create(AgreementMode.TAC));
    }
 
    @Override

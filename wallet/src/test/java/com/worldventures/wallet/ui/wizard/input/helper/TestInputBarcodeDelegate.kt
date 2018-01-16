@@ -13,6 +13,7 @@ import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WizardInteractor
 import com.worldventures.wallet.service.command.SmartCardUserCommand
+import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
@@ -38,6 +39,7 @@ class TestInputBarcodeDelegate : BaseTest() {
          addContract(contractGetSmartCardStatus)
          addContract(contractSmartCardUser)
          addContract(contractFetchAssociatedSmartCard)
+         addContract(Contract.of(AcceptSmartCardAgreementsCommand::class.java).result(null))
       }
    }
 
@@ -50,8 +52,10 @@ class TestInputBarcodeDelegate : BaseTest() {
       view = mockScreen(InputDelegateView::class.java)
       val progressView: ProgressView<GetSmartCardStatusCommand> = mock()
       val progressSmartCardUserView: ProgressView<SmartCardUserCommand> = mock()
+      val progressAcceptTermsView: ProgressView<AcceptSmartCardAgreementsCommand> = mock()
       whenever(view.provideOperationFetchCardStatus()).thenReturn(ComposableOperationView<GetSmartCardStatusCommand>(progressView))
       whenever(view.provideOperationFetchSmartCardUser()).thenReturn(ComposableOperationView<SmartCardUserCommand>(progressSmartCardUserView))
+      whenever(view.provideOperationAcceptAgreements()).thenReturn(ComposableOperationView<AcceptSmartCardAgreementsCommand>(progressAcceptTermsView))
 
       navigator = mock()
       val wizardInteractor = interactorBuilder.createInteractor(WizardInteractor::class)

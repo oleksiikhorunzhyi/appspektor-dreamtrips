@@ -25,6 +25,8 @@ public interface Navigator {
 
    void finish();
 
+   void returnWalletStart();
+
    void goInstallFirmwareWalletStart();
 
    void goNewFirmwareAvailableWalletStart();

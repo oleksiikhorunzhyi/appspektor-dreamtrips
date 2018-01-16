@@ -175,7 +175,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private void startAutoplayVideos() {
-      recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
+      recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilPauseComposer());
    }
 
    @Override

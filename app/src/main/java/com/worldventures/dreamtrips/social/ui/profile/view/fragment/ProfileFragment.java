@@ -90,7 +90,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    protected void startAutoplayVideos() {
-      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilPauseComposer());
    }
 
    @Override

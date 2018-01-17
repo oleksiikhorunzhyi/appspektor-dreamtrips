@@ -30,7 +30,7 @@ public class PhotoAttachmentPagerFragment extends BaseImageViewPagerFragment<Pho
       }
 
       @Override
-      protected List<FragmentItem> getItems() {
+      protected List<FragmentItem> makeFragmentItems() {
          return Queryable.from(photoAttachments)
                .map(entity -> new FragmentItem(MessageImageFullscreenFragment.class, "", entity))
                .toList();

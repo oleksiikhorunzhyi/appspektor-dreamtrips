@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.activity.presenter;
 import android.util.Pair;
 
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.ProgressAnalyticInteractor;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.SendVideoAnalyticsIfNeedAction;
 
 import javax.inject.Inject;
 
@@ -34,7 +34,7 @@ public class PlayerPresenter extends VideoPlayerPresenter<PlayerPresenter.View> 
    private void listenVideoProgress() {
       view.videoProgress()
             .compose(bindView())
-            .flatMap(progressPair -> progressAnalyticInteractor.sendProgressAnalyticsIfNeedActionPipe()
+            .flatMap(progressPair -> progressAnalyticInteractor.getSendAnalyticsPipe()
                   .createObservableResult(new SendVideoAnalyticsIfNeedAction(launchComponent, language, videoName,
                         expectedAnalyticStep, progressPair.first, progressPair.second)))
             .map(action -> (Integer) action.getResult())

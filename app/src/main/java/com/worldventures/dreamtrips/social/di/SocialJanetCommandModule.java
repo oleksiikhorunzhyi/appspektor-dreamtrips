@@ -62,7 +62,9 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountTim
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntityCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetNotificationsCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetPhotoCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand;
+import com.worldventures.dreamtrips.social.ui.feed.service.command.GetVideoCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.LikeEntityCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationAsReadCommand;
@@ -87,6 +89,8 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBack
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.SendAnalyticsIfNeedAction;
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CreatePhotoCreationItemCommand;
@@ -100,8 +104,6 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetIns
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetMemberMediaCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetUsersMediaCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSBHPhotosCommand;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendAnalyticsIfNeedAction;
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TranslatePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.video.service.command.DetermineHeadersCommand;
 import com.worldventures.dreamtrips.social.ui.video.service.command.SortVideo360CategoriesCommand;
@@ -222,6 +224,8 @@ import dagger.Provides;
       AddContactCommand.class,
       DetermineHeadersCommand.class,
       SortVideo360CategoriesCommand.class,
+      GetPhotoCommand.class,
+      GetVideoCommand.class
 }, complete = false, library = true)
 public class SocialJanetCommandModule {
 

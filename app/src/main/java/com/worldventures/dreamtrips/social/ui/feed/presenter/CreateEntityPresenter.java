@@ -278,7 +278,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoPickerModel photoPickerModel) {
-      return tripImagesInteractor.createPhotoCreationItemPipe()
+      return tripImagesInteractor.getCreatePhotoCreationItemPipe()
             .createObservableResult(new CreatePhotoCreationItemCommand(photoPickerModel, photoPickerModel.getSource()))
             .map(Command::getResult);
    }

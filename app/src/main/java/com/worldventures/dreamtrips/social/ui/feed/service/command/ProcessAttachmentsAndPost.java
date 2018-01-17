@@ -54,7 +54,7 @@ public class ProcessAttachmentsAndPost extends Command<List<PhotoCreationItem>> 
                image.setFilePath(pair.first);
                return image;
             })
-            .concatMap(item -> tripImagesInteractor.fetchLocationFromExifPipe()
+            .concatMap(item -> tripImagesInteractor.getFetchLocationFromExifPipe()
                   .createObservableResult(new FetchLocationFromExifCommand(item.getFilePath()))
                   .map(command -> {
                      item.setLocationFromExif(command.getResult());

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -24,7 +23,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.DescriptionBundle;
@@ -41,10 +39,11 @@ import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.ResizeCellScro
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.MediaItemAnimation;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.PhotoPostCreationItemDecorator;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.EditPhotoTagsFragment;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,12 +55,12 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.social.ui.tripsimages.view.args.EditPhotoTagsBundle.PhotoEntity;
+import static com.worldventures.dreamtrips.social.util.ViewUtilsKt.getColor;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable> extends RxBaseFragmentWithArgs<PM, P>
       implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
 
    @Inject BackStackDelegate backStackDelegate;
-   @Inject ConfigurationInteractor configurationInteractor;
    @Inject @ForActivity Provider<Injector> injectorProvider;
 
    @InjectView(R.id.avatar) protected SmartAvatarView avatar;
@@ -72,53 +71,38 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    @InjectView(R.id.photos) protected RecyclerView photosList;
    @InjectView(R.id.post_container) ViewGroup postContainer;
 
-   protected BaseDelegateAdapter adapter;
+   protected BaseDelegateAdapter<Object> adapter;
    private SweetAlertDialog dialog;
    private PostDescription description = new PostDescription();
-   private LinearLayoutManager layoutManager;
    private ResizeCellScrollListener resizeCellScrollListener;
+   private BackStackDelegate.BackPressedListener backPressedListener;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       postButton.setText(getPostButtonText());
-      adapter = new BaseDelegateAdapter(getContext(), this);
+      adapter = new BaseDelegateAdapter<>(getContext(), this);
       adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class); //Tag
       adapter.registerCell(PostDescription.class, PostCreationTextCell.class); //hashtag
       adapter.registerCell(ImmutableVideoCreationModel.class, VideoPostCreationCell.class);
       PostCreationTextCell.Delegate delegate = model -> openPhotoCreationDescriptionDialog((PostDescription) model);
       adapter.registerDelegate(PostDescription.class, delegate);
       adapter.registerDelegate(PhotoCreationItem.class, this);
-      layoutManager = new LinearLayoutManager(getContext());
+      LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
       photosList.setLayoutManager(layoutManager);
       photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
       photosList.setAdapter(adapter);
       photosList.setItemAnimator(new MediaItemAnimation(position -> photosList.scrollToPosition(position), getResources()
             .getDimension(R.dimen.photo_cell_title_height)));
 
-      configurationInteractor.configurationActionPipe()
-            .observe()
-            .compose(bindUntilDropViewComposer())
-            .map(state -> state.action.getResult())
-            .subscribe(this::updateContainerOnOrientationChange);
-
       photosList.addOnScrollListener(resizeCellScrollListener = new ResizeCellScrollListener(layoutManager));
+      backPressedListener = this::onBack;
    }
 
    protected void openPhotoCreationDescriptionDialog(PostDescription model) {
       router.moveTo(DescriptionCreatorFragment.class, NavigationConfigBuilder.forActivity()
             .data(new DescriptionBundle(model.getDescription()))
             .build());
-   }
-
-   private void updateContainerOnOrientationChange(Configuration configuration) {
-      Resources res = postContainer.getContext().getResources();
-      ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) postContainer.getLayoutParams();
-      params.bottomMargin = res.getDimensionPixelSize(R.dimen.post_spacing_vertical_bottom);
-      int marginLeftRight = res.getDimensionPixelSize(R.dimen.post_spacing_horizontal);
-      params.leftMargin = marginLeftRight;
-      params.rightMargin = marginLeftRight;
-      params.topMargin = res.getDimensionPixelSize(R.dimen.post_spacing_vertical_top);
    }
 
    @Override
@@ -148,7 +132,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    @Override
    public void onResume() {
       super.onResume();
-      backStackDelegate.setListener(this::onBack);
+      backStackDelegate.addListener(backPressedListener);
       updateLocationButtonState();
       getPresenter().invalidateDynamicViews();
    }
@@ -156,7 +140,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    @Override
    public void attachPhotos(List<PhotoCreationItem> images) {
       if (images.size() > 1) {
-         adapter.addItems(images);
+         adapter.addItems(new ArrayList<>(images));
          adapter.notifyDataSetChanged();
       } else {
          attachMedia(images.get(0));
@@ -191,7 +175,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
    @Override
    public void onPause() {
       super.onPause();
-      backStackDelegate.setListener(null);
+      backStackDelegate.removeListener(backPressedListener);
       SoftInputUtil.hideSoftInputMethod(getActivity());
    }
 
@@ -244,13 +228,13 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
    @Override
    public void enableButton() {
-      postButton.setTextColor(getResources().getColor(R.color.bucket_detailed_text_color));
+      postButton.setTextColor(getColor(postButton, R.color.bucket_detailed_text_color));
       postButton.setClickable(true);
    }
 
    @Override
    public void disableButton() {
-      postButton.setTextColor(getResources().getColor(R.color.grey));
+      postButton.setTextColor(getColor(postButton, R.color.grey));
       postButton.setClickable(false);
    }
 

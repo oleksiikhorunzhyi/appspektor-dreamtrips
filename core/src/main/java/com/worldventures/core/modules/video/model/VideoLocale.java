@@ -13,6 +13,13 @@ public class VideoLocale implements Serializable, Filterable {
    private final String icon;
    private final List<VideoLanguage> languages;
 
+   public VideoLocale() {
+      this.title = null;
+      this.country = null;
+      this.icon = null;
+      this.languages = null;
+   }
+
    public VideoLocale(String title, String country, String icon, List<VideoLanguage> languages) {
       this.title = title;
       this.country = country;
@@ -37,6 +44,7 @@ public class VideoLocale implements Serializable, Filterable {
       return title;
    }
 
+   @SuppressWarnings("all")
    @Override
    public boolean equals(Object o) {
       if (this == o) { return true; }
@@ -61,6 +69,7 @@ public class VideoLocale implements Serializable, Filterable {
 
    @Override
    public boolean containsQuery(String query) {
-      return title.toLowerCase().contains(query.toLowerCase()) || country.toLowerCase().contains(query.toLowerCase());
+      return (title != null && title.toLowerCase().contains(query.toLowerCase()))
+            || (country != null && country.toLowerCase().contains(query.toLowerCase()));
    }
 }

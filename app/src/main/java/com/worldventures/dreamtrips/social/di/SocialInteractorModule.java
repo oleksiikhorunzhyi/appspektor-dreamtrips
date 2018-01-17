@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteracto
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.social.service.InviteShareInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -16,13 +17,12 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedStorag
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFeedStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.ProgressAnalyticInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
+import com.worldventures.dreamtrips.social.ui.video.service.VideoHelperInteractor;
 
 import javax.inject.Singleton;
 
@@ -126,12 +126,6 @@ class SocialInteractorModule {
 
    @Provides
    @Singleton
-   ConfigurationInteractor provideConfigurationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new ConfigurationInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
    MediaMetadataInteractor provideMediaMetadataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new MediaMetadataInteractor(sessionActionPipeCreator);
    }
@@ -157,5 +151,10 @@ class SocialInteractorModule {
    @Provides
    @Singleton PodcastsInteractor providePodcastInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new PodcastsInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   VideoHelperInteractor provideLayoutManagerProvider(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new VideoHelperInteractor(sessionActionPipeCreator);
    }
 }

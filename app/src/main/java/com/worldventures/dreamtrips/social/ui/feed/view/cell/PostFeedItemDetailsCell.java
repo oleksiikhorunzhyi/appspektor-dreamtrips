@@ -68,7 +68,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
       dtVideoView.setThumbnailAction(this::playVideoIfNeeded);
       if (!displayingInList && !dtVideoView.isVideoInProgress()) {
          List<FeedEntityHolder> attachments = getModelObject().getItem().getAttachments();
-         if (attachments.get(0).getItem() instanceof Video) {
+         if (!attachments.isEmpty() && attachments.get(0).getItem() instanceof Video) {
             Video video = (Video) getModelObject().getItem().getAttachments().get(0).getItem();
             if (playerExistsAndCurrentItemIsSame(video)) {
                if (videoPlayerHolder.inFullscreen()) {

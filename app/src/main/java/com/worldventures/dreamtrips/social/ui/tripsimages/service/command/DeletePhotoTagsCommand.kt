@@ -12,7 +12,7 @@ import javax.inject.Inject
 @CommandAction
 class DeletePhotoTagsCommand(private val photoId: String, private val userIds: List<Int>) : CommandWithError<Any>(), InjectableAction {
 
-   @field:Inject internal lateinit var janet: Janet
+   @Inject internal lateinit var janet: Janet
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Any>) {

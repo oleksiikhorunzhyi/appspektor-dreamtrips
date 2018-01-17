@@ -15,8 +15,8 @@ import javax.inject.Inject
 @CommandAction
 class EditPhotoCommand(private val uid: String, private val task: UploadTask) : Command<Photo>(), InjectableAction {
 
-   @field:Inject internal lateinit var janet: Janet
-   @field:Inject internal lateinit var mapperyContext: MapperyContext
+   @Inject internal lateinit var janet: Janet
+   @Inject internal lateinit var mapperyContext: MapperyContext
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Photo>) {

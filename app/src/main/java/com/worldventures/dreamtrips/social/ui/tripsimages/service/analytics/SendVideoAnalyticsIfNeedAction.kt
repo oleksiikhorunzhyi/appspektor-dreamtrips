@@ -14,7 +14,7 @@ class SendVideoAnalyticsIfNeedAction(private val launchComponent: Class<*>, priv
                                      private val videoName: String, expectedAnalyticStep: Int, currentVideoProgress: Long, totalVideoLength: Long) :
          SendProgressAnalyticsIfNeed<WatchVideoAnalyticAction>(expectedAnalyticStep, currentVideoProgress, totalVideoLength), InjectableAction {
 
-   @field:Inject internal lateinit var analyticsInteractor: AnalyticsInteractor
+   @Inject internal lateinit var analyticsInteractor: AnalyticsInteractor
 
    override fun chooseAnalyticAction(currentStep: Int, expectedAnalyticStep: Int): WatchVideoAnalyticAction? {
       if (expectedAnalyticStep == 0) {

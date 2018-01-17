@@ -13,7 +13,7 @@ import javax.inject.Inject
 @CommandAction
 class DeleteVideoCommand(private val video: Video) : CommandWithError<Video>(), InjectableAction {
 
-   @field:Inject internal lateinit var janet: Janet
+   @Inject internal lateinit var janet: Janet
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Video>) {

@@ -19,8 +19,8 @@ import javax.inject.Inject
 @CommandAction
 class CreatePhotoCreationItemCommand(private val photoPickerModel: PhotoPickerModel, private val source: MediaPickerAttachment.Source) : Command<PhotoCreationItem>(), InjectableAction {
 
-   @field:Inject internal lateinit var mediaInteractor: MediaPickerInteractor
-   @field:Inject internal lateinit var capturedRowMediaHelper: CapturedRowMediaHelper
+   @Inject internal lateinit var mediaInteractor: MediaPickerInteractor
+   @Inject internal lateinit var capturedRowMediaHelper: CapturedRowMediaHelper
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<PhotoCreationItem>) {
@@ -57,13 +57,11 @@ class CreatePhotoCreationItemCommand(private val photoPickerModel: PhotoPickerMo
 
    private fun getImageSize(path: String): Size {
       val imageSize = photoPickerModel.size
-      if (imageSize == null) {
+      return if (imageSize == null) {
          val options = BitmapFactory.Options()
          options.inJustDecodeBounds = true
          BitmapFactory.decodeFile(File(path).absolutePath, options)
-         return Size(options.outWidth, options.outHeight)
-      } else {
-         return imageSize
-      }
+         Size(options.outWidth, options.outHeight)
+      } else imageSize
    }
 }

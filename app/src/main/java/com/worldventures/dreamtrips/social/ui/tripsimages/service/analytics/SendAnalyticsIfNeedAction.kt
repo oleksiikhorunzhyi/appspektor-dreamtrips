@@ -15,7 +15,7 @@ class SendAnalyticsIfNeedAction(private val launchComponent: Class<*>, private v
                                 private val videoName: String, private val expectedAnalyticStep: Int,
                                 private val currentVideoProgress: Long, private val totalVideoLength: Long) : Command<Int>(), InjectableAction {
 
-   @field:Inject internal lateinit var analyticsInteractor: AnalyticsInteractor
+   @Inject internal lateinit var analyticsInteractor: AnalyticsInteractor
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Int>) {

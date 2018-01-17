@@ -59,8 +59,7 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
 
    internal var loading = false
    internal var lastPageReached = false
-   internal var memberImagesAreRefreshing: Boolean = false
-   private var previousScrolledTotal = 0
+   internal var memberImagesAreRefreshing = false
 
    var currentItems: ArrayList<BaseMediaEntity<out FeedEntity>> = arrayListOf()
    internal var compoundOperationModels: List<PostCompoundOperationModel<*>> = listOf()
@@ -114,8 +113,7 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
    private fun trackUploadAnalyticEvent() {
       val action = if (tripImagesArgs.tripImageType == TripImagesArgs.TripImageType.ACCOUNT_IMAGES)
          UploadTripImageAnalyticAction.fromMyImages()
-      else
-         UploadTripImageAnalyticAction.fromMemberImages()
+      else UploadTripImageAnalyticAction.fromMemberImages()
 
       analyticsInteractor.analyticsActionPipe().send(action)
    }
@@ -130,13 +128,11 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
       }
    }
 
-   internal fun refreshImages() = tripImagesInteractor.baseTripImagesPipe
-            .send(tripImagesCommandFactory.provideCommand(tripImagesArgs))
+   internal fun refreshImages() = tripImagesInteractor.baseTripImagesPipe.send(tripImagesCommandFactory.provideCommand(tripImagesArgs))
 
    fun loadNext() {
-      if (lastPageReached || loading || currentItems.isEmpty()) {
-         return
-      }
+      if (lastPageReached || loading || currentItems.isEmpty()) return
+
       loading = true
       tripImagesInteractor.baseTripImagesPipe
             .send(tripImagesCommandFactory.provideLoadMoreCommand(tripImagesArgs, currentItems))
@@ -152,7 +148,7 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
                      loading = true
                      view.showLoading()
                   }
-                  .onProgress { command, progress ->
+                  .onProgress { command, _ ->
                      if (command.isReload && !command.items.isEmpty()) {
                         itemsUpdated(command)
                      }
@@ -194,16 +190,16 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
 
    internal fun subscribeToErrorUpdates() =
          offlineErrorInteractor.offlineErrorCommandPipe()
-            .observeSuccess()
-            .compose(bindViewToMainComposer())
-            .subscribe { reportNoConnection() }
+               .observeSuccess()
+               .compose(bindViewToMainComposer())
+               .subscribe { reportNoConnection() }
 
    internal fun subscribeToNewItems() =
          postsInteractor.postCreatedPipe()
-            .observeSuccess()
-            .compose(bindViewToMainComposer())
-            .map(PostCreatedCommand::getResult)
-            .subscribe(this::onFeedItemAdded)
+               .observeSuccess()
+               .compose(bindViewToMainComposer())
+               .map(PostCreatedCommand::getResult)
+               .subscribe(this::onFeedItemAdded)
 
    private fun onFeedItemAdded(textualPost: TextualPost) {
       if (textualPost.attachments.isEmpty()) return
@@ -300,18 +296,17 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
 
    override fun deleteFeedEntity(feedEntity: FeedEntity) {
       currentItems = ArrayList(currentItems
-               .filter { mediaEntity -> mediaEntity.item.uid != feedEntity.uid }
-               .toList())
+            .filter { mediaEntity -> mediaEntity.item.uid != feedEntity.uid }
+            .toList())
 
-      val deletedEntity: BaseMediaEntity<*>
-      when (feedEntity) {
+      val deletedEntity: BaseMediaEntity<*> = when (feedEntity) {
          is Photo -> {
             val photoMediaEntity = PhotoMediaEntity(feedEntity)
-            deletedEntity = photoMediaEntity
+            photoMediaEntity
          }
          is Video -> {
             val videoMediaEntity = VideoMediaEntity(feedEntity)
-            deletedEntity = videoMediaEntity
+            videoMediaEntity
          }
          else -> return
       }

@@ -24,8 +24,8 @@ import javax.inject.Inject
 @CommandAction
 class GetMemberMediaCommand : BaseMediaCommand, InjectableAction, CachedAction<List<BaseMediaEntity<*>>> {
 
-   @field:Inject internal lateinit var janet: Janet
-   @field:Inject internal lateinit var mappery: MapperyContext
+   @Inject internal lateinit var janet: Janet
+   @Inject internal lateinit var mappery: MapperyContext
 
    private var before: Date? = null
    private var after: Date? = null
@@ -59,7 +59,7 @@ class GetMemberMediaCommand : BaseMediaCommand, InjectableAction, CachedAction<L
             .subscribe(callback::onSuccess, callback::onFail)
    }
 
-   override fun getCacheData(): List<BaseMediaEntity<*>> = ArrayList(result)
+   override fun getCacheData() = ArrayList(result)
 
    override fun onRestore(holder: ActionHolder<*>, cache: List<BaseMediaEntity<*>>) {
       cachedItems = cache

@@ -61,7 +61,7 @@ class GetUsersMediaCommand : BaseMediaCommand, InjectableAction, CachedAction<Li
       }
    }
 
-   override fun getCacheData(): List<BaseMediaEntity<*>> = ArrayList(result)
+   override fun getCacheData() = ArrayList(result)
 
    override fun onRestore(holder: ActionHolder<*>, cache: List<BaseMediaEntity<*>>) {
       this.cachedItems = cache

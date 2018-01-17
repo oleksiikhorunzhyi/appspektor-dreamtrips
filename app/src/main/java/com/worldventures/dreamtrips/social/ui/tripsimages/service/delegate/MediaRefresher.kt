@@ -24,8 +24,10 @@ class MediaRefresher(private val tripImagesInteractor: TripImagesInteractor,
             .flatMap { newestMedia -> getRefreshCommandObservable(args, newestMedia) }
             .map { it.result }
             .doOnNext { photos ->
-               lastPhotos.clear()
-               lastPhotos.addAll(photos)
+               lastPhotos.apply {
+                  clear()
+                  addAll(photos)
+               }
                newPhotosObservable.onNext(ArrayList<BaseMediaEntity<*>>(photos))
             }
             .subscribe()

@@ -16,7 +16,7 @@ import javax.inject.Inject
 @CommandAction
 class CheckVideoProcessingStatusCommand(private val mediaEntities: List<BaseMediaEntity<*>>) : Command<Any>(), InjectableAction {
 
-   @field:Inject internal lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
+   @Inject internal lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
 
    @Throws(Throwable::class)
    override fun run(commandCallback: Command.CommandCallback<Any>) {

@@ -47,7 +47,7 @@ class TripImagesCommandFactory {
       return command
    }
 
-   fun provideRefreshCommand(tripImagesArgs: TripImagesArgs, newestMedia: BaseMediaEntity<*>): BaseMediaCommand =
+   fun provideRefreshCommand(tripImagesArgs: TripImagesArgs, newestMedia: BaseMediaEntity<*>) =
       GetMemberMediaCommand(tripImagesArgs, ImmutablePaginationParams.builder()
             .after(newestMedia.item.createdAt)
             .perPage(tripImagesArgs.pageSize)

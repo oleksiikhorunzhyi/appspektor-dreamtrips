@@ -15,7 +15,7 @@ class InspireMeViewPagerPresenter(args: InspireMeViewPagerArgs) : BaseImageViewP
    private var randomSeed = args.randomSeed
    internal var currentItems = args.currentItems
 
-   @field:Inject internal lateinit var tripImagesInteractor: TripImagesInteractor
+   @Inject internal lateinit var tripImagesInteractor: TripImagesInteractor
 
    override val currentItemsSize: Int
       get() = currentItems.size

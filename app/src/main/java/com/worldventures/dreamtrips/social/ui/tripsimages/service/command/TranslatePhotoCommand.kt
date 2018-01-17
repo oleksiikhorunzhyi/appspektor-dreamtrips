@@ -13,13 +13,12 @@ import javax.inject.Inject
 @CommandAction
 class TranslatePhotoCommand(val photo: Photo) : Command<String>(), InjectableAction {
 
-   @field:Inject internal lateinit var janet: Janet
+   @Inject internal lateinit var janet: Janet
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<String>) {
       janet.createPipe(TranslateTextCachedCommand::class.java, Schedulers.io())
-            .createObservableResult(TranslateTextCachedCommand(photo.title,
-                  LocaleHelper.getDefaultLocaleFormatted()))
+            .createObservableResult(TranslateTextCachedCommand(photo.title, LocaleHelper.getDefaultLocaleFormatted()))
             .map { it.result }
             .subscribe(callback::onSuccess, callback::onFail)
    }

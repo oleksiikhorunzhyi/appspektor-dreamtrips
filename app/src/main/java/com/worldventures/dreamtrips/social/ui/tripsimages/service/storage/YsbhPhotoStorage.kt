@@ -27,17 +27,13 @@ class YsbhPhotoStorage : ActionStorage<List<YSBHPhoto>> {
       }
    }
 
-   override fun get(params: CacheBundle?): List<YSBHPhoto> {
-      return fetchCache(params)
-   }
+   override fun get(params: CacheBundle?) = fetchCache(params)
 
    private fun fetchCache(params: CacheBundle?): MutableList<YSBHPhoto> {
       val cachedItems = storage.get(params)
       return if (cachedItems != null) {
          ArrayList(cachedItems)
-      } else {
-         ArrayList()
-      }
+      } else ArrayList()
    }
 
    companion object {

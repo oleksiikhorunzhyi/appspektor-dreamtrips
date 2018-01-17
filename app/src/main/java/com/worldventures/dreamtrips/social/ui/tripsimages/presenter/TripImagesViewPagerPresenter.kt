@@ -36,17 +36,14 @@ class TripImagesViewPagerPresenter(args: TripImagesFullscreenArgs) : BaseImageVi
    internal var notificationId: Int
    private var displayOnlyCachedImages = false
 
-   override val currentItemsSize: Int
-      get() = baseMediaEntities.size
+   override val currentItemsSize: Int get() = baseMediaEntities.size
 
    init {
       if (args.tripImagesArgs == null) {
          displayOnlyCachedImages = true
-         this.baseMediaEntities = args.mediaEntityList
-      } else {
-         this.tripImagesArgs = args.tripImagesArgs
-      }
-      this.notificationId = args.notificationId
+         baseMediaEntities = args.mediaEntityList
+      } else tripImagesArgs = args.tripImagesArgs
+      notificationId = args.notificationId
    }
 
    override fun onViewTaken() {
@@ -95,13 +92,12 @@ class TripImagesViewPagerPresenter(args: TripImagesFullscreenArgs) : BaseImageVi
                .compose(bindViewToMainComposer())
                .subscribe(ActionStateSubscriber<BaseMediaCommand>()
                      .onStart { loading = true }
+                     .onFinish { loading = false }
                      .onFail { getYSBHPhotosCommand, throwable ->
-                        loading = false
                         handleError(getYSBHPhotosCommand, throwable)
                      }
-                     .onSuccess { baseTripImagesCommand ->
-                        loading = false
-                        baseMediaEntities.addAll(baseTripImagesCommand.result)
+                     .onSuccess {
+                        baseMediaEntities.addAll(it.result)
                         view.setItems(makeFragmentItems())
                      }
                )
@@ -110,19 +106,13 @@ class TripImagesViewPagerPresenter(args: TripImagesFullscreenArgs) : BaseImageVi
 
    override fun makeFragmentItems(): List<FragmentItem> {
       return baseMediaEntities.filter { it.type != MediaEntityType.UNKNOWN }
-            .map { entity ->
+            .map {
                val mediaFragmentClass: Class<out Fragment> =
-                     if (entity.type == MediaEntityType.PHOTO) {
-                        FullscreenPhotoFragment::class.java
-                     } else {
-                        FullscreenVideoFragment::class.java
-                     }
-               val item = entity.item
-               if (item is Parcelable) {
-                  FragmentItem(mediaFragmentClass, "", item)
-               } else {
-                  throw Exception("Item is not Parcelable")
-               }
+                     if (it.type == MediaEntityType.PHOTO) FullscreenPhotoFragment::class.java
+                     else FullscreenVideoFragment::class.java
+               val item = it.item
+               if (item is Parcelable) FragmentItem(mediaFragmentClass, "", item)
+               else throw Exception("Item is not Parcelable")
             }
             .toList()
    }

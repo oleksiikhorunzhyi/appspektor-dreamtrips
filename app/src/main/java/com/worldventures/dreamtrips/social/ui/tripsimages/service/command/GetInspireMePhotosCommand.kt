@@ -21,8 +21,8 @@ import javax.inject.Inject
 @CommandAction
 class GetInspireMePhotosCommand : CommandWithError<List<Inspiration>>(), InjectableAction, CachedAction<List<Inspiration>> {
 
-   @field:Inject internal lateinit var janet: Janet
-   @field:Inject internal lateinit var mappery: MapperyContext
+   @Inject internal lateinit var janet: Janet
+   @Inject internal lateinit var mappery: MapperyContext
 
    var page: Int = 0
    private var randomSeed: Double = 0.0 // used later when API lib is fixed for inspire me photos

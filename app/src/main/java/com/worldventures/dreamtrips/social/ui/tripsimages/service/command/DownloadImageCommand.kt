@@ -21,8 +21,8 @@ import javax.inject.Inject
 @CommandAction
 class DownloadImageCommand(private val url: String) : Command<String>(), InjectableAction {
 
-   @field:Inject @field:ForApplication internal lateinit var context: Context
-   @field:Inject internal lateinit var cachedModelHelper: CachedModelHelper
+   @Inject @ForApplication internal lateinit var context: Context
+   @Inject internal lateinit var cachedModelHelper: CachedModelHelper
 
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<String>) = callback.onSuccess(cacheBitmap())
@@ -56,10 +56,8 @@ class DownloadImageCommand(private val url: String) : Command<String>(), Injecta
 
          if (source != null) {
             val imageOut = cr.openOutputStream(url)
-            try {
-               source.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, imageOut)
-            } finally {
-               imageOut.close()
+            imageOut.use {
+               source.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, it)
             }
 
             val id = ContentUris.parseId(url)
@@ -105,13 +103,13 @@ class DownloadImageCommand(private val url: String) : Command<String>(), Injecta
       //
       val url = cr.insert(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, values)
       //
-      try {
+      return try {
          val thumbOut = cr.openOutputStream(url)
          thumb.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY_THUMB_OUT, thumbOut)
          thumbOut.close()
-         return thumb
+         thumb
       } catch (ex: Exception) {
-         return null
+         null
       }
    }
 

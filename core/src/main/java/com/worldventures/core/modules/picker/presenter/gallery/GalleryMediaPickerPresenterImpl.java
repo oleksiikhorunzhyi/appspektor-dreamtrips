@@ -26,6 +26,7 @@ import java.util.List;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.subjects.PublishSubject;
@@ -36,6 +37,8 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
    private final MediaPickerInteractor mediaPickerInteractor;
    private final PermissionDispatcher permissionDispatcher;
    private final PublishSubject<List<GalleryMediaPickerViewModel>> capturedMediaPublishSubject = PublishSubject.create();
+
+   private Subscription galleryMediaSubscription;
 
    public GalleryMediaPickerPresenterImpl(PickImageDelegate pickImageDelegate, MediaPickerInteractor mediaPickerInteractor,
          PermissionDispatcher permissionDispatcher) {
@@ -53,6 +56,12 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
       }
       observeGalleryFetch();
       loadItems();
+   }
+
+   @Override
+   public void detachView(boolean retainInstance) {
+      super.detachView(retainInstance);
+      galleryMediaSubscription.unsubscribe();
    }
 
    private List<GalleryMediaPickerViewModel> populateItems(List<MediaPickerModel> commandResult) {
@@ -216,9 +225,8 @@ public class GalleryMediaPickerPresenterImpl extends BaseMediaPickerPresenterImp
    }
 
    private void observeGalleryFetch() {
-      mediaPickerInteractor.getMediaFromGalleryPipe()
+      galleryMediaSubscription = mediaPickerInteractor.getMediaFromGalleryPipe()
             .observe()
-            .compose(getView().lifecycle())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().provideGalleryOperationView())
                   .onSuccess(galleryCommand -> getView().addItems(populateItems(galleryCommand.getResult())))

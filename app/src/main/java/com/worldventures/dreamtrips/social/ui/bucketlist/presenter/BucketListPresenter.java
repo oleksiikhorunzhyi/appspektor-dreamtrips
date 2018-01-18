@@ -209,6 +209,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
                   .name(title)
                   .status(NEW)
                   .build()))
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<CreateBucketItemCommand>()
                   .onSuccess(command -> analyticsInteractor.analyticsActionPipe()
                         .send(new BucketItemAddedAnalyticsAction(title)))

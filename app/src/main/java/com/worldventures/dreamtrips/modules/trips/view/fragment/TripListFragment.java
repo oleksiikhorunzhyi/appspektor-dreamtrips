@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,13 +22,18 @@ import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
+import com.worldventures.core.ui.view.fragment.FragmentUtil;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.utils.IntentUtils;
+import com.worldventures.dreamtrips.modules.config.model.TravelBannerRequirement;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
+import com.worldventures.dreamtrips.modules.trips.view.cell.BannerCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.BannerCellDelegate;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCellDelegate;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
@@ -55,12 +61,13 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
 
-   private BaseDelegateAdapter<TripModel> adapter;
+   private BaseDelegateAdapter<Object> adapter;
 
    private SearchView searchView;
    RecyclerViewStateDelegate stateDelegate;
 
    private WeakHandler weakHandler;
+   private GridLayoutManager layoutManager;
 
    @State boolean searchOpened;
 
@@ -82,13 +89,26 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       stateDelegate.setRecyclerView(recyclerView);
-      GridLayoutManager layout = new GridLayoutManager(getActivity(), getSpanCount());
-      recyclerView.setLayoutManager(layout);
+      layoutManager = new GridLayoutManager(getActivity(), getSpanCount());
+      recyclerView.setLayoutManager(layoutManager);
       recyclerView.setEmptyView(emptyView);
 
       adapter = new BaseDelegateAdapter<>(getActivity(), this);
       adapter.registerCell(TripModel.class, TripCell.class);
+      adapter.registerCell(TravelBannerRequirement.class, BannerCell.class);
       adapter.registerDelegate(TripModel.class, this);
+      adapter.registerDelegate(TravelBannerRequirement.class, new BannerCellDelegate() {
+         @Override
+         public void onCellClicked(TravelBannerRequirement model) {
+            Intent intent = IntentUtils.browserIntent(model.getUrl());
+            FragmentUtil.startSafely(TripListFragment.this, intent);
+         }
+
+         @Override
+         public void onCancelClicked() {
+            getPresenter().hideTripRequirement();
+         }
+      });
 
       recyclerView.setAdapter(adapter);
 
@@ -101,7 +121,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          @Override
          public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             int itemCount = recyclerView.getLayoutManager().getItemCount();
-            int lastVisibleItemPosition = layout.findLastVisibleItemPosition();
+            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
             if (lastVisibleItemPosition == itemCount - 1) {
                getPresenter().scrolled();
             }
@@ -243,14 +263,26 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    }
 
    @Override
-   public void itemsChanged(List<TripModel> items) {
+   public void itemsChanged(List<Object> items) {
+      layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+         @Override
+         public int getSpanSize(int position) {
+            if (adapter.getItem(position) instanceof TravelBannerRequirement) {
+               return getSpanCount();
+            }
+            return 1;
+         }
+      });
       adapter.clearAndUpdateItems(items);
    }
 
    @Override
    public void itemLiked(FeedEntity feedEntity) {
-      TripModel trip = Queryable.from(adapter.getItems()).firstOrDefault(element -> element.getUid()
-            .equals(feedEntity.getUid()));
+      TripModel trip = Queryable.from(adapter.getItems())
+            .filter(element -> element instanceof TripModel)
+            .cast(TripModel.class)
+            .firstOrDefault(element -> element.getUid().equals(feedEntity.getUid()));
+
       if (trip != null) {
          trip.syncLikeState(feedEntity);
          dataSetChanged();

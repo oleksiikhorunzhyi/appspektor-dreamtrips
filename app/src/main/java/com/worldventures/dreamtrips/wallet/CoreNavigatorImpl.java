@@ -39,10 +39,11 @@ class CoreNavigatorImpl implements CoreNavigator {
    }
 
    @Override
-   public void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage) {
+   public void goVideoPlayer(Uri uri, String uid, String videoName, Class launchComponent, String videoLanguage) {
       Intent intent = new Intent(activity, PlayerActivity.class).setData(uri)
             .putExtra(PlayerActivity.EXTRA_VIDEO_NAME, videoName)
             .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, launchComponent)
+            .putExtra(PlayerActivity.EXTRA_VIDEO_UID, uid)
             .putExtra(PlayerActivity.EXTRA_LANGUAGE, videoLanguage);
       activity.startActivity(intent);
    }

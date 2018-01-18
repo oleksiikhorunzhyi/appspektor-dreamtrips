@@ -15,18 +15,19 @@ import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInter
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.UserTimelineStorageDelegate;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.AddFriendCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.RemoveFriendCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.service.analytics.FriendRelationshipAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -164,7 +165,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
 
    public void unfriend() {
       analyticsInteractor.analyticsActionPipe().send(FriendRelationshipAnalyticAction.unfriend());
-      friendsInteractor.removeFriendPipe()
+      friendsInteractor.getRemoveFriendPipe()
             .createObservable(new RemoveFriendCommand(user))
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -183,7 +184,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    }
 
    private void addAsFriend(Circle circle) {
-      friendsInteractor.addFriendPipe()
+      friendsInteractor.getAddFriendPipe()
             .createObservable(new AddFriendCommand(user, circle.getId()))
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -203,7 +204,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    }
 
    private void accept(Circle circle) {
-      friendsInteractor.acceptRequestPipe()
+      friendsInteractor.getAcceptRequestPipe()
             .createObservable(new ActOnFriendRequestCommand.Accept(user, circle.getId()))
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -223,7 +224,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    }
 
    private void reject() {
-      friendsInteractor.rejectRequestPipe()
+      friendsInteractor.getRejectRequestPipe()
             .createObservable(new ActOnFriendRequestCommand.Reject(user))
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -283,13 +284,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    ///////////////////////////////////////////////////////////////////////////
 
    private void showAddFriendDialog(Action1<Circle> actionCircle) {
-      circlesInteractor.pipe()
+      circlesInteractor.getPipe()
             .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-                  .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
+                  .onSuccess(circlesCommand -> onCirclesSuccess(new ArrayList<>(circlesCommand.getResult()), actionCircle))
                   .onFail((getCirclesCommand, throwable) -> {
                      view.hideBlockingProgress();
                      handleError(getCirclesCommand, throwable);

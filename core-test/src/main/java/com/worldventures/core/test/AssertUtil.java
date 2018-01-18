@@ -26,6 +26,15 @@ public final class AssertUtil {
             .get(subscriber.getOnNextEvents().size() - 1).action));
    }
 
+   public static <T> void assertActionSuccessSkipStart(TestSubscriber<ActionState<T>> subscriber, Func1<T, Boolean> assertPredicate) {
+      subscriber.unsubscribe();
+      subscriber.assertNoErrors();
+      subscriber.assertUnsubscribed();
+      assertStatusCount(subscriber, ActionState.Status.SUCCESS, 1);
+      Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents()
+            .get(subscriber.getOnNextEvents().size() - 1).action));
+   }
+
    public static <T> void assertSingleProgressAction(TestSubscriber<ActionState<T>> subscriber, Func1<T, Boolean> assertPredicate) {
       subscriber.unsubscribe();
       subscriber.assertNoErrors();

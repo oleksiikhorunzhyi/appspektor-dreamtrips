@@ -7,11 +7,8 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
-import com.worldventures.dreamtrips.modules.common.view.jwplayer.VideoPlayerHolder;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerActivityModule;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,11 +43,5 @@ public class LegacyActivityModule {
    @Provides
    FragmentManager provideFragmentManager() {
       return baseActivity.getFragmentManager();
-   }
-
-   @Provides
-   @Singleton
-   VideoPlayerHolder provideVideoPlayerHolder() {
-      return new VideoPlayerHolder();
    }
 }

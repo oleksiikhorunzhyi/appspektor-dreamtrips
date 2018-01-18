@@ -506,8 +506,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage) {
-      coreNavigator.goVideoPlayer(uri, videoName, launchComponent, videoLanguage);
+   public void goVideoPlayer(Uri uri, String uid, String videoName, Class launchComponent, String videoLanguage) {
+      coreNavigator.goVideoPlayer(uri, uid, videoName, launchComponent, videoLanguage);
    }
 
    @Override

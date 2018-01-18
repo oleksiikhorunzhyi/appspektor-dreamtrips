@@ -2,14 +2,12 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.core.modules.settings.storage.SettingsStorage;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
@@ -38,11 +36,6 @@ import dagger.Provides;
 
 @Module(library = true, complete = false)
 public class ManagerModule {
-
-   @Provides
-   public PhotoUploadingManagerS3 providePhotoUploadingManagerS3(@ForApplication Context context, TransferUtility transferUtility) {
-      return new PhotoUploadingManagerS3(context, transferUtility);
-   }
 
    @Singleton
    @Provides

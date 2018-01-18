@@ -46,7 +46,11 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
    }
 
    public void retry() {
-      loadDocument();
+      if (documentBodyWithUrl != null) {
+         view.loadContent(documentBodyWithUrl.url());
+      } else {
+         loadDocument();
+      }
    }
 
    public void acceptTerms() {

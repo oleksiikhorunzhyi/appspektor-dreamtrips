@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter;
 
 import android.support.v4.app.FragmentManager;
 
-
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -22,6 +21,7 @@ import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import javax.inject.Inject;
 
@@ -33,6 +33,7 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
    @Inject FeedInteractor feedInteractor;
    @Inject FlagsInteractor flagsInteractor;
    @Inject FragmentManager fragmentManager;
+   @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject FeedEntityHolderDelegate feedEntityHolderDelegate;
 
    private Video video;
@@ -52,7 +53,7 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
    public void takeView(FullscreenVideoPresenter.View view) {
       super.takeView(view);
       feedEntityHolderDelegate.subscribeToUpdates(this, bindViewToMainComposer(), this::handleError);
-      view.setVideo(video);
+      view.setVideoThumbnail(video.getThumbnail());
       view.setSocialInfo(video, enableEdit(), enableDelete());
       loadEntity();
    }
@@ -91,6 +92,10 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
       flagDelegate.flagItem(new FlagData(video.getUid(), flagReasonId, reason), view, this::handleError);
    }
 
+   public void playVideoRequired() {
+      view.playVideo(video);
+   }
+
    @Override
    public void updateFeedEntity(FeedEntity updatedFeedEntity) {
       if (updatedFeedEntity.getUid().equals(video.getUid())) {
@@ -117,7 +122,7 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
    }
 
    public interface View extends Presenter.View, Flaggable, FlagDelegate.View {
-      void setVideo(Video video);
+      void setVideoThumbnail(String videoThumbnail);
 
       void openUser(UserBundle bundle);
 
@@ -126,5 +131,7 @@ public class FullscreenVideoPresenter extends Presenter<FullscreenVideoPresenter
       void showFlagProgress();
 
       void hideFlagProgress();
+
+      void playVideo(Video video);
    }
 }

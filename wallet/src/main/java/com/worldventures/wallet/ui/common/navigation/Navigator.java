@@ -173,7 +173,7 @@ public interface Navigator {
 
    void goDialer(String phoneNumber);
 
-   void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage);
+   void goVideoPlayer(Uri uri, String uid, String videoName, Class launchComponent, String videoLanguage);
 
    void goSendEmail(Uri uri, String title);
 

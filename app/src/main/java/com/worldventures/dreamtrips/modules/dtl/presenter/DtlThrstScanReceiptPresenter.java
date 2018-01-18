@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.picker.service.PickImageDelegate;
@@ -17,17 +17,19 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.UploadReceiptInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.UploadReceiptCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableUrlTokenActionParams;
 import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
@@ -40,6 +42,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
    @Inject DtlLocationInteractor locationInteractor;
+   @Inject UploadReceiptInteractor uploadReceiptInteractor;
    private final Merchant merchant;
 
    public DtlThrstScanReceiptPresenter(Merchant merchant) {
@@ -64,32 +67,34 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
                if (transaction.getUploadTask() != null) {
                   view.hideScanButton();
                   view.attachReceipt(Uri.parse(transaction.getUploadTask().getFilePath()));
+                  view.enableVerification();
+               } else {
+                  view.disableVerification();
                }
-               checkVerification(transaction);
             }, apiErrorViewAdapter::handleError);
-   }
-
-   private void checkVerification(DtlTransaction transaction) {
-      if (transaction.getUploadTask() != null) {
-         view.enableVerification();
-      } else {
-         view.disableVerification();
-      }
    }
 
    public void openThrstFlow() {
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(Command::getResult)
-            .subscribe(dtlTransaction -> locationInteractor.locationSourcePipe()
-                  .observeSuccessWithReplay()
-                  .take(1)
-                  .compose(bindViewIoToMainComposer())
-                  .flatMap(command -> merchantInteractor.urlTokenThrstHttpPipe()
-                        .createObservable(getUrlTokenAction(command.getResult(), dtlTransaction)))
-                  .subscribe(new ActionStateSubscriber<UrlTokenAction>()
-                        .onSuccess(this::onThrstSuccess)
-                        .onFail(this::onThrstError)));
+            .subscribe(dtlTransaction -> {
+               // TODO Remove this check once we have progress dialogs and error handling on this screen
+               if (dtlTransaction.getUploadTask() == null ||
+                     TextUtils.isEmpty(dtlTransaction.getUploadTask().getOriginUrl())) {
+                  return;
+               }
+
+               locationInteractor.locationSourcePipe()
+                     .observeSuccessWithReplay()
+                     .take(1)
+                     .compose(bindViewIoToMainComposer())
+                     .flatMap(command -> merchantInteractor.urlTokenThrstHttpPipe()
+                           .createObservable(getUrlTokenAction(command.getResult(), dtlTransaction)))
+                     .subscribe(new ActionStateSubscriber<UrlTokenAction>()
+                           .onSuccess(this::onThrstSuccess)
+                           .onFail(this::onThrstError));
+            });
    }
 
    @NonNull
@@ -99,7 +104,7 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
                   .checkinTime(DateTimeUtils.currentUtcString())
                   .merchantId(merchant.id())
                   .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
-                  .receiptPhotoUrl(photoUploadingManagerS3.getResultUrl(dtlTransaction.getUploadTask()))
+                  .receiptPhotoUrl(dtlTransaction.getUploadTask().getOriginUrl())
                   .location(ImmutableLocation.builder().coordinates(dtlLocation.provideFormattedLocation()).build())
                   .build());
    }
@@ -145,18 +150,22 @@ public class DtlThrstScanReceiptPresenter extends JobPresenter<DtlThrstScanRecei
             .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant.asMerchantAttributes())));
       view.attachReceipt(Uri.parse(filePath));
 
-      UploadTask uploadTask = new UploadTask();
-      uploadTask.setFilePath(filePath);
-      TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
-      uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
       transactionInteractor.transactionActionPipe()
-            .createObservable(DtlTransactionAction.update(merchant, transaction ->
-                  ImmutableDtlTransaction.copyOf(transaction).withUploadTask(uploadTask)))
+            .createObservableResult(DtlTransactionAction.get(merchant))
+            .flatMap(dtlTransactionAction -> {
+               UploadTask uploadTask = new UploadTask();
+               uploadTask.setFilePath(filePath);
+               UploadReceiptCommand command = new UploadReceiptCommand(merchant,
+                     dtlTransactionAction.getResult(), uploadTask);
+               return uploadReceiptInteractor.uploadReceiptCommandPipe().createObservable(command);
+            })
+            .filter(state -> state.status == ActionState.Status.PROGRESS ||
+                  state.status == ActionState.Status.FAIL)
+            .take(1)
             .compose(bindViewIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
-                  .onSuccess(action -> checkVerification(action.getResult()))
-                  .onFail(apiErrorViewAdapter::handleError));
+            .subscribe(new ActionStateSubscriber<UploadReceiptCommand>()
+                  .onProgress((uploadReceiptCommand, progress) -> view.enableVerification())
+                  .onFail(this::handleError));
    }
 
    public interface View extends RxView, DtlApiErrorViewAdapter.ApiErrorView {

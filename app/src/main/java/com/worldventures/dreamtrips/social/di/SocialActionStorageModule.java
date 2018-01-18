@@ -37,8 +37,7 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.storage.FeedStorage;
 import com.worldventures.dreamtrips.social.ui.feed.storage.storage.HashtagFeedStorage;
 import com.worldventures.dreamtrips.social.ui.feed.storage.storage.UserTimelineStorage;
 import com.worldventures.dreamtrips.social.ui.flags.storage.FlagsStorage;
-import com.worldventures.dreamtrips.social.ui.friends.storage.CirclesStorage;
-import com.worldventures.dreamtrips.social.ui.friends.storage.RequestsStorage;
+import com.worldventures.dreamtrips.social.service.friends.storage.CirclesStorage;
 import com.worldventures.dreamtrips.social.ui.membership.storage.PodcastsDiskStorage;
 import com.worldventures.dreamtrips.social.ui.membership.storage.PodcastsStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.InspireMeStorage;
@@ -183,12 +182,6 @@ public class SocialActionStorageModule {
    @Provides(type = Provides.Type.SET)
    ActionStorage provideDocumentsStorage(InfopagesStorage db) {
       return new DocumentsStorage(new KeyValuePaginatedMemoryStorage<>(), new DocumentsDiskStorage(db));
-   }
-
-   @Singleton
-   @Provides(type = Provides.Type.SET)
-   ActionStorage provideRequestsStorage() {
-      return new RequestsStorage();
    }
 
    @Singleton

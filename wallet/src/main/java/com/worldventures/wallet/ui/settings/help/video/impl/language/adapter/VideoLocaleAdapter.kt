@@ -1,4 +1,4 @@
-package com.worldventures.wallet.ui.settings.help.video.adapter
+package com.worldventures.wallet.ui.settings.help.video.impl.language.adapter
 
 import android.content.Context
 import android.graphics.Color
@@ -16,19 +16,13 @@ class VideoLocaleAdapter(context: Context, private val data: List<VideoLocale>) 
 
    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
-   override fun getDropDownView(position: Int, view: View?, parent: ViewGroup): View {
-      val (currentView, holder) = prepareHolder(view, parent)
+   override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+      val (view, holder) = prepareHolder(convertView, parent)
       val videoLocale = data[position]
 
       holder.tvName.setTextColor(Color.BLACK)
       holder.tvName.text = videoLocale.title
       holder.ivFlag.setImageURI(videoLocale.image)
-      return currentView
-   }
-
-   override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-      val view = getDropDownView(position, convertView, parent)
-      view.fetchViewHolder().tvName.setTextColor(Color.WHITE)
       return view
    }
 

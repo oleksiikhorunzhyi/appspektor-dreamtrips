@@ -20,6 +20,8 @@ import io.techery.janet.command.annotations.CommandAction
 import io.techery.mappery.MapperyContext
 import javax.inject.Inject
 
+private const val STUB_TAC_VERSION = 1
+
 @CommandAction
 class AssociateCardUserCommand(private val barcode: String,
                                private val updateCardUserData: UpdateCardUserData)
@@ -49,7 +51,7 @@ class AssociateCardUserCommand(private val barcode: String,
             .deviceModel(propertiesProvider.deviceName())
             .deviceOsVersion(propertiesProvider.osVersion())
             .deviceId(deviceId)
-            .acceptedTermsAndConditionVersion(obtainTACVersion())
+            .acceptedTermsAndConditionVersion(STUB_TAC_VERSION)
             .user(userData)
             .build()
 
@@ -72,11 +74,5 @@ class AssociateCardUserCommand(private val barcode: String,
                   revVersion = source.revVersion(),
                   nxtOrderId = source.nxtOrderId(),
                   orderDate = source.orderDate()))
-   }
-
-   private fun obtainTACVersion(): Int {
-      val (_, tacVersion) = storage.walletTermsAndConditions ?: throw IllegalArgumentException("You don't have Terms and Conditions data in DB")
-
-      return Integer.parseInt(tacVersion)
    }
 }

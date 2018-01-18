@@ -17,16 +17,24 @@ public class SimpleErrorView<T> extends DialogErrorView<T> {
    @StringRes private final int posText;
    @StringRes private final int negText;
    private final String message;
+   @StringRes private final int titleRes;
 
    public SimpleErrorView(Context context, String message, @NonNull Action1<T> action) {
-      this(context, message, action, R.string.wallet_ok);
+      this(context, 0, message, action, R.string.wallet_ok, null, 0);
    }
 
-   public SimpleErrorView(Context context, String message, @NonNull Action1<T> negAction, @StringRes int negText) {
-      this(context, message, negAction, negText, null, 0);
+   public SimpleErrorView(Context context,  @StringRes int titleRes, String message, @NonNull Action1<T> action) {
+      this(context, titleRes, message, action, R.string.wallet_ok, null, 0);
    }
 
    public SimpleErrorView(Context context, String message,
+         @NonNull Action1<T> negAction, @StringRes int negText,
+         @Nullable Action1<T> posAction, @StringRes int posText) {
+      this(context, 0, message, negAction, negText , posAction, posText);
+   }
+
+   public SimpleErrorView(Context context,
+         @StringRes int titleRes, String message,
          @NonNull Action1<T> negAction, @StringRes int negText,
          @Nullable Action1<T> posAction, @StringRes int posText) {
       super(context);
@@ -35,6 +43,7 @@ public class SimpleErrorView<T> extends DialogErrorView<T> {
       this.posText = posText;
       this.negAction = negAction;
       this.negText = negText;
+      this.titleRes = titleRes;
    }
 
    @Override
@@ -48,6 +57,9 @@ public class SimpleErrorView<T> extends DialogErrorView<T> {
       if (posAction != null) {
          builder.positiveText(posText)
                .onPositive((dialog, which) -> posAction.call(t));
+      }
+      if (titleRes != 0) {
+         builder.title(titleRes);
       }
       return builder.build();
    }

@@ -64,6 +64,7 @@ import com.worldventures.wallet.ui.settings.security.clear.records.impl.WalletAu
 import com.worldventures.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
 import com.worldventures.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
+import com.worldventures.wallet.ui.start.impl.WalletStartScreenImpl;
 import com.worldventures.wallet.ui.wizard.assign.impl.WizardAssignUserScreenImpl;
 import com.worldventures.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
 import com.worldventures.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
@@ -82,6 +83,7 @@ import com.worldventures.wallet.ui.wizard.records.SyncAction;
 import com.worldventures.wallet.ui.wizard.records.finish.impl.PaymentSyncFinishScreenImpl;
 import com.worldventures.wallet.ui.wizard.records.sync.impl.SyncRecordsScreenImpl;
 import com.worldventures.wallet.ui.wizard.splash.impl.WizardSplashScreenImpl;
+import com.worldventures.wallet.ui.wizard.termsandconditionals.AgreementMode;
 import com.worldventures.wallet.ui.wizard.termsandconditionals.impl.WizardTermsScreenImpl;
 import com.worldventures.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectScreenImpl;
 import com.worldventures.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
@@ -120,6 +122,11 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void finish() {
       routerLazy.get().getActivity().finish();
+   }
+
+   @Override
+   public void returnWalletStart() {
+      single(new WalletStartScreenImpl());
    }
 
    @Override
@@ -202,8 +209,13 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
+   public void goWizardAffidavit() {
+      single(WizardTermsScreenImpl.Companion.create(AgreementMode.AFFIDAVIT));
+   }
+
+   @Override
    public void goWizardTerms() {
-      single(new WizardTermsScreenImpl());
+      go(WizardTermsScreenImpl.Companion.create(AgreementMode.TAC));
    }
 
    @Override

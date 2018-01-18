@@ -11,9 +11,9 @@ import com.worldventures.core.repository.SnappyResult;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.wallet.domain.entity.SmartCard;
+import com.worldventures.wallet.domain.entity.SmartCardAgreement;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
-import com.worldventures.wallet.domain.entity.TermsAndConditions;
 import com.worldventures.wallet.domain.entity.lostcard.WalletLocation;
 import com.worldventures.wallet.domain.entity.record.SyncRecordsStatus;
 
@@ -29,6 +29,7 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
    private final static String WALLET_SMART_CARD_FIRMWARE = "WALLET_SMART_CARD_FIRMWARE";
    private final static String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
    private final static String WALLET_TERMS_AND_CONDITIONS = "WALLET_TERMS_AND_CONDITIONS";
+   private final static String WALLET_AFFIDAVIT = "WALLET_AFFIDAVIT";
    private final static String WALLET_FIRMWARE = "WALLET_FIRMWARE";
    private final static String WALLET_SMART_CARD_LOCATION = "WALLET_SMART_CARD_LOCATION";
    private final static String WALLET_SYNC_RECORD_STATUS = "WALLET_SYNC_RECORD_STATUS";
@@ -98,18 +99,34 @@ class WalletStorageImpl extends WalletBaseSnappyRepository implements WalletStor
    }
 
    @Override
-   public void saveWalletTermsAndConditions(TermsAndConditions data) {
+   public void saveWalletTermsAndConditions(SmartCardAgreement data) {
       putEncrypted(WALLET_TERMS_AND_CONDITIONS, data);
    }
 
    @Override
-   public TermsAndConditions getWalletTermsAndConditions() {
-      return getEncrypted(WALLET_TERMS_AND_CONDITIONS, TermsAndConditions.class);
+   public SmartCardAgreement getWalletTermsAndConditions() {
+      return getEncrypted(WALLET_TERMS_AND_CONDITIONS, SmartCardAgreement.class);
    }
 
    @Override
    public void deleteTermsAndConditions() {
       act(db -> db.del(WALLET_TERMS_AND_CONDITIONS));
+   }
+
+   @Override
+   public void saveSmartCardAffidavit(SmartCardAgreement agreement) {
+      putEncrypted(WALLET_AFFIDAVIT, agreement);
+
+   }
+
+   @Override
+   public SmartCardAgreement getSmartCardAffidavit() {
+      return getEncrypted(WALLET_AFFIDAVIT, SmartCardAgreement.class);
+   }
+
+   @Override
+   public void deleteSmartCardAffidavit() {
+      act(db -> db.del(WALLET_AFFIDAVIT));
    }
 
    @Override

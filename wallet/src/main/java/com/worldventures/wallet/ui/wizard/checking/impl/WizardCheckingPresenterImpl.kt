@@ -30,7 +30,7 @@ class WizardCheckingPresenterImpl(navigator: Navigator,
    }
 
    override fun goNext() {
-      navigator.goWizardTerms()
+      navigator.goWizardAffidavit()
    }
 
    private fun checkBleSupport(view: WizardCheckingScreen) {

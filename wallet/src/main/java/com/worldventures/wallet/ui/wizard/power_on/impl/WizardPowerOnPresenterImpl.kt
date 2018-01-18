@@ -31,7 +31,7 @@ class WizardPowerOnPresenterImpl(navigator: Navigator,
 
    override fun onNext() {
       if (bluetoothService.isEnable && networkDelegate.isAvailable) {
-         navigator.goWizardTerms()
+         navigator.goWizardAffidavit()
       } else {
          navigator.goWizardChecks()
       }

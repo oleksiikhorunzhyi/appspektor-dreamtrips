@@ -16,6 +16,7 @@ class WizardTermsScreenModule {
                                    deviceConnectionDelegate: WalletDeviceConnectionDelegate,
                                    analyticsInteractor: WalletAnalyticsInteractor,
                                    wizardInteractor: WizardInteractor): WizardTermsPresenter {
-      return WizardTermsPresenterImpl(navigator, deviceConnectionDelegate, analyticsInteractor, wizardInteractor)
+      return WizardTermsPresenterImpl(navigator, deviceConnectionDelegate,
+            AppAgreementStrategy(analyticsInteractor, wizardInteractor))
    }
 }

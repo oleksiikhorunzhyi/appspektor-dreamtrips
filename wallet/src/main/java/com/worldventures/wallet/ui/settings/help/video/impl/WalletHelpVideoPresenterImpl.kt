@@ -106,7 +106,7 @@ class WalletHelpVideoPresenterImpl(navigator: Navigator, deviceConnectionDelegat
 
    override fun onPlayVideo(entity: WalletVideoModel) {
       val videoUri = helpVideoDelegate.playVideo(entity)
-      navigator.goVideoPlayer(videoUri, entity.video.videoName,
+      navigator.goVideoPlayer(videoUri, entity.video.uid, entity.video.videoName,
             javaClass, helpVideoDelegate.obtainVideoLanguage(entity))
    }
 

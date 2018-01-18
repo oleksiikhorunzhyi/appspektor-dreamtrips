@@ -18,7 +18,6 @@ import com.worldventures.wallet.service.WalletSocialInfoProviderImpl;
 import com.worldventures.wallet.service.logout.WalletLogoutActionModule;
 import com.worldventures.wallet.util.WalletBuildConfigHelper;
 import com.worldventures.wallet.util.WalletFeatureHelper;
-import com.worldventures.wallet.util.WalletFeatureHelperFull;
 import com.worldventures.wallet.util.WalletFeatureHelperRelease;
 
 import javax.inject.Named;
@@ -79,9 +78,9 @@ public class SmartCardModule {
 
    @Singleton
    @Provides
-   WalletFeatureHelper featureHelper(@Named(JANET_WALLET) Janet janet, RecordInteractor recordInteractor) {
-//            return new WalletFeatureHelperRelease(janet, recordInteractor);
-      return new WalletFeatureHelperFull();
+   WalletFeatureHelper featureHelper() {
+      return new WalletFeatureHelperRelease();
+      //      return new WalletFeatureHelperFull();
    }
 
    @Provides

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-   <style name="RecordDetailDeleteButtonStyle" parent="RecordDetailDeleteButtonStyle.Base">
+   <style name="RecordDetailDeleteButtonStyle" parent="RecordDetailDeleteButtonStyleBase">
       <item name="backgroundTint">@color/white</item>
    </style>
 </resources>

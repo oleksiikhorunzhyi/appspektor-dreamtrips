@@ -12,10 +12,10 @@ import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.social.friends.util.MockUtil
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.liker.command.GetLikersCommand
+import com.worldventures.dreamtrips.social.service.users.request.storage.RequestsStorage
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand
-import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -33,13 +33,13 @@ class GetLikersCommandSpec : BaseSpec({
       beforeEachTest { setup(mockHttpServiceForSuccessResult()) }
 
       context("Should contains 100 received and converted searched entities from first page " +
-            "and first liker should equals first user in list") {
+            "and first liker should equals first user in users") {
          it("Should contains 100 received entities") {
             AssertUtil.assertActionSuccess(sendCommand(1)) { it.result.size == apiLikersFriendsPage1.size }
          }
 
          it("Feed entity should contain first liker name and it should equals " +
-               "first user in list") {
+               "first user in users") {
             AssertUtil.assertActionSuccess(sendCommand(1)) { it.feedEntity.firstLikerName == it.result[0].fullName }
          }
 

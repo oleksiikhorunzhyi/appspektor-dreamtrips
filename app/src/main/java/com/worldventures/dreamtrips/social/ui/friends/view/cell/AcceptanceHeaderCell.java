@@ -7,7 +7,7 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.social.service.friends.model.AcceptanceHeaderModel;
+import com.worldventures.dreamtrips.social.service.users.base.model.AcceptanceHeaderModel;
 
 import butterknife.InjectView;
 

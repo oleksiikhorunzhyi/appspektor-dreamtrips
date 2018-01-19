@@ -1,62 +1,49 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter
 
-import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.social.friends.util.MockUtil
+import com.nhaarman.mockito_kotlin.argWhere
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.worldventures.dreamtrips.social.service.users.search.command.GetSearchUsersCommand
+import com.worldventures.dreamtrips.social.service.users.search.delegate.SearchedUsersStorageDelegate
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendSearchPresenter.View
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.mockito.ArgumentMatchers
-import kotlin.test.assertTrue
+import org.mockito.internal.verification.VerificationModeFactory
 
 class FriendSearchPresenterSpec : AbstractUserListPresenterSpec(FriendSearchPresenterTestBody()) {
 
    class FriendSearchPresenterTestBody : AbstractUserListPresenterTestBody<View, FriendSearchPresenter>() {
       private fun createTestSuit(): SpecBody.() -> Unit = {
-         describe("Search users") {
-            it("Invoking setQuery() valid query and" +
-                  " save input query and notify view with new user data") {
-               val query = "friends name"
-               presenter.setQuery(query)
-               verify(presenter).reload()
-               verify(view).refreshUsers(argWhere { friends.size == it.size })
-               assertTrue { presenter.query == query }
+         describe("Refresh data") {
+            it("Search should notify view with new user data") {
+               presenter.takeView(view)
+               val query = "friend name"
+               presenter.search(query)
+               verify(view).refreshUsers(argWhere { it.size == friends.size })
             }
 
-            it("Invoke setQuery() with query with size < 3 " +
-                  "should notify view with empty user data and show empty view") {
-               presenter.users = (1..getUsersPerPage()).map { MockUtil.mockUser(it) }.toList()
-               presenter.setQuery("")
+            it("Scrolling to last item must notify view new part of data") {
+               presenter.takeView(view)
+               presenter.search("friend name")
+               presenter.scrolled(100, 100)
+               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { friends.size == it.size })
+            }
+
+            it("Empty query should notify view with empty list of data") {
+               presenter.takeView(view)
+               val query = ""
+               presenter.search(query)
                verify(view).refreshUsers(argWhere { it.isEmpty() })
-               verify(view).updateEmptyCaption(ArgumentMatchers.anyInt())
-            }
-         }
-
-         describe("Page counter") {
-            val query = "friend name"
-
-            it("Should increment nexPage from 1 to 2") {
-               assertTrue { presenter.nextPage == 1 }
-               presenter.setQuery(query)
-               assertTrue { presenter.nextPage == 2 }
             }
 
-            it("Should scroll and increment nexPage from 2 to 3") {
-               presenter.setQuery(query)
-               assertTrue { presenter.nextPage == 2 }
-               presenter.scrolled(friends.size, friends.size - 1)
-               assertTrue { presenter.nextPage == 3 }
-            }
-
-            it("Error while receiving user data should decrement nexPage") {
-               val command = GetSearchUsersCommand(query, 2, getUsersPerPage())
-               presenter.setQuery(query)
-               assertTrue { presenter.nextPage == 2 }
-               presenter.onError(command, Throwable())
-               assertTrue { presenter.nextPage == 1 }
+            it("Should notify view open circle selector alert") {
+               presenter.takeView(view)
+               presenter.addUserRequest(user)
+               verify(view, VerificationModeFactory.atLeastOnce()).showAddFriendDialog(argWhere { circles.size == it.size }, argWhere { true })
             }
          }
       }
@@ -71,6 +58,10 @@ class FriendSearchPresenterSpec : AbstractUserListPresenterSpec(FriendSearchPres
          return super.mockActionService().apply {
             addContract(BaseContract.of(GetSearchUsersCommand::class.java).result(friends))
          }
+      }
+
+      override fun prepareInjection() = super.prepareInjection().apply {
+         registerProvider(SearchedUsersStorageDelegate::class.java, { SearchedUsersStorageDelegate(friendInteractor, friendStorageInteractor, circleInteractor, profileInteractor) })
       }
 
       override fun getMainDescription() = "FriendSearchPresenter"

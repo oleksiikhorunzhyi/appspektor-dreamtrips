@@ -8,10 +8,10 @@ import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.users.friend.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
 import java.util.ArrayList;

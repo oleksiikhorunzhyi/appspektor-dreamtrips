@@ -20,6 +20,9 @@ import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConve
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateConverter;
+import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateFromInvitationPreviewConverter;
+import com.worldventures.dreamtrips.social.domain.converter.SentInviteConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.CircleConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FeedMetaDataConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter;
@@ -39,6 +42,10 @@ import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketUpdateBod
 import com.worldventures.dreamtrips.social.domain.mapping.ShortProfilesConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.TaggedUserConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.YSBHPhotoConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.ApiUserToUserConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.FriendCandidateToUserConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.FriendProfileToUserConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketCategoryConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketCoverPhotoConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketDiningItemConverter;
@@ -66,13 +73,6 @@ import com.worldventures.dreamtrips.social.ui.feed.converter.ReversePostAttachme
 import com.worldventures.dreamtrips.social.ui.feed.converter.ReversePostDataConverter;
 import com.worldventures.dreamtrips.social.ui.feed.converter.SimplePostConverter;
 import com.worldventures.dreamtrips.social.ui.feed.converter.VideoAttachmentConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.ApiUserToUserConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.FriendCandidateToUserConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.FriendProfileToUserConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.MutualsConverter;
-import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateConverter;
-import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateFromInvitationPreviewConverter;
-import com.worldventures.dreamtrips.social.domain.converter.SentInviteConverter;
 import com.worldventures.dreamtrips.social.ui.reptools.model.converter.SuccessStoryConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.MediaEntityConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.VideoSocializedConverter;

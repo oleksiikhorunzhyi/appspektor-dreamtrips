@@ -19,6 +19,6 @@ abstract class AbstractPresenterSpec(testBody: TestBody<*, *>) : PresenterBaseSp
 
       fun mockView(): V
 
-      fun prepareInjection(presenter: P): Injector
+      fun prepareInjection(): Injector
    }
 }

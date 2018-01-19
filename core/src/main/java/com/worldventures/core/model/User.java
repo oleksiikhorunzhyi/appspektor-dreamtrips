@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class User extends BaseEntity implements Parcelable {
+public class User extends BaseEntity implements Parcelable, Cloneable {
 
    @SuppressWarnings("PMD.UnusedPrivateField")
    private static final String RBS_SUBSCRIPTION = "RBS";   //rep
@@ -80,7 +80,9 @@ public class User extends BaseEntity implements Parcelable {
    }
 
    public String getCirclesString() {
-      if (circles == null || circles.isEmpty()) { return ""; }
+      if (circles == null || circles.isEmpty()) {
+         return "";
+      }
       return TextUtils.join(", ", Queryable.from(circles).map(Circle::getName).toList());
    }
 
@@ -500,4 +502,18 @@ public class User extends BaseEntity implements Parcelable {
          return new User[size];
       }
    };
+
+   @Override
+   public User clone() throws CloneNotSupportedException {
+      return (User) super.clone();
+   }
+
+   public User copy() {
+      try {
+         return clone();
+      } catch (CloneNotSupportedException e) {
+         return null;
+      }
+   }
+
 }

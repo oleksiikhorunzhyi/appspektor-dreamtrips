@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.feed;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.util.FileSplitter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedEntityHolderDelegate;
@@ -19,7 +20,6 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.AccountTim
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFeedStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl;
 import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;

@@ -1,5 +1,6 @@
 package com.worldventures.wallet.ui.start.impl;
 
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,5 +64,11 @@ public class WalletStartScreenImpl extends WalletBaseController<WalletStartScree
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletStartScreenModule();
    }
 }

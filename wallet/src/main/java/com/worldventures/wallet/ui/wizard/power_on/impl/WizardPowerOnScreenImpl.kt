@@ -34,4 +34,6 @@ class WizardPowerOnScreenImpl : WalletBaseController<WizardWelcomeScreen, Wizard
    override fun supportHttpConnectionStatusLabel() = false
 
    override fun getPresenter() = screenPresenter
+
+   override fun screenModule(): Any? = WizardPowerOnScreenModule()
 }

@@ -63,14 +63,19 @@ public class LostCardModule {
    @Provides
    LostCardManager locationManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
          LocationSyncManager jobScheduler, WalletNetworkService networkService, BeaconClient beaconClient, WalletBeaconLogger beaconLogger) {
-      return new LostCardManager(smartCardInteractor, locationInteractor, jobScheduler, networkService, beaconClient, beaconLogger);
+      return new LostCardManagerImpl(
+            () -> LostCardManagerImpl.Companion.createDefaultLocationTypeProvider(smartCardInteractor),
+            locationInteractor.connectActionPipe(),
+            locationInteractor.disconnectPipe(),
+            new LostCardEventReceiverImpl(locationInteractor),
+            jobScheduler, networkService, beaconClient, beaconLogger);
    }
 
    @Singleton
    @Provides
    LocationTrackingManager trackingManager(SmartCardInteractor smartCardInteractor, SmartCardLocationInteractor locationInteractor,
          DetectLocationService locationService, AuthInteractor authInteractor, LostCardManager lostCardManager, SessionHolder sessionHolder) {
-      return new LocationTrackingManager(smartCardInteractor, locationInteractor, locationService, authInteractor,
+      return new LocationTrackingManager(locationInteractor, new SmartCardIdHelperImpl(smartCardInteractor, locationInteractor), locationService, authInteractor,
             lostCardManager, sessionHolder);
    }
 }

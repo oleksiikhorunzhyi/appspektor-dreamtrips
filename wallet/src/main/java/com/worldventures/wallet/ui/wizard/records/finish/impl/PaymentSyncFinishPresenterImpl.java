@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.records.finish.impl;
 
-
 import com.worldventures.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.analytics.new_smartcard.NewCardSetupCompleteAction;

@@ -49,7 +49,7 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
       if (documentBodyWithUrl != null) {
          view.loadContent(documentBodyWithUrl.url());
       } else {
-         loadDocument();   
+         loadDocument();
       }
    }
 

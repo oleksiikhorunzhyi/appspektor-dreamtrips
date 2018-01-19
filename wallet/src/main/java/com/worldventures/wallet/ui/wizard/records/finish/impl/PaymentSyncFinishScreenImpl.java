@@ -1,8 +1,8 @@
 package com.worldventures.wallet.ui.wizard.records.finish.impl;
 
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,5 +47,11 @@ public class PaymentSyncFinishScreenImpl extends WalletBaseController<PaymentSyn
    @Override
    public PaymentSyncFinishPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new PaymentSyncFinishScreenModule();
    }
 }

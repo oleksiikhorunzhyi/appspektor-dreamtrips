@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding.widget.RxTextView
 import com.worldventures.core.utils.HttpErrorHandlingUtil
 import com.worldventures.wallet.R
 import com.worldventures.wallet.service.command.SmartCardUserCommand
+import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
@@ -82,6 +83,19 @@ class WizardManualInputScreenImpl : WalletBaseController<WizardManualInputScreen
       )
    }
 
+   override fun provideOperationAcceptAgreements(): OperationView<AcceptSmartCardAgreementsCommand> {
+      return ComposableOperationView(
+            SimpleDialogProgressView(context, R.string.wallet_loading, false),
+            ErrorViewFactory.builder<AcceptSmartCardAgreementsCommand>()
+                  .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
+                        { command -> presenter.retryAgreementsAccept(command.smartCardStatus, command.smartCardId) },
+                        { presenter.handleAcceptanceCancelled() },
+                        R.string.wallet_wizard_acceptance_error,
+                        R.string.wallet_common_backend_error_message)
+                  ).build()
+      )
+   }
+
    override fun showErrorCardIsAssignedDialog() {
       MaterialDialog.Builder(context)
             .content(R.string.wallet_wizard_manual_input_card_is_assigned)
@@ -91,4 +105,6 @@ class WizardManualInputScreenImpl : WalletBaseController<WizardManualInputScreen
    }
 
    override fun getPresenter() = viewPresenter
+
+   override fun screenModule(): Any? = WizardManualInputScreenModule()
 }

@@ -98,7 +98,6 @@ import dagger.Provides;
             DtlDetailsScreenImpl.class,
             DtlFullscreenImageScreenImpl.class,
             DtlFullscreenImagePresenterImpl.class,
-            ActivityPresenter.class,
             DtlFilterPresenterImpl.class,
             DtlLocationSearchHeaderCell.class,
             DtlNearbyHeaderCell.class,

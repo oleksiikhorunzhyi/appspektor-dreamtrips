@@ -106,7 +106,7 @@ public class PopupLastLocationViewModel extends BaseObservable implements Parcel
    }
 
    public boolean hasLastLocation() {
-      return !address.isEmpty() && !lastConnectedDate.isEmpty();
+      return (!address.isEmpty() || !place.isEmpty()) && !lastConnectedDate.isEmpty();
    }
 
    @Bindable

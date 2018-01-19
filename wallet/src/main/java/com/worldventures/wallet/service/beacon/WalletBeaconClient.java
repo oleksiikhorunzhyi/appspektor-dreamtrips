@@ -93,12 +93,12 @@ public class WalletBeaconClient implements BeaconClient, BeaconConsumer, Bootstr
 
    @Override
    public void didEnterRegion(Region region) {
-      beaconEventPipe.onNext(new BeaconEvent(region, true));
+      beaconEventPipe.onNext(BeaconEvent.createBeaconEvent(region, true));
    }
 
    @Override
    public void didExitRegion(Region region) {
-      beaconEventPipe.onNext(new BeaconEvent(region, false));
+      beaconEventPipe.onNext(BeaconEvent.createBeaconEvent(region, false));
    }
 
    @Override

@@ -226,7 +226,7 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       }
    }
 
-   override fun pickPhoto(initialPhotoUrl: String) {
+   override fun pickPhoto(initialPhotoUrl: String?) {
       onChoosePhotoClick(initialPhotoUrl)
    }
 
@@ -257,4 +257,6 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    override fun supportConnectionStatusLabel() = true
 
    override fun supportHttpConnectionStatusLabel() = true
+
+   override fun screenModule(): Any? = WalletSettingsProfileScreenModule()
 }

@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.records.sync.impl;
 
-
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.analytics.new_smartcard.SyncPaymentCardAction;
 import com.worldventures.wallet.service.RecordInteractor;

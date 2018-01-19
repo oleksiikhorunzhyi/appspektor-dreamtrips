@@ -74,20 +74,20 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
    protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup, @Nullable Bundle bundle) {
       final View view = layoutInflater.inflate(R.layout.subscreen_wallet_settings_lostcard_map, viewGroup, false);
       //noinspection all
-      final ObjectGraph objectGraph = (ObjectGraph) view.getContext()
-            .getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
+      final ObjectGraph objectGraph = ((ObjectGraph) view.getContext()
+            .getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME)).plus(new MapScreenModule());
       objectGraph.inject(this);
       mapView = view.findViewById(R.id.map_view);
+      emptyLocationsView = view.findViewById(R.id.empty_location_view);
+      noGoogleContainer = view.findViewById(R.id.noGoogleContainer);
+      final View popupInfoContainer = view.findViewById(R.id.ll_popup_info);
+      popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
          noGoogleContainer.setVisibility(VISIBLE);
       } else {
          mapView.onCreate(bundle);
       }
       mapView.getMapAsync(this);
-      emptyLocationsView = view.findViewById(R.id.empty_location_view);
-      noGoogleContainer = view.findViewById(R.id.noGoogleContainer);
-      final View popupInfoContainer = view.findViewById(R.id.ll_popup_info);
-      popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       return view;
    }
 

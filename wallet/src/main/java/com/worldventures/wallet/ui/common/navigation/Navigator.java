@@ -25,6 +25,8 @@ public interface Navigator {
 
    void finish();
 
+   void returnWalletStart();
+
    void goInstallFirmwareWalletStart();
 
    void goNewFirmwareAvailableWalletStart();
@@ -54,6 +56,8 @@ public interface Navigator {
    void goWizardPowerOn();
 
    void goWizardChecks();
+
+   void goWizardAffidavit();
 
    void goWizardTerms();
 

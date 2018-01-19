@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.about.impl;
 
-
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.analytics.settings.AboutAnalyticsAction;
 import com.worldventures.wallet.domain.WalletConstants;

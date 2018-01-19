@@ -11,10 +11,8 @@ public class BeaconEvent {
    private final String smartCardId;
    private final boolean enteredRegion;
 
-   public BeaconEvent(Region region, boolean enteredRegion) {
-      final Identifier smartCardIdIdentifier = region.getId3();
-
-      this.smartCardId = smartCardIdIdentifier == null ? null : smartCardIdIdentifier.toString();
+   public BeaconEvent(@Nullable String smartCardId, boolean enteredRegion) {
+      this.smartCardId = smartCardId;
       this.enteredRegion = enteredRegion;
    }
 
@@ -33,5 +31,11 @@ public class BeaconEvent {
             + "getSmartCardId='" + smartCardId + '\''
             + ", enteredRegion=" + enteredRegion
             + '}';
+   }
+
+   static BeaconEvent createBeaconEvent(Region region, boolean enteredRegion) {
+      final Identifier smartCardIdIdentifier = region.getId3();
+      final String smartCardId = smartCardIdIdentifier == null ? null : smartCardIdIdentifier.toString();
+      return new BeaconEvent(smartCardId, enteredRegion);
    }
 }

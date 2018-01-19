@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.firmware.uptodate.impl;
 
-
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -53,5 +52,11 @@ public class WalletUpToDateFirmwareScreenImpl extends WalletBaseController<Walle
    @Override
    public WalletUpToDateFirmwarePresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletUpToDateFirmwareScreenModule();
    }
 }

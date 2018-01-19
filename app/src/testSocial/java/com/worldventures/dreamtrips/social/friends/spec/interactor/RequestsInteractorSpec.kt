@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetRequestsCommand
-import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.request.command.GetRequestsCommand
+import com.worldventures.dreamtrips.social.service.users.request.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -28,7 +28,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class RequestsInteractorSpec : BaseSpec({
-   describe("Receive request list successfully") {
+   describe("Receive request users successfully") {
       setup(mockHttpServiceForSuccessResult())
 
       context("First page is received and processed correctly") {
@@ -95,7 +95,7 @@ class RequestsInteractorSpec : BaseSpec({
       }
    }
 
-   describe("Error during receiving request list") {
+   describe("Error during receiving request users") {
       setup(mockHttpServiceForError())
 
       context("Nothing should happen except thrown exception") {

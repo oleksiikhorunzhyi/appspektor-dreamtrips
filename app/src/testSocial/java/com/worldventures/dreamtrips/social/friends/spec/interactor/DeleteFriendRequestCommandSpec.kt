@@ -6,9 +6,9 @@ import com.worldventures.core.model.User
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.social.friends.util.MockUtil
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.DeleteFriendRequestCommand
-import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.request.command.DeleteFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.users.request.storage.RequestsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService

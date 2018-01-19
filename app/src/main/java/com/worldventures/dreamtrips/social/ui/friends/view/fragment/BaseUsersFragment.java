@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.friends.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.innahema.collections.query.functions.Action1;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.util.ViewUtils;
@@ -32,12 +32,17 @@ import com.worldventures.dreamtrips.social.ui.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserActionDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.InjectView;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B extends BaseUsersBundle> extends BaseFragmentWithArgs<T, B>
       implements BaseUserListPresenter.View, SwipeRefreshLayout.OnRefreshListener, UserActionDelegate {
@@ -149,9 +154,12 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public void refreshUsers(List<User> users) {
-      adapter.setItems(users);
+   public void refreshUsers(@Nullable List<? extends User> users) {
+      DiffUtil.DiffResult result = DiffUtil.calculateDiff(new UsersDiffUtilCallback(adapter.getItems(), (List<User>) users));
+      adapter.setItemsNoNotify((List<User>) users);
+      result.dispatchUpdatesTo(adapter);
       checkScrolledItems();
    }
 
@@ -169,14 +177,13 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
    }
 
    @Override
-   public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+   public void showAddFriendDialog(@Nullable List<? extends Circle> circles, @NotNull Function1<? super Circle, Unit> selectAction) {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
       builder.title(getString(R.string.profile_add_friend))
             .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles), (materialDialog, view, i, charSequence) -> {
-               selectedAction.apply(i);
+               selectAction.invoke(circles.get(i));
                materialDialog.dismiss();
-            })
-            .negativeText(R.string.action_cancel)
+            }).negativeText(R.string.action_cancel)
             .show();
    }
 
@@ -200,5 +207,41 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    protected abstract T createPresenter(Bundle savedInstanceState);
+
+   public class UsersDiffUtilCallback extends DiffUtil.Callback {
+
+      protected List<User> oldUsers;
+      protected List<User> newUsers;
+
+      public UsersDiffUtilCallback(List<User> oldUsers, List<User> newUsers) {
+         this.oldUsers = oldUsers;
+         this.newUsers = newUsers;
+      }
+
+      @Override
+      public int getOldListSize() {
+         return oldUsers.size();
+      }
+
+      @Override
+      public int getNewListSize() {
+         return newUsers.size();
+      }
+
+      @Override
+      public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+         return oldUsers.get(oldItemPosition).equals(newUsers.get(newItemPosition));
+      }
+
+      @Override
+      public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+         User oldUser = oldUsers.get(oldItemPosition);
+         User newUser = newUsers.get(newItemPosition);
+         return oldUser.getRelationship() == newUser.getRelationship()
+               && oldUser.getCircles().equals(newUser.getCircles())
+               && oldUser.getMutualFriends().equals(newUser.getMutualFriends());
+      }
+
+   }
 }
 

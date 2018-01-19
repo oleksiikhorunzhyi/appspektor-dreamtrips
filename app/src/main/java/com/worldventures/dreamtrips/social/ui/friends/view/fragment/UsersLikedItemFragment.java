@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.social.ui.friends.presenter.UsersLikedItemPr
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.UserCell;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserCellDelegate;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import butterknife.InjectView;
@@ -55,11 +57,13 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
       OrientationUtil.unlockOrientation(getActivity());
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public void refreshUsers(List<User> users) {
+   public void refreshUsers(@Nullable List<? extends User> users) {
       super.refreshUsers(users);
       if (isTabletLandscape()) {
-         String titleArg = users.size() == 1 ? users.get(0).getFullName() : String.valueOf(getLikersCount(users));
+         String titleArg = users.size() == 1 ? users.get(0)
+               .getFullName() : String.valueOf(getLikersCount((List<User>) users));
          @StringRes int quantityStringId = QuantityHelper.chooseResource(users.size(), R.string.users_who_liked_title, R.string.people_liked_one, R.string.people_liked_other);
          String title = String.format(getResources().getString(quantityStringId), titleArg);
          header.setText(title);
@@ -78,12 +82,12 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
 
    @Override
    public void acceptRequest(User user) {
-      getPresenter().acceptRequest(user);
+      getPresenter().acceptRequest(user.copy());
    }
 
    @Override
    public void addUserRequest(User user) {
-      getPresenter().addUserRequest(user);
+      getPresenter().addUserRequest(user.copy());
    }
 
    @Override
@@ -98,6 +102,6 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
 
    @Override
    public void onUnfriend(User user) {
-      getPresenter().unfriend(user);
+      getPresenter().unfriend(user.copy());
    }
 }

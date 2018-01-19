@@ -1,19 +1,29 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argWhere
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
 import com.worldventures.core.model.User
+import com.worldventures.core.model.session.SessionHolder
+import com.worldventures.core.model.session.UserSession
+import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.core.test.common.Injector
-import com.worldventures.core.ui.view.adapter.BaseArrayListAdapter
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.AcceptAllFriendRequestsCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.DeleteFriendRequestCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetRequestsCommand
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsStorageInteractor
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand
+import com.worldventures.dreamtrips.social.service.users.request.command.AcceptAllFriendRequestsCommand
+import com.worldventures.dreamtrips.social.service.users.request.command.ActOnFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.users.request.command.DeleteFriendRequestCommand
+import com.worldventures.dreamtrips.social.service.users.request.command.GetRequestsCommand
+import com.worldventures.dreamtrips.social.service.users.request.delegate.RequestsStorageDelegate
+import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
@@ -22,9 +32,7 @@ import org.jetbrains.spek.api.dsl.Spec
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.mockito.ArgumentMatchers
 import org.mockito.internal.verification.VerificationModeFactory
-import kotlin.test.assertTrue
 
 class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
 
@@ -32,93 +40,60 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
       private lateinit var presenter: RequestsPresenter
       private lateinit var view: RequestsPresenter.View
       private lateinit var friendsInteractor: FriendsInteractor
+      private lateinit var fsInteractor: FriendsStorageInteractor
+      private lateinit var profileInteractor: ProfileInteractor
       private lateinit var circlesInteractor: CirclesInteractor
       private val snappyRepository: SnappyRepository = mock()
       private val circles = mockCircles()
       private val user = mockUser(100500)
-      private val adapter: BaseArrayListAdapter<Any> = mock()
       private val requests = mockUsersList()
 
       private fun createTestSuit(): SpecBody.() -> Unit = {
-         describe("View taken") {
-            it("Should subscribe on get request result") {
-               verify(presenter).observeRequests()
-            }
-
-            it("Should invoke reload request") {
+         describe("Refresh data") {
+            it("Presenter should reload data") {
+               presenter.takeView(view)
                verify(presenter).reloadRequests()
             }
 
-            it("Should notify view with outgoing and incoming requests + two headers") {
-               verify(view).itemsLoaded(argWhere<List<Any>> { it.size == (requests.size + EXPECTED_HEADERS_COUNT) }
-                     , ArgumentMatchers.anyBoolean())
+            it("Should notify view with next part of data") {
+               presenter.takeView(view)
+               presenter.loadNext()
+               val expectedCount = requests.size + EXPECTED_HEADERS_COUNT
+               verify(view, VerificationModeFactory.times(2)).itemsLoaded(argWhere {
+                  it.size == expectedCount
+               }, any())
             }
          }
 
-         describe("Accept all requests") {
-            it("Should invoke getCircleObservable()") {
+         describe("Act on request") {
+            it("Should notify view to show circle picker after accept all") {
+               presenter.takeView(view)
                presenter.acceptAllRequests()
-               verify(presenter).circlesObservable
+               verify(view).showAddFriendDialog(argWhere { it.size == circles.size }, argWhere { true })
             }
 
-            it("Should notify view with request data with relationship != INCOMING_REQUEST") {
-               presenter.allFriendRequestsAccepted()
-               verify(view, VerificationModeFactory.atLeastOnce())
-                     .itemsLoaded(argWhere<List<Any>> {
-                        it.none { (it is User) && it.relationship == User.Relationship.INCOMING_REQUEST }
-                     }, ArgumentMatchers.anyBoolean())
-            }
-         }
-
-         describe("Page counter") {
-            it("Should increment currentPage counter to 2") {
-               assertTrue { presenter.currentPage == 2 }
+            it("Should notify view to show circle picker after accept one") {
+               presenter.takeView(view)
+               presenter.acceptRequest(user)
+               verify(view).showAddFriendDialog(argWhere { it.size == circles.size }, argWhere { true })
             }
 
-            it("Should increment currentPage to 3") {
-               presenter.loadNext()
-               assertTrue { presenter.currentPage == 3 }
-            }
-
-            it("Should refresh currentPage") {
-               presenter.loadNext()
-               presenter.reloadRequests()
-               assertTrue { presenter.currentPage == 2 }
-            }
-         }
-
-         describe("Reject request") {
-            it("Should remove rejected user from adapter") {
+            it("Should notify view to refresh data after reject request") {
+               presenter.takeView(view)
                presenter.rejectRequest(user)
-               verify(adapter).remove(argWhere<Any> { (it as User) == user })
-            }
-         }
-
-         describe("Hide/Cancel request") {
-            it("Should invoke delete fun with DeleteFriendRequestCommand.Action.HIDE") {
-               presenter.hideRequest(user)
-               verify(presenter).deleteRequest(argWhere { it == user }
-                     , argWhere { it == DeleteFriendRequestCommand.Action.HIDE })
+               verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
             }
 
-            it("Should invoke delete fun with DeleteFriendRequestCommand.Action.CANCEL") {
+            it("Should notify view to refresh data after cancel request") {
+               presenter.takeView(view)
                presenter.cancelRequest(user)
-               verify(presenter).deleteRequest(argWhere { it == user }
-                     , argWhere { it == DeleteFriendRequestCommand.Action.CANCEL })
+               verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
             }
-         }
 
-         describe("Delete request") {
-            it("Should remove user from adapter") {
-               presenter.deleteRequest(user, DeleteFriendRequestCommand.Action.CANCEL)
-               verify(adapter, atLeastOnce()).remove(argWhere<Any> { it == user })
-            }
-         }
-
-         describe("User clicked") {
-            it("Should notify view to open user inform") {
-               presenter.userClicked(user)
-               verify(view).openUser(argWhere { it.user == user })
+            it("Should notify view to refresh data after hide request") {
+               presenter.takeView(view)
+               presenter.hideRequest(user)
+               verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
             }
          }
       }
@@ -145,17 +120,16 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
             addContract(BaseContract.of(ActOnFriendRequestCommand.Reject::class.java).result(user))
             addContract(BaseContract.of(DeleteFriendRequestCommand::class.java).result(user))
          }.build()
-
          val janet = Janet.Builder().addService(service).build()
 
          friendsInteractor = FriendsInteractor(SessionActionPipeCreator(janet))
+         fsInteractor = FriendsStorageInteractor(SessionActionPipeCreator(janet))
+         profileInteractor = ProfileInteractor(SessionActionPipeCreator(janet), mockSessionHolder())
          circlesInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
 
-         whenever(view.adapter).thenReturn(adapter)
-         whenever(adapter.items).thenReturn(requests)
+         whenever(context.getString(any())).thenReturn("title")
 
-         prepareInjection(presenter)
-         presenter.takeView(view)
+         prepareInjection()
       }
 
       override fun mockPresenter(): RequestsPresenter = spy(RequestsPresenter())
@@ -174,24 +148,39 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
          firstName = "Name"
          lastName = "LastName"
          id = userId
+         relationship = if (userId % 5 == 0) User.Relationship.OUTGOING_REQUEST
+         else User.Relationship.INCOMING_REQUEST
       }
 
       private fun mockUsersList(): List<User> {
          return (1..USERS_PER_PAGE).map {
             val user = mockUser(it)
-            if (it % 2 == 0) user.relationship = User.Relationship.INCOMING_REQUEST
-            else user.relationship = User.Relationship.OUTGOING_REQUEST
+            user.relationship = if (it % 2 == 0) User.Relationship.INCOMING_REQUEST
+            else User.Relationship.OUTGOING_REQUEST
             user
          }.toList()
       }
 
-      override fun prepareInjection(presenter: RequestsPresenter): Injector {
+      override fun prepareInjection(): Injector {
          return prepareInjector().apply {
             registerProvider(FriendsInteractor::class.java) { friendsInteractor }
             registerProvider(CirclesInteractor::class.java) { circlesInteractor }
+            registerProvider(ProfileInteractor::class.java) { profileInteractor }
             registerProvider(SnappyRepository::class.java) { snappyRepository }
+            registerProvider(RequestsStorageDelegate::class.java) {
+               RequestsStorageDelegate(friendsInteractor, fsInteractor, circlesInteractor, profileInteractor)
+            }
             inject(presenter)
          }
+      }
+
+      private fun mockSessionHolder(): SessionHolder {
+         val sessionHolder: SessionHolder = mock()
+         val userSession: UserSession = mock()
+         val user: User = mock()
+         whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
+         whenever(userSession.user()).thenReturn(user)
+         return sessionHolder
       }
 
       companion object {

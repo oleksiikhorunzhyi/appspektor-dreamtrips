@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteracto
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.social.service.InviteShareInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;

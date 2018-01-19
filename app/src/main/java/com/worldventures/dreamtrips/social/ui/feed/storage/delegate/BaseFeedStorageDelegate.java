@@ -4,6 +4,8 @@ import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddToB
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.users.liker.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.DeleteBucketItemCommand;
@@ -27,8 +29,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.GetFeedEntity
 import com.worldventures.dreamtrips.social.ui.feed.service.command.PostCreatedCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedItemsStorageBaseCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedItemsStorageBaseInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;

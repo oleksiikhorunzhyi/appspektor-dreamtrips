@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter
 
 import com.messenger.delegate.StartChatDelegate
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
@@ -10,17 +9,17 @@ import com.worldventures.core.model.User
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
-import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsStorageInteractor
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand
+import com.worldventures.dreamtrips.social.service.users.friend.command.RemoveFriendCommand
+import com.worldventures.dreamtrips.social.service.users.search.command.AddFriendCommand
 import com.worldventures.dreamtrips.social.ui.friends.presenter.AbstractPresenterSpec.TestBody
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -37,11 +36,12 @@ abstract class AbstractUserListPresenterSpec(testBody: TestBody<*, *>) : Present
       : TestBody<View, Presenter> {
       protected lateinit var presenter: Presenter
       protected lateinit var view: View
+      protected lateinit var friendStorageInteractor: FriendsStorageInteractor
       protected lateinit var friendInteractor: FriendsInteractor
       protected lateinit var circleInteractor: CirclesInteractor
       protected lateinit var profileInteractor: ProfileInteractor
       protected val startChatDelegate: StartChatDelegate = mock()
-      protected val user = mockUser(100500)
+      protected val user = mockUser(1)
       protected val circles = mockCircles()
       protected val friends = (1..getUsersPerPage()).map { mockFriendsCandidate(it) }.toList()
       protected val users = (1..getUsersPerPage()).map { mockUser(it) }.toList()
@@ -58,17 +58,14 @@ abstract class AbstractUserListPresenterSpec(testBody: TestBody<*, *>) : Present
          presenter = mockPresenter()
          view = mockView()
          mockInteractors(Janet.Builder().addService(mockActionService().build()).build())
-         prepareInjection(presenter)
-         presenter.takeView(view)
+         prepareInjection().inject(presenter)
       }
 
-      override fun prepareInjection(presenter: Presenter): Injector
-            = PresenterBaseSpec.prepareInjector(sessionHolder).apply {
+      override fun prepareInjection() = PresenterBaseSpec.prepareInjector(sessionHolder).apply {
          registerProvider(FriendsInteractor::class.java, { friendInteractor })
          registerProvider(CirclesInteractor::class.java, { circleInteractor })
          registerProvider(ProfileInteractor::class.java, { profileInteractor })
          registerProvider(StartChatDelegate::class.java, { startChatDelegate })
-         inject(presenter)
       }
 
       protected abstract fun getMainDescription(): String
@@ -92,6 +89,7 @@ abstract class AbstractUserListPresenterSpec(testBody: TestBody<*, *>) : Present
          friendInteractor = FriendsInteractor(SessionActionPipeCreator(janet))
          circleInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
          profileInteractor = ProfileInteractor(SessionActionPipeCreator(janet), sessionHolder)
+         friendStorageInteractor = FriendsStorageInteractor(SessionActionPipeCreator(janet))
       }
 
       protected open fun mockUser(userId: Int): User = User().apply {

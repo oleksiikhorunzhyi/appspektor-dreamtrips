@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.core.rx.RxView
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.friend.command.GetFriendsCommand
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolder
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand
 import icepick.State
 import io.techery.janet.helper.ActionStateSubscriber
 import rx.functions.Action1

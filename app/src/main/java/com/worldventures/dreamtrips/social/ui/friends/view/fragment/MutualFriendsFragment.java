@@ -61,6 +61,6 @@ public class MutualFriendsFragment extends BaseUsersFragment<MutualFriendsPresen
 
    @Override
    public void onUnfriend(User user) {
-      getPresenter().unfriend(user);
+      getPresenter().unfriend(user.copy());
    }
 }

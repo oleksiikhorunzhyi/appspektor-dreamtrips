@@ -1,17 +1,21 @@
 package com.worldventures.dreamtrips.social.ui.profile.presenter
 
 import com.messenger.delegate.StartChatDelegate
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
 import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
 import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimelineCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.UserTimelineStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.UserTimelineStorageDelegate
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle
 import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand
@@ -21,7 +25,8 @@ import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.Observable
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
 
 class UserPresenterSpec : ProfilePresenterSpec(UserPresenterTestBody()) {
 

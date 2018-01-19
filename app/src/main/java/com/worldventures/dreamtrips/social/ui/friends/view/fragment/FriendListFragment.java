@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.social.ui.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.FriendCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SwipeRefreshLayoutWithText;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import butterknife.InjectView;
@@ -67,13 +69,13 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
       search.setDelayInMillis(500);
       search.setIconifiedByDefault(false);
 
-      search.setQuery(getPresenter().getQuery(), false);
+      search.setQuery(getPresenter().query, false);
       search.setQueryHint(getString(R.string.friend_search_placeholder));
 
       search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
          @Override
          public boolean onQueryTextSubmit(String s) {
-            getPresenter().setQuery(s);
+            getPresenter().search(s);
             return false;
          }
 
@@ -81,7 +83,7 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
          public boolean onQueryTextChange(String s) {
             if (recyclerView != null) {
                recyclerView.hideEmptyView();
-               getPresenter().setQuery(s);
+               getPresenter().search(s);
             }
             return false;
          }
@@ -112,10 +114,11 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
       getPresenter().onFilterClicked();
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public void showFilters(List<Circle> circles, int position) {
+   public void showFilters(@NotNull List<? extends Circle> circles, int position) {
       CirclesFilterPopupWindow filterPopupWindow = new CirclesFilterPopupWindow(getContext());
-      filterPopupWindow.setCircles(circles);
+      filterPopupWindow.setCircles((List<Circle>) circles);
       filterPopupWindow.setAnchorView(filter);
       filterPopupWindow.setOnItemClickListener((parent, view, pos, id) -> {
          filterPopupWindow.dismiss();

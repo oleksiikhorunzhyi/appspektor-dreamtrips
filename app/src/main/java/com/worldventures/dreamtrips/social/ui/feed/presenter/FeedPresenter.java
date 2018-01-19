@@ -20,6 +20,8 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
@@ -45,8 +47,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditi
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 

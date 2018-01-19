@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.modules.common.service.UserNotificationInter
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutableTextPostBody
@@ -44,8 +46,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.SuggestedPhot
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.FeedStorageDelegate
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService

@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.social.ui.profile.view.cell.FriendPrefGroupC
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.FriendPrefsCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.State;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import butterknife.InjectView;
@@ -55,9 +57,10 @@ public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPrefere
       getPresenter().onRelationshipChanged(friendGroupRelation.circle(), state);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public void addItems(List<FriendGroupRelation> circles) {
-      adapter.addItems(circles);
+   public void addItems(@NotNull List<? extends FriendGroupRelation> circles) {
+      adapter.addItems((List<FriendGroupRelation>) circles);
    }
 
    @OnClick(R.id.createNewListBtn)

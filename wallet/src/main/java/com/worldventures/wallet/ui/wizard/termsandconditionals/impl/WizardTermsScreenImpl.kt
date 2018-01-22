@@ -19,7 +19,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.TextView
-import com.afollestad.materialdialogs.MaterialDialog
 import com.worldventures.wallet.R
 import com.worldventures.wallet.service.command.http.FetchSmartCardAgreementsCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
@@ -29,6 +28,7 @@ import com.worldventures.wallet.ui.wizard.termsandconditionals.WizardTermsPresen
 import com.worldventures.wallet.ui.wizard.termsandconditionals.WizardTermsScreen
 import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.OperationView
+import rx.functions.Action0
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -46,7 +46,8 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
    private lateinit var webView: WebView
    private lateinit var agreeBtn: Button
    private lateinit var pb: View
-   private var errorDialog: MaterialDialog? = null
+   private lateinit var errorView: View
+   private lateinit var btnRetryFetch: Button
 
    @Suppress("UnsafeCast")
    override val agreementMode: AgreementMode
@@ -66,10 +67,14 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
          R.string.wallet_wizard_splash_accept_tail_agreement else
          R.string.wallet_wizard_splash_accept_tail_affidavit
       userAgreementSplash.text = getString(R.string.wallet_wizard_splash_accept_head, getString(userAgreementSplashTail))
+      val tvAgreementFetchError = view.findViewById<TextView>(R.id.tv_agreements_fetch_error)
+      tvAgreementFetchError.text = getString(R.string.wallet_wizard_agreements_load_failed, getString(userAgreementSplashTail))
       agreeBtn = view.findViewById(R.id.wallet_wizard_terms_and_conditions_agree_btn)
       agreeBtn.visibility = GONE
       agreeBtn.setOnClickListener { presenter.acceptTermsPressed() }
       pb = view.findViewById(R.id.pb)
+      errorView = view.findViewById(R.id.agreements_error_view)
+      btnRetryFetch = view.findViewById(R.id.btn_retry_agreements_fetch)
       webView = view.findViewById(R.id.webView)
 
       webView.webViewClient = object : WebViewClient() {
@@ -132,7 +137,7 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
    override fun supportHttpConnectionStatusLabel() = false
 
    fun showLoadTermsError() {
-      buildErrorDialog(MaterialDialog.SingleButtonCallback { _, _ -> webView.reload() })
+      configureErrorView(Action0 { webView.reload() })
    }
 
    override fun onAttach(view: View) {
@@ -143,12 +148,6 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
       }
    }
 
-   override fun onDetach(view: View) {
-      errorDialog?.dismiss()
-      errorDialog = null
-      super.onDetach(view)
-   }
-
    override fun getPresenter(): WizardTermsPresenter = screenPresenter
 
    override fun showTerms(url: String) {
@@ -156,29 +155,26 @@ class WizardTermsScreenImpl(args: Bundle) : WalletBaseController<WizardTermsScre
    }
 
    private fun failedToLoadTerms() {
-      buildErrorDialog(MaterialDialog.SingleButtonCallback { _, _ -> presenter.loadTerms() })
+      configureErrorView(Action0 { presenter.loadTerms() })
    }
 
    override fun termsOperationView(): OperationView<FetchSmartCardAgreementsCommand> {
       return ComposableOperationView<FetchSmartCardAgreementsCommand>(ViewProgressView(pb), null, this)
    }
 
-   private fun buildErrorDialog(retryAction: MaterialDialog.SingleButtonCallback) {
-      errorDialog = MaterialDialog.Builder(context).title(R.string.wallet_error_label)
-            .content(R.string.wallet_terms_and_conditions_load_failed)
-            .positiveText(R.string.wallet_retry_label)
-            .onPositive(retryAction)
-            .show()
+   private fun configureErrorView(retryAction: Action0) {
+      errorView.visibility = VISIBLE
+      btnRetryFetch.setOnClickListener { retryAction.call() }
    }
 
    override fun showError(p0: FetchSmartCardAgreementsCommand?, throwable: Throwable?) {
       failedToLoadTerms()
    }
 
-   override fun isErrorVisible() = errorDialog?.isShowing ?: false
+   override fun isErrorVisible() = errorView.visibility == VISIBLE
 
    override fun hideError() {
-      errorDialog?.dismiss()
+      errorView.visibility = GONE
    }
 
    override fun onSaveViewState(view: View, outState: Bundle) {

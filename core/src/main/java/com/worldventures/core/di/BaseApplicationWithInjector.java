@@ -1,13 +1,9 @@
 package com.worldventures.core.di;
 
-import android.content.Context;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.worldventures.core.janet.Injector;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -15,7 +11,8 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 
 public abstract class BaseApplicationWithInjector extends MultiDexApplication implements Injector {
-   private ObjectGraph objectGraph;
+
+   private Injector injector;
 
    @Inject protected Set<AppInitializer> appInitializers;
 
@@ -23,11 +20,13 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
    public void onCreate() {
       super.onCreate();
 
-      this.objectGraph = ObjectGraph.create(getModules().toArray());
-      inject(this);
+      injector = createInjector();
+      injector.inject(this);
 
       runInitializers();
    }
+
+   protected abstract Injector createInjector();
 
    protected void runInitializers() {
       for (AppInitializer initializer : appInitializers) {
@@ -35,27 +34,13 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
       }
    }
 
-   protected List<Object> getModules() {
-      List<Object> result = new ArrayList<>();
-      result.add(getApplicationModule());
-      return result;
-   }
-
-   @Override
-   protected void attachBaseContext(Context base) {
-      super.attachBaseContext(base);
-      MultiDex.install(this);
-   }
-
-   protected abstract Object getApplicationModule();
-
    @Override
    public ObjectGraph getObjectGraph() {
-      return objectGraph;
+      return injector.getObjectGraph();
    }
 
    @Override
    public void inject(Object target) {
-      getObjectGraph().inject(target);
+      injector.inject(target);
    }
 }

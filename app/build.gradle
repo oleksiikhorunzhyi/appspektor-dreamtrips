@@ -168,6 +168,7 @@ android {
    dexOptions {
       javaMaxHeapSize "4g"
       preDexLibraries = project.ext.androidConfig.preDex
+      keepRuntimeAnnotatedClasses false
    }
    lintOptions {
       xmlReport false

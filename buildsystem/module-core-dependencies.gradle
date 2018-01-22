@@ -106,7 +106,7 @@ ext {
          // API
          mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.38-DEV-SNAPSHOT', config: {
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.38-RELEASE-1.26-SNAPSHOT', config: {
             changing = true
          }],
    ]

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter
 import android.support.annotation.StringRes
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.R
+import com.worldventures.dreamtrips.social.service.users.base.command.BaseUserStorageCommand
 import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesDecoratorCommand
 import com.worldventures.dreamtrips.social.service.users.search.command.AddFriendCommand
 import com.worldventures.dreamtrips.social.service.users.search.command.GetSearchUsersCommand
@@ -24,18 +25,15 @@ open class FriendSearchPresenter(@JvmField @State var query: String)
                   .onFail(this::onCirclesError))
 
       friendsStorageDelegate.observeOnUpdateStorage()
-            .map {
-               canLoadMore = !it.isNoMoreItems()
-               it.getStorageItems()
-            }.compose(bindViewToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(this::finishUpdateStorage)
    }
 
-   override fun finishUpdateStorage(users: List<User>) {
-      super.finishUpdateStorage(users)
-      usersCount = users.size
+   override fun finishUpdateStorage(resultCommand: BaseUserStorageCommand) {
+      super.finishUpdateStorage(resultCommand)
+      usersCount = resultCommand.getStorageItems().size
       updateEmptyView(false)
-      if (users.isEmpty() && query.length < MIN_SEARCH_QUERY_LENGTH) {
+      if (usersCount == 0 && query.length < MIN_SEARCH_QUERY_LENGTH) {
          view.updateEmptyCaption(R.string.start_searching)
       }
    }
@@ -78,20 +76,15 @@ open class FriendSearchPresenter(@JvmField @State var query: String)
    }
 
    fun addUserRequest(user: User) {
-      view.startLoading()
       friendsStorageDelegate.getCircles { circles ->
          view.showAddFriendDialog(circles) { selectedCircle ->
+            view.startLoading()
             friendsStorageDelegate.addFriend(user, selectedCircle)
          }
       }
    }
 
    override fun isNeedPreload() = false
-
-   override fun scrolled(totalItemCount: Int, lastVisible: Int) {
-      if (query.length < MIN_SEARCH_QUERY_LENGTH) return
-      super.scrolled(totalItemCount, lastVisible)
-   }
 
    interface View : BaseUserListPresenter.View {
       fun updateEmptyView(friendsSize: Int, isLoading: Boolean)

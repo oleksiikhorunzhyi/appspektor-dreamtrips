@@ -130,7 +130,6 @@ open class RequestsPresenter : Presenter<RequestsPresenter.View>() {
    }
 
    fun acceptRequest(user: User) {
-      hideRequest(user)
       friendStorageDelegate.getCircles { circles ->
          view.showAddFriendDialog(circles) { selectedCircle ->
             view.startLoading()

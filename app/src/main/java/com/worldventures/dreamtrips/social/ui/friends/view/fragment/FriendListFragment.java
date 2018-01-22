@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
@@ -36,6 +37,13 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
    @InjectView(R.id.iv_filter) ImageView filter;
    @InjectView(R.id.search) DelaySearchView search;
    @InjectView(R.id.swipe_container) SwipeRefreshLayoutWithText refreshLayout;
+   private WeakHandler weakHandler;
+
+   @Override
+   public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      weakHandler = new WeakHandler();
+   }
 
    @OnClick(R.id.global)
    void onGlobalSearchClicked() {

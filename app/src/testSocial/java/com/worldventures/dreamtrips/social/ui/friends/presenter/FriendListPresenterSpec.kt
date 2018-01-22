@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argWhere
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
@@ -29,40 +30,34 @@ class FriendListPresenterSpec : AbstractUserListPresenterSpec(FriendListPresente
 
             it("View should receive new users data") {
                presenter.takeView(view)
-               verify(view).refreshUsers(argWhere { it.size == friends.size })
+               verify(view).refreshUsers(argWhere { it.size == friends.size }, any())
             }
 
             it("Apply filters should notify view with new user data and contains input args") {
                presenter.takeView(view)
                presenter.reloadWithFilter(circles[0], 1)
-               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { it.size == friends.size })
+               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { it.size == friends.size }, any())
                assertTrue { presenter.selectedCircle?.id == circles[0].id && presenter.position == 1 }
-            }
-
-            it("Scrolling to last item must notify view new part of data") {
-               presenter.takeView(view)
-               presenter.scrolled(100, 100)
-               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { friends.size == it.size })
             }
 
             it("Search should notify view with new user data") {
                presenter.takeView(view)
                val query = "friend name"
                presenter.search(query)
-               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { it.size == friends.size })
+               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { it.size == friends.size }, any())
             }
 
             it("Empty query shouldn't initiate receive new part of data") {
                presenter.takeView(view)
                val query = ""
                presenter.search(query)
-               verify(view, VerificationModeFactory.times(1)).refreshUsers(argWhere { it.size == friends.size })
+               verify(view, VerificationModeFactory.times(1)).refreshUsers(argWhere { it.size == friends.size }, any())
             }
 
             it("Removing friend should notify view by data without it user") {
                presenter.takeView(view)
                presenter.unfriend(user)
-               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { it.indexOf(user) == -1 })
+               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { it.indexOf(user) == -1 }, any())
             }
          }
 
@@ -87,7 +82,7 @@ class FriendListPresenterSpec : AbstractUserListPresenterSpec(FriendListPresente
       override fun mockView(): View = mock()
 
       override fun prepareInjection() = super.prepareInjection().apply {
-         registerProvider(FriendsListStorageDelegate::class.java,{ FriendsListStorageDelegate(friendInteractor,friendStorageInteractor, circleInteractor, profileInteractor)})
+         registerProvider(FriendsListStorageDelegate::class.java, { FriendsListStorageDelegate(friendInteractor, friendStorageInteractor, circleInteractor, profileInteractor) })
       }
 
       override fun mockActionService(): MockCommandActionService.Builder = super.mockActionService().apply {

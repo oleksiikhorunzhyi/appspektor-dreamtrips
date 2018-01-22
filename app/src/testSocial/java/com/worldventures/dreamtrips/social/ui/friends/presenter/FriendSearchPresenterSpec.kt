@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argWhere
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
@@ -23,21 +24,14 @@ class FriendSearchPresenterSpec : AbstractUserListPresenterSpec(FriendSearchPres
                presenter.takeView(view)
                val query = "friend name"
                presenter.search(query)
-               verify(view).refreshUsers(argWhere { it.size == friends.size })
-            }
-
-            it("Scrolling to last item must notify view new part of data") {
-               presenter.takeView(view)
-               presenter.search("friend name")
-               presenter.scrolled(100, 100)
-               verify(view, VerificationModeFactory.times(2)).refreshUsers(argWhere { friends.size == it.size })
+               verify(view).refreshUsers(argWhere { it.size == friends.size }, any())
             }
 
             it("Empty query should notify view with empty list of data") {
                presenter.takeView(view)
                val query = ""
                presenter.search(query)
-               verify(view).refreshUsers(argWhere { it.isEmpty() })
+               verify(view).refreshUsers(argWhere { it.isEmpty() }, any())
             }
 
             it("Should notify view open circle selector alert") {

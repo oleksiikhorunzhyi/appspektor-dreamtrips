@@ -7,13 +7,12 @@ import com.worldventures.core.model.Circle
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView
+import com.worldventures.dreamtrips.social.service.users.base.command.BaseUserStorageCommand
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle
 import javax.inject.Inject
 
 abstract class BaseUserListPresenter<V : BaseUserListPresenter.View> : Presenter<V>() {
 
-   private var loading = false
-   protected var canLoadMore = true
    @Inject lateinit var startChatDelegate: StartChatDelegate
 
    override fun takeView(view: V) {
@@ -29,14 +28,12 @@ abstract class BaseUserListPresenter<V : BaseUserListPresenter.View> : Presenter
 
    protected abstract fun subscribeOnErrors()
 
-   protected open fun finishUpdateStorage(users: List<User>) {
-      loading = false
+   protected open fun finishUpdateStorage(resultCommand: BaseUserStorageCommand) {
       view.finishLoading()
-      view.refreshUsers(users)
+      view.refreshUsers(resultCommand.getStorageItems(), resultCommand.isNoMoreItems())
    }
 
    override fun handleError(action: Any?, error: Throwable?) {
-      loading = false
       view.finishLoading()
       super.handleError(action, error)
    }
@@ -53,16 +50,12 @@ abstract class BaseUserListPresenter<V : BaseUserListPresenter.View> : Presenter
 
    open fun reload() {
       view.startLoading()
-      loading = true
       loadUsers(true)
    }
 
-   open fun scrolled(totalItemCount: Int, lastVisible: Int) {
-      if (canLoadMore && !loading && lastVisible >= totalItemCount - LAST_VISIBLE_ITEM_THRESHOLD) {
-         loading = true
-         view.startLoading()
-         loadUsers(false)
-      }
+   open fun loadNext() {
+      view.startLoading()
+      loadUsers(false)
    }
 
    protected abstract fun loadUsers(reload: Boolean)
@@ -88,7 +81,7 @@ abstract class BaseUserListPresenter<V : BaseUserListPresenter.View> : Presenter
 
       fun finishLoading()
 
-      fun refreshUsers(users: List<User>?)
+      fun refreshUsers(users: List<User>?, noMoreItems: Boolean)
 
       fun openFriendPrefs(userBundle: UserBundle)
 

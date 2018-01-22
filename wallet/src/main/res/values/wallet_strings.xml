@@ -520,6 +520,7 @@
    <string name="wallet_settings_help_video_title_screen">Videos</string>
    <string name="wallet_settings_help_video_training_no_video">Videos coming soon</string>
    <string name="wallet_settings_help_video_action_title">Languages</string>
+   <string name="wallet_settings_help_video_language_dialog_title">Choose language</string>
    <string name="wallet_settings_help_video_loading">Load videos…</string>
    <string name="wallet_settings_help_video_locales_loading">Load locales…</string>
    <string name="wallet_settings_help_video_cancel_cached_video_text">Are you sure you want to cancel file download?</string>

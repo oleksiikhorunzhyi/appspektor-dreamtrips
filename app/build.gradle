@@ -172,7 +172,7 @@ android {
    }
    lintOptions {
       xmlReport false
-      disable 'MissingTranslation', 'RestrictedApi', 'ExtraTranslation'
+      disable 'MissingTranslation'
    }
    packagingOptions {
       exclude 'LICENSE.txt'

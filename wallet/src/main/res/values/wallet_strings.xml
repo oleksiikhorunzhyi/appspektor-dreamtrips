@@ -83,6 +83,10 @@
    <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
 
    <!--agreements-->
+   <string name="wallet_terms_and_conditions_header">User Agreement</string>
+   <string name="wallet_affidavit_header">Beta Affidavit</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
+   <string name="wallet_wizard_agreements_load_failed">Failed to retrieve user %1$s</string>
    <string name="wallet_wizard_splash_accept_head">Please accept the %1$s.</string>
    <string name="wallet_wizard_splash_accept_tail_agreement">user agreement</string>
    <string name="wallet_wizard_splash_accept_tail_affidavit">Affidavit\'s conditions</string>
@@ -252,10 +256,6 @@
    <string name="wallet_charging_swiping_screen_instruction">Plug Smart Card into the charger and swipe credit or debit cards.</string>
    <string name="wallet_charging_swiping_screen_notes">Be sure your Smart Card is turned on\nand the charger LED is on.</string>
    <string name="wallet_wizard_charging_swipe_error">Incorrect card reading. Try again</string>
-   <string name="wallet_terms_and_conditions_header">User Agreement</string>
-   <string name="wallet_affidavit_header">Beta Affidavit</string>
-   <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
-   <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve user agreement</string>
    <string name="wallet_add_card_swipe_success">Successfully swipe. Loading&#8230;</string>
 
    <!--set up smart card-->
@@ -515,6 +515,9 @@
       <item>@string/wallet_settings_help_feedback_attachment_failed_item_retry</item>
       <item>@string/wallet_settings_help_feedback_attachment_failed_item_remove</item>
    </string-array>
+
+   <!--Help Documents screen -->
+   <string name="wallet_settings_help_documents_load_failed">Failed to retrieve user agreement</string>
 
    <!-- Help Video screen -->
    <string name="wallet_settings_help_video_title_screen">Videos</string>

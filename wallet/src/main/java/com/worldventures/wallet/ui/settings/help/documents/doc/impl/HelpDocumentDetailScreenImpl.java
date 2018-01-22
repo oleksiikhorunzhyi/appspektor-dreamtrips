@@ -115,7 +115,7 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
 
    private void buildErrorDialog(MaterialDialog.SingleButtonCallback retryAction) {
       new MaterialDialog.Builder(getContext()).title(R.string.wallet_error_label)
-            .content(R.string.wallet_terms_and_conditions_load_failed)
+            .content(R.string.wallet_settings_help_documents_load_failed)
             .positiveText(R.string.wallet_retry_label)
             .onPositive(retryAction)
             .cancelable(false)

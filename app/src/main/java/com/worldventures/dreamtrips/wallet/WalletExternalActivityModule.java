@@ -6,7 +6,7 @@ import com.worldventures.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
-import com.worldventures.wallet.di.WalletActivityModule;
+import com.worldventures.wallet.ui.WalletActivityModule;
 import com.worldventures.wallet.ui.common.WalletNavigationDelegate;
 import com.worldventures.wallet.ui.common.navigation.CoreNavigator;
 

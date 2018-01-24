@@ -4,10 +4,9 @@ import android.os.Parcel;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class UndefinedFeedItem extends FeedItem<TripModel> {
+public class UndefinedFeedItem extends FeedItem<TextualPost> {
 
    public UndefinedFeedItem() {
       type = Type.UNDEFINED;

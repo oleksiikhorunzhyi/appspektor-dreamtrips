@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableVideoCreationModel;

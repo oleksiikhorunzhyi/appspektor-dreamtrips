@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.utils.FileUtils;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePhotoAttachment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel;

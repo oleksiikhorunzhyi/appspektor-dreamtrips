@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.api.trip.ImmutableGetTripsLocationsHttpActio
 import com.worldventures.dreamtrips.api.trip.model.TripPinWrapper;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
-import com.worldventures.dreamtrips.util.TripsFilterData;
+import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 
 import java.util.ArrayList;
 import java.util.List;

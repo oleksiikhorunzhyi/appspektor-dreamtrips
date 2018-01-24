@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.util;
+package com.worldventures.dreamtrips.modules.trips.model.filter;
 
 import android.support.annotation.Nullable;
 

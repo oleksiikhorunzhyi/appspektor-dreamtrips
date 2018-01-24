@@ -5,13 +5,12 @@ import android.content.res.Resources;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("PMD.GodClass") //TODO: Resolve PMD error
@@ -91,10 +90,6 @@ public class TripModel extends BaseFeedEntity {
       this.dates = dates;
    }
 
-   public boolean isRewarded() {
-      return rewarded;
-   }
-
    public void setRewarded(boolean rewarded) {
       this.rewarded = rewarded;
    }
@@ -155,16 +150,8 @@ public class TripModel extends BaseFeedEntity {
       return dates;
    }
 
-   public RegionModel getRegion() {
-      return region;
-   }
-
    public void setRegion(RegionModel region) {
       this.region = region;
-   }
-
-   public boolean isRecentlyAdded() {
-      return recent;
    }
 
    public void setRecentlyAdded(boolean recentlyAdded) {
@@ -232,36 +219,6 @@ public class TripModel extends BaseFeedEntity {
       return Queryable.from(images).filter(input -> tag.equals(input.getType())).toList();
    }
 
-   public long getStartDateMillis() {
-      return dates.getStartDate().getTime();
-   }
-
-   public boolean isPriceAccepted(double maxPrice, double minPrice) {
-      return price.getAmount() <= maxPrice && price.getAmount() >= minPrice;
-   }
-
-   public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
-      return duration <= maxNights
-            && duration >= minNights
-            && getAvailabilityDates().check(dateFilterItem);
-   }
-
-   public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {
-      return themesAccepted(acceptedThemes) && regionsAccepted(acceptedRegions);
-   }
-
-   private boolean themesAccepted(List<ActivityModel> acceptedThemes) {
-      return acceptedThemes == null || !isActivitiesEmpty() && !Collections.disjoint(acceptedThemes, getActivities());
-   }
-
-   private boolean regionsAccepted(List<Integer> acceptedRegions) {
-      return acceptedRegions == null || getRegion() != null && acceptedRegions.contains(getRegion().getId());
-   }
-
-   private boolean isActivitiesEmpty() {
-      return getActivities().isEmpty();
-   }
-
    public boolean isPlatinum() {
       return platinum;
    }
@@ -281,5 +238,17 @@ public class TripModel extends BaseFeedEntity {
    @Override
    public String toString() {
       return tripId;
+   }
+
+   public boolean isRewarded() {
+      return rewarded;
+   }
+
+   public RegionModel getRegion() {
+      return region;
+   }
+
+   public boolean isRecent() {
+      return recent;
    }
 }

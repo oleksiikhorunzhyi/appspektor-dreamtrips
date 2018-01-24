@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.BaseSpec.Companion.anyString
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor
-import com.worldventures.dreamtrips.modules.trips.model.Location
+import com.worldventures.core.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor

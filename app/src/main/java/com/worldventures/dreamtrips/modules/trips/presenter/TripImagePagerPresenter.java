@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 
 
-public class TripImagePagerPresenter extends BaseImagePresenter<ImagePathHolder> {
+public class TripImagePagerPresenter extends BaseImagePresenter {
 
    public TripImagePagerPresenter(ImageBundle<ImagePathHolder> bundle) {
       super(bundle);

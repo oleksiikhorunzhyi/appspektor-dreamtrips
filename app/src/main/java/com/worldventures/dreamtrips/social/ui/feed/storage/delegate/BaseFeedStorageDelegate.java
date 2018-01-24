@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddToBeginningIfNotExistsStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.service.users.liker.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
@@ -46,20 +44,17 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
    private final FeedItemsStorageBaseInteractor feedStorageInteractor;
    protected final FeedInteractor feedInteractor;
    private final PostsInteractor postsInteractor;
-   private final TripsInteractor tripsInteractor;
    private final TripImagesInteractor tripImagesInteractor;
    private final BucketInteractor bucketInteractor;
    private final FriendsInteractor friendsInteractor;
    private final CommentsInteractor commentsInteractor;
 
    public BaseFeedStorageDelegate(FeedItemsStorageBaseInteractor<? extends COMMAND> feedStorageInteractor, FeedInteractor feedInteractor,
-         PostsInteractor postsInteractor, TripsInteractor tripsInteractor, TripImagesInteractor tripImagesInteractor,
-         BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
+         PostsInteractor postsInteractor, TripImagesInteractor tripImagesInteractor, BucketInteractor bucketInteractor,
+         FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
       this.feedStorageInteractor = feedStorageInteractor;
-
       this.feedInteractor = feedInteractor;
       this.postsInteractor = postsInteractor;
-      this.tripsInteractor = tripsInteractor;
       this.tripImagesInteractor = tripImagesInteractor;
       this.bucketInteractor = bucketInteractor;
       this.friendsInteractor = friendsInteractor;
@@ -125,10 +120,10 @@ public abstract class BaseFeedStorageDelegate<COMMAND extends FeedItemsStorageBa
                   .map(GetFeedEntityCommand::getResult)
                   .map(this::updateItemOperation),
 
-            tripsInteractor.detailsPipe().observeSuccess()
+            /* tripsInteractor.detailsPipe().observeSuccess()
                   .map(GetTripDetailsCommand::getResult)
                   .map(this::updateItemOperation),
-
+            */
             commentsInteractor.commentsPipe().observeSuccess()
                   .map(GetCommentsCommand::getFeedEntity)
                   .map(this::updateItemOperation),

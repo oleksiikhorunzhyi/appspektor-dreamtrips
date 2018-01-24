@@ -13,13 +13,6 @@ import com.worldventures.dreamtrips.modules.config.model.converter.Configuration
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
 import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateConverter;
 import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateFromInvitationPreviewConverter;
 import com.worldventures.dreamtrips.social.domain.converter.SentInviteConverter;
@@ -93,50 +86,8 @@ public class SocialMappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter providePinConverter() {
-      return new TripPinToPinConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideTripConverter() {
-      return new TripWithoutDetailsToTripConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideTripWithDetailsConverter() {
-      return new TripWithDetailsToTripConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
    Converter provideShortProfilesConverter() {
       return new ShortProfilesConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideActivityConverter() {
-      return new ActivityConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideRegionConverter() {
-      return new RegionConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideTripImageConverter() {
-      return new TripImageConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideContentItemConverter() {
-      return new ContentItemConverter();
    }
 
    @Provides

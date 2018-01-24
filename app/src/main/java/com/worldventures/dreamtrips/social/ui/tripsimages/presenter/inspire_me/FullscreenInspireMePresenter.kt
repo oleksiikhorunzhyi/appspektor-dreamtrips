@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me
 
 import com.worldventures.core.model.ShareType
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
-import com.worldventures.dreamtrips.modules.trips.service.analytics.ShareInspirationImageAnalyticAction
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.ShareInspirationImageAnalyticAction
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.DownloadImageDelegate
 import rx.functions.Action2

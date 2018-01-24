@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerActivityModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.modules.trips.TripsAppModule;
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.wallet.di.SmartCardModule;
 
@@ -104,7 +105,7 @@ public class LegacyActivityModule {
    ComponentsConfig provideComponentsConfig(FeatureManager featureManager, @ForActivity Context context) {
       List<String> activeComponents = new ArrayList<>();
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.FEED));
-      featureManager.with(Feature.TRIPS, () -> activeComponents.add(SocialAppModule.TRIPS));
+      featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsAppModule.TRIPS));
       if (!ViewUtils.isTablet(context)) {
          featureManager.with(Feature.WALLET, () -> activeComponents.add(SmartCardModule.WALLET));
       }
@@ -121,7 +122,7 @@ public class LegacyActivityModule {
       activeComponents.add(SocialAppModule.SEND_FEEDBACK);
       activeComponents.add(SocialAppModule.HELP);
       activeComponents.add(SocialAppModule.TERMS);
-      activeComponents.add(SocialAppModule.MAP_TRIPS);
+      activeComponents.add(TripsAppModule.MAP_TRIPS);
       activeComponents.add(SocialAppModule.LOGOUT);
       return new ComponentsConfig(activeComponents);
    }

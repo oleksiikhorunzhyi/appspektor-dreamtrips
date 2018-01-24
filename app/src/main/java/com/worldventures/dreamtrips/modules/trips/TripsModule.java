@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragm
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapListFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripViewPagerFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.OtaPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.OtaFragment;
@@ -33,6 +34,7 @@ import dagger.Module;
             TripViewPagerFragment.class,
             TripMapListFragment.class,
             TripMapListPresenter.class,
+            TripPhotoFullscreenFragment.class,
             BaseImageFragment.class,
             BaseImagePresenter.class,
             OtaFragment.class,

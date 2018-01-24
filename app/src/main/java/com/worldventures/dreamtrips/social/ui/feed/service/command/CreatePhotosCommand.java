@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotoCreationParam
 import com.worldventures.dreamtrips.api.photos.model.ImmutablePhotosCreationParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotoTagParams;
 import com.worldventures.dreamtrips.api.photos.model.PhotosCreationParams;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithPhotoAttachmentBody;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;

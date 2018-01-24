@@ -287,7 +287,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          trip.syncLikeState(feedEntity);
          dataSetChanged();
          if (isVisibleOnScreen()) {
-            new SweetDialogHelper().notifyTripLiked(getActivity(), trip);
+            new SweetDialogHelper().notifyTripLiked(getActivity(), trip.getName(), trip.isLiked());
          }
       }
    }

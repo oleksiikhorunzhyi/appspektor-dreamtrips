@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.delegate;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.EventDelegate;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
-import com.worldventures.dreamtrips.util.TripsFilterData;
+import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 
 import rx.Observable;
 

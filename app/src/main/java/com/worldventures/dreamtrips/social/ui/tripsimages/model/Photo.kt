@@ -6,7 +6,7 @@ import com.esotericsoftware.kryo.DefaultSerializer
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer
 import com.worldventures.core.model.ImagePathHolder
 import com.worldventures.core.model.User
-import com.worldventures.dreamtrips.modules.trips.model.Location
+import com.worldventures.core.model.Location
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity
 import com.worldventures.dreamtrips.social.ui.feed.model.comment.Comment
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag

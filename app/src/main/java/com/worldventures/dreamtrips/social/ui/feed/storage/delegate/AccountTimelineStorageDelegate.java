@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddItemsStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.RefreshStorageOperation;
-import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -19,10 +18,10 @@ import rx.Observable;
 public class AccountTimelineStorageDelegate extends BaseFeedStorageDelegate<AccountTimelineStorageCommand> {
 
    public AccountTimelineStorageDelegate(FeedItemsStorageBaseInteractor<? extends AccountTimelineStorageCommand> feedStorageInteractor,
-         FeedInteractor feedInteractor, PostsInteractor postsInteractor, TripsInteractor tripsInteractor,
+         FeedInteractor feedInteractor, PostsInteractor postsInteractor,
          TripImagesInteractor tripImagesInteractor, BucketInteractor bucketInteractor,
          FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
-      super(feedStorageInteractor, feedInteractor, postsInteractor, tripsInteractor,
+      super(feedStorageInteractor, feedInteractor, postsInteractor,
             tripImagesInteractor, bucketInteractor, friendsInteractor, commentsInteractor);
    }
 

@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand
-import com.worldventures.dreamtrips.modules.trips.service.analytics.UploadTripImageAnalyticAction
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.UploadTripImageAnalyticAction
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand

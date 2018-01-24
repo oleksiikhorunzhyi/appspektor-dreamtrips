@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.social.ui.feed.service.CreatePostBodyInteractor;
 

@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.util.TripsFilterData;
+import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

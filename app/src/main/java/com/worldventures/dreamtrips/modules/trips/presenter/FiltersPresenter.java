@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutMode
 import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.AcceptDreamTripsFiltersAnalyticAction;
-import com.worldventures.dreamtrips.util.TripsFilterData;
+import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 
 import java.util.ArrayList;
 import java.util.List;

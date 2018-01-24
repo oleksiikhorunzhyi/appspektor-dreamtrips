@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.trips.service.analytics;
+package com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics;
 
 import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.janet.analytics.AnalyticsEvent;

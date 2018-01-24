@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddItemsStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.RefreshStorageOperation;
-import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -23,9 +22,9 @@ public class HashtagFeedStorageDelegate extends BaseFeedStorageDelegate<HashtagF
    private String hashtag;
 
    public HashtagFeedStorageDelegate(HashtagInteractor hashtagInteractor, HashtagFeedStorageInteractor hashtagFeedStorageInteractor, FeedInteractor feedInteractor,
-         PostsInteractor postsInteractor, TripsInteractor tripsInteractor, TripImagesInteractor tripImagesInteractor,
+         PostsInteractor postsInteractor, TripImagesInteractor tripImagesInteractor,
          BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
-      super(hashtagFeedStorageInteractor, feedInteractor, postsInteractor, tripsInteractor, tripImagesInteractor,
+      super(hashtagFeedStorageInteractor, feedInteractor, postsInteractor, tripImagesInteractor,
             bucketInteractor, friendsInteractor, commentsInteractor);
       this.hashtagInteractor = hashtagInteractor;
    }

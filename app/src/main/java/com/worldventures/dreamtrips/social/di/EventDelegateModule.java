@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.social.di;
 
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
-import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
-import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
 import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
@@ -35,18 +32,6 @@ public class EventDelegateModule {
    @Singleton
    StoryLikedEventDelegate provideStoryLikedEventDelegate() {
       return new StoryLikedEventDelegate();
-   }
-
-   @Provides
-   @Singleton
-   TripFilterEventDelegate provideTripFilterEventDelegate(SnappyRepository snappyRepository) {
-      return new TripFilterEventDelegate(snappyRepository);
-   }
-
-   @Provides
-   @Singleton
-   ResetFilterEventDelegate provideResetFilterEventDelegate() {
-      return new ResetFilterEventDelegate();
    }
 
    @Provides

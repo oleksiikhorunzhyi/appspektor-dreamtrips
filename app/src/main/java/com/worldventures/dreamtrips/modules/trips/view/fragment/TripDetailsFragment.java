@@ -203,7 +203,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
 
    @Override
    public void tripLiked(TripModel tripModel) {
-      sweetDialogHelper.notifyTripLiked(getActivity(), tripModel);
+      sweetDialogHelper.notifyTripLiked(getActivity(), tripModel.getName(), tripModel.isLiked());
    }
 
    @Override

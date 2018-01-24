@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.api.trip.GetTripsHttpAction;
 import com.worldventures.dreamtrips.api.trip.ImmutableGetTripsHttpAction;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper.ActionCommandSubscriber;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.util.TripsFilterData;
+import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;

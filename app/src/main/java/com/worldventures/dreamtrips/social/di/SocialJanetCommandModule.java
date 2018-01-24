@@ -8,13 +8,6 @@ import com.worldventures.dreamtrips.modules.config.service.command.LoadConfigura
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.fragments.CreateReviewPhotoCreationItemCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.RecognizeFacesCommand;
-import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.social.service.invites.AddContactCommand;
 import com.worldventures.dreamtrips.social.service.invites.CreateFilledInviteCommand;
 import com.worldventures.dreamtrips.social.service.invites.GetInviteTemplatesCommand;
@@ -137,12 +130,6 @@ import dagger.Provides;
       GetSuccessStoriesCommand.class,
       LikeSuccessStoryCommand.class,
       UnlikeSuccessStoryCommand.class,
-      GetTripDetailsCommand.class,
-      GetActivitiesCommand.class,
-      GetRegionsCommand.class,
-      GetTripsCommand.class,
-      GetTripsLocationsCommand.class,
-      GetTripsByUidCommand.class,
       HashtagSuggestionCommand.class,
       ClearStoragesCommand.class,
       CreatePostCommand.class,
@@ -203,7 +190,6 @@ import dagger.Provides;
       DeleteBucketItemCommand.class,
       ChangeFeedEntityLikedStatusCommand.class,
       CreatePostCompoundOperationCommand.class,
-      CheckTripsByUidCommand.class,
       TranslatePhotoCommand.class,
       TranslateBucketItemCommand.class,
       SendAnalyticsIfNeedAction.class,

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command
 
 import android.media.ExifInterface
-import com.worldventures.dreamtrips.modules.trips.model.Location
+import com.worldventures.core.model.Location
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
 import rx.Observable

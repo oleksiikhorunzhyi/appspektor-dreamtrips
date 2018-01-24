@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.converter;
 
 import com.worldventures.core.converter.Converter;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.feed.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 

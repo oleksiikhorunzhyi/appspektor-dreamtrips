@@ -49,7 +49,11 @@ abstract class BucketDetailsBasePresenterSpec<P: BucketDetailsBasePresenter<V, *
 
                presenter.onResume()
 
-               verify(presenter).syncUI()
+               verify(view).setBucketItem(any())
+               verify(view).setStatus(any())
+               verify(view).setPeople(any())
+               verify(view).setTags(any())
+               verify(view).setTime(any())
             }
 
             it("should properly sync ui") {
@@ -77,7 +81,7 @@ abstract class BucketDetailsBasePresenterSpec<P: BucketDetailsBasePresenter<V, *
       }
 
       fun setup(contracts: List<Contract> = emptyList()) {
-         presenter = spy(createPresenter())
+         presenter = createPresenter()
          view = createView()
 
          val serviceBuilder = MockCommandActionService.Builder()

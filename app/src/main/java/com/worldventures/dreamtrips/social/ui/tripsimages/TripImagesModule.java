@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresen
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.social.ui.activity.Player360Activity;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketFullscreenPresenter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketPhotoFullscreenPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.EditPhotoTagsPresenter;
@@ -88,7 +88,7 @@ import dagger.Provides;
             MessageImageFullscreenFragment.class,
             MessageImageFullscreenPresenter.class,
 
-            BucketFullscreenPresenter.class,
+            BucketPhotoFullscreenPresenter.class,
             BucketPhotoFullscreenFragment.class,
             TripPhotoFullscreenFragment.class,
             EditPhotoTagsPresenter.class,

@@ -29,7 +29,7 @@ import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundle;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.util.SweetDialogHelper;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
 import java.util.List;

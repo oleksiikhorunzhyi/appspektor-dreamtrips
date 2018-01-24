@@ -28,7 +28,6 @@ import java.util.Map;
 public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements SocialSnappyRepository {
 
    private static final String BUCKET_LIST = "bucket_items";
-   private static final String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
    private static final String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
    private static final String TRANSLATION = "translation";
    private static final String CIRCLES = "circles";
@@ -100,16 +99,6 @@ public class SocialSnappyRepositoryImpl extends BaseSnappyRepository implements 
          }
       });
       return list;
-   }
-
-   @Override
-   public void saveOpenBucketTabType(String type) {
-      act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
-   }
-
-   @Override
-   public String getOpenBucketTabType() {
-      return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
    }
 
    ///////////////////////////////////////////////////////////////////////////

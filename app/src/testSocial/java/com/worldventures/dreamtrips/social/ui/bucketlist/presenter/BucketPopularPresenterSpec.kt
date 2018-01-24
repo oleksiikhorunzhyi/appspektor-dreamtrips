@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 
 class BucketPopularPresenterSpec : PresenterBaseSpec({
 
-   describe("BucketTabsPresenter") {
+   describe("BucketPopularPresenter") {
       describe("Lifecycle actions") {
          it("should reload in onResume if items are empty") {
             init(Contract.of(GetPopularBucketItemsCommand::class.java).result(emptyList<PopularBucketItem>()))
@@ -31,7 +31,8 @@ class BucketPopularPresenterSpec : PresenterBaseSpec({
 
             presenter.onResume()
 
-            verify(presenter).reload()
+            verify(view).finishLoading()
+            verify(view).setItems(any())
          }
 
          it("should not reload items are not empty") {
@@ -40,25 +41,28 @@ class BucketPopularPresenterSpec : PresenterBaseSpec({
 
             presenter.onResume()
 
-            verify(presenter, never()).reload()
+            verify(view, never()).finishLoading()
+            verify(view, never()).setItems(any())
          }
       }
 
       describe("Search actions") {
          it("should not trigger search if search query is too short") {
-            init()
-            doNothing().whenever(presenter).searchPopularItems(any())
+            init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java).result(emptyList<PopularBucketItem>()))
 
             presenter.onSearch("11")
 
-            verify(presenter, never()).searchPopularItems(any())
+            verify(view, never()).finishLoading()
+            verify(view, never()).setFilteredItems(any())
          }
 
          it("should trigger search") {
-            presenter.onSearch("111")
-            doNothing().whenever(presenter).searchPopularItems(any())
+            init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java).result(emptyList<PopularBucketItem>()))
 
-            verify(presenter).searchPopularItems(any())
+            presenter.onSearch("111")
+
+            verify(view).finishLoading()
+            verify(view).setFilteredItems(any())
          }
 
          it("should refresh view on search success") {
@@ -75,7 +79,6 @@ class BucketPopularPresenterSpec : PresenterBaseSpec({
 
             presenter.searchPopularItems("111")
 
-            verify(presenter).handleError(any(), any())
             verify(view).finishLoading()
          }
 
@@ -114,7 +117,6 @@ class BucketPopularPresenterSpec : PresenterBaseSpec({
 
             presenter.add(stubPopularBucketItem(), true)
 
-            verify(presenter).handleError(any(), any())
             verify(view).notifyItemsChanged()
          }
       }
@@ -129,7 +131,7 @@ class BucketPopularPresenterSpec : PresenterBaseSpec({
       val bucketType = BucketItem.BucketType.ACTIVITY
 
       fun init(contract: Contract? = null) {
-         presenter = spy(BucketPopularPresenter(bucketType))
+         presenter = BucketPopularPresenter(bucketType)
          view = spy()
 
          val janetBuilder = Janet.Builder()

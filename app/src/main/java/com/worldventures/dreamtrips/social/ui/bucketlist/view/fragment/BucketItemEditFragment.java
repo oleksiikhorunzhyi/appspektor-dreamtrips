@@ -40,6 +40,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketItemEdi
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.BucketHorizontalPhotosView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -128,7 +129,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
    private void openDatePicker() {
       Calendar calendar = Calendar.getInstance();
-      calendar.setTime(getPresenter().getDate());
+      calendar.setTime(getPresenter().getDatePickerDate());
       DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar
             .get(Calendar.DAY_OF_MONTH), false);
       if (getActivity() != null && !getActivity().isFinishing()) {
@@ -190,8 +191,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void setCategoryItems(List<CategoryItem> items, CategoryItem selectedItem) {
-      ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_dropdown_item, items);
+   public void setCategoryItems(List<? extends CategoryItem> items, CategoryItem selectedItem) {
+      ArrayAdapter<CategoryItem> adapter = new ArrayAdapter(getActivity(), R.layout.spinner_dropdown_item, items);
       adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
       spinnerCategory.setVisibility(android.view.View.VISIBLE);
       spinnerCategory.setAdapter(adapter);
@@ -225,7 +226,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
             getPresenter().onDateClear();
             initAutoCompleteDate();
          } else {
-            getPresenter().setDate(DateTimeUtils.convertReferenceToDate(position));
+            getPresenter().setSelectedDate(DateTimeUtils.convertReferenceToDate(position));
          }
       });
    }
@@ -352,8 +353,8 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
    }
 
    @Override
-   public void setImages(List<EntityStateHolder<BucketPhoto>> photos) {
-      bucketPhotosView.setImages(photos);
+   public void setImages(List<? extends EntityStateHolder<BucketPhoto>> photos) {
+      bucketPhotosView.setImages(new ArrayList(photos));
    }
 
    @Override

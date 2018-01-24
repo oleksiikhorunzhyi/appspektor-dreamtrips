@@ -93,7 +93,7 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends R
    }
 
    @Override
-   public void setTypes(List<BucketType> types) {
+   public void setTypes(List<? extends BucketType> types) {
       if (adapter.getCount() == 0) {
          for (BucketType type : types) {
             adapter.add(new DataFragmentItem<>(getBucketRoute(), getString(type.getRes()), type));

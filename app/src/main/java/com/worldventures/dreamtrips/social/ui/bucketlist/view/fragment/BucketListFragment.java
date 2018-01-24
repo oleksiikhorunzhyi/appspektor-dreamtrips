@@ -53,6 +53,7 @@ import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -245,7 +246,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
 
       quickInputEditText.setThreshold(MIN_SYMBOL_COUNT);
       AutoCompleteAdapter<Suggestion> adapter = new AutoCompleteAdapter<>(getView().getContext());
-      adapter.setLoader(getPresenter().getSuggestionLoader());
+      adapter.setLoader(getPresenter().suggestionLoader());
 
       quickInputEditText.setAdapter(adapter);
 
@@ -304,8 +305,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
       popupMenu.inflate(R.menu.menu_bucket_filter);
       PopupMenuUtils.convertItemsToUpperCase(popupMenu);
 
-      boolean showCompleted = getPresenter().isShowCompleted();
-      boolean showToDO = getPresenter().isShowToDO();
+      boolean showCompleted = getPresenter().showCompleted;
+      boolean showToDO = getPresenter().showToDo;
 
       if (showCompleted && showToDO) {
          popupMenu.getMenu().getItem(0).setChecked(true);
@@ -386,8 +387,8 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
    }
 
    @Override
-   public void setItems(List<BucketItem> items) {
-      adapter.setItems(items);
+   public void setItems(List<? extends BucketItem> items) {
+      adapter.setItems(new ArrayList(items));
    }
 
    @Override

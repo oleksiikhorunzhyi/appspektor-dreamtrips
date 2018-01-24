@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.model;
 
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
@@ -111,7 +112,7 @@ public class BucketItem extends BaseFeedEntity {
       return category;
    }
 
-   public DiningItem getDining() {
+   public @Nullable DiningItem getDining() {
       return dining;
    }
 

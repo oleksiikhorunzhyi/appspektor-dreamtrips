@@ -284,7 +284,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    }
 
    @Override
-   public void setImages(List<BucketPhoto> newPhotos) {
+   public void setImages(List<? extends BucketPhoto> newPhotos) {
       this.photos.clear();
       this.photos.addAll(newPhotos);
       adapter.clear();

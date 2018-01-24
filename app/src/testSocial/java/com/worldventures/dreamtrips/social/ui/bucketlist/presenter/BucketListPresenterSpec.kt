@@ -79,7 +79,7 @@ class BucketListPresenterSpec : PresenterBaseSpec({
          it("should filter out todo items correctly") {
             presenter.bucketItems = listOf(stubBucketItem(isDone = false))
 
-            presenter.showToDO = false
+            presenter.showToDo = false
             presenter.refresh()
 
             assert(presenter.filteredItems.isEmpty())

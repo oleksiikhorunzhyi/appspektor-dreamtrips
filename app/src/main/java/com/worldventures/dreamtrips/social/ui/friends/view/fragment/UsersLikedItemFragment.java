@@ -59,8 +59,8 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
 
    @SuppressWarnings("unchecked")
    @Override
-   public void refreshUsers(@Nullable List<? extends User> users) {
-      super.refreshUsers(users);
+   public void refreshUsers(@Nullable List<? extends User> users, boolean noMoreItems) {
+      super.refreshUsers(users, noMoreItems);
       if (isTabletLandscape()) {
          String titleArg = users.size() == 1 ? users.get(0)
                .getFullName() : String.valueOf(getLikersCount((List<User>) users));

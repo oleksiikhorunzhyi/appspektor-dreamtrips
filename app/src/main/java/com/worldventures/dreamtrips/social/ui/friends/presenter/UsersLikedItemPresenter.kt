@@ -14,8 +14,8 @@ import javax.inject.Inject
 open class UsersLikedItemPresenter(bundle: UsersLikedEntityBundle) :
       BaseUserListPresenter<BaseUserListPresenter.View>() {
 
-   private val feedEntity = bundle.feedEntity
    @Inject lateinit var friendsStorageDelegate: LikersStorageDelegate
+   private val feedEntity = bundle.feedEntity
 
    override fun subscribeOnStorage() {
       friendsStorageDelegate.observeOnGetCirclesCommand()
@@ -24,10 +24,7 @@ open class UsersLikedItemPresenter(bundle: UsersLikedEntityBundle) :
                   .onFail(this::onCirclesError))
 
       friendsStorageDelegate.observeOnUpdateStorage()
-            .map {
-               canLoadMore = !it.isNoMoreItems()
-               it.getStorageItems()
-            }.compose(bindViewToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(this::finishUpdateStorage)
    }
 
@@ -64,9 +61,9 @@ open class UsersLikedItemPresenter(bundle: UsersLikedEntityBundle) :
    }
 
    fun acceptRequest(user: User) {
-      view.startLoading()
       friendsStorageDelegate.getCircles { circles ->
          view.showAddFriendDialog(circles) { selectedCircle ->
+            view.startLoading()
             friendsStorageDelegate.acceptRequest(user, selectedCircle)
          }
       }
@@ -78,9 +75,9 @@ open class UsersLikedItemPresenter(bundle: UsersLikedEntityBundle) :
    }
 
    open fun addUserRequest(user: User) {
-      view.startLoading()
       friendsStorageDelegate.getCircles { circles ->
          view.showAddFriendDialog(circles) { selectedCircle ->
+            view.startLoading()
             friendsStorageDelegate.addFriend(user, selectedCircle)
          }
       }

@@ -278,6 +278,7 @@
           </arrangement>
         </codeStyleSettings>
         <codeStyleSettings language="kotlin">
+          <option name="FIELD_ANNOTATION_WRAP" value="0" />
           <indentOptions>
             <option name="INDENT_SIZE" value="3" />
             <option name="CONTINUATION_INDENT_SIZE" value="6" />

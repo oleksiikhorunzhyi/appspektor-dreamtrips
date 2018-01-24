@@ -36,10 +36,7 @@ open class FriendListPresenter : BaseUserListPresenter<FriendListPresenter.View>
                   .onFail(this::onCirclesError))
 
       friendsStorageDelegate.observeOnUpdateStorage()
-            .map {
-               canLoadMore = !it.isNoMoreItems()
-               it.getStorageItems()
-            }.compose(bindViewToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(this::finishUpdateStorage)
    }
 

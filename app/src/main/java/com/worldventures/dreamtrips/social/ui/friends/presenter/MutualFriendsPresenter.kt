@@ -10,15 +10,12 @@ import javax.inject.Inject
 
 open class MutualFriendsPresenter(bundle: MutualFriendsBundle) : BaseUserListPresenter<MutualFriendsPresenter.View>() {
 
-   private val userId: Int = bundle.id
    @Inject lateinit var friendsStorageDelegate: MutualFriendsStorageDelegate
+   private val userId: Int = bundle.id
 
    override fun subscribeOnStorage() {
       friendsStorageDelegate.observeOnUpdateStorage(userId.toString())
-            .map {
-               canLoadMore = !it.isNoMoreItems()
-               it.getStorageItems()
-            }.compose(bindViewToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(this::finishUpdateStorage)
    }
 

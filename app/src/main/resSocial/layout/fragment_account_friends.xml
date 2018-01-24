@@ -67,7 +67,7 @@
                   android:layout_height="match_parent"
                   >
 
-               <com.worldventures.core.ui.view.custom.EmptyRecyclerView
+               <com.worldventures.core.ui.view.recycler.StateRecyclerView
                      android:id="@+id/recyclerViewFriends"
                      android:layout_width="match_parent"
                      android:layout_height="match_parent"

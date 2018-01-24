@@ -175,6 +175,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
    public void showAddFriendDialog(@NotNull List<? extends Circle> circles, @NotNull Function1<? super Circle, Unit> selectAction) {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
       builder.title(getString(R.string.friend_add_to))
+            .dismissListener(dialog -> notifyItemsStateChanged())
             .adapter(new ArrayAdapter<>(getActivity(), R.layout.simple_list_item_circle, circles), (materialDialog, view, i, charSequence) -> {
                selectAction.invoke(circles.get(i));
                materialDialog.dismiss();

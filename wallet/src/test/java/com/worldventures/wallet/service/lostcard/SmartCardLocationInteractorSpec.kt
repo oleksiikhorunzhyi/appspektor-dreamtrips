@@ -43,6 +43,8 @@ import com.worldventures.wallet.service.beacon.StubWalletBeaconLogger
 import com.worldventures.wallet.service.beacon.WalletBeaconLogger
 import com.worldventures.core.service.location.MockDetectLocationService
 import com.worldventures.core.service.location.DetectLocationService
+import com.worldventures.wallet.service.credentials.GoogleApiCredentials
+import com.worldventures.wallet.service.credentials.GoogleApiCredentialsProvider
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand
 import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesCommand
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand
@@ -87,6 +89,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          mockDb = createMockDb()
          janet = createJanet()
          mappery = createMappery()
+         googleCredentialsProvider = mockGoogleCredentialsProvider()
 
          smartCardInteractor = createSmartCardInteractor(janet)
          smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
@@ -177,6 +180,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var janet: Janet
       lateinit var mockDb: WalletStorage
       lateinit var mappery: MapperyContext
+      lateinit var googleCredentialsProvider: GoogleApiCredentialsProvider
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
       lateinit var detectLocationService: DetectLocationService
       lateinit var smartCardInteractor: SmartCardInteractor
@@ -214,6 +218,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(WalletStorage::class.java) { mockDb }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
+         daggerCommandActionService.registerProvider(GoogleApiCredentialsProvider::class.java) { googleCredentialsProvider }
          daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
          daggerCommandActionService.registerProvider(DetectLocationService::class.java) { detectLocationService }
          daggerCommandActionService.registerProvider(LostCardRepository::class.java) { locationStorage }
@@ -254,6 +259,12 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          return lostCardRepository
       }
 
+      fun mockGoogleCredentialsProvider(): GoogleApiCredentialsProvider {
+         val googleApiCredentialsProvider: GoogleApiCredentialsProvider = mock()
+         whenever(googleApiCredentialsProvider.provideGoogleApiCredentials()).thenReturn(GoogleApiCredentials(""))
+         return googleApiCredentialsProvider
+      }
+
       private fun mockHttpService(): MockHttpActionService {
          val placesResponse = mockPlacesResponse()
          val addressResponse = mockAddressRestResponse()
@@ -267,7 +278,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                   request.url.startsWith("https://maps.googleapis.com/maps/api/place/nearbysearch/json")
                }
                .bind(MockHttpActionService.Response(200).body(addressResponse)) { request ->
-                  request.url.startsWith("http://maps.googleapis.com/maps/api/geocode/json")
+                  request.url.startsWith("https://maps.googleapis.com/maps/api/geocode/json")
                }
                .bind(MockHttpActionService.Response(204)) { request ->
                   request.url.endsWith("api/user/settings")

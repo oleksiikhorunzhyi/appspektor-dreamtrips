@@ -1,6 +1,5 @@
 package com.worldventures.wallet.service.lostcard.command.http;
 
-
 import com.worldventures.core.janet.BaseThirdPartyHttpAction;
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates;
 import com.worldventures.wallet.service.lostcard.command.http.model.AddressRestResponse;
@@ -15,15 +14,16 @@ import io.techery.janet.http.annotations.Url;
 @HttpAction(method = HttpAction.Method.GET)
 public class AddressHttpAction extends BaseThirdPartyHttpAction {
 
-   @Url String mapApiAddress = "http://maps.googleapis.com/maps/api/geocode/json";
+   @Url String mapApiAddress = "https://maps.googleapis.com/maps/api/geocode/json";
 
-   @Query("latlng")
-   String coords;
-   @Response
-   AddressRestResponse response;
+   @Query("latlng") String coordinates;
+   @Query("key") String apiKey;
 
-   public AddressHttpAction(WalletCoordinates location) {
-      this.coords = String.format(Locale.US, "%.6f,%,6f", location.getLat(), location.getLng());
+   @Response AddressRestResponse response;
+
+   public AddressHttpAction(String apiKey, WalletCoordinates location) {
+      this.apiKey = apiKey;
+      this.coordinates = String.format(Locale.US, "%.6f,%,6f", location.getLat(), location.getLng());
    }
 
    public AddressRestResponse response() {

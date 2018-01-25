@@ -20,6 +20,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET;
@@ -37,10 +38,13 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
    @SetHomeDisplayTypeAction.HomeDisplayType
    private final int displayType;
    private final SmartCardUser user;
+   private final Action1<SmartCardUser> profileChangedAction;
 
-   public SaveDisplayTypeCommand(@SetHomeDisplayTypeAction.HomeDisplayType int type, @NonNull SmartCardUser user) {
+   public SaveDisplayTypeCommand(@SetHomeDisplayTypeAction.HomeDisplayType int type, @NonNull SmartCardUser user,
+         Action1<SmartCardUser> profileChangedAction) {
       this.displayType = type;
       this.user = user;
+      this.profileChangedAction = profileChangedAction;
    }
 
    @Override
@@ -67,6 +71,11 @@ public class SaveDisplayTypeCommand extends Command<Void> implements InjectableA
                      break;
                   default:
                      break;
+               }
+            })
+            .doOnNext(smartCardUser -> {
+               if (profileChangedAction != null) {
+                  profileChangedAction.call(smartCardUser);
                }
             })
             .flatMap(smartCardUser -> janet.createPipe(SetHomeDisplayTypeAction.class, Schedulers.io())

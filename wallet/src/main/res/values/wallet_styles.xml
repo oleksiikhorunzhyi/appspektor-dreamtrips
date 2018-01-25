@@ -248,5 +248,10 @@
       <item name="android:background">@drawable/wallet_delete_record_v18_background_selector</item>
       <item name="android:padding">4dp</item>
    </style>
+   
+   <style name="RetryButtonStyle" parent="Widget.AppCompat.Button">
+      <item name="android:background">@drawable/wallet_retry_v18_background_selector</item>
+      <item name="android:padding">4dp</item>
+   </style>
 
 </resources>

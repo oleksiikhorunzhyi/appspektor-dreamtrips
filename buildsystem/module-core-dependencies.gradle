@@ -2,7 +2,7 @@ ext {
    janetHttpVersion = '1.3.1'
    mobileSdkVersion = '1.2.4'
    okhttp3Version = '3.5.0'
-   googleLibrariesVersion = '26.1.0'
+   googleLibrariesVersion = '27.0.2'
    googleServicesVersion = '11.8.0'
    mosbyVersion = '2.0.0'
 
@@ -32,7 +32,7 @@ ext {
    ]
 
    coreDependencies.ui = [
-         googleCardView           : [impl: "com.android.support:cardview-v7:${googleLibrariesVersion}"], // resolve version conflicts
+         googleCardView           : [impl: "com.android.support:cardview-v7:${googleLibrariesVersion}"],
          googleAnnotations        : [impl: "com.android.support:support-annotations:${googleLibrariesVersion}"],
          googlePercent            : [impl: "com.android.support:percent:${googleLibrariesVersion}"],
 
@@ -40,7 +40,7 @@ ext {
          fabbutton                : [impl: 'mbanje.kurt:fabbutton:1.2.5-SNAPSHOT@aar'],
          googleDesign             : [impl: "com.android.support:design:${googleLibrariesVersion}"],
          googleAppcompat7         : [impl: "com.android.support:appcompat-v7:${googleLibrariesVersion}"],
-         customtabs               : [impl: "com.android.support:customtabs:${googleLibrariesVersion}"], // resolve version conflicts: facebook uses v25.0.0
+         customtabs               : [impl: "com.android.support:customtabs:${googleLibrariesVersion}"],
          constraintlayout         : [impl: 'com.android.support.constraint:constraint-layout:1.0.2'],
          operationActionSubscriber: [api: 'com.github.techery:OperationActionSubscriber:1.0.4'],
          materialDialogsCore      : [impl: 'com.github.afollestad.material-dialogs:core:0.8.6.2'],

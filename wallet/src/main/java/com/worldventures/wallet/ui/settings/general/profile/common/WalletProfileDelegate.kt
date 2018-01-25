@@ -49,18 +49,16 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
             .subscribe(OperationActionSubscriber.forView(view.provideHttpUploadOperation(this)).create())
    }
 
-   fun updateUser(profile: ProfileViewModel, forceUpdateDisplayType: Boolean, actionComplete: (() -> Unit)? = null) {
-      updateUser(createSmartCardUser(profile), forceUpdateDisplayType, actionComplete)
+   fun updateUser(profile: ProfileViewModel, forceUpdateDisplayType: Boolean) {
+      updateUser(createSmartCardUser(profile), forceUpdateDisplayType)
    }
 
-   fun updateUser(newUser: SmartCardUser, forceUpdateDisplayType: Boolean, actionComplete: (() -> Unit)? = null) {
+   fun updateUser(newUser: SmartCardUser, forceUpdateDisplayType: Boolean) {
       smartCardInteractor.activeSmartCardPipe()
             .createObservableResult(ActiveSmartCardCommand())
-            .subscribe({
-               smartCardUserDataInteractor.updateSmartCardUserPipe()
-                     .createObservableResult(UpdateSmartCardUserCommand(newUser, it.result.smartCardId, forceUpdateDisplayType))
-                     .subscribe({ actionComplete?.invoke() }, { Timber.e(it) })
-            }, { Timber.e(it) })
+            .flatMap { smartCardUserDataInteractor.updateSmartCardUserPipe()
+                  .createObservableResult(UpdateSmartCardUserCommand(newUser, it.result.smartCardId, forceUpdateDisplayType)) }
+            .subscribe({ }, { Timber.e(it) })
    }
 
    fun cancelUploadServerUserData(smartCardId: String, newUser: SmartCardUser) {
@@ -80,13 +78,16 @@ class WalletProfileDelegate(private val smartCardUserDataInteractor: SmartCardUs
 
    private fun createPhone(model: ProfileViewModel): SmartCardUserPhone? = createPhone(model.phoneCode, model.phoneNumber)
 
-   fun createPhone(phoneCode: String, phoneNumber: String): SmartCardUserPhone? {
-      return if (phoneCode.isEmpty() || phoneNumber.isEmpty()) {
+   private fun createPhone(phoneCode: String, phoneNumber: String): SmartCardUserPhone? {
+      return if (!isPhoneValid(phoneCode, phoneNumber)) {
          null
       } else {
          SmartCardUserPhone("+$phoneCode", phoneNumber)
       }
    }
+
+   fun isPhoneValid(phoneCode: String, phoneNumber: String)
+         = !phoneCode.isEmpty() && !phoneNumber.isEmpty()
 
    private fun createPhoto(model: ProfileViewModel): SmartCardUserPhoto? =
          if (!model.isPhotoEmpty) SmartCardUserPhoto(model.chosenPhotoUri!!) else null

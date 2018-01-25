@@ -1,7 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.display.impl
 
 import com.worldventures.core.modules.picker.model.PhotoPickerModel
-import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.service.SmartCardInteractor
 import com.worldventures.wallet.service.WalletSocialInfoProvider
 import com.worldventures.wallet.service.command.SmartCardUserCommand
@@ -20,6 +19,7 @@ import io.techery.janet.operationsubscriber.OperationActionSubscriber
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Action1
 import timber.log.Timber
 
 class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
@@ -55,13 +55,11 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
    }
 
    private fun observeHomeDisplay() {
-      val getDisplayTypeOperationView = view.provideGetDisplayTypeOperationView()
-      getDisplayTypeOperationView.showProgress(null)
       smartCardInteractor.displayTypePipe.observe()
             .compose(GuaranteedProgressVisibilityTransformer<ActionState<GetDisplayTypeCommand>>())
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(getDisplayTypeOperationView)
+            .subscribe(OperationActionSubscriber.forView(view.provideGetDisplayTypeOperationView())
                   .create()
             )
       smartCardInteractor.saveDisplayTypePipe().observe()
@@ -70,10 +68,8 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(view.provideSaveDisplayTypeOperationView())
                   .onSuccess {
-                     if (view.displayOptionsSource.isSettings) {
-                        goBack()
-                     } else {
-                        navigator.goBackToProfile()
+                     if (!view.isProfileChanged) {
+                        proceedWithChangesApply()
                      }
                   }
                   .create()
@@ -81,11 +77,13 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
    }
 
    private fun observeUserProfileUploading() {
-      delegate.observeProfileUploading(view)
+      delegate.observeProfileUploading(view, { proceedWithChangesApply() }, null)
    }
 
    override fun phoneNumberEntered(phoneCode: String, phoneNumber: String) {
-      delegate.createPhone(phoneCode, phoneNumber)?.let { view.updatePhone(it.code, it.number) }
+      if (delegate.isPhoneValid(phoneCode, phoneNumber)) {
+         view.updatePhone(phoneCode, phoneNumber)
+      }
    }
 
    override fun handlePickedPhoto(model: PhotoPickerModel) {
@@ -101,17 +99,9 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
    }
 
    override fun saveDisplayType(@SetHomeDisplayTypeAction.HomeDisplayType type: Int) {
-      val user: SmartCardUser = delegate.createSmartCardUser(view.profile)
-      val saveDisplayType = SaveDisplayTypeCommand(type, user)
-      if (view.isProfileChanged) {
-         updateProfileAndSaveDisplayType(user, saveDisplayType)
-      } else {
-         smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType)
-      }
-   }
-
-   private fun updateProfileAndSaveDisplayType(user: SmartCardUser, saveDisplayType: SaveDisplayTypeCommand) {
-      delegate.updateUser(user, true) { smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType) }
+      val saveDisplayType = SaveDisplayTypeCommand(type, delegate.createSmartCardUser(view.profile),
+            if (view.isProfileChanged) Action1 { delegate.updateUser(it, false) } else null)
+      smartCardInteractor.saveDisplayTypePipe().send(saveDisplayType)
    }
 
    override fun goBack() {
@@ -120,5 +110,13 @@ class DisplayOptionsSettingsPresenterImpl(navigator: Navigator,
 
    override fun fetchDisplayType() {
       smartCardInteractor.displayTypePipe.send(GetDisplayTypeCommand(true))
+   }
+
+   private fun proceedWithChangesApply() {
+      if (view.displayOptionsSource.isSettings) {
+         goBack()
+      } else {
+         navigator.goBackToProfile()
+      }
    }
 }

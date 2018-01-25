@@ -206,12 +206,12 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    }
 
    override fun provideUpdateSmartCardOperation(delegate: WalletProfileDelegate): OperationView<UpdateSmartCardUserCommand> {
-      return UpdateSmartCardUserOperationView.UpdateUser(context, delegate
-      ) { presenter.confirmDisplayTypeChange() }
+      return UpdateSmartCardUserOperationView.UpdateUser(context, delegate,
+            { presenter.confirmDisplayTypeChange() }, this)
    }
 
    override fun provideHttpUploadOperation(delegate: WalletProfileDelegate): OperationView<RetryHttpUploadUpdatingCommand> =
-         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate)
+         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate, this)
 
    override fun showSCNonConnectionDialog() {
       if (scNonConnectionDialog == null) {
@@ -259,4 +259,8 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    override fun supportHttpConnectionStatusLabel() = true
 
    override fun screenModule(): Any? = WalletSettingsProfileScreenModule()
+
+   override fun detachObservable(): Observable<Void> {
+      return detachStopper.asObservable()
+   }
 }

@@ -26,6 +26,7 @@ import com.worldventures.wallet.service.command.settings.general.display.excepti
 import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
 import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
+import com.worldventures.wallet.ui.common.helper2.error.DetachableOperationView
 import com.worldventures.wallet.ui.common.helper2.error.DialogErrorView
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewProvider
@@ -40,7 +41,6 @@ import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSettin
 import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel
 import com.worldventures.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView
 import com.worldventures.wallet.ui.settings.general.profile.common.WalletProfileDelegate
-import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.ErrorView
 import io.techery.janet.operationsubscriber.view.OperationView
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction
@@ -181,7 +181,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun provideGetDisplayTypeOperationView(): OperationView<GetDisplayTypeCommand> {
-      return ComposableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_loading, false),
+      return DetachableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_loading, false),
             ErrorViewFactory.builder<GetDisplayTypeCommand>()
                   .addProvider(SmartCardErrorViewProvider(context,
                         { presenter.fetchDisplayType() }) { presenter.goBack() })
@@ -189,12 +189,13 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
                         { presenter.fetchDisplayType() }) { presenter.goBack() })
                   .defaultErrorView(RetryDialogErrorView(context, R.string.wallet_error_something_went_wrong,
                         { presenter.fetchDisplayType() }) { presenter.goBack() })
-                  .build()
+                  .build(),
+            this
       )
    }
 
    override fun provideSaveDisplayTypeOperationView(): OperationView<SaveDisplayTypeCommand> {
-      return ComposableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_updating, false),
+      return DetachableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_updating, false),
             SimpleToastSuccessView(context, R.string.wallet_settings_general_display_changes_saved),
             ErrorViewFactory.builder<SaveDisplayTypeCommand>()
                   .addProvider(getUserRequiredInfoMissingDialogProvider(MissingUserPhoneException::class.java,
@@ -206,7 +207,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
                   .addProvider(SCConnectionErrorViewProvider(context))
                   .addProvider(SmartCardErrorViewProvider(context) { saveCurrentChoice() })
                   .defaultErrorView(RetryDialogErrorView(context, R.string.wallet_error_something_went_wrong) { saveCurrentChoice() })
-                  .build()
+                  .build(),
+            this
       )
    }
 
@@ -277,10 +279,10 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun provideUpdateSmartCardOperation(delegate: WalletProfileDelegate): OperationView<UpdateSmartCardUserCommand> =
-         UpdateSmartCardUserOperationView.UpdateUser(context, delegate, null)
+         UpdateSmartCardUserOperationView.UpdateUser(context, delegate, null, this)
 
    override fun provideHttpUploadOperation(delegate: WalletProfileDelegate): OperationView<RetryHttpUploadUpdatingCommand> =
-         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate)
+         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate, this)
 
    private fun getUserRequiredInfoMissingDialogProvider(error: Class<out Throwable>, @StringRes title: Int, @StringRes message: Int):
          ErrorViewProvider<SaveDisplayTypeCommand> {
@@ -319,6 +321,10 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun screenModule(): Any? = DisplayOptionsSettingsScreenModule()
+
+   override fun detachObservable(): Observable<Void> {
+      return detachStopper.asObservable()
+   }
 
    companion object {
 

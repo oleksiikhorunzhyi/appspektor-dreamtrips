@@ -14,21 +14,19 @@ import rx.Observable
 abstract class BaseUserPaginationCommand(val refresh: Boolean, private val getUserOperation: (page: Int, perPage: Int)
 -> Observable<out GetUsersCommand>) : Command<List<User>>(), CachedAction<BaseUserPaginationCommand.PaginationCachedModel> {
 
-   private var page = 1
+   var page = 1; private set
    private var perPage = 100
-   private var canLoadMore = true
 
    override fun run(callback: CommandCallback<List<User>>) {
       getUserOperation.invoke(page, perPage)
-            .map { it.result.apply { canLoadMore = isNotEmpty() } }
+            .map { it.result }
             .subscribe(callback::onSuccess, callback::onFail)
    }
 
-   override fun getCacheData() = PaginationCachedModel(page + 1, canLoadMore)
+   override fun getCacheData() = PaginationCachedModel(page + 1)
 
    override fun onRestore(holder: ActionHolder<*>?, cache: PaginationCachedModel?) {
       page = cache?.page ?: 1
-      canLoadMore = cache?.canLoadMore ?: true
    }
 
    override fun getCacheOptions(): CacheOptions {
@@ -40,7 +38,7 @@ abstract class BaseUserPaginationCommand(val refresh: Boolean, private val getUs
    }
 
    @CommandAction
-   class PaginationCachedModel(val page: Int, val canLoadMore: Boolean)
+   class PaginationCachedModel(val page: Int)
 
 }
 

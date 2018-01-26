@@ -9,106 +9,128 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.BaseImageViewPagerPresenter
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetInspireMePhotosCommand
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSBHPhotosCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.InspireMeViewPagerArgs
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class InspireMeViewPagerPresenterSpec : PresenterBaseSpec({
+class InspireMeViewPagerPresenterSpec : PresenterBaseSpec(InspireMeViewPagerTestSuite()) {
 
-   describe("InspireMeViewPagerPresenter") {
+   class InspireMeViewPagerTestSuite : TestSuite<InspireMeViewPagerComponents>(InspireMeViewPagerComponents()) {
 
-      it("should init fragments correctly") {
-         val selectedPosition = 1
-         val args = stubArgs(stubPhotos(), currentItemPosition = selectedPosition)
-         setup(args, Contract.of(GetInspireMePhotosCommand::class.java).result(emptyList<Inspiration>()))
+      override fun specs(): SpecBody.() -> Unit = {
 
-         presenter.initItems()
+         with(components) {
+            describe("InspireMeViewPagerPresenter") {
 
-         verify(view).setItems(any())
-         verify(view).setSelectedPosition(selectedPosition)
-      }
+               it("should init fragments correctly") {
+                  val selectedPosition = 1
+                  val args = stubArgs(stubPhotos(), currentItemPosition = selectedPosition)
+                  val contract = Contract.of(GetInspireMePhotosCommand::class.java).result(emptyList<Inspiration>())
+                  init(args, contract)
+                  linkPresenterAndView()
 
-      it("should subscribe to new items and refresh view on success, last page is not reached") {
-         val stubbedPhotos = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
-         setup(stubArgs(stubPhotos()), Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotos))
+                  presenter.initItems()
 
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(RANDOM_SEED, 1))
+                  verify(view).setItems(any())
+                  verify(view).setSelectedPosition(selectedPosition)
+               }
 
-         assertFalse(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotos))
-         assert(presenter.currentItems.size == stubbedPhotos.size)
-      }
+               it("should subscribe to new items and refresh view on success, last page is not reached") {
+                  val stubbedPhotos = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
+                  val contract = Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotos)
+                  init(stubArgs(stubPhotos()), contract)
+                  linkPresenterAndView()
 
-      it("should subscribe to new items and refresh view on success, last page is reached") {
-         val stubbedPhotos = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE - 1)
-         setup(stubArgs(stubPhotos()), Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotos))
+                  val presenter = presenter
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.inspireMePhotosPipe.send(
+                        GetInspireMePhotosCommand.forPage(RANDOM_SEED, 1))
 
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(RANDOM_SEED, 1))
+                  assertFalse(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotos))
+                  assert(presenter.currentItems.size == stubbedPhotos.size)
+               }
 
-         assertTrue(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotos))
-         assert(presenter.currentItems.size == stubbedPhotos.size)
-      }
+               it("should subscribe to new items and refresh view on success, last page is reached") {
+                  val stubbedPhotos = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE - 1)
+                  val contract = Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotos)
+                  init(stubArgs(stubPhotos()), contract)
+                  linkPresenterAndView()
 
-      it ("should load next page and refresh view, last page is not reached") {
-         val stubbedPhotosPage1 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
-         val stubbedPhotosPage2 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
-         val stubbedPhotosPage1And2 = arrayListOf<Inspiration>()
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
-         setup(stubArgs(), Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotosPage2))
+                  val presenter = presenter
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.inspireMePhotosPipe.send(
+                        GetInspireMePhotosCommand.forPage(RANDOM_SEED, 1))
 
-         presenter.currentItems = ArrayList(stubbedPhotosPage1)
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(randomSeed = 0.1, page = 2))
+                  assertTrue(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotos))
+                  assert(presenter.currentItems.size == stubbedPhotos.size)
+               }
 
-         assertFalse(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
-         assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
-      }
+               it("should load next page and refresh view, last page is not reached") {
+                  val stubbedPhotosPage1 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
+                  val stubbedPhotosPage2 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
+                  val stubbedPhotosPage1And2 = arrayListOf<Inspiration>()
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
+                  val contract = Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotosPage2)
+                  init(stubArgs(), contract)
+                  linkPresenterAndView()
 
-      it ("should load next page and refresh view, last page is reached") {
-         val stubbedPhotosPage1 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
-         val stubbedPhotosPage2 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE - 1)
-         val stubbedPhotosPage1And2 = arrayListOf<Inspiration>()
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
-         setup(stubArgs(), Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotosPage2))
+                  val presenter = presenter
+                  presenter.currentItems = ArrayList(stubbedPhotosPage1)
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(RANDOM_SEED, 2))
 
-         presenter.currentItems = ArrayList(stubbedPhotosPage1)
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(randomSeed = 0.1, page = 2))
+                  assertFalse(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
+                  assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
+               }
 
-         assertTrue(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
-         assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
+               it("should load next page and refresh view, last page is reached") {
+                  val stubbedPhotosPage1 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE)
+                  val stubbedPhotosPage2 = stubPhotos(size = GetInspireMePhotosCommand.PER_PAGE - 1)
+                  val stubbedPhotosPage1And2 = arrayListOf<Inspiration>()
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
+                  val contract = Contract.of(GetInspireMePhotosCommand::class.java).result(stubbedPhotosPage2)
+                  init(stubArgs(), contract)
+                  linkPresenterAndView()
+
+                  val presenter = presenter
+                  presenter.currentItems = ArrayList(stubbedPhotosPage1)
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.inspireMePhotosPipe.send(GetInspireMePhotosCommand.forPage(RANDOM_SEED, 2))
+
+                  assertTrue(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
+                  assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
+               }
+            }
+         }
       }
    }
 
-}) {
-   companion object {
+   class InspireMeViewPagerComponents : TestComponents<InspireMeViewPagerPresenter, BaseImageViewPagerPresenter.View>() {
 
-      const val RANDOM_SEED = 0.1
-
-      lateinit var presenter: InspireMeViewPagerPresenter
-      lateinit var view: BaseImageViewPagerPresenter.View
-
+      val RANDOM_SEED = 0.1
       lateinit var tripImagesInteractor: TripImagesInteractor
 
-      fun setup(args: InspireMeViewPagerArgs, contract: Contract?) {
+      fun init(args: InspireMeViewPagerArgs, contract: Contract?) {
+         presenter = InspireMeViewPagerPresenter(args)
+         view = mock()
+
          val service = MockCommandActionService.Builder().apply {
             actionService(CommandActionService())
             if (contract != null) {
@@ -120,15 +142,10 @@ class InspireMeViewPagerPresenterSpec : PresenterBaseSpec({
 
          tripImagesInteractor = TripImagesInteractor(sessionPipeCreator)
 
-         presenter = InspireMeViewPagerPresenter(args)
-         view = mock()
-
          prepareInjector().apply {
             registerProvider(TripImagesInteractor::class.java, { tripImagesInteractor })
             inject(presenter)
          }
-
-         presenter.takeView(view)
       }
 
       fun stubArgs(list: MutableList<Inspiration> = mutableListOf(),

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.social.ui.profile.presenter
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.anyOrNull
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
@@ -23,58 +23,30 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
-import org.jetbrains.spek.api.dsl.Spec
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.mockito.internal.verification.VerificationModeFactory
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter<out ProfilePresenter.View>, out ProfilePresenter.View>)
-   : PresenterBaseSpec(testBody.makeTestBody()) {
+abstract class ProfilePresenterSpec(suite: ProfileTestSuite<ProfileTestComponents<out ProfilePresenter<out ProfilePresenter.View>,
+      out ProfilePresenter.View>>) : PresenterBaseSpec(suite) {
 
-   abstract class TestBody<P : ProfilePresenter<V>, V : ProfilePresenter.View> {
-      val USER_ID = 1100
-      val USER = User(USER_ID)
-      var sessionHolder = makeSessionHolder(USER_ID)
+   abstract class ProfileTestSuite<out C : ProfileTestComponents<out ProfilePresenter<out ProfilePresenter.View>,
+         out ProfilePresenter.View>>(components: C) : PresenterBaseSpec.TestSuite<C>(components) {
 
-      lateinit var presenter: P
-      lateinit var view: V
+      override fun specs(): SpecBody.() -> Unit = {
 
-      lateinit var feedInteractor: FeedInteractor
-      val translationDelegate: TranslationDelegate = mock()
-      val feedActionHandlerDelegate: FeedActionHandlerDelegate = mock()
-
-      abstract fun getDescription(): String
-      abstract fun makePresenter(): P
-      abstract fun makeView(): V
-      abstract fun verifyFeedItemsRefreshedInView()
-      abstract fun verifyFeedItemsNeverRefreshedInView()
-      abstract fun makeExtendedSuite(): SpecBody.() -> Unit
-
-      fun makeTestBody(): Spec.() -> Unit {
-         return {
-            describe(getDescription()) {
-               for (body in makeTestSuites()) {
-                  body.invoke(this)
-               }
-            }
-         }
-      }
-
-      fun makeTestSuites(): List<SpecBody.() -> Unit> {
-         return listOf(makeBaseSuite(), makeExtendedSuite())
-      }
-
-      fun makeBaseSuite(): SpecBody.() -> Unit {
-         return {
-            beforeEachTest {
-               setup()
-            }
-
+         with(components) {
             describe("Profile Presenter") {
+
+               beforeEachTest {
+                  init()
+                  linkPresenterAndView()
+               }
+
                describe("Base interactions") {
+
                   it("should refresh items in view on view taken") {
                      val list = ArrayList<FeedItem<out FeedEntity>>()
                      list.add(mock())
@@ -132,7 +104,7 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
 
                      verify(presenter).refreshFeed()
                      verify(presenter).loadProfile()
-                     verify(view, VerificationModeFactory.times(2)).startLoading()
+                     verify(view, times(2)).startLoading()
                   }
 
                   it("should not load next when feed items are empty") {
@@ -196,16 +168,28 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
          }
       }
 
+      abstract fun verifyFeedItemsRefreshedInView()
+
+      abstract fun verifyFeedItemsNeverRefreshedInView()
+   }
+
+   abstract class ProfileTestComponents<P : ProfilePresenter<V>, V : ProfilePresenter.View> : TestComponents<P, V>() {
+
+      val USER_ID = 1100
+      val USER = User(USER_ID)
+      val translationDelegate: TranslationDelegate = mock()
+      val feedActionHandlerDelegate: FeedActionHandlerDelegate = mock()
+      protected val sessionHolder = makeSessionHolder(USER_ID)
+
+      lateinit var feedInteractor: FeedInteractor
+
       fun getNonEmptyMockedFeedItemsList(): ArrayList<FeedItem<out FeedEntity>> {
          val list = ArrayList<FeedItem<out FeedEntity>>()
          list.add(mock())
          return list
       }
 
-      open fun setup(contract: Contract? = null) {
-         presenter = spy(makePresenter())
-         view = makeView()
-
+      open fun init(contract: Contract? = null) {
          val service = MockCommandActionService.Builder().apply {
             actionService(CommandActionService())
             if (contract != null) addContract(contract)
@@ -221,18 +205,15 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
             registerProvider(TranslationDelegate::class.java, { translationDelegate })
             registerProvider(FeedActionHandlerDelegate::class.java, { feedActionHandlerDelegate })
          }
-         onSetupInjector(injector, sessionPipeCreator)
 
-         injector.inject(presenter)
-
-         presenter.takeView(view)
+         onInit(injector, sessionPipeCreator)
       }
 
-      fun makeSessionHolder(id: Int): SessionHolder {
+      private fun makeSessionHolder(id: Int): SessionHolder {
          val sessionHolder = mock<SessionHolder>()
          val userSession = mock<UserSession>()
          val user = User()
-         user.id = id;
+         user.id = id
          whenever(userSession.user()).thenReturn(user)
          whenever(userSession.locale()).thenReturn("mock-locale")
          whenever(userSession.apiToken()).thenReturn("mock-token")
@@ -245,9 +226,6 @@ open abstract class ProfilePresenterSpec(testBody: TestBody<out ProfilePresenter
          return sessionHolder
       }
 
-      open fun onSetupInjector(injector: Injector,
-                               pipeCreator: SessionActionPipeCreator) {
-      }
+      protected abstract fun onInit(injector: Injector, pipeCreator: SessionActionPipeCreator)
    }
 }
-

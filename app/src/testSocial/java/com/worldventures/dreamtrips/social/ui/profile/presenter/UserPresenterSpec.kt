@@ -4,6 +4,7 @@ import com.messenger.delegate.StartChatDelegate
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
@@ -28,152 +29,165 @@ import rx.Observable
 import java.util.ArrayList
 import java.util.Date
 
-class UserPresenterSpec : ProfilePresenterSpec(UserPresenterTestBody()) {
+class UserPresenterSpec : ProfilePresenterSpec(UserTestSuite()) {
 
-   class UserPresenterTestBody : TestBody<UserPresenter, UserPresenter.View>() {
-      val CIRCLE = Circle.withTitle("Friends")
+   class UserTestSuite : ProfileTestSuite<UserTestComponents>(UserTestComponents()) {
 
-      lateinit var circlesInteractor: CirclesInteractor
-      lateinit var friendsInteractor: FriendsInteractor
-      lateinit var notificationFeedInteractor: NotificationFeedInteractor
-      val notificationDelegate: NotificationDelegate = mock()
-      val startChatDelegate: StartChatDelegate = mock()
-      lateinit var profileInteractor: ProfileInteractor
-      val userTimelineStorageDelegate: UserTimelineStorageDelegate = mock()
+      override fun specs(): SpecBody.() -> Unit = {
 
-      override fun getDescription(): String = "Account Presenter"
+         with(components) {
+            describe("User Presenter") {
 
-      override fun makePresenter() = UserPresenter(UserBundle(USER))
+               super.specs().invoke(this)
 
-      override fun makeView(): UserPresenter.View = mock()
+               describe("Basic interactions") {
+                  beforeEachTest {
+                     init()
+                     linkPresenterAndView()
+                  }
 
-      override fun makeExtendedSuite(): SpecBody.() -> Unit {
-         return {
-            describe("Basic interactions") {
-               beforeEachTest {
-                  setup()
+                  it("should cancel notification on injected") {
+                     presenter.onInjected()
+                     verify(notificationDelegate).cancel(any<Int>())
+                  }
+
+                  it("should subscribe to data sources on view taken") {
+                     val userTimelineStorageCommand: UserTimelineStorageCommand = mock()
+                     whenever(userTimelineStorageDelegate.observeStorageCommand()).thenReturn(Observable.just(userTimelineStorageCommand))
+                     val presenter = presenter
+                     presenter.feedItems = ArrayList()
+                     presenter.onViewTaken()
+
+                     verify(presenter).subscribeToStorage()
+                     verify(presenter).subscribeLoadNextFeeds()
+                     verify(presenter).subscribeRefreshFeeds()
+                     verify(presenter).subscribeToChangingCircles()
+                  }
                }
 
-               it("should cancel notification on injected") {
-                  presenter.onInjected()
-                  verify(notificationDelegate).cancel(any<Int>())
+               describe("Interaction with data") {
+                  it("should refresh items when getting storage command") {
+                     init()
+                     linkPresenterAndView()
+
+                     val command = UserTimelineStorageCommand(0, null)
+                     command.result = getNonEmptyMockedFeedItemsList()
+                     whenever(userTimelineStorageDelegate.observeStorageCommand()).thenReturn(Observable.just(command))
+
+                     presenter.subscribeToStorage()
+
+                     verify(presenter).onItemsChanged(any())
+                  }
+
+                  it("should call refresh feed succeed on success") {
+                     init(Contract.of(GetUserTimelineCommand.Refresh::class.java).result(emptyList<Any>()))
+                     linkPresenterAndView()
+
+                     presenter.subscribeRefreshFeeds()
+                     feedInteractor.refreshUserTimelinePipe.send(GetUserTimelineCommand.Refresh(USER_ID))
+
+                     verify(presenter).refreshFeedSucceed(any())
+                  }
+
+                  it("should call refresh feed error on fail") {
+                     init(Contract.of(GetUserTimelineCommand.Refresh::class.java).exception(RuntimeException()))
+                     linkPresenterAndView()
+
+                     presenter.subscribeRefreshFeeds()
+                     feedInteractor.refreshUserTimelinePipe.send(GetUserTimelineCommand.Refresh(USER_ID))
+
+                     verify(presenter).refreshFeedError(any(), any())
+                  }
+
+                  it("should call add feed items on load more success") {
+                     init(Contract.of(GetUserTimelineCommand.LoadNext::class.java).result(emptyList<Any>()))
+                     linkPresenterAndView()
+
+                     presenter.subscribeLoadNextFeeds()
+                     feedInteractor.loadNextUserTimelinePipe.send(GetUserTimelineCommand.LoadNext(USER_ID, Date()))
+
+                     verify(presenter).addFeedItems(any())
+                  }
+
+                  it("should call refresh feed error on fail") {
+                     init(Contract.of(GetUserTimelineCommand.LoadNext::class.java).exception(RuntimeException()))
+                     linkPresenterAndView()
+
+                     presenter.subscribeRefreshFeeds()
+                     feedInteractor.loadNextUserTimelinePipe.send(GetUserTimelineCommand.LoadNext(USER_ID, Date()))
+
+                     verify(presenter).loadMoreItemsError(any(), any())
+                  }
                }
 
-               it("should subscribe to data sources on view taken") {
-                  val userTimelineStorageCommand: UserTimelineStorageCommand = mock()
-                  whenever(userTimelineStorageDelegate.observeStorageCommand()).thenReturn(Observable.just(userTimelineStorageCommand))
-                  presenter.feedItems = ArrayList()
-                  presenter.onViewTaken()
+               describe("Circles interactions") {
+                  it("should refresh view when user is added to friends") {
+                     init(Contract.of(AddFriendToCircleCommand::class.java).result(USER_ID))
+                     linkPresenterAndView()
 
-                  verify(presenter).subscribeToStorage()
-                  verify(presenter).subscribeLoadNextFeeds()
-                  verify(presenter).subscribeRefreshFeeds()
-                  verify(presenter).subscribeToChangingCircles()
-               }
-            }
+                     presenter.subscribeToChangingCircles()
+                     profileInteractor.addFriendToCirclesPipe().send(AddFriendToCircleCommand(CIRCLE, USER))
 
-            describe("Interaction with data") {
-               it("should refresh items when getting storage command") {
-                  setup()
-                  val command = UserTimelineStorageCommand(0, null)
-                  command.result = getNonEmptyMockedFeedItemsList()
-                  whenever(userTimelineStorageDelegate.observeStorageCommand()).thenReturn(Observable.just(command))
+                     assert(USER.circles.contains(CIRCLE))
+                     verify(presenter).refreshFeedItems()
+                  }
 
-                  presenter.subscribeToStorage()
+                  it("should refresh view when user is removed from friends") {
+                     init(Contract.of(RemoveFriendFromCircleCommand::class.java).result(USER_ID))
+                     linkPresenterAndView()
+                     USER.circles.add(CIRCLE)
 
-                  verify(presenter).onItemsChanged(any())
-               }
+                     presenter.subscribeToChangingCircles()
+                     profileInteractor.removeFriendFromCirclesPipe()
+                           .send(RemoveFriendFromCircleCommand(CIRCLE, USER))
 
-               it("should call refresh feed succeed on success") {
-                  setup(Contract.of(GetUserTimelineCommand.Refresh::class.java).result(emptyList<Any>()))
-
-                  presenter.subscribeRefreshFeeds()
-                  feedInteractor.refreshUserTimelinePipe.send(GetUserTimelineCommand.Refresh(USER_ID))
-
-                  verify(presenter).refreshFeedSucceed(any())
-               }
-
-               it("should call refresh feed error on fail") {
-                  setup(Contract.of(GetUserTimelineCommand.Refresh::class.java).exception(RuntimeException()))
-
-                  presenter.subscribeRefreshFeeds()
-                  feedInteractor.refreshUserTimelinePipe.send(GetUserTimelineCommand.Refresh(USER_ID))
-
-                  verify(presenter).refreshFeedError(any(), any())
-               }
-
-               it("should call add feed items on load more success") {
-                  setup(Contract.of(GetUserTimelineCommand.LoadNext::class.java).result(emptyList<Any>()))
-
-                  presenter.subscribeLoadNextFeeds()
-                  feedInteractor.loadNextUserTimelinePipe.send(GetUserTimelineCommand.LoadNext(USER_ID, Date()))
-
-                  verify(presenter).addFeedItems(any())
-               }
-
-               it("should call refresh feed error on fail") {
-                  setup(Contract.of(GetUserTimelineCommand.LoadNext::class.java).exception(RuntimeException()))
-
-                  presenter.subscribeRefreshFeeds()
-                  feedInteractor.loadNextUserTimelinePipe.send(GetUserTimelineCommand.LoadNext(USER_ID, Date()))
-
-                  verify(presenter).loadMoreItemsError(any(), any())
-               }
-            }
-
-            describe("Circles interactions") {
-               it("should refresh view when user is added to friends") {
-                  setup(Contract.of(AddFriendToCircleCommand::class.java).result(USER_ID))
-
-                  presenter.subscribeToChangingCircles()
-                  profileInteractor.addFriendToCirclesPipe().send(AddFriendToCircleCommand(CIRCLE, USER))
-
-                  assert(USER.circles.contains(CIRCLE))
-                  verify(presenter).refreshFeedItems()
-               }
-
-               it("should refresh view when user is removed from friends") {
-                  setup(Contract.of(RemoveFriendFromCircleCommand::class.java).result(USER_ID))
-                  USER.circles.add(CIRCLE)
-
-                  presenter.subscribeToChangingCircles()
-                  profileInteractor.removeFriendFromCirclesPipe().send(RemoveFriendFromCircleCommand(CIRCLE, USER))
-
-                  assert(USER.circles.isEmpty())
-                  verify(presenter).refreshFeedItems()
+                     assert(USER.circles.isEmpty())
+                     verify(presenter).refreshFeedItems()
+                  }
                }
             }
          }
       }
 
       override fun verifyFeedItemsRefreshedInView() {
-         verify(view).refreshFeedItems(any(), any())
+         verify(components.view).refreshFeedItems(any(), any())
       }
 
       override fun verifyFeedItemsNeverRefreshedInView() {
-         verify(view, never()).refreshFeedItems(any(), any())
+         verify(components.view, never()).refreshFeedItems(any(), any())
       }
+   }
 
-      override fun setup(contract: Contract?) {
-         super.setup(contract)
+   class UserTestComponents : ProfileTestComponents<UserPresenter, UserPresenter.View>() {
+
+      val CIRCLE = Circle.withTitle("Friends")
+      val notificationDelegate: NotificationDelegate = mock()
+      val userTimelineStorageDelegate: UserTimelineStorageDelegate = mock()
+
+      lateinit var profileInteractor: ProfileInteractor
+
+      override fun onInit(injector: Injector, pipeCreator: SessionActionPipeCreator) {
+         presenter = spy(UserPresenter(UserBundle(USER)))
+         view = mock()
          USER.circles = mutableListOf()
-      }
 
-      override fun onSetupInjector(injector: Injector, pipeCreator: SessionActionPipeCreator) {
-         super.onSetupInjector(injector, pipeCreator)
-         circlesInteractor = CirclesInteractor(pipeCreator)
-         friendsInteractor = FriendsInteractor(pipeCreator)
-         notificationFeedInteractor = NotificationFeedInteractor(pipeCreator)
+         val circlesInteractor = CirclesInteractor(pipeCreator)
+         val friendsInteractor = FriendsInteractor(pipeCreator)
+         val notificationFeedInteractor = NotificationFeedInteractor(pipeCreator)
          profileInteractor = ProfileInteractor(pipeCreator, sessionHolder)
 
-         injector.registerProvider(CirclesInteractor::class.java, { circlesInteractor })
-         injector.registerProvider(FriendsInteractor::class.java, { friendsInteractor })
-         injector.registerProvider(NotificationFeedInteractor::class.java, { notificationFeedInteractor })
-         injector.registerProvider(ProfileInteractor::class.java, { profileInteractor })
+         injector.apply {
+            registerProvider(CirclesInteractor::class.java, { circlesInteractor })
+            registerProvider(FriendsInteractor::class.java, { friendsInteractor })
+            registerProvider(NotificationFeedInteractor::class.java, { notificationFeedInteractor })
+            registerProvider(ProfileInteractor::class.java, { profileInteractor })
 
-         injector.registerProvider(NotificationDelegate::class.java, { notificationDelegate })
-         injector.registerProvider(UserTimelineStorageDelegate::class.java, { userTimelineStorageDelegate })
-         injector.registerProvider(StartChatDelegate::class.java, { startChatDelegate })
+            registerProvider(NotificationDelegate::class.java, { notificationDelegate })
+            registerProvider(UserTimelineStorageDelegate::class.java, { userTimelineStorageDelegate })
+            registerProvider(StartChatDelegate::class.java, { mock() })
+
+            inject(presenter)
+         }
       }
    }
 }

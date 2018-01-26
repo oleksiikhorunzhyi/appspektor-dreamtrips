@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.User
 import com.worldventures.core.model.session.SessionHolder
@@ -9,60 +13,63 @@ import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
-import com.worldventures.dreamtrips.social.ui.bucketlist.model.CategoryItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetCategoriesCommand
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xit
-import org.mockito.ArgumentCaptor
 import rx.observers.TestSubscriber
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class BucketTabsPresenterSpec : PresenterBaseSpec({
+class BucketTabsPresenterSpec : PresenterBaseSpec(BucketTabsTestSuites()) {
 
-   describe("BucketTabsPresenter") {
+   class BucketTabsTestSuites : TestSuite<BucketTabsComponents>(BucketTabsComponents()) {
 
-      it("should set tabs") {
-         init()
+      override fun specs(): SpecBody.() -> Unit = {
 
-         presenter.setTabs()
+         with(components) {
+            describe("Bucket Tabs Presenter") {
 
-         val expectedList = listOf(BucketItem.BucketType.LOCATION, BucketItem.BucketType.ACTIVITY,
-               BucketItem.BucketType.DINING)
-         val argCaptor = argumentCaptor<List<BucketItem.BucketType>>()
-         verify(view).setTypes(argCaptor.capture())
-         verify(view).updateSelection()
+               it("should set tabs") {
+                  init()
+                  linkPresenterAndView()
 
-         val actualBucketTypesList = argCaptor.firstValue
+                  presenter.setTabs()
 
-         assertEquals(actualBucketTypesList.size, expectedList.size)
-         assertTrue(actualBucketTypesList.containsAll(expectedList) && expectedList.containsAll(actualBucketTypesList))
-      }
+                  val expectedList = listOf(BucketItem.BucketType.LOCATION, BucketItem.BucketType.ACTIVITY,
+                        BucketItem.BucketType.DINING)
+                  val argCaptor = argumentCaptor<List<BucketItem.BucketType>>()
+                  verify(view).setTypes(argCaptor.capture())
+                  verify(view).updateSelection()
 
-      it("should load bucket list") {
-         init(Contract.of(BucketListCommand::class.java).result(emptyList<BucketItem>()))
+                  val actualBucketTypesList = argCaptor.firstValue
 
-         val subscriber: TestSubscriber<BucketListCommand> = TestSubscriber()
-         bucketInteractor.bucketListActionPipe().observeSuccess().subscribe(subscriber)
-         presenter.loadBucketList()
+                  assertEquals(actualBucketTypesList.size, expectedList.size)
+                  assertTrue(actualBucketTypesList.containsAll(expectedList) && expectedList.containsAll(actualBucketTypesList))
+               }
 
-         subscriber.assertValueCount(1)
+               it("should load bucket list") {
+                  init(Contract.of(BucketListCommand::class.java).result(emptyList<BucketItem>()))
+
+                  val subscriber: TestSubscriber<BucketListCommand> = TestSubscriber()
+                  bucketInteractor.bucketListActionPipe().observeSuccess().subscribe(subscriber)
+                  presenter.loadBucketList()
+
+                  subscriber.assertValueCount(1)
+               }
+            }
+         }
       }
    }
 
-}) {
-   companion object {
+   class BucketTabsComponents : TestComponents<BucketTabsPresenter, BucketTabsPresenter.View>() {
+
       lateinit var bucketInteractor: BucketInteractor
-      lateinit var presenter: BucketTabsPresenter
-      lateinit var view: BucketTabsPresenter.View
-      val socialSnappy: SocialSnappyRepository = spy()
 
       fun init(contract: Contract? = null) {
          presenter = BucketTabsPresenter()
@@ -79,14 +86,12 @@ class BucketTabsPresenterSpec : PresenterBaseSpec({
 
          prepareInjector(makeSessionHolder()).apply {
             registerProvider(BucketInteractor::class.java, { bucketInteractor })
-            registerProvider(SocialSnappyRepository::class.java, { socialSnappy })
+            registerProvider(SocialSnappyRepository::class.java, { spy() })
             inject(presenter)
          }
-
-         presenter.takeView(view)
       }
 
-      fun makeSessionHolder(): SessionHolder {
+      private fun makeSessionHolder(): SessionHolder {
          val sessionHolder = mock<SessionHolder>()
          val user = User()
          user.id = 11

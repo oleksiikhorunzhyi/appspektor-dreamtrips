@@ -12,7 +12,7 @@ class GetMutualFriendsPaginationStorage : FifoKeyValueStorage<String, Pagination
       PaginatedStorage<PaginationCachedModel>, ActionStorage<PaginationCachedModel> {
 
    override fun get(params: CacheBundle?): PaginationCachedModel {
-      if (isRefresh(params)) save(params, PaginationCachedModel(1, true))
+      if (isRefresh(params)) save(params, PaginationCachedModel(1))
       return super.get(params)
    }
 

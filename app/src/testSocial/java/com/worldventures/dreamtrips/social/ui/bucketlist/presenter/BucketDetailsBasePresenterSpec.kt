@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
@@ -11,56 +14,35 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
-import org.jetbrains.spek.api.dsl.Spec
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.it
 
-abstract class BucketDetailsBasePresenterSpec<P: BucketDetailsBasePresenter<V, *>, V: BucketDetailsBasePresenter.View<*>,
-      T: BucketDetailsBasePresenterSpec.TestBody<P, V>>(testBody: T) : PresenterBaseSpec(testBody.getBody()) {
+abstract class BucketDetailsBasePresenterSpec(suite: BucketBaseDetailsTestSuite<BucketBaseDetailsComponents<out BucketDetailsBasePresenter<out BucketDetailsBasePresenter.View<*>, *>,
+      out BucketDetailsBasePresenter.View<*>>>) : PresenterBaseSpec(suite) {
 
-   abstract class TestBody<P: BucketDetailsBasePresenter<V, *>, V: BucketDetailsBasePresenter.View<*>> {
+   abstract class BucketBaseDetailsTestSuite<out C : BucketBaseDetailsComponents<out BucketDetailsBasePresenter<out BucketDetailsBasePresenter.View<*>, *>,
+         out BucketDetailsBasePresenter.View<*>>>(components: C) : TestSuite<C>(components) {
 
-      lateinit var presenter: P
-      lateinit var view: V
-      protected lateinit var bucketInfoHelper: BucketItemInfoHelper
-      protected lateinit var bucketInteractor: BucketInteractor
-      val socialSnappy = mock<SocialSnappyRepository>()
+      override fun specs(): SpecBody.() -> Unit = {
 
-      abstract fun describeTest(): String
-      abstract fun createPresenter(): P
-      abstract fun createView(): V
-      abstract fun onSetupInjector(injector: Injector, pipeCreator: SessionActionPipeCreator)
+         with(components) {
 
-      fun getBody(): Spec.() -> Unit {
-         return {
-            for (suite in getSuiteList()) {
-               suite.invoke(this)
-            }
-         }
-      }
-
-      fun getSuiteList(): List<Spec.() -> Unit> {
-         return listOf(getBaseTestSuite(), getMainTestSuite())
-      }
-
-      fun getBaseTestSuite(): Spec.() -> Unit {
-         return {
             it("should refresh view in onResume") {
-               onResumeTestSetup()
+               init()
+               linkPresenterAndView()
 
                presenter.onResume()
 
-               verify(view).setBucketItem(any())
-               verify(view).setStatus(any())
-               verify(view).setPeople(any())
-               verify(view).setTags(any())
-               verify(view).setTime(any())
+               verify(presenter).syncUI()
             }
 
             it("should properly sync ui") {
-               setup()
+               init()
+               linkPresenterAndView()
 
                presenter.syncUI()
 
+               val view = view
                verify(view).setBucketItem(any())
                verify(view).setStatus(any())
                verify(view).setPeople(any())
@@ -69,21 +51,15 @@ abstract class BucketDetailsBasePresenterSpec<P: BucketDetailsBasePresenter<V, *
             }
          }
       }
+   }
 
-      open fun onResumeTestSetup() {
-         setup()
-      }
+   abstract class BucketBaseDetailsComponents<P : BucketDetailsBasePresenter<V, *>, V : BucketDetailsBasePresenter.View<*>> :
+         PresenterBaseSpec.TestComponents<P, V>() {
 
-      open fun getMainTestSuite(): Spec.() -> Unit  = {}
+      val bucketInfoHelper: BucketItemInfoHelper = mock()
+      lateinit var bucketInteractor: BucketInteractor
 
-      fun setup(contract: Contract) {
-         setup(listOf(contract))
-      }
-
-      fun setup(contracts: List<Contract> = emptyList()) {
-         presenter = createPresenter()
-         view = createView()
-
+      fun init(contracts: List<Contract> = emptyList()) {
          val serviceBuilder = MockCommandActionService.Builder()
          for (contract in contracts) {
             serviceBuilder.addContract(contract)
@@ -93,23 +69,20 @@ abstract class BucketDetailsBasePresenterSpec<P: BucketDetailsBasePresenter<V, *
          val janet = Janet.Builder().addService(serviceBuilder.build()).build()
          val sessionPipeCreator = SessionActionPipeCreator(janet)
 
-         val injector = prepareInjector()
+         bucketInteractor = BucketInteractor(sessionPipeCreator)
+         whenever(bucketInfoHelper.getTime(any())).thenReturn("")
 
-         injector.apply {
-            bucketInteractor = BucketInteractor(sessionPipeCreator)
+         val injector = prepareInjector().apply {
             registerProvider(BucketInteractor::class.java, { bucketInteractor })
-
-            registerProvider(SocialSnappyRepository::class.java, { socialSnappy })
-            bucketInfoHelper = mock<BucketItemInfoHelper>()
-            whenever(bucketInfoHelper.getTime(any())).thenReturn("")
+            registerProvider(SocialSnappyRepository::class.java, { mock() })
             registerProvider(BucketItemInfoHelper::class.java, { bucketInfoHelper })
          }
 
-         onSetupInjector(injector, sessionPipeCreator)
-         injector.inject(presenter)
-
-         presenter.takeView(view)
+         onInit(injector, sessionPipeCreator)
       }
-   }
 
+      fun initWithContract(contract: Contract) = init(listOf(contract))
+
+      protected abstract fun onInit(injector: Injector, pipeCreator: SessionActionPipeCreator)
+   }
 }

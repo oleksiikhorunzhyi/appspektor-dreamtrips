@@ -39,7 +39,7 @@ open class ThreeSixtyVideosPresenter : VideoBasePresenter<ThreeSixtyVideosPresen
       loadVideos()
    }
 
-   private fun subscribeToVideosPipe() {
+   open fun subscribeToVideosPipe() {
       memberVideosInteractor.memberVideosPipe
             .observe()
             .compose(bindViewToMainComposer())
@@ -52,7 +52,7 @@ open class ThreeSixtyVideosPresenter : VideoBasePresenter<ThreeSixtyVideosPresen
                   })
    }
 
-   private fun fetchHeaders(categories: List<VideoCategory>) {
+   open fun fetchHeaders(categories: List<VideoCategory>) {
       headerInteractor.headerPipe
             .createObservableResult(DetermineHeadersCommand(HeaderType.TREESIXTY, categories))
             .flatMap { headerInteractor.sort360VideoPipe.createObservableResult(SortVideo360CategoriesCommand(it.result)) }

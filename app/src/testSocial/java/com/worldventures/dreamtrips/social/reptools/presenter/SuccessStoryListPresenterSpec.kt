@@ -1,6 +1,12 @@
 package com.worldventures.dreamtrips.social.reptools.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.anyOrNull
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory
@@ -13,65 +19,71 @@ import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.mockito.internal.verification.VerificationModeFactory
 
-class SuccessStoryListPresenterSpec: PresenterBaseSpec({
+class SuccessStoryListPresenterSpec : PresenterBaseSpec(SuccessStoryListTestSuite()) {
 
-   describe("Success stories list presenter") {
-      context("success response") {
-         beforeEachTest {
-            init(Contract.of(GetSuccessStoriesCommand::class.java).result(makeStubStories()))
-         }
+   class SuccessStoryListTestSuite : TestSuite<SuccessStoryListComponents>(SuccessStoryListComponents()) {
 
-         it("should set items and finish loading on response") {
-            presenter.takeView(view)
-            presenter.onResume()
+      override fun specs(): SpecBody.() -> Unit = {
 
-            verify(view).setItems(any())
-            verify(view).finishLoading()
-         }
+         with(components) {
+            describe("Success stories list presenter") {
 
-         it("should reload in onResume if there are no items") {
-            doReturn(0).whenever(view).itemsCount
-            presenter.takeView(view)
-            presenter.onResume()
+               context("success response") {
+                  beforeEachTest {
+                     init(Contract.of(GetSuccessStoriesCommand::class.java).result(makeStubStories()))
+                     linkPresenterAndView()
+                  }
 
-            verify(view).setItems(any())
-            verify(view).finishLoading()
-         }
+                  it("should set items and finish loading on response") {
+                     presenter.onResume()
 
-         it("should not reload in onResume if there are already some items") {
-            doReturn(55).whenever(view).itemsCount
+                     verify(view).setItems(any())
+                     verify(view).finishLoading()
+                  }
 
-            presenter.takeView(view)
-            presenter.onResume()
+                  it("should reload in onResume if there are no items") {
+                     val view = view
+                     doReturn(0).whenever(view).itemsCount
+                     presenter.takeView(view)
+                     presenter.onResume()
 
-            verify(view, never()).setItems(any())
-         }
-      }
+                     verify(view).setItems(any())
+                     verify(view).finishLoading()
+                  }
 
-      context("error response") {
-         it ("should handle error") {
-            init(BaseContract.of(GetSuccessStoriesCommand::class.java).exception(RuntimeException()))
-            doReturn(0).whenever(view).itemsCount
+                  it("should not reload in onResume if there are already some items") {
+                     doReturn(55).whenever(view).itemsCount
 
-            presenter.takeView(view)
-            presenter.onResume()
+                     presenter.takeView(view)
+                     presenter.onResume()
 
-            verify(view).informUser(anyOrNull<String>())
+                     verify(view, never()).setItems(any())
+                  }
+               }
+
+               context("error response") {
+                  it("should handle error") {
+                     init(BaseContract.of(GetSuccessStoriesCommand::class.java).exception(RuntimeException()))
+                     linkPresenterAndView()
+                     doReturn(0).whenever(view).itemsCount
+
+                     presenter.takeView(view)
+                     presenter.onResume()
+
+                     verify(view).informUser(anyOrNull<String>())
+                  }
+               }
+            }
          }
       }
    }
 
-}) {
-   companion object {
-      lateinit var presenter: SuccessStoryListPresenter
-      lateinit var view: SuccessStoryListPresenter.View
-
-      lateinit var successStoriesInteractor: SuccessStoriesInteractor
+   class SuccessStoryListComponents : TestComponents<SuccessStoryListPresenter, SuccessStoryListPresenter.View>() {
 
       fun init(contract: Contract) {
          presenter = SuccessStoryListPresenter()
@@ -82,18 +94,18 @@ class SuccessStoryListPresenterSpec: PresenterBaseSpec({
             addContract(contract)
          }.build()
          val janet = Janet.Builder().addService(service).build()
-         successStoriesInteractor = SuccessStoriesInteractor(SessionActionPipeCreator(janet))
+         val successStoriesInteractor = SuccessStoriesInteractor(SessionActionPipeCreator(janet))
 
-         val injector = prepareInjector()
-         injector.registerProvider(StoryLikedEventDelegate::class.java, { StoryLikedEventDelegate() })
-         injector.registerProvider(SuccessStoriesInteractor::class.java, { successStoriesInteractor })
-         injector.inject(presenter)
-         presenter.onInjected()
+         prepareInjector().apply {
+            registerProvider(StoryLikedEventDelegate::class.java, { StoryLikedEventDelegate() })
+            registerProvider(SuccessStoriesInteractor::class.java, { successStoriesInteractor })
+            inject(presenter)
+         }
       }
 
       fun makeStubStories() = mutableListOf(makeStubStory(1), makeStubStory(2))
 
-      fun makeStubStory(id: Int): SuccessStory {
+      private fun makeStubStory(id: Int): SuccessStory {
          return SuccessStory(
                id = id,
                title = "title $id",

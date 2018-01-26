@@ -12,8 +12,8 @@ import com.worldventures.core.model.User
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
-import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
+import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsStorageInteractor
@@ -28,88 +28,82 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
-import org.jetbrains.spek.api.dsl.Spec
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.mockito.internal.verification.VerificationModeFactory
 
-class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
+class RequestPresenterSpec : PresenterBaseSpec(RequestTestSuite()) {
 
-   class RequestPresenterTestBody : TestBody<RequestsPresenter.View, RequestsPresenter> {
-      private lateinit var presenter: RequestsPresenter
-      private lateinit var view: RequestsPresenter.View
-      private lateinit var friendsInteractor: FriendsInteractor
-      private lateinit var fsInteractor: FriendsStorageInteractor
-      private lateinit var profileInteractor: ProfileInteractor
-      private lateinit var circlesInteractor: CirclesInteractor
-      private val snappyRepository: SnappyRepository = mock()
-      private val circles = mockCircles()
-      private val user = mockUser(100500)
-      private val requests = mockUsersList()
+   class RequestTestSuite : TestSuite<RequestComponents>(RequestComponents()) {
 
-      private fun createTestSuit(): SpecBody.() -> Unit = {
-         describe("Refresh data") {
-            it("Presenter should reload data") {
-               presenter.takeView(view)
-               verify(presenter).reloadRequests()
-            }
+      override fun specs(): SpecBody.() -> Unit = {
 
-            it("Should notify view with next part of data") {
-               presenter.takeView(view)
-               presenter.loadNext()
-               val expectedCount = requests.size + EXPECTED_HEADERS_COUNT
-               verify(view, VerificationModeFactory.times(2)).itemsLoaded(argWhere {
-                  it.size == expectedCount
-               }, any())
-            }
-         }
+         with(components) {
+            describe("Request Presenter") {
 
-         describe("Act on request") {
-            it("Should notify view to show circle picker after accept all") {
-               presenter.takeView(view)
-               presenter.acceptAllRequests()
-               verify(view).showAddFriendDialog(argWhere { it.size == circles.size }, argWhere { true })
-            }
+               beforeEachTest {
+                  init()
+                  linkPresenterAndView()
+               }
 
-            it("Should notify view to show circle picker after accept one") {
-               presenter.takeView(view)
-               presenter.acceptRequest(user)
-               verify(view).showAddFriendDialog(argWhere { it.size == circles.size }, argWhere { true })
-            }
+               describe("Refresh data") {
+                  it("Presenter should reload data") {
+                     verify(presenter).reloadRequests()
+                  }
 
-            it("Should notify view to refresh data after reject request") {
-               presenter.takeView(view)
-               presenter.rejectRequest(user)
-               verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
-            }
+                  it("Should notify view with next part of data") {
+                     presenter.loadNext()
+                     val expectedCount = requests.size + EXPECTED_HEADERS_COUNT
+                     verify(view, VerificationModeFactory.times(2)).itemsLoaded(argWhere {
+                        it.size == expectedCount
+                     }, any())
+                  }
+               }
 
-            it("Should notify view to refresh data after cancel request") {
-               presenter.takeView(view)
-               presenter.cancelRequest(user)
-               verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
-            }
+               describe("Act on request") {
+                  it("Should notify view to show circle picker after accept all") {
+                     presenter.acceptAllRequests()
+                     verify(view).showAddFriendDialog(argWhere { it.size == circles.size }, argWhere { true })
+                  }
 
-            it("Should notify view to refresh data after hide request") {
-               presenter.takeView(view)
-               presenter.hideRequest(user)
-               verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
+                  it("Should notify view to show circle picker after accept one") {
+                     presenter.acceptRequest(user)
+                     verify(view).showAddFriendDialog(argWhere { it.size == circles.size }, argWhere { true })
+                  }
+
+                  it("Should notify view to refresh data after reject request") {
+                     presenter.rejectRequest(user)
+                     verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
+                  }
+
+                  it("Should notify view to refresh data after cancel request") {
+                     presenter.cancelRequest(user)
+                     verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
+                  }
+
+                  it("Should notify view to refresh data after hide request") {
+                     presenter.hideRequest(user)
+                     verify(view, VerificationModeFactory.times(2)).itemsLoaded(any(), any())
+                  }
+               }
             }
          }
       }
+   }
 
-      override fun createTestBody(): Spec.() -> Unit = {
-         describe("RequestPresenterTestBody", {
-            beforeEachTest { init() }
-            createTestSuits().forEach { it.invoke(this) }
-         })
-      }
+   class RequestComponents : TestComponents<RequestsPresenter, RequestsPresenter.View>() {
 
-      override fun createTestSuits(): List<SpecBody.() -> Unit> = listOf(createTestSuit())
+      val EXPECTED_HEADERS_COUNT = 2
+      private val USERS_PER_PAGE = 10
 
-      override fun init() {
-         presenter = mockPresenter()
-         view = mockView()
+      val circles = mockCircles()
+      val user = mockUser(100500)
+      val requests = mockUsersList()
+
+      fun init() {
+         presenter = spy(RequestsPresenter())
+         view = mock()
 
          val service = MockCommandActionService.Builder().apply {
             actionService(CommandActionService())
@@ -122,19 +116,24 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
          }.build()
          val janet = Janet.Builder().addService(service).build()
 
-         friendsInteractor = FriendsInteractor(SessionActionPipeCreator(janet))
-         fsInteractor = FriendsStorageInteractor(SessionActionPipeCreator(janet))
-         profileInteractor = ProfileInteractor(SessionActionPipeCreator(janet), mockSessionHolder())
-         circlesInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
+         val friendsInteractor = FriendsInteractor(SessionActionPipeCreator(janet))
+         val fsInteractor = FriendsStorageInteractor(SessionActionPipeCreator(janet))
+         val profileInteractor = ProfileInteractor(SessionActionPipeCreator(janet), mockSessionHolder())
+         val circlesInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
 
          whenever(context.getString(any())).thenReturn("title")
 
-         prepareInjection()
+         prepareInjector().apply {
+            registerProvider(FriendsInteractor::class.java) { friendsInteractor }
+            registerProvider(CirclesInteractor::class.java) { circlesInteractor }
+            registerProvider(ProfileInteractor::class.java) { profileInteractor }
+            registerProvider(SnappyRepository::class.java) { mock() }
+            registerProvider(RequestsStorageDelegate::class.java) {
+               RequestsStorageDelegate(friendsInteractor, fsInteractor, circlesInteractor, profileInteractor)
+            }
+            inject(presenter)
+         }
       }
-
-      override fun mockPresenter(): RequestsPresenter = spy(RequestsPresenter())
-
-      override fun mockView(): RequestsPresenter.View = mock()
 
       private fun mockCircles(): List<Circle> {
          val circleFriends = Circle.withTitle("Friends")
@@ -161,19 +160,6 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
          }.toList()
       }
 
-      override fun prepareInjection(): Injector {
-         return prepareInjector().apply {
-            registerProvider(FriendsInteractor::class.java) { friendsInteractor }
-            registerProvider(CirclesInteractor::class.java) { circlesInteractor }
-            registerProvider(ProfileInteractor::class.java) { profileInteractor }
-            registerProvider(SnappyRepository::class.java) { snappyRepository }
-            registerProvider(RequestsStorageDelegate::class.java) {
-               RequestsStorageDelegate(friendsInteractor, fsInteractor, circlesInteractor, profileInteractor)
-            }
-            inject(presenter)
-         }
-      }
-
       private fun mockSessionHolder(): SessionHolder {
          val sessionHolder: SessionHolder = mock()
          val userSession: UserSession = mock()
@@ -181,11 +167,6 @@ class RequestPresenterSpec : AbstractPresenterSpec(RequestPresenterTestBody()) {
          whenever(sessionHolder.get()).thenReturn(Optional.of(userSession))
          whenever(userSession.user()).thenReturn(user)
          return sessionHolder
-      }
-
-      companion object {
-         private const val USERS_PER_PAGE = 10
-         private const val EXPECTED_HEADERS_COUNT = 2
       }
    }
 }

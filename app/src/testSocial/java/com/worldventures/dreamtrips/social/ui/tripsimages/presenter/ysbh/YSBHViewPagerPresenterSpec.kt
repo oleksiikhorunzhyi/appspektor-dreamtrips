@@ -14,98 +14,119 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class YSBHViewPagerPresenterSpec : PresenterBaseSpec ({
+class YSBHViewPagerPresenterSpec : PresenterBaseSpec(YSBHViewPagerTestSuite()) {
 
-   describe("YsbhViewPagerPresenter") {
+   class YSBHViewPagerTestSuite : TestSuite<YSBHViewPagerComponents>(YSBHViewPagerComponents()) {
 
-      it("should init fragments correctly") {
-         val selectedPosition = 1
-         val args = stubArgs(stubPhotos(), currentItemPosition = selectedPosition)
-         setup(args, Contract.of(GetYSBHPhotosCommand::class.java).result(emptyList<YSBHPhoto>()))
+      override fun specs(): SpecBody.() -> Unit = {
 
-         presenter.initItems()
+         with(components) {
+            describe("Ysbh View Pager Presenter") {
 
-         verify(view).setItems(any())
-         verify(view).setSelectedPosition(selectedPosition)
-      }
+               it("should init fragments correctly") {
+                  val selectedPosition = 1
+                  val args = stubArgs(stubPhotos(), currentItemPosition = selectedPosition)
+                  val contract = Contract.of(GetYSBHPhotosCommand::class.java).result(emptyList<YSBHPhoto>())
+                  init(args, contract)
+                  linkPresenterAndView()
 
-      it("should subscribe to new items and refresh view on success, last page is not reached") {
-         val stubbedPhotos = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
-         setup(stubArgs(stubPhotos()), Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotos))
+                  presenter.initItems()
 
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(1))
+                  verify(view).setItems(any())
+                  verify(view).setSelectedPosition(selectedPosition)
+               }
 
-         assertFalse(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotos))
-         assert(presenter.currentItems.size == stubbedPhotos.size)
-      }
+               it("should subscribe to new items and refresh view on success, last page is not reached") {
+                  val stubbedPhotos = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
+                  val contract = Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotos)
+                  init(stubArgs(stubPhotos()), contract)
+                  linkPresenterAndView()
 
-      it("should subscribe to new items and refresh view on success, last page is reached") {
-         val stubbedPhotos = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE - 1)
-         setup(stubArgs(stubPhotos()), Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotos))
+                  val presenter = presenter
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(1))
 
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(1))
+                  assertFalse(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotos))
+                  assert(presenter.currentItems.size == stubbedPhotos.size)
+               }
 
-         assertTrue(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotos))
-         assert(presenter.currentItems.size == stubbedPhotos.size)
-      }
+               it("should subscribe to new items and refresh view on success, last page is reached") {
+                  val stubbedPhotos = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE - 1)
+                  val contract = Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotos)
+                  init(stubArgs(stubPhotos()), contract)
+                  linkPresenterAndView()
 
-      it ("should load next page and refresh view, last page is not reached") {
-         val stubbedPhotosPage1 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
-         val stubbedPhotosPage2 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
-         val stubbedPhotosPage1And2 = arrayListOf<YSBHPhoto>()
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
-         setup(stubArgs(), Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotosPage2))
+                  val presenter = presenter
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(1))
 
-         presenter.currentItems = ArrayList(stubbedPhotosPage1)
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(2))
+                  assertTrue(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotos))
+                  assert(presenter.currentItems.size == stubbedPhotos.size)
+               }
 
-         assertFalse(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
-         assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
-      }
+               it("should load next page and refresh view, last page is not reached") {
+                  val stubbedPhotosPage1 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
+                  val stubbedPhotosPage2 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
+                  val stubbedPhotosPage1And2 = arrayListOf<YSBHPhoto>()
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
+                  val contract = Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotosPage2)
+                  init(stubArgs(), contract)
+                  linkPresenterAndView()
 
-      it ("should load next page and refresh view, last page is reached") {
-         val stubbedPhotosPage1 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
-         val stubbedPhotosPage2 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE - 1)
-         val stubbedPhotosPage1And2 = arrayListOf<YSBHPhoto>()
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
-         stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
-         setup(stubArgs(), Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotosPage2))
+                  val presenter = presenter
+                  presenter.currentItems = ArrayList(stubbedPhotosPage1)
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(2))
 
-         presenter.currentItems = ArrayList(stubbedPhotosPage1)
-         presenter.subscribeToNewItems()
-         tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(2))
+                  assertFalse(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
+                  assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
+               }
 
-         assertTrue(presenter.lastPageReached)
-         assertFalse(presenter.loading)
-         assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
-         assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
+               it("should load next page and refresh view, last page is reached") {
+                  val stubbedPhotosPage1 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE)
+                  val stubbedPhotosPage2 = stubPhotos(size = GetYSBHPhotosCommand.PER_PAGE - 1)
+                  val stubbedPhotosPage1And2 = arrayListOf<YSBHPhoto>()
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage1)
+                  stubbedPhotosPage1And2.addAll(stubbedPhotosPage2)
+                  val contract = Contract.of(GetYSBHPhotosCommand::class.java).result(stubbedPhotosPage2)
+                  init(stubArgs(), contract)
+                  linkPresenterAndView()
+
+                  val presenter = presenter
+                  presenter.currentItems = ArrayList(stubbedPhotosPage1)
+                  presenter.subscribeToNewItems()
+                  tripImagesInteractor.ysbhPhotosPipe.send(GetYSBHPhotosCommand.commandForPage(2))
+
+                  assertTrue(presenter.lastPageReached)
+                  assertFalse(presenter.loading)
+                  assert(presenter.currentItems.containsAll(stubbedPhotosPage1And2))
+                  assert(presenter.currentItems.size == stubbedPhotosPage1And2.size)
+               }
+            }
+         }
       }
    }
-}) {
-   companion object {
 
-      lateinit var presenter: YSBHViewPagerPresenter
-      lateinit var view: BaseImageViewPagerPresenter.View
+   class YSBHViewPagerComponents : TestComponents<YSBHViewPagerPresenter, BaseImageViewPagerPresenter.View>() {
 
       lateinit var tripImagesInteractor: TripImagesInteractor
 
-      fun setup(args: YsbhPagerArgs, contract: Contract? = null) {
+      fun init(args: YsbhPagerArgs, contract: Contract? = null) {
          presenter = YSBHViewPagerPresenter(args)
+         view = mock()
 
          val service = MockCommandActionService.Builder().apply {
             actionService(CommandActionService())
@@ -117,17 +138,14 @@ class YSBHViewPagerPresenterSpec : PresenterBaseSpec ({
          tripImagesInteractor = TripImagesInteractor(sessionPipeCreator)
 
          prepareInjector().apply {
-            registerProvider(TripImagesInteractor::class.java, { tripImagesInteractor })
+            registerProvider(TripImagesInteractor::class.java, { TripImagesInteractor(sessionPipeCreator) })
             inject(presenter)
          }
-
-         view = mock()
-         presenter.takeView(view)
       }
 
       fun stubArgs(list: MutableList<YSBHPhoto> = mutableListOf(),
                    lastPageReached: Boolean = false,
-                   currentItemPosition: Int = 0) : YsbhPagerArgs {
+                   currentItemPosition: Int = 0): YsbhPagerArgs {
          return YsbhPagerArgs(list, lastPageReached, currentItemPosition)
       }
    }

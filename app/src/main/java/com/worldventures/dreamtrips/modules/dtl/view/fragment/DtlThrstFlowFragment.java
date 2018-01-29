@@ -83,7 +83,7 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
                   .containerId(R.id.container_main)
                   .backStackEnabled(true)
                   .clearBackStack(true)
-                  .data(new ThrstPaymentBundle(getArgs().getMerchant(), isPaid, response.billTotal(),
+                  .data(new ThrstPaymentBundle(response.transactionId(), getArgs().getMerchant(), isPaid, response.billTotal(),
                         response.pointsAmount(), response.totalPoints(), response.billImagePath(), response.subTotal(),
                         response.tax(), response.tip()))
                   .build()

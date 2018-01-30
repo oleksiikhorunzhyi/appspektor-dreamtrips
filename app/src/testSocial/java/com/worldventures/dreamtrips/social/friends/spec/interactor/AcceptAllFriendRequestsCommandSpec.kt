@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.friends.spec.interactor
 
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.CacheResultWrapper
+import com.worldventures.janet.cache.CacheResultWrapper
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor

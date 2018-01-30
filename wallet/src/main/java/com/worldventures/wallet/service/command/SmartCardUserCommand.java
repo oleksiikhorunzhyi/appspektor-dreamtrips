@@ -1,8 +1,7 @@
 package com.worldventures.wallet.service.command;
 
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 
 import io.techery.janet.ActionHolder;
@@ -52,8 +51,6 @@ public final class SmartCardUserCommand extends Command<SmartCardUser> implement
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder()
-            .saveToCache(save)
-            .build();
+      return new CacheOptions(true, save, true, null);
    }
 }

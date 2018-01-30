@@ -1,20 +1,18 @@
-package com.worldventures.core.janet.cache.storage;
+package com.worldventures.janet.cache.storage;
 
-import android.support.annotation.Nullable;
-
-import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundle;
 
 public class MemoryStorage<T> implements Storage<T>, ClearableStorage {
 
    private volatile T data;
 
    @Override
-   public void save(@Nullable CacheBundle bundle, T data) {
+   public void save(CacheBundle bundle, T data) {
       this.data = data;
    }
 
    @Override
-   public T get(@Nullable CacheBundle bundle) {
+   public T get(CacheBundle bundle) {
       return data;
    }
 

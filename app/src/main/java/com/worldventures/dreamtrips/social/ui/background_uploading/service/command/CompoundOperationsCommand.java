@@ -1,9 +1,8 @@
 package com.worldventures.dreamtrips.social.ui.background_uploading.service.command;
 
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +32,7 @@ public abstract class CompoundOperationsCommand extends Command<List<PostCompoun
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder()
-            .build();
+      return new CacheOptions();
    }
 
    public static CompoundOperationsCommand compoundOperationsChanged(List<PostCompoundOperationModel> updatedModels) {

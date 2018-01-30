@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.di.friends;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.social.service.friends.storage.IncomingRequestsCountStorage;
 import com.worldventures.dreamtrips.social.service.friends.storage.RequestsStorage;
 import com.worldventures.dreamtrips.social.service.friends.storage.UserPaginationStorage;

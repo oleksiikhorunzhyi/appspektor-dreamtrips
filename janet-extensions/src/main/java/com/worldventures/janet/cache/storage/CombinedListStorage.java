@@ -1,8 +1,6 @@
-package com.worldventures.core.janet.cache.storage;
+package com.worldventures.janet.cache.storage;
 
-import android.support.annotation.Nullable;
-
-import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundle;
 
 import java.util.List;
 
@@ -17,13 +15,13 @@ public abstract class CombinedListStorage<T> implements Storage<List<T>>, Cleara
    }
 
    @Override
-   public void save(@Nullable CacheBundle params, List<T> data) {
+   public void save(CacheBundle params, List<T> data) {
       memoryStorage.save(params, data);
       diskStorage.save(params, data);
    }
 
    @Override
-   public List<T> get(@Nullable CacheBundle params) {
+   public List<T> get(CacheBundle params) {
       List<T> data = memoryStorage.get(params);
       if (data == null || data.isEmpty()) {
          data = diskStorage.get(params);

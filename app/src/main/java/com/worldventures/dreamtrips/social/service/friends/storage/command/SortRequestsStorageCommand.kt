@@ -1,13 +1,12 @@
 package com.worldventures.dreamtrips.social.service.friends.storage.command
 
-import com.worldventures.core.janet.cache.CacheBundleImpl
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
-import com.worldventures.core.janet.cache.storage.PaginatedStorage
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.social.service.friends.model.AcceptanceHeaderModel
 import com.worldventures.dreamtrips.social.service.friends.model.RequestHeaderModel
+import com.worldventures.janet.cache.CacheBundleImpl
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
+import com.worldventures.janet.cache.storage.PaginatedStorage
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
@@ -58,8 +57,7 @@ class SortRequestsStorageCommand(private val isRefresh: Boolean
       incomingCount = cache ?: 0
    }
 
-   override fun getCacheOptions(): CacheOptions {
-      return ImmutableCacheOptions.builder()
-            .params(CacheBundleImpl().apply { put(PaginatedStorage.BUNDLE_REFRESH, isRefresh) }).build()
-   }
+   override fun getCacheOptions() = CacheOptions(params = CacheBundleImpl().apply {
+      put(PaginatedStorage.BUNDLE_REFRESH, isRefresh)
+   })
 }

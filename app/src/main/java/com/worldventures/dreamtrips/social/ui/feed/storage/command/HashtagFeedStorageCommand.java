@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.social.ui.feed.storage.command;
 
-import com.worldventures.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.storage.storage.HashtagFeedStorage;
+import com.worldventures.janet.cache.CacheOptions;
 
 import io.techery.janet.command.annotations.CommandAction;
 
@@ -20,7 +20,7 @@ public class HashtagFeedStorageCommand extends FeedItemsStorageBaseCommand {
    @Override
    public CacheOptions getCacheOptions() {
       CacheOptions cacheOptions = super.getCacheOptions();
-      cacheOptions.params().put(HashtagFeedStorage.BUNDLE_KEY_VALUE, hashtag);
+      cacheOptions.getParams().put(HashtagFeedStorage.BUNDLE_KEY_VALUE, hashtag);
       return cacheOptions;
    }
 }

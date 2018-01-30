@@ -1,6 +1,6 @@
 package com.worldventures.wallet.di;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.wallet.domain.storage.WalletStorage;
 import com.worldventures.wallet.domain.storage.action.AboutSmartCardDataActionStorage;
 import com.worldventures.wallet.domain.storage.action.AddressWithPlacesActionStorage;

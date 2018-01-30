@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.service.storage;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.ClearableStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.ClearableStorage;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.UploadPhotoControllerCommand;

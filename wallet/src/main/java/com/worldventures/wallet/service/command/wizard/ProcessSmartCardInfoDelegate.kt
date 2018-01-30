@@ -9,15 +9,14 @@ import com.worldventures.wallet.domain.entity.SmartCardDetails
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.SmartCardUserPhone
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto
-import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand
+import com.worldventures.wallet.service.command.SmartCardUserCommand
 import io.techery.janet.Janet
 import io.techery.mappery.MapperyContext
 import rx.Observable
 
 @Suppress("UnsafeCallOnNullableType")
 internal class ProcessSmartCardInfoDelegate(
-      private val walletStorage: WalletStorage,
       private val janetWallet: Janet,
       private val mappery: MapperyContext) {
 
@@ -57,10 +56,10 @@ internal class ProcessSmartCardInfoDelegate(
    }
 
    private fun save(result: Pair<SmartCard, SmartCardUser>): Observable<Void> {
-      walletStorage.saveSmartCardUser(result.second)
-      //saving smart card
       return janetWallet.createPipe(ActiveSmartCardCommand::class.java)
             .createObservableResult(ActiveSmartCardCommand(result.first))
+            .flatMap { janetWallet.createPipe(SmartCardUserCommand::class.java )
+                  .createObservableResult(SmartCardUserCommand.save(result.second)) }
             .map { null }
    }
 

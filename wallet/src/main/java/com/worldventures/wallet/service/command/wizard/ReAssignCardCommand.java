@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.api.smart_card.user_association.UpdateDevice
 import com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardInfo;
 import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.record.SyncRecordsStatus;
-import com.worldventures.wallet.domain.storage.WalletStorage;
 import com.worldventures.wallet.service.RecordInteractor;
 import com.worldventures.wallet.service.SystemPropertiesProvider;
 import com.worldventures.wallet.service.command.record.SyncRecordStatusCommand;
@@ -27,7 +26,6 @@ public class ReAssignCardCommand extends Command<Void> implements InjectableActi
    @Inject RecordInteractor recordInteractor;
    @Inject @Named(JANET_WALLET) Janet janetWallet;
    @Inject SystemPropertiesProvider systemPropertiesProvider;
-   @Inject WalletStorage walletStorage;
    @Inject MapperyContext mappery;
 
    private final String scId;
@@ -39,7 +37,7 @@ public class ReAssignCardCommand extends Command<Void> implements InjectableActi
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       updateDeviceId()
-            .flatMap(smartCardInfo -> new ProcessSmartCardInfoDelegate(walletStorage, janetWallet, mappery)
+            .flatMap(smartCardInfo -> new ProcessSmartCardInfoDelegate(janetWallet, mappery)
                   .processSmartCardInfo(smartCardInfo))
             .subscribe(result -> {
                recordInteractor.syncRecordStatusPipe() // set default value for this flow

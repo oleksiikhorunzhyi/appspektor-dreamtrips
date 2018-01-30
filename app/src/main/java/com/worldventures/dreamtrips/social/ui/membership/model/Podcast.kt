@@ -18,6 +18,6 @@ data class Podcast(var title: String? = null,
                    var speaker: String? = null,
                    var cachedModel: CachedModel? = null) {
 
-   override fun equals(other: Any?) = (other !is Podcast) || this.fileUrl.equals(other.fileUrl)
+   override fun equals(other: Any?) = (other is Podcast) && this.fileUrl.equals(other.fileUrl)
 
 }

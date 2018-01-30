@@ -1,11 +1,11 @@
 package com.worldventures.core.service.command;
 
 import com.worldventures.core.R;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.model.Status;
 import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
 import com.worldventures.core.service.DownloadFileInteractor;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ public class DownloadCachedModelCommand extends CachedEntityCommand implements I
 
    // TODO We must send min progress > 0 as view level determines is entity is NOT in progress
    // if entity is not failed and progress is 0.
-   public static final int PROGRESS_START_MIN = 1;
+   private static final int PROGRESS_START_MIN = 1;
 
    private File file;
 
@@ -42,16 +42,17 @@ public class DownloadCachedModelCommand extends CachedEntityCommand implements I
             .createObservable(downloadFileCommand = new DownloadFileCommand(file, cachedModel.getUrl()))
             .onBackpressureLatest()
             .subscribe(new ActionStateSubscriber<DownloadFileCommand>()
-                  .onStart(this::onStart)
+                  .onStart(successCommand -> onStart(callback))
                   .onSuccess(successCommand -> onSuccess(callback))
                   .onFail((failedCommand, throwable) -> onFail(callback, throwable))
                   .onProgress((commandInProgress, progress) -> onProgress(callback, progress)));
    }
 
-   private void onStart(DownloadFileCommand command) {
+   private void onStart(Command.CommandCallback<CachedModel> callback) {
       cachedModel.setCacheStatus(Status.IN_PROGRESS);
       cachedModel.setProgress(PROGRESS_START_MIN);
       db.saveDownloadMediaModel(cachedModel);
+      callback.onProgress(PROGRESS_START_MIN);
    }
 
    private void onSuccess(Command.CommandCallback<CachedModel> callback) {

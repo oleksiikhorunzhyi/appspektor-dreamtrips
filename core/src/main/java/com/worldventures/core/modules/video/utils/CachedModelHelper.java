@@ -1,6 +1,5 @@
 package com.worldventures.core.modules.video.utils;
 
-
 import android.os.Environment;
 
 import com.worldventures.core.model.CachedModel;
@@ -21,11 +20,13 @@ public class CachedModelHelper {
    }
 
    public boolean isCachedPodcast(CachedModel cachedModel) {
-      return new File(getFileForStorage(Environment.DIRECTORY_PODCASTS, cachedModel.getUrl())).exists() && cachedModel.getProgress() == 100;
+      return new File(getPodcastPath(cachedModel)).exists() && cachedModel.getProgress() == 100;
    }
 
-   public String getPodcastPath(CachedModel entity) {
-      return getFileForStorage(Environment.DIRECTORY_PODCASTS, entity.getUrl());
+   public String getPodcastPath(CachedModel cachedModel) {
+      File podcastsPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS);
+      podcastsPath.mkdirs();
+      return podcastsPath + File.separator + getFileName(cachedModel.getUrl());
    }
 
    public String getFilePath(String url) {
@@ -34,12 +35,6 @@ public class CachedModelHelper {
 
    public String getExternalFilePath(String url) {
       return filePathProvider.getExternalCacheDir() + File.separator + getFileName(url);
-   }
-
-   public String getFileForStorage(String type, String url) {
-      File podcastsPath = Environment.getExternalStoragePublicDirectory(type);
-      podcastsPath.mkdirs();
-      return podcastsPath + File.separator + getFileName(url);
    }
 
    public String getFileName(String url) {

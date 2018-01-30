@@ -4,16 +4,15 @@ import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.locations.LocationsHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.comparator.LocationComparator;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.LocationsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.LocationsActionCreator;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +83,7 @@ public class SearchLocationAction extends CommandWithError<List<DtlLocation>> im
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().saveToCache(needApiRequest()).build();
+      return new CacheOptions(true, needApiRequest(), true, null);
    }
 
    private boolean needApiRequest() {

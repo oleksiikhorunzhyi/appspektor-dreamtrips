@@ -2,16 +2,15 @@ package com.worldventures.dreamtrips.modules.common.command;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +77,6 @@ public class TripsFilterDataCommand extends CommandWithError<CachedTripFilters>
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return new CacheOptions();
    }
 }

@@ -5,7 +5,7 @@ import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.storage.ActionStorage
 import com.worldventures.core.model.EntityStateHolder
 import com.worldventures.core.model.EntityStateHolder.State
 import com.worldventures.core.model.EntityStateHolder.create

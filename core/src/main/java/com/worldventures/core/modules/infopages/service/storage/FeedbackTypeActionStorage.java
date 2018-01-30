@@ -3,9 +3,9 @@ package com.worldventures.core.modules.infopages.service.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.core.modules.infopages.model.FeedbackType;
 import com.worldventures.core.modules.infopages.service.command.GetFeedbackCommand;
 

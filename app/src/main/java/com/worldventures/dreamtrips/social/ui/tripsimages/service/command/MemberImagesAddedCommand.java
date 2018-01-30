@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.TripImageStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +48,6 @@ public class MemberImagesAddedCommand extends Command<List<BaseMediaEntity>> imp
       cacheBundle.put(TripImageStorage.RELOAD, false);
       cacheBundle.put(TripImageStorage.LOAD_MORE, false);
       cacheBundle.put(TripImageStorage.REMOVE_ITEMS, false);
-      return ImmutableCacheOptions.builder()
-            .params(cacheBundle)
-            .restoreFromCache(false)
-            .build();
+      return new CacheOptions(false, true, true, cacheBundle);
    }
 }

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.di;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.MemoryStorage;
 import com.worldventures.core.modules.infopages.service.storage.DocumentsDiskStorage;
 import com.worldventures.core.modules.infopages.service.storage.DocumentsStorage;
 import com.worldventures.core.modules.infopages.service.storage.FeedbackTypeActionStorage;

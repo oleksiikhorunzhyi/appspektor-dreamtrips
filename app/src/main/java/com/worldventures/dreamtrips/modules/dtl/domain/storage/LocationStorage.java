@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.domain.storage;
 
 import android.support.v4.util.Pair;
 
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
 

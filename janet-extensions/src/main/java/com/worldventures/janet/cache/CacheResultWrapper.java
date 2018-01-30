@@ -1,7 +1,7 @@
-package com.worldventures.core.janet.cache;
+package com.worldventures.janet.cache;
 
-import com.worldventures.core.janet.cache.storage.MemoryStorage;
-import com.worldventures.core.janet.cache.storage.Storage;
+import com.worldventures.janet.cache.storage.MemoryStorage;
+import com.worldventures.janet.cache.storage.Storage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,15 +32,15 @@ public class CacheResultWrapper extends ActionServiceWrapper {
          CachedAction action = (CachedAction) holder.action();
          CacheOptions options = action.getCacheOptions();
 
-         if (options.restoreFromCache()) {
+         if (options.getRestoreFromCache()) {
             Class actionClass = holder.action().getClass();
             Object data;
             try {
                lock.readLock().lock();
-               data = getStorage(actionClass).get(options.params());
+               data = getStorage(actionClass).get(options.getParams());
                if (data != null) {
                   action.onRestore(holder, data);
-                  return !options.sendAfterRestore();
+                  return !options.getSendAfterRestore();
                }
             } catch (Throwable throwable) {
                throw new JanetException("Action cannot be restored", throwable);
@@ -74,10 +74,10 @@ public class CacheResultWrapper extends ActionServiceWrapper {
          CachedAction action = (CachedAction) holder.action();
          CacheOptions options = action.getCacheOptions();
 
-         if (options.saveToCache()) {
+         if (options.getSaveToCache()) {
             try {
                lock.writeLock().lock();
-               getStorage(holder.action().getClass()).save(options.params(), action.getCacheData());
+               getStorage(holder.action().getClass()).save(options.getParams(), action.getCacheData());
             } finally {
                lock.writeLock().unlock();
             }

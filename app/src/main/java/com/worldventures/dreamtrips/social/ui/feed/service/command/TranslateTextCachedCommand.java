@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.messenger.api.TranslationInteractor;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
 import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
@@ -63,7 +62,6 @@ public class TranslateTextCachedCommand extends Command<String> implements Cache
       CacheBundle bundle = new CacheBundleImpl();
       bundle.put(ORIGINAL_TEXT, originalText);
       bundle.put(LANGUAGE_TO, languageTo);
-
-      return ImmutableCacheOptions.builder().params(bundle).build();
+      return new CacheOptions(true, true, true, bundle);
    }
 }

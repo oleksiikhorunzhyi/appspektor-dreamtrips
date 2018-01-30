@@ -1,8 +1,6 @@
-package com.worldventures.core.janet.cache.storage;
+package com.worldventures.janet.cache.storage;
 
-import android.support.annotation.Nullable;
-
-import com.worldventures.core.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +12,7 @@ public abstract class KeyValuePaginatedDiskStorage<T> implements Storage<List<T>
       KeyValueStorage<List<T>> {
 
    @Override
-   public synchronized void save(@Nullable CacheBundle params, List<T> data) {
+   public synchronized void save(CacheBundle params, List<T> data) {
       if (params == null || !params.contains(BUNDLE_KEY_VALUE)) {
          throw new IllegalStateException("CacheBundle passed to FifoKeyValueStorage should not be null and should contain BUNDLE_KEY_VALUE");
       }
@@ -29,7 +27,7 @@ public abstract class KeyValuePaginatedDiskStorage<T> implements Storage<List<T>
    }
 
    @Override
-   public synchronized List<T> get(@Nullable CacheBundle params) {
+   public synchronized List<T> get(CacheBundle params) {
       return getRestoreFunc().call(params.get(BUNDLE_KEY_VALUE));
    }
 

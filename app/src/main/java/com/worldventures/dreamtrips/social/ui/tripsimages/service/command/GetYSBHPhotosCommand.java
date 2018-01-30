@@ -1,15 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.ysbh.GetYSBHPhotosHttpAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.YsbhPhotoStorage;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,9 +94,6 @@ public class GetYSBHPhotosCommand extends CommandWithError<List<YSBHPhoto>> impl
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
       cacheBundle.put(YsbhPhotoStorage.RELOAD, page == 1);
       cacheBundle.put(YsbhPhotoStorage.LOAD_MORE, page != 1);
-      return ImmutableCacheOptions.builder()
-            .saveToCache(!fromCache)
-            .params(cacheBundle)
-            .build();
+      return new CacheOptions(true, !fromCache, true, cacheBundle);
    }
 }

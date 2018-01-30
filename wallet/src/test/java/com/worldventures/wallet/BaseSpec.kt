@@ -1,7 +1,7 @@
 package com.worldventures.wallet
 
-import com.worldventures.core.janet.cache.CacheResultWrapper
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.CacheResultWrapper
+import com.worldventures.janet.cache.storage.ActionStorage
 import com.worldventures.core.test.common.RxJavaSchedulerInitializer
 import com.worldventures.core.test.janet.MockDaggerActionService
 import com.worldventures.core.test.janet.StubServiceWrapper

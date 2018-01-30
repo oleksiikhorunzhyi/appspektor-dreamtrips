@@ -1,18 +1,17 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripsDetailsHttpAction;
 import com.worldventures.dreamtrips.api.trip.model.TripWithoutDetails;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +90,6 @@ public class GetTripsByUidCommand extends CommandWithError<List<TripModel>> impl
    public CacheOptions getCacheOptions() {
       CacheBundle cacheBundle = new CacheBundleImpl();
       cacheBundle.put(TripsByUidsStorage.UIDS, tripUids);
-      return ImmutableCacheOptions.builder().params(cacheBundle).build();
+      return new CacheOptions(true, true, true, cacheBundle);
    }
 }

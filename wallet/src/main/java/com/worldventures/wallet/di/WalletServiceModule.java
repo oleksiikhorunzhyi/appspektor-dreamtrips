@@ -144,8 +144,9 @@ public class WalletServiceModule {
    @Provides
    SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor,
          FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor,
-         WalletFeatureHelper featureHelper) {
-      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper);
+         FactoryResetInteractor factoryResetInteractor, WalletFeatureHelper featureHelper) {
+      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor,
+            factoryResetInteractor, featureHelper);
    }
 
    @Singleton

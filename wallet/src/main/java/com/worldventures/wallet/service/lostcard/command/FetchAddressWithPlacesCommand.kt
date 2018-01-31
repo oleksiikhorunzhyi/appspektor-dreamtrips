@@ -7,7 +7,6 @@ import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
 import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
-import com.worldventures.wallet.service.credentials.GoogleApiCredentials
 import com.worldventures.wallet.service.credentials.GoogleApiCredentialsProvider
 import com.worldventures.wallet.service.lostcard.command.http.AddressHttpAction
 import com.worldventures.wallet.service.lostcard.command.http.PlacesNearbyHttpAction

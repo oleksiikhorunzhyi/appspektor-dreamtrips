@@ -47,16 +47,18 @@ public class SmartCardSyncManager {
    private final RecordInteractor recordInteractor;
    private final WalletFeatureHelper featureHelper;
    private final FirmwareInteractor firmwareInteractor;
+   private final FactoryResetInteractor factoryResetInteractor;
 
    private volatile boolean syncDisabled = false;
 
    public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor,
          FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor,
-         WalletFeatureHelper featureHelper) {
+         FactoryResetInteractor factoryResetInteractor, WalletFeatureHelper featureHelper) {
       this.janet = janet;
       this.interactor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.recordInteractor = recordInteractor;
+      this.factoryResetInteractor = factoryResetInteractor;
       this.featureHelper = featureHelper;
       observeConnection();
       connectUpdateSmartCard();
@@ -161,7 +163,10 @@ public class SmartCardSyncManager {
       interactor.fetchFirmwareVersionPipe()
             .observeSuccess()
             .map(Command::getResult)
+            // reset pipe with distinctUntilChanged() below after card factory reset
+            .mergeWith(factoryResetInteractor.factoryResetCommandActionPipe().observeSuccess().map(command -> null))
             .distinctUntilChanged()
+            .filter(wirmware -> wirmware != null)
             .subscribe(firmware -> {
                      saveFirmwareDataForAboutScreen(firmware);
                      interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.Companion.save(firmware));

@@ -8,30 +8,35 @@ import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent
 
 import javax.inject.Inject
 
-class EnrollRepPresenter(url: String) : AuthorizedStaticInfoPresenter<EnrollRepPresenter.View>(url) {
+class EnrollMemberPresenter(url: String) : AuthorizedStaticInfoPresenter<EnrollMemberPresenter.View>(url) {
 
    @Inject lateinit var staticPageProvider: StaticPageProvider
    @Inject lateinit var permissionLocationDelegate: PermissionLocationDelegate
 
-   override fun takeView(view: EnrollRepPresenter.View) {
+   override fun takeView(view: View) {
       permissionLocationDelegate.setNeedRationalAction(view::showPermissionExplanationText)
       super.takeView(view)
    }
 
-   override fun load() {
-      permissionLocationDelegate.setLocationObtainedAction {
-         updateUrlWithLocation(it)
-         super.load()
+   public override fun load() {
+      permissionLocationDelegate.apply {
+         setLocationObtainedAction {
+            updateUrlWithLocation(it)
+            super.load()
+         }
+
+         requestPermission(true, bindView<Any>())
       }
-      permissionLocationDelegate.requestPermission(true, bindView<Any>())
    }
 
    override fun reload() {
-      permissionLocationDelegate.setLocationObtainedAction {
-         updateUrlWithLocation(it)
-         super.reload()
+      permissionLocationDelegate.apply {
+         setLocationObtainedAction {
+            updateUrlWithLocation(it)
+            super.reload()
+         }
+         requestPermission(true, bindView<Any>())
       }
-      permissionLocationDelegate.requestPermission(true, bindView<Any>())
    }
 
    private fun updateUrlWithLocation(location: Location?) {

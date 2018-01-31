@@ -71,10 +71,6 @@ abstract class BaseUserListPresenter<V : BaseUserListPresenter.View> : Presenter
       handleError(commandWithError, throwable)
    }
 
-   companion object {
-      const val LAST_VISIBLE_ITEM_THRESHOLD = 1
-   }
-
    interface View : Presenter.View, BlockingProgressView {
 
       fun startLoading()

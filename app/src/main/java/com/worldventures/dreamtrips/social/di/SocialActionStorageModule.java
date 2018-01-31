@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStora
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
 import com.worldventures.dreamtrips.social.domain.storage.action.ContactsStorage;
+import com.worldventures.dreamtrips.social.domain.storage.action.SuccessStoriesStorage;
 import com.worldventures.dreamtrips.social.service.users.circle.storage.CirclesStorage;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationRepository;
 import com.worldventures.dreamtrips.social.ui.background_uploading.storage.CompoundOperationRepositoryImpl;
@@ -174,4 +175,9 @@ public class SocialActionStorageModule {
       return new ContactsStorage();
    }
 
+   @Singleton
+   @Provides(type = Provides.Type.SET)
+   MultipleActionStorage provideSuccessStoriesStorage() {
+      return new SuccessStoriesStorage();
+   }
 }

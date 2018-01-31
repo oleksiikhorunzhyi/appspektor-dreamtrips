@@ -2,25 +2,17 @@ package com.worldventures.dreamtrips.social.ui.reptools.model
 
 import android.os.Parcel
 import android.os.Parcelable
-
-import com.worldventures.core.model.BaseEntity
-import com.worldventures.core.model.Filterable
 import com.worldventures.core.ui.view.adapter.HeaderItem
 
-class SuccessStory(id: Int,
-                   val title: String,
-                   val author: String,
-                   val category: String,
-                   val locale: String,
-                   val url: String,
-                   val sharingUrl: String,
-                   var isLiked: Boolean)
-                              : BaseEntity(id), Parcelable, Filterable, HeaderItem {
-   var isSelected: Boolean = false
-
-   override fun containsQuery(query: String?): Boolean {
-      return query == null || title.toLowerCase().contains(query)
-   }
+data class SuccessStory(val id: Int,
+                        val title: String,
+                        val author: String,
+                        val category: String,
+                        val locale: String,
+                        val url: String,
+                        val sharingUrl: String,
+                        val isLiked: Boolean) : Parcelable, HeaderItem {
+   var isSelected = false
 
    override fun getHeaderTitle(): String? = category
 

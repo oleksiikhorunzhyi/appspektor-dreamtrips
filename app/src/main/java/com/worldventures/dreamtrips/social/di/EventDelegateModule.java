@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEvent
 import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.worldventures.dreamtrips.social.util.event_delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.social.util.event_delegate.SearchFocusChangedDelegate;
-import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate;
 
 import javax.inject.Singleton;
 
@@ -26,12 +25,6 @@ public class EventDelegateModule {
    @Singleton
    ScreenChangedEventDelegate provideScreenChangedDelegate() {
       return new ScreenChangedEventDelegate();
-   }
-
-   @Provides
-   @Singleton
-   StoryLikedEventDelegate provideStoryLikedEventDelegate() {
-      return new StoryLikedEventDelegate();
    }
 
    @Provides

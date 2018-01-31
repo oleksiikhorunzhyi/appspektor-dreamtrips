@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter
 
 import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand
-import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.ViewLegalDocumentsAnalyticAction
-
-private const val LEGAL_DOCUMENTS_ANALYTICS_SECTION_NAME = "Legal Documents"
 
 class LegalTermsPresenter : DocumentListPresenter() {
 
@@ -20,8 +17,8 @@ class LegalTermsPresenter : DocumentListPresenter() {
    private fun subscribeToErrorUpdates() {
       offlineErrorInteractor.offlineErrorCommandPipe()
             .observeSuccess()
-            .compose<OfflineErrorCommand>(bindViewToMainComposer<OfflineErrorCommand>())
-            .subscribe { _ -> reportNoConnection() }
+            .compose(bindViewToMainComposer())
+            .subscribe { reportNoConnection() }
    }
 
    override fun track() {
@@ -31,4 +28,8 @@ class LegalTermsPresenter : DocumentListPresenter() {
    override fun getAnalyticsSectionName() = LEGAL_DOCUMENTS_ANALYTICS_SECTION_NAME
 
    override fun getDocumentType() = GetDocumentsCommand.DocumentType.LEGAL
+
+   companion object {
+      private const val LEGAL_DOCUMENTS_ANALYTICS_SECTION_NAME = "Legal Documents"
+   }
 }

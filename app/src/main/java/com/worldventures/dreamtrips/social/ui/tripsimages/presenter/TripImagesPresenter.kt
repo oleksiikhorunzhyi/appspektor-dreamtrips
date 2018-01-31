@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter
 
-import com.innahema.collections.query.queriables.Queryable
 import com.worldventures.core.modules.picker.helper.PickerPermissionChecker
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment
 import com.worldventures.core.ui.util.permission.PermissionUtils
@@ -8,7 +7,6 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.UploadTripImageAnalyticAction
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand
@@ -28,6 +26,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.VideoMediaEntity
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImageArgsFilterFunc
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.UploadTripImageAnalyticAction
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.BaseMediaCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.CheckVideoProcessingStatusCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.MemberImagesAddedCommand
@@ -37,9 +36,11 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.UserIm
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs
 import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent
 import io.techery.janet.helper.ActionStateSubscriber
+import rx.Observable
 import rx.functions.Action2
 import timber.log.Timber
 import java.util.ArrayList
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 typealias FeedEntityListener = com.worldventures.dreamtrips.social.ui.feed.presenter.FeedEntityHolder
@@ -245,13 +246,20 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
       }
    }
 
-   internal fun updateItemsInView() {
+   internal fun updateItemsInView(refreshTimeStamp: Boolean = true, withScrolling: Boolean = false) {
       val items = arrayListOf<Any>()
-      if (!compoundOperationModels.isEmpty()) {
-         items.add(UploadingPostsList(compoundOperationModels))
-      }
+      val hasBackgroundOperations = !compoundOperationModels.isEmpty()
+
+      if (hasBackgroundOperations) items.add(UploadingPostsList(compoundOperationModels))
       items.addAll(currentItems)
-      view.updateItems(items)
+      view.updateItems(items, refreshTimeStamp)
+      if (hasBackgroundOperations && withScrolling) scrollViewWithDelay()
+   }
+
+   internal fun scrollViewWithDelay() {
+      Observable.timer(SCROLLIG_DELAY, TimeUnit.MILLISECONDS)
+            .compose(bindViewToMainComposer())
+            .subscribe { view.scrollToTop() }
    }
 
    ///////////////////////////////////////////////////////////////////////////
@@ -263,11 +271,14 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
             .observeWithReplay()
             .compose(bindViewToMainComposer())
             .subscribe(ActionStateSubscriber<CompoundOperationsCommand>()
-                  .onSuccess { compoundOperationsCommand ->
-                     compoundOperationModels = Queryable.from(compoundOperationsCommand.result)
-                           .cast(PostCompoundOperationModel::class.java).toList()
-                     updateItemsInView()
-                  })
+                  .onSuccess { processUploads(it.result) })
+   }
+
+   internal fun processUploads(uploadModels: List<PostCompoundOperationModel<*>>) {
+      val newCompoundModels = uploadModels.mapNotNull { it as? PostCompoundOperationModel }.toList()
+      val withScrolling = !compoundOperationModels.hasEqualContent(newCompoundModels)
+      compoundOperationModels = newCompoundModels
+      updateItemsInView(false, withScrolling)
    }
 
    override fun onUploadResume(compoundOperationModel: PostCompoundOperationModel<*>) =
@@ -324,7 +335,7 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
 
       fun openFullscreen(lastPageReached: Boolean, index: Int)
 
-      fun updateItems(items: List<*>)
+      fun updateItems(items: List<*>, refreshTimeStamp: Boolean)
 
       fun showLoading()
 
@@ -340,4 +351,12 @@ open class TripImagesPresenter(internal var tripImagesArgs: TripImagesArgs) : Pr
 
       fun openCreatePhoto(mediaAttachment: MediaPickerAttachment)
    }
+
+   companion object {
+      private const val SCROLLIG_DELAY = 700L
+   }
+}
+
+fun List<PostCompoundOperationModel<*>>.hasEqualContent(other: List<PostCompoundOperationModel<*>>): Boolean {
+   return this.containsAll(other) && other.containsAll(this)
 }

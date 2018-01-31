@@ -72,7 +72,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @State protected int videoDuration;
    @State protected boolean mediaPickerShown;
 
-   protected BaseDelegateAdapter adapter;
+   protected BaseDelegateAdapter<Object> adapter;
    protected GridLayoutManager layoutManager;
    private RecyclerViewStateDelegate stateDelegate;
    private MediaPickerDialog mediaPickerDialog;
@@ -116,13 +116,13 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void scrollToTop() {
-      recyclerView.scrollToPosition(0);
+      recyclerView.smoothScrollToPosition(0);
    }
 
    private void initAdapter() {
       initLayoutManager(getSpanCount());
       stateDelegate.setRecyclerView(recyclerView);
-      adapter = new BaseDelegateAdapter(getContext(), this);
+      adapter = new BaseDelegateAdapter<>(getContext(), this);
       registerCellsAndDelegates();
       recyclerView.setAdapter(this.adapter);
    }
@@ -213,7 +213,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void updateItems(List items) {
+   public void updateItems(List items, boolean refreshTimeStamp) {
       layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
          @Override
          public int getSpanSize(int position) {
@@ -234,7 +234,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity && items.get(newItemPosition) instanceof PhotoMediaEntity) {
+            if (refreshTimeStamp && adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity
+                  && items.get(newItemPosition) instanceof PhotoMediaEntity) {
                return false;
             }
             return super.areContentsTheSame(oldItemPosition, newItemPosition);

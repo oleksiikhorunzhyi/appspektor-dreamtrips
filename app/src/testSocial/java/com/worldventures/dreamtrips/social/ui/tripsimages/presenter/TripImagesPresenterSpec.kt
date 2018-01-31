@@ -164,7 +164,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec(TripImagesTestSuite()) {
                      assert(presenter.loading == false)
                      assert(presenter.lastPageReached == false)
                      verify(view).finishLoading()
-                     verify(view).updateItems(any())
+                     verify(view).updateItems(any(), any())
                   }
 
                   it("Items updated with load more command, last page is not reached") {
@@ -185,7 +185,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec(TripImagesTestSuite()) {
                      assertFalse(presenter.loading)
                      assertFalse(presenter.lastPageReached)
                      verify(view).finishLoading()
-                     verify(view).updateItems(any())
+                     verify(view).updateItems(any(), any())
                   }
 
                   it("Items updated with load more command, last page is reached") {
@@ -205,7 +205,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec(TripImagesTestSuite()) {
                      assert(presenter.loading == false)
                      assert(presenter.lastPageReached == true)
                      verify(view).finishLoading()
-                     verify(view).updateItems(any())
+                     verify(view).updateItems(any(), any())
                   }
                }
 
@@ -229,7 +229,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec(TripImagesTestSuite()) {
                      presenter.reload()
 
                      verify(view).hideNewImagesButton()
-                     verify(view).updateItems(any())
+                     verify(view).updateItems(any(), any())
                   }
                }
 
@@ -245,7 +245,7 @@ class TripImagesPresenterSpec : PresenterBaseSpec(TripImagesTestSuite()) {
 
                      assert(presenter.currentItems.map { it.item }
                            .count { it == stubTextualPost.attachments[0].item } > 0)
-                     verify(view).updateItems(any())
+                     verify(view).updateItems(any(), any())
                      verify(view).scrollToTop()
                   }
                }

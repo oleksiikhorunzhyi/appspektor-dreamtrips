@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.ui.reptools.service.command
+package com.worldventures.dreamtrips.social.service.reptools.command
 
 import com.worldventures.core.service.command.api_action.MappableApiActionCommand
 import com.worldventures.dreamtrips.R

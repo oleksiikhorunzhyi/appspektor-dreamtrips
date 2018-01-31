@@ -1,73 +1,74 @@
 package com.worldventures.dreamtrips.social.ui.reptools.presenter
 
 import com.worldventures.core.model.ShareType
+import com.worldventures.dreamtrips.social.service.reptools.SuccessStoriesInteractor
+import com.worldventures.dreamtrips.social.service.reptools.command.LikeSuccessStoryCommand
+import com.worldventures.dreamtrips.social.service.reptools.command.UnlikeSuccessStoryCommand
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.WebViewFragmentPresenter
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory
-import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor
-import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.AdobeFavoriteSuccessStoryAction
 import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.AdobeViewSuccessStoryAction
 import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ApptentiveSuccessStoryAction
 import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ShareSuccessStoryAction
-import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand
-import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand
-import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate
 import io.techery.janet.helper.ActionStateSubscriber
 import javax.inject.Inject
 
-class SuccessStoryDetailsPresenter(private val successStory: SuccessStory, url: String) : WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View>(url) {
+class SuccessStoryDetailsPresenter(private var successStory: SuccessStory, url: String) : WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View>(url) {
 
-   @field:Inject lateinit var storyLikedEventDelegate: StoryLikedEventDelegate
-   @field:Inject lateinit var successStoriesInteractor: SuccessStoriesInteractor
+   @Inject lateinit var successStoriesInteractor: SuccessStoriesInteractor
 
    override fun takeView(view: View) {
       super.takeView(view)
+      view.updateLikeStatus(successStory.isLiked)
       analyticsInteractor.analyticsActionPipe().send(ApptentiveSuccessStoryAction())
       analyticsInteractor.analyticsActionPipe().send(AdobeViewSuccessStoryAction(successStory.url))
+      subscribeToLikeStatusUpdate()
    }
 
-   fun like(successStory: SuccessStory) {
+   private fun subscribeToLikeStatusUpdate() {
+      successStoriesInteractor.updateLikeStatusPipe
+            .observeSuccess()
+            .map { it.result.first { it.id == successStory.id } }
+            .compose(bindViewToMainComposer())
+            .subscribe {
+               successStory = it
+               view.likeRequestSuccess(successStory.isLiked)
+               view.updateLikeStatus(successStory.isLiked)
+            }
+   }
+
+   fun like() {
       if (successStory.isLiked) {
          successStoriesInteractor.unlikeSuccessStoryPipe
                .createObservable(UnlikeSuccessStoryCommand(successStory.id))
                .compose(bindViewToMainComposer())
-               .subscribe(ActionStateSubscriber<UnlikeSuccessStoryCommand>()
-                     .onSuccess { onLiked() }
-                     .onFail(this::handleError))
+               .subscribe(ActionStateSubscriber<UnlikeSuccessStoryCommand>().onFail(this::handleError))
       } else {
          successStoriesInteractor.likeSuccessStoryPipe
                .createObservable(LikeSuccessStoryCommand(successStory.id))
                .compose(bindViewToMainComposer())
-               .subscribe(ActionStateSubscriber<LikeSuccessStoryCommand>()
-                     .onSuccess { onLiked() }
-                     .onFail(this::handleError))
+               .subscribe(ActionStateSubscriber<LikeSuccessStoryCommand>().onFail(this::handleError))
       }
-      analyticsInteractor.analyticsActionPipe().send(ApptentiveSuccessStoryAction())
-      analyticsInteractor.analyticsActionPipe().send(AdobeFavoriteSuccessStoryAction(successStory.url))
    }
 
-   private fun onLiked() = view.likeRequestSuccess()
+   fun onUpdateAuthorRequired() = view.updateStoryTitle(successStory.author)
 
-   fun onStoryLiked(successStory: SuccessStory) {
-      view.updateStoryLike(successStory.isLiked)
-      storyLikedEventDelegate.post(successStory)
-   }
+   fun onFullscreenPressed() = view.openFullscreen(successStory)
 
-   fun share() = view.showShareDialog()
-
-   fun onShare(@ShareType type: String, successStory: SuccessStory) {
+   fun onShare(@ShareType type: String) {
       view.openShare(successStory.sharingUrl, type)
       analyticsInteractor.analyticsActionPipe().send(ShareSuccessStoryAction(type, successStory.url))
    }
 
    interface View : WebViewFragmentPresenter.View {
+      fun updateStoryTitle(author: String)
 
-      fun showShareDialog()
+      fun likeRequestSuccess(isLiked: Boolean)
 
-      fun likeRequestSuccess()
+      fun updateLikeStatus(isLike: Boolean)
 
       fun openShare(url: String, @ShareType type: String)
 
-      fun updateStoryLike(isLiked: Boolean)
+      fun openFullscreen(story: SuccessStory)
    }
 
 }

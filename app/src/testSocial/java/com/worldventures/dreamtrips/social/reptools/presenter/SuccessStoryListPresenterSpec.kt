@@ -2,27 +2,30 @@ package com.worldventures.dreamtrips.social.reptools.presenter
 
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.anyOrNull
-import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.service.reptools.SuccessStoriesInteractor
+import com.worldventures.dreamtrips.social.service.reptools.command.GetSuccessStoriesCommand
+import com.worldventures.dreamtrips.social.service.reptools.command.ReadSuccessStoriesCommand
+import com.worldventures.dreamtrips.social.service.reptools.command.RefreshSuccessStoriesCommand
+import com.worldventures.dreamtrips.social.service.reptools.command.SuccessStoriesCommand
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryListPresenter
-import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor
-import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand
-import com.worldventures.dreamtrips.social.util.event_delegate.StoryLikedEventDelegate
+import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
-import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
+import org.mockito.internal.verification.Times
+import rx.observers.TestSubscriber
 
 class SuccessStoryListPresenterSpec : PresenterBaseSpec(SuccessStoryListTestSuite()) {
 
@@ -33,49 +36,50 @@ class SuccessStoryListPresenterSpec : PresenterBaseSpec(SuccessStoryListTestSuit
          with(components) {
             describe("Success stories list presenter") {
 
-               context("success response") {
+               describe("Success response") {
                   beforeEachTest {
                      init(Contract.of(GetSuccessStoriesCommand::class.java).result(makeStubStories()))
                      linkPresenterAndView()
                   }
 
-                  it("should set items and finish loading on response") {
-                     presenter.onResume()
+                  it("Should set items") {
+                     presenter.subscribeSuccessStories()
+                     successStoriesInteractor.successStoriesPipe.send(RefreshSuccessStoriesCommand(makeStubStories()))
 
                      verify(view).setItems(any())
-                     verify(view).finishLoading()
                   }
 
-                  it("should reload in onResume if there are no items") {
-                     val view = view
-                     doReturn(0).whenever(view).itemsCount
-                     presenter.takeView(view)
-                     presenter.onResume()
+                  it("Should finish loading and should no inform user about anything") {
+                     presenter.reload()
 
-                     verify(view).setItems(any())
                      verify(view).finishLoading()
+                     verify(view, Times(0)).informUser(anyOrNull<String>())
+
                   }
 
-                  it("should not reload in onResume if there are already some items") {
-                     doReturn(55).whenever(view).itemsCount
+                  it("Should send ReadSuccessStoriesCommand") {
+                     val testSubscriber = TestSubscriber<ActionState<SuccessStoriesCommand>>()
+                     successStoriesInteractor.successStoriesPipe.observe().subscribe(testSubscriber)
+                     presenter.filterFavorites(true)
 
-                     presenter.takeView(view)
-                     presenter.onResume()
+                     assertActionSuccess(testSubscriber) { it is ReadSuccessStoriesCommand }
+                  }
 
-                     verify(view, never()).setItems(any())
+                  it("Should show filter dialog") {
+                     presenter.onShowFilterRequired()
+
+                     verify(view).showFilterDialog(false)
                   }
                }
 
-               context("error response") {
-                  it("should handle error") {
+               describe("Error response") {
+                  it("Should handle error and inform user about it") {
                      init(BaseContract.of(GetSuccessStoriesCommand::class.java).exception(RuntimeException()))
                      linkPresenterAndView()
-                     doReturn(0).whenever(view).itemsCount
-
-                     presenter.takeView(view)
-                     presenter.onResume()
+                     presenter.reload()
 
                      verify(view).informUser(anyOrNull<String>())
+                     verify(view).finishLoading()
                   }
                }
             }
@@ -85,8 +89,10 @@ class SuccessStoryListPresenterSpec : PresenterBaseSpec(SuccessStoryListTestSuit
 
    class SuccessStoryListComponents : TestComponents<SuccessStoryListPresenter, SuccessStoryListPresenter.View>() {
 
+      lateinit var successStoriesInteractor: SuccessStoriesInteractor
+
       fun init(contract: Contract) {
-         presenter = SuccessStoryListPresenter()
+         presenter = spy(SuccessStoryListPresenter())
          view = mock()
 
          val service = MockCommandActionService.Builder().apply {
@@ -94,10 +100,9 @@ class SuccessStoryListPresenterSpec : PresenterBaseSpec(SuccessStoryListTestSuit
             addContract(contract)
          }.build()
          val janet = Janet.Builder().addService(service).build()
-         val successStoriesInteractor = SuccessStoriesInteractor(SessionActionPipeCreator(janet))
+         successStoriesInteractor = SuccessStoriesInteractor(SessionActionPipeCreator(janet))
 
          prepareInjector().apply {
-            registerProvider(StoryLikedEventDelegate::class.java, { StoryLikedEventDelegate() })
             registerProvider(SuccessStoriesInteractor::class.java, { successStoriesInteractor })
             inject(presenter)
          }
@@ -105,7 +110,7 @@ class SuccessStoryListPresenterSpec : PresenterBaseSpec(SuccessStoryListTestSuit
 
       fun makeStubStories() = mutableListOf(makeStubStory(1), makeStubStory(2))
 
-      private fun makeStubStory(id: Int): SuccessStory {
+      fun makeStubStory(id: Int): SuccessStory {
          return SuccessStory(
                id = id,
                title = "title $id",

@@ -14,6 +14,9 @@ import com.worldventures.dreamtrips.social.service.invites.GetInviteTemplatesCom
 import com.worldventures.dreamtrips.social.service.invites.SendInvitesCommand;
 import com.worldventures.dreamtrips.social.service.invites.UpdateContactsCommand;
 import com.worldventures.dreamtrips.social.service.invites.UpdateContactsWithSentInvitesCommand;
+import com.worldventures.dreamtrips.social.service.reptools.command.GetSuccessStoriesCommand;
+import com.worldventures.dreamtrips.social.service.reptools.command.LikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.social.service.reptools.command.UnlikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.service.users.friend.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.social.service.users.friend.command.GetMutualFriendsCommand;
@@ -79,9 +82,6 @@ import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicP
 import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand;
 import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand;
-import com.worldventures.dreamtrips.social.ui.reptools.service.command.GetSuccessStoriesCommand;
-import com.worldventures.dreamtrips.social.ui.reptools.service.command.LikeSuccessStoryCommand;
-import com.worldventures.dreamtrips.social.ui.reptools.service.command.UnlikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.SendAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.analytics.SendVideoAnalyticsIfNeedAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.AddPhotoTagsCommand;

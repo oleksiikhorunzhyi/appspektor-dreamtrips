@@ -27,8 +27,8 @@ import com.worldventures.wallet.ui.records.detail.impl.CardDetailsEnterAnimHandl
 import com.worldventures.wallet.ui.records.detail.impl.CardDetailsScreenImpl;
 import com.worldventures.wallet.ui.records.swiping.impl.WizardChargingScreenImpl;
 import com.worldventures.wallet.ui.settings.general.about.impl.AboutScreenImpl;
-import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSettingsScreenImpl;
+import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
 import com.worldventures.wallet.ui.settings.general.firmware.download.impl.WalletDownloadFirmwareScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.install.impl.WalletInstallFirmwareScreenImpl;
 import com.worldventures.wallet.ui.settings.general.firmware.installsuccess.impl.WalletSuccessInstallFirmwareScreenImpl;
@@ -64,6 +64,7 @@ import com.worldventures.wallet.ui.settings.security.clear.records.impl.WalletAu
 import com.worldventures.wallet.ui.settings.security.impl.WalletSecuritySettingsScreenImpl;
 import com.worldventures.wallet.ui.settings.security.lostcard.impl.LostCardScreenImpl;
 import com.worldventures.wallet.ui.settings.security.offline_mode.impl.WalletOfflineModeSettingsScreenImpl;
+import com.worldventures.wallet.ui.start.impl.WalletStartScreenImpl;
 import com.worldventures.wallet.ui.wizard.assign.impl.WizardAssignUserScreenImpl;
 import com.worldventures.wallet.ui.wizard.checking.impl.WizardCheckingScreenImpl;
 import com.worldventures.wallet.ui.wizard.input.manual.impl.WizardManualInputScreenImpl;
@@ -82,6 +83,7 @@ import com.worldventures.wallet.ui.wizard.records.SyncAction;
 import com.worldventures.wallet.ui.wizard.records.finish.impl.PaymentSyncFinishScreenImpl;
 import com.worldventures.wallet.ui.wizard.records.sync.impl.SyncRecordsScreenImpl;
 import com.worldventures.wallet.ui.wizard.splash.impl.WizardSplashScreenImpl;
+import com.worldventures.wallet.ui.wizard.termsandconditionals.AgreementMode;
 import com.worldventures.wallet.ui.wizard.termsandconditionals.impl.WizardTermsScreenImpl;
 import com.worldventures.wallet.ui.wizard.unassign.impl.ExistingDeviceDetectScreenImpl;
 import com.worldventures.wallet.ui.wizard.welcome.impl.WizardWelcomeScreenImpl;
@@ -120,6 +122,11 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void finish() {
       routerLazy.get().getActivity().finish();
+   }
+
+   @Override
+   public void returnWalletStart() {
+      single(new WalletStartScreenImpl());
    }
 
    @Override
@@ -202,8 +209,13 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
+   public void goWizardAffidavit() {
+      single(WizardTermsScreenImpl.Companion.create(AgreementMode.AFFIDAVIT));
+   }
+
+   @Override
    public void goWizardTerms() {
-      single(new WizardTermsScreenImpl());
+      go(WizardTermsScreenImpl.Companion.create(AgreementMode.TAC));
    }
 
    @Override
@@ -228,12 +240,12 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goPairKey(ProvisioningMode provisioningMode, String smartCardId) {
-      go(PairKeyScreenImpl.create(provisioningMode, smartCardId));
+      go(PairKeyScreenImpl.Companion.create(provisioningMode, smartCardId));
    }
 
    @Override
    public void goPairKeyExistingDevice(ProvisioningMode provisioningMode, String smartCardId) {
-      single(PairKeyScreenImpl.create(provisioningMode, smartCardId));
+      single(PairKeyScreenImpl.Companion.create(provisioningMode, smartCardId));
    }
 
    @Override
@@ -258,7 +270,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goWizardAssignUser(ProvisioningMode provisioningMode) {
-      withoutLast(WizardAssignUserScreenImpl.create(provisioningMode));
+      withoutLast(WizardAssignUserScreenImpl.Companion.create(provisioningMode));
    }
 
    @Override
@@ -288,7 +300,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goCardDetails(CommonCardViewModel recordViewModel, TransitionModel transitionModel) {
-      go(CardDetailsScreenImpl.create(recordViewModel),
+      go(CardDetailsScreenImpl.Companion.create(recordViewModel),
             new CardDetailsEnterAnimHandler(transitionModel), new FadeChangeHandler());
    }
 
@@ -494,8 +506,8 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
-   public void goVideoPlayer(Uri uri, String videoName, Class launchComponent, String videoLanguage) {
-      coreNavigator.goVideoPlayer(uri, videoName, launchComponent, videoLanguage);
+   public void goVideoPlayer(Uri uri, String uid, String videoName, Class launchComponent, String videoLanguage) {
+      coreNavigator.goVideoPlayer(uri, uid, videoName, launchComponent, videoLanguage);
    }
 
    @Override

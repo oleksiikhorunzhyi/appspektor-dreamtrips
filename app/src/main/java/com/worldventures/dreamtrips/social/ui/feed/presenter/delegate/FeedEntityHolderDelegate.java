@@ -16,8 +16,8 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.DeletePostCom
 import com.worldventures.dreamtrips.social.ui.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.EditPostCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetCommentsCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;

@@ -3,8 +3,9 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.UsersLikedEntityBundle;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -24,7 +25,7 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<BaseUserListP
             .createObservable(new GetLikersCommand(feedEntity, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetLikersCommand>()
-                  .onSuccess(likersCommand -> onSuccessAction.call(likersCommand.getResult()))
+                  .onSuccess(likersCommand -> onSuccessAction.call(new ArrayList<>(likersCommand.getResult())))
                   .onFail(this::onError));
 
    }

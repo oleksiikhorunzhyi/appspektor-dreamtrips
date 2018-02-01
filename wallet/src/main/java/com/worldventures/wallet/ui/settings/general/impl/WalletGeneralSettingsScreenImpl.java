@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.impl;
 
-
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -208,5 +207,11 @@ public class WalletGeneralSettingsScreenImpl extends WalletBaseController<Wallet
    @Override
    public WalletGeneralSettingsPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletGeneralSettingsScreenModule();
    }
 }

@@ -1,6 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.newcard.detection.impl;
 
-
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -158,5 +158,11 @@ public class ExistingCardDetectScreenImpl extends WalletBaseController<ExistingC
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new ExistingCardDetectScreenModule();
    }
 }

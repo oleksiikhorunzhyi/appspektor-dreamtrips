@@ -75,4 +75,10 @@ public class WalletPuckConnectionScreenImpl extends WalletBaseController<WalletP
          userPhoto.setImageURI(photo.getUri());
       } // // TODO: 5/23/17 add place holder
    }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletPuckConnectionScreenModule();
+   }
 }

@@ -22,6 +22,7 @@ class SmartCardRecordToWalletRecordConverter : Converter<SDKRecord, Record> {
                cvv = source.cvv(),
                track1 = source.t1(),
                track2 = source.t2(),
+               track3 = source.t3(),
                nickname = source.title(),
                bankName = source.bankName(),
                financialService = source.financialService().toDomainFinancialService(),

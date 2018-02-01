@@ -24,17 +24,16 @@ public class CameraChangeObservable implements Observable.OnSubscribe<CameraPosi
    public void call(final Subscriber<? super CameraPosition> subscriber) {
       verifyMainThread();
 
-      GoogleMap.OnCameraChangeListener listener = cameraPosition -> {
+      map.setOnCameraIdleListener(() -> {
          if (!subscriber.isUnsubscribed()) {
-            subscriber.onNext(cameraPosition);
+            subscriber.onNext(map.getCameraPosition());
          }
-      };
-      map.setOnCameraChangeListener(listener);
+      });
 
       subscriber.add(new MainThreadSubscription() {
          @Override
          protected void onUnsubscribe() {
-            map.setOnCameraChangeListener(null);
+            map.setOnCameraIdleListener(null);
          }
       });
    }

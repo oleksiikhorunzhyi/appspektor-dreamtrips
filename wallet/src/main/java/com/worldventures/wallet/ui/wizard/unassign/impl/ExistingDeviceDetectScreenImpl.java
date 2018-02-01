@@ -1,7 +1,7 @@
 package com.worldventures.wallet.ui.wizard.unassign.impl;
 
-
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,5 +108,11 @@ public class ExistingDeviceDetectScreenImpl extends WalletBaseController<Existin
    @Override
    public ExistingDeviceDetectPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new ExistingDeviceDetectScreenModule();
    }
 }

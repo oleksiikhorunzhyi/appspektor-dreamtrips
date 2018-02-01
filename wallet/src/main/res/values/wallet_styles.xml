@@ -234,4 +234,14 @@
       <item name="android:textSize">@dimen/font_normal</item>
    </style>
 
+   <style name="RecordDetailDeleteButtonStyleBase">
+      <item name="android:textColor">@color/wallet_card_details_delete_text_color</item>
+      <item name="android:textSize">@dimen/wallet_details_screen_card_interact_button_text_size</item>
+   </style>
+
+   <style name="RecordDetailDeleteButtonStyle" parent="RecordDetailDeleteButtonStyleBase">
+      <item name="android:background">@drawable/wallet_delete_record_v18_background_selector</item>
+      <item name="android:padding">4dp</item>
+   </style>
+
 </resources>

@@ -81,15 +81,23 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
    private void setUserPhotoAndCover(User user) {
       // views dimensions might be zero, wait for measure
       if (!ProjectTextUtils.isEmpty(user.getAvatar().getThumb())) {
-         ViewUtils.runTaskAfterMeasure(userPhoto, () ->
-            userPhoto.setController(GraphicUtils.provideFrescoResizingController(user.getAvatar().getThumb(),
-                  userPhoto.getController(), userPhoto.getWidth(), userPhoto.getHeight())));
+         ViewUtils.runTaskAfterMeasure(userPhoto, () -> {
+                  if (userPhoto != null) {
+                     userPhoto.setController(GraphicUtils.provideFrescoResizingController(user.getAvatar().getThumb(),
+                           userPhoto.getController(), userPhoto.getWidth(), userPhoto.getHeight()));
+                  }
+               }
+         );
       }
 
       if (!ProjectTextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
-         ViewUtils.runTaskAfterMeasure(userCover, () ->
-            userCover.setController(GraphicUtils.provideFrescoResizingController(user.getBackgroundPhotoUrl(),
-                  userCover.getController(), userCover.getWidth(), userCover.getHeight())));
+         ViewUtils.runTaskAfterMeasure(userCover, () -> {
+                  if (userCover != null) {
+                     userCover.setController(GraphicUtils.provideFrescoResizingController(user.getBackgroundPhotoUrl(),
+                           userCover.getController(), userCover.getWidth(), userCover.getHeight()));
+                  }
+               }
+         );
       }
    }
 

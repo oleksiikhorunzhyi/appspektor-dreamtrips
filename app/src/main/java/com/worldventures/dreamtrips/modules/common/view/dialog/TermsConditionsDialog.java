@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -40,7 +39,6 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
 
    @Inject HeaderProvider headerProvider;
 
-   private String termsText;
    private boolean onErrorReceived;
 
    // After actual request for Terms and Conditions and onPageFinished called, we get onReceivedHttpError for other url
@@ -57,17 +55,13 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
       super.onViewCreated(view, savedInstanceState);
 
       termsContent.getSettings().setJavaScriptEnabled(true);
-      termsContent.addJavascriptInterface(new ContentJavaScriptInterface(), "HtmlViewer");
       termsContent.setWebViewClient(new WebViewClient() {
          @Override
          public void onPageFinished(WebView view, String url) {
             if (termsContent == null || btnRetry == null || onErrorReceived) {
                return;
             }
-
             onPageShown = true;
-            termsContent.loadUrl("javascript:window.HtmlViewer.getHtml" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-
             termsContent.setVisibility(View.VISIBLE);
             btnRetry.setVisibility(View.GONE);
          }
@@ -90,11 +84,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
                return;
             }
             onErrorReceived = true;
-            if (termsContent != null && btnRetry != null) {
-               termsContent.setVisibility(View.GONE);
-               btnRetry.setVisibility(View.VISIBLE);
-               disableButtons();
-            }
+            showRetryButton();
          }
 
          @Override
@@ -109,7 +99,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
       });
 
       acceptCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-         if (termsText == null && isChecked) {
+         if (!onPageShown || onErrorReceived) {
             acceptCheckbox.setChecked(false);
             return;
          }
@@ -120,9 +110,9 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
    }
 
    private void initAcceptRejectButtons() {
-      btnAccept.setOnClickListener(v -> presenter.acceptTerms(termsText));
+      btnAccept.setOnClickListener(v -> presenter.acceptTerms());
       btnReject.setOnClickListener(v -> presenter.denyTerms());
-      btnRetry.setOnClickListener(v -> presenter.loadContent());
+      btnRetry.setOnClickListener(v -> presenter.retry());
       setEqualAcceptRejectButtonsHeight();
    }
 
@@ -140,14 +130,6 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
          }
       };
       btnAccept.getViewTreeObserver().addOnPreDrawListener(globalLayoutListener);
-   }
-
-   class ContentJavaScriptInterface {
-
-      @JavascriptInterface
-      public void getHtml(String html) {
-         termsText = html;
-      }
    }
 
    @Override
@@ -189,5 +171,14 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
    public void disableButtons() {
       btnAccept.setEnabled(false);
       btnReject.setEnabled(false);
+   }
+
+   @Override
+   public void showRetryButton() {
+      if (termsContent != null && btnRetry != null) {
+         termsContent.setVisibility(View.GONE);
+         btnRetry.setVisibility(View.VISIBLE);
+         btnAccept.setEnabled(false);
+      }
    }
 }

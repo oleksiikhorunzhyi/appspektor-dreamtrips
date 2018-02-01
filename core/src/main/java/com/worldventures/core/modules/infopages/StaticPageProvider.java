@@ -20,7 +20,6 @@ public class StaticPageProvider {
    private static final String BOOKING_PAGE_URL = "/gateway/booking_page/%trip_id%";
    private static final String OTA_PAGE_URL = "/gateway/ota_page";
    private static final String FAQ_URL = "/gateway/faq";
-   private static final String TERMS_OF_SERVICE_URL = "/gateway/terms_of_use";
    private static final String PRIVACY_POLICY_URL = "/gateway/privacy_policy";
    private static final String COOKIES_POLICY_URL = "/gateway/cookies_policy";
    private static final String ENROLL_UPGRADE_URL = "/gateway/enroll_upgrade";
@@ -83,10 +82,6 @@ public class StaticPageProvider {
 
    public String getFaqUrl() {
       return apiUrl + FAQ_URL;
-   }
-
-   public String getTermsOfServiceUrl() {
-      return apiUrl + TERMS_OF_SERVICE_URL;
    }
 
    public String getCookiesPolicyUrl() {

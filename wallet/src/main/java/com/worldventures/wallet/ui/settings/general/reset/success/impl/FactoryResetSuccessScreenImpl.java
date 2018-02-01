@@ -1,6 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.reset.success.impl;
 
-
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,5 +42,11 @@ public class FactoryResetSuccessScreenImpl extends WalletBaseController<FactoryR
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new FactoryResetSuccessScreenModule();
    }
 }

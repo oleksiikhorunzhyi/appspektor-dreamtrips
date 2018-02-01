@@ -28,7 +28,7 @@ import com.worldventures.wallet.ui.common.helper2.error.SimpleDialogErrorViewPro
 import com.worldventures.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
-import com.worldventures.wallet.ui.dialog.ChangeDefaultPaymentCardDialog;
+import com.worldventures.wallet.ui.records.common.ChangeDefaultPaymentCardDialog;
 import com.worldventures.wallet.ui.records.add.AddCardDetailsPresenter;
 import com.worldventures.wallet.ui.records.add.AddCardDetailsScreen;
 import com.worldventures.wallet.ui.records.add.RecordBundle;
@@ -255,4 +255,9 @@ public class AddCardDetailsScreenImpl extends WalletBaseController<AddCardDetail
       setCardName(etCardNickname.getText());
    }
 
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new AddCardDetailsScreenModule();
+   }
 }

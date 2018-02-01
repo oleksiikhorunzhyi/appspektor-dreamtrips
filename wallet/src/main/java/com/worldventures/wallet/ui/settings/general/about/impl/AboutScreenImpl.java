@@ -1,7 +1,7 @@
 package com.worldventures.wallet.ui.settings.general.about.impl;
 
-
 import android.databinding.DataBindingUtil;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,5 +83,11 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
    @Override
    public AboutPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new AboutScreenModule();
    }
 }

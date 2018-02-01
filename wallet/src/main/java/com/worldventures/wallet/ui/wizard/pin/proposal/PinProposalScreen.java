@@ -4,7 +4,6 @@ import android.view.View;
 
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
 
-
 public interface PinProposalScreen extends WalletScreen {
 
    void setLabel();

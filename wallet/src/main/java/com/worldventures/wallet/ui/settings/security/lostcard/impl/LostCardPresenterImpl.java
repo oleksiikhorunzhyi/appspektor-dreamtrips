@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.security.lostcard.impl;
 
-import com.google.android.gms.location.LocationSettingsResult;
 import com.worldventures.core.ui.util.permission.PermissionConstants;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.core.ui.util.permission.PermissionSubscriber;
@@ -11,7 +10,8 @@ import com.worldventures.wallet.analytics.locatecard.action.LocateDisabledAnalyt
 import com.worldventures.wallet.analytics.locatecard.action.LocateEnabledAnalyticsAction;
 import com.worldventures.wallet.service.SmartCardLocationInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
-import com.worldventures.wallet.service.location.WalletDetectLocationService;
+import com.worldventures.core.service.location.SettingsResult;
+import com.worldventures.core.service.location.DetectLocationService;
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand;
 import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.wallet.ui.common.LocationScreenComponent;
@@ -31,18 +31,18 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    private final PermissionDispatcher permissionDispatcher;
    private final SmartCardLocationInteractor smartCardLocationInteractor;
-   private final WalletDetectLocationService locationService;
+   private final DetectLocationService locationService;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final LocationScreenComponent locationScreenComponent;
 
    public LostCardPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          PermissionDispatcher permissionDispatcher,
-         SmartCardLocationInteractor smartCardLocationInteractor, WalletDetectLocationService walletDetectLocationService,
+         SmartCardLocationInteractor smartCardLocationInteractor, DetectLocationService detectLocationService,
          LocationScreenComponent locationScreenComponent, WalletAnalyticsInteractor analyticsInteractor) {
       super(navigator, deviceConnectionDelegate);
       this.permissionDispatcher = permissionDispatcher;
       this.smartCardLocationInteractor = smartCardLocationInteractor;
-      this.locationService = walletDetectLocationService;
+      this.locationService = detectLocationService;
       this.locationScreenComponent = locationScreenComponent;
       this.analyticsInteractor = analyticsInteractor;
    }
@@ -103,10 +103,11 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void onTrackingStateFetched(boolean state) {
-      if (state && (!locationService.isEnabled() || !locationService.isPermissionGranted())) {
+      boolean shouldRequestPermission = state && (!locationService.isEnabled() || !locationService.isPermissionGranted());
+      if (shouldRequestPermission) {
          requestLocationPermissions(true);
       }
-      applyTrackingStatusForUI(state);
+      applyTrackingStatusForUI(state, !shouldRequestPermission);
    }
 
    private void observeCheckingSwitcher() {
@@ -140,8 +141,8 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
                   }));
    }
 
-   private void applyTrackingStatusForUI(boolean isTrackingEnabled) {
-      getView().switcherEnable(true);
+   private void applyTrackingStatusForUI(boolean isTrackingEnabled, boolean enableSwitcher) {
+      getView().switcherEnable(enableSwitcher);
       getView().setTrackingSwitchStatus(isTrackingEnabled);
       getView().setMapEnabled(isTrackingEnabled);
    }
@@ -158,7 +159,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
 
    @Override
    public void disableTrackingCanceled() {
-      applyTrackingStatusForUI(true);
+      applyTrackingStatusForUI(true, true);
    }
 
    @Override
@@ -173,7 +174,7 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
             .subscribe(this::checkLocationServiceResult, Timber::e);
    }
 
-   private void checkLocationServiceResult(LocationSettingsResult result) {
+   private void checkLocationServiceResult(SettingsResult result) {
       locationScreenComponent.checkSettingsResult(result)
             .compose(getView().bindUntilDetach())
             .subscribe(this::onLocationSettingsResult);
@@ -184,7 +185,6 @@ public class LostCardPresenterImpl extends WalletPresenterImpl<LostCardScreen> i
    }
 
    private void applyTrackingStatus(boolean enableTracking) {
-      getView().switcherEnable(true);
       smartCardLocationInteractor.updateTrackingStatusPipe().send(new UpdateTrackingStatusCommand(enableTracking));
    }
 

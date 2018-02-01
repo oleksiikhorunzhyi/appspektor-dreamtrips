@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import com.afollestad.materialdialogs.MaterialDialog
+import com.bluelinelabs.conductor.ControllerChangeHandler
+import com.bluelinelabs.conductor.ControllerChangeType
 import com.google.zxing.Result
 import com.worldventures.core.utils.HttpErrorHandlingUtil
 import com.worldventures.wallet.R
 import com.worldventures.wallet.service.command.SmartCardUserCommand
+import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCommand
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
@@ -28,7 +31,8 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView
 import javax.inject.Inject
 
 @Suppress("UnsafeCallOnNullableType")
-class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen, WizardScanBarcodePresenter>(), WizardScanBarcodeScreen, ZXingScannerView.ResultHandler {
+class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen, WizardScanBarcodePresenter>(),
+      WizardScanBarcodeScreen, ZXingScannerView.ResultHandler {
 
    private var scanner: WalletBarCodeScanner? = null
    private lateinit var contentView: View
@@ -55,19 +59,6 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
    override fun supportConnectionStatusLabel() = false
 
    override fun supportHttpConnectionStatusLabel() = false
-
-   override fun onPostEnterAnimation() {
-      presenter.requestCamera()
-   }
-
-   override fun onPreExitAnimation() {
-      scanner?.stopCamera()
-   }
-
-   override fun onAttach(view: View) {
-      super.onAttach(view)
-      presenter.requestCamera()
-   }
 
    override fun onActivityStarted(activity: Activity) {
       super.onActivityStarted(activity)
@@ -99,8 +90,6 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
       Snackbar.make(view!!, R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show()
    }
 
-   override fun getContentView(): View = contentView
-
    override fun provideOperationFetchCardStatus(): OperationView<GetSmartCardStatusCommand> {
       return ComposableOperationView(
             SimpleDialogProgressView(context, R.string.wallet_wizard_assigning_msg, false),
@@ -124,6 +113,19 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
       )
    }
 
+   override fun provideOperationAcceptAgreements(): OperationView<AcceptSmartCardAgreementsCommand> {
+      return ComposableOperationView(
+            SimpleDialogProgressView(context, R.string.wallet_loading, false),
+            ErrorViewFactory.builder<AcceptSmartCardAgreementsCommand>()
+                  .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
+                        { command -> presenter.retryAgreementsAccept(command.smartCardStatus, command.smartCardId) },
+                        { presenter.handleAcceptanceCancelled() },
+                        R.string.wallet_wizard_acceptance_error,
+                        R.string.wallet_common_backend_error_message)
+                  ).build()
+      )
+   }
+
    override fun showErrorCardIsAssignedDialog() {
       MaterialDialog.Builder(context)
             .content(R.string.wallet_wizard_scan_barcode_card_is_assigned)
@@ -140,4 +142,17 @@ class WizardScanBarcodeScreenImpl : WalletBaseController<WizardScanBarcodeScreen
    override fun handleResult(result: Result) {
       presenter.checkBarcode(result.text)
    }
+
+   override fun onChangeStarted(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
+      super.onChangeStarted(changeHandler, changeType)
+      scanner?.visibility = View.GONE
+   }
+
+   override fun onChangeEnded(changeHandler: ControllerChangeHandler, changeType: ControllerChangeType) {
+      super.onChangeEnded(changeHandler, changeType)
+      scanner?.visibility = View.VISIBLE
+      if (changeType.isEnter && isAttached) presenter.requestCamera()
+   }
+
+   override fun screenModule(): Any? = WizardScanBarcodeScreenModule()
 }

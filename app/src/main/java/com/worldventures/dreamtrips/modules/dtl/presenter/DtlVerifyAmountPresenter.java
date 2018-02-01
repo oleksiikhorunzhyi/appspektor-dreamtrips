@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.UploadReceiptInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
@@ -18,6 +19,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
+   @Inject UploadReceiptInteractor uploadReceiptInteractor;
 
    private final Merchant merchant;
 
@@ -46,7 +48,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
-            .doOnNext(transaction -> photoUploadingManagerS3.cancelUploading(transaction.getUploadTask()))
+            .doOnNext(transaction -> uploadReceiptInteractor.uploadReceiptCommandPipe().cancelLatest())
             .flatMap(transaction -> transactionInteractor.transactionActionPipe()
                   .createObservableResult(DtlTransactionAction.save(merchant, ImmutableDtlTransaction.copyOf(transaction)
                         .withUploadTask(null)))

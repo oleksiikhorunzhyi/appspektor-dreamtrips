@@ -1,7 +1,7 @@
 package com.worldventures.wallet.ui.provisioning_blocked.impl;
 
-
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -98,5 +98,11 @@ public class WalletProvisioningBlockedScreenImpl extends WalletBaseController<Wa
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletProvisioningBlockedScreenModule();
    }
 }

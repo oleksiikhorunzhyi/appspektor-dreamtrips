@@ -1,5 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.newcard.helper;
 
+// TODO: 12/17/17 WTF ?
 public final class CardIdUtil {
 
    private CardIdUtil() {

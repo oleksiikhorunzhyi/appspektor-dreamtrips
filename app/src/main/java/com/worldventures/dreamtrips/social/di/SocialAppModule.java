@@ -4,11 +4,13 @@ import android.support.annotation.DrawableRes;
 
 import com.worldventures.core.component.ComponentDescription;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.model.session.UserSession;
+import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.modules.config.ConfigurationModule;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
+import com.worldventures.dreamtrips.social.di.friends.UserAppModule;
 import com.worldventures.dreamtrips.social.ui.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.FeedAppModule;
@@ -41,6 +43,7 @@ import dagger.Provides;
             SocialInitializerModule.class,
             SocialMappingModule.class,
             SocialSnappyModule.class,
+            UserAppModule.class
       }
 )
 public class SocialAppModule {
@@ -205,7 +208,7 @@ public class SocialAppModule {
             .key(HELP)
             .navMenuTitle(R.string.help)
             .toolbarTitle(R.string.help)
-            .icon(R.drawable.ic_help)
+            .icon(R.drawable.ic_help_selector)
             .fragmentClass(HelpFragment.class)
             .build();
    }
@@ -232,9 +235,12 @@ public class SocialAppModule {
 
    @DrawableRes
    private int getLogo(SessionHolder sessionHolder) {
-      String countryCode = sessionHolder.get().get().user().getCountryCode();
-      if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
-         return R.drawable.dt_action_bar_logo_skyzone;
+      Optional<UserSession> sessionOptional = sessionHolder.get();
+      if (sessionOptional.isPresent()) {
+         String countryCode = sessionOptional.get().user().getCountryCode();
+         if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
+            return R.drawable.dt_action_bar_logo_skyzone;
+         }
       }
       return R.drawable.dt_action_bar_logo;
    }

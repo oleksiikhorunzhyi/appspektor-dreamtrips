@@ -16,7 +16,6 @@ import com.worldventures.core.test.common.Injector
 import com.worldventures.core.test.common.RxJavaSchedulerInitializer
 import com.worldventures.core.test.janet.MockAnalyticsService
 import com.worldventures.core.utils.HttpErrorHandlingUtil
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate
 import io.techery.janet.Janet
@@ -34,7 +33,6 @@ abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
       var context: Context = mock()
       var activityRouter: ActivityRouter = mock()
       var featureManager: FeatureManager = mock()
-      var photoUploadingManager: PhotoUploadingManagerS3 = mock()
       var offlineWarningDelegate: OfflineWarningDelegate = mock()
       var connectionInfoProvider: ConnectionInfoProvider = mock()
       var httpErrorHandlingUtil: HttpErrorHandlingUtil = mock()
@@ -58,7 +56,6 @@ abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
             registerProvider(SessionHolder::class.java, { sessionHolder })
             registerProvider(AnalyticsInteractor::class.java, { AnalyticsInteractor(pipeCreator) })
             registerProvider(FeatureManager::class.java, { featureManager })
-            registerProvider(PhotoUploadingManagerS3::class.java, { photoUploadingManager })
             registerProvider(OfflineWarningDelegate::class.java, { offlineWarningDelegate })
             registerProvider(ConnectionInfoProvider::class.java, { connectionInfoProvider })
             registerProvider(HttpErrorHandlingUtil::class.java, { httpErrorHandlingUtil })

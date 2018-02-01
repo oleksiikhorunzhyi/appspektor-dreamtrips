@@ -274,7 +274,7 @@ public class FragmentWithFeedDelegate {
          if (isTabletLandscape) {
             bundleBuilder.slave(true);
          }
-         router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+         router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
                .data(bundleBuilder.build()).build());
       }
    }
@@ -330,7 +330,6 @@ public class FragmentWithFeedDelegate {
    public void openHashtagSearch() {
       router.moveTo(HashtagFeedFragment.class, NavigationConfigBuilder.forActivity()
             .data(null)
-            .manualOrientationActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
    }

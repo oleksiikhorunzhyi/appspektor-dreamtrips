@@ -9,5 +9,5 @@ class BeaconLoggerModule {
 
    @Provides
    @Singleton
-   fun provideBeaconLogger(): WalletBeaconLogger = StubWalletBeaconLogger()
+   fun provideBeaconLogger(): WalletBeaconLogger = WalletBeaconLoggerSlf4j()
 }

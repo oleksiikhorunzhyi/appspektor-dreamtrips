@@ -4,19 +4,21 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetSearchUsersCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetUsersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetUsersCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 
 public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPresenter.View> {
 
    @State String query;
+   private Subscription subscription;
 
    public FriendSearchPresenter(String query) {
       this.query = query;
@@ -24,11 +26,16 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
 
    @Override
    protected void loadUsers(int page, Action1<List<User>> onSuccessAction) {
-      friendsInteractor.getSearchUsersPipe()
+      //It's correcting pagination and removing layering of queries
+      if (subscription != null && !subscription.isUnsubscribed()) {
+         subscription.unsubscribe();
+      }
+
+      subscription = friendsInteractor.getSearchUsersPipe()
             .createObservable(new GetSearchUsersCommand(query, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetSearchUsersCommand>()
-                  .onSuccess(searchUsersCommand -> onSuccessAction.call(searchUsersCommand.getResult()))
+                  .onSuccess(searchUsersCommand -> onSuccessAction.call(new ArrayList<>(searchUsersCommand.getResult())))
                   .onFail(this::onError));
    }
 

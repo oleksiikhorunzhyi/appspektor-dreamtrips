@@ -32,12 +32,17 @@ public class ActivityRouter extends ActivityBoundRouter {
       startActivity(LaunchActivity.class, null, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
    }
 
-   public void openPlayerActivity(Uri url, String videoName, String language, Class launchComponent) {
+   public void openPlayerActivity(Uri url, String uid, String videoName, String language, Class launchComponent) {
       Intent intent = new Intent(getContext(), PlayerActivity.class).setData(url)
             .putExtra(PlayerActivity.EXTRA_VIDEO_NAME, videoName)
+            .putExtra(PlayerActivity.EXTRA_VIDEO_UID, uid)
             .putExtra(PlayerActivity.EXTRA_LAUNCH_COMPONENT, launchComponent)
             .putExtra(PlayerActivity.EXTRA_LANGUAGE, language);
       getContext().startActivity(intent);
+   }
+
+   public void openPlayerActivity(Uri url, String videoName, String language, Class launchComponent) {
+      openPlayerActivity(url, null, videoName, language, launchComponent);
    }
 
    public void open360Activity(String url, String title) {

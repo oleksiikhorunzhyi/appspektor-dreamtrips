@@ -24,7 +24,6 @@ import com.worldventures.wallet.domain.converter.SmartCardLocationTypeToWalletLo
 import com.worldventures.wallet.domain.converter.WalletCoordinatesToSmartCardCoordinatesConverter
 import com.worldventures.wallet.domain.converter.WalletLocationToSmartCardLocationConverter
 import com.worldventures.wallet.domain.converter.WalletLocationTypeToSmartCardLocationTypeConverter
-import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
@@ -33,6 +32,7 @@ import com.worldventures.wallet.domain.entity.lostcard.WalletLocationType
 import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
+import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.FirmwareInteractor
 import com.worldventures.wallet.service.RecordInteractor
 import com.worldventures.wallet.service.SmartCardInteractor
@@ -41,8 +41,8 @@ import com.worldventures.wallet.service.SmartCardSyncManager
 import com.worldventures.wallet.service.TestSchedulerProvider
 import com.worldventures.wallet.service.beacon.StubWalletBeaconLogger
 import com.worldventures.wallet.service.beacon.WalletBeaconLogger
-import com.worldventures.wallet.service.impl.MockWalletLocationService
-import com.worldventures.wallet.service.location.WalletDetectLocationService
+import com.worldventures.core.service.location.MockDetectLocationService
+import com.worldventures.core.service.location.DetectLocationService
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand
 import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesCommand
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand
@@ -94,7 +94,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          firmwareInteractor = createFirmwareInteractor(janet)
          recordInteractor = createRecordInteractor(janet)
          smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
-         walletDetectLocationService = createWalletDetectLocationService()
+         detectLocationService = createWalletDetectLocationService()
          locationStorage = mockLostCardStorage()
 
          janet.connectToSmartCardSdk()
@@ -102,7 +102,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       context("SmartCard Location interactor spec tests") {
          it("take location and save to DB") {
-            val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
+            val smartCard: SmartCard = createTestSmartCard(SMART_CARD_ID)
             whenever(mockDb.smartCard).thenReturn(smartCard)
             val initialLocationsSize = locationStorage.walletLocations.size
             val testSubscriber: TestSubscriber<ActionState<WalletLocationCommand>> = TestSubscriber()
@@ -116,7 +116,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
             assert(locationStorage.walletLocations.size == initialLocationsSize + 1)
          }
          it("post location") {
-            val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
+            val smartCard: SmartCard = createTestSmartCard(SMART_CARD_ID)
             val walletLocation = mockWalletLocation()
             var locationList: List<WalletLocation> = mutableListOf()
             whenever(mockDb.smartCard).thenReturn(smartCard)
@@ -137,7 +137,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
             assertNotNull(WalletLocationsUtil.getLatestLocation(locationList)?.postedAt)
          }
          it("get location") {
-            val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
+            val smartCard: SmartCard = createTestSmartCard(SMART_CARD_ID)
             whenever(mockDb.smartCard).thenReturn(smartCard)
             whenever(mockDb.walletLocations).thenReturn(mutableListOf<WalletLocation>())
 
@@ -178,7 +178,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var mockDb: WalletStorage
       lateinit var mappery: MapperyContext
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
-      lateinit var walletDetectLocationService: WalletDetectLocationService
+      lateinit var detectLocationService: DetectLocationService
       lateinit var smartCardInteractor: SmartCardInteractor
       lateinit var firmwareInteractor: FirmwareInteractor
       lateinit var recordInteractor: RecordInteractor
@@ -215,7 +215,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
          daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
-         daggerCommandActionService.registerProvider(WalletDetectLocationService::class.java) { walletDetectLocationService }
+         daggerCommandActionService.registerProvider(DetectLocationService::class.java) { detectLocationService }
          daggerCommandActionService.registerProvider(LostCardRepository::class.java) { locationStorage }
          daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
          daggerCommandActionService.registerProvider(FirmwareInteractor::class.java, { firmwareInteractor })
@@ -277,13 +277,11 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       private fun mockAddressRestResponse() = AddressRestResponse(results = emptyList(), placeId = null, status = "unknown")
 
-      fun mockSmartCard(cardId: String) = SmartCard(cardId, CardStatus.ACTIVE, "deviceId")
-
       fun createMockDb(): WalletStorage = spy()
 
       fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
 
-      fun createWalletDetectLocationService(): WalletDetectLocationService = MockWalletLocationService(mockLocation())
+      fun createWalletDetectLocationService(): DetectLocationService = MockDetectLocationService(mockLocation())
 
       private fun mockLocation(): Location {
          val location: Location = mock()

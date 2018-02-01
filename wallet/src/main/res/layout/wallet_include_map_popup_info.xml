@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       >
 
@@ -21,20 +20,37 @@
 
    <android.support.v7.widget.CardView
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
+         android:layout_height="@dimen/wallet_find_my_smart_card_address_popup_height"
          android:visibility="@{viewModel.visible ? View.VISIBLE : View.GONE}"
          >
 
-      <android.support.constraint.ConstraintLayout
+      <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
             >
+
+         <TextView
+               android:id="@+id/label_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="16dp"
+               android:text="@string/wallet_lost_card_last_known_location"
+               android:textColor="#929292"
+               android:textSize="15sp"
+               android:textStyle="bold"
+               />
 
          <TextView
                android:id="@+id/tv_place"
                style="@style/SettingsText.Primary"
-               android:layout_marginStart="36dp"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/label_title"
+               android:layout_marginEnd="@dimen/wallet_find_my_smart_card_address_popup_content_margin"
+               android:layout_marginStart="@dimen/wallet_find_my_smart_card_address_popup_content_margin"
                android:layout_marginTop="8dp"
                android:maxLines="1"
                android:text="@{viewModel.place}"
@@ -42,70 +58,53 @@
                android:textSize="14sp"
                android:textStyle="bold"
                android:visibility="@{viewModel.place.isEmpty() ? View.GONE : View.VISIBLE}"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@+id/textView13"
                tools:text="Subway, Food"
                />
 
          <TextView
                android:id="@+id/tv_info"
                style="@style/SettingsText.Secondary"
-               android:layout_marginStart="36dp"
-               android:layout_marginTop="0dp"
-               android:maxLines="2"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/tv_place"
+               android:layout_marginEnd="@dimen/wallet_find_my_smart_card_address_popup_content_margin"
+               android:layout_marginStart="@dimen/wallet_find_my_smart_card_address_popup_content_margin"
+               android:maxLines="3"
                android:text="@{viewModel.address}"
                android:textColor="#222222"
                android:textSize="14sp"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@+id/tv_place"
-               tools:text="Dominicana st, 29891"
+               tools:text="Ukraine, Kyiv city\n18/20, Mykhaila Omelianovycha-Pavlenka Street"
+               />
+
+         <TextView
+               android:id="@+id/last_connected_label"
+               style="@style/SettingsText.Secondary"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/tv_info"
+               android:layout_marginEnd="@dimen/wallet_find_my_smart_card_address_popup_content_margin"
+               android:layout_marginStart="@dimen/wallet_find_my_smart_card_address_popup_content_margin"
+               android:text="@{viewModel.lastConnectedDate}"
+               android:textColor="#929292"
+               android:textSize="14sp"
+               tools:text="Sunday, October 3rd, 12:08PM"
                />
 
          <Button
                android:id="@+id/btn_directions"
                style="@style/Widget.AppCompat.Button.Small"
-               android:layout_width="0dp"
+               android:layout_width="match_parent"
                android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
                android:layout_gravity="center"
-               android:layout_marginBottom="8dp"
                android:layout_marginEnd="12dp"
                android:layout_marginStart="12dp"
                android:layout_marginTop="20dp"
                android:onClick="@{directionClick}"
                android:text="@string/wallet_directions"
                android:textColor="@color/white"
-               app:layout_constraintBottom_toBottomOf="parent"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@+id/last_connected_label"
                />
 
-         <TextView
-               android:id="@+id/textView13"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginStart="16dp"
-               android:layout_marginTop="8dp"
-               android:text="@string/wallet_lost_card_last_known_location"
-               android:textColor="#929292"
-               android:textSize="15sp"
-               android:textStyle="bold"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toTopOf="parent"
-               />
-
-         <TextView
-               android:id="@+id/last_connected_label"
-               style="@style/SettingsText.Secondary"
-               android:layout_marginStart="36dp"
-               android:text="@{viewModel.lastConnectedDate}"
-               android:textColor="#929292"
-               android:textSize="14sp"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@+id/tv_info"
-               tools:text="Sunday, October 3rd, 12:08PM"
-               />
-
-      </android.support.constraint.ConstraintLayout>
+      </RelativeLayout>
    </android.support.v7.widget.CardView>
 </layout>

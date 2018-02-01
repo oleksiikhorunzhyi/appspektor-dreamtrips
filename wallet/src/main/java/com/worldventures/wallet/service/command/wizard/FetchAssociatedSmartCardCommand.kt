@@ -6,8 +6,6 @@ import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET
 import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
-import com.worldventures.wallet.domain.entity.SmartCardDetails
-import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.service.SystemPropertiesProvider
 import com.worldventures.wallet.service.command.ConnectSmartCardCommand
@@ -21,29 +19,18 @@ import javax.inject.Named
 
 @Suppress("UnsafeCallOnNullableType")
 @CommandAction
-class FetchAssociatedSmartCardCommand : Command<FetchAssociatedSmartCardCommand.AssociatedCard>(), InjectableAction {
+class FetchAssociatedSmartCardCommand(private val skipLocalData: Boolean = false)
+   : Command<FetchAssociatedSmartCardCommand.AssociatedCard>(), InjectableAction {
 
-   @field:[Inject Named(JANET_WALLET)]
-   lateinit var janetWallet: Janet
+   @field:[Inject Named(JANET_WALLET)] lateinit var janetWallet: Janet
    @Inject lateinit var janet: Janet
    @Inject lateinit var propertiesProvider: SystemPropertiesProvider
    @Inject lateinit var walletStorage: WalletStorage
    @Inject lateinit var mappery: MapperyContext
 
-   private val smartCardFromCache: SmartCard?
-      get() = walletStorage.smartCard
-
-   private val smartCardUserFromCache: SmartCardUser?
-      get() = walletStorage.smartCardUser
-
    @Throws(Throwable::class)
-   override fun run(callback: Command.CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard>) {
-      val smartCard = smartCardFromCache
-      val user = smartCardUserFromCache
-      if (smartCard != null && smartCard.cardStatus === CardStatus.ACTIVE && user != null
-            // TODO: this check for backward compatibility 1.21 -> 1.23
-            && user.userPhoto != null && user.userPhoto.uri != null) {
-         callback.onSuccess(createAssociatedCard(smartCard, walletStorage.smartCardDetails))
+   override fun run(callback: CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard>) {
+      if (!skipLocalData && findInLocalCash(callback)) {
          return
       }
       janet.createPipe(GetAssociatedCardsHttpAction::class.java)
@@ -60,25 +47,27 @@ class FetchAssociatedSmartCardCommand : Command<FetchAssociatedSmartCardCommand.
 
    private fun handleResponse(listSmartCardInfo: List<SmartCardInfo>): Observable<FetchAssociatedSmartCardCommand.AssociatedCard> {
       if (listSmartCardInfo.isEmpty()) {
-         return Observable.just(AssociatedCard(exist = false))
+         return Observable.just(AssociatedCard())
       }
       val smartCardInfo = listSmartCardInfo[0]
 
       return ProcessSmartCardInfoDelegate(walletStorage, janetWallet, mappery)
             .processSmartCardInfo(smartCardInfo)
-            .map { result -> createAssociatedCard(result.smartCard, result.details) }
+            .map { (smartCard, _) -> AssociatedCard(smartCard = smartCard) }
    }
 
-   private fun createAssociatedCard(smartCard: SmartCard, smartCardDetails: SmartCardDetails): AssociatedCard {
-      return AssociatedCard(
-            exist = true,
-            smartCard = smartCard,
-            smartCardDetails = smartCardDetails)
+   private fun findInLocalCash(callback: CommandCallback<FetchAssociatedSmartCardCommand.AssociatedCard>): Boolean {
+      val smartCard = walletStorage.smartCard
+      val user = walletStorage.smartCardUser
+      if (smartCard != null && smartCard.cardStatus === CardStatus.ACTIVE && user != null) {
+         callback.onSuccess(AssociatedCard(smartCard = smartCard))
+         return true
+      }
+      return false
    }
 
-   data class AssociatedCard(
-         val smartCard: SmartCard? = null,
-         val smartCardDetails: SmartCardDetails? = null,
-         val exist: Boolean
-   )
+   class AssociatedCard(val smartCard: SmartCard? = null) {
+      val exist: Boolean
+         get() = smartCard != null
+   }
 }

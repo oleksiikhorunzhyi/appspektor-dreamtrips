@@ -113,7 +113,7 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
       pickerNavigationViewFlipper = findViewById(R.id.flipper_picker_navigation);
 
       findViewById(R.id.btn_done).setOnClickListener(view -> onDone());
-      findViewById(R.id.btn_cancel).setOnClickListener(view -> dismiss());
+      findViewById(R.id.btn_cancel).setOnClickListener(view -> cancel());
       findViewById(R.id.btn_back).setOnClickListener(view -> mediaPickerContainer.goBack());
    }
 
@@ -230,6 +230,11 @@ public class MediaPickerDialog extends BottomSheetDialog implements MediaPickerD
    @Override
    public int getPickLimit() {
       return photoPickLimitStrategy.photoPickLimit();
+   }
+
+   @Override
+   public int getVideoDurationLimit() {
+      return videoPickLimitStrategy.videoDurationLimit();
    }
 
    @Override

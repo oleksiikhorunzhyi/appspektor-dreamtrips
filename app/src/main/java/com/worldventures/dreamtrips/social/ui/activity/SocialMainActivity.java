@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
-import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.wallet.DTWalletActivity;
 import com.worldventures.wallet.di.SmartCardModule;
@@ -110,10 +109,6 @@ public class SocialMainActivity extends SocialDrawerActivity<MainActivityPresent
             break;
          case SmartCardModule.WALLET:
             DTWalletActivity.startWallet(this);
-            break;
-         case SocialAppModule.FEED:
-         case SocialAppModule.ACCOUNT_PROFILE:
-            FeedActivity.startFeed(this, component);
             break;
          default:
             currentComponent = component;

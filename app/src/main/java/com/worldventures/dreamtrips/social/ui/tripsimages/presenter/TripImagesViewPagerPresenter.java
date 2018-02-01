@@ -66,6 +66,7 @@ public class TripImagesViewPagerPresenter extends BaseImageViewPagerPresenter<Ba
 
    @Override
    public void pageSelected(int position) {
+      videoPlayerHolder.pause();
       videoPlayerHolder.releaseCurrentVideo();
       super.pageSelected(position);
    }

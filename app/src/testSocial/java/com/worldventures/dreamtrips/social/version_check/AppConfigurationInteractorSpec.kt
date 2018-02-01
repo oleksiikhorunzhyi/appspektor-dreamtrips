@@ -39,7 +39,7 @@ class AppConfigurationInteractorSpec : BaseSpec({
 
       it("should get correct update requirement") {
          val testSub = TestSubscriber<ActionState<LoadConfigurationCommand>>()
-         configurationInteractor.loadConfigurationPipe().createObservable(LoadConfigurationCommand()).subscribe(testSub)
+         configurationInteractor.loadConfigPipe.createObservable(LoadConfigurationCommand()).subscribe(testSub)
          assertActionSuccess(testSub) {
             checkConfigurationCorrect(it.result, STUB_UPDATE_REQUIREMENT)
             true
@@ -131,14 +131,16 @@ class AppConfigurationInteractorSpec : BaseSpec({
       }
 
       fun checkConfigurationCorrect(configuration: Configuration,
-                                    apiCongiguration: ApiConfiguration) {
+                                    apiConfiguration: ApiConfiguration) {
          val updateRequirement = configuration.updateRequirement
-         assertEquals(updateRequirement.appVersion, apiCongiguration.categories()[0].configSettings()[0].value())
-         val mappedTimestamp = java.lang.Long.valueOf(apiCongiguration.categories()[0].configSettings()[1].value()) * 1000
-         assertEquals(updateRequirement.timeStamp, mappedTimestamp)
+         updateRequirement?.let {
+            assertEquals(updateRequirement.appVersion, apiConfiguration.categories()[0].configSettings()[0].value())
+            val mappedTimestamp = java.lang.Long.valueOf(apiConfiguration.categories()[0].configSettings()[1].value()) * 1000
+            assertEquals(updateRequirement.timeStamp, mappedTimestamp)
+         }
 
          assertEquals(configuration.videoRequirement.videoMaxLength.toString(),
-               apiCongiguration.categories()[1].configSettings()[0].value())
+               apiConfiguration.categories()[1].configSettings()[0].value())
       }
    }
 }

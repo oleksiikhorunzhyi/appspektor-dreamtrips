@@ -43,4 +43,7 @@
 
    <dimen name="wallet_settings_help_video_item_height">200dp</dimen>
    <dimen name="wallet_settings_help_pin_progress_button_size">48dp</dimen>
+
+   <dimen name="wallet_find_my_smart_card_address_popup_height">182dp</dimen>
+   <dimen name="wallet_find_my_smart_card_address_popup_content_margin">36dp</dimen>
 </resources>

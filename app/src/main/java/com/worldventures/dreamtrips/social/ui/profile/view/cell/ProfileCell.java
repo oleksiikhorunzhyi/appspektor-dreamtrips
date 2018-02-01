@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.ui.profile.view.cell;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.GraphicUtils;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.custom.BadgeView;
-import com.worldventures.core.utils.BadgeHelper;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.core.utils.ProjectTextUtils;
@@ -37,7 +35,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.social.ui.profile.service.analytics.TapMyProfileAnalyticAction;
 import com.worldventures.dreamtrips.social.ui.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.ProfileCellDelegate;
-import com.worldventures.dreamtrips.social.ui.profile.view.widgets.ExpandableLayout;
 import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 
 import java.text.DecimalFormat;
@@ -58,7 +55,7 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    @InjectView(R.id.cover_camera) ImageView cover;
    @InjectView(R.id.avatar_camera) ImageView avatar;
    @InjectView(R.id.user_name) TextView userName;
-   @InjectView(R.id.et_date_of_birth) DTEditText dateOfBirth;
+   @InjectView(R.id.date_of_birth) DTEditText dateOfBirth;
    @InjectView(R.id.pb) ProgressBar progressBar;
    @InjectView(R.id.pb_cover) ProgressBar coverProgressBar;
    @InjectView(R.id.trip_images) TextView tripImages;
@@ -74,24 +71,17 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    @InjectView(R.id.dt_points) TextView dtPoints;
    @InjectView(R.id.rovia_bucks) TextView roviaBucks;
    @InjectView(R.id.user_balance) ViewGroup userBalance;
-   @InjectView(R.id.expandable_info) ExpandableLayout info;
-   @InjectView(R.id.more) ViewGroup more;
    @InjectView(R.id.friend_request_caption) TextView friendRequestCaption;
    @InjectView(R.id.friend_request) ViewGroup friendRequest;
-   @InjectView(R.id.accept) AppCompatTextView accept;
-   @InjectView(R.id.reject) AppCompatTextView reject;
    @InjectView(R.id.badge) BadgeView badge;
    @InjectView(R.id.fl_friends_container) View friendsContainer;
    @InjectView(R.id.divider1) View divider1;
-   @InjectView(R.id.divider2) View divider2;
-   @InjectView(R.id.divider3) View divider3;
 
    @Inject SessionHolder appSessionHolder;
    @Inject SnappyRepository snapper;
    @Inject FeatureManager featureManager;
    @Inject @ForActivity Provider<Injector> injectorProvider;
    @Inject AnalyticsInteractor analyticsInteractor;
-   @Inject BadgeHelper badgeHelper;
 
    private final Context context;
    private DecimalFormat df = new DecimalFormat("#0.00");
@@ -122,17 +112,13 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
          avatar.setVisibility(View.GONE);
          userBalance.setVisibility(View.GONE);
          addFriend.setVisibility(View.VISIBLE);
-
          itemView.findViewById(R.id.wrapper_enroll).setVisibility(View.GONE);
          itemView.findViewById(R.id.wrapper_from).setVisibility(View.GONE);
          itemView.findViewById(R.id.wrapper_date_of_birth).setVisibility(View.GONE);
          itemView.findViewById(R.id.wrapper_user_id).setVisibility(View.GONE);
-         more.setVisibility(View.INVISIBLE);
-
-         setIsExpandEnabled(false);
-         info.show();
       }
 
+      setIsExpandEnabled(false);
       friends.setEnabled(isAccount());
 
       if (isAccount() && featureManager.available(Feature.SOCIAL)) {
@@ -376,19 +362,6 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    @OnClick(R.id.add_friend)
    protected void onAddFriend() {
       cellDelegate.onAddFriend();
-   }
-
-   @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})
-   public void onInfoClick() {
-      if (isExpandEnabled) {
-         if (info.isOpened()) {
-            info.hide();
-            more.setVisibility(View.VISIBLE);
-         } else {
-            info.show();
-            more.setVisibility(View.INVISIBLE);
-         }
-      }
    }
 
    private void sendAnalyticIfNeed(TapMyProfileAnalyticAction analyticAction) {

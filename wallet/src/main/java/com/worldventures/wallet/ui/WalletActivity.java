@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.FrameLayout;
 
 import com.bluelinelabs.conductor.Conductor;
@@ -88,7 +89,7 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
    public Object getSystemService(@NonNull String name) {
       if (WalletCropImageService.SERVICE_NAME.equals(name)) {
          return cropImageService;
-      } else if (LocationScreenComponent.COMPONENT_NAME.equals(name)) {
+      } else if (LocationScreenComponent.Companion.getCOMPONENT_NAME().equals(name)) {
          return locationSettingsService;
       }
       return super.getSystemService(name);
@@ -101,11 +102,11 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
    }
 
    @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
       if (cropImageService.onActivityResult(requestCode, resultCode, data)) {
          return;
       }
-      if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) {
+      if (locationSettingsService.onActivityResult(requestCode, resultCode)) {
          return;
       }
       super.onActivityResult(requestCode, resultCode, data);

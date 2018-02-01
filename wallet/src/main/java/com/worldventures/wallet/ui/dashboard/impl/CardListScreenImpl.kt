@@ -311,7 +311,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    private fun showDetails(view: View, overlap: Int) {
       val model = (bankCardList.getChildViewHolder(view) as CommonCardHolder).data
       val transitionModel = presenter.getCardPosition(view, overlap, model.cardBackGround,
-            model.isDefaultCard)
+            model.defaultCard)
       addTransitionView(model, transitionModel)
       presenter.cardClicked(model, transitionModel)
    }
@@ -421,6 +421,8 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    override fun supportConnectionStatusLabel() = true
 
    override fun supportHttpConnectionStatusLabel() = true
+
+   override fun screenModule(): Any? = CardListScreenModule()
 
    companion object {
       private val KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE"

@@ -18,16 +18,16 @@
 
    <com.worldventures.dreamtrips.social.ui.feed.view.custom.TranslateView
          android:id="@+id/translate_view"
+         style="@style/TranslateView"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         style="@style/TranslateView"
          />
 
    <TextView
          android:id="@+id/translate"
+         style="@style/TranslateButton"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         style="@style/TranslateButton"
          android:text="@string/translate"
          android:textColor="@android:color/black"
          />
@@ -38,7 +38,7 @@
          android:layout_height="match_parent"
          >
 
-      <com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView
+      <com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl
             android:id="@+id/videoAttachment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

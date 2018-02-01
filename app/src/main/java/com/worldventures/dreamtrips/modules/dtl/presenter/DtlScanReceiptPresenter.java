@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.net.Uri;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.worldventures.core.modules.picker.command.CopyFileCommand;
 import com.worldventures.core.modules.picker.service.MediaPickerInteractor;
 import com.worldventures.core.modules.picker.service.PickImageDelegate;
@@ -21,7 +20,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.UploadReceiptInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.UploadReceiptCommand;
 import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 
 import javax.inject.Inject;
@@ -30,7 +31,6 @@ import icepick.State;
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
@@ -39,11 +39,11 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
    @Inject PickImageDelegate pickImageDelegate;
    @Inject MediaPickerInteractor mediaPickerInteractor;
    @Inject DtlScanReceiptErrorAdapter apiErrorViewAdapter;
+   @Inject UploadReceiptInteractor uploadReceiptInteractor;
    //
    @State double amount;
    //
    private final Merchant merchant;
-   //
 
    public DtlScanReceiptPresenter(Merchant merchant) {
       this.merchant = merchant;
@@ -171,17 +171,22 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(merchant.asMerchantAttributes())));
       view.attachReceipt(Uri.parse(filePath));
 
-      UploadTask uploadTask = new UploadTask();
-      uploadTask.setFilePath(filePath);
-      TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
-      uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
-
       transactionInteractor.transactionActionPipe()
-            .createObservable(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
-                  .withUploadTask(uploadTask)))
-            .subscribeOn(Schedulers.io())
-            .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onSuccess(action -> checkVerification(action.getResult()))
-                  .onFail(apiErrorViewAdapter::handleError));
+            .createObservableResult(DtlTransactionAction.get(merchant))
+            .flatMap(dtlTransactionAction -> {
+               UploadTask uploadTask = new UploadTask();
+               uploadTask.setFilePath(filePath);
+               UploadReceiptCommand command = new UploadReceiptCommand(merchant,
+                     dtlTransactionAction.getResult(), uploadTask);
+               return uploadReceiptInteractor.uploadReceiptCommandPipe().createObservable(command);
+            })
+            .filter(state -> state.status == ActionState.Status.PROGRESS ||
+               state.status == ActionState.Status.FAIL)
+            .take(1)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<UploadReceiptCommand>()
+               .onProgress((uploadReceiptCommand, progress) -> checkVerification(uploadReceiptCommand.getTransaction()))
+               .onFail(this::handleError));
    }
 
    public interface View extends RxView, InformView {

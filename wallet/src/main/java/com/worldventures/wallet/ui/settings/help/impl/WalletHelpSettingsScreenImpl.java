@@ -1,9 +1,9 @@
 package com.worldventures.wallet.ui.settings.help.impl;
 
-
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -90,5 +90,11 @@ public class WalletHelpSettingsScreenImpl extends WalletBaseController<WalletHel
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return true;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletHelpSettingsScreenModule();
    }
 }

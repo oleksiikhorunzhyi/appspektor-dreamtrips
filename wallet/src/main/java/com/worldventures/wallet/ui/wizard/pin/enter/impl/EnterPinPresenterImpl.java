@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.pin.enter.impl;
 
-
 import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.wallet.service.WizardInteractor;

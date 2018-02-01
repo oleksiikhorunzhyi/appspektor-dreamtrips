@@ -2,6 +2,8 @@ package com.worldventures.wallet.domain.storage.disk;
 
 import com.worldventures.wallet.domain.storage.SnappyCrypter;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public abstract class CryptedModelStorage extends BaseModelStorage {
       return executeWithResult(db -> snappyCrypter.get(db, key, clazz)).or(defaultValue);
    }
 
+   @NonNls
    protected <T> List<T> getList(String key) {
       return executeWithResult(db -> (List<T>) snappyCrypter.getList(db, key)).or(Collections.emptyList());
    }
@@ -38,6 +41,7 @@ public abstract class CryptedModelStorage extends BaseModelStorage {
       return executeWithResult(db -> snappyCrypter.getEncrypted(db, key, clazz)).orNull();
    }
 
+   @NonNls
    protected <T> List<T> getEncryptedList(String key) {
       return executeWithResult(db -> (List<T>) snappyCrypter.getEncryptedList(db, key)).or(Collections.emptyList());
    }

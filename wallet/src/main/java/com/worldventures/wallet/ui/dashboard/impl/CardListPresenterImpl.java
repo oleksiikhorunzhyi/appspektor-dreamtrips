@@ -326,7 +326,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       }
 
       Observable.zip(
-            smartCardInteractor.offlineModeStatusPipe().createObservableResult(OfflineModeStatusCommand.fetch()),
+            smartCardInteractor.offlineModeStatusPipe().createObservableResult(OfflineModeStatusCommand.Companion.fetch()),
             smartCardInteractor.deviceStatePipe().createObservableResult(DeviceStateCommand.Companion.fetch()),
             (offlineModeState, smartCardModifier) -> {
                boolean needNetworkConnection = offlineModeState.getResult() || networkDelegate.isAvailable();

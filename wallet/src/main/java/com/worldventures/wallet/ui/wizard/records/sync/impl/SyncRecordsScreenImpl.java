@@ -1,10 +1,10 @@
 package com.worldventures.wallet.ui.wizard.records.sync.impl;
 
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,8 +122,14 @@ public class SyncRecordsScreenImpl extends WalletBaseController<SyncRecordsScree
 
    @Override
    public SyncAction getSyncAction() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_SYNC_ACTION))
+      return !getArgs().isEmpty() && getArgs().containsKey(KEY_SYNC_ACTION)
             ? (SyncAction) getArgs().getSerializable(KEY_SYNC_ACTION)
             : null;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new SyncRecordsScreenModule();
    }
 }

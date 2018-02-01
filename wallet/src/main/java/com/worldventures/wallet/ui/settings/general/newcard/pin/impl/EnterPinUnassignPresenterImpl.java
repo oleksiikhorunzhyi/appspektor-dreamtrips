@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.newcard.pin.impl;
 
-
 import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;

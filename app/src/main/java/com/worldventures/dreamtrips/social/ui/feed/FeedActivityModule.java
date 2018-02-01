@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
-import com.worldventures.dreamtrips.social.ui.activity.FeedActivity;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
@@ -80,8 +79,9 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.FeedEntityContentFr
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.FullscreenViewActivity;
 
 import javax.inject.Singleton;
 
@@ -90,7 +90,6 @@ import dagger.Provides;
 
 @Module(
       injects = {
-            FeedActivity.class,
             TripFeedItemDetailsCell.class,
             FeedPresenter.class,
             SuggestedPhotoCellPresenterHelper.class,
@@ -143,6 +142,7 @@ import dagger.Provides;
             UploadingPostsSectionCell.class,
             VideoFeedItemDetailsCell.class,
             PhotoStripView.class,
+            FullscreenViewActivity.class,
       },
       complete = false,
       library = true)

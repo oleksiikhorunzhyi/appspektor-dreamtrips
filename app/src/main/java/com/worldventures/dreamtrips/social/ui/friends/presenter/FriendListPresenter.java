@@ -1,14 +1,17 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction;
-import com.worldventures.dreamtrips.social.ui.friends.service.analytics.FilterFriendsFeedAction;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.friends.analytics.FilterFriendsFeedAction;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import icepick.State;
@@ -31,7 +34,12 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      friendsInteractor.acceptRequestPipe()
+      subscribeOnAcceptRequestResult();
+   }
+
+   @VisibleForTesting
+   public void subscribeOnAcceptRequestResult(){
+      friendsInteractor.getAcceptRequestPipe()
             .observeSuccess()
             .compose(bindView())
             .observeOn(AndroidSchedulers.mainThread())
@@ -40,7 +48,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
 
    public void onFilterClicked() {
       getCirclesObservable().subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-            .onSuccess(circlesCommand -> onCirclesFilterSuccess(circlesCommand.getResult()))
+            .onSuccess(circlesCommand -> onCirclesFilterSuccess(new ArrayList<>(circlesCommand.getResult())))
             .onFail(this::onCirclesError));
    }
 
@@ -84,7 +92,7 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
             .createObservable(new GetFriendsCommand(selectedCircle, query, page, getPerPageCount()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetFriendsCommand>()
-                  .onSuccess(getFriendsCommand -> onSuccessAction.call(getFriendsCommand.getResult()))
+                  .onSuccess(getFriendsCommand -> onSuccessAction.call(new ArrayList<>(getFriendsCommand.getResult())))
                   .onFail(this::onError));
    }
 

@@ -1,7 +1,7 @@
 package com.worldventures.wallet.ui.wizard.pin.success.impl;
 
-
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,7 +73,7 @@ public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessS
 
    @Override
    public Action getPinAction() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_PIN_ACTION))
+      return !getArgs().isEmpty() && getArgs().containsKey(KEY_PIN_ACTION)
             ? (Action) getArgs().getSerializable(KEY_PIN_ACTION)
             : null;
    }
@@ -81,5 +81,11 @@ public class PinSetSuccessScreenImpl extends WalletBaseController<PinSetSuccessS
    @Override
    public PinSetSuccessPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new PinSetSuccessScreenModule();
    }
 }

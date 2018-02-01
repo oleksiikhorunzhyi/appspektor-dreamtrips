@@ -12,7 +12,6 @@
          android:id="@+id/toolbar"
          android:layout_width="match_parent"
          android:layout_height="?attr/actionBarSize"
-         app:title="@string/wallet_terms_and_conditions_header"
          />
 
    <RelativeLayout
@@ -31,7 +30,6 @@
             android:layout_marginStart="@dimen/wallet_wizard_agreement_margin_start_end"
             android:layout_marginEnd="@dimen/wallet_wizard_agreement_margin_start_end"
             android:layout_marginBottom="@dimen/wallet_wizard_agreement_margin_bottom"
-            android:text="@string/wallet_wizard_splash_accept_user_agreement"
             android:gravity="center"
             />
 
@@ -43,14 +41,14 @@
             >
 
          <WebView
-               android:id="@+id/termsView"
+               android:id="@+id/webView"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                />
 
          <View
                android:layout_width="match_parent"
-               android:layout_height="@dimen/spacing_huge"
+               android:layout_height="@dimen/spacing_large"
                android:layout_gravity="top"
                android:background="@drawable/wallet_terms_top_overlay"
                />

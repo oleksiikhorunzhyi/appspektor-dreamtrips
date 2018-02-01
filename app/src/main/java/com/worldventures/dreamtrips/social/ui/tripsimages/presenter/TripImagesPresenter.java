@@ -129,7 +129,7 @@ public class TripImagesPresenter extends Presenter<TripImagesPresenter.View> imp
    }
 
    private void showMediaPicker() {
-      appConfigurationInteractor.configurationCommandActionPipe()
+      appConfigurationInteractor.getConfigurationPipe()
             .createObservableResult(new ConfigurationCommand())
             .compose(new IoToMainComposer<>())
             .map(configurationCommand -> configurationCommand.getResult()

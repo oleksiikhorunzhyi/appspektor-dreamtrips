@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 
 import javax.inject.Inject;
 

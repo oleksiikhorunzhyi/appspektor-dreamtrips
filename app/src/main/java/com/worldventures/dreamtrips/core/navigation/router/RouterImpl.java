@@ -55,12 +55,12 @@ public class RouterImpl implements Router {
       ActivityRouter activityRouter = new ActivityRouter(activity);
       Bundle args = getArgs(config);
       args.putSerializable(ComponentPresenter.FRAGMENT_CLAZZ, fragmentClazz);
+
       Class<? extends InjectingActivity> clazz = config.isManualOrientationActivity()
-             ? ConfigChangesAwareComponentActivity.class
-             : config.getTransparentBackground() ? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
+            ? ConfigChangesAwareComponentActivity.class
+            : config.getTransparentBackground() ? TransparentSocialComponentActivity.class : SocialComponentActivity.class;
 
       activityRouter.startActivityWithArgs(clazz, args, config.getFlags());
-
       if (config.animationConfig != null) {
          activity.overridePendingTransition(config.animationConfig.getAnimationEnter(), config.animationConfig.getAnimationExit());
       }

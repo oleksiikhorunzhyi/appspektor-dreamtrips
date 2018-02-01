@@ -67,7 +67,6 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       get() = binding.profile!!
       set(value) = setProfileModel(value)
 
-   @Suppress("UnsafeCast")
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       binding = DataBindingUtil.bind(view)
@@ -227,7 +226,7 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       }
    }
 
-   override fun pickPhoto(initialPhotoUrl: String) {
+   override fun pickPhoto(initialPhotoUrl: String?) {
       onChoosePhotoClick(initialPhotoUrl)
    }
 
@@ -258,4 +257,6 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    override fun supportConnectionStatusLabel() = true
 
    override fun supportHttpConnectionStatusLabel() = true
+
+   override fun screenModule(): Any? = WalletSettingsProfileScreenModule()
 }

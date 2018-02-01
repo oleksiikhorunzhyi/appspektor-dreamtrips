@@ -21,7 +21,6 @@ import com.worldventures.core.model.session.FeatureManager;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
@@ -45,6 +44,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTr
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.UploadReceiptInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -72,7 +72,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject FeatureManager featureManager;
    @Inject LocationDelegate locationDelegate;
    @Inject DtlTransactionInteractor transactionInteractor;
-   @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
+   @Inject UploadReceiptInteractor uploadReceiptInteractor;
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;
@@ -221,7 +221,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                      if (action.getResult() != null) {
                         DtlTransaction dtlTransaction = action.getResult();
                         if (dtlTransaction.getUploadTask() != null) {
-                           photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
+                           uploadReceiptInteractor.uploadReceiptCommandPipe().cancelLatest();
                         }
                         transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
 

@@ -3,12 +3,12 @@ ext {
    mobileSdkVersion = '1.2.4'
    okhttp3Version = '3.5.0'
    googleLibrariesVersion = '26.1.0'
-   googleServicesVersion = '11.2.0'
+   googleServicesVersion = '11.8.0'
    mosbyVersion = '2.0.0'
 
    def jodaTimeVersion = '2.9.9'
    def spekVersion = '1.1.2'
-   def dataBindingCompilerVersion = '3.0.0-rc1'
+   def dataBindingCompilerVersion = '3.0.1'
 
    coreDependencies = [:]
 
@@ -106,7 +106,7 @@ ext {
          // API
          mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.35-RELEASE-1.25-SNAPSHOT', config: {
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.38-RELEASE-1.26-SNAPSHOT', config: {
             changing = true
          }],
    ]
@@ -141,7 +141,8 @@ ext {
          dagger           : [api: "com.squareup.dagger:dagger:$daggerVersion"],
          daggerProcessor  : [a: "com.squareup.dagger:dagger-compiler:$daggerVersion"],
          daggerAnnotations: [api: 'javax.annotation:jsr250-api:1.0'],
-         daggerProguard   : [rap: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+         daggerProguard   : [rapAndroid: 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'],
+         // daggerProguard doesn't play nice with kap, so using java annotation processor instead
    ]
 
    coreDependencies.test = [

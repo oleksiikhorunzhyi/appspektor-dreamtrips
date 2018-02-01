@@ -15,11 +15,11 @@ import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.core.ui.util.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
-import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
-import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
@@ -45,8 +45,8 @@ import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditi
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate;
 import com.worldventures.dreamtrips.social.ui.flags.model.FlagData;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
 
@@ -161,20 +161,22 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
       refreshFeed();
    }
 
+   @SuppressWarnings("unchecked")
    public void actionFilter() {
-      circlesInteractor.pipe()
+      circlesInteractor.getPipe()
             .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>()
                   .onStart(circlesCommand -> view.showBlockingProgress())
-                  .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                  .onSuccess(circlesCommand ->
+                        onCirclesSuccess((List<Circle>) circlesCommand.getResult())) // generic problem java vs kotlin
                   .onFail(this::onCirclesError));
    }
 
    void updateCircles() {
-      circlesInteractor.pipe().send(new GetCirclesCommand());
+      circlesInteractor.getPipe().send(new GetCirclesCommand());
    }
 
    private void onCirclesSuccess(List<Circle> resultCircles) {

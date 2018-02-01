@@ -12,7 +12,6 @@ import com.worldventures.wallet.analytics.tokenization.TokenizationAnalyticsLoca
 import com.worldventures.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.wallet.service.command.ConnectSmartCardCommand;
-import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.wallet.service.command.FactoryResetCommand;
 import com.worldventures.wallet.service.command.FetchBatteryLevelCommand;
 import com.worldventures.wallet.service.command.FetchCardPropertiesCommand;
@@ -31,16 +30,15 @@ import com.worldventures.wallet.service.command.SetSmartCardTimeCommand;
 import com.worldventures.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.wallet.service.command.SyncSmartCardCommand;
+import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCommand;
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand;
 import com.worldventures.wallet.service.command.http.CreateNxtSessionCommand;
 import com.worldventures.wallet.service.command.http.FetchFirmwareInfoCommand;
-import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand;
+import com.worldventures.wallet.service.command.http.FetchSmartCardAgreementsCommand;
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.OfflineModeStatusCommand;
 import com.worldventures.wallet.service.command.offline_mode.RestoreOfflineModeDefaultStateCommand;
 import com.worldventures.wallet.service.command.offline_mode.SwitchOfflineModeCommand;
-import com.worldventures.wallet.service.profile.UpdateProfileModule;
-import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 import com.worldventures.wallet.service.command.record.AddRecordCommand;
 import com.worldventures.wallet.service.command.record.DefaultRecordIdCommand;
 import com.worldventures.wallet.service.command.record.DeleteRecordCommand;
@@ -65,6 +63,8 @@ import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
+import com.worldventures.wallet.service.profile.UpdateProfileModule;
+import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 
 import dagger.Module;
 
@@ -86,7 +86,6 @@ import dagger.Module;
             SetupUserDataCommand.class,
             DefaultRecordIdCommand.class,
             ActivateSmartCardCommand.class,
-            CreateAndConnectToCardCommand.class,
             AddRecordCommand.class,
             SetDefaultCardOnDeviceCommand.class,
             SetPaymentCardAction.class,
@@ -97,7 +96,8 @@ import dagger.Module;
             FetchCardPropertiesCommand.class,
             FetchFirmwareVersionCommand.class,
             SetLockStateCommand.class,
-            FetchTermsAndConditionsCommand.class,
+            FetchSmartCardAgreementsCommand.class,
+            AcceptSmartCardAgreementsCommand.class,
             GetCustomerSupportContactCommand.class,
             SmartCardFeedbackCommand.class,
             CustomerSupportFeedbackCommand.class,

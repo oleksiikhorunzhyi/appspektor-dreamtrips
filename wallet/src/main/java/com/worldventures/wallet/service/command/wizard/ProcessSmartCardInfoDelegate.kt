@@ -21,12 +21,11 @@ internal class ProcessSmartCardInfoDelegate(
       private val janetWallet: Janet,
       private val mappery: MapperyContext) {
 
-   fun processSmartCardInfo(smartCardInfo: SmartCardInfo): Observable<Result> {
-      val details = mappery.convert(smartCardInfo, SmartCardDetails::class.java)
+   fun processSmartCardInfo(smartCardInfo: SmartCardInfo): Observable<Pair<SmartCard, SmartCardUser>> {
       val smartCard = createSmartCard(smartCardInfo)
 
       val user = createSmartCardUser(smartCardInfo.user())
-      val result = Result(smartCard, user, details)
+      val result = Pair(smartCard, user)
       return save(result).map { result }
    }
 
@@ -45,18 +44,24 @@ internal class ProcessSmartCardInfoDelegate(
    private fun createSmartCard(smartCardInfo: SmartCardInfo): SmartCard {
       return SmartCard(
             smartCardId = smartCardInfo.scId().toString(),
-            deviceId = smartCardInfo.deviceId(),
-            cardStatus = CardStatus.ACTIVE)
+            cardStatus = CardStatus.ACTIVE,
+            details = SmartCardDetails(
+                  deviceId = smartCardInfo.deviceId(),
+                  serialNumber = smartCardInfo.serialNumber(),
+                  bleAddress = smartCardInfo.bleAddress(),
+                  revVersion = smartCardInfo.revVersion(),
+                  wvOrderId = smartCardInfo.wvOrderId(),
+                  nxtOrderId = smartCardInfo.nxtOrderId(),
+                  orderDate = smartCardInfo.orderDate())
+      )
    }
 
-   private fun save(result: Result): Observable<Void> {
-      walletStorage.saveSmartCardDetails(result.details)
-      walletStorage.saveSmartCardUser(result.user)
+   private fun save(result: Pair<SmartCard, SmartCardUser>): Observable<Void> {
+      walletStorage.saveSmartCardUser(result.second)
       //saving smart card
       return janetWallet.createPipe(ActiveSmartCardCommand::class.java)
-            .createObservableResult(ActiveSmartCardCommand(result.smartCard))
+            .createObservableResult(ActiveSmartCardCommand(result.first))
             .map { null }
    }
 
-   internal class Result(val smartCard: SmartCard, val user: SmartCardUser, val details: SmartCardDetails)
 }

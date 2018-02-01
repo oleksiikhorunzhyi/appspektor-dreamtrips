@@ -7,7 +7,7 @@
       android:keepScreenOn="true"
       >
 
-   <tv.danmaku.ijk.media.widget.media.IjkVideoView
+   <com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl
          android:id="@+id/myVideo"
          android:layout_width="match_parent"
          android:layout_height="match_parent"

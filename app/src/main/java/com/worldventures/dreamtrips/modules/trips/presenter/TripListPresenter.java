@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
+import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
@@ -22,11 +24,13 @@ import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.ChangeFeedEntityLikedStatusCommand;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 
@@ -36,6 +40,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    @Inject BucketInteractor bucketInteractor;
    @Inject TripFilterEventDelegate tripFilterEventDelegate;
    @Inject ResetFilterEventDelegate resetFilterEventDelegate;
+   @Inject AppConfigurationInteractor appConfigurationInteractor;
    @Inject TripsInteractor tripsInteractor;
 
    @State String query;
@@ -59,7 +64,29 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
       subscribeToLikesChanges();
 
       loadWithStatus = true;
+      Observable.combineLatest(appConfigurationInteractor.getConfigurationPipe()
+                  .observe()
+                  .filter(state -> state.status == ActionState.Status.SUCCESS)
+                  .map(state -> state.action.getResult()),
+            tripsInteractor.tripsPipe()
+                  .observe()
+                  .filter(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.PROGRESS)
+                  .map(state -> state.action.getItems()),
+            (configuration, trips) -> {
+               List<Object> items = new ArrayList<>();
+               if (configuration.getTravelBannerRequirement() != null
+                     && configuration.getTravelBannerRequirement().getEnabled()) {
+                  items.add(configuration.getTravelBannerRequirement());
+               }
+               items.addAll(trips);
+               return items;
+            })
+            .compose(bindViewToMainComposer())
+            .subscribe(view::itemsChanged);
+
+
       reload();
+      appConfigurationInteractor.getConfigurationPipe().send(new ConfigurationCommand());
    }
 
    public void reload() {
@@ -117,17 +144,12 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripsCommand>()
-                  .onProgress((action, progress) -> view.itemsChanged(action.getItems()))
                   .onSuccess(getTripsCommand -> {
                      loading = false;
                      noMoreItems = !getTripsCommand.hasMore();
-                     view.finishLoading();
-                     view.itemsChanged(getTripsCommand.getItems());
                   })
-                  .onFail((getTripsCommand, throwable) -> {
-                     this.handleError(getTripsCommand, throwable);
-                     view.finishLoading();
-                  }));
+                  .onFinish(command -> view.finishLoading())
+                  .onFail(this::handleError));
    }
 
    public void likeItem(TripModel trip) {
@@ -142,6 +164,10 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
             .subscribe(new ActionStateSubscriber<ChangeFeedEntityLikedStatusCommand>()
                   .onSuccess(command -> view.itemLiked(command.getResult()))
                   .onFail(this::handleError));
+   }
+
+   public void hideTripRequirement() {
+      appConfigurationInteractor.getConfigurationPipe().send(new ConfigurationCommand(null, true));
    }
 
    public void addItemToBucket(TripModel tripModel) {
@@ -185,7 +211,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
             });
    }
 
-   public void sendAnalyticAction(BaseAnalyticsAction action) {
+   private void sendAnalyticAction(BaseAnalyticsAction action) {
       analyticsInteractor.analyticsActionPipe().send(action);
    }
 
@@ -212,7 +238,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
       Observable<String> textChanges();
 
-      void itemsChanged(List<TripModel> items);
+      void itemsChanged(List<Object> items);
 
       void itemLiked(FeedEntity feedEntity);
 

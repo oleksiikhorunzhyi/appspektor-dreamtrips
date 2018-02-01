@@ -1,5 +1,6 @@
 package com.worldventures.wallet.ui.settings.security.lostcard.impl;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -61,6 +62,18 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
             trackingEnableSwitcher.setEnabled(true);
          }
       });
+   }
+
+   @Override
+   protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+      super.onSaveViewState(view, outState);
+      controllerFlipper.onSaveViewState(outState);
+   }
+
+   @Override
+   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+      super.onRestoreViewState(view, savedViewState);
+      controllerFlipper.onRestoreViewState(savedViewState);
    }
 
    protected void onNavigationClick() {

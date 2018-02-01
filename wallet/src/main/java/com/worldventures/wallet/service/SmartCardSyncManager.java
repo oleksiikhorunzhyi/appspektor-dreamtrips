@@ -23,6 +23,7 @@ import com.worldventures.wallet.service.command.http.FetchFirmwareInfoCommand;
 import com.worldventures.wallet.service.command.record.SyncRecordStatusCommand;
 import com.worldventures.wallet.service.command.settings.general.display.GetDisplayTypeCommand;
 import com.worldventures.wallet.service.firmware.command.LoadFirmwareFilesCommand;
+import com.worldventures.wallet.util.SCFirmwareUtils;
 import com.worldventures.wallet.util.WalletFeatureHelper;
 
 import java.util.concurrent.TimeUnit;
@@ -39,6 +40,7 @@ import timber.log.Timber;
 import static com.worldventures.wallet.domain.entity.ConnectionStatus.CONNECTED;
 import static com.worldventures.wallet.domain.entity.ConnectionStatus.DFU;
 import static com.worldventures.wallet.domain.entity.ConnectionStatus.DISCONNECTED;
+import static com.worldventures.wallet.util.SCFirmwareUtils.supportRecordDataCommandOptions;
 
 public class SmartCardSyncManager {
 
@@ -78,7 +80,7 @@ public class SmartCardSyncManager {
       interactor.connectionActionPipe()
             .observeSuccess()
             .throttleLast(1, TimeUnit.SECONDS)
-            .subscribe(connectAction -> cardConnected(connectAction.type == ConnectionType.DFU ? DFU : CONNECTED),
+            .subscribe(connectAction -> cardConnected(connectAction.type == ConnectionType.DFU ? DFU : CONNECTED, connectAction.firmwareVersion),
                   throwable -> Timber.e(throwable, "Error with handling connection event"));
 
       interactor.disconnectPipe()
@@ -86,17 +88,17 @@ public class SmartCardSyncManager {
             .subscribe(command -> cardDisconnected(), throwable -> Timber.e(throwable, "Error while updating status of active card"));
    }
 
-   private void cardConnected(ConnectionStatus connection) {
-      interactor.deviceStatePipe().send(DeviceStateCommand.Companion.connection(connection));
-      observeActiveSmartCard(connection);
+   private void cardConnected(ConnectionStatus connection, String firmwareVersion) {
+      interactor.deviceStatePipe().send(DeviceStateCommand.Companion.connection(connection, firmwareVersion));
+      observeActiveSmartCard(connection, firmwareVersion);
    }
 
    private void cardDisconnected() {
-      interactor.deviceStatePipe().send(DeviceStateCommand.Companion.connection(DISCONNECTED));
+      interactor.deviceStatePipe().send(DeviceStateCommand.Companion.connection(DISCONNECTED, ""));
       interactor.deviceStatePipe().send(DeviceStateCommand.Companion.battery(0));
    }
 
-   private void observeActiveSmartCard(ConnectionStatus connectionStatus) {
+   private void observeActiveSmartCard(ConnectionStatus connectionStatus, String firmwareVersion) {
       interactor.activeSmartCardPipe()
             .observeSuccessWithReplay()
             .map(Command::getResult)
@@ -104,16 +106,18 @@ public class SmartCardSyncManager {
                   && smartCard.getCardStatus() == CardStatus.ACTIVE)
             .takeUntil(interactor.disconnectPipe().observeSuccess())
             .take(1)
-            .subscribe(aVoid -> activeCardConnected(),
+            .subscribe(aVoid -> activeCardConnected(firmwareVersion),
                   throwable -> Timber.e(throwable, "Error while observe connection for active card")
             );
    }
 
-   private void activeCardConnected() {
+   private void activeCardConnected(String firmwareVersion) {
       interactor.setSmartCardTimePipe().send(new SetSmartCardTimeCommand());
       interactor.fetchCardPropertiesPipe().send(new FetchCardPropertiesCommand());
       interactor.checkPinStatusActionPipe().send(new CheckPinStatusAction());
-      interactor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));
+      if (SCFirmwareUtils.supportHomeDisplayOptions(firmwareVersion)) {
+         interactor.getDisplayTypePipe().send(new GetDisplayTypeCommand(true));
+      }
       recordInteractor.cardsListPipe().send(RecordListCommand.Companion.fetch());
       setupBatteryObserver();
       setupChargerEventObserver();
@@ -253,7 +257,8 @@ public class SmartCardSyncManager {
                            .createObservableResult(DeviceStateCommand.Companion.fetch()),
                      (activeCommand, cardStateCommand) -> Pair.create(activeCommand.getResult(), cardStateCommand.getResult()))
                      .filter(pair -> pair.second.getConnectionStatus() == CONNECTED
-                           && pair.first.getCardStatus() == CardStatus.ACTIVE)
+                           && pair.first.getCardStatus() == CardStatus.ACTIVE
+                           && supportRecordDataCommandOptions(pair.second.getFirmwareVersion()))
                      .map(pair -> pair.first));
       }
    }

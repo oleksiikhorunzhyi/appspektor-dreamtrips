@@ -1,13 +1,12 @@
 package com.worldventures.dreamtrips.social.ui.flags.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.flagging.GetFlagReasonsHttpAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +54,7 @@ public class GetFlagsCommand extends CommandWithError<List<Flag>> implements Inj
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return new CacheOptions();
    }
 
    @Override

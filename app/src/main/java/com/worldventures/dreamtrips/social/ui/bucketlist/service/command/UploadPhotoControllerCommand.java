@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 
 import java.util.List;
 
@@ -60,8 +59,7 @@ public final class UploadPhotoControllerCommand extends Command<List<EntityState
    public CacheOptions getCacheOptions() {
       CacheBundle bundle = new CacheBundleImpl();
       bundle.put(BUCKET_ID_PARAM, bucketId);
-
-      return ImmutableCacheOptions.builder().params(bundle).build();
+      return new CacheOptions(true, true, true, bundle);
    }
 
    private static class FetchFunc implements Func1<List<EntityStateHolder<BucketPhoto>>, List<EntityStateHolder<BucketPhoto>>> {

@@ -24,7 +24,10 @@ android {
             includeCompileClasspath = false
          }
       }
+
+      vectorDrawables.useSupportLibrary = true
    }
+
 
    dataBinding {
       enabled = true
@@ -40,8 +43,6 @@ android {
 
    lintOptions {
       xmlReport false
-      // todo fix it
-      disable 'RestrictedApi', 'MissingPermission', 'WrongViewCast'
    }
 
    compileOptions {

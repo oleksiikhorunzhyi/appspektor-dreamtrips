@@ -1,8 +1,7 @@
 package com.worldventures.wallet.service.command;
 
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
@@ -41,9 +40,7 @@ public abstract class CachedValueCommand<T> extends Command<T> implements Cached
 
    @Override
    public final CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder()
-            .saveToCache(hasOperationFunc())
-            .build();
+      return new CacheOptions(true, hasOperationFunc(), true, null);
    }
 
    public boolean hasOperationFunc() {

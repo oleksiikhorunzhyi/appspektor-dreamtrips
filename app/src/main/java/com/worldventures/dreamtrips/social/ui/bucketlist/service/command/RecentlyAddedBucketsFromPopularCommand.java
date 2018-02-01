@@ -2,12 +2,11 @@ package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
 import android.support.v4.util.Pair;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 
 import java.util.List;
 
@@ -69,7 +68,7 @@ public final class RecentlyAddedBucketsFromPopularCommand extends Command<Pair<B
       CacheBundle bundle = new CacheBundleImpl();
       bundle.put(BUCKET_TYPE_EXTRA, bucketType);
 
-      return ImmutableCacheOptions.builder().params(bundle).build();
+      return new CacheOptions(true, true, true, bundle);
    }
 
    private static final class AddFunc implements Func1<List<BucketItem>, List<BucketItem>> {

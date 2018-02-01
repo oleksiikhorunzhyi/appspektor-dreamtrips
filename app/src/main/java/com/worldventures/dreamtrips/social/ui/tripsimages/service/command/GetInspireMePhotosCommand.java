@@ -1,15 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.inspirations.GetInspireMePhotosHttpAction;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.InspireMeStorage;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +87,7 @@ public class GetInspireMePhotosCommand extends CommandWithError<List<Inspiration
       CacheBundleImpl cacheBundle = new CacheBundleImpl();
       cacheBundle.put(InspireMeStorage.RELOAD, page == 1);
       cacheBundle.put(InspireMeStorage.LOAD_MORE, page != 1);
-      return ImmutableCacheOptions.builder().saveToCache(!fromCache).params(cacheBundle).build();
+      return new CacheOptions(true, !fromCache, true, cacheBundle);
    }
 
    @Override

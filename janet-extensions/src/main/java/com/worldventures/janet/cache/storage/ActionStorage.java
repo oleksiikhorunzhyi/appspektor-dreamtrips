@@ -1,6 +1,6 @@
-package com.worldventures.core.janet.cache.storage;
+package com.worldventures.janet.cache.storage;
 
-import com.worldventures.core.janet.cache.CachedAction;
+import com.worldventures.janet.cache.CachedAction;
 
 public interface ActionStorage<T> extends Storage<T> {
    Class<? extends CachedAction> getActionClass();

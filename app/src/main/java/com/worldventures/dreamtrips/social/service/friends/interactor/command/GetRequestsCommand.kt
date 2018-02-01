@@ -1,18 +1,17 @@
 package com.worldventures.dreamtrips.social.service.friends.interactor.command
 
-import com.worldventures.core.janet.cache.CacheBundleImpl
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
-import com.worldventures.core.janet.cache.storage.PaginatedStorage
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.friends.GetFriendRequestsHttpAction
 import com.worldventures.dreamtrips.api.friends.model.ImmutableGetFriendRequestsParams
-import java.util.ArrayList
+import com.worldventures.janet.cache.CacheBundleImpl
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
+import com.worldventures.janet.cache.storage.PaginatedStorage
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
+import java.util.ArrayList
 
 @CommandAction
 class GetRequestsCommand(val page: Int) : GetUsersCommand(), CachedAction<List<User>> {
@@ -48,11 +47,9 @@ class GetRequestsCommand(val page: Int) : GetUsersCommand(), CachedAction<List<U
       cachedUsers = ArrayList(cache)
    }
 
-   override fun getCacheOptions(): CacheOptions {
-      val cacheBundle = CacheBundleImpl()
-      cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, isFirstPage)
-      return ImmutableCacheOptions.builder().params(cacheBundle).build()
-   }
+   override fun getCacheOptions() = CacheOptions(params = CacheBundleImpl().apply {
+      put(PaginatedStorage.BUNDLE_REFRESH, isFirstPage)
+   })
 
    fun items(): List<User> {
       //we should add previous loaded pages in beginning of list
@@ -70,4 +67,3 @@ class GetRequestsCommand(val page: Int) : GetUsersCommand(), CachedAction<List<U
    }
 
 }
-

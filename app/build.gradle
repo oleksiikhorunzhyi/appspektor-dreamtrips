@@ -39,6 +39,10 @@ android {
             includeCompileClasspath = false
          }
       }
+
+      ndk{
+         abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+      }
    }
 
    flavorDimensions "build", "stream", "config"
@@ -168,10 +172,11 @@ android {
    dexOptions {
       javaMaxHeapSize "4g"
       preDexLibraries = project.ext.androidConfig.preDex
+      keepRuntimeAnnotatedClasses false
    }
    lintOptions {
       xmlReport false
-      disable 'MissingTranslation', 'RestrictedApi', 'ExtraTranslation'
+      disable 'MissingTranslation'
    }
    packagingOptions {
       exclude 'LICENSE.txt'

@@ -1,16 +1,15 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command;
 
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.multimedia.GetMultimediaHttpAction;
 import com.worldventures.dreamtrips.api.multimedia.ImmutableMultimediaPaginatedParams;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.TripImageStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.Nullable;
@@ -85,10 +84,7 @@ public class GetMemberMediaCommand extends BaseMediaCommand implements Injectabl
       cacheBundle.put(TripImageStorage.RELOAD, isReload());
       cacheBundle.put(TripImageStorage.LOAD_LATEST, false);
       cacheBundle.put(TripImageStorage.REMOVE_ITEMS, false);
-      return ImmutableCacheOptions.builder()
-            .params(cacheBundle)
-            .saveToCache(!fromCache)
-            .build();
+      return new CacheOptions(true, !fromCache, true, cacheBundle);
    }
 
    @Override

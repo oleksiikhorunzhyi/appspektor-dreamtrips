@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.social.service.friends.storage
 
-import com.worldventures.core.janet.cache.CacheBundle
-import com.worldventures.core.janet.cache.storage.ActionStorage
-import com.worldventures.core.janet.cache.storage.ClearableStorage
-import com.worldventures.core.janet.cache.storage.PaginatedStorage
-import com.worldventures.core.janet.cache.storage.PaginatedStorage.BUNDLE_REFRESH
+import com.worldventures.janet.cache.CacheBundle
+import com.worldventures.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.storage.ClearableStorage
+import com.worldventures.janet.cache.storage.PaginatedStorage
+import com.worldventures.janet.cache.storage.PaginatedStorage.BUNDLE_REFRESH
 import com.worldventures.dreamtrips.social.service.friends.interactor.command.UserPaginationCommand
 
 class UserPaginationStorage : PaginatedStorage<UserPaginationCommand.PaginationCachedModel>, ClearableStorage

@@ -3,6 +3,7 @@ package com.worldventures.wallet.ui.settings.help.documents.doc.impl;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -28,13 +29,21 @@ import static android.view.View.VISIBLE;
 
 public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocumentDetailScreen, HelpDocumentDetailPresenter> implements HelpDocumentDetailScreen {
 
+   private static final String KEY_STATE_CONTENT_LOADED = "HelpDocumentDetailScreenImpl#KEY_STATE_CONTENT_LOADED";
+   private static final String KEY_STATE_USE_WIDE_VIEW_PORT = "HelpDocumentDetailScreenImpl#KEY_STATE_USE_WIDE_VIEW_PORT";
+   private static final String KEY_STATE_LOAD_WITH_OVERVIEW_MODE = "HelpDocumentDetailScreenImpl#KEY_STATE_LOAD_WITH_OVERVIEW_MODE";
+   private static final String KEY_STATE_TITLE = "HelpDocumentDetailScreenImpl#KEY_STATE_TITLE";
+
    private static final String KEY_HELP_DOCUMENT = "key_help_document";
+   private static final String USER_GUIDE_NAME = "flye_user_guide";
 
    private Toolbar toolbar;
    private WebView webView;
-   private View pb;
+   private View progressView;
 
    @Inject HelpDocumentDetailPresenter presenter;
+
+   private boolean contentLoaded;
 
    public static HelpDocumentDetailScreenImpl create(WalletDocumentModel document) {
       final Bundle args = new Bundle();
@@ -70,20 +79,22 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
    private void setUpView(View view) {
       toolbar = view.findViewById(R.id.toolbar);
       toolbar.setNavigationOnClickListener(v -> onNavigationClick());
-      pb = view.findViewById(R.id.pb);
+      progressView = view.findViewById(R.id.pb);
       webView = view.findViewById(R.id.document_view);
+      webView.getSettings().setBuiltInZoomControls(true);
+      webView.getSettings().setDisplayZoomControls(false);
       webView.setWebViewClient(new WebViewClient() {
          @Override
          public void onPageFinished(WebView view, String url) {
             if (view.getProgress() == 100) {
-               pb.setVisibility(GONE);
+               progressView.setVisibility(GONE);
             }
          }
 
          @Override
          public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
-            pb.setVisibility(GONE);
+            progressView.setVisibility(GONE);
             view.setVisibility(INVISIBLE);
             showLoadDocError();
          }
@@ -105,6 +116,14 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
       });
    }
 
+   @Override
+   protected void onAttach(@NonNull View view) {
+      super.onAttach(view);
+      if (!contentLoaded) {
+         presenter.fetchDocument();
+      }
+   }
+
    private void showLoadDocError() {
       buildErrorDialog((dialog, which) -> webView.reload());
    }
@@ -124,15 +143,40 @@ public class HelpDocumentDetailScreenImpl extends WalletBaseController<HelpDocum
 
    @Override
    public WalletDocumentModel getDocument() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_HELP_DOCUMENT))
+      return !getArgs().isEmpty() && getArgs().containsKey(KEY_HELP_DOCUMENT)
             ? getArgs().getParcelable(KEY_HELP_DOCUMENT)
             : null;
    }
 
    @Override
    public void showDocument(WalletDocumentModel document) {
+      contentLoaded = true;
+      if (document.getUrl().contains(USER_GUIDE_NAME)) { // adjust only user guide documents // workaround for one doc
+         webView.getSettings().setLoadWithOverviewMode(true);
+         webView.getSettings().setUseWideViewPort(true);
+      }
       toolbar.setTitle(document.getName());
       webView.loadUrl(document.getUrl());
+   }
+
+   @Override
+   protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
+      super.onSaveViewState(view, outState);
+      outState.putBoolean(KEY_STATE_CONTENT_LOADED, contentLoaded);
+      outState.putCharSequence(KEY_STATE_TITLE, toolbar.getTitle());
+      outState.putBoolean(KEY_STATE_LOAD_WITH_OVERVIEW_MODE, webView.getSettings().getLoadWithOverviewMode());
+      outState.putBoolean(KEY_STATE_USE_WIDE_VIEW_PORT, webView.getSettings().getUseWideViewPort());
+      webView.saveState(outState);
+   }
+
+   @Override
+   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
+      super.onRestoreViewState(view, savedViewState);
+      webView.restoreState(savedViewState);
+      webView.getSettings().setLoadWithOverviewMode(savedViewState.getBoolean(KEY_STATE_LOAD_WITH_OVERVIEW_MODE));
+      webView.getSettings().setUseWideViewPort(savedViewState.getBoolean(KEY_STATE_USE_WIDE_VIEW_PORT));
+      toolbar.setTitle(savedViewState.getCharSequence(KEY_STATE_TITLE));
+      contentLoaded = savedViewState.getBoolean(KEY_STATE_CONTENT_LOADED, false);
    }
 
    @Override

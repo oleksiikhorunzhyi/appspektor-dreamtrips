@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">Sorry, we couldn\'t send the email, please try later.</string>
+   <string name="dtl_send_email_success">The email has been sent successfully.</string>
+   <string name="dtl_send_email_text">Send to my email</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">Subtotal: %s</string>
    <string name="dtl_locations_title">Select location</string>

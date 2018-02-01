@@ -93,6 +93,7 @@ ext {
          properratingbar       : [impl: 'com.github.techery:properratingbar:0.0.5'],
          materialRangeBar      : [impl: 'com.github.techery:material-range-bar:db6fec9fdd'],
          shortuctbadger        : [impl: 'me.leolin:ShortcutBadger:1.1.3@aar'],
+         screenshot            : [impl: 'com.github.nisrulz:screenshott:2.0.0']
    ]
    coreDependencies.ui.each { moduleDependencies.ui << it }
    //

@@ -13,6 +13,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NewRelicTrackableAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.SendEmailAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.TakeScreenshotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 
@@ -32,6 +34,8 @@ public class MerchantsInteractor {
    private final ActionPipe<UrlTokenAction> addUrlTokenPipe;
    private final ActionPipe<TransactionPilotAction> addTransactionPipe;
    private final ActionPipe<GetTransactionsCommand> getTransactionsPipe;
+   private final ActionPipe<SendEmailAction> sendEmailPipe;
+   private final ActionPipe<TakeScreenshotAction> takeScreenshotPipe;
 
    public MerchantsInteractor(SessionActionPipeCreator sessionActionPipeCreator, DtlLocationInteractor dtlLocationInteractor,
          ClearMemoryInteractor clearMemoryInteractor) {
@@ -46,6 +50,8 @@ public class MerchantsInteractor {
       this.addUrlTokenPipe = sessionActionPipeCreator.createPipe(UrlTokenAction.class, Schedulers.io());
       this.addTransactionPipe = sessionActionPipeCreator.createPipe(TransactionPilotAction.class, Schedulers.io());
       this.getTransactionsPipe = sessionActionPipeCreator.createPipe(GetTransactionsCommand.class, Schedulers.io());
+      this.sendEmailPipe = sessionActionPipeCreator.createPipe(SendEmailAction.class, Schedulers.io());
+      this.takeScreenshotPipe = sessionActionPipeCreator.createPipe(TakeScreenshotAction.class);
 
       connectNewRelicTracking();
       connectForLocationUpdates();
@@ -110,6 +116,14 @@ public class MerchantsInteractor {
 
    public ActionPipe<GetTransactionsCommand> getTransactionsPipe() {
       return getTransactionsPipe;
+   }
+
+   public ActionPipe<SendEmailAction> sendEmailPipe() {
+      return sendEmailPipe;
+   }
+
+   public ActionPipe<TakeScreenshotAction> takeScreenshotPipe() {
+      return takeScreenshotPipe;
    }
 
    private static DtlLocation buildManualLocation(ThinMerchant thinMerchant, DtlLocation dtlLocation) {

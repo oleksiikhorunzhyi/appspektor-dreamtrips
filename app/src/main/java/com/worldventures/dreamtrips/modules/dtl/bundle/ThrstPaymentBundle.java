@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 
 public class ThrstPaymentBundle implements Parcelable {
 
+   private final String transactionId;
    private final Merchant merchant;
    private final boolean isPaid;
    private final String totalAmount;
@@ -17,9 +18,10 @@ public class ThrstPaymentBundle implements Parcelable {
    private final double taxAmount;
    private final double tipAmount;
 
-   public ThrstPaymentBundle(Merchant merchant, boolean isPaid, String totalAmount,
-         String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount,
-         double taxAmount, double tipAmount) {
+   public ThrstPaymentBundle(String transactionId, Merchant merchant, boolean isPaid, String totalAmount,
+         String earnedPoints, String totalPoints, String receiptURL, double subTotalAmount, double taxAmount,
+         double tipAmount) {
+      this.transactionId = transactionId;
       this.merchant = merchant;
       this.isPaid = isPaid;
       this.totalAmount = totalAmount;
@@ -29,6 +31,10 @@ public class ThrstPaymentBundle implements Parcelable {
       this.subTotalAmount = subTotalAmount;
       this.taxAmount = taxAmount;
       this.tipAmount = tipAmount;
+   }
+
+   public String getTransactionId() {
+      return transactionId;
    }
 
    public Merchant getMerchant() {
@@ -72,6 +78,7 @@ public class ThrstPaymentBundle implements Parcelable {
    ///////////////////////////////////////////////////////////////////////////
 
    protected ThrstPaymentBundle(Parcel in) {
+      transactionId = in.readString();
       merchant = (Merchant) in.readSerializable();
       isPaid = in.readByte() != 0;
       totalAmount = in.readString();
@@ -85,6 +92,7 @@ public class ThrstPaymentBundle implements Parcelable {
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
+      dest.writeString(transactionId);
       dest.writeSerializable(merchant);
       dest.writeByte((byte) (isPaid ? 1 : 0));
       dest.writeString(totalAmount);

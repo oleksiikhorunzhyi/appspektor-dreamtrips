@@ -189,5 +189,5 @@
    <string name="transaction_review_merchant">Reseñar Negocio</string>
    <string name="transaction_sub_total_amount_no_semicolon">Cantidad subtotal:</string>
    <string name="dtl_estimator_explanation_to_earn_points">Los puntos se calculan en función de una cantidad mínima gastada en un establecimiento y del día de la semana. La cantidad mínima para ganar puntos debe ser de %1$s</string>
-   <string name="dtl_estimator_error_title">Error</string>
+   <string name="dtl_alert_title_error">Error</string>
 </resources>

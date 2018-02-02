@@ -180,7 +180,7 @@ public class DtlThankYouScreenFragment
    public void showSuccessEmailMessage() {
       Context context = getContext();
       SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
-            .setTitleText("")
+            .setTitleText(context.getString(R.string.app_name))
             .setContentText(context.getString(R.string.dtl_send_email_success))
             .setConfirmText(context.getString(R.string.ok))
             .setConfirmClickListener(sweetAlertDialog -> {
@@ -194,7 +194,7 @@ public class DtlThankYouScreenFragment
    public void showErrorEmailMessage() {
       Context context = getContext();
       SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
-            .setTitleText("")
+            .setTitleText(context.getString(R.string.dtl_alert_title_error))
             .setContentText(context.getString(R.string.dtl_send_email_error))
             .setConfirmText(context.getString(R.string.ok))
             .setConfirmClickListener(sweetAlertDialog -> {

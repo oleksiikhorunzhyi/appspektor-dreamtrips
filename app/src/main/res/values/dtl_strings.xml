@@ -193,5 +193,5 @@
    <string name="transaction_review_merchant">Review Merchant</string>
    <string name="transaction_sub_total_amount_no_semicolon">Sub Total Amount</string>
    <string name="dtl_estimator_explanation_to_earn_points">Points are calculated based on minimum amount spent at merchant and day of the week. To earn points the minimum amount should be %s</string>
-   <string name="dtl_estimator_error_title">Error</string>
+   <string name="dtl_alert_title_error">Error</string>
 </resources>

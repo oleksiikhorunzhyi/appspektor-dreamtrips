@@ -39,7 +39,7 @@ class FetchAssociatedSmartCardCommand(private val skipLocalData: Boolean = false
             .doOnNext {
                if (it.exist) {
                   janetWallet.createPipe(ConnectSmartCardCommand::class.java)
-                        .send(ConnectSmartCardCommand(result.smartCard!!.smartCardId))
+                        .send(ConnectSmartCardCommand(it.smartCard!!.smartCardId))
                }
             }
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })

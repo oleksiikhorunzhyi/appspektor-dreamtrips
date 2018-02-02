@@ -1,18 +1,16 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripHttpAction;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
@@ -27,7 +25,6 @@ public class GetTripDetailsCommand extends CommandWithError<TripModel> implement
 
    @Inject Janet janet;
    @Inject MapperyContext mappery;
-   @Inject SnappyRepository db;
 
    private String uid;
 
@@ -72,6 +69,6 @@ public class GetTripDetailsCommand extends CommandWithError<TripModel> implement
    public CacheOptions getCacheOptions() {
       CacheBundle cacheBundle = new CacheBundleImpl();
       cacheBundle.put(TripDetailsStorage.UID, uid);
-      return ImmutableCacheOptions.builder().params(cacheBundle).build();
+      return new CacheOptions(true, true, true, cacheBundle);
    }
 }

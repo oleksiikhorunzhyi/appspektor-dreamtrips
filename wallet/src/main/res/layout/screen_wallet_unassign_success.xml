@@ -21,12 +21,12 @@
          >
 
       <ImageView
+            android:id="@+id/image_success_container"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:id="@+id/image_success_container"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="58dp"
-            android:src="@drawable/ic_wallet_vector_success"
+            app:srcCompat="@drawable/ic_wallet_vector_success"
             tools:ignore="ContentDescription"
             />
 

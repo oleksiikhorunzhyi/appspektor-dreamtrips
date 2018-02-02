@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.di;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
 import com.worldventures.core.modules.infopages.service.storage.DocumentsDiskStorage;
 import com.worldventures.core.modules.infopages.service.storage.DocumentsStorage;
 import com.worldventures.core.modules.infopages.service.storage.FeedbackTypeActionStorage;
@@ -34,6 +33,7 @@ import com.worldventures.dreamtrips.social.ui.membership.storage.PodcastsStorage
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.InspireMeStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.TripImageStorage;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.YsbhPhotoStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
 
 import javax.inject.Singleton;
 

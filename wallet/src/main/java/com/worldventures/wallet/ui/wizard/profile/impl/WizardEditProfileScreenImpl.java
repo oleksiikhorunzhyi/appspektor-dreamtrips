@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.profile.impl;
 
-
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -263,5 +262,11 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
       return (!getArgs().isEmpty() && getArgs().containsKey(KEY_PROVISION_MODE))
             ? (ProvisioningMode) getArgs().getSerializable(KEY_PROVISION_MODE)
             : null;
+   }
+
+   @android.support.annotation.Nullable
+   @Override
+   protected Object screenModule() {
+      return new WizardEditProfileScreenModule();
    }
 }

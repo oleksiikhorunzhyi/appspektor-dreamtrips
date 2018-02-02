@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.storage
 
-import com.worldventures.core.janet.cache.CacheBundle
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.storage.ActionStorage
-import com.worldventures.core.janet.cache.storage.MemoryStorage
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetYSBHPhotosCommand
+import com.worldventures.janet.cache.CacheBundle
+import com.worldventures.janet.cache.CachedAction
+import com.worldventures.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.storage.MemoryStorage
 
 class YsbhPhotoStorage : ActionStorage<List<YSBHPhoto>> {
 

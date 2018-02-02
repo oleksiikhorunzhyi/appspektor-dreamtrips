@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
@@ -18,6 +17,8 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTab
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.util.PageSelectionDetector;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -110,7 +111,7 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends R
    }
 
    @Override
-   public void setRecentBucketItemCountByType(BucketType type, int count) {
+   public void setRecentBucketItemCountByType(@Nullable BucketType type, @Nullable Integer count) {
       tabStrip.setBadgeCount(type.ordinal(), count);
    }
 }

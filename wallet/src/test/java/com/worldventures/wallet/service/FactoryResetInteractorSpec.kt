@@ -8,19 +8,18 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.storage.ActionStorage
 import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.wallet.BaseSpec
-import com.worldventures.wallet.domain.entity.CardStatus
-import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
+import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.command.FactoryResetCommand
 import com.worldventures.wallet.service.command.reset.ResetOptions
 import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand
@@ -28,6 +27,8 @@ import com.worldventures.wallet.service.command.reset.WipeSmartCardDataCommand
 import com.worldventures.wallet.service.lostcard.LostCardRepository
 import com.worldventures.wallet.service.nxt.model.MultiResponseBody
 import com.worldventures.wallet.util.CachedPhotoUtil
+import com.worldventures.wallet.util.WalletFeatureHelper
+import com.worldventures.wallet.util.WalletFeatureHelperFull
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -63,7 +64,7 @@ class FactoryResetInteractorSpec : BaseSpec({
          beforeEachTest {
             // mock active SmartCard
             val smartCardId = "111"
-            val smartCard = mockSmartCard(smartCardId)
+            val smartCard = createTestSmartCard(smartCardId)
             whenever(mockDb.smartCard).thenReturn(smartCard)
             whenever(mockDb.smartCardUser).thenReturn(SmartCardUser("FirstName"))
          }
@@ -186,6 +187,7 @@ class FactoryResetInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(CachedPhotoUtil::class.java, { mock() })
          daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
          daggerCommandActionService.registerProvider(SettingsInteractor::class.java, { settingsInteractor })
+         daggerCommandActionService.registerProvider(WalletFeatureHelper::class.java) { WalletFeatureHelperFull() }
 
          return janet
       }
@@ -212,8 +214,6 @@ class FactoryResetInteractorSpec : BaseSpec({
       fun createSmartCardLocationInteractor(janet: Janet) = SmartCardLocationInteractor(SessionActionPipeCreator(janet))
 
       fun createSettingsInteractor(janet: Janet) = SettingsInteractor(SessionActionPipeCreator(janet))
-
-      fun mockSmartCard(cardId: String) = SmartCard(cardId, CardStatus.ACTIVE, "deviceId")
 
       fun Janet.connectToSmartCardSdk() {
          this.createPipe(ConnectAction::class.java).createObservableResult(ConnectAction(ImmutableConnectionParams.of(1)))

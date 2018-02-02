@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
@@ -12,6 +10,8 @@ import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
 import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.MemoryStorage;
 
 import javax.inject.Singleton;
 

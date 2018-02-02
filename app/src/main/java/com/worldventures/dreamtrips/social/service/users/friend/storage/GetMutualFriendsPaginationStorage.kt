@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.social.service.users.friend.storage
 
-import com.worldventures.core.janet.cache.CacheBundle
-import com.worldventures.core.janet.cache.storage.ActionStorage
-import com.worldventures.core.janet.cache.storage.PaginatedStorage
-import com.worldventures.core.janet.cache.storage.PaginatedStorage.BUNDLE_REFRESH
 import com.worldventures.dreamtrips.core.janet.cache.storage.FifoKeyValueStorage
 import com.worldventures.dreamtrips.social.service.users.base.command.BaseUserPaginationCommand.PaginationCachedModel
 import com.worldventures.dreamtrips.social.service.users.friend.command.GetMutualFriendsPaginationCommand
+import com.worldventures.janet.cache.CacheBundle
+import com.worldventures.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.storage.PaginatedStorage
+import com.worldventures.janet.cache.storage.PaginatedStorage.BUNDLE_REFRESH
 
 class GetMutualFriendsPaginationStorage : FifoKeyValueStorage<String, PaginationCachedModel>(),
       PaginatedStorage<PaginationCachedModel>, ActionStorage<PaginationCachedModel> {

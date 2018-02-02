@@ -39,6 +39,10 @@ android {
             includeCompileClasspath = false
          }
       }
+
+      ndk{
+         abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+      }
    }
 
    flavorDimensions "build", "stream", "config"
@@ -172,7 +176,7 @@ android {
    }
    lintOptions {
       xmlReport false
-      disable 'MissingTranslation', 'RestrictedApi', 'ExtraTranslation'
+      disable 'MissingTranslation'
    }
    packagingOptions {
       exclude 'LICENSE.txt'

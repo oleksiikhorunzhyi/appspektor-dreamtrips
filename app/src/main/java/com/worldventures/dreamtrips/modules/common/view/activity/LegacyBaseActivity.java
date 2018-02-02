@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.worldventures.core.ui.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.core.module.LegacyActivityModule;
+import com.worldventures.dreamtrips.core.module.NavigationActivityModule;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -69,6 +70,7 @@ public abstract class LegacyBaseActivity extends BaseActivity {
       modules.add(new LocationPickerModule());
       modules.add(new ConfigurationActivityModule());
       modules.add(new SocialCommonActivityModule());
+      modules.add(new NavigationActivityModule(this));
       modules.add(new LegacyActivityModule(this));
       modules.add(new DtlLegacyActivityModule());
       return modules;

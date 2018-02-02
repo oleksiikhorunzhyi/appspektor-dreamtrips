@@ -157,11 +157,11 @@
             android:layout_marginBottom="0dp"
             android:layout_marginStart="18dp"
             android:layout_marginTop="0dp"
-            android:src="@drawable/ic_wallet_vector_check_circle_green"
             android:visibility="@{cardModel.defaultCard ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_default_card_label"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_default_card_label"
+            app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
             tools:ignore="ContentDescription"
             />
    </android.support.constraint.ConstraintLayout>

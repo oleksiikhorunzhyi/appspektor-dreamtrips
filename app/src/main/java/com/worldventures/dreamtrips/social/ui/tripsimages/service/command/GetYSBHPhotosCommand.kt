@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command
 
 import com.worldventures.core.janet.CommandWithError
-import com.worldventures.core.janet.cache.CacheBundleImpl
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.ysbh.GetYSBHPhotosHttpAction
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.YSBHPhoto
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.YsbhPhotoStorage
+import com.worldventures.janet.cache.CacheBundleImpl
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
 import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
@@ -57,10 +56,7 @@ class GetYSBHPhotosCommand : CommandWithError<List<YSBHPhoto>>(), InjectableActi
       val cacheBundle = CacheBundleImpl()
       cacheBundle.put(YsbhPhotoStorage.RELOAD, page == 1)
       cacheBundle.put(YsbhPhotoStorage.LOAD_MORE, page != 1)
-      return ImmutableCacheOptions.builder()
-            .saveToCache(!isFromCache)
-            .params(cacheBundle)
-            .build()
+      return CacheOptions(saveToCache = !isFromCache, params = cacheBundle)
    }
 
    companion object {

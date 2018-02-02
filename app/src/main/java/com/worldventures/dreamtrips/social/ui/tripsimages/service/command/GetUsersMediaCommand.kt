@@ -1,15 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.service.command
 
-import com.worldventures.core.janet.cache.CacheBundleImpl
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.multimedia.GetUserMultimediaHttpAction
 import com.worldventures.dreamtrips.api.multimedia.ImmutableMultimediaPaginatedParams
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.BaseMediaEntity
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.storage.TripImageStorage
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs
+import com.worldventures.janet.cache.CacheBundleImpl
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
 import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
@@ -74,10 +73,7 @@ class GetUsersMediaCommand : BaseMediaCommand, InjectableAction, CachedAction<Li
       cacheBundle.put(TripImageStorage.LOAD_MORE, isLoadMore)
       cacheBundle.put(TripImageStorage.LOAD_LATEST, false)
       cacheBundle.put(TripImageStorage.REMOVE_ITEMS, false)
-      return ImmutableCacheOptions.builder()
-            .params(cacheBundle)
-            .saveToCache(!fromCacheOnly)
-            .build()
+      return CacheOptions(saveToCache = !fromCacheOnly, params = cacheBundle)
    }
 
    override fun lastPageReached() = result != null && result.size < perPage

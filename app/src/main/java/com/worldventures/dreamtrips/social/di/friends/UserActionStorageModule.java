@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.social.di.friends;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.social.service.users.friend.storage.FriendsListStorage;
 import com.worldventures.dreamtrips.social.service.users.friend.storage.GetFriendsPaginationStorage;
 import com.worldventures.dreamtrips.social.service.users.friend.storage.GetMutualFriendsPaginationStorage;
@@ -12,6 +11,7 @@ import com.worldventures.dreamtrips.social.service.users.request.storage.Request
 import com.worldventures.dreamtrips.social.service.users.request.storage.UserRequestsStorage;
 import com.worldventures.dreamtrips.social.service.users.search.storage.SearchUsersPaginationStorage;
 import com.worldventures.dreamtrips.social.service.users.search.storage.SearchedUsersStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
 
 import javax.inject.Singleton;
 

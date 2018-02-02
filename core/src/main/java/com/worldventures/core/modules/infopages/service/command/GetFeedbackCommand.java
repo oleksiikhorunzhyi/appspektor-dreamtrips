@@ -2,9 +2,8 @@ package com.worldventures.core.modules.infopages.service.command;
 
 import com.worldventures.core.R;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 import com.worldventures.core.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.api.feedback.GetFeedbackReasonsHttpAction;
 import com.worldventures.janet.injection.InjectableAction;
@@ -60,6 +59,6 @@ public class GetFeedbackCommand extends CommandWithError<List<FeedbackType>> imp
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return new CacheOptions();
    }
 }

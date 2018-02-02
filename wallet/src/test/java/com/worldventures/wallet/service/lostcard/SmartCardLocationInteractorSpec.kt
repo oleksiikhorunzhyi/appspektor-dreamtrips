@@ -24,7 +24,6 @@ import com.worldventures.wallet.domain.converter.SmartCardLocationTypeToWalletLo
 import com.worldventures.wallet.domain.converter.WalletCoordinatesToSmartCardCoordinatesConverter
 import com.worldventures.wallet.domain.converter.WalletLocationToSmartCardLocationConverter
 import com.worldventures.wallet.domain.converter.WalletLocationTypeToSmartCardLocationTypeConverter
-import com.worldventures.wallet.domain.entity.CardStatus
 import com.worldventures.wallet.domain.entity.SmartCard
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
@@ -33,6 +32,7 @@ import com.worldventures.wallet.domain.entity.lostcard.WalletLocationType
 import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
+import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.FirmwareInteractor
 import com.worldventures.wallet.service.RecordInteractor
 import com.worldventures.wallet.service.SmartCardInteractor
@@ -102,7 +102,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       context("SmartCard Location interactor spec tests") {
          it("take location and save to DB") {
-            val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
+            val smartCard: SmartCard = createTestSmartCard(SMART_CARD_ID)
             whenever(mockDb.smartCard).thenReturn(smartCard)
             val initialLocationsSize = locationStorage.walletLocations.size
             val testSubscriber: TestSubscriber<ActionState<WalletLocationCommand>> = TestSubscriber()
@@ -116,7 +116,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
             assert(locationStorage.walletLocations.size == initialLocationsSize + 1)
          }
          it("post location") {
-            val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
+            val smartCard: SmartCard = createTestSmartCard(SMART_CARD_ID)
             val walletLocation = mockWalletLocation()
             var locationList: List<WalletLocation> = mutableListOf()
             whenever(mockDb.smartCard).thenReturn(smartCard)
@@ -137,7 +137,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
             assertNotNull(WalletLocationsUtil.getLatestLocation(locationList)?.postedAt)
          }
          it("get location") {
-            val smartCard: SmartCard = mockSmartCard(SMART_CARD_ID)
+            val smartCard: SmartCard = createTestSmartCard(SMART_CARD_ID)
             whenever(mockDb.smartCard).thenReturn(smartCard)
             whenever(mockDb.walletLocations).thenReturn(mutableListOf<WalletLocation>())
 
@@ -276,8 +276,6 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       }
 
       private fun mockAddressRestResponse() = AddressRestResponse(results = emptyList(), placeId = null, status = "unknown")
-
-      fun mockSmartCard(cardId: String) = SmartCard(cardId, CardStatus.ACTIVE, "deviceId")
 
       fun createMockDb(): WalletStorage = spy()
 

@@ -2,10 +2,10 @@ package com.worldventures.dreamtrips.core.janet.cache.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.storage.ClearableStorage;
-import com.worldventures.core.janet.cache.storage.KeyValueStorage;
-import com.worldventures.core.janet.cache.storage.Storage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.storage.ClearableStorage;
+import com.worldventures.janet.cache.storage.KeyValueStorage;
+import com.worldventures.janet.cache.storage.Storage;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

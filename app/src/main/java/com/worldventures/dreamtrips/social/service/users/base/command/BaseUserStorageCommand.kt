@@ -1,12 +1,11 @@
 package com.worldventures.dreamtrips.social.service.users.base.command
 
-import com.worldventures.core.janet.cache.CacheBundleImpl
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
-import com.worldventures.core.janet.cache.storage.PaginatedStorage
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.social.service.users.base.operation.BaseUserStorageOperation
+import com.worldventures.janet.cache.CacheBundleImpl
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
+import com.worldventures.janet.cache.storage.PaginatedStorage
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
@@ -39,12 +38,9 @@ abstract class BaseUserStorageCommand(protected val operation: BaseUserStorageOp
 
    fun isNoMoreItems() = !haveMoreItems
 
-   override fun getCacheOptions(): CacheOptions {
-      return ImmutableCacheOptions.builder()
-            .params(CacheBundleImpl().apply {
-               put(PaginatedStorage.BUNDLE_REFRESH, isRefresh)
-            }).build()
-   }
+   override fun getCacheOptions() = CacheOptions(params = CacheBundleImpl().apply {
+      put(PaginatedStorage.BUNDLE_REFRESH, isRefresh)
+   })
 
    open class UsersCachedModel(val items: MutableList<User>, val haveMoreItems: Boolean)
 }

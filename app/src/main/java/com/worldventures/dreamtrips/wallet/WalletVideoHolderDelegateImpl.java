@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.wallet;
 
+import android.support.annotation.NonNull;
+
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.ui.view.custom.PinProgressButton;
 import com.worldventures.dreamtrips.social.ui.video.cell.util.ProgressVideoCellHelper;
@@ -16,17 +18,18 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
    }
 
    @Override
-   public void sendPlayVideoAction(WalletVideoModel video) {
-      //do nothing
+   public void sendPlayVideoAction(@NonNull WalletVideoModel video) {
+      // do nothing
    }
 
    @Override
-   public void sendMembershipVideoAction(WalletVideoModel video) {
-      //do nothing
+   public void sendMembershipVideoAction(@NonNull WalletVideoModel video) {
+      // do nothing
    }
 
+   @NonNull
    @Override
-   public WalletVideoHolderHelper createHelper(PinProgressButton progressView) {
+   public WalletVideoHolderHelper createHelper(@NonNull PinProgressButton progressView) {
       return new WalletVideoHolderHelperImpl(new ProgressVideoCellHelper(progressView, cachedModelHelper));
    }
 
@@ -39,12 +42,12 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
       }
 
       @Override
-      public void onDownloadClick(WalletVideoCallback videoCallback, WalletVideoModel walletVideoModel) {
+      public void onDownloadClick(@NonNull WalletVideoCallback videoCallback, @NonNull WalletVideoModel walletVideoModel) {
          progressVideoCellHelper.onDownloadClick(videoCallback, walletVideoModel);
       }
 
       @Override
-      public void setModelObject(WalletVideoModel walletVideoModel) {
+      public void setModelObject(@NonNull WalletVideoModel walletVideoModel) {
          progressVideoCellHelper.setModelObject(walletVideoModel.getVideo().getCacheEntity());
       }
 

@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -164,5 +165,11 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
             .append(getString(R.string.wallet_firmware_install_error_alert_content_customer_support))
             .append("\n")
             .append(supportPhoneNumber);
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new WalletInstallFirmwareScreenModule();
    }
 }

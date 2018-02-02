@@ -2,7 +2,8 @@ package com.worldventures.wallet.util;
 
 import android.content.Context;
 
-import com.worldventures.wallet.domain.entity.SmartCardUser;
+import com.worldventures.wallet.service.SmartCardLocationInteractor;
+import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.wallet.ui.settings.WalletSettingsScreen;
@@ -56,16 +57,6 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    }
 
    @Override
-   public Observable<Void> onUserAssigned(SmartCardUser user) {
-      return Observable.just(null);
-   }
-
-   @Override
-   public void onUserFetchedFromServer(SmartCardUser user) {
-      // do nothing
-   }
-
-   @Override
    public boolean isSampleCardMode() {
       return false;
    }
@@ -78,5 +69,13 @@ public class WalletFeatureHelperFull implements WalletFeatureHelper {
    @Override
    public boolean pinFunctionalityAvailable() {
       return true;
+   }
+
+   @Override
+   public Observable<Void> clearSettings(SmartCardLocationInteractor interactor) {
+      // todo skip it if setting is disabled
+      return interactor.updateTrackingStatusPipe()
+            .createObservableResult(new UpdateTrackingStatusCommand(false))
+            .map(disassociateCardUserHttpAction -> (Void) null);
    }
 }

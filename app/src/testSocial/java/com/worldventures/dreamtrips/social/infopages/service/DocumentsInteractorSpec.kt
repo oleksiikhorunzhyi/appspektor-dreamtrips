@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.infopages.service
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.CacheBundle
-import com.worldventures.core.janet.cache.storage.KeyValuePaginatedDiskStorage
-import com.worldventures.core.janet.cache.storage.KeyValueStorage
+import com.worldventures.janet.cache.CacheBundle
+import com.worldventures.janet.cache.storage.KeyValuePaginatedDiskStorage
+import com.worldventures.janet.cache.storage.KeyValueStorage
 import com.worldventures.core.modules.infopages.model.Document
 import com.worldventures.core.modules.infopages.service.DocumentsInteractor
 import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand

@@ -212,4 +212,6 @@ class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, 
          super.handleBack()
       }
    }
+
+   override fun screenModule(): Any? = PaymentFeedbackScreenModule()
 }

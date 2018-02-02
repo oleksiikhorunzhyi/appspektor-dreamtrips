@@ -9,12 +9,19 @@ import javax.inject.Inject
 
 @CommandAction
 class AcceptTermsCommand(private val type: String, private val version: String) : Command<Void>(), InjectableAction {
+   private var smartCardId: String? = null
+
+   constructor(type: String, version: String, smartCardId: String) : this(type, version) {
+      this.smartCardId = smartCardId
+   }
 
    @Inject lateinit var janet: Janet
 
    override fun run(callback: Command.CommandCallback<Void>) {
       janet.createPipe(AcceptTermsAndConditionsHttpAction::class.java)
-            .createObservableResult(AcceptTermsAndConditionsHttpAction(type, version))
+            .createObservableResult(if (smartCardId == null)
+               AcceptTermsAndConditionsHttpAction(type, version)
+            else AcceptTermsAndConditionsHttpAction(type, version, smartCardId))
             .subscribe({ callback.onSuccess(null) }) { callback.onFail(it) }
    }
 }

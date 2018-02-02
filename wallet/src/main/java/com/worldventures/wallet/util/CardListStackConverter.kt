@@ -53,9 +53,10 @@ class CardListStackConverter(private val utils: WalletRecordUtil, private val fe
       return if (x == y) 0 else if (x) 1 else -1
    }
 
+   @Suppress("UnsafeCallOnNullableType")
    private fun createCommonCardViewModel(context: Context, loadedCard: Record, isDefault: Boolean): CommonCardViewModel {
       return CommonCardViewModel(
-            loadedCard.id,
+            loadedCard.id!!,
             utils.toBoldSpannable(loadedCard.nickname),
             setCardType(loadedCard.recordType.name),
             loadedCard.recordType.name,

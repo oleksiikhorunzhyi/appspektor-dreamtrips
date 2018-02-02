@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter
 
 import com.worldventures.core.model.User
-import com.worldventures.dreamtrips.core.rx.RxView
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.BucketType
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem.BucketType.ACTIVITY
@@ -33,9 +32,9 @@ open class BucketTabsPresenter : Presenter<BucketTabsPresenter.View>() {
 
    override fun onResume() {
       super.onResume()
-      recentTabCountObservable().map { it.result }
+      recentTabCountObservable()
             .compose(bindViewToMainComposer())
-            .subscribe { view.setRecentBucketItemCountByType(it.first, it.second.size) }
+            .subscribe { view.setRecentBucketItemCountByType(it?.result?.first, it.result.second?.size) }
    }
 
    override fun dropView() {
@@ -48,24 +47,24 @@ open class BucketTabsPresenter : Presenter<BucketTabsPresenter.View>() {
     * Subscribe to offline errors to be able to handle those happened in tabs and show it.
     */
    internal fun subscribeToErrorUpdates() =
-      offlineErrorInteractor.offlineErrorCommandPipe()
-            .observeSuccess()
-            .compose(bindViewToMainComposer())
-            .subscribe { reportNoConnection() }
+         offlineErrorInteractor.offlineErrorCommandPipe()
+               .observeSuccess()
+               .compose(bindViewToMainComposer())
+               .subscribe { reportNoConnection() }
 
    internal fun loadBucketList() =
-      bucketInteractor.bucketListActionPipe()
-            .createObservable(BucketListCommand.fetch(user, false))
-            .compose(bindViewToMainComposer())
-            .concatMap { state ->
-               if (state.action.isFromCache)
-                  bucketInteractor.bucketListActionPipe()
-                        .createObservable(BucketListCommand.fetch(user, true))
-               else
-                  Observable.just(state)
-            }
-            .subscribe(ActionStateSubscriber<BucketListCommand>()
-                  .onFail(this::handleError))
+         bucketInteractor.bucketListActionPipe()
+               .createObservable(BucketListCommand.fetch(user, false))
+               .compose(bindViewToMainComposer())
+               .concatMap { state ->
+                  if (state.action.isFromCache)
+                     bucketInteractor.bucketListActionPipe()
+                           .createObservable(BucketListCommand.fetch(user, true))
+                  else
+                     Observable.just(state)
+               }
+               .subscribe(ActionStateSubscriber<BucketListCommand>()
+                     .onFail(this::handleError))
 
    internal fun setTabs() {
       view.setTypes(Arrays.asList(LOCATION, ACTIVITY, DINING))
@@ -80,17 +79,19 @@ open class BucketTabsPresenter : Presenter<BucketTabsPresenter.View>() {
 
    private fun recentTabCountObservable(): Observable<RecentlyAddedBucketsFromPopularCommand> {
       val recentPipe = bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
-      return Observable.merge(recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(LOCATION)), recentPipe
-            .createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(ACTIVITY)), recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand
-            .get(DINING)))
+      return Observable.merge(
+            recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(LOCATION)),
+            recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(ACTIVITY)),
+            recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(DINING))
+      )
    }
 
    fun onTrackListOpened() = analyticsInteractor.analyticsActionPipe().send(AdobeBucketListViewedAction())
 
-   interface View : RxView {
+   interface View : Presenter.View {
       fun setTypes(type: List<BucketType>)
 
-      fun setRecentBucketItemCountByType(type: BucketType, count: Int)
+      fun setRecentBucketItemCountByType(type: BucketType?, count: Int?)
 
       fun updateSelection()
    }

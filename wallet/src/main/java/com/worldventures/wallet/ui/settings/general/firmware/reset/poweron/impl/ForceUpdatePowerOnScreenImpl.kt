@@ -73,6 +73,10 @@ class ForceUpdatePowerOnScreenImpl : WalletBaseController<ForceUpdatePowerOnScre
             .show()
    }
 
+   override fun screenModule(): Any? {
+      return ForceUpdatePowerOnScreenModule()
+   }
+
    companion object {
 
       private val SHOW_SOAR_TITLE_DELAY = 1000L

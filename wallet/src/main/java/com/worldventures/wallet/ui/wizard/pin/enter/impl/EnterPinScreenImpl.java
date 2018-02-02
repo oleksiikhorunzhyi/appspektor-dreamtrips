@@ -1,8 +1,8 @@
 package com.worldventures.wallet.ui.wizard.pin.enter.impl;
 
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,7 +145,7 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
 
    @Override
    public Action getPinAction() {
-      return (getArgs() != null && !getArgs().isEmpty() && getArgs().containsKey(KEY_PIN_ACTION))
+      return !getArgs().isEmpty() && getArgs().containsKey(KEY_PIN_ACTION)
             ? (Action) getArgs().getSerializable(KEY_PIN_ACTION)
             : null;
    }
@@ -154,5 +154,11 @@ public class EnterPinScreenImpl extends WalletBaseController<EnterPinScreen, Ent
    public boolean handleBack() {
       getPresenter().cancelSetupPIN();
       return super.handleBack();
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new EnterPinScreenModule();
    }
 }

@@ -1,10 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.trip.GetTripsLocationsHttpAction;
 import com.worldventures.dreamtrips.api.trip.ImmutableGetTripsLocationsHttpAction;
@@ -12,6 +8,9 @@ import com.worldventures.dreamtrips.api.trip.model.TripPinWrapper;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +96,7 @@ public class GetTripsLocationsCommand extends CommandWithError<List<Pin>> implem
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return new CacheOptions();
    }
 
    @Override

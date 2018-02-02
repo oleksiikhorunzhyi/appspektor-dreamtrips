@@ -1,8 +1,7 @@
 package com.worldventures.wallet.service.lostcard.command
 
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
 import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
@@ -54,11 +53,7 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates)
       }
    }
 
-   override fun getCacheOptions(): CacheOptions {
-      return ImmutableCacheOptions.builder()
-            .saveToCache(needApiRequest())
-            .build()
-   }
+   override fun getCacheOptions() = CacheOptions(saveToCache = needApiRequest())
 
    data class PlacesWithAddress internal constructor(val address: WalletAddress?, val places: List<WalletPlace>)
 }

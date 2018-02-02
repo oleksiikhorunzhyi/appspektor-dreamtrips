@@ -28,6 +28,8 @@
          android:gravity="center_vertical"
          android:padding="@dimen/spacing_small"
          android:textAppearance="@style/WalletTheme.TextAppearanceMedium"
+         android:singleLine="true"
+         android:ellipsize="marquee"
          tools:text="United States"
          />
 </LinearLayout>

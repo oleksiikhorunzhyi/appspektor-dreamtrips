@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.service.users.base.command
 
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.CacheResultWrapper
+import com.worldventures.janet.cache.CacheResultWrapper
 import com.worldventures.core.model.User
 import com.worldventures.core.test.janet.MockDaggerActionService
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate

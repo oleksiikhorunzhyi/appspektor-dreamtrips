@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.service.users.request.command
 
-import com.worldventures.core.janet.cache.CacheResultWrapper
+import com.worldventures.janet.cache.CacheResultWrapper
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.core.test.janet.MockDaggerActionService
 import com.worldventures.dreamtrips.BaseSpec.Companion.wrapDagger

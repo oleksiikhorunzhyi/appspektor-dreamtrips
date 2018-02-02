@@ -4,7 +4,6 @@ import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.core.janet.cache.CacheResultWrapper
 import com.worldventures.core.model.User
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.core.test.janet.MockDaggerActionService
@@ -12,6 +11,7 @@ import com.worldventures.dreamtrips.BaseSpec.Companion.wrapDagger
 import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.social.common.base.BaseBodySpec
 import com.worldventures.dreamtrips.social.service.users.base.command.BaseHttpUsersCommandTestBody
+import com.worldventures.janet.cache.CacheResultWrapper
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.http.test.MockHttpActionService

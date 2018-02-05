@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent
 
 import javax.inject.Inject
 
-class EnrollRepPresenter() : AuthorizedStaticInfoPresenter<EnrollRepPresenter.View>() {
+class EnrollRepPresenter : AuthorizedStaticInfoPresenter<EnrollRepPresenter.View>() {
 
    @Inject lateinit var staticPageProvider: StaticPageProvider
    @Inject lateinit var permissionLocationDelegate: PermissionLocationDelegate

@@ -12,9 +12,11 @@ import com.worldventures.dreamtrips.social.ui.reptools.service.analytics.ShareSu
 import io.techery.janet.helper.ActionStateSubscriber
 import javax.inject.Inject
 
-class SuccessStoryDetailsPresenter(private var successStory: SuccessStory, url: String) : WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View>(url) {
+class SuccessStoryDetailsPresenter(private var successStory: SuccessStory) : WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View>() {
 
    @Inject lateinit var successStoriesInteractor: SuccessStoriesInteractor
+
+   override fun initUrl() = successStory.url
 
    override fun takeView(view: View) {
       super.takeView(view)
@@ -70,5 +72,4 @@ class SuccessStoryDetailsPresenter(private var successStory: SuccessStory, url: 
 
       fun openFullscreen(story: SuccessStory)
    }
-
 }

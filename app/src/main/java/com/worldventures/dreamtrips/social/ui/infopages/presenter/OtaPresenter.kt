@@ -6,9 +6,13 @@ import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcont
 
 import javax.inject.Inject
 
-class OtaPresenter(url: String) : AuthorizedStaticInfoPresenter<AuthorizedStaticInfoPresenter.View>(url) {
+class OtaPresenter : AuthorizedStaticInfoPresenter<AuthorizedStaticInfoPresenter.View>() {
 
    @Inject lateinit var analyticsInteractorProxy: AnalyticsInteractorProxy
+
+   override fun initUrl() = provider.otaPageUrl ?: ""
+
+   override fun getAdditionalHeaders() = mapOf(AUTHORIZATION_HEADER_KEY to getAuthToken())
 
    override fun pageLoaded(url: String) {
       super.pageLoaded(url)

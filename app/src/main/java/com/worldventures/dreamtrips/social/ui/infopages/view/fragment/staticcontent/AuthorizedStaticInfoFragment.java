@@ -38,6 +38,6 @@ public abstract class AuthorizedStaticInfoFragment<PR extends AuthorizedStaticIn
 
    @Override
    protected PR createPresenter(Bundle savedInstanceState) {
-      return (PR) new AuthorizedStaticInfoPresenter(getURL());
+      return (PR) new AuthorizedStaticInfoPresenter();
    }
 }

@@ -36,8 +36,6 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
    private boolean slave = false;
 
-   private String storyUrl = "";
-
    @OnClick(R.id.iv_like)
    public void onLike() {
       getPresenter().like();
@@ -92,15 +90,9 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
    }
 
    @Override
-   protected String getURL() {
-      return storyUrl;
-   }
-
-   @Override
    protected SuccessStoryDetailsPresenter createPresenter(Bundle savedInstanceState) {
       SuccessStory story = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getParcelable(EXTRA_STORY);
-      storyUrl = story.getUrl();
-      return new SuccessStoryDetailsPresenter(story, getURL());
+      return new SuccessStoryDetailsPresenter(story);
    }
 
    @Override

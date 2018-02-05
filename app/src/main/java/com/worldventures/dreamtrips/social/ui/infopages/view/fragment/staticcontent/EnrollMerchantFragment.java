@@ -5,24 +5,16 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantStaticPageProvider;
-import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMerchantPresenter;
-import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMerchantViewedAction;
 
 import javax.inject.Inject;
 
 @Layout(R.layout.fragment_webview)
-public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<AuthorizedStaticInfoPresenter, MerchantIdBundle> {
+public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<EnrollMerchantPresenter, MerchantIdBundle> {
 
    @Inject MerchantStaticPageProvider merchantStaticPageProvider;
-
-   @Override
-   protected String getURL() {
-      return merchantStaticPageProvider.getEnrollMerchantUrl(getArgs());
-   }
 
    @Override
    public void afterCreateView(View rootView) {
@@ -32,13 +24,13 @@ public class EnrollMerchantFragment extends AuthorizedStaticInfoFragment<Authori
    }
 
    @Override
-   protected AuthorizedStaticInfoPresenter createPresenter(Bundle savedInstanceState) {
-      return new EnrollMerchantPresenter(getURL(), getArgs());
+   protected EnrollMerchantPresenter createPresenter(Bundle savedInstanceState) {
+      return new EnrollMerchantPresenter(getArgs());
    }
 
    @Override
    protected void trackViewFromViewPagerIfNeeded() {
       super.trackViewFromViewPagerIfNeeded();
-      analyticsInteractor.analyticsActionPipe().send(new EnrollMerchantViewedAction(getUserId()));
+      getPresenter().sendAnalyticsEnrollMemberViewedAction();
    }
 }

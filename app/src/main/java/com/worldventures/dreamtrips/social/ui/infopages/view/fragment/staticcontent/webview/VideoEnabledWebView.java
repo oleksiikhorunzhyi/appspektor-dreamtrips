@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent;
+package com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -112,6 +112,5 @@ public class VideoEnabledWebView extends WebView {
          });
       }
    }
-
 
 }

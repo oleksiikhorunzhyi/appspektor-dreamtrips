@@ -4,11 +4,14 @@ import com.worldventures.core.modules.auth.api.command.LoginCommand
 import com.worldventures.core.modules.auth.api.command.LogoutCommand
 import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.utils.ProjectTextUtils
+import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.OtaViewedAction
+import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMerchantViewedAction
 import io.techery.janet.helper.ActionStateSubscriber
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-open class AuthorizedStaticInfoPresenter<T : AuthorizedStaticInfoPresenter.View>(url: String) : WebViewFragmentPresenter<T>(url) {
+open class AuthorizedStaticInfoPresenter<T : AuthorizedStaticInfoPresenter.View> : WebViewFragmentPresenter<T>() {
 
    @Inject lateinit var authInteractor: AuthInteractor
 
@@ -20,6 +23,8 @@ open class AuthorizedStaticInfoPresenter<T : AuthorizedStaticInfoPresenter.View>
       doWithAuth { super.reload() }
    }
 
+   override fun initUrl() = ""
+
    fun getLegacyAuthTokenBase64(): String {
       return appSessionHolder.get().get().username() + ":" + appSessionHolder.get()
             .get().legacyApiToken().let { "Basic " + ProjectTextUtils.convertToBase64(it) }
@@ -27,7 +32,7 @@ open class AuthorizedStaticInfoPresenter<T : AuthorizedStaticInfoPresenter.View>
 
    private fun doWithAuth(updateAction: () -> Unit) {
       appSessionHolder.get().get().apply {
-         if (lastUpdate() ?: 0 > System.currentTimeMillis() - LIFE_DURATION) {
+         if (lastUpdate() ?: 0 > LIFE_DURATION) {
             updateAction.invoke()
          } else {
             view.setRefreshing(true)
@@ -44,6 +49,14 @@ open class AuthorizedStaticInfoPresenter<T : AuthorizedStaticInfoPresenter.View>
                   .onFail { _, throwable -> onLoginFail(throwable) })
    }
 
+   open fun sendAnalyticsEnrollMemberViewedAction() {
+      analyticsInteractor.analyticsActionPipe().send(EnrollMerchantViewedAction(appSessionHolder.get().get().username()))
+   }
+
+   fun sendAnalyticsOtaViewedAction() {
+      analyticsInteractor.analyticsActionPipe().send(OtaViewedAction())
+   }
+
    protected open fun onLoginSuccess() {
       view.setRefreshing(false)
       reload()
@@ -58,6 +71,6 @@ open class AuthorizedStaticInfoPresenter<T : AuthorizedStaticInfoPresenter.View>
    interface View : WebViewFragmentPresenter.View
 
    companion object {
-      private const val LIFE_DURATION = 30 * 1000 // min * millis
+      private val LIFE_DURATION: Long get() = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(30)
    }
 }

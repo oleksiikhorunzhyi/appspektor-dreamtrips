@@ -5,13 +5,15 @@ import com.worldventures.dreamtrips.modules.dtl.helper.MerchantStaticPageProvide
 
 import javax.inject.Inject
 
-class EnrollMerchantPresenter(url: String, private val merchantBundle: MerchantIdBundle)
-   : AuthorizedStaticInfoPresenter<AuthorizedStaticInfoPresenter.View>(url) {
+class EnrollMerchantPresenter(private val merchantBundle: MerchantIdBundle)
+   : AuthorizedStaticInfoPresenter<AuthorizedStaticInfoPresenter.View>() {
 
-   @Inject lateinit var provider: MerchantStaticPageProvider
+   @Inject lateinit var merChantProvider: MerchantStaticPageProvider
+
+   override fun initUrl() = merChantProvider.getEnrollMerchantUrl(merchantBundle) ?: ""
 
    override fun onLoginSuccess() {
-      url = provider.getEnrollMerchantUrl(merchantBundle)
+      url = merChantProvider.getEnrollMerchantUrl(merchantBundle)
       super.onLoginSuccess()
    }
 }

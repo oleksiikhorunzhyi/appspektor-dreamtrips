@@ -28,6 +28,7 @@
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
+   <string name="wallet_long_operation_hint_full">This could take a few minutes…\n\nKeep the flye smart card near your phone, and don’t turn it off.</string>
    <string name="wallet_sc_operation_could_not_be_completed">This operation could not be completed\n(%1$s)</string>
    <string name="wallet_error_internal_server">Internal Server Error</string>
    <string name="wallet_error_something_went_wrong">Something went wrong</string>

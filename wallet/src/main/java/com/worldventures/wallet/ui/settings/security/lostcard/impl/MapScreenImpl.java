@@ -194,6 +194,11 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
 
    @Override
    public void onMapReady(GoogleMap googleMap) {
+      // Avoid crash when multiple views can be created during window resizing phase in multi window mode
+      // as this triggers callbacks on already recycled screens
+      if (isDestroyed()) {
+         return;
+      }
       this.googleMap = googleMap;
 
       final UiSettings uiSettings = googleMap.getUiSettings();

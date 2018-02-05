@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent;
+package com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.webview;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;

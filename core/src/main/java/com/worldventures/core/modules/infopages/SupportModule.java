@@ -30,6 +30,7 @@ import dagger.Provides;
 public class SupportModule {
 
    @Provides
+   @Singleton
    StaticPageProvider provideStaticPageProvider(StaticPageProviderConfig config) {
       return new StaticPageProvider(config);
    }

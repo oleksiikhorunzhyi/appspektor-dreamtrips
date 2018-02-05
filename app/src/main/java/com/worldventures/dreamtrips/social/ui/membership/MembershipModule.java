@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.social.ui.activity.presenter.VideoPlayerPres
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMerchantPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollRepPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.WVAdvantagePresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMemberFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.WVAdvantageFragment;
@@ -63,10 +64,12 @@ import dagger.Provides;
             EditTemplateFragment.class,
             EditTemplatePresenter.class,
             EnrollMemberPresenter.class,
+            EnrollMerchantPresenter.class,
             EnrollRepPresenter.class,
             PreviewTemplateFragment.class,
             FilterLanguageDialogFragment.class,
             WVAdvantageFragment.class,
+            WVAdvantagePresenter.class,
             Video360Cell.class,
             Video360SmallCell.class,
             ThreeSixtyVideosFragment.class,

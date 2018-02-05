@@ -1,13 +1,27 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter
 
+import com.worldventures.core.modules.infopages.StaticPageProvider
 import com.worldventures.core.service.NewDreamTripsHttpService
 import com.worldventures.dreamtrips.core.rx.RxView
+import com.worldventures.dreamtrips.core.utils.HeaderProvider
+import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState
+import javax.inject.Inject
 
-open class WebViewFragmentPresenter<T : WebViewFragmentPresenter.View>(protected var url: String) : Presenter<T>() {
+abstract class WebViewFragmentPresenter<T : WebViewFragmentPresenter.View> : Presenter<T>() {
 
+   @Inject lateinit var headerProvider: HeaderProvider
+   @Inject lateinit var provider: StaticPageProvider
+   protected lateinit var url: String
    private var inErrorState: Boolean = false
+
+   override fun onInjected() {
+      super.onInjected()
+      url = initUrl()
+   }
+
+   protected abstract fun initUrl(): String
 
    override fun takeView(view: T) {
       super.takeView(view)
@@ -25,15 +39,18 @@ open class WebViewFragmentPresenter<T : WebViewFragmentPresenter.View>(protected
 
    fun noInternetConnection() {
       connectionStatePublishSubject.onNext(ConnectionState.DISCONNECTED)
+      offlineErrorInteractor.offlineErrorCommandPipe().send(OfflineErrorCommand())
    }
 
    protected open fun load() {
-      view.load(url)
+      view.load(url, headerProvider.standardWebViewHeaders.apply { putAll(getAdditionalHeaders()) })
    }
 
    protected open fun reload() {
-      view.reload(url)
+      view.reload(url, headerProvider.standardWebViewHeaders.apply { putAll(getAdditionalHeaders()) })
    }
+
+   protected open fun getAdditionalHeaders() = mapOf<String, String>()
 
    fun onReload() {
       reload()
@@ -48,20 +65,28 @@ open class WebViewFragmentPresenter<T : WebViewFragmentPresenter.View>(protected
       }
    }
 
+   open fun onPageStartLoad(url: String) {
+
+   }
+
    fun setInErrorState(inErrorState: Boolean) {
       this.inErrorState = inErrorState
    }
 
    interface View : RxView {
 
-      fun load(localizedUrl: String)
+      fun load(localizedUrl: String, headers: Map<String, String>?)
 
-      fun reload(localizedUrl: String)
+      fun reload(localizedUrl: String, headers: Map<String, String>?)
 
       fun setRefreshing(refreshing: Boolean)
 
       fun showError(code: Int)
 
       fun hideLoadingProgress()
+   }
+
+   companion object {
+      const val AUTHORIZATION_HEADER_KEY = "Authorization"
    }
 }

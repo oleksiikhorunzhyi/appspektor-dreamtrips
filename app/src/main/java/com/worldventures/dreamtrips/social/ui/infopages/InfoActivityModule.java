@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.social.ui.infopages;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.BookItPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollUpgradePresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.FeedbackImageAttachmentsPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpDocumentListPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpTabPresenter;
@@ -19,8 +21,11 @@ import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.HelpFragme
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.LegalTermsFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.BookItFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.BundleUrlFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DocumentFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollRepFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollUpgradeFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.social.ui.video.presenter.HelpVideosPresenter;
 import com.worldventures.dreamtrips.social.ui.video.view.HelpVideosFragment;
@@ -32,10 +37,12 @@ import dagger.Module;
             AuthorizedStaticInfoFragment.class,
             AuthorizedStaticInfoPresenter.class,
             StaticInfoFragment.class,
-            StaticInfoFragment.BookItFragment.class,
-            StaticInfoFragment.BundleUrlFragment.class,
-            StaticInfoFragment.EnrollUpgradeFragment.class,
+            BookItFragment.class,
+            BookItPresenter.class,
+            BundleUrlFragment.class,
+            EnrollUpgradeFragment.class,
             EnrollRepFragment.class,
+            EnrollUpgradePresenter.class,
             DocumentFragment.class,
             HelpVideosFragment.class,
             HelpVideosPresenter.class,

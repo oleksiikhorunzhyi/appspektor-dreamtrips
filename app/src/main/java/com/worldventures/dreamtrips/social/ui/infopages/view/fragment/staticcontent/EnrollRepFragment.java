@@ -7,20 +7,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollRepPresenter;
-import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.EnrolRepViewedAction;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 @Layout(R.layout.fragment_webview)
 public class EnrollRepFragment extends AuthorizedStaticInfoFragment<EnrollRepPresenter, UrlBundle> implements EnrollRepPresenter.View {
 
    @Override
-   protected String getURL() {
-      return provider.getEnrollRepUrl();
-   }
-
-   @Override
    protected EnrollRepPresenter createPresenter(Bundle savedInstanceState) {
-      return new EnrollRepPresenter(getURL());
+      return new EnrollRepPresenter();
    }
 
    @Override
@@ -28,6 +22,12 @@ public class EnrollRepFragment extends AuthorizedStaticInfoFragment<EnrollRepPre
       super.afterCreateView(rootView);
       webView.getSettings().setLoadWithOverviewMode(true);
       webView.getSettings().setUseWideViewPort(true);
+   }
+
+   @Override
+   protected void startLoadingPage(String url) {
+      super.startLoadingPage(url);
+      getPresenter().sendPageDisplayedAnalyticsEvent(url);
    }
 
    @Override
@@ -45,11 +45,6 @@ public class EnrollRepFragment extends AuthorizedStaticInfoFragment<EnrollRepPre
    @Override
    public void showPermissionDenied(String[] permissions) {
       //do nothing
-   }
-
-   @Override
-   protected void sendPageDisplayedAnalyticsEvent() {
-      analyticsInteractor.analyticsActionPipe().send(new EnrolRepViewedAction());
    }
 
 }

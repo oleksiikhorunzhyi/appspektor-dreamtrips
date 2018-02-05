@@ -9,7 +9,10 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.modules.settings.service.SettingsInteractor
+import com.worldventures.core.service.location.DetectLocationService
+import com.worldventures.core.service.location.MockDetectLocationService
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoordinates
@@ -33,6 +36,7 @@ import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.model.createTestSmartCard
+import com.worldventures.wallet.service.FactoryResetInteractor
 import com.worldventures.wallet.service.FirmwareInteractor
 import com.worldventures.wallet.service.RecordInteractor
 import com.worldventures.wallet.service.SmartCardInteractor
@@ -41,8 +45,6 @@ import com.worldventures.wallet.service.SmartCardSyncManager
 import com.worldventures.wallet.service.TestSchedulerProvider
 import com.worldventures.wallet.service.beacon.StubWalletBeaconLogger
 import com.worldventures.wallet.service.beacon.WalletBeaconLogger
-import com.worldventures.core.service.location.MockDetectLocationService
-import com.worldventures.core.service.location.DetectLocationService
 import com.worldventures.wallet.service.credentials.GoogleApiCredentials
 import com.worldventures.wallet.service.credentials.GoogleApiCredentialsProvider
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand
@@ -250,7 +252,11 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper)
+      fun createAuthInteractor(janet: Janet) = AuthInteractor(SessionActionPipeCreator(janet))
+
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, createFactoryResetInteractor(janet), createAuthInteractor(Companion.janet), featureHelper)
+
+      fun createFactoryResetInteractor(janet: Janet) = FactoryResetInteractor(SessionActionPipeCreator(janet))
 
       fun mockLostCardStorage(): LostCardRepository {
          val lostCardRepository: LostCardRepository = mock()

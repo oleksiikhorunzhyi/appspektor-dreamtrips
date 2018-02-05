@@ -2,6 +2,7 @@ package com.worldventures.wallet.service;
 
 import android.support.v4.util.Pair;
 
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.wallet.domain.WalletConstants;
 import com.worldventures.wallet.domain.entity.AboutSmartCardData;
 import com.worldventures.wallet.domain.entity.CardStatus;
@@ -47,6 +48,7 @@ public class SmartCardSyncManager {
    private final Janet janet;
    private final SmartCardInteractor interactor;
    private final RecordInteractor recordInteractor;
+   private final AuthInteractor authInteractor;
    private final WalletFeatureHelper featureHelper;
    private final FirmwareInteractor firmwareInteractor;
    private final FactoryResetInteractor factoryResetInteractor;
@@ -55,12 +57,13 @@ public class SmartCardSyncManager {
 
    public SmartCardSyncManager(Janet janet, SmartCardInteractor smartCardInteractor,
          FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor,
-         FactoryResetInteractor factoryResetInteractor, WalletFeatureHelper featureHelper) {
+         FactoryResetInteractor factoryResetInteractor, AuthInteractor authInteractor, WalletFeatureHelper featureHelper) {
       this.janet = janet;
       this.interactor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.recordInteractor = recordInteractor;
       this.factoryResetInteractor = factoryResetInteractor;
+      this.authInteractor = authInteractor;
       this.featureHelper = featureHelper;
       observeConnection();
       connectUpdateSmartCard();
@@ -167,10 +170,11 @@ public class SmartCardSyncManager {
       interactor.fetchFirmwareVersionPipe()
             .observeSuccess()
             .map(Command::getResult)
-            // reset pipe with distinctUntilChanged() below after card factory reset
+            // reset pipe with distinctUntilChanged() below after card factory reset and logout
             .mergeWith(factoryResetInteractor.factoryResetCommandActionPipe().observeSuccess().map(command -> null))
+            .mergeWith(authInteractor.logoutPipe().observeSuccess().map(command -> null))
             .distinctUntilChanged()
-            .filter(wirmware -> wirmware != null)
+            .filter(firmware -> firmware != null)
             .subscribe(firmware -> {
                      saveFirmwareDataForAboutScreen(firmware);
                      interactor.smartCardFirmwarePipe().send(SmartCardFirmwareCommand.Companion.save(firmware));

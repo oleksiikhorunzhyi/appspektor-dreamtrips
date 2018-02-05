@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.trips.model;
+package com.worldventures.dreamtrips.modules.trips.model.map;
 
 import android.os.Parcel;
 import android.os.Parcelable;

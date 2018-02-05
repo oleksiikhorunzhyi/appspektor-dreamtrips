@@ -134,12 +134,13 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                val testName = "Test from trip"
                val tripId = 333
 
-               val mockedTripModel = mock<TripModel>()
+               val mockedTripModel = TripModel().apply {
+                  name = testName
+               }
 
                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
                whenever(testBucketItem.name).thenReturn(testName)
-               whenever(mockedTripModel.name).thenReturn(testName)
                testBucketItemApi = getStubbedApiBucketSocialized()
                      .name(testName)
                      .id(tripId)

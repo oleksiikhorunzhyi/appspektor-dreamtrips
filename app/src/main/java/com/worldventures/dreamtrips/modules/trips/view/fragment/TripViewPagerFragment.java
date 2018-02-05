@@ -35,8 +35,8 @@ public class TripViewPagerFragment extends BaseFragmentWithArgs<Presenter, TripV
       activity.getSupportActionBar().setTitle("");
 
       pager.setAdapter(adapter = new BasePagerAdapter<>(getActivity().getSupportFragmentManager()));
-      for (TripImage tripImage : getArgs().getTripImages()) {
-         adapter.add(new FragmentItem(TripPhotoFullscreenFragment.class, "", tripImage));
+      for (String tripImageUrl : getArgs().getTripImages()) {
+         adapter.add(new FragmentItem(TripPhotoFullscreenFragment.class, "", new TripImage(tripImageUrl)));
       }
       pager.setCurrentItem(getArgs().getPosition());
       adapter.notifyDataSetChanged();

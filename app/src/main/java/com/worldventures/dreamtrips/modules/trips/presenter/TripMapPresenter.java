@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
-import com.worldventures.dreamtrips.modules.trips.model.Pin;
-import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.map.TripClusterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
 

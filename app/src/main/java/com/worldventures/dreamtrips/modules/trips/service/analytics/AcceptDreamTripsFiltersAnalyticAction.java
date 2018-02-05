@@ -4,7 +4,7 @@ import com.worldventures.core.service.analytics.AdobeTracker;
 import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
-import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
+import com.worldventures.dreamtrips.modules.trips.model.analytics.TripsFilterDataAnalyticsWrapper;
 
 @AnalyticsEvent(action = "dreamtrips", trackers = AdobeTracker.TRACKER_KEY)
 public class AcceptDreamTripsFiltersAnalyticAction extends BaseAnalyticsAction {

@@ -3,21 +3,19 @@ package com.worldventures.dreamtrips.modules.trips.view.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
-
 import java.util.List;
 
 public class TripViewPagerBundle implements Parcelable {
 
-   private final List<TripImage> tripImages;
+   private List<String> tripImages;
    private final int position;
 
-   public TripViewPagerBundle(List<TripImage> tripImages, int position) {
+   public TripViewPagerBundle(List<String> tripImages, int position) {
       this.tripImages = tripImages;
       this.position = position;
    }
 
-   public List<TripImage> getTripImages() {
+   public List<String> getTripImages() {
       return tripImages;
    }
 
@@ -26,7 +24,7 @@ public class TripViewPagerBundle implements Parcelable {
    }
 
    protected TripViewPagerBundle(Parcel in) {
-      tripImages = in.readArrayList(TripImage.class.getClassLoader());
+      in.readStringList(tripImages);
       position = in.readInt();
    }
 
@@ -37,7 +35,7 @@ public class TripViewPagerBundle implements Parcelable {
 
    @Override
    public void writeToParcel(Parcel dest, int flags) {
-      dest.writeList(tripImages);
+      dest.writeStringList(tripImages);
       dest.writeInt(position);
    }
 

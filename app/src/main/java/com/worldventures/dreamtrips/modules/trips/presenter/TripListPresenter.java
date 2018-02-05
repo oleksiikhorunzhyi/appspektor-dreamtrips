@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
+import com.worldventures.dreamtrips.modules.trips.model.analytics.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.TripItemAnalyticAction;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsAdobeAnalyticAction;

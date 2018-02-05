@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.trips.model;
+package com.worldventures.dreamtrips.modules.trips.model.analytics;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.modules.trips.model.filter.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 
 import java.text.SimpleDateFormat;

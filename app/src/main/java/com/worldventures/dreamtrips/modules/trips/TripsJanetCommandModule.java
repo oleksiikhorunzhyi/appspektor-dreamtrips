@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsComma
 import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
@@ -60,12 +59,6 @@ public class TripsJanetCommandModule {
    @Singleton
    Converter provideRegionConverter() {
       return new RegionConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideTripImageConverter() {
-      return new TripImageConverter();
    }
 
    @Provides(type = Provides.Type.SET)

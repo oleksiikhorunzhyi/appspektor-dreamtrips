@@ -271,7 +271,7 @@
                         android:maxLines="1"
                         android:paddingEnd="@dimen/spacing_normal"
                         android:paddingStart="0dp"
-                        android:text="@{aboutViewModel.smartCardFirmware.nordicAppVersion}"
+                        android:text="@{aboutViewModel.nordicAppVersion}"
                         android:textAppearance="@style/AboutItemText.Value"
                         tools:text="1.49.0"
                         />
@@ -304,7 +304,7 @@
                         android:maxLines="1"
                         android:paddingEnd="@dimen/spacing_normal"
                         android:paddingStart="0dp"
-                        android:text="@{aboutViewModel.smartCardFirmware.internalAtmelVersion}"
+                        android:text="@{aboutViewModel.internalAtmelVersion}"
                         android:textAppearance="@style/AboutItemText.Value"
                         tools:text="1.15.2"
                         />
@@ -337,7 +337,7 @@
                         android:maxLines="1"
                         android:paddingEnd="@dimen/spacing_normal"
                         android:paddingStart="0dp"
-                        android:text="@{aboutViewModel.smartCardFirmware.nrfBootloaderVersion}"
+                        android:text="@{aboutViewModel.nrfBootloaderVersion}"
                         android:textAppearance="@style/AboutItemText.Value"
                         tools:text="1.13.3"
                         />
@@ -370,7 +370,7 @@
                         android:maxLines="1"
                         android:paddingEnd="@dimen/spacing_normal"
                         android:paddingStart="0dp"
-                        android:text="@{aboutViewModel.smartCardFirmware.externalAtmelVersion}"
+                        android:text="@{aboutViewModel.externalAtmelVersion}"
                         android:textAppearance="@style/AboutItemText.Value"
                         tools:text="1.13.3"
                         />

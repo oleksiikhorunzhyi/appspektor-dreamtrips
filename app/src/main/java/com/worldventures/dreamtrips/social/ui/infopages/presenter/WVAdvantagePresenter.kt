@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter
 
+import com.worldventures.core.utils.ProjectTextUtils
+
 class WVAdvantagePresenter : AuthorizedStaticInfoPresenter<AuthorizedStaticInfoPresenter.View>() {
 
    override fun initUrl() = provider.wvAdvantageUrl ?: ""
@@ -9,5 +11,10 @@ class WVAdvantagePresenter : AuthorizedStaticInfoPresenter<AuthorizedStaticInfoP
       headerProvider.applicationIdentifierHeader.also {
          put(it.name, it.value)
       }
+   }
+
+   private fun getLegacyAuthTokenBase64(): String {
+      return "Basic " + ProjectTextUtils.convertToBase64(appSessionHolder.get().get().username() + ":" + appSessionHolder.get()
+            .get().legacyApiToken())
    }
 }

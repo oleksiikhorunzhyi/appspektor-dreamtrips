@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.social.ui.infopages.presenter
 import com.worldventures.core.modules.auth.api.command.LoginCommand
 import com.worldventures.core.modules.auth.api.command.LogoutCommand
 import com.worldventures.core.modules.auth.service.AuthInteractor
-import com.worldventures.core.utils.ProjectTextUtils
 import com.worldventures.dreamtrips.social.ui.infopages.service.analytics.OtaViewedAction
 import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMerchantViewedAction
 import io.techery.janet.helper.ActionStateSubscriber
@@ -24,11 +23,6 @@ open class AuthorizedStaticInfoPresenter<T : AuthorizedStaticInfoPresenter.View>
    }
 
    override fun initUrl() = ""
-
-   fun getLegacyAuthTokenBase64(): String {
-      return appSessionHolder.get().get().username() + ":" + appSessionHolder.get()
-            .get().legacyApiToken().let { "Basic " + ProjectTextUtils.convertToBase64(it) }
-   }
 
    private fun doWithAuth(updateAction: () -> Unit) {
       appSessionHolder.get().get().apply {

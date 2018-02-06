@@ -9,10 +9,10 @@ import icepick.State
 import java.util.ArrayList
 import javax.inject.Inject
 
-class FeedbackImageAttachmentsPresenter(initialAttachments: List<FeedbackImageAttachment>, private val initialPosition: Int)
+class FeedbackImageAttachmentsPresenter(initialAttachments: List<FeedbackImageAttachment>?, private val initialPosition: Int)
    : Presenter<FeedbackImageAttachmentsPresenter.View>() {
 
-   @State @JvmField var attachments = ArrayList(initialAttachments)
+   @State @JvmField var attachments = ArrayList(initialAttachments?: listOf())
    @State @JvmField var locallyDeletedAttachments = ArrayList<FeedbackImageAttachment>()
    @Inject lateinit var backStackDelegate: BackStackDelegate
    @Inject lateinit var feedbackInteractor: FeedbackInteractor

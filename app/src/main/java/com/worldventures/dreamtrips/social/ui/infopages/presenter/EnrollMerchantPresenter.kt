@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.MerchantStaticPageProvide
 
 import javax.inject.Inject
 
-class EnrollMerchantPresenter(private val merchantBundle: MerchantIdBundle)
+class EnrollMerchantPresenter(private val merchantBundle: MerchantIdBundle?)
    : AuthorizedStaticInfoPresenter<AuthorizedStaticInfoPresenter.View>() {
 
    @Inject lateinit var merChantProvider: MerchantStaticPageProvider

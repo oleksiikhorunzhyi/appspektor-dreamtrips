@@ -3,9 +3,9 @@ package com.worldventures.dreamtrips.social.ui.infopages.presenter
 import android.os.Build
 import com.worldventures.dreamtrips.BuildConfig
 
-class BookItPresenter(val link: String) : WebViewFragmentPresenter<WebViewFragmentPresenter.View>() {
+class BookItPresenter(val link: String?) : WebViewFragmentPresenter<WebViewFragmentPresenter.View>() {
 
-   override fun initUrl() = link
+   override fun initUrl() = link ?: ""
 
    override fun getAdditionalHeaders() = mapOf(AUTHORIZATION_HEADER_KEY to getAuthToken(), BOOK_IT_HEADER_KEY to BOOK_IT_HEADER)
 

@@ -7,7 +7,7 @@ import com.worldventures.janet.cache.CachedAction;
 import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
-import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 
 import java.util.List;
 

@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.trips.model.filter;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -9,9 +9,7 @@ import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.BookItAction;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsApptentiveAnalyticAction;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundle;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,12 +21,11 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    @Inject TripsInteractor tripsInteractor;
    @Inject StaticPageProvider staticPageProvider;
 
-   private List<TripImage> filteredImages;
+   private List<String> filteredImages;
 
    public TripDetailsPresenter(TripModel trip) {
       super(trip);
-      filteredImages = new ArrayList<>();
-      filteredImages.addAll(trip.getFilteredImages());
+      filteredImages = trip.getImageUrls();
    }
 
    @Override
@@ -95,7 +92,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
       view.openFullscreen(new TripViewPagerBundle(filteredImages, position));
    }
 
-   public List<TripImage> getFilteredImages() {
+   public List<String> getFilteredImages() {
       return filteredImages;
    }
 

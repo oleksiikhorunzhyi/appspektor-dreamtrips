@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.repository;
 
 import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
 

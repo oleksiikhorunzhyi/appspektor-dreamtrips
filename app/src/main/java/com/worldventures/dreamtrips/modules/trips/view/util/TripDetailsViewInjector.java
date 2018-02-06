@@ -44,12 +44,12 @@ public class TripDetailsViewInjector extends TripViewInjector {
       addToBucketItem = menu.findItem(R.id.action_add_to_bucket);
    }
 
-   public void initGalleryData(FragmentManager fragmentManager, List<TripImage> filteredImages) {
+   public void initGalleryData(FragmentManager fragmentManager, List<String> filteredImages) {
       BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(fragmentManager) {
          @Override
          public void setArgs(int position, Fragment fragment) {
-            TripImage photo = filteredImages.get(position);
-            ((BaseImageFragment) fragment).setArgs(new ImageBundle<>(photo));
+            String photo = filteredImages.get(position);
+            ((BaseImageFragment) fragment).setArgs(new ImageBundle<>(new TripImage(photo)));
          }
       };
 

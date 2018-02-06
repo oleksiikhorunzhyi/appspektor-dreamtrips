@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.api.trip.GetTripsLocationsHttpAction;
 import com.worldventures.dreamtrips.api.trip.ImmutableGetTripsLocationsHttpAction;
 import com.worldventures.dreamtrips.api.trip.model.TripPinWrapper;
 import com.worldventures.dreamtrips.core.janet.CommandActionBaseHelper;
-import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 import com.worldventures.janet.cache.CacheOptions;
 import com.worldventures.janet.cache.CachedAction;

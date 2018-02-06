@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
 import com.worldventures.dreamtrips.api.trip.GetTripActivitiesHttpAction;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.ActivityModel;
 import com.worldventures.janet.cache.CacheOptions;
 import com.worldventures.janet.cache.CachedAction;
 import com.worldventures.janet.injection.InjectableAction;

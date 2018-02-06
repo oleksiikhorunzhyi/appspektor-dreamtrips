@@ -3,36 +3,25 @@ package com.worldventures.dreamtrips.social.ui.tripsimages.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.worldventures.core.model.ImagePathHolder
-import com.worldventures.core.utils.ImageUtils
 
 class TripImage() : Parcelable, ImagePathHolder {
 
-   lateinit var id: String
-   var description: String? = null
-   var url: String = ""
-   var type: String? = null
-   var originUrl: String? = null
+   var url = ""
 
-   fun getUrl(width: Int, height: Int): String = ImageUtils.getParametrizedUrl(url, width, height)
-
-   override fun getImagePath(): String? = url
+   constructor(url: String): this() {
+      this.url = url
+   }
 
    constructor(source: Parcel) : this() {
-      id = source.readString()
-      description = source.readString()
       url = source.readString()
-      type = source.readString()
-      originUrl = source.readString()
    }
+
+   override fun getImagePath() = url
 
    override fun describeContents() = 0
 
    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-      writeString(id)
-      writeString(description)
       writeString(url)
-      writeString(type)
-      writeString(originUrl)
    }
 
    companion object {

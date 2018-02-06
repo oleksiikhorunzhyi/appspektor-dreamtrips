@@ -8,7 +8,7 @@ import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.janet.cache.storage.ClearableStorage;
 import com.worldventures.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionModel;
 
 import java.util.List;
 

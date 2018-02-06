@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterData
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
+import com.worldventures.dreamtrips.modules.trips.model.filter.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionModel;
+import com.worldventures.dreamtrips.modules.trips.model.analytics.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
@@ -96,7 +96,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       queryTripsFilterDataInteractor.pipe().send(new TripsFilterDataCommand());
    }
 
-   public void fillData() {
+   private void fillData() {
       List<Object> data = new ArrayList<>();
       data.clear();
       data.add(dateFilterItem);
@@ -119,13 +119,13 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
       view.fillData(data);
    }
 
-   public void setRegionsChecked(boolean isChecked) {
+   private void setRegionsChecked(boolean isChecked) {
       for (RegionModel region : tripFilterData.getAllRegions()) {
          region.setChecked(isChecked);
       }
    }
 
-   public void setThemesChecked(boolean isChecked) {
+   private void setThemesChecked(boolean isChecked) {
       for (ActivityModel activity : tripFilterData.getAllParentActivities()) {
          activity.setChecked(isChecked);
       }
@@ -137,7 +137,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
    }
 
    public void resetFilters() {
-      dateFilterItem.reset();
+      dateFilterItem = new DateFilterItem();
       filterModel.reset();
       themeHeaderModel.setChecked(true);
       regionHeaderModel.setChecked(true);

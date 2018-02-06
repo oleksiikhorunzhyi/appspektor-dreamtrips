@@ -5,9 +5,6 @@ import android.support.annotation.Nullable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.model.BaseEntity;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -95,7 +92,7 @@ public class TripsFilterData implements Serializable {
       }
       return Queryable.from(allRegions)
             .filter(RegionModel::isChecked)
-            .map(BaseEntity::getId)
+            .map(RegionModel::getId)
             .toList();
    }
 
@@ -106,7 +103,7 @@ public class TripsFilterData implements Serializable {
       }
       return Queryable.from(allParentActivities)
             .filter(ActivityModel::isChecked)
-            .map(BaseEntity::getId)
+            .map(ActivityModel::getId)
             .toList();
    }
 

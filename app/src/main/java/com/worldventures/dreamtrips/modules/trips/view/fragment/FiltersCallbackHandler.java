@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;

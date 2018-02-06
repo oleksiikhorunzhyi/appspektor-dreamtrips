@@ -20,7 +20,7 @@ public class TripFeedItem extends FeedItem<TripModel> {
 
    @Override
    public String previewImage(Resources res) {
-      return getItem().getImageUrl("THUMB");
+      return getItem().getThumbnailUrl();
    }
 
    public static final Creator<TripFeedItem> CREATOR = new Creator<TripFeedItem>() {

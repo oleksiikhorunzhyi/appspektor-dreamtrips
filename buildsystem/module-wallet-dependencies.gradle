@@ -34,7 +34,7 @@ ext {
    ]
 
    walletDependencies.smartcard = [
-         service: [impl: 'io.techery.janet:smartcard:0.21.7.4-SNAPSHOT'],
+         service: [impl: 'io.techery.janet:smartcard:0.21.7.4'],
    ]
 
    walletDependencies.test = [

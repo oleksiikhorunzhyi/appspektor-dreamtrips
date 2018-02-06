@@ -83,6 +83,7 @@ public class WalletActionStorageModule {
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage aboutSmartCardDataActionStorage(FirmwareDataStorage persistentStorage) {
       return new AboutSmartCardDataActionStorage(persistentStorage);
    }

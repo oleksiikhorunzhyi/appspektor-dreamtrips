@@ -72,10 +72,7 @@ public class WalletAutoClearCardsPresenterImpl extends WalletPresenterImpl<Walle
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<SetAutoClearSmartCardDelayCommand>provideOperationView())
-                  .onSuccess(command -> {
-                     bindToView(command.getResult());
-                     getView().setDelayWasChanged(true);
-                  })
+                  .onSuccess(command -> getView().notifyDataIsSaved())
                   .create());
    }
 

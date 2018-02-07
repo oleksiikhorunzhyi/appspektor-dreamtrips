@@ -78,23 +78,24 @@ public abstract class WalletBaseClearDelayScreenImpl<S extends WalletBaseClearDe
    }
 
    @Override
-   public void setSelectedPosition(int position) {
-      selectionView.check(position);
-   }
-
-   @Override
    public int getSelectedPosition() {
       return selectionView.getCheckedRadioButtonId();
    }
 
    @Override
-   public void setDelayWasChanged(boolean autoClearWasChanged) {
-      this.delayWasChanged = autoClearWasChanged;
+   public void setSelectedPosition(int position) {
+      selectionView.check(position);
+   }
+
+   @Override
+   public void notifyDataIsSaved() {
+      this.delayWasChanged = true;
    }
 
    @Override
    public <T> OperationView<T> provideOperationView() {
-      return new ComposableOperationView<>(new SimpleToastSuccessView<>(getContext(), getSuccessMessage()),
+      return new ComposableOperationView<>(
+            new SimpleToastSuccessView<>(getContext(), getSuccessMessage()),
             ErrorViewFactory.<T>builder()
                   .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext()))

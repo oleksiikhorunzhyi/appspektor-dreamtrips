@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.delegate;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
-import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.TripsFilterDataCommand;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

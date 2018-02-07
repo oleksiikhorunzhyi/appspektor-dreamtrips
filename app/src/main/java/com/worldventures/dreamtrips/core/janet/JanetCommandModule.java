@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCom
 import com.worldventures.dreamtrips.modules.common.command.ClearStoragesCommand;
 import com.worldventures.dreamtrips.modules.common.command.InitializeCommand;
 import com.worldventures.dreamtrips.modules.common.command.SubscribeToPushNotificationsCommand;
-import com.worldventures.dreamtrips.modules.common.command.TripsFilterDataCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlJanetCommandModule;
 import com.worldventures.dreamtrips.modules.gcm.command.UnsubscribeFromPushCommand;
 import com.worldventures.dreamtrips.social.di.SocialJanetCommandModule;

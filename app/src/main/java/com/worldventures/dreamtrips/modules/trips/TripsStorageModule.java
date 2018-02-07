@@ -4,14 +4,13 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStor
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.RegionsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsFiltersStorage;
-import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage;
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripDetailsStorage;
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripPinsStorage;
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripsByUidsStorage;
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripsDiskStorage;
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripsFiltersStorage;
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripsStorage;
 import com.worldventures.janet.cache.storage.ActionStorage;
-import com.worldventures.janet.cache.storage.MemoryStorage;
 
 import javax.inject.Singleton;
 
@@ -24,13 +23,13 @@ public class TripsStorageModule {
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideActivitiesStorage() {
-      return new ActivitiesStorage(new MemoryStorage<>());
+      return new ActivitiesStorage();
    }
 
    @Singleton
    @Provides(type = Provides.Type.SET)
    ActionStorage provideRegionsStorage() {
-      return new RegionsStorage(new MemoryStorage<>());
+      return new RegionsStorage();
    }
 
    @Singleton

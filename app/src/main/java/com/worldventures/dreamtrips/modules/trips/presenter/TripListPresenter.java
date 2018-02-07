@@ -5,7 +5,6 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.config.service.command.ConfigurationCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -16,6 +15,7 @@ import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTri
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsApptentiveAnalyticAction;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewMapDreamTripsAnalyticAction;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewTripDetailsAnalyticAction;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand;
@@ -43,7 +43,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    @Inject AppConfigurationInteractor appConfigurationInteractor;
    @Inject TripsInteractor tripsInteractor;
 
-   @State String query;
+   @State String query = "";
 
    private boolean loadWithStatus;
 
@@ -68,7 +68,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
                   .observe()
                   .filter(state -> state.status == ActionState.Status.SUCCESS)
                   .map(state -> state.action.getResult()),
-            tripsInteractor.tripsPipe()
+            tripsInteractor.getTripsPipe()
                   .observe()
                   .filter(state -> state.status == ActionState.Status.SUCCESS || state.status == ActionState.Status.PROGRESS)
                   .map(state -> state.action.getItems()),
@@ -113,7 +113,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
    private void loadTrips(boolean refresh) {
       tripFilterEventDelegate.last()
-            .subscribe(tripsFilterData -> tripsInteractor.tripsPipe()
+            .subscribe(tripsFilterData -> tripsInteractor.getTripsPipe()
                   .send(new GetTripsCommand(query, tripsFilterData, refresh)));
    }
 
@@ -129,7 +129,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
    private void search(String query) {
       this.query = query;
-      tripsInteractor.tripsPipe().cancelLatest();
+      tripsInteractor.getTripsPipe().cancelLatest();
       reload();
    }
 
@@ -140,7 +140,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
    }
 
    private void subscribeToLoadTrips() {
-      tripsInteractor.tripsPipe()
+      tripsInteractor.getTripsPipe()
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripsCommand>()

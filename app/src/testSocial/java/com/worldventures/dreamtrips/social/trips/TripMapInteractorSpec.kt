@@ -7,13 +7,13 @@ import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.trip.model.Trip
 import com.worldventures.dreamtrips.api.trip.model.TripPinWrapper
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand
-import com.worldventures.dreamtrips.modules.trips.model.map.Pin
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
-import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor
-import com.worldventures.dreamtrips.modules.trips.storage.TripPinsStorage
-import com.worldventures.dreamtrips.modules.trips.storage.TripsByUidsStorage
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsByUidCommand
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsLocationsCommand
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripPinsStorage
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripsByUidsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -35,7 +35,7 @@ class TripMapInteractorSpec : BaseSpec({
 
          val testSubscriber = TestSubscriber<ActionState<GetTripsLocationsCommand>>()
 
-         tripMapInteractor.mapObjectsPipe()
+         tripsInteractor.mapObjectsActionPipe
                .createObservable(GetTripsLocationsCommand("", null))
                .subscribe(testSubscriber)
 
@@ -53,7 +53,7 @@ class TripMapInteractorSpec : BaseSpec({
 
          val testSubscriber = TestSubscriber<ActionState<GetTripsLocationsCommand>>()
 
-         tripMapInteractor.mapObjectsPipe()
+         tripsInteractor.mapObjectsActionPipe
                .createObservable(GetTripsLocationsCommand("", null))
                .subscribe(testSubscriber)
 
@@ -77,7 +77,7 @@ class TripMapInteractorSpec : BaseSpec({
 
          val testSubscriber = TestSubscriber<ActionState<GetTripsByUidCommand>>()
 
-         tripMapInteractor.tripsByUidPipe()
+         tripsInteractor.tripsByUidPipe
                .createObservable(GetTripsByUidCommand(listOf("1", "2")))
                .subscribe(testSubscriber)
 
@@ -95,7 +95,7 @@ class TripMapInteractorSpec : BaseSpec({
 
          val testSubscriber = TestSubscriber<ActionState<GetTripsByUidCommand>>()
 
-         tripMapInteractor.tripsByUidPipe()
+         tripsInteractor.tripsByUidPipe
                .createObservable(GetTripsByUidCommand(listOf("1", "2")))
                .subscribe(testSubscriber)
 
@@ -116,7 +116,7 @@ class TripMapInteractorSpec : BaseSpec({
 
          val testSubscriber = TestSubscriber<ActionState<GetTripsByUidCommand>>()
 
-         tripMapInteractor.tripsByUidPipe()
+         tripsInteractor.tripsByUidPipe
                .createObservable(GetTripsByUidCommand(listOf("1")))
                .subscribe(testSubscriber)
 
@@ -149,7 +149,7 @@ class TripMapInteractorSpec : BaseSpec({
       val tripByUidsStorage: TripsByUidsStorage = mock()
       val mappery : MapperyContext = mock()
 
-      lateinit var tripMapInteractor: TripMapInteractor
+      lateinit var tripsInteractor: TripsInteractor
 
       fun setup(httpService: ActionService) {
          val daggerCommandActionService = CommandActionService()
@@ -167,7 +167,7 @@ class TripMapInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(Janet::class.java) { janet }
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
 
-         tripMapInteractor = TripMapInteractor(SessionActionPipeCreator(janet))
+         tripsInteractor = TripsInteractor(SessionActionPipeCreator(janet))
       }
 
      fun mockHttpServiceForTripLocations(): MockHttpActionService {

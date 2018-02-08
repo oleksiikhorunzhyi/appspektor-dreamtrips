@@ -1,19 +1,21 @@
 package com.worldventures.dreamtrips.modules.trips;
 
 import com.worldventures.core.converter.Converter;
-import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
+import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
 import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.command.CheckTripsByUidCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetActivitiesCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetRegionsCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripDetailsCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsByUidCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsLocationsCommand;
 
 import javax.inject.Singleton;
 
@@ -30,6 +32,12 @@ import dagger.Provides;
       GetTripsByUidCommand.class,
 }, complete = false, library = true)
 public class TripsJanetCommandModule {
+
+   @Provides
+   @Singleton
+   TripsInteractor provideTripsInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new TripsInteractor(sessionActionPipeCreator);
+   }
 
    @Provides(type = Provides.Type.SET)
    @Singleton

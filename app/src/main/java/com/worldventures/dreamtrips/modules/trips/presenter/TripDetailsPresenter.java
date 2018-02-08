@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.BookItAction;
 import com.worldventures.dreamtrips.modules.trips.service.analytics.ViewDreamTripsApptentiveAnalyticAction;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundle;
 
 import java.util.List;
@@ -62,11 +62,11 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
    }
 
    public void loadTripDetails() {
-      tripsInteractor.detailsPipe().send(new GetTripDetailsCommand(trip.getUid()));
+      tripsInteractor.getDetailsPipe().send(new GetTripDetailsCommand(trip.getUid()));
    }
 
    private void subscribeForTripsDetails() {
-      tripsInteractor.detailsPipe()
+      tripsInteractor.getDetailsPipe()
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()

@@ -210,7 +210,7 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public boolean hasTripsDetailsForUids(List<String> uids) {
       return actWithResult(db ->
-            Queryable.from()
+            Queryable.from(db.findKeys(TRIPS_DETAILS))
                   .toList()
                   .containsAll(Queryable.from(uids).map(uid -> TRIPS_DETAILS + uid).toList())
       ).or(false);

@@ -4,17 +4,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.command.CheckTripsByUidCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsByUidCommand;
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsLocationsCommand;
 import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.map.TripClusterItem;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.command.CheckTripsByUidCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsByUidCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsLocationsCommand;
+import com.worldventures.dreamtrips.social.util.event_delegate.DrawerOpenedEventDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +29,9 @@ import timber.log.Timber;
 
 public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
-   @State String query;
+   @State String query = "";
 
-   @Inject TripMapInteractor tripMapInteractor;
+   @Inject TripsInteractor tripsInteractor;
    @Inject TripFilterEventDelegate tripFilterEventDelegate;
    @Inject DrawerOpenedEventDelegate drawerOpenedEventDelegate;
 
@@ -109,7 +109,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
       }
 
       List<String> tripUids = holder.getTripUids();
-      tripMapInteractor.checkTripsByUidPipe()
+      tripsInteractor.getCheckTripsByUidPipe()
             .createObservableResult(new CheckTripsByUidCommand(tripUids))
             .compose(new IoToMainComposer<>())
             .compose(bindUntilPause())
@@ -159,13 +159,13 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
    // Map reloading
    ///////////////////////////////////////////////////////////////////////////
 
-   public void reloadMapObjects() {
-      tripFilterEventDelegate.last().subscribe(tripsFilterData -> tripMapInteractor
-            .mapObjectsPipe().send(new GetTripsLocationsCommand(query, tripsFilterData)));
+   private void reloadMapObjects() {
+      tripFilterEventDelegate.last().subscribe(tripsFilterData -> tripsInteractor
+            .getMapObjectsActionPipe().send(new GetTripsLocationsCommand(query, tripsFilterData)));
    }
 
    private void subscribeToMapReloading() {
-      tripMapInteractor.mapObjectsPipe()
+      tripsInteractor.getMapObjectsActionPipe()
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripsLocationsCommand>()
@@ -197,11 +197,11 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
    ///////////////////////////////////////////////////////////////////////////
 
    private void loadTrips(List<String> tripUids) {
-      tripMapInteractor.tripsByUidPipe().send(new GetTripsByUidCommand(tripUids));
+      tripsInteractor.getTripsByUidPipe().send(new GetTripsByUidCommand(tripUids));
    }
 
    private void subscribeToTripLoading() {
-      tripMapInteractor.tripsByUidPipe()
+      tripsInteractor.getTripsByUidPipe()
             .observe()
             .compose(new IoToMainComposer<>())
             .compose(bindUntilPause())
@@ -222,7 +222,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
    }
 
    private void cancelLatestTripAction() {
-      tripMapInteractor.tripsByUidPipe().cancelLatest();
+      tripsInteractor.getTripsByUidPipe().cancelLatest();
    }
 
    public interface View extends Presenter.View {

@@ -12,9 +12,9 @@ public interface LostCardControllerFlipper {
 
    void flip(boolean isMapEnabled);
 
-   void onSaveViewState(@NonNull Bundle outState);
+   void onSaveState(@NonNull Bundle outState);
 
-   void onRestoreViewState(@NonNull Bundle savedViewState);
+   void onRestoreState(@NonNull Bundle savedViewState);
 
    void destroy();
 }

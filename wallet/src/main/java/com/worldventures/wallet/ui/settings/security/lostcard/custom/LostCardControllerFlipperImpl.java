@@ -24,7 +24,9 @@ public class LostCardControllerFlipperImpl implements LostCardControllerFlipper,
    public void init(Router childRouter, ControllerFlipListener flipListener) {
       this.childRouter = childRouter;
       this.controllerFlipListener = flipListener;
-      updateController(false);
+      if (!childRouter.hasRootController()) {
+         updateController(false);
+      }
    }
 
    @Override
@@ -36,14 +38,13 @@ public class LostCardControllerFlipperImpl implements LostCardControllerFlipper,
    }
 
    @Override
-   public void onSaveViewState(@NonNull Bundle outState) {
+   public void onSaveState(@NonNull Bundle outState) {
       outState.putBoolean(MAP_ENABLED_KEY, isMapEnabled);
    }
 
    @Override
-   public void onRestoreViewState(@NonNull Bundle savedViewState) {
+   public void onRestoreState(@NonNull Bundle savedViewState) {
       isMapEnabled = savedViewState.getBoolean(MAP_ENABLED_KEY);
-      updateController(false);
    }
 
    @Override

@@ -8,6 +8,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.janet.cache.CacheResultWrapper
 import com.worldventures.janet.cache.storage.ActionStorage
+import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.AssertUtil.assertActionFail
 import com.worldventures.core.test.AssertUtil.assertActionSuccess
@@ -66,6 +67,7 @@ class SmartCardInteractorSpec : BaseSpec({
          mappery = createMappery()
          janet = createJanet()
          smartCardInteractor = createSmartCardInteractor(janet)
+         authInteractor = createAuthInteractor(janet)
          firmwareInteractor = createFirmwareInteractor(janet)
          recordInteractor = createRecordInteractor(janet)
          smartCardSyncManager = createSmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor)
@@ -309,6 +311,7 @@ class SmartCardInteractorSpec : BaseSpec({
       lateinit var janet: Janet
       lateinit var mappery: MapperyContext
       lateinit var smartCardInteractor: SmartCardInteractor
+      lateinit var authInteractor: AuthInteractor
       lateinit var firmwareInteractor: FirmwareInteractor
       lateinit var recordInteractor: RecordInteractor
       lateinit var cardStorage: RecordsStorage
@@ -325,7 +328,11 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun createSmartCardInteractor(janet: Janet) = SmartCardInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
+      fun createAuthInteractor(janet: Janet) = AuthInteractor(SessionActionPipeCreator(janet))
+
       fun createFirmwareInteractor(janet: Janet) = FirmwareInteractor(SessionActionPipeCreator(janet))
+
+      fun createFactoryResetInteractor(janet: Janet) = FactoryResetInteractor(SessionActionPipeCreator(janet))
 
       fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
@@ -333,7 +340,12 @@ class SmartCardInteractorSpec : BaseSpec({
 
       fun createAnalyticsInteractor(janet: Janet) = AnalyticsInteractor(SessionActionPipeCreator(janet))
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper)
+      fun createSmartCardSyncManager(janet: Janet,
+                                     smartCardInteractor: SmartCardInteractor,
+                                     firmwareInteractor: FirmwareInteractor,
+                                     recordInteractor: RecordInteractor) =
+            SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor,
+                  createFactoryResetInteractor(janet), authInteractor, featureHelper)
 
       fun createJanet(): Janet {
          val daggerCommandActionService = CommandActionService()

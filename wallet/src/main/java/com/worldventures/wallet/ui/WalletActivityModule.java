@@ -1,4 +1,4 @@
-package com.worldventures.wallet.di;
+package com.worldventures.wallet.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,7 +12,6 @@ import com.worldventures.wallet.service.WalletBluetoothService;
 import com.worldventures.wallet.service.WalletCropImageService;
 import com.worldventures.wallet.service.WalletCropImageServiceImpl;
 import com.worldventures.wallet.service.WalletNetworkService;
-import com.worldventures.wallet.ui.WalletActivity;
 import com.worldventures.wallet.ui.common.activity.WalletActivityPresenter;
 import com.worldventures.wallet.ui.common.activity.WalletActivityPresenterImpl;
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;

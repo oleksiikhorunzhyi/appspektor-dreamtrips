@@ -142,7 +142,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @Override
    public void showErrorDialog(String error) {
       SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
-      alertDialog.setTitleText(getString(R.string.dtl_estimator_error_title));
+      alertDialog.setTitleText(getString(R.string.dtl_alert_title_error));
       alertDialog.setContentText(error);
       alertDialog.setConfirmText(getActivity().getString(R.string.ok));
       alertDialog.setConfirmClickListener(Dialog::dismiss);

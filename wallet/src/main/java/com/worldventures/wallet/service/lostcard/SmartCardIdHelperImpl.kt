@@ -18,7 +18,9 @@ internal class SmartCardIdHelperImpl(
 
       smartCardInteractor.fetchAssociatedSmartCard()
             .createObservableResult(FetchAssociatedSmartCardCommand())
-            .doOnNext { locationInteractor.fetchTrackingStatusPipe().send(FetchTrackingStatusCommand()) }
+            .doOnNext {
+               smartCardInteractor.fetchAssociatedSmartCard().clearReplays()
+               locationInteractor.fetchTrackingStatusPipe().send(FetchTrackingStatusCommand()) }
             .subscribe()
    }
 

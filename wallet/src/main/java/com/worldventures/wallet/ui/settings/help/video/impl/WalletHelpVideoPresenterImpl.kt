@@ -3,7 +3,6 @@ package com.worldventures.wallet.ui.settings.help.video.impl
 import com.worldventures.core.model.CachedModel
 import com.worldventures.core.modules.video.model.Video
 import com.worldventures.core.modules.video.model.VideoCategory
-import com.worldventures.core.modules.video.model.VideoLanguage
 import com.worldventures.core.modules.video.model.VideoLocale
 import com.worldventures.core.modules.video.service.MemberVideosInteractor
 import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand
@@ -19,13 +18,11 @@ import com.worldventures.wallet.ui.settings.help.video.WalletHelpVideoPresenter
 import com.worldventures.wallet.ui.settings.help.video.WalletHelpVideoScreen
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel
 import io.techery.janet.ActionState
-
-import java.util.ArrayList
-
 import io.techery.janet.helper.ActionStateSubscriber
 import io.techery.janet.operationsubscriber.OperationActionSubscriber
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import java.util.ArrayList
 
 class WalletHelpVideoPresenterImpl(navigator: Navigator, deviceConnectionDelegate: WalletDeviceConnectionDelegate,
                                    private val memberVideosInteractor: MemberVideosInteractor,
@@ -39,6 +36,7 @@ class WalletHelpVideoPresenterImpl(navigator: Navigator, deviceConnectionDelegat
 
       observeUpdateStatusCachedEntity()
       subscribeToCachingStatusUpdates()
+      observeFetchVideoLocales()
    }
 
    private fun observeUpdateStatusCachedEntity() {
@@ -48,51 +46,41 @@ class WalletHelpVideoPresenterImpl(navigator: Navigator, deviceConnectionDelegat
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ActionStateSubscriber<UpdateStatusCachedEntityCommand>()
                   .onSuccess { handleUpdatedStatusCachedEntities(it.result) }
-                  .onFail { _, _ -> view.showRefreshing(false) }
             )
    }
 
    private fun handleUpdatedStatusCachedEntities(categories: List<VideoCategory>) {
-      view.setVideos(convert(categories[0].videos))
-      view.showRefreshing(false)
+      view.videos = convert(categories[0].videos)
    }
 
    private fun convert(videos: List<Video>): ArrayList<WalletVideoModel> =
          if (videos.isNotEmpty()) ArrayList(videos.map { WalletVideoModel(it) }.toList()) else ArrayList()
 
-   override fun fetchVideoAndLocales() {
-      fetchVideoLocales()
+   override fun fetchLocales() {
+      memberVideosInteractor.videoLocalesPipe.send(GetVideoLocalesCommand())
    }
 
-   private fun fetchVideoLocales() {
-      memberVideosInteractor.videoLocalesPipe
-            .createObservable(GetVideoLocalesCommand())
+   private fun observeFetchVideoLocales() {
+      memberVideosInteractor.videoLocalesPipe.observe()
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(view.provideOperationLoadLanguages())
-                  .onSuccess({ this.handleLoadedLocales(it) })
+                  .onSuccess({ this.handleLoadedLocales(it.result) })
                   .create())
    }
 
-   override fun fetchVideos(videoLanguage: VideoLanguage?) {
+   override fun fetchVideos(videoLocales: HelpVideoLocale) {
       memberVideosInteractor.memberVideosPipe
-            .createObservable(GetMemberVideosCommand.forHelpSmartCardVideos(videoLanguage))
+            .createObservable(GetMemberVideosCommand.forHelpSmartCardVideos(videoLocales.videoLanguage))
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(view.provideOperationLoadVideos())
-                  .onStart { view.showRefreshing(true) }
                   .onSuccess { onVideoLoaded(it.result) }
-                  .onFail { _, _ -> view.showRefreshing(false) }
                   .create())
    }
 
-   private fun handleLoadedLocales(command: GetVideoLocalesCommand) {
-      val locales = command.result
-      helpVideoDelegate.setVideoLocales(locales)
-      view.setVideoLocales(ArrayList(locales))
-      view.setSelectedLocale(helpVideoDelegate.getDefaultLocaleIndex(locales))
-
-      fetchVideos(helpVideoDelegate.getDefaultLanguage(locales))
+   private fun handleLoadedLocales(videoLocales: List<VideoLocale>) {
+      view.setVideoLocales(ArrayList(videoLocales), obtainDefaultLanguage(videoLocales))
    }
 
    private fun onVideoLoaded(categories: List<VideoCategory>) {
@@ -105,9 +93,8 @@ class WalletHelpVideoPresenterImpl(navigator: Navigator, deviceConnectionDelegat
    }
 
    override fun onPlayVideo(entity: WalletVideoModel) {
-      val videoUri = helpVideoDelegate.playVideo(entity)
-      navigator.goVideoPlayer(videoUri, entity.video.uid, entity.video.videoName,
-            javaClass, helpVideoDelegate.obtainVideoLanguage(entity))
+      val videoUri = helpVideoDelegate.obtainVideoUri(entity)
+      navigator.goVideoPlayer(videoUri, entity.video.uid, entity.video.videoName, javaClass, entity.video.language)
    }
 
    private fun subscribeToCachingStatusUpdates() {
@@ -138,21 +125,5 @@ class WalletHelpVideoPresenterImpl(navigator: Navigator, deviceConnectionDelegat
 
    override fun downloadVideo(entity: CachedModel) {
       cachedEntityDelegate.startCaching(entity, helpVideoDelegate.getPathForCache(entity))
-   }
-
-   override fun onSelectedLocale(item: VideoLocale) {
-      if (!helpVideoDelegate.isCurrentSelectedVideoLocale(item)) {
-         view.showDialogChosenLanguage(item)
-      } else {
-         helpVideoDelegate.setCurrentSelectedVideoLocale(item)
-      }
-   }
-
-   override fun refreshVideos() {
-      fetchVideos(helpVideoDelegate.defaultLanguageFromLastLocales)
-   }
-
-   override fun onSelectLastLocale() {
-      view.setSelectedLocale(helpVideoDelegate.lastSelectedLocaleIndex)
    }
 }

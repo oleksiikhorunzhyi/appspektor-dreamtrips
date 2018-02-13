@@ -13,9 +13,12 @@ import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.wallet.BaseSpec
+import com.worldventures.wallet.domain.entity.ConnectionStatus
+import com.worldventures.wallet.domain.entity.SmartCardStatus
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage
+import com.worldventures.wallet.domain.storage.action.DeviceStateActionStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
@@ -158,9 +161,14 @@ class FactoryResetInteractorSpec : BaseSpec({
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
       lateinit var settingsInteractor: SettingsInteractor
       lateinit var smartCardInteractor: SmartCardInteractor
+      private val deviceStateActionStorage = DeviceStateActionStorage()
+
+      init {
+         deviceStateActionStorage.save(null, SmartCardStatus(connectionStatus = ConnectionStatus.CONNECTED))
+      }
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultRecordIdStorage(cardStorage), SmartCardActionStorage(mockDb))
+         setOf(DefaultRecordIdStorage(cardStorage), SmartCardActionStorage(mockDb), deviceStateActionStorage)
       }
 
       fun createJanet(): Janet {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl android:id="@+id/root_reviews_view"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl
       xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/root_reviews_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       >
@@ -13,7 +14,7 @@
       <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_actionbar"
             style="@style/ToolBarStyle"
-            ></android.support.v7.widget.Toolbar>
+            />
 
       <TextView
             android:id="@+id/tv_title"
@@ -33,5 +34,4 @@
          android:id="@+id/include_detail_transaction"
          layout="@layout/include_detail_transaction"
          />
-
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.transaction_detail.DtlTransactionScreenImpl>

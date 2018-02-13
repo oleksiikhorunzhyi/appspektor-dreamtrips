@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
-import com.worldventures.wallet.di.SmartCardModule;
+import com.worldventures.wallet.domain.WalletConstants;
 import com.worldventures.wallet.ui.common.WalletNavigationDelegate;
 
 import rx.functions.Action0;
@@ -67,7 +67,7 @@ class DTDrawerNavigation implements WalletNavigationDelegate {
       navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
       navigationDrawerPresenter.setOnLogout(this::logout);
 
-      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(SmartCardModule.WALLET));
+      navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider.getComponentByKey(WalletConstants.WALLET_COMPONENT));
    }
 
    private void itemReselected(ComponentDescription route) {

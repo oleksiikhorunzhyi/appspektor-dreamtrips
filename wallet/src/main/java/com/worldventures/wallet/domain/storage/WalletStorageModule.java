@@ -18,7 +18,7 @@ import com.worldventures.wallet.domain.storage.security.crypto.HybridAndroidCryp
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.inject.Named;
@@ -69,8 +69,8 @@ public class WalletStorageModule {
 
    @Provides
    @Singleton
-   SnappyStorageManager SnappyRepositoryImpl(RecordsStorage recordsStorage) {
-      return new SnappyStorageManager(Collections.singletonList(recordsStorage));
+   SnappyStorageManager SnappyRepositoryImpl(RecordsStorage recordsStorage, FirmwareDataStorage firmwareDataStorage) {
+      return new SnappyStorageManager(Arrays.asList(recordsStorage, firmwareDataStorage));
    }
 
    @Provides
@@ -81,8 +81,8 @@ public class WalletStorageModule {
 
    @Provides
    @Singleton
-   FirmwareDataStorage provideWalletPersistentStorage(@Named(PERSISTENT_SNAPPY_STORAGE) SnappyStorage snappyStorage, SnappyCrypter snappyCrypter) {
-      return new PersistentFirmwareDataStorage(snappyStorage, snappyCrypter);
+   FirmwareDataStorage provideWalletPersistentStorage(@Named(PERSISTENT_SNAPPY_STORAGE) SnappyStorage snappyStorage) {
+      return new PersistentFirmwareDataStorage(snappyStorage);
    }
 
 }

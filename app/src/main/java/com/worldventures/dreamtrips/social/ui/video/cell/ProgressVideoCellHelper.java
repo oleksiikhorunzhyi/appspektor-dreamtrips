@@ -4,6 +4,7 @@ import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.cell.ProgressMediaButtonActions;
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.ui.view.custom.PinProgressButton;
+import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 
 import static com.worldventures.core.modules.video.model.Status.FAILED;
 
@@ -56,7 +57,13 @@ public class ProgressVideoCellHelper {
       if (delegate == null) {
          return;
       }
-      boolean cached = cachedModelHelper.isCached(cacheModel);
+      boolean cached;
+      if (cacheModel.getEntityClass() == Podcast.class) {
+         cached = cachedModelHelper.isCachedPodcast(cacheModel);
+      } else {
+         cached = cachedModelHelper.isCached(cacheModel);
+      }
+
       boolean inProgress = cacheModel.getProgress() > 0 && cacheModel.getProgress() < 100;
       boolean failed = cacheModel.getCacheStatus() == FAILED;
       if ((!cached && !inProgress) || failed) {

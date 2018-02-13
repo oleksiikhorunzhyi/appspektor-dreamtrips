@@ -36,10 +36,10 @@ class FetchAssociatedSmartCardCommand(private val skipLocalData: Boolean = false
       janet.createPipe(GetAssociatedCardsHttpAction::class.java)
             .createObservableResult(GetAssociatedCardsHttpAction(propertiesProvider.deviceId()))
             .flatMap { action -> handleResponse(action.response()) }
-            .doOnNext { result ->
-               if (result.exist) {
+            .doOnNext {
+               if (it.exist) {
                   janetWallet.createPipe(ConnectSmartCardCommand::class.java)
-                        .send(ConnectSmartCardCommand(result.smartCard!!.smartCardId))
+                        .send(ConnectSmartCardCommand(it.smartCard!!.smartCardId))
                }
             }
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
@@ -49,9 +49,9 @@ class FetchAssociatedSmartCardCommand(private val skipLocalData: Boolean = false
       if (listSmartCardInfo.isEmpty()) {
          return Observable.just(AssociatedCard())
       }
-      val smartCardInfo = listSmartCardInfo[0]
+      val smartCardInfo = listSmartCardInfo.first()
 
-      return ProcessSmartCardInfoDelegate(walletStorage, janetWallet, mappery)
+      return ProcessSmartCardInfoDelegate(janetWallet, mappery)
             .processSmartCardInfo(smartCardInfo)
             .map { (smartCard, _) -> AssociatedCard(smartCard = smartCard) }
    }

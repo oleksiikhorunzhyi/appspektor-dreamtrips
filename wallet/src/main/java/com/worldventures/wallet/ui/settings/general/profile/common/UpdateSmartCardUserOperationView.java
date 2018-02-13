@@ -5,12 +5,14 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.worldventures.wallet.R;
+import com.worldventures.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
+import com.worldventures.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
 import com.worldventures.wallet.service.profile.BaseUserUpdateCommand;
 import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand;
 import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 import com.worldventures.wallet.service.profile.UploadProfileDataException;
-import com.worldventures.wallet.service.command.settings.general.display.exception.MissingUserPhoneException;
-import com.worldventures.wallet.service.command.settings.general.display.exception.MissingUserPhotoException;
+import com.worldventures.wallet.ui.common.base.screen.LifecycleHolder;
+import com.worldventures.wallet.ui.common.helper2.error.DetachableOperationView;
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewProvider;
 import com.worldventures.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
@@ -22,13 +24,12 @@ import com.worldventures.wallet.util.LastNameException;
 import com.worldventures.wallet.util.MiddleNameException;
 import com.worldventures.wallet.util.NetworkUnavailableException;
 
-import io.techery.janet.operationsubscriber.view.ComposableOperationView;
 import rx.functions.Action0;
 
 public class UpdateSmartCardUserOperationView {
 
-   public static class UpdateUser extends ComposableOperationView<UpdateSmartCardUserCommand> {
-      public UpdateUser(Context context, WalletProfileDelegate profileDelegate, @Nullable Action0 confirmDisplayTypeChange) {
+   public static class UpdateUser extends DetachableOperationView<UpdateSmartCardUserCommand> {
+      public UpdateUser(Context context, WalletProfileDelegate profileDelegate, @Nullable Action0 confirmDisplayTypeChange, LifecycleHolder lifecycleHolder) {
          super(new SimpleDialogProgressView<>(context, R.string.wallet_long_operation_hint, false),
                ErrorViewFactory.<UpdateSmartCardUserCommand>builder()
                      .addProvider(new SimpleDialogErrorViewProvider<>(context, FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
@@ -42,17 +43,19 @@ public class UpdateSmartCardUserOperationView {
                      .addProvider(provideUploadDataExceptionHandler(context, profileDelegate))
                      .addProvider(new SCConnectionErrorViewProvider<>(context))
                      .addProvider(new SmartCardErrorViewProvider<>(context))
-                     .build());
+                     .build(),
+               lifecycleHolder);
       }
    }
 
-   public static class RetryHttpUpload extends ComposableOperationView<RetryHttpUploadUpdatingCommand> {
-      public RetryHttpUpload(Context context, WalletProfileDelegate profileDelegate) {
+   public static class RetryHttpUpload extends DetachableOperationView<RetryHttpUploadUpdatingCommand> {
+      public RetryHttpUpload(Context context, WalletProfileDelegate profileDelegate, LifecycleHolder lifecycleHolder) {
          super(new SimpleDialogProgressView<>(context, R.string.wallet_long_operation_hint, false),
                ErrorViewFactory.<RetryHttpUploadUpdatingCommand>builder()
                      .addProvider(new SimpleDialogErrorViewProvider<>(context, NetworkUnavailableException.class, R.string.wallet_card_settings_profile_dialog_error_network_unavailable))
                      .addProvider(provideUploadDataExceptionHandler(context, profileDelegate))
-                     .build());
+                     .build(),
+               lifecycleHolder);
       }
    }
 

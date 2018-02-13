@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -230,5 +231,15 @@ public class DtlDetailReviewScreenImpl extends DtlLayout<DtlDetailReviewScreen, 
    @Override
    public void hideBlockingProgress() {
 
+   }
+
+   @Override
+   public void showFlaggingSuccess() {
+      Snackbar.make(this, R.string.flag_sent_success_msg, Snackbar.LENGTH_SHORT).show();
+   }
+
+   @Override
+   public void showFlaggingError() {
+      Snackbar.make(this, R.string.chat_flag_failed, Snackbar.LENGTH_SHORT).show();
    }
 }

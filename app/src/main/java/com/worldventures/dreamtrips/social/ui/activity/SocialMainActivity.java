@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerView;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.wallet.DTWalletActivity;
-import com.worldventures.wallet.di.SmartCardModule;
+import com.worldventures.wallet.domain.WalletConstants;
 
 import butterknife.InjectView;
 import rx.schedulers.Schedulers;
@@ -107,7 +107,7 @@ public class SocialMainActivity extends SocialDrawerActivity<MainActivityPresent
          case DtlModule.DTL:
             DtlActivity.startDtl(this);
             break;
-         case SmartCardModule.WALLET:
+         case WalletConstants.WALLET_COMPONENT:
             DTWalletActivity.startWallet(this);
             break;
          default:

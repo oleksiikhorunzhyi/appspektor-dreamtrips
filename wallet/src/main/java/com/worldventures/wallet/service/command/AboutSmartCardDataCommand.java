@@ -41,7 +41,7 @@ public final class AboutSmartCardDataCommand extends Command<AboutSmartCardData>
 
    @Override
    public CacheOptions getCacheOptions() {
-      return new CacheOptions(!update, update, true);
+      return new CacheOptions(!update, update, true, null);
    }
 
    @Override

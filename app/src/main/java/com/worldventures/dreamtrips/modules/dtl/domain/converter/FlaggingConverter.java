@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.domain.converter;
 
 import com.worldventures.core.converter.Converter;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Errors;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.FlaggingReviewParams;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ImmutableFlaggingReviewParams;
 
@@ -21,7 +22,7 @@ public class FlaggingConverter implements Converter<com.worldventures.dreamtrips
    @Override
    public FlaggingReviewParams convert(MapperyContext mapperyContext, com.worldventures.dreamtrips.api.dtl.merchants.model.SdkFlaggingResponse review) {
       return ImmutableFlaggingReviewParams.builder()
-            .message(review.message())
+            .errors(mapperyContext.convert(review.errors(), Errors.class))
             .build();
    }
 }

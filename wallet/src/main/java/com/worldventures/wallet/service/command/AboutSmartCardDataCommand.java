@@ -14,19 +14,20 @@ import rx.functions.Func1;
 public final class AboutSmartCardDataCommand extends Command<AboutSmartCardData> implements CachedAction<AboutSmartCardData> {
 
    private final Func1<AboutSmartCardData, AboutSmartCardData> func;
-
+   public final boolean update;
    private AboutSmartCardData cachedAboutSmartCardData;
 
-   private AboutSmartCardDataCommand(Func1<AboutSmartCardData, AboutSmartCardData> func) {
+   private AboutSmartCardDataCommand(boolean update, Func1<AboutSmartCardData, AboutSmartCardData> func) {
+      this.update = update;
       this.func = func;
    }
 
    public static AboutSmartCardDataCommand fetch() {
-      return new AboutSmartCardDataCommand(aboutSmartCardData -> aboutSmartCardData);
+      return new AboutSmartCardDataCommand(false, aboutSmartCardData -> aboutSmartCardData);
    }
 
    public static AboutSmartCardDataCommand save(AboutSmartCardData aboutSmartCardData) {
-      return new AboutSmartCardDataCommand(user -> aboutSmartCardData);
+      return new AboutSmartCardDataCommand(true, user -> aboutSmartCardData);
    }
 
    @Override
@@ -42,7 +43,8 @@ public final class AboutSmartCardDataCommand extends Command<AboutSmartCardData>
    @Override
    public CacheOptions getCacheOptions() {
       return ImmutableCacheOptions.builder()
-            .saveToCache(true)
+            .restoreFromCache(!update)
+            .saveToCache(update)
             .build();
    }
 

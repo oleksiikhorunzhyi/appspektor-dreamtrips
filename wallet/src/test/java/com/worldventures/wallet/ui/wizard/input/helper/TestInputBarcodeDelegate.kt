@@ -17,6 +17,7 @@ import com.worldventures.wallet.service.command.http.AcceptSmartCardAgreementsCo
 import com.worldventures.wallet.service.command.http.GetSmartCardStatusCommand
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
+import com.worldventures.wallet.service.provisioning.ProvisioningModeCommand
 import com.worldventures.wallet.ui.common.BaseTest
 import com.worldventures.wallet.ui.common.InteractorBuilder
 import com.worldventures.wallet.ui.common.navigation.Navigator
@@ -39,6 +40,7 @@ class TestInputBarcodeDelegate : BaseTest() {
          addContract(contractGetSmartCardStatus)
          addContract(contractSmartCardUser)
          addContract(contractFetchAssociatedSmartCard)
+         addContract(Contract.of(ProvisioningModeCommand::class.java).result(ProvisioningMode.SETUP_NEW_CARD))
          addContract(Contract.of(AcceptSmartCardAgreementsCommand::class.java).result(null))
       }
    }
@@ -101,6 +103,6 @@ class TestInputBarcodeDelegate : BaseTest() {
 
       verify(view, times(0)).showErrorCardIsAssignedDialog()
       verify(navigator, times(0)).goExistingDeviceDetected(anyOrNull())
-      verify(navigator, times(1)).goPairKey(eq(ProvisioningMode.STANDARD), anyOrNull())
+      verify(navigator, times(1)).goPairKey(eq(ProvisioningMode.SETUP_NEW_CARD), anyOrNull())
    }
 }

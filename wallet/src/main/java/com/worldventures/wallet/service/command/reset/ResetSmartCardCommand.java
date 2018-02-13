@@ -39,11 +39,12 @@ public class ResetSmartCardCommand extends Command<Void> implements InjectableAc
    }
 
    private Observable<WipeSmartCardDataCommand> wipeSmartCardData() {
+      // todo: merge current command and ResetSmartCardCommand
       return walletJanet.createPipe(WipeSmartCardDataCommand.class)
             .createObservableResult(new WipeSmartCardDataCommand(factoryResetOptions));
    }
 
-   private Observable<DisconnectAction> disconnect() {
+   private Observable<DisconnectAction> disconnect() { // todo: is it needed ?
       return walletJanet.createPipe(DisconnectAction.class)
             .createObservableResult(new DisconnectAction());
    }

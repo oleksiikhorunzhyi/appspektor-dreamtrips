@@ -66,6 +66,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    private WalletCropImageService cropImageService;
    private WalletPhotoProposalDialog photoActionDialog;
    private WalletSuffixSelectingDialog suffixSelectingDialog;
+   private OperationView<SetupUserDataCommand> setupUserOperationView;
 
    public WizardEditProfileScreenImpl() {
       super();
@@ -202,18 +203,21 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
 
    @Override
    public OperationView<SetupUserDataCommand> provideOperationView() {
-      return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.wallet_long_operation_hint, false),
-            ErrorViewFactory.<SetupUserDataCommand>builder()
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
-                  .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
-                  .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
-                        cmd -> getPresenter().onUserDataConfirmed(), cmd -> {
-                  }))
-                  .addProvider(new SmartCardErrorViewProvider<>(getContext(), cmd -> getPresenter().onUserDataConfirmed()))
-                  .build()
-      );
+      if (setupUserOperationView == null) {
+         setupUserOperationView = new ComposableOperationView<>(
+               new SimpleDialogProgressView<>(getContext(), R.string.wallet_long_operation_hint, false),
+               ErrorViewFactory.<SetupUserDataCommand>builder()
+                     .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), FirstNameException.class, R.string.wallet_edit_profile_first_name_format_detail))
+                     .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), MiddleNameException.class, R.string.wallet_edit_profile_middle_name_format_detail))
+                     .addProvider(new SimpleDialogErrorViewProvider<>(getContext(), LastNameException.class, R.string.wallet_edit_profile_last_name_format_detail))
+                     .addProvider(new SCConnectionErrorViewProvider<>(getContext(),
+                           cmd -> getPresenter().onUserDataConfirmed(), cmd -> {
+                     }))
+                     .addProvider(new SmartCardErrorViewProvider<>(getContext(), cmd -> getPresenter().onUserDataConfirmed()))
+                     .build()
+         );
+      }
+      return setupUserOperationView;
    }
 
    @Override
@@ -222,24 +226,25 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
    }
 
    @Override
-   public void cropPhoto(Uri photoPath) {
+   public void cropPhoto(@NonNull Uri photoPath) {
       cropImageService.cropImage(getActivity(), photoPath);
    }
 
+   @NonNull
    @Override
    public Observable<File> observeCropper() {
       return cropImageService.observeCropper();
    }
 
    @Override
-   public void setProfile(ProfileViewModel model) {
-      viewModel = model;
-      binding.setProfile(model);
+   public ProfileViewModel getProfile() {
+      return viewModel;
    }
 
    @Override
-   public ProfileViewModel getProfile() {
-      return viewModel;
+   public void setProfile(ProfileViewModel model) {
+      viewModel = model;
+      binding.setProfile(model);
    }
 
    @Override
@@ -264,7 +269,7 @@ public class WizardEditProfileScreenImpl extends WalletBaseController<WizardEdit
             : null;
    }
 
-   @android.support.annotation.Nullable
+   @Nullable
    @Override
    protected Object screenModule() {
       return new WizardEditProfileScreenModule();

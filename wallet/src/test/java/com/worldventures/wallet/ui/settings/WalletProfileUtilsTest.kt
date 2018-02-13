@@ -2,8 +2,8 @@ package com.worldventures.wallet.ui.settings
 
 import com.worldventures.wallet.domain.entity.SmartCardUserPhone
 import com.worldventures.wallet.ui.settings.general.profile.common.WalletProfileUtils.equalsPhone
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WalletProfileUtilsTest {

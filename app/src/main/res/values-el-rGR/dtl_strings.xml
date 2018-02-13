@@ -189,5 +189,5 @@
    <string name="transaction_review_merchant">Κριτική Εμπόρου</string>
    <string name="transaction_sub_total_amount_no_semicolon">Ποσό Υποσυνόλου</string>
    <string name="dtl_estimator_explanation_to_earn_points">Οι πόντοι υπολογίζονται βάσει ενός ελάχιστου ποσού που έχει δαπανηθεί στον έμπορο και της ημέρας της εβδομάδας. Για να κερδίσετε πόντους το ελάχιστο ποσό πρέπει να είναι %1$s</string>
-   <string name="dtl_estimator_error_title">Σφάλμα</string>
+   <string name="dtl_alert_title_error">Σφάλμα</string>
 </resources>

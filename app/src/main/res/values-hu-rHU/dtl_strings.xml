@@ -189,5 +189,5 @@
    <string name="transaction_review_merchant">Kereskedő megtekintése</string>
    <string name="transaction_sub_total_amount_no_semicolon">Részösszeg</string>
    <string name="dtl_estimator_explanation_to_earn_points">A pontok számolása az értékesítőnél elköltött minimális összeg és a hét napja alapján történik. Pontok gyűjtéséhez a minimum összeg %1$s</string>
-   <string name="dtl_estimator_error_title">Hiba</string>
+   <string name="dtl_alert_title_error">Hiba</string>
 </resources>

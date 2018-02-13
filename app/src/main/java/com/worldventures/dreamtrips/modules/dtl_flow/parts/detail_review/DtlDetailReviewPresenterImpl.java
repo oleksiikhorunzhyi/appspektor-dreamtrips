@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableSdkFlaggingReviewParams;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Errors;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
@@ -19,12 +20,14 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.DtlReviewsPat
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.utils.NetworkUtils;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
 import flow.path.Path;
-import io.techery.janet.ActionPipe;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailReviewScreen, ViewState.EMPTY> implements DtlDetailReviewPresenter {
 
@@ -68,16 +71,25 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
 
    @Override
    public void sendFlag() {
-      ActionPipe<FlaggingReviewAction> reviewActionPipe = merchantInteractor.flaggingReviewHttpPipe();
-      reviewActionPipe
-            .observeWithReplay()
-            .compose(bindViewIoToMainComposer());
-      reviewActionPipe.send(FlaggingReviewAction.create(getView().getMerchantId(),
+      FlaggingReviewAction flaggingReviewAction = FlaggingReviewAction.create(getView().getMerchantId(),
             ImmutableSdkFlaggingReviewParams.builder()
                   .authorIpAddress(getIpAddress())
                   .contentType(1)
                   .feedbackType(1)
-                  .build()));
+                  .build());
+      merchantInteractor.flaggingReviewHttpPipe()
+            .createObservable(flaggingReviewAction)
+            .compose(bindViewIoToMainComposer())
+            .subscribe(new ActionStateSubscriber<FlaggingReviewAction>()
+               .onSuccess(flaggingReviewAction1 -> {
+                  List<Errors> errors = flaggingReviewAction.getResult().errors();
+                  if (errors == null || errors.isEmpty()) {
+                     getView().showFlaggingSuccess();
+                  } else {
+                     getView().showFlaggingError();
+                  }
+               })
+               .onFail((flaggingReviewAction1, throwable) -> getView().showFlaggingError()));
    }
 
    private void onMerchantsLoaded(UrlTokenAction action) {

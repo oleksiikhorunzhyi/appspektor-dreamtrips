@@ -157,5 +157,5 @@
 
    <string name="transaction_total_amount_paid">Suma totală plătită</string>
    <string name="dtl_estimator_explanation_to_earn_points">Punctele se calculează în funcție de suma minimă cheltuită la comerciant și de ziua săptămânii. Pentru a câștiga puncte, suma minimă ar trebui să fie de %1$s</string>
-   <string name="dtl_estimator_error_title">Eroare</string>
+   <string name="dtl_alert_title_error">Eroare</string>
 </resources>

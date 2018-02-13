@@ -20,11 +20,12 @@ public class PlacesNearbyHttpAction extends BaseThirdPartyHttpAction {
 
    @Query("location") String location;
    @Query("radius") String radius = "1";
-   @Query("key") String key = "AIzaSyDGK1DDsWvVa661zcnkCUjEJnuw_dzdUjQ"; // TODO: 2/8/17 is test key, before release need to exchange
+   @Query("key") String apiKey;
 
    @Response NearbyResponse response;
 
-   public PlacesNearbyHttpAction(WalletCoordinates location) {
+   public PlacesNearbyHttpAction(String apiKey, WalletCoordinates location) {
+      this.apiKey = apiKey;
       this.location = String.format(Locale.US, "%.6f,%,6f", location.getLat(), location.getLng());
    }
 

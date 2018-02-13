@@ -46,7 +46,17 @@ class DeviceStateCommand private constructor(private val func: (SmartCardStatus)
 
       fun stealthMode(stealthMode: Boolean) = DeviceStateCommand({ it.copy(stealthMode = stealthMode) })
 
+      @Deprecated(
+            message = "This method is deprecated",
+            replaceWith = ReplaceWith("connection(connectionStatus: ConnectionStatus, firmwareVersion: String)"),
+            level = DeprecationLevel.ERROR)
       fun connection(connectionStatus: ConnectionStatus) = DeviceStateCommand({ it.copy(connectionStatus = connectionStatus) })
+
+      fun connection(connectionStatus: ConnectionStatus, firmwareVersion: String) =
+            DeviceStateCommand({
+               it.copy(connectionStatus = connectionStatus,
+                     firmwareVersion = firmwareVersion)
+            })
 
       fun battery(batteryLevel: Int) = DeviceStateCommand({ it.copy(batteryLevel = batteryLevel) })
 

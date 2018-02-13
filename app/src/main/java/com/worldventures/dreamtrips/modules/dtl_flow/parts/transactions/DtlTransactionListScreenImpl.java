@@ -56,13 +56,13 @@ public class DtlTransactionListScreenImpl extends DtlLayout<DtlTransactionListSc
          toolbar.setBackgroundColor(Color.WHITE);
          tvTitle.setVisibility(View.VISIBLE);
          tvTitle.setText(getContext().getResources().getString(R.string.dtl_show_transaction_toolbar));
+         toolbar.setNavigationIcon(R.drawable.back_icon_black);
       } else {
          toolbar.setTitle(getContext().getResources().getString(R.string.dtl_show_transaction_toolbar));
-         toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
-         toolbar.setNavigationOnClickListener(view -> {
-            Flow.get(getContext()).goBack();
-         });
+         toolbar.setNavigationIcon(R.drawable.back_icon);
+
       }
+      toolbar.setNavigationOnClickListener(view -> Flow.get(getContext()).goBack());
       //      setupSearch(); //Disabled in current RC
       searchView.setVisibility(View.GONE);
    }

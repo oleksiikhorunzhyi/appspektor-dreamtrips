@@ -15,8 +15,8 @@
    <android.support.v7.widget.CardView
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_marginBottom="@dimen/dtl_transaction_screen_margin_big"
-         android:layout_marginTop="@dimen/dtl_transaction_screen_margin_big"
+         android:layout_marginBottom="@dimen/dtl_transaction_screen_total_amount_card_vertical_margin"
+         android:layout_marginTop="@dimen/dtl_transaction_screen_total_amount_card_vertical_margin"
          app:cardCornerRadius="@dimen/dtl_transaction_screen_card_radius"
          >
 
@@ -26,7 +26,10 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="@dimen/dtl_transaction_screen_margin_extra_big"
+            android:paddingTop="@dimen/dtl_transaction_screen_total_amount_card_vertical_padding"
+            android:paddingBottom="@dimen/dtl_transaction_screen_total_amount_card_vertical_padding"
+            android:paddingLeft="@dimen/dtl_transaction_screen_total_amount_card_horizontal_padding"
+            android:paddingRight="@dimen/dtl_transaction_screen_total_amount_card_horizontal_padding"
             >
 
          <TextView
@@ -62,15 +65,14 @@
          android:textStyle="bold"
          />
 
+   <TextView
+         android:id="@+id/tv_non_thrst_currentTime"
+         android:layout_width="match_parent"
+         android:layout_height="0dp"
+         android:layout_weight="1"
+         android:gravity="center"
+         android:padding="@dimen/spacing_small"
+         tools:text="26-Oct-2017 12:08:18"
+         />
 </LinearLayout>
-
-<TextView
-      android:id="@+id/tv_non_thrst_currentTime"
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      android:gravity="center"
-      android:padding="@dimen/spacing_small"
-      tools:text="26-Oct-2017 12:08:18"
-      />
 </merge>

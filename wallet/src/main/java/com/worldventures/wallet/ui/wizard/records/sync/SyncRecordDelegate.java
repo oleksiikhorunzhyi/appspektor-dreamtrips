@@ -26,7 +26,7 @@ public abstract class SyncRecordDelegate {
       this.navigator = navigator;
    }
 
-   protected final void performComplete() {
+   final void performComplete() {
       navigator.goPaymentSyncFinished();
    }
 
@@ -88,17 +88,16 @@ public abstract class SyncRecordDelegate {
          observeSyncPaymentCards(view);
          observeSyncProgress(view);
 
-         restoreOfflineModeDefaultState();
+         syncRecordsToSmartCard();
       }
 
       @Override
       public void retry() {
-         restoreOfflineModeDefaultState();
+         syncRecordsToSmartCard();
       }
 
-      private void restoreOfflineModeDefaultState() {
-         smartCardInteractor.restoreOfflineModeDefaultStatePipe()
-               .send(new RestoreOfflineModeDefaultStateCommand());
+      private void syncRecordsToSmartCard() {
+         recordInteractor.recordsSyncPipe().send(new SyncRecordsCommand());
       }
 
       private void observeOfflineModeStateCheck(SyncView view) {
@@ -108,7 +107,7 @@ public abstract class SyncRecordDelegate {
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<RestoreOfflineModeDefaultStateCommand>provideOperationView())
                      .onStart(command -> view.setProgressInPercent(0))
-                     .onSuccess(command -> recordInteractor.recordsSyncPipe().send(new SyncRecordsCommand()))
+                     .onSuccess(command -> performComplete())
                      .create());
       }
 
@@ -118,7 +117,8 @@ public abstract class SyncRecordDelegate {
                .compose(RxLifecycleAndroid.bindView(view.getView()))
                .observeOn(AndroidSchedulers.mainThread())
                .subscribe(OperationActionSubscriber.forView(view.<SyncRecordsCommand>provideOperationView())
-                     .onSuccess(command -> performComplete())
+                     .onSuccess(command -> smartCardInteractor.restoreOfflineModeDefaultStatePipe()
+                           .send(new RestoreOfflineModeDefaultStateCommand()))
                      .create());
       }
 

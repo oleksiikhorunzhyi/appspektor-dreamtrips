@@ -167,6 +167,11 @@ public class WalletInstallFirmwareScreenImpl extends WalletBaseController<Wallet
             .append(supportPhoneNumber);
    }
 
+   @Override
+   public boolean handleBack() {
+      return true;
+   }
+
    @Nullable
    @Override
    protected Object screenModule() {

@@ -87,6 +87,10 @@ public abstract class WalletBaseController<V extends WalletScreen, P extends Wal
       return input -> input.takeUntil(detachStopper);
    }
 
+   public PublishSubject<Void> getDetachStopper() {
+      return detachStopper;
+   }
+
    public abstract View inflateView(LayoutInflater layoutInflater, ViewGroup viewGroup);
 
    public abstract boolean supportConnectionStatusLabel();

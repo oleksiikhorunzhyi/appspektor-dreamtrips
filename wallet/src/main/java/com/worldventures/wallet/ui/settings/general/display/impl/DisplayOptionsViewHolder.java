@@ -82,9 +82,10 @@ public class DisplayOptionsViewHolder {
    private void internalBindData(@SetHomeDisplayTypeAction.HomeDisplayType int type, @StringRes int titleRes, ProfileViewModel profileViewModel) {
       final String userPhoto = profileViewModel.getChosenPhotoUri();
       final String userPhone = profileViewModel.getPhoneNumber();
-      final String phone = userPhone.isEmpty() ? String.format(Locale.US, "(%s)", rootView.getResources()
+      final String phone = userPhone.isEmpty() ? String.format(Locale.US, ""
+            + "(%s)", rootView.getResources()
             .getString(R.string.wallet_settings_general_display_phone_required))
-            : profileViewModel.getPhoneCode() + userPhone;
+            : "+" + profileViewModel.getPhoneCode() + userPhone;
 
       title.setText(titleRes);
 

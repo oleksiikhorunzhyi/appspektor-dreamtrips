@@ -10,10 +10,17 @@ public interface DtlTransactionScreen extends DtlScreen {
 
       void showReceipt(String url);
 
-      void showLoadingMerchantDialog();
-
-      void hideLoadingMerchantDialog();
-
       void showCouldNotShowMerchantDialog();
 
+      void showTransactionButtons();
+
+      void hideTransactionButtons();
+
+      void showErrorEmailMessage();
+
+      void showSuccessEmailMessage();
+
+      void showLoading();
+
+      void hideLoading();
 }

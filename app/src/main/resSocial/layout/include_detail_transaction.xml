@@ -4,96 +4,94 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginBottom="@dimen/dtl_transaction_screen_padding"
-      android:layout_marginTop="@dimen/dtl_transaction_screen_padding"
       android:gravity="center_horizontal"
       android:orientation="vertical"
+      android:paddingTop="@dimen/dtl_transaction_screen_vertical_padding"
+      android:paddingBottom="@dimen/dtl_transaction_screen_vertical_padding"
       >
 
    <LinearLayout
-         android:id="@+id/thrst_status_labels_container"
+         android:id="@+id/receipt_main_views_container"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_marginLeft="@dimen/dtl_transaction_screen_padding"
-         android:layout_marginRight="@dimen/dtl_transaction_screen_padding"
-         android:gravity="center_horizontal"
          android:orientation="vertical"
+         android:gravity="center_horizontal"
          >
 
-      <TextView
-            android:id="@+id/tv_transaction_status_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:gravity="center_horizontal"
-            android:text="@string/thank_you_thrst_pilot"
-            android:textColor="@color/transaction_text_color"
-            android:textSize="@dimen/font_extra_large"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-      <TextView
-            android:id="@+id/tv_transaction_status_error_secondary_title"
+      <LinearLayout
+            android:id="@+id/thrst_status_labels_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
+            android:layout_marginLeft="@dimen/dtl_transaction_screen_horizontal_padding"
+            android:layout_marginRight="@dimen/dtl_transaction_screen_horizontal_padding"
             android:gravity="center_horizontal"
-            android:text="@string/second_failure_text_thrst_pilot"
-            android:textColor="@color/transaction_text_color"
-            android:textSize="@dimen/font_normal"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
-            />
+            android:orientation="vertical"
+            >
 
-      <TextView
-            android:id="@+id/tv_accept_payment_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-            android:fontFamily="sans-serif"
-            android:gravity="center_horizontal"
-            android:text="@string/payment_success_status_pilot"
-            android:textColor="@color/transaction_text_color"
-            android:textSize="@dimen/font_normal"
-            android:textStyle="normal"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_show_to_server_text"
-            />
+         <TextView
+               android:id="@+id/tv_transaction_status_title"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:fontFamily="sans-serif"
+               android:gravity="center_horizontal"
+               android:text="@string/thank_you_thrst_pilot"
+               android:textColor="@color/transaction_text_color"
+               android:textSize="@dimen/dtl_transaction_screen_title_text_size"
+               android:textStyle="bold"
+               />
 
-      <TextView
-            android:id="@+id/tv_show_to_server_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dtl_transaction_screen_margin"
-            android:fontFamily="sans-serif"
-            android:gravity="center_horizontal"
-            android:text="@string/payment_resume_success_pilot"
-            android:textColor="@color/transaction_text_color"
-            android:textSize="@dimen/font_normal"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_transaction_status_title"
-            />
+         <TextView
+               android:id="@+id/tv_transaction_status_error_secondary_title"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:fontFamily="sans-serif"
+               android:gravity="center_horizontal"
+               android:text="@string/second_failure_text_thrst_pilot"
+               android:textColor="@color/transaction_text_color"
+               android:textSize="@dimen/dtl_transaction_screen_payment_status_text_size"
+               android:textStyle="bold"
+               android:visibility="gone"
+               tools:visibility="visible"
+               />
 
+         <TextView
+               android:id="@+id/tv_accept_payment_status"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/dtl_transaction_screen_accept_payment_status_top_margin"
+               android:fontFamily="sans-serif"
+               android:gravity="center_horizontal"
+               android:text="@string/payment_success_status_pilot"
+               android:textColor="@color/transaction_text_color"
+               android:textSize="@dimen/dtl_transaction_screen_payment_status_text_size"
+               android:textStyle="normal"
+               />
+
+         <TextView
+               android:id="@+id/tv_show_to_server_text"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/dtl_transaction_screen_show_to_server_text_top_margin"
+               android:fontFamily="sans-serif"
+               android:gravity="center_horizontal"
+               android:text="@string/payment_resume_success_pilot"
+               android:textColor="@color/transaction_text_color"
+               android:textSize="@dimen/dtl_transaction_screen_payment_status_text_size"
+               android:textStyle="bold"
+               />
+      </LinearLayout>
+
+      <include layout="@layout/include_transaction_details_thrst" />
+
+      <include layout="@layout/include_transaction_details_non_thrst" />
    </LinearLayout>
 
-   <include layout="@layout/include_transaction_details_thrst" />
-
-   <include layout="@layout/include_transaction_details_non_thrst" />
-
    <LinearLayout
+         android:id="@+id/transaction_buttons_container"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:orientation="vertical"
          android:gravity="center_horizontal"
+         android:orientation="vertical"
          >
 
       <TextView
@@ -105,6 +103,18 @@
             android:gravity="center_vertical|center_horizontal"
             android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
             android:text="@string/transaction_view_your_receipt"
+            android:textStyle="bold"
+            />
+
+      <TextView
+            android:id="@+id/tv_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingBottom="@dimen/dtl_transaction_screen_margin_extra_big"
+            android:text="@string/dtl_send_email_text"
             android:textStyle="bold"
             />
 
@@ -127,7 +137,7 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_normal"
             android:visibility="gone"
+            tools:visibility="visible"
             />
-
    </LinearLayout>
 </LinearLayout>

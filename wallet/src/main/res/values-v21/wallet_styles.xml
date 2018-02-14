@@ -2,6 +2,10 @@
 <resources>
 
    <style name="RecordDetailDeleteButtonStyle" parent="RecordDetailDeleteButtonStyleBase">
-      <item name="backgroundTint">@color/white</item>
+      <item name="android:backgroundTint">@color/white</item>
+   </style>
+
+   <style name="RetryButtonStyle" parent="Widget.AppCompat.Button">
+      <item name="android:backgroundTint">@color/grey_lighter</item>
    </style>
 </resources>

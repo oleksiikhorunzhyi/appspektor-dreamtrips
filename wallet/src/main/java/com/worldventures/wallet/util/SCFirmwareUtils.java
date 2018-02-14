@@ -10,7 +10,9 @@ public final class SCFirmwareUtils {
 
    private static final int MIN_BATTERY_LEVEL = 10;
    private final static int SUPPORTED_CHARGER_ACTION_VERSION_FW = 1052;
+   private final static int SUPPORTED_HOME_DISPLAY_TYPE_VERSION_FW = 1075;
    private final static int SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW = 1070;
+   private final static int SUPPORTED_RECORD_DATA_COMMAND_VERSION_FW = 1052;
 
    private final static String UNKNOWN_VERSION = "0.0.0.0"; //NOPMD
 
@@ -40,8 +42,16 @@ public final class SCFirmwareUtils {
       return firmware != null && firmwareVersionStringToInt(firmware.getNordicAppVersion()) >= SUPPORTED_ON_CARD_ANALYTICS_VERSION_FW;
    }
 
+   public static boolean supportHomeDisplayOptions(String firmwareVersion) {
+      return firmwareVersionStringToInt(firmwareVersion) >= SUPPORTED_HOME_DISPLAY_TYPE_VERSION_FW;
+   }
+
+   public static boolean supportRecordDataCommandOptions(String firmwareVersion) {
+      return firmwareVersionStringToInt(firmwareVersion) >= SUPPORTED_RECORD_DATA_COMMAND_VERSION_FW;
+   }
+
    private static int firmwareVersionStringToInt(@Nullable String firmwareVersion) {
-      if (firmwareVersion != null) {
+      if (firmwareVersion != null && firmwareVersion.length() > 0) {
          try {
             String parsed = firmwareVersion.replaceAll("\\.", "").intern();
             return Integer.parseInt(parsed);

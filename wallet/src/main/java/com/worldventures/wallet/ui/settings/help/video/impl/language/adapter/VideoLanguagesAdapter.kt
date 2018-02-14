@@ -1,4 +1,4 @@
-package com.worldventures.wallet.ui.settings.help.video.adapter
+package com.worldventures.wallet.ui.settings.help.video.impl.language.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

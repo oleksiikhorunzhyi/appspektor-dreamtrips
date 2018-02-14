@@ -6,6 +6,7 @@ import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.lostcard.WalletAddress
 import com.worldventures.wallet.domain.entity.lostcard.WalletCoordinates
 import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
+import com.worldventures.wallet.service.credentials.GoogleApiCredentialsProvider
 import com.worldventures.wallet.service.lostcard.command.http.AddressHttpAction
 import com.worldventures.wallet.service.lostcard.command.http.PlacesNearbyHttpAction
 import io.techery.janet.ActionHolder
@@ -23,6 +24,7 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates)
 
    @Inject lateinit var janet: Janet
    @Inject lateinit var mapperyContext: MapperyContext
+   @Inject lateinit var googleCredentialsProvider: GoogleApiCredentialsProvider
 
    private var cachedResult: PlacesWithAddress? = null
 
@@ -32,12 +34,13 @@ class FetchAddressWithPlacesCommand(val coordinates: WalletCoordinates)
          callback.onSuccess(cachedResult)
          return
       }
+      val googleApiCredentials = googleCredentialsProvider.provideGoogleApiCredentials()
       zip(
             janet.createPipe(PlacesNearbyHttpAction::class.java)
-                  .createObservableResult(PlacesNearbyHttpAction(coordinates))
+                  .createObservableResult(PlacesNearbyHttpAction(googleApiCredentials.apiKey, coordinates))
                   .map { httpAction -> mapperyContext.convert(httpAction.response().locationPlaces, WalletPlace::class.java) },
             janet.createPipe(AddressHttpAction::class.java)
-                  .createObservableResult(AddressHttpAction(coordinates))
+                  .createObservableResult(AddressHttpAction(googleApiCredentials.apiKey, coordinates))
                   .map { addressAction -> mapperyContext.convert(addressAction.response(), WalletAddress::class.java) }
       ) { locationPlaces, address -> PlacesWithAddress(address, locationPlaces) }
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })

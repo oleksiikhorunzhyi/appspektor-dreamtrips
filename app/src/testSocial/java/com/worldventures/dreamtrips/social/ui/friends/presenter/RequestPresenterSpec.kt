@@ -14,6 +14,7 @@ import com.worldventures.core.model.session.UserSession
 import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsStorageInteractor
@@ -23,7 +24,6 @@ import com.worldventures.dreamtrips.social.service.users.request.command.ActOnFr
 import com.worldventures.dreamtrips.social.service.users.request.command.DeleteFriendRequestCommand
 import com.worldventures.dreamtrips.social.service.users.request.command.GetRequestsCommand
 import com.worldventures.dreamtrips.social.service.users.request.delegate.RequestsStorageDelegate
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract

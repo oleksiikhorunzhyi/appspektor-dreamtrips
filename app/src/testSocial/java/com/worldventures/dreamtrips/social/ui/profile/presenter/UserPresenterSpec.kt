@@ -11,6 +11,9 @@ import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
 import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
+import com.worldventures.dreamtrips.social.service.profile.command.AddFriendToCircleCommand
+import com.worldventures.dreamtrips.social.service.profile.command.RemoveFriendFromCircleCommand
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
 import com.worldventures.dreamtrips.social.ui.feed.service.NotificationFeedInteractor
@@ -18,9 +21,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimeli
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.UserTimelineStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.UserTimelineStorageDelegate
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
-import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand
 import io.techery.janet.command.test.Contract
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
@@ -126,7 +126,7 @@ class UserPresenterSpec : ProfilePresenterSpec(UserTestSuite()) {
                      linkPresenterAndView()
 
                      presenter.subscribeToChangingCircles()
-                     profileInteractor.addFriendToCirclesPipe().send(AddFriendToCircleCommand(CIRCLE, USER))
+                     profileInteractor.addFriendToCirclePipe.send(AddFriendToCircleCommand(CIRCLE, USER))
 
                      assert(USER.circles.contains(CIRCLE))
                      verify(presenter).refreshFeedItems()
@@ -138,7 +138,7 @@ class UserPresenterSpec : ProfilePresenterSpec(UserTestSuite()) {
                      USER.circles.add(CIRCLE)
 
                      presenter.subscribeToChangingCircles()
-                     profileInteractor.removeFriendFromCirclesPipe()
+                     profileInteractor.removeFriendFromCirclePipe
                            .send(RemoveFriendFromCircleCommand(CIRCLE, USER))
 
                      assert(USER.circles.isEmpty())

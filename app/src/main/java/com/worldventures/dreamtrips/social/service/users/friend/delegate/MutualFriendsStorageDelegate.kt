@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.service.users.friend.delegate
 
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
 import com.worldventures.dreamtrips.social.service.users.base.delegate.BaseUserStorageDelegate
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
@@ -8,7 +9,6 @@ import com.worldventures.dreamtrips.social.service.users.base.operation.BaseUser
 import com.worldventures.dreamtrips.social.service.users.friend.command.GetMutualFriendsCommand
 import com.worldventures.dreamtrips.social.service.users.friend.command.GetMutualFriendsPaginationCommand
 import com.worldventures.dreamtrips.social.service.users.friend.command.MutualFriendsStorageCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import rx.Observable
 
 class MutualFriendsStorageDelegate(

@@ -14,13 +14,13 @@ import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsStorageInteractor
 import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.service.users.friend.command.RemoveFriendCommand
 import com.worldventures.dreamtrips.social.service.users.search.command.AddFriendCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract

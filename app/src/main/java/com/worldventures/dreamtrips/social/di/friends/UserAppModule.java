@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.di.friends;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsStorageInteractor;
@@ -9,7 +10,6 @@ import com.worldventures.dreamtrips.social.service.users.friend.delegate.MutualF
 import com.worldventures.dreamtrips.social.service.users.liker.delegate.LikersStorageDelegate;
 import com.worldventures.dreamtrips.social.service.users.request.delegate.RequestsStorageDelegate;
 import com.worldventures.dreamtrips.social.service.users.search.delegate.SearchedUsersStorageDelegate;
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
 
 import javax.inject.Singleton;
 

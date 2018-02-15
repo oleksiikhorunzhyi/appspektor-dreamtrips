@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.service.users.liker.delegate
 
 import com.worldventures.core.model.Circle
 import com.worldventures.core.model.User
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
 import com.worldventures.dreamtrips.social.service.users.base.delegate.BaseUserStorageDelegate
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
@@ -14,7 +15,6 @@ import com.worldventures.dreamtrips.social.service.users.liker.command.LikerStor
 import com.worldventures.dreamtrips.social.service.users.liker.operation.AcceptRequestOperation
 import com.worldventures.dreamtrips.social.service.users.liker.operation.RemoveFriendOperation
 import com.worldventures.dreamtrips.social.service.users.request.command.ActOnFriendRequestCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 
 class LikersStorageDelegate(
       friendInteractor: FriendsInteractor,

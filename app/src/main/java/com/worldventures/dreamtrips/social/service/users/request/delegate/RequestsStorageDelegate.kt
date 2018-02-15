@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.social.service.users.request.delegate
 
 import com.worldventures.core.model.Circle
 import com.worldventures.core.model.User
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
+import com.worldventures.dreamtrips.social.service.profile.command.AddFriendToCircleCommand
+import com.worldventures.dreamtrips.social.service.profile.command.RemoveFriendFromCircleCommand
 import com.worldventures.dreamtrips.social.service.users.base.delegate.BaseUserStorageDelegate
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
@@ -17,9 +20,6 @@ import com.worldventures.dreamtrips.social.service.users.request.command.SortReq
 import com.worldventures.dreamtrips.social.service.users.request.command.UserRequestsStorageCommand
 import com.worldventures.dreamtrips.social.service.users.request.operation.AddFriendOperation
 import com.worldventures.dreamtrips.social.service.users.search.command.AddFriendCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
-import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand
 
 class RequestsStorageDelegate(
       friendInteractor: FriendsInteractor,

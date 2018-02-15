@@ -55,6 +55,7 @@
           </option>
           <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="2147483647" />
           <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="2147483647" />
+          <option name="WRAP_EXPRESSION_BODY_FUNCTIONS" value="1" />
         </JetCodeStyleSettings>
         <Objective-C-extensions>
           <file>
@@ -278,6 +279,7 @@
           </arrangement>
         </codeStyleSettings>
         <codeStyleSettings language="kotlin">
+          <option name="METHOD_CALL_CHAIN_WRAP" value="1" />
           <option name="FIELD_ANNOTATION_WRAP" value="0" />
           <indentOptions>
             <option name="INDENT_SIZE" value="3" />

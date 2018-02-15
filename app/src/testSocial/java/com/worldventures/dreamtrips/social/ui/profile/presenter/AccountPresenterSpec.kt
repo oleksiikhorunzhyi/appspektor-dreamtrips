@@ -17,6 +17,9 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerEventDelegate
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
+import com.worldventures.dreamtrips.social.service.profile.command.UploadAvatarCommand
+import com.worldventures.dreamtrips.social.service.profile.command.UploadBackgroundCommand
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CompoundOperationsCommand
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
@@ -25,9 +28,6 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.UploadingP
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountTimelineCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.AccountTimelineStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.AccountTimelineStorageDelegate
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
-import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand
 import com.worldventures.dreamtrips.util.SocialCropImageManager
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.Contract
@@ -96,7 +96,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestSuite()) {
                      linkPresenterAndView()
 
                      presenter.subscribeToAvatarUpdates()
-                     profileInteractor.uploadAvatarPipe().send(UploadAvatarCommand(""))
+                     profileInteractor.uploadAvatarPipe.send(UploadAvatarCommand(""))
 
                      verify(presenter).onAvatarUploadSuccess()
                   }
@@ -106,7 +106,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestSuite()) {
                      linkPresenterAndView()
 
                      presenter.subscribeToAvatarUpdates()
-                     profileInteractor.uploadAvatarPipe().send(UploadAvatarCommand(""))
+                     profileInteractor.uploadAvatarPipe.send(UploadAvatarCommand(""))
 
                      verify(presenter).handleError(any(), any())
                      verify(presenter).refreshFeedItems()
@@ -117,7 +117,7 @@ class AccountPresenterSpec : ProfilePresenterSpec(AccountTestSuite()) {
                      linkPresenterAndView()
 
                      presenter.subscribeToBackgroundUpdates()
-                     profileInteractor.uploadBackgroundPipe().send(UploadBackgroundCommand(""))
+                     profileInteractor.uploadBackgroundPipe.send(UploadBackgroundCommand(""))
 
                      verify(presenter).onCoverUploadSuccess()
                   }

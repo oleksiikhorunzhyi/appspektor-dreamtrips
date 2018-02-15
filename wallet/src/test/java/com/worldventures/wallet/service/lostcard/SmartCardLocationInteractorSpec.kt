@@ -9,7 +9,10 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.modules.settings.service.SettingsInteractor
+import com.worldventures.core.service.location.DetectLocationService
+import com.worldventures.core.service.location.MockDetectLocationService
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.api.smart_card.location.model.SmartCardCoordinates
@@ -33,6 +36,7 @@ import com.worldventures.wallet.domain.entity.lostcard.WalletPlace
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.model.createTestSmartCard
+import com.worldventures.wallet.service.FactoryResetInteractor
 import com.worldventures.wallet.service.FirmwareInteractor
 import com.worldventures.wallet.service.RecordInteractor
 import com.worldventures.wallet.service.SmartCardInteractor
@@ -41,8 +45,8 @@ import com.worldventures.wallet.service.SmartCardSyncManager
 import com.worldventures.wallet.service.TestSchedulerProvider
 import com.worldventures.wallet.service.beacon.StubWalletBeaconLogger
 import com.worldventures.wallet.service.beacon.WalletBeaconLogger
-import com.worldventures.core.service.location.MockDetectLocationService
-import com.worldventures.core.service.location.DetectLocationService
+import com.worldventures.wallet.service.credentials.GoogleApiCredentials
+import com.worldventures.wallet.service.credentials.GoogleApiCredentialsProvider
 import com.worldventures.wallet.service.lostcard.command.DetectGeoLocationCommand
 import com.worldventures.wallet.service.lostcard.command.FetchAddressWithPlacesCommand
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand
@@ -87,6 +91,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          mockDb = createMockDb()
          janet = createJanet()
          mappery = createMappery()
+         googleCredentialsProvider = mockGoogleCredentialsProvider()
 
          smartCardInteractor = createSmartCardInteractor(janet)
          smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
@@ -177,6 +182,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
       lateinit var janet: Janet
       lateinit var mockDb: WalletStorage
       lateinit var mappery: MapperyContext
+      lateinit var googleCredentialsProvider: GoogleApiCredentialsProvider
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
       lateinit var detectLocationService: DetectLocationService
       lateinit var smartCardInteractor: SmartCardInteractor
@@ -214,6 +220,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(WalletStorage::class.java) { mockDb }
          daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
          daggerCommandActionService.registerProvider(MapperyContext::class.java) { mappery }
+         daggerCommandActionService.registerProvider(GoogleApiCredentialsProvider::class.java) { googleCredentialsProvider }
          daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
          daggerCommandActionService.registerProvider(DetectLocationService::class.java) { detectLocationService }
          daggerCommandActionService.registerProvider(LostCardRepository::class.java) { locationStorage }
@@ -245,13 +252,23 @@ class SmartCardLocationInteractorSpec : BaseSpec({
 
       fun createRecordInteractor(janet: Janet) = RecordInteractor(SessionActionPipeCreator(janet), { Schedulers.immediate() })
 
-      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper)
+      fun createAuthInteractor(janet: Janet) = AuthInteractor(SessionActionPipeCreator(janet))
+
+      fun createSmartCardSyncManager(janet: Janet, smartCardInteractor: SmartCardInteractor, firmwareInteractor: FirmwareInteractor, recordInteractor: RecordInteractor) = SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, createFactoryResetInteractor(janet), createAuthInteractor(Companion.janet), featureHelper)
+
+      fun createFactoryResetInteractor(janet: Janet) = FactoryResetInteractor(SessionActionPipeCreator(janet))
 
       fun mockLostCardStorage(): LostCardRepository {
          val lostCardRepository: LostCardRepository = mock()
          whenever(lostCardRepository.isEnableTracking).thenReturn(true)
          whenever(lostCardRepository.walletLocations).thenReturn(mutableListOf())
          return lostCardRepository
+      }
+
+      fun mockGoogleCredentialsProvider(): GoogleApiCredentialsProvider {
+         val googleApiCredentialsProvider: GoogleApiCredentialsProvider = mock()
+         whenever(googleApiCredentialsProvider.provideGoogleApiCredentials()).thenReturn(GoogleApiCredentials(""))
+         return googleApiCredentialsProvider
       }
 
       private fun mockHttpService(): MockHttpActionService {
@@ -267,7 +284,7 @@ class SmartCardLocationInteractorSpec : BaseSpec({
                   request.url.startsWith("https://maps.googleapis.com/maps/api/place/nearbysearch/json")
                }
                .bind(MockHttpActionService.Response(200).body(addressResponse)) { request ->
-                  request.url.startsWith("http://maps.googleapis.com/maps/api/geocode/json")
+                  request.url.startsWith("https://maps.googleapis.com/maps/api/geocode/json")
                }
                .bind(MockHttpActionService.Response(204)) { request ->
                   request.url.endsWith("api/user/settings")

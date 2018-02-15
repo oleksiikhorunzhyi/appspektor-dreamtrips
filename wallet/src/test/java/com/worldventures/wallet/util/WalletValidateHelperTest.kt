@@ -1,8 +1,8 @@
 package com.worldventures.wallet.util
 
 import com.worldventures.wallet.util.WalletValidateHelper.isValidCardName
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class WalletValidateHelperTest {

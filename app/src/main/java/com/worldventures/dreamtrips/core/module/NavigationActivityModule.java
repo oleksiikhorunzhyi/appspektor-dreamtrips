@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.trips.TripsAppModule;
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
-import com.worldventures.wallet.di.SmartCardModule;
+import com.worldventures.wallet.domain.WalletConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class NavigationActivityModule {
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.FEED));
       featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsAppModule.TRIPS));
       if (!ViewUtils.isTablet(context)) {
-         featureManager.with(Feature.WALLET, () -> activeComponents.add(SmartCardModule.WALLET));
+         featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletConstants.WALLET_COMPONENT));
       }
       featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.NOTIFICATIONS));

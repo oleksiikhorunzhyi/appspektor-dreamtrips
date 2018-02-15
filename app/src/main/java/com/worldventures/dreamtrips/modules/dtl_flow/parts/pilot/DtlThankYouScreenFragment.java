@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
@@ -31,21 +33,27 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @Layout(R.layout.include_detail_transaction)
-public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle> implements DtlThrstThankYouScreenPresenter.View {
+public class DtlThankYouScreenFragment
+      extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle>
+      implements DtlThrstThankYouScreenPresenter.View {
    @InjectView(R.id.payment_done_button) Button mButtonDone;
    @InjectView(R.id.tv_total) TextView mMoneyCharged;
    @InjectView(R.id.tv_earned_points) TextView tvEarnedPoints;
    @InjectView(R.id.tv_subtotal) TextView tvSubTotal;
    @InjectView(R.id.tv_tip) TextView tvTip;
    @InjectView(R.id.tv_tax) TextView tvTax;
+   @InjectView(R.id.transaction_buttons_container) View transactionButtonsContainer;
    @InjectView(R.id.tv_receipt) TextView tvReceipt;
    @InjectView(R.id.tv_review_merchant) TextView tvReviewMerchant;
    @InjectView(R.id.currentTime) TextView tvDate;
+
+   private MaterialDialog progressDialog;
 
    private TransactionStatusInjector transactionStatusInjector;
    private Merchant merchant;
@@ -73,9 +81,24 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
       return new DtlThrstThankYouScreenPresenter(getArgs());
    }
 
+   @OnClick(R.id.tv_send)
+   public void onEmailClick() {
+      getPresenter().onSendEmailClick(getView().findViewById(R.id.receipt_main_views_container));
+   }
+
    @OnClick(R.id.payment_done_button)
    public void onDoneClick() {
       getPresenter().onDoneClick();
+   }
+
+   @Override
+   public void showTransactionButtons() {
+      transactionButtonsContainer.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideTransactionButtons() {
+      transactionButtonsContainer.setVisibility(View.INVISIBLE);
    }
 
    @Override
@@ -153,6 +176,50 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
       tvDate.setText(DateTimeUtils.convertDateToString(new Date(), DtlDateTimeUtils.THANK_YOU_SCREEN_FORMAT));
    }
 
+   @Override
+   public void showSuccessEmailMessage() {
+      Context context = getContext();
+      SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE)
+            .setTitleText(context.getString(R.string.app_name))
+            .setContentText(context.getString(R.string.dtl_send_email_success))
+            .setConfirmText(context.getString(R.string.ok))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.dismissWithAnimation();
+            });
+      alertDialog.setCancelable(false);
+      alertDialog.show();
+   }
+
+   @Override
+   public void showErrorEmailMessage() {
+      Context context = getContext();
+      SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+            .setTitleText(context.getString(R.string.dtl_alert_title_error))
+            .setContentText(context.getString(R.string.dtl_send_email_error))
+            .setConfirmText(context.getString(R.string.ok))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.dismissWithAnimation();
+            });
+      alertDialog.setCancelable(false);
+      alertDialog.show();
+   }
+
+   @Override
+   public void showLoadingDialog() {
+      progressDialog = new MaterialDialog.Builder(getContext()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
+
+   @Override
+   public void hideLoadingDialog() {
+      if (progressDialog != null && progressDialog.isShowing()) {
+         progressDialog.dismiss();
+      }
+   }
+
    private class OpenURLSpannable extends ClickableSpan {
       @Override
       public void onClick(View view) {
@@ -165,5 +232,4 @@ public class DtlThankYouScreenFragment extends RxBaseFragmentWithArgs<DtlThrstTh
          ds.setUnderlineText(false);
       }
    }
-
 }

@@ -3,7 +3,6 @@ ext {
    walletDependencies = [:]
 
    walletDependencies.repos = [
-         //TODO : add required repos
    ]
    coreDependencies.repos.each { walletDependencies.repos << it }
 
@@ -35,7 +34,7 @@ ext {
    ]
 
    walletDependencies.smartcard = [
-         service: [impl: 'io.techery.janet:smartcard:0.21.6.1-SNAPSHOT'],
+         service: [impl: 'io.techery.janet:smartcard:0.21.7.4'],
    ]
 
    walletDependencies.test = [

@@ -243,6 +243,7 @@
 
             <!--TODO: disable suffix functionality-->
             <!--android:text="@={profile.suffix}"-->
+            <!--TODO: ic_wallet_arrow_down_grey is item from DTL resources-->
             <TextView
                   android:id="@+id/tv_suffix"
                   android:layout_width="0dp"

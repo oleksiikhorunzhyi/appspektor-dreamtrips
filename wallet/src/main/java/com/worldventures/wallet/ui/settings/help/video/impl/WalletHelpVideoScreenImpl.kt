@@ -6,11 +6,9 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Spinner
 import android.widget.TextView
-
 import com.afollestad.materialdialogs.MaterialDialog
+import com.facebook.drawee.view.SimpleDraweeView
 import com.worldventures.core.model.CachedModel
 import com.worldventures.core.modules.video.model.VideoLocale
 import com.worldventures.core.modules.video.service.command.GetMemberVideosCommand
@@ -26,20 +24,17 @@ import com.worldventures.wallet.ui.common.helper2.error.http.HttpErrorViewProvid
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView
 import com.worldventures.wallet.ui.settings.help.video.WalletHelpVideoPresenter
 import com.worldventures.wallet.ui.settings.help.video.WalletHelpVideoScreen
-import com.worldventures.wallet.ui.settings.help.video.adapter.VideoLanguagesAdapter
-import com.worldventures.wallet.ui.settings.help.video.adapter.VideoLocaleAdapter
 import com.worldventures.wallet.ui.settings.help.video.delegate.WalletVideoCallback
 import com.worldventures.wallet.ui.settings.help.video.holder.VideoHolderFactoryImpl
 import com.worldventures.wallet.ui.settings.help.video.holder.WalletVideoHolderDelegate
+import com.worldventures.wallet.ui.settings.help.video.impl.language.HelpVideoLanguagePicker
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel
-
-import java.util.ArrayList
-
-import javax.inject.Inject
-
 import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.OperationView
+import java.util.ArrayList
+import javax.inject.Inject
 
+private const val STATE_KEY_LOCALE = "WalletHelpVideoScreenImpl#STATE_KEY_LOCALE"
 private const val STATE_KEY_VIDEOS = "WalletHelpVideoScreenImpl#STATE_KEY_VIDEOS"
 private const val STATE_KEY_VIDEO_LOCALES = "WalletHelpVideoScreenImpl#STATE_KEY_VIDEO_LOCALES"
 
@@ -52,22 +47,26 @@ class WalletHelpVideoScreenImpl : WalletBaseController<WalletHelpVideoScreen, Wa
    private lateinit var rvVideos: EmptyRecyclerView
    private lateinit var refreshLayout: SwipeRefreshLayout
    private lateinit var videoAdapter: MultiHolderAdapter<WalletVideoModel>
-   private lateinit var localeAdapter: VideoLocaleAdapter
-   private lateinit var spinnerVideoLocales: Spinner
 
-   private var videos: ArrayList<WalletVideoModel>? = null
-   private var videoLocales: ArrayList<VideoLocale>? = null
+   private lateinit var tvLocaleTitle: TextView
+   private lateinit var ivLocaleFlag: SimpleDraweeView
+   private lateinit var viewLocaleContainer: View
+   private lateinit var languagePicker: HelpVideoLanguagePicker
 
-   override val currentItems: List<WalletVideoModel>
-      get() = if (videoAdapter.itemCount == 0) emptyList() else videoAdapter.items
-
-   private val itemLocaleSelectedListener = object : AdapterView.OnItemSelectedListener {
-      override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-         localeAdapter.getItem(position)?.let { presenter.onSelectedLocale(it) }
+   private var videoLocale: HelpVideoLocale? = null
+      set(value) {
+         value?.videoLocale?.let { bindSelectedLocale(it) }
+         field = value
       }
 
-      override fun onNothingSelected(parent: AdapterView<*>) {}
-   }
+   private var videoLocales: ArrayList<VideoLocale>? = null
+
+   override var videos: ArrayList<WalletVideoModel> = ArrayList()
+      set(value) {
+         field = value
+         this.videoAdapter.clear()
+         this.videoAdapter.addItems(value)
+      }
 
    private val videoActionsCallback = object : WalletVideoCallback {
 
@@ -101,28 +100,40 @@ class WalletHelpVideoScreenImpl : WalletBaseController<WalletHelpVideoScreen, Wa
    override fun onAttach(view: View) {
       super.onAttach(view)
       if (videoLocales == null) {
-         presenter.fetchVideoAndLocales()
+         viewLocaleContainer.visibility = View.GONE
+         presenter.fetchLocales()
       }
    }
 
    private fun initRefreshLayout(view: View) {
       refreshLayout = view.findViewById(R.id.refresh_layout)
-      refreshLayout.setOnRefreshListener { presenter.refreshVideos() }
+      refreshLayout.setOnRefreshListener { fetchVideo() }
    }
 
-   @Suppress("UnsafeCast")
    private fun initToolbar(view: View) {
       val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
       toolbar.setNavigationOnClickListener { presenter.goBack() }
-      toolbar.inflateMenu(R.menu.wallet_settings_videos)
 
-      val actionVideoLanguage = toolbar.menu.findItem(R.id.action_video_language)
-      spinnerVideoLocales = actionVideoLanguage.actionView as Spinner
+      ivLocaleFlag = view.findViewById(R.id.iv_locale_flag)
+      tvLocaleTitle = view.findViewById(R.id.tv_locale_title)
+      viewLocaleContainer = toolbar.findViewById(R.id.tv_locale_container)
+      viewLocaleContainer.setOnClickListener {
+         languagePicker.showLocalePicker(it)
+      }
+      languagePicker = HelpVideoLanguagePicker(context) {
+         onLanguageSelected(it)
+      }
+   }
 
-      localeAdapter = VideoLocaleAdapter(context, ArrayList())
+   private fun onLanguageSelected(videoLocale: HelpVideoLocale?) {
+      fetchVideo(videoLocale)
+      this.videoLocale = videoLocale
+   }
 
-      spinnerVideoLocales.adapter = localeAdapter
-      spinnerVideoLocales.onItemSelectedListener = itemLocaleSelectedListener
+   private fun bindSelectedLocale(locale: VideoLocale) {
+      tvLocaleTitle.text = locale.title
+      ivLocaleFlag.setImageURI(locale.image)
+      viewLocaleContainer.visibility = View.VISIBLE
    }
 
    private fun initAdapter() {
@@ -130,26 +141,36 @@ class WalletHelpVideoScreenImpl : WalletBaseController<WalletHelpVideoScreen, Wa
       rvVideos.adapter = videoAdapter
    }
 
-   override fun setVideos(videos: ArrayList<WalletVideoModel>) {
-      this.videos = videos
-      this.videoAdapter.clear()
-      this.videoAdapter.addItems(videos)
+   override fun setVideoLocales(videoLocales: ArrayList<VideoLocale>, defaultLocale: HelpVideoLocale) {
+      setVideoLocales(videoLocales)
+      if (videoLocale == null) {
+         onLanguageSelected(defaultLocale)
+      }
    }
 
-   override fun setVideoLocales(videoLocales: ArrayList<VideoLocale>) {
+   private fun setVideoLocales(videoLocales: ArrayList<VideoLocale>) {
       this.videoLocales = videoLocales
-      localeAdapter.clear()
-      localeAdapter.addAll(videoLocales)
+      languagePicker.addLocales(videoLocales)
    }
 
    override fun provideOperationLoadVideos(): OperationView<GetMemberVideosCommand> {
       return ComposableOperationView(
-            SimpleDialogProgressView(context, R.string.wallet_settings_help_video_loading, false),
+            SwipeRefreshProgressView(refreshLayout),
             ErrorViewFactory.builder<GetMemberVideosCommand>()
                   .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
-                        { presenter.fetchVideos(null) }, { presenter.goBack() })
+                        { fetchVideo() },
+                        {
+                           val locales = videoLocales
+                           if (locales == null || locales.isEmpty()) {
+                              presenter.goBack()
+                           }
+                        })
                   ).build()
       )
+   }
+
+   private fun fetchVideo(videoLocale: HelpVideoLocale? = this.videoLocale) {
+      videoLocale?.let { presenter.fetchVideos(it) }
    }
 
    override fun provideOperationLoadLanguages(): OperationView<GetVideoLocalesCommand> {
@@ -157,7 +178,7 @@ class WalletHelpVideoScreenImpl : WalletBaseController<WalletHelpVideoScreen, Wa
             SimpleDialogProgressView(context, R.string.wallet_settings_help_video_locales_loading, false),
             ErrorViewFactory.builder<GetVideoLocalesCommand>()
                   .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil,
-                        { presenter.fetchVideoAndLocales() }, { presenter.goBack() })
+                        { presenter.fetchLocales() }, { presenter.goBack() })
                   ).build()
       )
    }
@@ -185,27 +206,8 @@ class WalletHelpVideoScreenImpl : WalletBaseController<WalletHelpVideoScreen, Wa
    }
 
    override fun notifyItemChanged(cachedEntity: CachedModel) {
+//      todo optimize it
       videoAdapter.notifyDataSetChanged()
-   }
-
-   override fun showDialogChosenLanguage(videoLocale: VideoLocale) {
-      MaterialDialog.Builder(context)
-            .adapter(VideoLanguagesAdapter(context, videoLocale.languages)
-            ) { dialog, _, which, _ ->
-               presenter.fetchVideos(videoLocale.languages[which])
-               dialog.dismiss()
-            }
-            .cancelListener { presenter.onSelectLastLocale() }
-            .build()
-            .show()
-   }
-
-   override fun setSelectedLocale(index: Int) {
-      spinnerVideoLocales.setSelection(index)
-   }
-
-   override fun showRefreshing(show: Boolean) {
-      refreshLayout.isRefreshing = show
    }
 
    override fun getPresenter(): WalletHelpVideoPresenter = screenPresenter
@@ -219,6 +221,7 @@ class WalletHelpVideoScreenImpl : WalletBaseController<WalletHelpVideoScreen, Wa
 
    override fun onSaveViewState(view: View, outState: Bundle) {
       super.onSaveViewState(view, outState)
+      outState.putParcelable(STATE_KEY_LOCALE, videoLocale)
       outState.putParcelableArrayList(STATE_KEY_VIDEOS, videos)
       outState.putSerializable(STATE_KEY_VIDEO_LOCALES, videoLocales)
    }
@@ -226,7 +229,8 @@ class WalletHelpVideoScreenImpl : WalletBaseController<WalletHelpVideoScreen, Wa
    @Suppress("UNCHECKED_CAST", "UnsafeCast")
    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
       super.onRestoreViewState(view, savedViewState)
-      setVideos(savedViewState.getParcelableArrayList(STATE_KEY_VIDEOS))
+      videoLocale = savedViewState.getParcelable(STATE_KEY_LOCALE)
+      videos = savedViewState.getParcelableArrayList(STATE_KEY_VIDEOS)
       setVideoLocales(savedViewState.getSerializable(STATE_KEY_VIDEO_LOCALES) as ArrayList<VideoLocale>)
    }
 

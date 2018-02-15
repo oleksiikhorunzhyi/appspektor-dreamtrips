@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider;
 import com.worldventures.wallet.ui.common.helper2.error.SmartCardErrorViewProvider;
 import com.worldventures.wallet.ui.common.helper2.success.SimpleToastSuccessView;
 import com.worldventures.wallet.ui.settings.security.clear.common.WalletDelayRadioGroup;
@@ -77,24 +78,26 @@ public abstract class WalletBaseClearDelayScreenImpl<S extends WalletBaseClearDe
    }
 
    @Override
-   public void setSelectedPosition(int position) {
-      selectionView.check(position);
-   }
-
-   @Override
    public int getSelectedPosition() {
       return selectionView.getCheckedRadioButtonId();
    }
 
    @Override
-   public void setDelayWasChanged(boolean autoClearWasChanged) {
-      this.delayWasChanged = autoClearWasChanged;
+   public void setSelectedPosition(int position) {
+      selectionView.check(position);
+   }
+
+   @Override
+   public void notifyDataIsSaved() {
+      this.delayWasChanged = true;
    }
 
    @Override
    public <T> OperationView<T> provideOperationView() {
-      return new ComposableOperationView<>(new SimpleToastSuccessView<>(getContext(), getSuccessMessage()),
+      return new ComposableOperationView<>(
+            new SimpleToastSuccessView<>(getContext(), getSuccessMessage()),
             ErrorViewFactory.<T>builder()
+                  .addProvider(new SCConnectionErrorViewProvider<>(getContext()))
                   .addProvider(new SmartCardErrorViewProvider<>(getContext()))
                   .build());
    }

@@ -4,13 +4,13 @@ import com.worldventures.core.model.Circle
 import com.worldventures.core.model.User
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
+import com.worldventures.dreamtrips.social.service.profile.command.AddFriendToCircleCommand
+import com.worldventures.dreamtrips.social.service.profile.command.RemoveFriendFromCircleCommand
+import com.worldventures.dreamtrips.social.service.profile.model.FriendGroupRelation
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle
-import com.worldventures.dreamtrips.social.ui.profile.model.FriendGroupRelation
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
-import com.worldventures.dreamtrips.social.ui.profile.service.command.AddFriendToCircleCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.command.RemoveFriendFromCircleCommand
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.State
 import io.techery.janet.helper.ActionStateSubscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -53,12 +53,11 @@ class FriendPreferencesPresenter(userBundle: UserBundle) : Presenter<FriendPrefe
    fun onRelationshipChanged(circle: Circle, state: State) {
       when (state) {
          State.ADDED -> {
-            profileInteractor.addFriendToCirclesPipe()
-                  .send(AddFriendToCircleCommand(circle, friend))
+            profileInteractor.addFriendToCirclePipe.send(AddFriendToCircleCommand(circle, friend))
             friend.circles.add(circle)
          }
          State.REMOVED -> {
-            profileInteractor.removeFriendFromCirclesPipe()
+            profileInteractor.removeFriendFromCirclePipe
                   .send(RemoveFriendFromCircleCommand(circle, friend))
          }
       }

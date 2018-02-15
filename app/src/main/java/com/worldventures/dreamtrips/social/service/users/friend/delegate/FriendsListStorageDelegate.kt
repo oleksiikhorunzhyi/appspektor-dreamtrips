@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.service.users.friend.delegate
 
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
 import com.worldventures.dreamtrips.social.service.users.base.delegate.BaseUserStorageDelegate
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
@@ -12,7 +13,6 @@ import com.worldventures.dreamtrips.social.service.users.friend.operation.Accept
 import com.worldventures.dreamtrips.social.service.users.friend.operation.AcceptFriendOperation
 import com.worldventures.dreamtrips.social.service.users.request.command.AcceptAllFriendRequestsCommand
 import com.worldventures.dreamtrips.social.service.users.request.command.ActOnFriendRequestCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
 
 class FriendsListStorageDelegate(
       friendInteractor: FriendsInteractor,

@@ -8,6 +8,9 @@ import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor;
+import com.worldventures.dreamtrips.social.service.profile.analytics.FriendRelationshipAnalyticAction;
+import com.worldventures.dreamtrips.social.service.profile.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand;
@@ -22,9 +25,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.GetUserTimeli
 import com.worldventures.dreamtrips.social.ui.feed.service.command.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.UserTimelineStorageDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
-import com.worldventures.dreamtrips.social.ui.profile.service.analytics.FriendRelationshipAnalyticAction;
-import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    @Override
    protected void loadProfile() {
       view.startLoading();
-      profileInteractor.publicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
+      profileInteractor.getPublicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPublicProfileCommand>()
                   .onSuccess(command -> this.onProfileLoaded(command.getResult()))
@@ -245,7 +245,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
    }
 
    void subscribeToChangingCircles() {
-      profileInteractor.addFriendToCirclesPipe().observeSuccess()
+      profileInteractor.getAddFriendToCirclePipe().observeSuccess()
             .compose(bindViewToMainComposer())
             .subscribe(command -> {
                if (user.getId() == command.getUserId()) {
@@ -254,7 +254,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View> {
                   view.notifyDataSetChanged();
                }
             });
-      profileInteractor.removeFriendFromCirclesPipe().observeSuccess()
+      profileInteractor.getRemoveFriendFromCirclePipe().observeSuccess()
             .compose(bindViewToMainComposer())
             .subscribe(command -> {
                if (user.getId() == command.getUserId()) {

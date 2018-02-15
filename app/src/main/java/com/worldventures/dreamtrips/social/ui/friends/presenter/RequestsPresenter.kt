@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView
+import com.worldventures.dreamtrips.social.service.profile.analytics.FriendRelationshipAnalyticAction
 import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesDecoratorCommand
 import com.worldventures.dreamtrips.social.service.users.request.command.AcceptAllFriendRequestsCommand
 import com.worldventures.dreamtrips.social.service.users.request.command.ActOnFriendRequestCommand
@@ -16,7 +17,6 @@ import com.worldventures.dreamtrips.social.service.users.request.command.SortReq
 import com.worldventures.dreamtrips.social.service.users.request.delegate.RequestsStorageDelegate
 import com.worldventures.dreamtrips.social.ui.feed.service.analytics.FriendsAnalyticsAction
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle
-import com.worldventures.dreamtrips.social.ui.profile.service.analytics.FriendRelationshipAnalyticAction
 import io.techery.janet.helper.ActionStateSubscriber
 import javax.inject.Inject
 

@@ -45,7 +45,7 @@ public class ForcePairKeyPresenterImpl extends WalletPresenterImpl<ForcePairKeyS
    }
 
    private void smartCardConnected() {
-      getNavigator().goNewFirmwareAvailable();
+      getNavigator().goNewFirmwareAvailableForcePair();
    }
 
    @Override

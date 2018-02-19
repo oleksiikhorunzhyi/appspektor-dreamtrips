@@ -413,7 +413,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    @Override
    public void navigateToFirmwareUpdate() {
-      getNavigator().goStartFirmwareInstallCardList();
+      getNavigator().goStartFirmwareInstall();
    }
 
    @SuppressWarnings("ConstantConditions")

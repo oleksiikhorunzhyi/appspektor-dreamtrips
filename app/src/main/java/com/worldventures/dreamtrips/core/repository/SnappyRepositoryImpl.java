@@ -10,9 +10,9 @@ import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -264,5 +264,15 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    @Override
    public int getFriendsRequestsCount() {
       return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
+   }
+
+   @Override
+   public void setCurrentVersion(int version) {
+      act(db -> db.putInt(CURRENT_VERSION, version));
+   }
+
+   @Override
+   public int getCurrentVersion() {
+      return actWithResult(db -> db.getInt(CURRENT_VERSION)).or(0);
    }
 }

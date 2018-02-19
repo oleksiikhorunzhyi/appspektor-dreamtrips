@@ -4,6 +4,7 @@ import android.support.annotation.DrawableRes;
 import android.support.v4.util.Pair;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.worldventures.core.janet.composer.ActionPipeCacheWiper;
 import com.worldventures.core.utils.ProjectTextUtils;
 import com.worldventures.wallet.analytics.AddPaymentCardAction;
@@ -203,6 +204,13 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    }
 
    private void handleSmartCardUser(SmartCardUser smartCardUser) {
+      if (smartCardUser == null) {
+         String message = String.format("User is null in SmartCardUserCommand storage in %s screen",
+               getClass().getSimpleName());
+         Timber.e(message);
+         Crashlytics.log(message);
+         return;
+      }
       getView().setSmartCardUser(smartCardUser);
    }
 

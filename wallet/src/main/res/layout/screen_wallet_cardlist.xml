@@ -112,7 +112,7 @@
             <TextView
                   android:id="@+id/empty_card_view"
                   android:layout_width="match_parent"
-                  android:layout_height="154dp"
+                  android:layout_height="100dp"
                   android:layout_alignParentBottom="true"
                   android:layout_centerHorizontal="true"
                   android:layout_gravity="bottom"

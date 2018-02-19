@@ -19,8 +19,8 @@ import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView;
 
 import java.util.Arrays;
 import java.util.List;

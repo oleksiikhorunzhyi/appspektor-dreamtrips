@@ -19,7 +19,6 @@ import com.worldventures.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
 import com.worldventures.wallet.domain.entity.record.Record;
 import com.worldventures.wallet.domain.entity.record.SyncRecordsStatus;
-import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.FirmwareInteractor;
 import com.worldventures.wallet.service.RecordInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
@@ -47,8 +46,7 @@ import com.worldventures.wallet.ui.dashboard.CardListPresenter;
 import com.worldventures.wallet.ui.dashboard.CardListScreen;
 import com.worldventures.wallet.ui.dashboard.util.model.CommonCardViewModel;
 import com.worldventures.wallet.ui.dashboard.util.model.TransitionModel;
-import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
 import com.worldventures.wallet.util.CardListStackConverter;
 import com.worldventures.wallet.util.WalletFeatureHelper;
 import com.worldventures.wallet.util.WalletRecordUtil;
@@ -80,7 +78,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletNavigationDelegate navigationDelegate;
    private final WalletFeatureHelper featureHelper;
-   private final CheckPinDelegate checkPinDelegate;
+   private final FactoryResetDelegate factoryResetDelegate;
    private final CardListStackConverter cardListStackConverter;
    private final LocationTrackingManager locationTrackingManager;
 
@@ -89,7 +87,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
    public CardListPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          WalletNetworkDelegate networkDelegate, SmartCardInteractor smartCardInteractor, RecordInteractor recordInteractor,
          FirmwareInteractor firmwareInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         FactoryResetInteractor factoryResetInteractor, WalletNavigationDelegate navigationDelegate,
+         FactoryResetDelegate factoryResetDelegate, WalletNavigationDelegate navigationDelegate,
          WalletFeatureHelper walletFeatureHelper, LocationTrackingManager locationTrackingManager) {
       super(navigator, deviceConnectionDelegate);
       this.networkDelegate = networkDelegate;
@@ -99,8 +97,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       this.analyticsInteractor = analyticsInteractor;
       this.navigationDelegate = navigationDelegate;
       this.featureHelper = walletFeatureHelper;
-      this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
-            navigator, FactoryResetAction.GENERAL);
+      this.factoryResetDelegate = factoryResetDelegate;
       this.cardListStackConverter = new CardListStackConverter(new WalletRecordUtil(), walletFeatureHelper);
       this.locationTrackingManager = locationTrackingManager;
    }
@@ -111,7 +108,7 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
       networkDelegate.setup(getView());
       featureHelper.prepareDashboardScreen(getView());
       getView().setDefaultSmartCard();
-      checkPinDelegate.observePinStatus(getView());
+      factoryResetDelegate.bindView(getView());
       observeSmartCard();
       observeDisplayType();
       observeConnectionStatus();
@@ -466,6 +463,6 @@ public class CardListPresenterImpl extends WalletPresenterImpl<CardListScreen> i
 
    @Override
    public void goToFactoryReset() {
-      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
+      factoryResetDelegate.startRegularFactoryReset();
    }
 }

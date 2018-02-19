@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.newcard.check.impl;
 
-
 import android.util.Pair;
 
 import com.worldventures.wallet.analytics.WalletAnalyticsAction;
@@ -8,7 +7,6 @@ import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.analytics.new_smartcard.BluetoothDisabledAction;
 import com.worldventures.wallet.analytics.new_smartcard.BluetoothEnabledAction;
 import com.worldventures.wallet.analytics.new_smartcard.SmartCartWillNowBeAssignedAction;
-import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.wallet.service.WalletBluetoothService;
@@ -19,8 +17,7 @@ import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.check.PreCheckNewCardScreen;
-import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,23 +31,22 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
    private final SmartCardInteractor smartCardInteractor;
    private final WalletBluetoothService bluetoothService;
    private final WalletAnalyticsInteractor analyticsInteractor;
-   private final CheckPinDelegate checkPinDelegate;
+   private final FactoryResetDelegate factoryResetDelegate;
 
    public PreCheckNewCardPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         FactoryResetInteractor factoryResetInteractor, WalletBluetoothService bluetoothService) {
+         WalletBluetoothService bluetoothService, FactoryResetDelegate factoryResetDelegate) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.bluetoothService = bluetoothService;
       this.analyticsInteractor = analyticsInteractor;
-      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor,
-            analyticsInteractor, navigator, FactoryResetAction.NEW_CARD);
+      this.factoryResetDelegate = factoryResetDelegate;
    }
 
    @Override
    public void attachView(PreCheckNewCardScreen view) {
       super.attachView(view);
-      checkPinDelegate.observePinStatus(getView());
+      factoryResetDelegate.bindView(view);
       observeChecks();
    }
 
@@ -98,7 +94,7 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
    @Override
    public void navigateNext() {
       sendAnalyticAction(new SmartCartWillNowBeAssignedAction());
-      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
+      factoryResetDelegate.startRegularFactoryReset();
    }
 
    private void sendAnalyticAction(WalletAnalyticsAction action) {

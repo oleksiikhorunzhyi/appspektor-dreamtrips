@@ -1,7 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.newcard.detection.impl;
 
-
-import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.analytics.WalletAnalyticsAction;
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.analytics.new_smartcard.ExistSmartCardAction;
@@ -11,137 +9,99 @@ import com.worldventures.wallet.analytics.new_smartcard.ExistSmartCardHaveCardAc
 import com.worldventures.wallet.analytics.new_smartcard.ExistSmartCardNotConnectedAction;
 import com.worldventures.wallet.analytics.new_smartcard.UnAssignCardContinueAction;
 import com.worldventures.wallet.domain.entity.ConnectionStatus;
-import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.wallet.service.command.reset.ResetOptions;
-import com.worldventures.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.settings.general.newcard.detection.ExistingCardDetectPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.detection.ExistingCardDetectScreen;
-import com.worldventures.wallet.ui.settings.general.newcard.helper.CardIdUtil;
-import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
 
-import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<ExistingCardDetectScreen> implements ExistingCardDetectPresenter {
 
    private final SmartCardInteractor smartCardInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
-   private final CheckPinDelegate checkPinDelegate;
-   private final HttpErrorHandlingUtil httpErrorHandlingUtil;
+   private final FactoryResetDelegate factoryResetDelegate;
 
-   public ExistingCardDetectPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         FactoryResetInteractor factoryResetInteractor, HttpErrorHandlingUtil httpErrorHandlingUtil) {
+   public ExistingCardDetectPresenterImpl(
+         Navigator navigator,
+         WalletDeviceConnectionDelegate deviceConnectionDelegate,
+         SmartCardInteractor smartCardInteractor,
+         WalletAnalyticsInteractor analyticsInteractor,
+         FactoryResetDelegate factoryResetDelegate) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.analyticsInteractor = analyticsInteractor;
-      this.httpErrorHandlingUtil = httpErrorHandlingUtil;
-      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
-            navigator, FactoryResetAction.NEW_CARD);
+      this.factoryResetDelegate = factoryResetDelegate;
    }
 
    @Override
    public void attachView(ExistingCardDetectScreen view) {
       super.attachView(view);
-      checkPinDelegate.observePinStatus(getView());
-      observerSmartCardConnectedStatus();
-      fetchSmartCardId();
+      factoryResetDelegate.bindView(view);
    }
 
-   private void fetchSmartCardId() {
+   @Override
+   public void fetchSmartCardId() {
       smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new ActiveSmartCardCommand())
+            .createObservableResult(new ActiveSmartCardCommand())
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new ActionStateSubscriber<ActiveSmartCardCommand>()
-                  .onSuccess(command -> bindSmartCardId(command.getResult().getSmartCardId()))
-            );
+            .subscribe(command -> bindSmartCardId(command.getResult().getSmartCardId()), Timber::e);
+   }
+
+   @Override
+   public void fetchSmartCardConnection() {
+      smartCardInteractor.deviceStatePipe()
+            .createObservableResult(DeviceStateCommand.Companion.fetch())
+            .compose(getView().bindUntilDetach())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(command -> handleConnectedResult(command.getResult().getConnectionStatus()), Timber::e);
    }
 
    private void bindSmartCardId(String smartCardId) {
-      getView().setSmartCardId(CardIdUtil.pushZeroToSmartCardId(smartCardId));
-   }
-
-   private void observerSmartCardConnectedStatus() {
-      smartCardInteractor.deviceStatePipe()
-            .createObservable(DeviceStateCommand.Companion.fetch())
-            .compose(getView().bindUntilDetach())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(getView().provideDeviceStateOperationView())
-                  .onSuccess(command -> handleConnectedResult(command.getResult().getConnectionStatus()))
-                  .create());
+      getView().setSmartCardId(smartCardId);
    }
 
    private void handleConnectedResult(ConnectionStatus connectionStatus) {
-      if (connectionStatus.isConnected()) {
-         sendAnalyticAction(new ExistSmartCardAction());
-         getView().modeConnectedSmartCard();
-      } else {
-         sendAnalyticAction(new ExistSmartCardNotConnectedAction());
-         getView().modeDisconnectedSmartCard();
-      }
+      sendAnalyticAction(connectionStatus.isConnected() ? new ExistSmartCardAction() : new ExistSmartCardNotConnectedAction());
+      getView().setSmartCardConnection(connectionStatus);
+   }
+
+   @Override
+   public void unassignCardConfirmed(String smartCardId) {
+      sendAnalyticAction(new UnAssignCardContinueAction());
+      factoryResetDelegate.startRegularFactoryReset();
    }
 
    @Override
    public void unassignCard() {
-      sendAnalyticAction(new UnAssignCardContinueAction());
-      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
+      getView().showConfirmationUnassignDialog();
    }
 
    @Override
-   public void prepareUnassignCard() {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new ActiveSmartCardCommand())
-            .compose(getView().bindUntilDetach())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
-                  .onSuccess(command -> getView().showConfirmationUnassignDialog(command.getResult().getSmartCardId()))
-                  .create());
+   public void unassignWithoutCard() {
+      sendAnalyticAction(new ExistSmartCardDontHaveCardAction());
+      getView().showConfirmationUnassignWhioutCard();
    }
 
    @Override
-   public void prepareUnassignCardOnBackend() {
-      smartCardInteractor.activeSmartCardPipe()
-            .createObservable(new ActiveSmartCardCommand())
-            .compose(getView().bindUntilDetach())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(getView().provideActiveSmartCardOperationView())
-                  .onSuccess(command -> {
-                     sendAnalyticAction(new ExistSmartCardDontHaveCardAction());
-                     getView().showConfirmationUnassignOnBackend(command.getResult().getSmartCardId());
-                  })
-                  .create());
-   }
-
-   @Override
-   public void unassignCardOnBackend() {
-      smartCardInteractor.wipeSmartCardDataPipe()
-            .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
+   public void unassignWithoutCardConfirmed(String smartCardId) {
+      sendAnalyticAction(new ExistSmartCardDontHaveCardContinueAction());
+      factoryResetDelegate.factoryReset(
+            ResetOptions.builder()
                   .wipePaymentCards(false)
+                  .withEnterPin(false)
                   .wipeUserSmartCardData(false)
-                  .build()))
-            .compose(getView().bindUntilDetach())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
-                  .onSuccess(activeSmartCardCommand -> {
-                     sendAnalyticAction(new ExistSmartCardDontHaveCardContinueAction());
-                     getNavigator().goUnassignSuccess();
-                  })
-                  .create());
-   }
-
-   @Override
-   public HttpErrorHandlingUtil httpErrorHandlingUtil() {
-      return httpErrorHandlingUtil;
+                  .smartCardIsAvailable(false)
+                  .build());
    }
 
    public void goBack() {
@@ -149,18 +109,12 @@ public class ExistingCardDetectPresenterImpl extends WalletPresenterImpl<Existin
    }
 
    @Override
-   public void navigateToPowerOn() {
+   public void cardAvailable() {
       sendAnalyticAction(new ExistSmartCardHaveCardAction());
       getNavigator().goNewCardPowerOn();
    }
 
    private void sendAnalyticAction(WalletAnalyticsAction action) {
-      analyticsInteractor
-            .walletAnalyticsPipe()
-            .send(new WalletAnalyticsCommand(action));
-   }
-
-   void retryFactoryReset() {
-      checkPinDelegate.getFactoryResetDelegate().factoryReset();
+      analyticsInteractor.walletAnalyticsPipe().send(new WalletAnalyticsCommand(action));
    }
 }

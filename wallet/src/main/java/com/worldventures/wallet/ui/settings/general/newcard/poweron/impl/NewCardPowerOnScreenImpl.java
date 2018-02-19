@@ -19,8 +19,8 @@ import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView;
 import com.worldventures.wallet.ui.widget.WizardVideoView;
 
 import javax.inject.Inject;

@@ -1,7 +1,6 @@
 package com.worldventures.wallet.ui.settings.help.video.impl
 
 import com.worldventures.core.model.CachedModel
-import com.worldventures.core.modules.video.model.Video
 import com.worldventures.core.modules.video.model.VideoCategory
 import com.worldventures.core.modules.video.model.VideoLocale
 import com.worldventures.core.modules.video.service.MemberVideosInteractor
@@ -50,11 +49,14 @@ class WalletHelpVideoPresenterImpl(navigator: Navigator, deviceConnectionDelegat
    }
 
    private fun handleUpdatedStatusCachedEntities(categories: List<VideoCategory>) {
-      view.videos = convert(categories[0].videos)
+      view.videos = convert(categories)
    }
 
-   private fun convert(videos: List<Video>): ArrayList<WalletVideoModel> =
-         if (videos.isNotEmpty()) ArrayList(videos.map { WalletVideoModel(it) }.toList()) else ArrayList()
+   private fun convert(categories: List<VideoCategory>): ArrayList<WalletVideoModel> {
+      if (categories.isEmpty()) return ArrayList()
+      val videos = categories[0].videos
+      return if (videos.isNotEmpty()) ArrayList(videos.map { WalletVideoModel(it) }.toList()) else ArrayList()
+   }
 
    override fun fetchLocales() {
       memberVideosInteractor.videoLocalesPipe.send(GetVideoLocalesCommand())

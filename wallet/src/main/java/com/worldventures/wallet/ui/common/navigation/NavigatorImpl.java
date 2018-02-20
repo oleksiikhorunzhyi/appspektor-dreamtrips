@@ -270,7 +270,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goWizardEditProfile(ProvisioningMode provisioningMode) {
-      withoutLast(WizardEditProfileScreenImpl.create(provisioningMode));
+      withoutLast(WizardEditProfileScreenImpl.Companion.create(provisioningMode));
    }
 
    @Override

@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +31,6 @@ public class TripDetailsViewInjector extends TripViewInjector {
 
    @Optional @InjectView(R.id.viewPagerGallery) protected ViewPager viewPagerGallery;
    @Optional @InjectView(R.id.circleIndicator) protected CircleIndicator circleIndicator;
-   @Optional @InjectView(R.id.textViewDescription) TextView textViewDescription;
    @Optional @InjectView(R.id.textViewScheduleDescription) TextView textViewScheduleDescription;
 
    public TripDetailsViewInjector(View rootView) {
@@ -77,9 +75,6 @@ public class TripDetailsViewInjector extends TripViewInjector {
          int iconBucket = tripModel.isInBucketList() ? R.drawable.ic_trip_add_to_bucket_selected : R.drawable.ic_trip_add_to_bucket_normal;
          addToBucketItem.setIcon(iconBucket);
          addToBucketItem.setEnabled(!tripModel.isInBucketList());
-      }
-      if (textViewDescription != null) {
-         textViewDescription.setText(Html.fromHtml(tripModel.getDescription()));
       }
    }
 

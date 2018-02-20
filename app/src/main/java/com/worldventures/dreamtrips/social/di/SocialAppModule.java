@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.fragment.NotificationFra
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.LegalTermsFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.SendFeedbackFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DreamLifeClubFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.social.ui.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.social.ui.profile.view.fragment.AccountFragment;
@@ -42,7 +43,6 @@ import dagger.Provides;
       }
 )
 public class SocialAppModule {
-
    public static final String FEED = "FEED";
    public static final String NOTIFICATIONS = "NOTIFICATIONS";
    public static final String OTA = "OTA";
@@ -56,6 +56,7 @@ public class SocialAppModule {
    public static final String SEND_FEEDBACK = "SEND_FEEDBACK";
    public static final String REP_TOOLS = "REP_TOOLS";
    public static final String LOGOUT = "Logout";
+   public static final String DLC = "DLC";
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMembershipComponent() {
@@ -197,6 +198,17 @@ public class SocialAppModule {
             .key(LOGOUT)
             .navMenuTitle(R.string.logout_component)
             .icon(R.drawable.ic_logout)
+            .build();
+   }
+
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideDreamLifeClubComponent() {
+      return new ComponentDescription.Builder()
+            .key(DLC)
+            .toolbarTitle(R.string.dlc)
+            .navMenuTitle(R.string.dlc)
+            .icon(R.drawable.ic_dreamtrips)
+            .fragmentClass(DreamLifeClubFragment.class)
             .build();
    }
 

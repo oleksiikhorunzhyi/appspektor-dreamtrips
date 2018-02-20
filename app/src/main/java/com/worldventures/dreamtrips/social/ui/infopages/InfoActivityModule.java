@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStat
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.BookItPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.DreamLifeClubPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollUpgradePresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.FeedbackImageAttachmentsPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpDocumentListPresenter;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcont
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.BookItFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.BundleUrlFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DocumentFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DreamLifeClubFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollUpgradeFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
@@ -53,6 +55,8 @@ import dagger.Module;
             WebViewFragmentPresenter.class,
             SendFeedbackFragment.class,
             SendFeedbackPresenter.class,
+            DreamLifeClubFragment.class,
+            DreamLifeClubPresenter.class,
             FeedbackImageAttachmentsPresenter.class,
             FeedbackImageAttachmentFullscreenFragment.class,
             FeedbackImageAttachmentsFragment.class,

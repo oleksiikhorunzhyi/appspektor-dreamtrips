@@ -80,9 +80,6 @@
    <string name="wallet_wizard_finish_label">When finished you will be able to add credit and debit cards.</string>
    <string name="wallet_wizard_finish_error_sample_cards">Failed to add Sample Card.</string>
 
-   <!--splash-->
-   <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
-
    <!--agreements-->
    <string name="wallet_terms_and_conditions_header">User Agreement</string>
    <string name="wallet_affidavit_header">Beta Affidavit</string>

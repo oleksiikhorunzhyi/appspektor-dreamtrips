@@ -42,6 +42,7 @@ class ReptoolsPresenterSpec : PresenterBaseSpec(ReptoolsTestSuite()) {
 
                it("should provide 5 screens with Invite screen") {
                   whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(true)
+                  whenever(featureManager.available(Feature.INVITATIONS)).thenReturn(true)
 
                   val screens = presenter.provideScreens()
 
@@ -51,6 +52,7 @@ class ReptoolsPresenterSpec : PresenterBaseSpec(ReptoolsTestSuite()) {
 
                it("should provide 4 screens without Invite screen") {
                   whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(false)
+                  whenever(featureManager.available(Feature.INVITATIONS)).thenReturn(false)
 
                   val screens = presenter.provideScreens()
 

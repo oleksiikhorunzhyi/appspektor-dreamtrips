@@ -25,7 +25,7 @@ public class StaticPageProvider {
    private static final String ENROLL_UPGRADE_URL = "/gateway/enroll_upgrade";
    private static final String WV_ADVANTAGE_URL = "/Account/Dispatch?url=";
    private static final String WV_ADVANTAGE_URL_TO_ENCODE = "/Marketing/WorldVenturesAdvantage";
-   private static final String DLC = "http://dreamlifeclub.tw/";
+   private static final String DLC = "/gateway/dreamlifeclub";
 
    ///////////////////////////////////////////
    //// Query params
@@ -110,7 +110,7 @@ public class StaticPageProvider {
    }
 
    public String getDLCUrl() {
-      return DLC;
+      return apiUrl + DLC;
    }
 
    public String getForgotPasswordUrl() {

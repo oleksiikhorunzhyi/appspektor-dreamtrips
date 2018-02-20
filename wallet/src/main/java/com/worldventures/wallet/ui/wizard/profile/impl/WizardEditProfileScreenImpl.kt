@@ -38,6 +38,9 @@ import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.OperationView
 import javax.inject.Inject
 
+private const val STATE_KEY_PHOTO_PICKER_SHOWING = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_SHOWING"
+private const val STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC"
+
 class WizardEditProfileScreenImpl(bundle: Bundle?) : WalletBaseController<WizardEditProfileScreen, WizardEditProfilePresenter>(bundle), WizardEditProfileScreen {
 
    @Inject internal lateinit var presenter: WizardEditProfilePresenter
@@ -46,6 +49,8 @@ class WizardEditProfileScreenImpl(bundle: Bundle?) : WalletBaseController<Wizard
    private lateinit var cropImageService: WalletCropImageService
    private var photoActionDialog: WalletPhotoProposalDialog? = null
    private var suffixSelectingDialog: WalletSuffixSelectingDialog? = null
+   private var mediaPickerDialog: MediaPickerDialog? = null
+   private var originalPhotoPickerDialogPic: String? = null
    private var setupUserOperationView: OperationView<SetupUserDataCommand>? = null
 
    constructor() : this(null)
@@ -99,21 +104,35 @@ class WizardEditProfileScreenImpl(bundle: Bundle?) : WalletBaseController<Wizard
       observeNewAvatar()
    }
 
+   override fun onDetach(view: View) {
+      super.onDetach(view)
+      mediaPickerDialog?.dismiss()
+      mediaPickerDialog = null
+   }
+
    override fun getPresenter() = presenter
 
    override fun onSaveViewState(view: View, outState: Bundle) {
       outState.putParcelable(PROFILE_STATE_KEY, profile)
+      outState.putBoolean(STATE_KEY_PHOTO_PICKER_SHOWING, mediaPickerDialog != null)
+      outState.putString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC, originalPhotoPickerDialogPic)
       super.onSaveViewState(view, outState)
    }
 
    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
       super.onRestoreViewState(view, savedViewState)
       profile = savedViewState.getParcelable(PROFILE_STATE_KEY)
+      val mediaDialogShowing = savedViewState.getBoolean(STATE_KEY_PHOTO_PICKER_SHOWING)
+      if (mediaDialogShowing) {
+         pickPhoto(savedViewState.getString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC))
+      }
+      super.onRestoreViewState(view, savedViewState)
    }
 
    private fun navigateButtonClick() = getPresenter().back()
 
    private fun onChoosePhotoClick(initialPhotoUrl: String?) {
+      originalPhotoPickerDialogPic = initialPhotoUrl
       hideDialog()
       val mediaPickerDialog = MediaPickerDialog(context)
       mediaPickerDialog.setOnDoneListener { attachment ->
@@ -126,6 +145,8 @@ class WizardEditProfileScreenImpl(bundle: Bundle?) : WalletBaseController<Wizard
       } else {
          mediaPickerDialog.show()
       }
+      mediaPickerDialog.setOnDismissListener { this.mediaPickerDialog = null }
+      this.mediaPickerDialog = mediaPickerDialog
    }
 
    private fun onDontAddPhotoClick() {

@@ -250,16 +250,6 @@
          </LinearLayout>
 
          <TextView
-               android:id="@+id/textViewDescription"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:background="@color/grey_lighter"
-               android:fontFamily="sans-serif-light"
-               android:padding="@dimen/spacing_medium"
-               android:textColor="@color/black"
-               />
-
-         <TextView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:background="@android:color/white"

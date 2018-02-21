@@ -28,16 +28,8 @@ public class HeaderRegionCell extends BaseAbstractDelegateCell<RegionHeaderModel
 
    @OnClick(R.id.checkBoxSelectAllRegion)
    void checkBoxClicked() {
-      getModelObject().setChecked(checkBoxSelectAll.isChecked());
       cellDelegate.onCheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked());
 
-   }
-
-   @OnClick(R.id.textViewSelectAllRegion)
-   void checkBoxTextViewClicked() {
-      checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
-      getModelObject().setChecked(checkBoxSelectAll.isChecked());
-      cellDelegate.onCheckBoxAllRegionsPressedEvent(checkBoxSelectAll.isChecked());
    }
 
    @OnClick(R.id.listHeader)

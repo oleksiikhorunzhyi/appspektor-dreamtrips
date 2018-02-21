@@ -109,10 +109,6 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
          toolbarLandscape.setBackgroundColor(getResources().getColor(R.color.theme_main));
          toolbarLandscape.getBackground().setAlpha(255);
       }
-
-      tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
-
-      subscribeToTripImagesClicks();
    }
 
    @Override
@@ -132,7 +128,8 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    }
 
    private void subscribeToTripImagesClicks() {
-      imagePresenterClickEventDelegate.getObservable().compose(bindUntilDropViewComposer())
+      imagePresenterClickEventDelegate.getObservable()
+            .compose(bindUntilDropViewComposer())
             .subscribe(imagePathHolder -> getPresenter()
                   .onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition()));
    }
@@ -195,6 +192,8 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
       if (toolbarLandscape != null) {
          ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
       }
+      tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), tripModel.getImageUrls());
+      subscribeToTripImagesClicks();
    }
 
    @Override

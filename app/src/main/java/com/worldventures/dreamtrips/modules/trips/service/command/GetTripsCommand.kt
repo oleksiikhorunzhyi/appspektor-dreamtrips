@@ -60,12 +60,12 @@ class GetTripsCommand(private val searchQuery: String,
    private fun params(tripsFilterData: TripsFilterData?, query: String, page: Int): ImmutableGetTripsHttpAction.Params {
       val params = ImmutableGetTripsHttpAction.Params.builder().page(page).perPage(PER_PAGE).query(query)
       tripsFilterData?.apply {
-         params.durationMin(minNights)
-               .durationMax(maxNights)
-               .priceMin(minPrice)
-               .priceMax(maxPrice)
-               .startDate(startDate)
-               .endDate(endDate)
+         params.durationMin(minNightsForRequest)
+               .durationMax(maxNightsForRequest)
+               .priceMin(minPriceForRequest)
+               .priceMax(maxPriceForRequest)
+               .startDate(startDateForRequest)
+               .endDate(endDateForRequest)
                .regions(acceptedRegions)
                .activities(acceptedActivities)
                .soldOut(isShowSoldOut)

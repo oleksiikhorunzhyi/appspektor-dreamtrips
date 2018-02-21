@@ -9,10 +9,6 @@ import io.techery.janet.operationsubscriber.view.OperationView
 
 interface CardDetailsScreen : WalletScreen {
 
-   val recordId: String
-
-   val recordName: String
-
    var isSaveButtonEnabled: Boolean
 
    var defaultRecordDetails: DefaultRecordDetail?
@@ -27,7 +23,7 @@ interface CardDetailsScreen : WalletScreen {
 
    fun showNetworkConnectionErrorDialog()
 
-   fun showCardIsReadyDialog(cardName: String)
+   fun showCardIsReadyDialog()
 
    fun showSCNonConnectionDialog()
 

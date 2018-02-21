@@ -24,7 +24,6 @@ public class WizardSplashPresenterImpl extends WalletPresenterImpl<WizardSplashS
    public void attachView(WizardSplashScreen view) {
       super.attachView(view);
       trackScreen();
-      getView().setup();
    }
 
    private void trackScreen() {

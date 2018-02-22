@@ -105,8 +105,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       observeNewAvatar()
    }
 
-   override fun onDetach(view: View) {
-      super.onDetach(view)
+   override fun onDestroyView(view: View) {
+      super.onDestroyView(view)
       mediaPickerDialog?.dismiss()
       mediaPickerDialog = null
    }
@@ -245,6 +245,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun pickPhoto(initialPhotoUrl: String?) {
+      this.mediaPickerDialog?.dismiss()
       originalPhotoPickerDialogPic = initialPhotoUrl
       val mediaPickerDialog = MediaPickerDialog(context)
       mediaPickerDialog.setOnDoneListener { result ->

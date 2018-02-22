@@ -114,8 +114,9 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    }
 
    private fun onChoosePhotoClick(initialPhotoUrl: String?) {
-      originalPhotoPickerDialogPic = initialPhotoUrl
+      this.mediaPickerDialog?.dismiss()
       hideDialog()
+      originalPhotoPickerDialogPic = initialPhotoUrl
       val mediaPickerDialog = MediaPickerDialog(context)
       mediaPickerDialog.setOnDoneListener { result ->
          if (!result.isEmpty) {
@@ -260,9 +261,13 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       if (scNonConnectionDialog != null) {
          scNonConnectionDialog!!.dismiss()
       }
+      super.onDetach(view)
+   }
+
+   override fun onDestroyView(view: View) {
+      super.onDestroyView(view)
       mediaPickerDialog?.dismiss()
       mediaPickerDialog = null
-      super.onDetach(view)
    }
 
    override fun getPresenter() = screenPresenter

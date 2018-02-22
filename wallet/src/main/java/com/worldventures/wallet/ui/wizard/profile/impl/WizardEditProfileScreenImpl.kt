@@ -104,8 +104,8 @@ class WizardEditProfileScreenImpl(bundle: Bundle?) : WalletBaseController<Wizard
       observeNewAvatar()
    }
 
-   override fun onDetach(view: View) {
-      super.onDetach(view)
+   override fun onDestroyView(view: View) {
+      super.onDestroyView(view)
       mediaPickerDialog?.dismiss()
       mediaPickerDialog = null
    }
@@ -132,8 +132,9 @@ class WizardEditProfileScreenImpl(bundle: Bundle?) : WalletBaseController<Wizard
    private fun navigateButtonClick() = getPresenter().back()
 
    private fun onChoosePhotoClick(initialPhotoUrl: String?) {
-      originalPhotoPickerDialogPic = initialPhotoUrl
       hideDialog()
+      this.mediaPickerDialog?.dismiss()
+      originalPhotoPickerDialogPic = initialPhotoUrl
       val mediaPickerDialog = MediaPickerDialog(context)
       mediaPickerDialog.setOnDoneListener { attachment ->
          if (!attachment.isEmpty) {

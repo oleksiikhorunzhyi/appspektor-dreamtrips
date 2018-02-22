@@ -7,6 +7,12 @@
       tools:context="com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment"
       >
 
+   <include
+         layout="@layout/cell_travel_banner"
+         android:id="@+id/empty_search_travel_banner"
+         android:visibility="gone"
+         />
+
    <FrameLayout
          android:id="@id/content_layout"
          android:layout_width="match_parent"

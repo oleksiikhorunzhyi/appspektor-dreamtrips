@@ -59,6 +59,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @InjectView(R.id.recyclerViewTrips) protected EmptyRecyclerView recyclerView;
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
+   @InjectView(R.id.empty_search_travel_banner) protected View emptySearchTravelBanner;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
 
    private BaseDelegateAdapter<Object> adapter;
@@ -68,6 +69,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    private WeakHandler weakHandler;
    private GridLayoutManager layoutManager;
+   private BannerCell emptySearchBannerCell;
 
    @State boolean searchOpened;
 
@@ -93,11 +95,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
       recyclerView.setLayoutManager(layoutManager);
       recyclerView.setEmptyView(emptyView);
 
-      adapter = new BaseDelegateAdapter<>(getActivity(), this);
-      adapter.registerCell(TripModel.class, TripCell.class);
-      adapter.registerCell(TravelBannerRequirement.class, BannerCell.class);
-      adapter.registerDelegate(TripModel.class, this);
-      adapter.registerDelegate(TravelBannerRequirement.class, new BannerCellDelegate() {
+      BannerCellDelegate delegate = new BannerCellDelegate() {
          @Override
          public void onCellClicked(TravelBannerRequirement model) {
             Intent intent = IntentUtils.browserIntent(model.getUrl());
@@ -108,7 +106,15 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          public void onCancelClicked() {
             getPresenter().hideTripRequirement();
          }
-      });
+      };
+
+      adapter = new BaseDelegateAdapter<>(getActivity(), this);
+      adapter.registerCell(TripModel.class, TripCell.class);
+      adapter.registerCell(TravelBannerRequirement.class, BannerCell.class);
+      adapter.registerDelegate(TripModel.class, this);
+      adapter.registerDelegate(TravelBannerRequirement.class, delegate);
+      emptySearchBannerCell = new BannerCell(emptySearchTravelBanner);
+      emptySearchBannerCell.setCellDelegate(delegate);
 
       recyclerView.setAdapter(adapter);
 
@@ -273,7 +279,15 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
             return 1;
          }
       });
-      adapter.clearAndUpdateItems(items);
+
+      if (items.size() == 1 && items.get(0) instanceof TravelBannerRequirement) {
+         adapter.clear();
+         emptySearchBannerCell.fillWithItem((TravelBannerRequirement) items.get(0));
+         emptySearchTravelBanner.setVisibility(View.VISIBLE);
+      } else {
+         adapter.clearAndUpdateItems(items);
+         emptySearchTravelBanner.setVisibility(View.GONE);
+      }
    }
 
    @Override

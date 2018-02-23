@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.di;
 
+import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
@@ -26,6 +27,7 @@ import dagger.Provides;
       SocialComponentActivity.class,
       ConfigChangesAwareComponentActivity.class,
       TransparentSocialComponentActivity.class,
+      FlaggingPresenterImpl.class,
       ComponentPresenter.class,
       ProgressDialogFragment.class,
       MessageDialogFragment.class,

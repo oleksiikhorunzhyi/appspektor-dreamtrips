@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.fragment.NotificationFra
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.LegalTermsFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.SendFeedbackFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DreamLifeClubFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.social.ui.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.social.ui.profile.view.fragment.AccountFragment;
@@ -47,7 +48,6 @@ import dagger.Provides;
       }
 )
 public class SocialAppModule {
-
    public static final String FEED = "FEED";
    public static final String NOTIFICATIONS = "NOTIFICATIONS";
    public static final String TRIPS = "TRIPS";
@@ -63,6 +63,7 @@ public class SocialAppModule {
    public static final String SEND_FEEDBACK = "SEND_FEEDBACK";
    public static final String REP_TOOLS = "REP_TOOLS";
    public static final String LOGOUT = "Logout";
+   public static final String DLC = "DLC";
 
    public static final String MALAYSIYA_COUNTRY_CODE = "my";
 
@@ -233,6 +234,18 @@ public class SocialAppModule {
             .build();
    }
 
+
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideDreamLifeClubComponent() {
+      return new ComponentDescription.Builder()
+            .key(DLC)
+            .toolbarTitle(R.string.dlc)
+            .navMenuTitle(R.string.dlc)
+            .icon(R.drawable.ic_dreamtrips)
+            .fragmentClass(DreamLifeClubFragment.class)
+            .build();
+   }
+
    @DrawableRes
    private int getLogo(SessionHolder sessionHolder) {
       Optional<UserSession> sessionOptional = sessionHolder.get();
@@ -244,5 +257,4 @@ public class SocialAppModule {
       }
       return R.drawable.dt_action_bar_logo;
    }
-
 }

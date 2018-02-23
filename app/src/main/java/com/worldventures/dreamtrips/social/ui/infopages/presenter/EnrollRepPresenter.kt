@@ -36,7 +36,7 @@ class EnrollRepPresenter(url: String) : AuthorizedStaticInfoPresenter<EnrollRepP
 
    private fun updateUrlWithLocation(location: Location?) {
       if (location == null) return
-      url = staticPageProvider.getEnrollWithLocation(location.latitude, location.longitude)
+      url = staticPageProvider.getEnrollRepWithLocation(location.latitude, location.longitude)
    }
 
    fun recheckPermissionAccepted(recheckAccepted: Boolean) {

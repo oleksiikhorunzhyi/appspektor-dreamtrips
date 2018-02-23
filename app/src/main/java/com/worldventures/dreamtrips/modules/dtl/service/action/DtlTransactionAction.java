@@ -3,14 +3,13 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import android.support.v4.util.Pair;
 
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
@@ -101,6 +100,6 @@ public final class DtlTransactionAction extends Command<DtlTransaction> implemen
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return new CacheOptions();
    }
 }

@@ -71,10 +71,7 @@ public class WalletDisableDefaultCardPresenterImpl extends WalletPresenterImpl<W
             .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(OperationActionSubscriber.forView(getView().<SetDisableDefaultCardDelayCommand>provideOperationView())
-                  .onSuccess(command -> {
-                     bindToView(command.getResult());
-                     getView().setDelayWasChanged(true);
-                  })
+                  .onSuccess(command -> getView().notifyDataIsSaved())
                   .create());
    }
 

@@ -1,15 +1,14 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.feed.GetFeedNotificationsHttpAction;
 import com.worldventures.dreamtrips.api.feed.ImmutableGetFeedNotificationsHttpAction;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.service.storage.NotificationsStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,10 +77,7 @@ public class GetNotificationsCommand extends BaseGetFeedCommand<GetFeedNotificat
    public CacheOptions getCacheOptions() {
       CacheBundle cacheBundle = new CacheBundleImpl();
       cacheBundle.put(NotificationsStorage.REFRESH, refresh);
-      return ImmutableCacheOptions
-            .builder()
-            .params(cacheBundle)
-            .build();
+      return new CacheOptions(true, true, true, cacheBundle);
    }
 
    @Override

@@ -6,7 +6,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.converter.Converter
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.storage.ActionStorage
 import com.worldventures.core.model.User
 import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.model.session.UserSession

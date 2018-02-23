@@ -1,24 +1,20 @@
 package com.worldventures.dreamtrips.social.service.friends.interactor.command
 
 import com.worldventures.core.janet.CommandWithError
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
-import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.core.model.Circle
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.circles.GetCirclesHttpAction
-
-import java.util.ArrayList
-
-import javax.inject.Inject
-
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
+import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
 import io.techery.janet.Janet
 import io.techery.janet.command.annotations.CommandAction
 import io.techery.mappery.MapperyContext
 import rx.schedulers.Schedulers
+import java.util.ArrayList
+import javax.inject.Inject
 
 @CommandAction
 class GetCirclesCommand : CommandWithError<List<Circle>>(), InjectableAction, CachedAction<List<Circle>> {
@@ -48,6 +44,5 @@ class GetCirclesCommand : CommandWithError<List<Circle>>(), InjectableAction, Ca
       cachedData = cache
    }
 
-   override fun getCacheOptions(): CacheOptions = ImmutableCacheOptions.builder().build()
-
+   override fun getCacheOptions() = CacheOptions()
 }

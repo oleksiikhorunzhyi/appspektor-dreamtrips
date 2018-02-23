@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.trips.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;

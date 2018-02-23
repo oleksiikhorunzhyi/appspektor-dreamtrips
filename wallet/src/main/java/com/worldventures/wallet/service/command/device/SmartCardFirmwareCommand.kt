@@ -1,10 +1,8 @@
 package com.worldventures.wallet.service.command.device
 
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
 import com.worldventures.wallet.domain.entity.SmartCardFirmware
-
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
@@ -29,13 +27,7 @@ class SmartCardFirmwareCommand private constructor(private val func: Func1<Smart
       cachedSmartCardFirmware = cache
    }
 
-   override fun getCacheOptions(): CacheOptions {
-      return ImmutableCacheOptions.builder()
-            .saveToCache(true)
-            .restoreFromCache(true)
-            .sendAfterRestore(true)
-            .build()
-   }
+   override fun getCacheOptions() = CacheOptions()
 
    private fun createDefault() = SmartCardFirmware()
 

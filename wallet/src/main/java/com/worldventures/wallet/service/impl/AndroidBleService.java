@@ -42,7 +42,7 @@ public class AndroidBleService implements WalletBluetoothService {
       }
 
       RxBluetoothAdapter adapter = new RxBluetoothAdapter(appContext);
-      return Observable.create(adapter)
+      return Observable.unsafeCreate(adapter)
             .doOnUnsubscribe(adapter::release);
    }
 

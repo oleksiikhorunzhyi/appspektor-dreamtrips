@@ -1,11 +1,10 @@
 package com.worldventures.dreamtrips.modules.trips.command;
 
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.api.trip.GetTripActivitiesHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class GetActivitiesCommand extends Command<List<ActivityModel>> implement
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder().build();
+      return new CacheOptions();
    }
 
    @Override

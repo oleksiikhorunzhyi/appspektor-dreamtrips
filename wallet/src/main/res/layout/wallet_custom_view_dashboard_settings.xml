@@ -16,7 +16,7 @@
          android:layout_marginTop="16dp"
          android:background="?attr/selectableItemBackgroundBorderless"
          android:contentDescription="@string/wallet_dashboard_menu_settings_item"
-         android:src="@drawable/ic_wallet_vector_settings"
+         app:srcCompat="@drawable/ic_wallet_vector_settings"
          />
 
    <com.worldventures.core.ui.view.custom.BadgeView

@@ -1,12 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.GetMerchantByIdHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.domain.converter.MerchantDistancePatcher;
@@ -15,6 +9,11 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.FullMerchantActionCreator;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
 
@@ -116,6 +115,6 @@ public class FullMerchantAction extends CommandWithError<Merchant> implements In
    public CacheOptions getCacheOptions() {
       CacheBundle bundle = new CacheBundleImpl();
       bundle.put(FullMerchantStorage.BUNDLE_MERCHANT_ID, merchantId);
-      return ImmutableCacheOptions.builder().sendAfterRestore(cache == null).params(bundle).build();
+      return new CacheOptions(true, true, cache == null, bundle);
    }
 }

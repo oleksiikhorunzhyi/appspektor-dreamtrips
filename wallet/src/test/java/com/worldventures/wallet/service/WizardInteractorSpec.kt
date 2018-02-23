@@ -8,8 +8,8 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.CacheResultWrapper
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.CacheResultWrapper
+import com.worldventures.janet.cache.storage.ActionStorage
 import com.worldventures.core.modules.legal.LegalInteractor
 import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.core.test.AssertUtil

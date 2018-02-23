@@ -1,8 +1,8 @@
 package com.worldventures.wallet.domain.storage.action;
 
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.MemoryStorage;
 import com.worldventures.wallet.domain.entity.SmartCardStatus;
 import com.worldventures.wallet.service.command.device.DeviceStateCommand;
 

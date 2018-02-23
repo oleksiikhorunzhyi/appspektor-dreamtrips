@@ -1,4 +1,4 @@
-package com.worldventures.core.janet.cache.storage;
+package com.worldventures.janet.cache.storage;
 
 @SuppressWarnings("InterfaceIsType")
 public interface KeyValueStorage<T> {

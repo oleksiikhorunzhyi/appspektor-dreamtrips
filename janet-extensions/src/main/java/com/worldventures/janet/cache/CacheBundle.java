@@ -1,4 +1,4 @@
-package com.worldventures.core.janet.cache;
+package com.worldventures.janet.cache;
 
 public interface CacheBundle {
    <T> void put(String label, T params);

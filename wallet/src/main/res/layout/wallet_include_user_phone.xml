@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_small"
             android:layout_weight="0.7"
-            android:drawableEnd="@drawable/ic_wallet_vector_pencil"
+            android:drawableEnd="@drawable/ic_wallet_wrapper_pencil"
             android:hint="@string/wallet_card_settings_profile_phone_hint"
             android:imeOptions="actionDone"
             android:maxLength="12"

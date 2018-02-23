@@ -1,9 +1,9 @@
 package com.worldventures.core.modules.infopages.service.storage;
 
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.CombinedListStorage;
-import com.worldventures.core.janet.cache.storage.Storage;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.CombinedListStorage;
+import com.worldventures.janet.cache.storage.Storage;
 import com.worldventures.core.modules.infopages.model.Document;
 import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand;
 

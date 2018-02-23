@@ -95,8 +95,7 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {
-            },
+            getPresenter()::onFactoryResetFailed,
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.wallet_retry_label,

@@ -11,8 +11,6 @@ import io.techery.janet.command.annotations.CommandAction
 class ConfigurationCommand(private var configuration: Configuration? = null, private val hideTravelConfig: Boolean = false)
    : Command<Configuration>(), CachedAction<Configuration> {
 
-   val videoMaxLength get() = configuration?.videoRequirement?.videoMaxLength
-
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<Configuration>) {
       var tempConfig = configuration

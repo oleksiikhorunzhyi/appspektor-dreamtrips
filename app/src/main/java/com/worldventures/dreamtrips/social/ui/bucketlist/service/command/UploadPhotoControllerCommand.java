@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.service.command;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.model.EntityStateHolder;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.janet.cache.CacheBundle;
@@ -86,10 +87,13 @@ public final class UploadPhotoControllerCommand extends Command<List<EntityState
                addOrSetProgress(list);
                break;
             case FAIL:
-               list.set(list.indexOf(photoEntityStateHolder), photoEntityStateHolder);
+               list.set(list.indexOf(Queryable.from(list)
+                     .firstOrDefault(item -> item.entity()
+                           .equals(photoEntityStateHolder.entity()))), photoEntityStateHolder);
                break;
             case DONE:
-               list.remove(photoEntityStateHolder);
+               list.remove(Queryable.from(list)
+                     .firstOrDefault(item -> item.entity().equals(photoEntityStateHolder.entity())));
                break;
             default:
                break;

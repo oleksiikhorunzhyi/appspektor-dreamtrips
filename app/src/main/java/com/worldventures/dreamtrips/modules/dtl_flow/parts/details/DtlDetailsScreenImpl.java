@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +35,7 @@ import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
@@ -57,13 +60,17 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.views.OfferWithReviewView;
+import com.worldventures.dreamtrips.social.ui.feed.model.video.Quality;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoConfig;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -72,6 +79,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.Flow;
 import flow.History;
@@ -86,6 +94,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Inject ActivityResultDelegate activityResultDelegate;
    @Inject Router router;
+   @Inject ActivityRouter activityRouter;
    @Inject DeviceInfoProvider deviceInfoProvider;
 
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
@@ -103,6 +112,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.btn_rate_and_review) TextView rateAndReviewBtn;
    @InjectView(R.id.order_from_menu_divider) View orderFromMenuDivider;
    @InjectView(R.id.order_from_menu) TextView orderFromMenuBtn;
+   @Optional @InjectView(R.id.dt_video_view) DTVideoViewImpl dtVideoView;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -136,6 +146,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       showMessage();
 
       mContainerComments.loadFirstPage();
+
+      updateVideoHeight();
    }
 
    @Override
@@ -204,6 +216,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    protected void onDetachedFromWindow() {
+      if (dtVideoView != null) {
+         dtVideoView.pauseVideo();
+      }
+
       if (merchantDataInflater != null) {
          merchantDataInflater.release();
       }
@@ -351,6 +367,19 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       if (pay != null) {
          RxView.clicks(pay).compose(RxLifecycleAndroid.bindView(this)).subscribe(aVoid -> getPresenter().onClickPay());
       }
+   }
+
+   private void updateVideoHeight() {
+      if (dtVideoView == null) {
+         return;
+      }
+
+      DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+      float pxWidth = displayMetrics.widthPixels;
+      int height = (int) (pxWidth / 1.75); // video is FullHD, 1900 / 1080 = ~ 1.75
+      ViewGroup.LayoutParams params = dtVideoView.getLayoutParams();
+      params.height = height;
+      dtVideoView.setLayoutParams(params);
    }
 
    private void setReviews() {
@@ -601,6 +630,37 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    private void setThrstFlow() {
       getPresenter().setThrstFlow();
       getPresenter().setupFullThrstBtn();
+   }
+
+   @Override
+   public void showHowToPayHint(String videoUrl) {
+      new MaterialDialog.Builder(getContext())
+            .content(R.string.pay_in_app_hint_dialog_text)
+            .positiveText(R.string.pay_in_app_hint_positive)
+            .onPositive((materialDialog, dialogAction) -> presenter.onShowHowPayVideo(videoUrl))
+            // this lib shows neutral button as last for some reason and negative button in the middle, correct this
+            .negativeText(R.string.pay_in_app_hint_neutral)
+            .onNegative((materialDialog, dialogAction) -> presenter.onRemindLaterHowToPay())
+            .neutralText(R.string.pay_in_app_hint_negative)
+            .onNeutral((materialDialog, dialogAction) -> presenter.onNeverShowHotToPay())
+            .show();
+   }
+
+   @Override
+   public void openHowToPayVideo(String url) {
+      dtVideoView.setClosePlayerFunction(() -> {
+         dtVideoView.pauseVideo();
+         dtVideoView.setVisibility(GONE);
+         return null;
+      });
+      dtVideoView.hideFullscreenButton();
+      dtVideoView.setVisibility(VISIBLE);
+      List<Quality> qualities = Arrays.asList(new Quality(url));
+      dtVideoView.setVideoFinishedFunction(() -> {
+         dtVideoView.setVisibility(GONE);
+         return null;
+      });
+      dtVideoView.playVideo(new DTVideoConfig(null, false, qualities, 0));
    }
 
    ///////////////////////////////////////////////////////////////////////////

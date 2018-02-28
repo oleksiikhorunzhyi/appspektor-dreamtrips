@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl
+      xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:fresco="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
@@ -43,6 +44,16 @@
                android:layout_width="match_parent"
                android:layout_height="1dp"
                android:background="@drawable/divider_list"
+               />
+
+         <com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl
+               android:id="@+id/dt_video_view"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:dtvv_show_close_button="true"
+               android:visibility="gone"
+               tools:visibility="visible"
+               tools:layout_height="150dp"
                />
 
          <LinearLayout

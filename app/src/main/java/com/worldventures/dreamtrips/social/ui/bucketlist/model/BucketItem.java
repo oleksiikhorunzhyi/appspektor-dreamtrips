@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class BucketItem extends BaseFeedEntity {
    private List<BucketTag> tags;
    private CategoryItem category;
    private List<String> friends;
-   private List<BucketPhoto> photos = Collections.emptyList();
+   private List<BucketPhoto> photos = new ArrayList<>();
    private BucketPhoto coverPhoto;
    private BucketLocation location;
    private String link;

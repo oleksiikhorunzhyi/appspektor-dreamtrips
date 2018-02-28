@@ -27,4 +27,7 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlM
    void onClickPay();
    void orderFromMenu();
    void setupFullThrstBtn();
+   void onShowHowPayVideo(String url);
+   void onRemindLaterHowToPay();
+   void onNeverShowHotToPay();
 }

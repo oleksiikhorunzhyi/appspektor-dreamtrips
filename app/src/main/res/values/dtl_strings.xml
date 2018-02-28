@@ -197,4 +197,9 @@
 
    <string name="receipt_upload_error_caption">Error uploading receipt. Retry?</string>
    <string name="thrst_opening_error_caption">Something went wrong. Please try again in a while</string>
+
+   <string name="pay_in_app_hint_dialog_text">Would you like to watch a How to video on the new Pay in App process?</string>
+   <string name="pay_in_app_hint_positive">Watch now</string>
+   <string name="pay_in_app_hint_neutral">Remind me later</string>
+   <string name="pay_in_app_hint_negative">Do not show again</string>
 </resources>

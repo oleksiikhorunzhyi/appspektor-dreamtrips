@@ -26,8 +26,12 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
 
    @Inject lateinit var videoHolder: VideoPlayerHolder
 
+   private var showCloseButton = false
+
    private val simpleExoPlayerView: SimpleExoPlayerView
    private val thumbnailView: SimpleDraweeView
+   private val closeButton: ImageView
+   private val closeButtonLayout: ViewGroup
    private val fullScreenButton: ImageView
    private val qualitySwitchTextView: TextView
    private val progressBar: ProgressBar
@@ -47,22 +51,29 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
          else fullScreenButton.setImageResource(R.drawable.ic_video_fullscreen)
       }
 
+   var closePlayerFunction: () -> Unit = {}
    var fullscreenExitFunction: () -> Unit = {}
    var videoFinishedFunction: (() -> Unit)? = null
 
    constructor(context: Context) : super(context)
 
-   constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+   constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+      initAttributes(context, attrs)
+   }
 
-   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+      initAttributes(context, attrs)
+   }
 
    init {
       LayoutInflater.from(context).inflate(R.layout.layout_video_view, this, true)
-      val tempContext = context
+      val tempContext = context.applicationContext
       if (tempContext is Injector) {
          tempContext.inject(this)
          actionPanelInjector.setup(context, this, tempContext)
       }
+      closeButtonLayout = findViewById(R.id.exo_exit_button_layout)
+      closeButton = findViewById(R.id.exo_exit_button)
       progressBar = findViewById(R.id.videoLoadingProgress)
       videoErrorView = findViewById(R.id.videoErrorView)
       simpleExoPlayerView = findViewById(R.id.exoPlayerView)
@@ -76,6 +87,17 @@ class DTVideoViewImpl : FrameLayout, DTVideoView {
       muteButton.setOnClickListener { videoConfig?.let { switchMute(it) } }
       fullScreenButton.setOnClickListener { if (!fullscreen) goFullscreen() else fullscreenExitFunction.invoke() }
       qualitySwitchTextView.setOnClickListener { switchQuality() }
+      closeButton.setOnClickListener { closePlayerFunction.invoke() }
+   }
+
+   private fun initAttributes(context: Context, attrs: AttributeSet?) {
+      val a = context.obtainStyledAttributes(attrs, R.styleable.DTVideoViewImpl)
+
+      showCloseButton = a.getBoolean(R.styleable.DTVideoViewImpl_dtvv_show_close_button, false)
+
+      a.recycle()
+
+      closeButtonLayout.visibility = if (showCloseButton) View.VISIBLE else View.GONE
    }
 
    fun setSocialInfo(video: Video, enableFlagging: Boolean, enableDelete: Boolean) {

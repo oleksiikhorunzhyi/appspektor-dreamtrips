@@ -33,14 +33,16 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.map.TripClusterItem;
 import com.worldventures.dreamtrips.modules.trips.model.map.TripMapDetailsAnchor;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapListBundle;
 import com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripClusterRenderer;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -259,8 +261,14 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
          }
       });
       searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-      searchView.setQuery(getPresenter().getQuery(), false);
       getPresenter().onMenuInflated();
+   }
+
+   @Override
+   public void setQuery(@NotNull String query) {
+      if (searchView != null) {
+         searchView.setQuery(query, false);
+      }
    }
 
    @Override
@@ -332,11 +340,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    @Override
    public void setSelectedLocation(LatLng latLng) {
       selectedLocation = latLng;
-   }
-
-   @Override
-   public GoogleMap getMap() {
-      return googleMap;
    }
 
    @Override

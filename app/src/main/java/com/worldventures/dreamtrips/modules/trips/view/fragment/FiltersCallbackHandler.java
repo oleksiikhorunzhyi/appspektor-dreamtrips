@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.filter.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterFavoriteModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterRecentlyAddedModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.RegionHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.ThemeHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
@@ -21,9 +21,11 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
 
+import java.util.Date;
+
 public class FiltersCallbackHandler {
 
-   public void init(BaseDelegateAdapter adapter, FiltersPresenter presenter) {
+   public void init(BaseDelegateAdapter<Object> adapter, FiltersPresenter presenter) {
       setDateFilterItemDelegate(adapter, presenter);
       setFilterRecentlyAddedModelDelegate(adapter, presenter);
       setFilterFavoriteModelDelegate(adapter, presenter);
@@ -35,7 +37,7 @@ public class FiltersCallbackHandler {
       setActivityModelDelegate(adapter, presenter);
    }
 
-   protected void setActivityModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setActivityModelDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(ActivityModel.class, new ThemeCell.Delegate() {
          @Override
          public void onCellClicked(ActivityModel model) {
@@ -49,7 +51,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setRegionModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setRegionModelDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(RegionModel.class, new RegionCell.Delegate() {
          @Override
          public void onCellClicked(RegionModel model) {
@@ -63,7 +65,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setFilterModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setFilterModelDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(FilterModel.class, new FilterRangeBarsCell.Delegate() {
          @Override
          public void onCellClicked(FilterModel model) {
@@ -82,7 +84,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setRegionHeaderModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setRegionHeaderModelDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(RegionHeaderModel.class, new HeaderRegionCell.Delegate() {
 
          @Override
@@ -101,7 +103,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setHeaderThemeCellDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setHeaderThemeCellDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(ThemeHeaderModel.class, new HeaderThemeCell.Delegate() {
          @Override
          public void onCellClicked(ThemeHeaderModel model) {
@@ -120,7 +122,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setFilterSoldOutModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setFilterSoldOutModelDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(FilterSoldOutModel.class, new SoldOutCell.Delegate() {
          @Override
          public void onCellClicked(FilterSoldOutModel model) {
@@ -134,7 +136,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setFilterFavoriteModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setFilterFavoriteModelDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(FilterFavoriteModel.class, new FavoritesCell.Delegate() {
          @Override
          public void onCellClicked(FilterFavoriteModel model) {
@@ -148,7 +150,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setFilterRecentlyAddedModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setFilterRecentlyAddedModelDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(FilterRecentlyAddedModel.class, new FilterRecentlyAddedCell.Delegate() {
          @Override
          public void onCellClicked(FilterRecentlyAddedModel model) {
@@ -162,7 +164,7 @@ public class FiltersCallbackHandler {
       });
    }
 
-   protected void setDateFilterItemDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
+   private void setDateFilterItemDelegate(BaseDelegateAdapter<Object> adapter, final FiltersPresenter presenter) {
       adapter.registerDelegate(DateFilterItem.class, new DateCell.Delegate() {
          @Override
          public void onCellClicked(DateFilterItem model) {
@@ -170,8 +172,13 @@ public class FiltersCallbackHandler {
          }
 
          @Override
-         public void onDatesChanged(DateFilterItem item) {
-            presenter.onDatesChanged(item);
+         public void onEndDateChanged(Date date) {
+            presenter.onEndDateChanged(date);
+         }
+
+         @Override
+         public void onStartDateChanged(Date date) {
+            presenter.onStartDateChanged(date);
          }
       });
    }

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.service.storage
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.trips.service.command.TripsFilterDataCommand
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsFilterDataCommand
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters
 import com.worldventures.janet.cache.CacheBundle
 import com.worldventures.janet.cache.storage.ActionStorage
@@ -12,5 +12,5 @@ class TripsFiltersStorage(private val snappyRepository: SnappyRepository) : Acti
 
    override fun get(action: CacheBundle?) = snappyRepository.tripFilters
 
-   override fun getActionClass() = TripsFilterDataCommand::class.java
+   override fun getActionClass() = GetTripsFilterDataCommand::class.java
 }

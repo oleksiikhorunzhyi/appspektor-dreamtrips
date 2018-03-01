@@ -28,14 +28,6 @@ public class HeaderThemeCell extends BaseAbstractDelegateCell<ThemeHeaderModel, 
 
    @OnClick(R.id.checkBoxSelectAllTheme)
    void checkBoxClicked() {
-      getModelObject().setChecked(checkBoxSelectAll.isChecked());
-      cellDelegate.onCheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked());
-   }
-
-   @OnClick(R.id.textViewSelectAllTheme)
-   void checkBoxTextViewClicked() {
-      checkBoxSelectAll.setChecked(!checkBoxSelectAll.isChecked());
-      getModelObject().setChecked(checkBoxSelectAll.isChecked());
       cellDelegate.onCheckBoxAllThemePressedEvent(checkBoxSelectAll.isChecked());
    }
 

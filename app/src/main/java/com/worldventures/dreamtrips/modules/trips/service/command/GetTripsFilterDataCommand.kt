@@ -14,45 +14,33 @@ import io.techery.janet.Janet
 import io.techery.janet.command.annotations.CommandAction
 import rx.Observable
 import rx.schedulers.Schedulers
-import java.util.ArrayList
 import javax.inject.Inject
 
 @CommandAction
-class TripsFilterDataCommand : CommandWithError<CachedTripFilters>(), InjectableAction, CachedAction<CachedTripFilters> {
+class GetTripsFilterDataCommand : CommandWithError<CachedTripFilters>(), InjectableAction, CachedAction<CachedTripFilters> {
 
    @Inject internal lateinit var janet: Janet
 
    private var cachedTripFilters: CachedTripFilters? = null
 
-   val regions: List<RegionModel>?
-      get() = cachedTripFilters?.let { ArrayList(it.regions) }
-
-   val parentActivities: List<ActivityModel>?
-      get() = cachedTripFilters?.let { it.activities.filter({ it.isParent }).toList() }
-
    @Throws(Throwable::class)
    override fun run(callback: Command.CommandCallback<CachedTripFilters>) {
-      if (cachedTripFilters != null) {
-         callback.onProgress(0)
-      }
+      if (cachedTripFilters != null) callback.onProgress(0)
 
       val activitiesActionPipe = janet.createPipe(GetActivitiesCommand::class.java, Schedulers.io())
       val regionsActionPipe = janet.createPipe(GetRegionsCommand::class.java, Schedulers.io())
 
-      val activitiesObservable = activitiesActionPipe.createObservableResult(GetActivitiesCommand())
-            .map { it.result }
-      val regionsObservable = regionsActionPipe.createObservableResult(GetRegionsCommand())
-            .map { it.result }
+      val activitiesObservable = activitiesActionPipe.createObservableResult(GetActivitiesCommand()).map { it.result }
+      val regionsObservable = regionsActionPipe.createObservableResult(GetRegionsCommand()).map { it.result }
 
       Observable.zip<List<RegionModel>, List<ActivityModel>, CachedTripFilters>(regionsObservable, activitiesObservable)
-      { regions, activities ->
-         CachedTripFilters(regions, activities)
-      }.subscribe(callback::onSuccess, callback::onFail)
+      { regions, activities -> CachedTripFilters(activities, regions) }
+            .subscribe(callback::onSuccess, callback::onFail)
    }
 
    override fun getFallbackErrorMessage() = R.string.error_failed_to_load_activities
 
-   override fun getCacheData() = cachedTripFilters
+   override fun getCacheData() = result
 
    override fun onRestore(holder: ActionHolder<*>, cache: CachedTripFilters) {
       this.cachedTripFilters = cache

@@ -7,13 +7,8 @@ import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.trips.delegate.ResetFilterEventDelegate;
-import com.worldventures.dreamtrips.modules.trips.delegate.TripFilterEventDelegate;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,18 +24,6 @@ public class TripsAppModule {
    public static final String MAP_TRIPS = "MAP_TRIPS";
 
    public static final String MALAYSIYA_COUNTRY_CODE = "my";
-
-   @Provides
-   @Singleton
-   TripFilterEventDelegate provideTripFilterEventDelegate(SnappyRepository snappyRepository) {
-      return new TripFilterEventDelegate(snappyRepository);
-   }
-
-   @Provides
-   @Singleton
-   ResetFilterEventDelegate provideResetFilterEventDelegate() {
-      return new ResetFilterEventDelegate();
-   }
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideTripsComponent(SessionHolder sessionHolder) {

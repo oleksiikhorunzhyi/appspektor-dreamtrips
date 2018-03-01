@@ -48,10 +48,10 @@ public class TripsFilterDataAnalyticsWrapper {
    private final List<ActivityModel> allParentActivities;
 
    public TripsFilterDataAnalyticsWrapper(@NonNull TripsFilterData tripsFilterData) {
-      this.minNights = tripsFilterData.getMinNights() == null ? TripsFilterData.MIN_NIGHTS : tripsFilterData.getMinNights();
-      this.maxNights = tripsFilterData.getMaxNights() == null ? TripsFilterData.MAX_NIGHTS : tripsFilterData.getMaxNights();
-      this.minPrice = tripsFilterData.getMinPrice() == null ? TripsFilterData.MIN_PRICE : tripsFilterData.getMinPrice();
-      this.maxPrice = tripsFilterData.getMaxPrice() == null ? TripsFilterData.MAX_PRICE : tripsFilterData.getMaxPrice();
+      this.minNights = tripsFilterData.getMinNightsForRequest() == null ? TripsFilterData.Companion.getMIN_NIGHTS() : tripsFilterData.getMinNightsForRequest();
+      this.maxNights = tripsFilterData.getMaxNightsForRequest() == null ? TripsFilterData.Companion.getMAX_NIGHTS() : tripsFilterData.getMaxNightsForRequest();
+      this.minPrice = tripsFilterData.getMinPriceForRequest() == null ? TripsFilterData.Companion.getMIN_PRICE() : tripsFilterData.getMinPriceForRequest();
+      this.maxPrice = tripsFilterData.getMaxPriceForRequest() == null ? TripsFilterData.Companion.getMAX_PRICE() : tripsFilterData.getMaxPriceForRequest();
       //
       SimpleDateFormat sdf = new SimpleDateFormat(DateTimeUtils.TRIP_FILTER_ANALYTIC_DATE_FORMAT, LocaleHelper.getDefaultLocale());
       this.startDate = DateTimeUtils.convertDateToString(tripsFilterData.getStartDate(), sdf);

@@ -29,6 +29,8 @@ public interface SnappyRepository {
    String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
    String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
 
+   String CURRENT_VERSION = "CURRENT_VERSION";
+
    void clearAll();
 
    Boolean isEmpty(String key);
@@ -98,4 +100,8 @@ public interface SnappyRepository {
    int getExclusiveNotificationsCount();
 
    int getFriendsRequestsCount();
+
+   void setCurrentVersion(int version);
+
+   int getCurrentVersion();
 }

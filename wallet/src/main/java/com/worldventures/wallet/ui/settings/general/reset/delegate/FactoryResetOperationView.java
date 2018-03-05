@@ -1,4 +1,4 @@
-package com.worldventures.wallet.ui.settings.general.reset;
+package com.worldventures.wallet.ui.settings.general.reset.delegate;
 
 
 import android.content.Context;

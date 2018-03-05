@@ -65,15 +65,15 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    }
 
    @Override
-   protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
-      super.onSaveViewState(view, outState);
-      controllerFlipper.onSaveViewState(outState);
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      super.onSaveInstanceState(outState);
+      controllerFlipper.onSaveState(outState);
    }
 
    @Override
-   protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
-      super.onRestoreViewState(view, savedViewState);
-      controllerFlipper.onRestoreViewState(savedViewState);
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      controllerFlipper.onRestoreState(savedInstanceState);
    }
 
    protected void onNavigationClick() {

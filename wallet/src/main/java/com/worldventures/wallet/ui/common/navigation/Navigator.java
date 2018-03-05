@@ -31,6 +31,8 @@ public interface Navigator {
 
    void goNewFirmwareAvailableWalletStart();
 
+   void goNewFirmwareAvailableForcePair();
+
    void goWizardWelcomeWalletStart(ProvisioningMode provisioningMode);
 
    void goWalletSettings();
@@ -102,8 +104,6 @@ public interface Navigator {
    void goPuckConnection();
 
    void goStartFirmwareInstall();
-
-   void goStartFirmwareInstallCardList();
 
    void goWalletFirmwareChecks();
 

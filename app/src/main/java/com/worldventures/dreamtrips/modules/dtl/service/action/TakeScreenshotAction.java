@@ -32,7 +32,7 @@ public class TakeScreenshotAction extends Command<String> implements InjectableA
       try {
          Bitmap bitmap = ScreenShott.getInstance().takeScreenShotOfRootView(view);
          File file = ScreenShott.getInstance()
-               .saveScreenshotToPicturesFolder(context, bitmap, "my_screenshot_filename.jpg");
+               .saveScreenshotToPicturesFolder(context, bitmap, "transaction_screenshot");
          callback.onSuccess(file.getAbsolutePath());
       } catch (Exception e) {
          callback.onFail(e);

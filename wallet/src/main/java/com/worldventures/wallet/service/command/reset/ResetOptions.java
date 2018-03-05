@@ -5,6 +5,7 @@ public final class ResetOptions {
    private boolean withEnterPin = false;
    private boolean withPaymentCards = true;
    private boolean withUserSmartCardData = true;
+   private boolean smartCardIsAvailable = true;
 
    private ResetOptions() {}
 
@@ -22,6 +23,10 @@ public final class ResetOptions {
 
    public boolean isWithEnterPin() {
       return withEnterPin;
+   }
+
+   public boolean isSmartCardIsAvailable() {
+      return smartCardIsAvailable;
    }
 
    public static class Builder {
@@ -44,6 +49,11 @@ public final class ResetOptions {
 
       public Builder wipeUserSmartCardData(boolean wiped) {
          resetOptions.withUserSmartCardData = wiped;
+         return this;
+      }
+
+      public Builder smartCardIsAvailable(boolean smartCardIsAvailable) {
+         resetOptions.smartCardIsAvailable = smartCardIsAvailable;
          return this;
       }
 

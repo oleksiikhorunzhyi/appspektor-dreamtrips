@@ -2,7 +2,6 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
       >
 
    <data>
@@ -111,7 +110,6 @@
                      android:id="@+id/default_record_switcher"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:checked="@={recordDetails.defaultRecord}"
                      android:text="@string/wallet_add_card_details_option_set_as_default_card"
                      />
 
@@ -122,8 +120,8 @@
                      />
 
                <Button
-                     style="@style/RecordDetailDeleteButtonStyle"
                      android:id="@+id/delete_button"
+                     style="@style/RecordDetailDeleteButtonStyle"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:text="@string/wallet_card_details_button_delete_card"

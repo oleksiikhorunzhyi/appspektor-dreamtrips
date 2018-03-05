@@ -1,23 +1,18 @@
 package com.worldventures.wallet.ui.settings.general.newcard.poweron.impl;
 
-import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
-import com.worldventures.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.wallet.service.WalletBluetoothService;
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
 import com.worldventures.wallet.service.command.device.DeviceStateCommand;
 import com.worldventures.wallet.service.command.reset.ResetOptions;
-import com.worldventures.wallet.service.command.reset.WipeSmartCardDataCommand;
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;
 import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnScreen;
-import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -25,22 +20,20 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    private final SmartCardInteractor smartCardInteractor;
    private final WalletBluetoothService bluetoothService;
-   private final CheckPinDelegate checkPinDelegate;
+   private final FactoryResetDelegate factoryResetDelegate;
 
    public NewCardPowerOnPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, FactoryResetInteractor factoryResetInteractor,
-         WalletAnalyticsInteractor analyticsInteractor, WalletBluetoothService bluetoothService) {
+         SmartCardInteractor smartCardInteractor, WalletBluetoothService bluetoothService, FactoryResetDelegate factoryResetDelegate) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.bluetoothService = bluetoothService;
-      this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
-            navigator, FactoryResetAction.NEW_CARD);
+      this.factoryResetDelegate = factoryResetDelegate;
    }
 
    @Override
    public void attachView(NewCardPowerOnScreen view) {
       super.attachView(view);
-      checkPinDelegate.observePinStatus(getView());
+      factoryResetDelegate.bindView(view);
       fetchSmartCardId();
    }
 
@@ -70,17 +63,11 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    @Override
    public void unassignCardOnBackend() {
-      smartCardInteractor.wipeSmartCardDataPipe()
-            .createObservable(new WipeSmartCardDataCommand(ResetOptions.builder()
-                  .wipePaymentCards(false)
-                  .wipeUserSmartCardData(false)
-                  .build()))
-            .compose(getView().bindUntilDetach())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(OperationActionSubscriber.forView(getView().provideWipeOperationView())
-                  .onSuccess(activeSmartCardCommand -> getNavigator().goUnassignSuccess())
-                  .onFail((activeSmartCardCommand, throwable) -> Timber.e(throwable))
-                  .create());
+      factoryResetDelegate.factoryReset(ResetOptions.builder()
+            .wipePaymentCards(false)
+            .wipeUserSmartCardData(false)
+            .smartCardIsAvailable(false)
+            .build());
    }
 
    @Override
@@ -98,7 +85,7 @@ public class NewCardPowerOnPresenterImpl extends WalletPresenterImpl<NewCardPowe
 
    private void handleConnectionSmartCard(boolean bluetoothIsConnected, boolean smartCardConnected) {
       if (bluetoothIsConnected && smartCardConnected) {
-         checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
+         factoryResetDelegate.startRegularFactoryReset();
       } else {
          getNavigator().goPreCheckNewCard();
       }

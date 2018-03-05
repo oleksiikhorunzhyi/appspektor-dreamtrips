@@ -29,7 +29,9 @@ ext {
          ],
          util     : [
                NEWRELIC_API_KEY:      [String: '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"'],
-               GOOGLE_PLACES_API_KEY: [String: '"AIzaSyC-u0O3Hyt7f_TodND7ge0aoYDFdjpp3Dc"']
+               GOOGLE_PLACES_API_KEY: [String: '"AIzaSyBKbegwehtwpCM_ezmKyn3rr3uR_JfMToM"']
+//             GOOGLE_PLACES_API_KEY: [String: '"AIzaSyC-u0O3Hyt7f_TodND7ge0aoYDFdjpp3Dc"']
+//             TODO: key for development. uncomment on prod key check will be completed
 
          ],
          //

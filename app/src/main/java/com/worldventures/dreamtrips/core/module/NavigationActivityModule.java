@@ -71,17 +71,18 @@ public class NavigationActivityModule {
       if (!ViewUtils.isTablet(context)) {
          featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletConstants.WALLET_COMPONENT));
       }
+      featureManager.with(Feature.DLC, () -> activeComponents.add(SocialAppModule.DLC));
       featureManager.with(Feature.DTL, () -> activeComponents.add(DtlModule.DTL));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.NOTIFICATIONS));
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerModule.MESSENGER));
       featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(SocialAppModule.OTA));
-      activeComponents.add(SocialAppModule.TRIP_IMAGES);
+      featureManager.with(Feature.TRIP_IMAGES, () -> activeComponents.add(SocialAppModule.TRIP_IMAGES));
       featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(SocialAppModule.MEMBERSHIP));
-      activeComponents.add(SocialAppModule.BUCKETLIST);
+      featureManager.with(Feature.BUCKET_LIST, () -> activeComponents.add(SocialAppModule.BUCKETLIST));
       activeComponents.add(SocialAppModule.ACCOUNT_PROFILE);
       featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(SocialAppModule.REP_TOOLS));
-      activeComponents.add(SocialAppModule.SETTINGS);
-      activeComponents.add(SocialAppModule.SEND_FEEDBACK);
+      featureManager.with(Feature.SETTINGS, () -> activeComponents.add(SocialAppModule.SETTINGS));
+      featureManager.with(Feature.SEND_FEED_BACK, () -> activeComponents.add(SocialAppModule.SEND_FEEDBACK));
       activeComponents.add(SocialAppModule.HELP);
       activeComponents.add(SocialAppModule.TERMS);
       activeComponents.add(SocialAppModule.MAP_TRIPS);

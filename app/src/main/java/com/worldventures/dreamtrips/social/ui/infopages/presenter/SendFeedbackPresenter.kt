@@ -68,7 +68,7 @@ class SendFeedbackPresenter : Presenter<SendFeedbackPresenter.View>() {
 
    private fun getImageAttachments() = attachmentsManager.attachments.map {
       EntityStateHolder.create(it.entity(), it.state()).entity()
-   }.toList()
+   }
 
    private fun getFeedbackReasons(view: View) {
       feedbackInteractor.feedbackPipe

@@ -71,7 +71,7 @@ public class DtlToolbar extends LinearLayout {
    protected void bindSearchQueryPersisting() {
       RxDtlToolbar.merchantSearchTextChanges(this)
             .compose(RxLifecycleAndroid.bindView(this))
-            .subscribe(searchQuery -> this.searchQuery = searchQuery);
+            .subscribe(searchQuery -> this.searchQuery = searchQuery.toString());
    }
 
    protected void updateToolbarCaptions() {
@@ -92,12 +92,12 @@ public class DtlToolbar extends LinearLayout {
    }
 
    public void setSearchQuery(String searchQuery) {
-      this.searchQuery = searchQuery;
+      this.searchQuery = TextUtils.isEmpty(searchQuery) ? "" : searchQuery;
       updateToolbarCaptions();
    }
 
    public void setCaptions(String searchQuery, String locationTitle) {
-      this.searchQuery = searchQuery;
+      this.searchQuery = TextUtils.isEmpty(searchQuery) ? "" : searchQuery;
       this.locationTitle = locationTitle;
       updateToolbarCaptions();
    }

@@ -44,14 +44,7 @@ internal class ProcessSmartCardInfoDelegate(
       return SmartCard(
             smartCardId = smartCardInfo.scId().toString(),
             cardStatus = CardStatus.ACTIVE,
-            details = SmartCardDetails(
-                  deviceId = smartCardInfo.deviceId(),
-                  serialNumber = smartCardInfo.serialNumber(),
-                  bleAddress = smartCardInfo.bleAddress(),
-                  revVersion = smartCardInfo.revVersion(),
-                  wvOrderId = smartCardInfo.wvOrderId(),
-                  nxtOrderId = smartCardInfo.nxtOrderId(),
-                  orderDate = smartCardInfo.orderDate())
+            details = SmartCardDetails(deviceId = smartCardInfo.deviceId())
       )
    }
 

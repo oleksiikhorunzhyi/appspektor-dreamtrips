@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.infopages.view.fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +41,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -141,8 +143,15 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
 
    @Override
    public void feedbackSent() {
-      informUser(R.string.feedback_has_been_sent);
-      router.back();
+      Dialog dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+            .setTitleText(getString(R.string.congrats))
+            .setContentText(getString(R.string.feedback_has_been_sent))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.cancel();
+               router.back();
+            });
+      dialog.setCanceledOnTouchOutside(false);
+      dialog.show();
    }
 
    @Override

@@ -24,7 +24,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="top|end"
-            android:background="@drawable/ic_player360_play"
+            android:background="@drawable/ic_player360_close"
             android:padding="4dp"
             />
    </FrameLayout>

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -643,6 +644,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
             .onNegative((materialDialog, dialogAction) -> presenter.onRemindLaterHowToPay())
             .neutralText(R.string.pay_in_app_hint_negative)
             .onNeutral((materialDialog, dialogAction) -> presenter.onNeverShowHotToPay())
+            .buttonsGravity(GravityEnum.END)
             .show();
    }
 

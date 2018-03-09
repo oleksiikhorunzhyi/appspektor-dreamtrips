@@ -57,6 +57,9 @@ private const val STATE_KEY_SELECTED_DISPLAY_TYPE = "DisplayOptionsSettingsScree
 private const val STATE_KEY_DISPLAY_ORIGIN_MODEL = "DisplayOptionsSettingsScreenImpl#STATE_KEY_DISPLAY_ORIGIN_MODEL"
 private const val STATE_KEY_DISPLAY_MODEL = "DisplayOptionsSettingsScreenImpl#STATE_KEY_DISPLAY_MODEL"
 
+private const val STATE_KEY_PHOTO_PICKER_SHOWING = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_SHOWING"
+private const val STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC"
+
 @Suppress("UnsafeCallOnNullableType")
 class DisplayOptionsSettingsScreenImpl(args: Bundle)
    : WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter>(args),
@@ -72,6 +75,9 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
 
    private var originProfileModel: ProfileViewModel? = null
    private var profileModel: ProfileViewModel? = null
+
+   private var mediaPickerDialog: MediaPickerDialog? = null
+   private var originalPhotoPickerDialogPic: String? = null
 
    private val profileFromArgs: ProfileViewModel?
       get() = if (args.containsKey(PARAM_KEY_PROFILE_VIEW_MODEL))
@@ -97,6 +103,12 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    override fun onAttach(view: View) {
       super.onAttach(view)
       observeNewAvatar()
+   }
+
+   override fun onDestroyView(view: View) {
+      super.onDestroyView(view)
+      mediaPickerDialog?.dismiss()
+      mediaPickerDialog = null
    }
 
    override fun supportConnectionStatusLabel(): Boolean = true
@@ -233,6 +245,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun pickPhoto(initialPhotoUrl: String?) {
+      this.mediaPickerDialog?.dismiss()
+      originalPhotoPickerDialogPic = initialPhotoUrl
       val mediaPickerDialog = MediaPickerDialog(context)
       mediaPickerDialog.setOnDoneListener { result ->
          if (!result.isEmpty) {
@@ -244,6 +258,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       } else {
          mediaPickerDialog.show()
       }
+      mediaPickerDialog.setOnDismissListener { this.mediaPickerDialog = null }
+      this.mediaPickerDialog = mediaPickerDialog
    }
 
    override fun cropPhoto(photoPath: Uri) {
@@ -309,6 +325,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       outState.putInt(STATE_KEY_SELECTED_DISPLAY_TYPE, DisplayOptionsPagerAdapter.DISPLAY_OPTIONS[viewPager.currentItem])
       outState.putParcelable(STATE_KEY_DISPLAY_MODEL, profileModel)
       outState.putParcelable(STATE_KEY_DISPLAY_ORIGIN_MODEL, originProfileModel)
+      outState.putBoolean(STATE_KEY_PHOTO_PICKER_SHOWING, mediaPickerDialog != null)
+      outState.putString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC, originalPhotoPickerDialogPic)
       super.onSaveViewState(view, outState)
    }
 
@@ -317,6 +335,10 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
             originProfile = savedViewState.getParcelable(STATE_KEY_DISPLAY_ORIGIN_MODEL),
             profileModel = savedViewState.getParcelable(STATE_KEY_DISPLAY_MODEL),
             type = savedViewState.getInt(STATE_KEY_SELECTED_DISPLAY_TYPE))
+      val mediaDialogShowing = savedViewState.getBoolean(STATE_KEY_PHOTO_PICKER_SHOWING)
+      if (mediaDialogShowing) {
+         pickPhoto(savedViewState.getString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC))
+      }
       super.onRestoreViewState(view, savedViewState)
    }
 

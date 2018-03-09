@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.newcard.check.impl;
 
-
 import android.util.Pair;
 
 import com.worldventures.wallet.analytics.WalletAnalyticsAction;
@@ -8,7 +7,6 @@ import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
 import com.worldventures.wallet.analytics.new_smartcard.BluetoothDisabledAction;
 import com.worldventures.wallet.analytics.new_smartcard.BluetoothEnabledAction;
 import com.worldventures.wallet.analytics.new_smartcard.SmartCartWillNowBeAssignedAction;
-import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
 import com.worldventures.wallet.service.WalletBluetoothService;
@@ -19,13 +17,13 @@ import com.worldventures.wallet.ui.common.base.WalletPresenterImpl;
 import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.check.PreCheckNewCardScreen;
-import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
 
 import java.util.concurrent.TimeUnit;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -34,35 +32,36 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
    private final SmartCardInteractor smartCardInteractor;
    private final WalletBluetoothService bluetoothService;
    private final WalletAnalyticsInteractor analyticsInteractor;
-   private final CheckPinDelegate checkPinDelegate;
+   private final FactoryResetDelegate factoryResetDelegate;
+   private Subscription connectionStatusSubscription;
 
    public PreCheckNewCardPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
          SmartCardInteractor smartCardInteractor, WalletAnalyticsInteractor analyticsInteractor,
-         FactoryResetInteractor factoryResetInteractor, WalletBluetoothService bluetoothService) {
+         WalletBluetoothService bluetoothService, FactoryResetDelegate factoryResetDelegate) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.bluetoothService = bluetoothService;
       this.analyticsInteractor = analyticsInteractor;
-      checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor,
-            analyticsInteractor, navigator, FactoryResetAction.NEW_CARD);
+      this.factoryResetDelegate = factoryResetDelegate;
    }
 
    @Override
    public void attachView(PreCheckNewCardScreen view) {
       super.attachView(view);
-      checkPinDelegate.observePinStatus(getView());
-      observeChecks();
+      factoryResetDelegate.bindView(view);
+      observeConnection();
    }
 
-   private void observeChecks() {
-      Observable.combineLatest(
+   private void observeConnection() {
+      unsubscribeConnectionStatusObservable();
+
+      connectionStatusSubscription = Observable.combineLatest(
             smartCardInteractor.deviceStatePipe()
                   .observeSuccess()
                   .throttleLast(300, TimeUnit.MILLISECONDS),
             bluetoothService.observeEnablesState()
                   .startWith(bluetoothService.isEnable()),
             (smartCardCommand, bluetoothIsEnabled) -> new Pair<>(bluetoothIsEnabled, smartCardCommand.getResult()))
-            .compose(getView().bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(pair -> bind(pair.first, pair.second.getConnectionStatus().isConnected()), Timber::e);
 
@@ -74,6 +73,19 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
                   : new BluetoothDisabledAction()));
 
       smartCardInteractor.deviceStatePipe().send(DeviceStateCommand.Companion.fetch());
+   }
+
+   private void unsubscribeConnectionStatusObservable() {
+      if (connectionStatusSubscription != null && !connectionStatusSubscription.isUnsubscribed()) {
+         connectionStatusSubscription.unsubscribe();
+         connectionStatusSubscription = null;
+      }
+   }
+
+   @Override
+   public void detachView(boolean retainInstance) {
+      super.detachView(retainInstance);
+      unsubscribeConnectionStatusObservable();
    }
 
    private void bind(boolean bluetoothIsEnabled, boolean smartCardConnected) {
@@ -96,9 +108,16 @@ public class PreCheckNewCardPresenterImpl extends WalletPresenterImpl<PreCheckNe
    }
 
    @Override
+   public void onFactoryResetFailed() {
+      observeConnection();
+   }
+
+   @Override
    public void navigateNext() {
+      unsubscribeConnectionStatusObservable();
+      getView().nextButtonEnabled(false);
       sendAnalyticAction(new SmartCartWillNowBeAssignedAction());
-      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
+      factoryResetDelegate.startRegularFactoryReset();
    }
 
    private void sendAnalyticAction(WalletAnalyticsAction action) {

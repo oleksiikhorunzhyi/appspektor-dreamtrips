@@ -6,19 +6,21 @@ interface CardDetailsPresenter : WalletPresenter<CardDetailsScreen> {
 
    fun goBack()
 
-   fun updateNickName()
+   fun observeRecordChanges(recordId: String)
+
+   fun updateNickname(recordId: String, nickname: String)
 
    fun fetchDefaultRecord()
 
    fun onDeleteCardClick()
 
-   fun payThisCard()
+   fun payThisCard(recordId: String)
 
    fun onChangeDefaultCardConfirmed(recordId: String)
 
    fun onChangeDefaultCardCanceled()
 
-   fun onDeleteCardConfirmed()
+   fun onDeleteCardConfirmed(recordId: String)
 
    fun onCardIsReadyDialogShown()
 

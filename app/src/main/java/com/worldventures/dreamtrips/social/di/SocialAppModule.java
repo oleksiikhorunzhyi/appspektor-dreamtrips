@@ -211,5 +211,4 @@ public class SocialAppModule {
             .fragmentClass(DreamLifeClubFragment.class)
             .build();
    }
-
 }

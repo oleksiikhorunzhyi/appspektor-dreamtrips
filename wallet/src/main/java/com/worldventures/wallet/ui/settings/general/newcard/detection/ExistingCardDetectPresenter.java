@@ -1,22 +1,22 @@
 package com.worldventures.wallet.ui.settings.general.newcard.detection;
 
-import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.ui.common.base.WalletPresenter;
 
 public interface ExistingCardDetectPresenter extends WalletPresenter<ExistingCardDetectScreen> {
 
    void goBack();
 
-   void navigateToPowerOn();
+   void fetchSmartCardId();
 
-   void prepareUnassignCardOnBackend();
+   void fetchSmartCardConnection();
 
-   void prepareUnassignCard();
+   void cardAvailable();
+
+   void unassignWithoutCard();
 
    void unassignCard();
 
-   void unassignCardOnBackend();
+   void unassignCardConfirmed(String smartCardId);
 
-   HttpErrorHandlingUtil httpErrorHandlingUtil();
-
+   void unassignWithoutCardConfirmed(String smartCardId);
 }

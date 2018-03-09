@@ -1,29 +1,16 @@
 package com.worldventures.wallet.ui.settings.general.newcard.detection;
 
-import com.worldventures.wallet.service.command.ActiveSmartCardCommand;
-import com.worldventures.wallet.service.command.device.DeviceStateCommand;
-import com.worldventures.wallet.service.command.reset.WipeSmartCardDataCommand;
+import com.worldventures.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetView;
-
-import io.techery.janet.operationsubscriber.view.OperationView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetView;
 
 public interface ExistingCardDetectScreen extends WalletScreen, FactoryResetView {
 
-   OperationView<ActiveSmartCardCommand> provideActiveSmartCardOperationView();
-
-   OperationView<DeviceStateCommand> provideDeviceStateOperationView();
-
-   OperationView<WipeSmartCardDataCommand> provideWipeOperationView();
-
    void setSmartCardId(String scId);
 
-   void modeConnectedSmartCard();
+   void setSmartCardConnection(ConnectionStatus connection);
 
-   void modeDisconnectedSmartCard();
+   void showConfirmationUnassignDialog();
 
-   void showConfirmationUnassignDialog(String scId);
-
-   void showConfirmationUnassignOnBackend(String scId);
-
+   void showConfirmationUnassignWhioutCard();
 }

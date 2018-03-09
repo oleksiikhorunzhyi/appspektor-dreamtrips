@@ -1,71 +1,94 @@
 package com.worldventures.wallet.ui.widget.anim;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.wallet.R;
+
+import java.util.ArrayList;
+
+import static android.animation.AnimatorInflater.loadAnimator;
 
 public final class FlipAnim {
 
-   private AnimatorSet setRightOut;
-   private AnimatorSet setLeftIn;
+   private final static int FLIP_OUT_INDEX = 0;
+   private final static int FLIP_IN_INDEX = 1;
+   private final static int DISTANCE = 22000;
+
+   private final AnimatorSet flipAnimation;
    private boolean isBackVisible = false;
+
    private final View cardFrontLayout;
    private final View cardBackLayout;
 
-   private final WeakHandler handler = new WeakHandler();
+   private final Handler handler = new Handler();
+   private final AnimatorListenerAdapter restartAnimationListener = new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationEnd(Animator animation) {
+         super.onAnimationEnd(animation);
+         restartFlipCard();
+      }
+   };
 
    private FlipAnim(View cardFrontLayout, View cardBackLayout) {
       this.cardFrontLayout = cardFrontLayout;
       this.cardBackLayout = cardBackLayout;
+      Context context = cardBackLayout.getContext();
+
+      AnimatorSet flipAnimation = new AnimatorSet();
+      flipAnimation.playTogether(
+            loadAnimator(context, R.animator.wallet_smart_card_flip_out_animation),
+            loadAnimator(context, R.animator.wallet_smart_card_flip_in_animation));
+      flipAnimation.addListener(restartAnimationListener);
+      this.flipAnimation = flipAnimation;
    }
 
-   public void flipCard() {
-      flipCard(0);
+   private void restartFlipCard() {
+      handler.post(this::startFlipping);
    }
 
-   public void flipCard(long delay) {
-      handler.postDelayed(() -> {
-         if (!isBackVisible) {
-            setRightOut.setTarget(cardFrontLayout);
-            setLeftIn.setTarget(cardBackLayout);
-            setRightOut.start();
-            setLeftIn.start();
-            isBackVisible = true;
-         } else {
-            setRightOut.setTarget(cardBackLayout);
-            setLeftIn.setTarget(cardFrontLayout);
-            setRightOut.start();
-            setLeftIn.start();
-            isBackVisible = false;
-         }
-      }, delay);
-
+   void flipCard(long delay) {
+      handler.postDelayed(this::startFlipping, delay);
    }
 
-   private void init(Context context) {
-      setRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.wallet_smart_card_flip_out_animation);
-      setRightOut.addListener(new AnimatorListenerAdapter() {
-         @Override
-         public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-            flipCard();
-         }
-      });
-
-      setLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.wallet_smart_card_flip_in_animation);
-      setLeftIn.addListener(new AnimatorListenerAdapter() {});
+   private void startFlipping() {
+      if (!isBackVisible) {
+         animateCard(cardFrontLayout, cardBackLayout);
+         isBackVisible = true;
+      } else {
+         animateCard(cardBackLayout, cardFrontLayout);
+         isBackVisible = false;
+      }
    }
 
-   public static class Builder {
+   private void animateCard(View front, View back) {
+      final ArrayList<Animator> childAnimations = flipAnimation.getChildAnimations();
+      childAnimations.get(FLIP_OUT_INDEX).setTarget(front);
+      childAnimations.get(FLIP_IN_INDEX).setTarget(back);
+      flipAnimation.start();
+   }
+
+   public void cancel() {
+      handler.removeCallbacksAndMessages(null);
+      flipAnimation.removeListener(restartAnimationListener);
+      flipAnimation.cancel();
+   }
+
+   public static Builder builder() {
+      return new Builder();
+   }
+
+   public static final class Builder {
 
       private View cardFrontLayout;
       private View cardBackLayout;
+
+      private Builder() {
+      }
 
       public Builder setCardFrontLayout(View cardFrontLayout) {
          this.cardFrontLayout = cardFrontLayout;
@@ -77,13 +100,19 @@ public final class FlipAnim {
          return this;
       }
 
-      public FlipAnim createAnim() {
-         FlipAnim flipAnim = new FlipAnim(cardFrontLayout, cardBackLayout);
-         flipAnim.init(cardFrontLayout.getContext());
-         int distance = 22000;
-         float scale = cardFrontLayout.getContext().getResources().getDisplayMetrics().density * distance;
+      public FlipAnim flipCard(long delay) {
+         final FlipAnim flipAnim = new FlipAnim(cardFrontLayout, cardBackLayout);
+         final float scale = cardFrontLayout.getContext().getResources().getDisplayMetrics().density * DISTANCE;
+
+         // default state
+         cardBackLayout.setRotationY(0);
+         cardBackLayout.setAlpha(0);
+         cardFrontLayout.setRotation(0);
+         cardFrontLayout.setAlpha(1);
+
          cardFrontLayout.setCameraDistance(scale);
          cardBackLayout.setCameraDistance(scale);
+         flipAnim.flipCard(delay);
          return flipAnim;
       }
    }

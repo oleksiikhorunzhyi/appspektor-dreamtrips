@@ -53,6 +53,10 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
       reset().subscribe(callback::onSuccess, callback::onFail);
    }
 
+   private boolean isSmartCardAvailable() {
+      return factoryResetOptions.isSmartCardIsAvailable();
+   }
+
    /**
     * Step 0 we should check connection with smart-card
     * Step 1 we disassociate card on server side
@@ -65,7 +69,7 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    private Observable<Void> reset() {
       return fetchWipeData()
             .flatMap(wipeData -> {
-               if (wipeData.smartCardStatus.getConnectionStatus().isConnected()) {
+               if (!isSmartCardAvailable() || wipeData.smartCardStatus.getConnectionStatus().isConnected()) {
                   return disassociateCardUserServer(wipeData.smartCard)
                         .flatMap(aVoid -> disassociateCardUser())
                         .flatMap(action -> clearSmartCardSettings())
@@ -109,9 +113,13 @@ public class WipeSmartCardDataCommand extends Command<Void> implements Injectabl
    /**
     * Result will be emitted on Android Main Thread
     */
-   private Observable<UnAssignUserAction> disassociateCardUser() {
-      return walletJanet.createPipe(UnAssignUserAction.class)
-            .createObservableResult(new UnAssignUserAction());
+   private Observable<Void> disassociateCardUser() {
+      if (isSmartCardAvailable()) {
+         return walletJanet.createPipe(UnAssignUserAction.class)
+               .createObservableResult(new UnAssignUserAction())
+               .map(action -> null);
+      }
+      return Observable.just(null);
    }
 
    private Observable<Void> clearSmartCardSettings() {

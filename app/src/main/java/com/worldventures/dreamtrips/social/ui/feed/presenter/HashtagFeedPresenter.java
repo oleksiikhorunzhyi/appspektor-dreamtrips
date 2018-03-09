@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityCopyHelper;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.HashtagSuggestion;
@@ -132,7 +133,6 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
       feedItems.clear();
       feedItems.addAll(newFeedItems);
       refreshFeedItems();
-      view.dataSetChanged();
    }
 
    private void subscribeRefreshFeeds() {
@@ -202,7 +202,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
    }
 
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems);
+      view.refreshFeedItems(FeedEntityCopyHelper.copyFeedItems(feedItems));
    }
 
    @Override
@@ -304,7 +304,5 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
       void hideSuggestionProgress();
 
       void showComments(FeedItem feedItem);
-
-      void dataSetChanged();
    }
 }

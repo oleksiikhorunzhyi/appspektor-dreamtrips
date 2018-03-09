@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTab
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityCopyHelper;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
@@ -203,11 +204,10 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
       feedItems.clear();
       feedItems.addAll(newFeedItems);
       refreshFeedItems();
-      view.dataSetChanged();
    }
 
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems, user);
+      view.refreshFeedItems(FeedEntityCopyHelper.copyFeedItems(feedItems), user);
    }
 
    @Override
@@ -259,8 +259,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View> extends 
       void startLoading();
 
       void finishLoading();
-
-      void dataSetChanged();
 
       void refreshFeedItems(List<FeedItem> items, User user);
 

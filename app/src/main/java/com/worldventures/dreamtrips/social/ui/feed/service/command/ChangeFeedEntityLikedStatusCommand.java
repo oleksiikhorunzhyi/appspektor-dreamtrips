@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.service.command;
 
 import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityCopyHelper;
 import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.dreamtrips.R;
@@ -44,7 +45,7 @@ public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEnt
    }
 
    private void like(CommandCallback<FeedEntity> callback) {
-      likesInteractor.likePipe().createObservableResult(new LikeEntityCommand(feedEntity))
+      likesInteractor.likePipe().createObservableResult(new LikeEntityCommand(FeedEntityCopyHelper.copyFeedEntity(feedEntity)))
             .subscribe(likeEntityCommand -> {
                if (likeEntityCommand.getResult() instanceof Photo) {
                   analyticsInteractor.analyticsActionPipe()
@@ -59,7 +60,7 @@ public class ChangeFeedEntityLikedStatusCommand extends CommandWithError<FeedEnt
    }
 
    private void unlike(CommandCallback<FeedEntity> callback) {
-      likesInteractor.unlikePipe().createObservableResult(new UnlikeEntityCommand(feedEntity))
+      likesInteractor.unlikePipe().createObservableResult(new UnlikeEntityCommand(FeedEntityCopyHelper.copyFeedEntity(feedEntity)))
             .subscribe(unlikeEntityCommand -> {
                pendingLikesStorage.remove(unlikeEntityCommand.getResult().getUid());
                callback.onSuccess(unlikeEntityCommand.getResult());

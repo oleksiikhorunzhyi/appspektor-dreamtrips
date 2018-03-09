@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.social.ui.background_uploading.service.comma
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityCopyHelper;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.video.Video;
@@ -195,21 +196,20 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
    ///////////////////////////////////////////////////////////////////////////
 
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems, postUploads, shouldShowSuggestionItems);
+      view.refreshFeedItems(FeedEntityCopyHelper.copyFeedItems(feedItems), postUploads, shouldShowSuggestionItems);
    }
 
    void subscribeToStorage() {
       feedStorageDelegate.observeStorageCommand()
             .compose(bindViewToMainComposer())
             .map(Command::getResult)
-            .subscribe(feedItems1 -> feedChanged(feedItems1), this::handleError);
+            .subscribe(this::feedChanged, this::handleError);
    }
 
    private void feedChanged(List<FeedItem> items) {
       feedItems.clear();
       feedItems.addAll(items);
       refreshFeedItems();
-      view.dataSetChanged();
       assetStatusInteractor.feedItemsVideoProcessingPipe().send(new FeedItemsVideoProcessingStatusCommand(items));
    }
 
@@ -491,8 +491,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> implements Feed
 
       void refreshFeedItems(@NonNull List<FeedItem> feedItems,
             @Nullable List<PostCompoundOperationModel> uploadingPostsList, boolean shouldShowSuggestions);
-
-      void dataSetChanged();
 
       void startLoading();
 

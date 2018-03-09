@@ -19,11 +19,9 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
-import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
@@ -49,6 +47,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDe
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.HashtagSuggestionUtil;
+import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.List;
@@ -266,11 +265,6 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    public void refreshFeedItems(List feedItems) {
       fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.getStateRecyclerView());
       startAutoplayVideos();
-   }
-
-   @Override
-   public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged(statePaginatedRecyclerViewManager.findFocusedPosition());
    }
 
    @Override

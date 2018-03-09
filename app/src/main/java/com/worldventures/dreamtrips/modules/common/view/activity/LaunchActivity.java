@@ -13,7 +13,6 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.utils.BadgeHelper;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.connection_overlay.ConnectionState;
@@ -54,14 +53,6 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       loginEditTextsHolder.getLayoutParams().width = ViewUtils.getMinSideSize(this);
-   }
-
-   @OnClick(R.id.iv_title)
-   public void onTitleClick() {
-      if (BuildConfig.DEBUG && !BuildConfig.FLAVOR.equals("prod")) {
-         usernameEditText.setText("888888");
-         passwordEditText.setText("travel1ns1de");
-      }
    }
 
    @OnClick(R.id.btn_login)

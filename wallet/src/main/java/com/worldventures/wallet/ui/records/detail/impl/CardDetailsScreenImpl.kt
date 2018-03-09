@@ -19,6 +19,7 @@ import com.worldventures.wallet.service.command.record.UpdateRecordCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
 import com.worldventures.wallet.ui.common.binding.LastPositionSelector
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
+import com.worldventures.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider
 import com.worldventures.wallet.ui.common.helper2.error.SmartCardErrorViewProvider
 import com.worldventures.wallet.ui.common.helper2.error.http.HttpErrorViewProvider
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView
@@ -35,27 +36,22 @@ import io.techery.janet.operationsubscriber.view.OperationView
 import javax.inject.Inject
 
 private const val ARG_KEY_MODIFY_RECORD = "key_modify_record"
-private const val STATE_KEY_VIEW_MODEL = ""
+private const val STATE_KEY_VIEW_MODEL = "STATE_KEY_VIEW_MODEL"
 
 @Suppress("UnsafeCallOnNullableType")
 class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScreen, CardDetailsPresenter>(args), CardDetailsScreen {
 
-   private lateinit var binding: ScreenWalletWizardViewCardDetailsBinding
-
-   @Inject lateinit var screenPresenter: CardDetailsPresenter
-   @Inject lateinit var httpErrorHandlingUtil: HttpErrorHandlingUtil
+   @Inject
+   lateinit var screenPresenter: CardDetailsPresenter
+   @Inject
+   lateinit var httpErrorHandlingUtil: HttpErrorHandlingUtil
 
    private var detailViewModel: RecordDetailViewModel? = null
 
+   private lateinit var binding: ScreenWalletWizardViewCardDetailsBinding
    private lateinit var saveMenuItem: MenuItem
 
    private var networkConnectionErrorDialog: MaterialDialog? = null
-
-   override val recordId: String
-      get() = detailViewModel!!.recordId
-
-   override val recordName: String
-      get() = detailViewModel!!.recordName
 
    override var isSaveButtonEnabled: Boolean
       get() = saveMenuItem.isEnabled
@@ -79,11 +75,18 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
    override val isDataChanged: Boolean
       get() = detailViewModel!!.recordName != detailViewModel!!.originCardName
 
+   private val recordId: String
+      get() = detailViewModel!!.recordId
+
+   private val recordName: String
+      get() = detailViewModel!!.recordName.trim()
+
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
       setupToolbar()
+      binding.defaultRecordSwitcher.setOnCheckedChangeListener { _, isChecked -> defaultRecordSwitchChanged(isChecked) }
       binding.deleteButton.setOnClickListener { presenter.onDeleteCardClick() }
-      binding.payThisCardButton.setOnClickListener { presenter.payThisCard() }
+      binding.payThisCardButton.setOnClickListener { presenter.payThisCard(recordId) }
       bindSpannableStringToTarget(binding.cardNicknameLabel, R.string.wallet_card_details_label_card_nickname,
             R.string.wallet_add_card_details_hint_card_name_length, false, false)
    }
@@ -99,15 +102,22 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
          override fun onPropertyChanged(sender: android.databinding.Observable, propertyId: Int) {
             when (propertyId) {
                BR.recordName -> presenter.validateRecordName(detailViewModel.recordName.trim())
-               BR.defaultRecord -> {
-                  presenter.changeDefaultCard(detailViewModel.isDefaultRecord, detailViewModel.recordId, detailViewModel.defaultRecordDetail)
-               }
             }
          }
       })
       saveMenuItem.isEnabled = detailViewModel.isSaveButtonEnabled
+      binding.defaultRecordSwitcher.isChecked = detailViewModel.recordModel.defaultCard
       binding.recordDetails = detailViewModel
       this.detailViewModel = detailViewModel
+   }
+
+   private fun defaultRecordSwitchChanged(isChecked: Boolean) {
+      detailViewModel?.let {
+         if (isChecked != it.recordModel.defaultCard) {
+            presenter.changeDefaultCard(isChecked, it.recordId, it.defaultRecordDetail)
+         }
+         it.recordModel.defaultCard = isChecked
+      }
    }
 
    override fun supportConnectionStatusLabel() = false
@@ -121,7 +131,7 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
       saveMenuItem = toolbar.menu.findItem(R.id.action_save)
       toolbar.setOnMenuItemClickListener {
          if (it.itemId == R.id.action_save) {
-            presenter.updateNickName()
+            presenter.updateNickname(recordId, recordName)
             return@setOnMenuItemClickListener true
          } else {
             return@setOnMenuItemClickListener false
@@ -144,7 +154,7 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
             .content(R.string.wallet_card_details_delete_card_dialog_content)
             .positiveText(R.string.wallet_ok)
             .negativeText(R.string.wallet_cancel_label)
-            .onPositive { _, _ -> presenter.onDeleteCardConfirmed() }
+            .onPositive { _, _ -> presenter.onDeleteCardConfirmed(recordId) }
             .build()
             .show()
    }
@@ -163,9 +173,9 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
       }
    }
 
-   override fun showCardIsReadyDialog(cardName: String) {
+   override fun showCardIsReadyDialog() {
       val builder = MaterialDialog.Builder(context)
-      builder.content(getString(R.string.wallet_wizard_card_list_card_is_ready_text, cardName))
+      builder.content(getString(R.string.wallet_wizard_card_list_card_is_ready_text, recordName))
             .positiveText(R.string.wallet_ok)
             .onPositive { _, _ -> presenter.onCardIsReadyDialogShown() }
             .build()
@@ -186,9 +196,9 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
             SimpleDialogProgressView(context, R.string.wallet_card_details_progress_save, false),
             SimpleToastSuccessView(context, R.string.wallet_card_details_success_save),
             ErrorViewFactory.builder<UpdateRecordCommand>()
-                  .addProvider(SmartCardErrorViewProvider(context) { presenter.updateNickName() })
+                  .addProvider(SmartCardErrorViewProvider(context) { presenter.updateNickname(recordId, recordName) })
                   .addProvider(HttpErrorViewProvider(context, httpErrorHandlingUtil, {
-                     presenter.updateNickName()
+                     presenter.updateNickname(recordId, recordName)
                   }) { })
                   .build()
       )
@@ -203,7 +213,9 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
 
    override fun undoDefaultCardChanges() {
       detailViewModel?.let {
-         it.isDefaultRecord = it.recordId == it.defaultRecordDetail?.recordId
+         val isDefault = it.recordId == it.defaultRecordDetail?.recordId
+         it.recordModel.defaultCard = isDefault
+         binding.defaultRecordSwitcher.isChecked = isDefault
       }
    }
 
@@ -215,6 +227,7 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
       return ComposableOperationView(
             SimpleDialogProgressView(context, R.string.wallet_loading, false),
             ErrorViewFactory.builder<DeleteRecordCommand>()
+                  .addProvider(SCConnectionErrorViewProvider(context, { presenter.onDeleteCardClick() }, {}))
                   .addProvider(SmartCardErrorViewProvider(context) { presenter.onDeleteCardClick() })
                   .build()
       )
@@ -224,6 +237,7 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
       return ComposableOperationView(
             SimpleDialogProgressView(context, R.string.wallet_loading, false),
             ErrorViewFactory.builder<SetDefaultCardOnDeviceCommand>()
+                  .addProvider(SCConnectionErrorViewProvider(context))
                   .addProvider(SmartCardErrorViewProvider(context))
                   .build()
       )
@@ -233,12 +247,14 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
       return ComposableOperationView(
             SimpleDialogProgressView(context, R.string.wallet_loading, false),
             ErrorViewFactory.builder<SetPaymentCardAction>()
-                  .addProvider(SmartCardErrorViewProvider(context) { presenter.payThisCard() })
+                  .addProvider(SCConnectionErrorViewProvider(context, { presenter.payThisCard(recordId) }, {}))
+                  .addProvider(SmartCardErrorViewProvider(context) { presenter.payThisCard(recordId) })
                   .build()
       )
    }
 
    override fun onAttach(view: View) {
+      super.onAttach(view)
       var shouldRequestDefaultId = false
       if (detailViewModel == null) {
          val record: CommonCardViewModel = args.getParcelable(ARG_KEY_MODIFY_RECORD)
@@ -246,7 +262,7 @@ class CardDetailsScreenImpl(args: Bundle) : WalletBaseController<CardDetailsScre
          attachViewModel(detailViewModel)
          shouldRequestDefaultId = true
       }
-      super.onAttach(view)
+      presenter.observeRecordChanges(recordId)
       if (shouldRequestDefaultId) presenter.fetchDefaultRecord()
    }
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.crashlytics.android.Crashlytics;
 import com.worldventures.core.utils.AppVersionNameBuilder;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.databinding.ScreenWalletAboutBinding;
@@ -20,6 +21,8 @@ import com.worldventures.wallet.ui.settings.general.about.AboutScreen;
 import com.worldventures.wallet.ui.settings.general.about.model.SmartCardAboutViewModel;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 import static com.worldventures.wallet.util.SCUserUtils.userFullName;
 
@@ -101,6 +104,13 @@ public class AboutScreenImpl extends WalletBaseController<AboutScreen, AboutPres
 
    @Override
    public void setSmartCardUser(SmartCardUser smartCardUser) {
+      if (smartCardUser == null) {
+         String message = String.format("User is null in SmartCardUserCommand storage in %s screen",
+               getClass().getSimpleName());
+         Timber.e(message);
+         Crashlytics.log(message);
+         return;
+      }
       aboutViewModel.setSmartCardUserFullName(userFullName(smartCardUser));
    }
 

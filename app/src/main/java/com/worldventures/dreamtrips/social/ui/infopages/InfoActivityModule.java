@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDi
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentListPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.DreamLifeClubPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.FeedbackImageAttachmentsPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpDocumentListPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpTabPresenter;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.LegalTerms
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DocumentFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DreamLifeClubFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollRepFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.social.ui.video.presenter.HelpVideosPresenter;
@@ -46,6 +48,8 @@ import dagger.Module;
             WebViewFragmentPresenter.class,
             SendFeedbackFragment.class,
             SendFeedbackPresenter.class,
+            DreamLifeClubFragment.class,
+            DreamLifeClubPresenter.class,
             FeedbackImageAttachmentsPresenter.class,
             FeedbackImageAttachmentFullscreenFragment.class,
             FeedbackImageAttachmentsFragment.class,

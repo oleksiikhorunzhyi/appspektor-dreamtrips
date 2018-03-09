@@ -45,6 +45,14 @@ public class FeatureConverter implements Converter<Feature, com.worldventures.co
             return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.TRIP_IMAGES);
          case BUCKET_LIST:
             return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.BUCKET_LIST);
+         case SEND_FEEDBACK:
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.SEND_FEED_BACK);
+         case INVITATIONS:
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.INVITATIONS);
+         case SETTINGS:
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.SETTINGS);
+         case DREAM_LIFE_CLUB:
+            return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.DLC);
          default:
             return new com.worldventures.core.model.session.Feature(com.worldventures.core.model.session.Feature.UNKNOWN);
       }

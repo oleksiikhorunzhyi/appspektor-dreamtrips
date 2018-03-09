@@ -104,7 +104,7 @@ ext {
                      ],
                      util     : [
                            NEWRELIC_API_KEY:      [String: '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"'],
-                           GOOGLE_PLACES_API_KEY: [String: '"AIzaSyC-u0O3Hyt7f_TodND7ge0aoYDFdjpp3Dc"'] // TODO :: update key for production builds
+                           GOOGLE_PLACES_API_KEY: [String: '"AIzaSyBKbegwehtwpCM_ezmKyn3rr3uR_JfMToM"']
                      ]
                ],
          ],

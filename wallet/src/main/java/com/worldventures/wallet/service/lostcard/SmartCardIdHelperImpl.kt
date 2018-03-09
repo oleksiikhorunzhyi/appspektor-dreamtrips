@@ -8,6 +8,7 @@ import com.worldventures.wallet.service.command.ActiveSmartCardCommand
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand
 import com.worldventures.wallet.service.lostcard.command.FetchTrackingStatusCommand
 import rx.Observable
+import timber.log.Timber
 
 internal class SmartCardIdHelperImpl(
       private val smartCardInteractor: SmartCardInteractor,
@@ -20,8 +21,9 @@ internal class SmartCardIdHelperImpl(
             .createObservableResult(FetchAssociatedSmartCardCommand())
             .doOnNext {
                smartCardInteractor.fetchAssociatedSmartCard().clearReplays()
-               locationInteractor.fetchTrackingStatusPipe().send(FetchTrackingStatusCommand()) }
-            .subscribe()
+               locationInteractor.fetchTrackingStatusPipe().send(FetchTrackingStatusCommand())
+            }
+            .subscribe({}, Timber::e)
    }
 
    override fun smartCardIdObservable(): Observable<String?> = Observable.merge(

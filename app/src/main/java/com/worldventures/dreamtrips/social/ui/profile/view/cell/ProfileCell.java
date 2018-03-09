@@ -76,6 +76,8 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
    @InjectView(R.id.badge) BadgeView badge;
    @InjectView(R.id.fl_friends_container) View friendsContainer;
    @InjectView(R.id.divider1) View divider1;
+   @InjectView(R.id.divider2) View divider2;
+   @InjectView(R.id.divider3) View divider3;
 
    @Inject SessionHolder appSessionHolder;
    @Inject SnappyRepository snapper;
@@ -121,13 +123,7 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
       setIsExpandEnabled(false);
       friends.setEnabled(isAccount());
 
-      if (isAccount() && featureManager.available(Feature.SOCIAL)) {
-         post.setVisibility(View.VISIBLE);
-         friendsContainer.setVisibility(View.VISIBLE);
-      } else {
-         post.setVisibility(View.GONE);
-      }
-      divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL) ? View.GONE : View.VISIBLE);
+      setUpActionPanel();
 
       setTripImagesCount(user.getTripImagesCount());
       setBucketItemsCount(user.getBucketListItemsCount());
@@ -183,6 +179,35 @@ public class ProfileCell extends BaseAbstractDelegateCell<User, ProfileCellDeleg
       coverProgressBar.setVisibility(user.isCoverUploadInProgress() ? View.VISIBLE : View.GONE);
 
       setBadgeValue();
+   }
+
+   private void setUpActionPanel() {
+
+      featureManager.with(Feature.TRIP_IMAGES,
+            () -> tripImages.setVisibility(View.VISIBLE),
+            () -> tripImages.setVisibility(View.GONE));
+
+      featureManager.with(Feature.BUCKET_LIST,
+            () -> buckets.setVisibility(View.VISIBLE),
+            () -> buckets.setVisibility(View.GONE));
+
+      featureManager.with(Feature.SOCIAL,
+            () -> {
+               if (isAccount()) {
+                  friendsContainer.setVisibility(View.VISIBLE);
+                  post.setVisibility(View.VISIBLE);
+               } else {
+                  post.setVisibility(View.GONE);
+               }
+            },
+            () -> {
+               friendsContainer.setVisibility(View.GONE);
+               post.setVisibility(View.GONE);
+            });
+
+      divider1.setVisibility(post.getVisibility());
+      divider2.setVisibility(tripImages.getVisibility());
+      divider3.setVisibility(buckets.getVisibility());
    }
 
    private boolean isAccount() {

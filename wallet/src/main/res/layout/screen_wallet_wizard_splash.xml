@@ -30,7 +30,7 @@
             android:layout_marginRight="40dp"
             android:layout_marginTop="40dp"
             android:gravity="center"
-            android:text="@string/wallet_wizard_splash_title2"
+            android:text="@string/wallet_wizard_scan_proposal"
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
 

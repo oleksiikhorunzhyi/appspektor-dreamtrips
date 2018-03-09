@@ -41,6 +41,7 @@ class MembershipPresenterSpec: PresenterBaseSpec({
             whenever(featureManager.available(Feature.REP_SUGGEST_MERCHANT)).thenReturn(true)
             whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(false)
             whenever(featureManager.available(Feature.MEMBERSHIP)).thenReturn(true)
+            whenever(featureManager.available(Feature.INVITATIONS)).thenReturn(true)
 
             val screens = presenter.provideScreens()
             assertTrue { screens.contains(PresentationVideosFragment::class.java) }

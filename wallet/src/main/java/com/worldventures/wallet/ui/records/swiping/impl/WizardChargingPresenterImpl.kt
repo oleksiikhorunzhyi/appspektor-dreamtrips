@@ -1,5 +1,6 @@
 package com.worldventures.wallet.ui.records.swiping.impl
 
+import com.crashlytics.android.Crashlytics
 import com.worldventures.wallet.analytics.ConnectFlyeToChargerAction
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand
 import com.worldventures.wallet.domain.entity.SDKRecord
@@ -18,6 +19,7 @@ import io.techery.janet.smartcard.action.charger.StartCardRecordingAction
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction
 import io.techery.janet.smartcard.event.CardSwipedEvent
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 
 class WizardChargingPresenterImpl(navigator: Navigator,
                                   deviceConnectionDelegate: WalletDeviceConnectionDelegate,
@@ -43,7 +45,18 @@ class WizardChargingPresenterImpl(navigator: Navigator,
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess { command -> view.userPhoto(command.result.userPhoto) }
+                  .onSuccess {
+                     var user = it.result
+                     user = null
+                     if (user == null) {
+                        val message = String.format("User is null in SmartCardUserCommand storage in %s screen",
+                              javaClass.simpleName)
+                        Timber.e(message)
+                        Crashlytics.log(message)
+                     } else {
+                        view.userPhoto(user.userPhoto)
+                     }
+                  }
             )
    }
 

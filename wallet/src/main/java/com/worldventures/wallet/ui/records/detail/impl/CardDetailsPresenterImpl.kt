@@ -45,19 +45,22 @@ class CardDetailsPresenterImpl(navigator: Navigator,
    override fun attachView(view: CardDetailsScreen) {
       super.attachView(view)
       networkDelegate.setup(view)
-      connectToDeleteCardPipe()
+   }
+
+   override fun observeRecordChanges(recordId: String) {
+      connectToDeleteCardPipe(view, recordId)
       observeDefaultRecord()
       connectToSetDefaultCardIdPipe()
       connectSetPaymentCardPipe()
-      observeSaveCardData(view)
-      trackScreen()
+      observeSaveCardData(view, recordId)
+      trackScreen(recordId)
    }
 
-   private fun observeSaveCardData(view: CardDetailsScreen) {
+   private fun observeSaveCardData(view: CardDetailsScreen, recordId: String) {
       recordInteractor.updateRecordPipe()
             .observe()
             .filter { state ->
-               WalletRecordUtil.equalsRecordId(view.recordId, state.action.record)
+               WalletRecordUtil.equalsRecordId(recordId, state.action.record)
             }
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
@@ -93,14 +96,14 @@ class CardDetailsPresenterImpl(navigator: Navigator,
       recordInteractor.defaultRecordIdPipe().send(DefaultRecordIdCommand.fetch())
    }
 
-   override fun updateNickName() {
-      fetchOfflineModeState({ offlineModeEnabled ->
+   override fun updateNickname(recordId: String, nickname: String) {
+      fetchOfflineModeState { offlineModeEnabled ->
          if (offlineModeEnabled || networkDelegate.isAvailable) {
-            nicknameUpdated(view.recordName.trim { it <= ' ' })
+            sendUpdateNicknameCommand(recordId, nickname)
          } else {
             view.showNetworkConnectionErrorDialog()
          }
-      })
+      }
    }
 
    private fun fetchOfflineModeState(action: (Boolean) -> Unit) {
@@ -113,18 +116,17 @@ class CardDetailsPresenterImpl(navigator: Navigator,
             .subscribe(action)
    }
 
-   private fun trackScreen() {
-      fetchRecord(view.recordId, { record ->
+   private fun trackScreen(recordId: String) {
+      fetchRecord(recordId, { record ->
          analyticsInteractor.paycardAnalyticsPipe()
                .send(PaycardAnalyticsCommand(CardDetailsAction(record.nickname), record))
       })
    }
 
-   private fun connectToDeleteCardPipe() {
-      val view = this.view
+   private fun connectToDeleteCardPipe(view: CardDetailsScreen, recordId: String) {
       recordInteractor.deleteRecordPipe()
             .observeWithReplay()
-            .filter { state -> state.action.recordId == view.recordId }
+            .filter { state -> state.action.recordId == recordId }
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(ActionPipeCacheWiper(recordInteractor.deleteRecordPipe()))
@@ -150,7 +152,7 @@ class CardDetailsPresenterImpl(navigator: Navigator,
             .observeOn(AndroidSchedulers.mainThread())
             .compose(ActionPipeCacheWiper(recordInteractor.setPaymentCardPipe()))
             .subscribe(OperationActionSubscriber.forView(view.provideOperationSetPaymentCardAction())
-                  .onSuccess { view.showCardIsReadyDialog(view.recordName.trim { it <= ' ' }) }
+                  .onSuccess { view.showCardIsReadyDialog() }
                   .create())
    }
 
@@ -164,10 +166,10 @@ class CardDetailsPresenterImpl(navigator: Navigator,
       }
    }
 
-   override fun payThisCard() {
+   override fun payThisCard(recordId: String) {
       fetchConnectionStats {
          if (it.isConnected) {
-            recordInteractor.setPaymentCardPipe().send(SetPaymentCardAction(view.recordId))
+            recordInteractor.setPaymentCardPipe().send(SetPaymentCardAction(recordId))
          } else {
             view.showSCNonConnectionDialog()
          }
@@ -199,8 +201,8 @@ class CardDetailsPresenterImpl(navigator: Navigator,
       }
    }
 
-   override fun onDeleteCardConfirmed() {
-      recordInteractor.deleteRecordPipe().send(DeleteRecordCommand(view.recordId))
+   override fun onDeleteCardConfirmed(recordId: String) {
+      recordInteractor.deleteRecordPipe().send(DeleteRecordCommand(recordId))
    }
 
    private fun unsetCardAsDefault(recordId: String, defaultRecordDetail: DefaultRecordDetail?) {
@@ -219,7 +221,7 @@ class CardDetailsPresenterImpl(navigator: Navigator,
    }
 
    private fun applyDefaultId(recordId: String) {
-      trackSetAsDefault()
+      trackSetAsDefault(recordId)
       recordInteractor.setDefaultCardOnDeviceCommandPipe()
             .send(SetDefaultCardOnDeviceCommand.setAsDefault(recordId))
    }
@@ -232,8 +234,8 @@ class CardDetailsPresenterImpl(navigator: Navigator,
       view.undoDefaultCardChanges()
    }
 
-   private fun trackSetAsDefault() {
-      fetchRecord(view.recordId) {
+   private fun trackSetAsDefault(recordId: String) {
+      fetchRecord(recordId) {
          analyticsInteractor.walletAnalyticsPipe().send(WalletAnalyticsCommand(ChangeDefaultCardAction(it)))
       }
    }
@@ -242,9 +244,15 @@ class CardDetailsPresenterImpl(navigator: Navigator,
       navigator.goBack()
    }
 
-   private fun nicknameUpdated(nickName: String) {
-      fetchRecord(view.recordId) {
-         recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickname(it, nickName))
+   private fun sendUpdateNicknameCommand(recordId: String, nickName: String) {
+      fetchConnectionStats { connectionStatus ->
+         if (connectionStatus.isConnected) {
+            fetchRecord(recordId) {
+               recordInteractor.updateRecordPipe().send(UpdateRecordCommand.updateNickname(it, nickName))
+            }
+         } else {
+            view.showSCNonConnectionDialog()
+         }
       }
    }
 

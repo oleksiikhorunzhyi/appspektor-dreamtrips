@@ -265,4 +265,14 @@ class SnappyRepositoryImpl extends BaseSnappyRepository implements SnappyReposit
    public int getFriendsRequestsCount() {
       return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
    }
+
+   @Override
+   public void setCurrentVersion(int version) {
+      act(db -> db.putInt(CURRENT_VERSION, version));
+   }
+
+   @Override
+   public int getCurrentVersion() {
+      return actWithResult(db -> db.getInt(CURRENT_VERSION)).or(0);
+   }
 }

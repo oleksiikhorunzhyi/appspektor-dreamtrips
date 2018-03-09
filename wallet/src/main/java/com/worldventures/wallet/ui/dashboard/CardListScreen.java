@@ -10,7 +10,7 @@ import com.worldventures.wallet.service.command.SyncSmartCardCommand;
 import com.worldventures.wallet.service.command.record.SyncRecordOnNewDeviceCommand;
 import com.worldventures.wallet.ui.common.adapter.BaseViewModel;
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

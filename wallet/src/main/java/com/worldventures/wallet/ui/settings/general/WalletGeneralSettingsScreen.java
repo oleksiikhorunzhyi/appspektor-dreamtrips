@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto;
 import com.worldventures.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetView;
 
 import java.util.List;
 

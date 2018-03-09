@@ -107,6 +107,8 @@
 
    <string name="settings">Settings</string>
 
+   <string name="dlc">Dream life club</string>
+
    <string name="error_fail_to_create_post">Failed to create post</string>
    <string name="error_fail_to_update_post">Failed to update post</string>
    <string name="error_fail_to_delete_post">Failed to delete post</string>

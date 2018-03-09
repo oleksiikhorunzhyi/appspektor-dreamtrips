@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.general.impl;
 
-
 import android.support.annotation.Nullable;
 
 import com.worldventures.wallet.analytics.WalletAnalyticsCommand;
@@ -9,7 +8,6 @@ import com.worldventures.wallet.analytics.settings.SettingsGeneralAction;
 import com.worldventures.wallet.domain.entity.ConnectionStatus;
 import com.worldventures.wallet.domain.entity.FirmwareUpdateData;
 import com.worldventures.wallet.domain.entity.SmartCardUser;
-import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.FirmwareInteractor;
 import com.worldventures.wallet.service.SmartCardInteractor;
 import com.worldventures.wallet.service.WalletAnalyticsInteractor;
@@ -23,8 +21,7 @@ import com.worldventures.wallet.ui.common.navigation.Navigator;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsPresenter;
 import com.worldventures.wallet.ui.settings.general.WalletGeneralSettingsScreen;
 import com.worldventures.wallet.ui.settings.general.display.impl.DisplayOptionsSource;
-import com.worldventures.wallet.ui.settings.general.reset.CheckPinDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetAction;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
 import com.worldventures.wallet.util.WalletFeatureHelper;
 
 import io.techery.janet.Command;
@@ -40,20 +37,19 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
    private final FirmwareInteractor firmwareInteractor;
    private final WalletAnalyticsInteractor analyticsInteractor;
    private final WalletFeatureHelper featureHelper;
-   private final CheckPinDelegate checkPinDelegate;
+   private final FactoryResetDelegate factoryResetDelegate;
 
    private Action0 firmwareUpdateNavigatorAction = () -> getNavigator().goFirmwareUpToDate();
 
    public WalletGeneralSettingsPresenterImpl(Navigator navigator, WalletDeviceConnectionDelegate deviceConnectionDelegate,
-         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, FactoryResetInteractor factoryResetInteractor,
+         SmartCardInteractor smartCardInteractor, FirmwareInteractor firmwareInteractor, FactoryResetDelegate factoryResetDelegate,
          WalletAnalyticsInteractor analyticsInteractor, WalletFeatureHelper walletFeatureHelper) {
       super(navigator, deviceConnectionDelegate);
       this.smartCardInteractor = smartCardInteractor;
       this.firmwareInteractor = firmwareInteractor;
       this.analyticsInteractor = analyticsInteractor;
       this.featureHelper = walletFeatureHelper;
-      this.checkPinDelegate = new CheckPinDelegate(smartCardInteractor, factoryResetInteractor, analyticsInteractor,
-            navigator, FactoryResetAction.GENERAL);
+      this.factoryResetDelegate = factoryResetDelegate;
    }
 
    @Override
@@ -64,7 +60,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
 
       observeSmartCardUserChanges();
       observeFirmwareUpdates();
-      checkPinDelegate.observePinStatus(getView());
+      factoryResetDelegate.bindView(view);
 
       firmwareInteractor.firmwareInfoCachedPipe().send(FirmwareInfoCachedCommand.fetch());
       smartCardInteractor.smartCardUserPipe().send(SmartCardUserCommand.fetch());
@@ -126,7 +122,7 @@ public class WalletGeneralSettingsPresenterImpl extends WalletPresenterImpl<Wall
 
    @Override
    public void openFactoryResetScreen() {
-      checkPinDelegate.getFactoryResetDelegate().setupDelegate(getView());
+      factoryResetDelegate.startRegularFactoryReset();
    }
 
    @Override

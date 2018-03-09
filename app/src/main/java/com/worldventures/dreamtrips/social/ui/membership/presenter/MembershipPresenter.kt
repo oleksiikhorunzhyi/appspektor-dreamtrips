@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcont
 import com.worldventures.dreamtrips.social.ui.membership.view.fragment.InviteFragment
 import com.worldventures.dreamtrips.social.ui.membership.view.fragment.PodcastsFragment
 import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment
-import java.util.ArrayList
 
 class MembershipPresenter : Presenter<MembershipPresenter.View>() {
 
@@ -32,30 +31,29 @@ class MembershipPresenter : Presenter<MembershipPresenter.View>() {
             .subscribe { reportNoConnection() }
    }
 
-   fun provideScreens(): List<FragmentItem> {
-      val screens = ArrayList<FragmentItem>()
-      screens.add(FragmentItem(PresentationVideosFragment::class.java, context.getString(R.string.presentations)))
-      screens.add(FragmentItem(EnrollMemberFragment::class.java, context.getString(R.string.enroll_member)))
-      if (enrollMerchantAvailable()) {
-         screens.add(FragmentItem(EnrollMerchantFragment::class.java, context.getString(R.string.dt_local_tools)))
-      }
-      if (inviteAvailable()) {
-         screens.add(FragmentItem(InviteFragment::class.java, context.getString(R.string.invite_and_share)))
-      }
-      if (podcastsAvailable()) {
-         screens.add(FragmentItem(PodcastsFragment::class.java, context.getString(R.string.podcasts)))
-      }
-      return screens
+   fun provideScreens() = mutableListOf<FragmentItem>().apply {
+      add(FragmentItem(PresentationVideosFragment::class.java, context.getString(R.string.presentations)))
+      add(FragmentItem(EnrollMemberFragment::class.java, context.getString(R.string.enroll_member)))
+
+      if (enrollMerchantAvailable()) add(FragmentItem(EnrollMerchantFragment::class.java, context.getString(R.string.dt_local_tools)))
+
+      if (inviteAvailable()) add(FragmentItem(InviteFragment::class.java, context.getString(R.string.invite_and_share)))
+
+      if (podcastsAvailable()) add(FragmentItem(PodcastsFragment::class.java, context.getString(R.string.podcasts)))
+
    }
 
    private fun enrollMerchantAvailable() = featureManager.available(Feature.REP_SUGGEST_MERCHANT)
 
    private fun inviteAvailable() = !featureManager.available(Feature.REP_TOOLS)
+         && featureManager.available(Feature.INVITATIONS)
 
    private fun podcastsAvailable() = featureManager.available(Feature.MEMBERSHIP)
 
-   interface View : Presenter.View {
+   private fun isShowInvite() = featureManager.available(Feature.INVITATIONS)
+         && !featureManager.available(Feature.REP_TOOLS)
 
+   interface View : Presenter.View {
       fun setScreens(items: List<FragmentItem>?)
    }
 }

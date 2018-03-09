@@ -51,10 +51,12 @@ public class PostReviewParamsAdapter {
    public List<File> attachments() {
       if (postReviewActionParams.attachments() != null) {
          List<File> files = new ArrayList<>();
-         for (PhotoPickerModel photo: postReviewActionParams.attachments()) {
+         for (PhotoPickerModel photo : postReviewActionParams.attachments()) {
             files.add(new File(photo.getAbsolutePath()));
          }
          return files;
-      } else return null;
+      } else {
+         return null;
+      }
    }
 }

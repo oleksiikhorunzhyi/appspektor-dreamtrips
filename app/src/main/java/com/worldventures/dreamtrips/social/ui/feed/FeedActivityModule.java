@@ -14,7 +14,6 @@ import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.presenter.GalleryPresenter;
-import com.worldventures.dreamtrips.modules.media_picker.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
@@ -124,7 +123,6 @@ import dagger.Provides;
             FeedItemAdditionalInfoPresenter.class,
             EditCommentFragment.class,
             EditCommentPresenter.class,
-            DtGalleryFragment.class,
             GalleryPresenter.class,
             CreateEntityFragment.class,
             CreateEntityPresenter.class,

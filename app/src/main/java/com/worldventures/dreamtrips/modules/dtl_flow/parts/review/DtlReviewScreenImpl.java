@@ -134,10 +134,14 @@ public class DtlReviewScreenImpl extends DtlLayout<DtlReviewScreen, DtlReviewPre
             new ActionSuccessView<>(ignore -> finish()),
             ErrorViewFactory.<PostReviewHttpCommand>builder()
                   .defaultErrorView(new SimpleSweetDialogErrorView<>(getContext(), SweetDialogParams.forUnrecognizedErrorView(getContext())))
-                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), ProfanityPostException.class, SweetDialogParams.forProfanityErrorView(getContext())))
-                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), DuplicatePostException.class, SweetDialogParams.forReviewDuplicatedErrorView(getContext())))
-                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), RequestLimitException.class, SweetDialogParams.forLimitReachedErrorView(getContext())))
-                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), UnknownPostException.class, SweetDialogParams.forUnknownErrorView(getContext(), ignore -> post())))
+                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), ProfanityPostException.class, SweetDialogParams
+                        .forProfanityErrorView(getContext())))
+                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), DuplicatePostException.class, SweetDialogParams
+                        .forReviewDuplicatedErrorView(getContext())))
+                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), RequestLimitException.class, SweetDialogParams
+                        .forLimitReachedErrorView(getContext())))
+                  .addProvider(new SweetDialogErrorViewProvider<>(getContext(), UnknownPostException.class, SweetDialogParams
+                        .forUnknownErrorView(getContext(), ignore -> post())))
                   .addProvider(new SweetDialogHttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil, ignore -> post()))
                   .build());
    }
@@ -215,7 +219,7 @@ public class DtlReviewScreenImpl extends DtlLayout<DtlReviewScreen, DtlReviewPre
    }
 
    private void onBack() {
-      if(commentAdapter.isCommentExist() || ratingView.getRating() > 0) {
+      if (commentAdapter.isCommentExist() || ratingView.getRating() > 0) {
          confirmBack();
       } else {
          back();

@@ -17,7 +17,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.operationsubscriber.OperationActionSubscriber;
 
-public class DtlReviewPresenterImpl extends DtlPresenterImpl<DtlReviewScreen,ViewState.EMPTY> implements DtlReviewPresenter {
+public class DtlReviewPresenterImpl extends DtlPresenterImpl<DtlReviewScreen, ViewState.EMPTY> implements DtlReviewPresenter {
 
    private static final int MAX_PHOTOS_COUNT = 5;
 

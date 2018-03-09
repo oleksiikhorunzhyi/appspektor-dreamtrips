@@ -129,23 +129,23 @@ import dagger.Provides;
       complete = false, library = true)
 public class DtlActivityModule {
 
-      @Named(FlowActivityModule.LABEL)
-      @Provides(type = Provides.Type.SET)
-      TypeAdapterFactory provideDtlPathTypeAdapterFactory() {
-            return RuntimeTypeAdapterFactory.of(MasterDetailPath.class)
-                  .registerSubtype(DtlFullscreenImagePath.class)
-                  .registerSubtype(DtlLocationsPath.class)
-                  .registerSubtype(DtlMerchantsPath.class)
-                  .registerSubtype(DtlReviewPath.class)
-                  .registerSubtype(DtlLocationChangePath.class)
-                  .registerSubtype(DtlLocationsSearchPath.class)
-                  .registerSubtype(DtlStartPath.class)
-                  .registerSubtype(DtlDetailReviewPath.class)
-                  .registerSubtype(DtlMerchantDetailsPath.class)
-                  .registerSubtype(DtlMapPath.class)
-                  .registerSubtype(DtlTransactionListPath.class)
-                  .registerSubtype(DtlReviewsPath.class)
-                  .registerSubtype(DtlMapInfoPath.class)
-                  .registerSubtype(DtlTransactionPath.class);
-      }
+   @Named(FlowActivityModule.LABEL)
+   @Provides(type = Provides.Type.SET)
+   TypeAdapterFactory provideDtlPathTypeAdapterFactory() {
+      return RuntimeTypeAdapterFactory.of(MasterDetailPath.class)
+            .registerSubtype(DtlFullscreenImagePath.class)
+            .registerSubtype(DtlLocationsPath.class)
+            .registerSubtype(DtlMerchantsPath.class)
+            .registerSubtype(DtlReviewPath.class)
+            .registerSubtype(DtlLocationChangePath.class)
+            .registerSubtype(DtlLocationsSearchPath.class)
+            .registerSubtype(DtlStartPath.class)
+            .registerSubtype(DtlDetailReviewPath.class)
+            .registerSubtype(DtlMerchantDetailsPath.class)
+            .registerSubtype(DtlMapPath.class)
+            .registerSubtype(DtlTransactionListPath.class)
+            .registerSubtype(DtlReviewsPath.class)
+            .registerSubtype(DtlMapInfoPath.class)
+            .registerSubtype(DtlTransactionPath.class);
+   }
 }

@@ -70,14 +70,21 @@ public class PostReviewHttpCommand extends Command<CommentReview> implements Inj
 
    private void throwIfError(CommentReview commentReview) {
       final PostReviewErrorAdapter adapter = new PostReviewErrorAdapter(commentReview);
-      if (!adapter.isHaveError()) return;
+      if (!adapter.isHaveError()) {
+         return;
+      }
 
       switch (adapter.errorReason()) {
-         case PROFANITY: throw new ProfanityPostException();
-         case DUPLICATED: throw new DuplicatePostException();
-         case REQUESTS_LIMIT: throw new RequestLimitException();
-         case UNKNOWN: throw new UnknownPostException();
-         default: throw new UnrecognizedException();
+         case PROFANITY:
+            throw new ProfanityPostException();
+         case DUPLICATED:
+            throw new DuplicatePostException();
+         case REQUESTS_LIMIT:
+            throw new RequestLimitException();
+         case UNKNOWN:
+            throw new UnknownPostException();
+         default:
+            throw new UnrecognizedException();
       }
    }
 }

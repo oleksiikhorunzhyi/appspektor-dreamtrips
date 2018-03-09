@@ -80,15 +80,15 @@ public class DtlDetailReviewPresenterImpl extends DtlPresenterImpl<DtlDetailRevi
             .createObservable(flaggingReviewAction)
             .compose(bindViewIoToMainComposer())
             .subscribe(new ActionStateSubscriber<FlaggingReviewAction>()
-               .onSuccess(flaggingReviewAction1 -> {
-                  List<Errors> errors = flaggingReviewAction.getResult().errors();
-                  if (errors == null || errors.isEmpty()) {
-                     getView().showFlaggingSuccess();
-                  } else {
-                     getView().showFlaggingError();
-                  }
-               })
-               .onFail((flaggingReviewAction1, throwable) -> getView().showFlaggingError()));
+                  .onSuccess(flaggingReviewAction1 -> {
+                     List<Errors> errors = flaggingReviewAction.getResult().errors();
+                     if (errors == null || errors.isEmpty()) {
+                        getView().showFlaggingSuccess();
+                     } else {
+                        getView().showFlaggingError();
+                     }
+                  })
+                  .onFail((flaggingReviewAction1, throwable) -> getView().showFlaggingError()));
    }
 
    private void onMerchantsLoaded(UrlTokenAction action) {

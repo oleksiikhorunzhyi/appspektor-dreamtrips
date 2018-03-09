@@ -23,7 +23,9 @@ public enum PostReviewError {
    }
 
    public static PostReviewError of(@Nullable String error) {
-      if (error == null) return UNRECOGNIZED;
+      if (error == null) {
+         return UNRECOGNIZED;
+      }
 
       for (PostReviewError name : values()) {
          if (String.format(name.error(), Locale.ENGLISH).equalsIgnoreCase(error)) {

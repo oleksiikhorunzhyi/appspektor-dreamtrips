@@ -314,12 +314,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.getStateRecyclerView());
    }
 
-   @Override
-   public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged(recyclerViewManager.findFocusedPosition());
-   }
-
-
    private void processFeedItems(List<FeedItem> feedItems, List feedModels) {
       int feedItemsSize = feedItems == null ? 0 : feedItems.size();
       if (feedItemsSize == 0) {

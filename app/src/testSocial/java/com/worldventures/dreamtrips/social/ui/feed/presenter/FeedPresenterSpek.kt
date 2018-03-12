@@ -115,8 +115,6 @@ class FeedPresenterSpek : PresenterBaseSpec(FeedTestSuite()) {
                      presenter.subscribeToStorage()
 
                      assert(presenter.feedItems.containsAll(command.result))
-                     verify(view, VerificationModeFactory.times(1)).refreshFeedItems(command.result, null, false)
-                     verify(view, VerificationModeFactory.times(1)).dataSetChanged()
                      AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 1)
                   }
 

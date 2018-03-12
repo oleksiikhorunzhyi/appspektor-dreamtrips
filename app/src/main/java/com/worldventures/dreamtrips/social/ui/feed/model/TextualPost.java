@@ -73,6 +73,10 @@ public class TextualPost extends BaseFeedEntity {
          return false;
       }
 
+      if (!super.contentSame(feedEntity)) {
+         return false;
+      }
+
       TextualPost that = (TextualPost) feedEntity;
 
       if (description != null ? !description.equals(that.description) : that.description != null) {

@@ -2,7 +2,7 @@ ext {
    pluginDependencies = [:]
    pluginDependencies.versions = [
          java  : '1.8',
-         kotlin: '1.2.30',
+         kotlin: '1.2.10',
          detekt: '1.0.0.RC6-2'
    ]
    pluginDependencies.repos = [

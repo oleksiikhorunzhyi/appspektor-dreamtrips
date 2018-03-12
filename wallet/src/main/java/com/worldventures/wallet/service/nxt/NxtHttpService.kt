@@ -3,8 +3,6 @@ package com.worldventures.wallet.service.nxt
 import android.os.Build
 import com.worldventures.core.utils.AppVersionNameBuilder
 import com.worldventures.core.utils.LocaleHelper
-import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction
-import com.worldventures.dreamtrips.api.api_common.BaseHttpAction
 import com.worldventures.dreamtrips.api.smart_card.nxt.CreateNxtSessionHttpAction
 import com.worldventures.wallet.domain.session.NxtSessionHolder
 import com.worldventures.wallet.service.WalletSocialInfoProvider
@@ -24,23 +22,28 @@ import timber.log.Timber
 import java.net.HttpURLConnection
 import java.util.concurrent.CopyOnWriteArraySet
 
-@Suppress("UnsafeCallOnNullableType")
-class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder, private val appVersionNameBuilder: AppVersionNameBuilder,
-                     private val socialInfoProvider: WalletSocialInfoProvider, private val mapperyContext: MapperyContext, baseUrl: String,
-                     client: HttpClient, converter: Converter, private val nxtIdConfigsProvider: NxtIdConfigsProvider) : ActionServiceWrapper(HttpActionService(baseUrl, client, converter)) {
+class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder,
+                     private val appVersionNameBuilder: AppVersionNameBuilder,
+                     private val socialInfoProvider: WalletSocialInfoProvider,
+                     private val mapperyContext: MapperyContext,
+                     private val nxtIdConfigsProvider: NxtIdConfigsProvider,
+                     baseUrl: String,
+                     client: HttpClient,
+                     converter: Converter
+) : ActionServiceWrapper(HttpActionService(baseUrl, client, converter)) {
+
    private val nxtAuthRetryPolicy: NxtAuthRetryPolicy = NxtAuthRetryPolicy(nxtSessionHolder)
    private val createNxtSessionHttpActionPipe: ActionPipe<CreateNxtSessionHttpAction> = Janet.Builder()
          .addService(HttpActionService(nxtIdConfigsProvider.nxtidSessionApi(), client, converter))
          .build() // inject janet via constructor
          .createPipe(CreateNxtSessionHttpAction::class.java)
+
    private val retriedActions = CopyOnWriteArraySet<Any>()
 
-   @Suppress("UnsafeCast")
    override fun <A> onInterceptSend(holder: ActionHolder<A>): Boolean {
-      if (holder.action() is MultifunctionNxtHttpAction) {
+      val action = holder.action()
+      if (action is MultifunctionNxtHttpAction) {
          nxtAuthRetryPolicy.handle { this.createSession() }
-
-         val action = holder.action() as MultifunctionNxtHttpAction
          action.body = action.body.copy(sessionToken = pleaseGetSessionToken())
       }
       return false
@@ -64,8 +67,8 @@ class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder, private val
 
    @Suppress("UNCHECKED_CAST", "UnsafeCast")
    override fun <A> onInterceptFail(holder: ActionHolder<A>, e: JanetException): Boolean {
-      if (holder.action() is MultifunctionNxtHttpAction && !retriedActions.remove(holder.action())) {
-         val action = holder.action() as MultifunctionNxtHttpAction
+      val action = holder.action()
+      if (action is MultifunctionNxtHttpAction && !retriedActions.remove(holder.action())) {
          if (action.getStatusCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) {
             synchronized(this) {
                val currentSessionToken = pleaseGetSessionToken()
@@ -104,22 +107,23 @@ class NxtHttpService(private val nxtSessionHolder: NxtSessionHolder, private val
       val loginState = createNxtSessionHttpActionPipe.createObservable(createNxtSessionHttpAction)
             .toBlocking()
             .last()
-      if (loginState.status == ActionState.Status.SUCCESS) {
-         return mapperyContext.convert(loginState.action.response(), NxtSession::class.java)
+
+      return if (loginState.status == ActionState.Status.SUCCESS) {
+         mapperyContext.convert(loginState.action.response(), NxtSession::class.java)
       } else {
          Timber.w(loginState.exception, "Login error")
+         null
       }
-      return null
    }
 
-   private fun prepareAction(action: BaseHttpAction) {
+   private fun prepareAction(action: CreateNxtSessionHttpAction) {
       action.appVersionHeader = appVersionNameBuilder.semanticVersionName
       action.appLanguageHeader = LocaleHelper.getDefaultLocaleFormatted()
       action.setApiVersionForAccept(nxtIdConfigsProvider.apiVersion())
-      action.appPlatformHeader = String.format("android-%d", Build.VERSION.SDK_INT)
+      action.appPlatformHeader = String.format("android-${Build.VERSION.SDK_INT}")
       //
-      if (action is AuthorizedHttpAction && socialInfoProvider.hasUser()) {
-         action.authorizationHeader = "Token token=" + socialInfoProvider.apiToken()!!
+      if (socialInfoProvider.hasUser()) {
+         action.authorizationHeader = "Token token=${socialInfoProvider.apiToken()}"
       }
    }
 }

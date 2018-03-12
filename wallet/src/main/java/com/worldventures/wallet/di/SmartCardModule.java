@@ -15,6 +15,7 @@ import com.worldventures.wallet.domain.storage.action.PersistentDeviceStorage;
 import com.worldventures.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.wallet.service.WalletSocialInfoProviderImpl;
 import com.worldventures.wallet.service.logout.WalletLogoutActionModule;
+import com.worldventures.wallet.service.nxt.JanetNxtModule;
 import com.worldventures.wallet.util.WalletBuildConfigHelper;
 import com.worldventures.wallet.util.WalletFeatureHelper;
 import com.worldventures.wallet.util.WalletFeatureHelperFull;

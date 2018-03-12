@@ -14,6 +14,7 @@ import com.worldventures.core.modules.legal.LegalInteractor
 import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableSmartCardDetails
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
 import com.worldventures.dreamtrips.api.terms_and_conditions.model.BaseDocumentBody
 import com.worldventures.dreamtrips.api.terms_and_conditions.model.DocumentBodyWithUrl
@@ -31,7 +32,6 @@ import com.worldventures.wallet.domain.storage.action.DeviceStateActionStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
-import com.worldventures.wallet.model.TestApiSmartCardDetails
 import com.worldventures.wallet.model.TestApiUpdateCardUserData
 import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
@@ -200,7 +200,7 @@ class WizardInteractorSpec : BaseSpec({
                .bind(MockHttpActionService.Response(204)) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("delete", true)
                }
-               .bind(MockHttpActionService.Response(204).body(TestApiSmartCardDetails(MOCK_SMART_CARD_ID))) { request ->
+               .bind(MockHttpActionService.Response(204).body(ImmutableSmartCardDetails.builder().scID(MOCK_SMART_CARD_ID).build())) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("post", true)
                }
                .bind(MockHttpActionService.Response(200).body(termsAndConditionsResponse)) { request ->

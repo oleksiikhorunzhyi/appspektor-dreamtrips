@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.api.smart_card.feedback.model.ImmutableSmart
 import com.worldventures.dreamtrips.api.smart_card.feedback.model.SmartCardMetadata;
 import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.wallet.domain.entity.SmartCard;
-import com.worldventures.wallet.domain.entity.SmartCardDetails;
 import com.worldventures.wallet.domain.entity.SmartCardFirmware;
 import com.worldventures.wallet.domain.storage.WalletStorage;
 import com.worldventures.wallet.util.SCFirmwareUtils;
@@ -66,11 +65,11 @@ public abstract class SendWalletFeedbackCommand<F extends BaseFeedback> extends 
          return null;
       }
 
-      SmartCardDetails details = smartCard.getDetails();
       return ImmutableSmartCardMetadata.builder()
             .smartCardId(Integer.parseInt(smartCard.getSmartCardId()))
-            .smartCardSerialNumber(details.getSerialNumber())
-            .bleId(details.getBleAddress())
+            // TODO Replace stubs with actual data from smartcard
+            .smartCardSerialNumber("")
+            .bleId("")
             .firmwareVersion(SCFirmwareUtils.smartCardFirmwareVersion(firmware))
             .sdkVersion(SmartCardSDK.getSDKVersion())
             .build();

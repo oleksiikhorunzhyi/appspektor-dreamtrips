@@ -13,7 +13,6 @@ import com.worldventures.wallet.ui.common.navigation.Navigator
 import com.worldventures.wallet.ui.records.add.toCreateRecordBundle
 import com.worldventures.wallet.ui.records.swiping.WizardChargingPresenter
 import com.worldventures.wallet.ui.records.swiping.WizardChargingScreen
-import io.techery.janet.helper.ActionStateSubscriber
 import io.techery.janet.operationsubscriber.OperationActionSubscriber
 import io.techery.janet.smartcard.action.charger.StartCardRecordingAction
 import io.techery.janet.smartcard.action.charger.StopCardRecordingAction
@@ -41,23 +40,23 @@ class WizardChargingPresenterImpl(navigator: Navigator,
 
    private fun fetchUserPhoto() {
       smartCardInteractor.smartCardUserPipe()
-            .createObservable(SmartCardUserCommand.fetch())
+            .createObservableResult(SmartCardUserCommand.fetch())
             .compose(view.bindUntilDetach())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(ActionStateSubscriber<SmartCardUserCommand>()
-                  .onSuccess {
-                     var user = it.result
-                     user = null
-                     if (user == null) {
-                        val message = String.format("User is null in SmartCardUserCommand storage in %s screen",
-                              javaClass.simpleName)
-                        Timber.e(message)
-                        Crashlytics.log(message)
-                     } else {
-                        view.userPhoto(user.userPhoto)
-                     }
-                  }
-            )
+            .subscribe({
+               val user = it.result
+               if (user == null) {
+                  val message = String.format("User is null in SmartCardUserCommand storage in %s screen",
+                        javaClass.simpleName)
+                  Timber.e(message)
+                  Crashlytics.log(message)
+               } else {
+                  view.userPhoto(user.userPhoto)
+               }
+            }, {
+               Timber.e(it)
+               Crashlytics.logException(it)
+            })
    }
 
    private fun observeCharger() {

@@ -264,7 +264,6 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void refreshFeedItems(List feedItems) {
       fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.getStateRecyclerView());
-      startAutoplayVideos();
    }
 
    @Override

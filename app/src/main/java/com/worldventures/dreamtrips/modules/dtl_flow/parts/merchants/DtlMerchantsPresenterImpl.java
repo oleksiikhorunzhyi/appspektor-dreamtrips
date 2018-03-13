@@ -54,6 +54,7 @@ import flow.path.Path;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import timber.log.Timber;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, DtlMerchantsState>
       implements DtlMerchantsPresenter {
@@ -262,6 +263,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
    }
 
    protected void onFailMerchantLoad(FullMerchantAction action, Throwable throwable) {
+      Timber.e(throwable);
+
       actionParamsHolder = FullMerchantParamsHolder.fromAction(action);
 
       getView().hideBlockingProgress();

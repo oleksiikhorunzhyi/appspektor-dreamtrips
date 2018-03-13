@@ -140,6 +140,11 @@ public class NavigatorImpl implements Navigator {
    }
 
    @Override
+   public void goNewFirmwareAvailableForcePair() {
+      single(new WalletNewFirmwareAvailableScreenImpl());
+   }
+
+   @Override
    public void goWizardWelcomeWalletStart(ProvisioningMode provisioningMode) {
       single(WizardWelcomeScreenImpl.create(provisioningMode));
    }
@@ -190,7 +195,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goNewFirmwareAvailable() {
-      single(new WalletNewFirmwareAvailableScreenImpl());
+      withoutLast(new WalletNewFirmwareAvailableScreenImpl());
    }
 
    @Override
@@ -265,7 +270,7 @@ public class NavigatorImpl implements Navigator {
 
    @Override
    public void goWizardEditProfile(ProvisioningMode provisioningMode) {
-      withoutLast(WizardEditProfileScreenImpl.create(provisioningMode));
+      withoutLast(WizardEditProfileScreenImpl.Companion.create(provisioningMode));
    }
 
    @Override
@@ -322,11 +327,6 @@ public class NavigatorImpl implements Navigator {
    @Override
    public void goStartFirmwareInstall() {
       go(new StartFirmwareInstallScreenImpl(), new SimpleSwapChangeHandler(), new SimpleSwapChangeHandler());
-   }
-
-   @Override
-   public void goStartFirmwareInstallCardList() {
-      single(new StartFirmwareInstallScreenImpl(), new SimpleSwapChangeHandler(), new SimpleSwapChangeHandler());
    }
 
    @Override

@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.modules.auth.api.command.LogoutCommand;
 import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
@@ -188,7 +189,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
 
    @Override
    public void refreshFeed() {
-      feedInteractor.getRefreshAccountTimelinePipe().send(new GetAccountTimelineCommand.Refresh());
+      featureManager.with(Feature.SOCIAL, () -> feedInteractor.getRefreshAccountTimelinePipe()
+            .send(new GetAccountTimelineCommand.Refresh()));
    }
 
    @Override
@@ -243,9 +245,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
                } else {
                   onCoverCropped(fileNotification.getValue(), null);
                }
-            }, error -> {
-               Timber.e(error, "");
-            });
+            }, Timber::e);
    }
 
    @Override

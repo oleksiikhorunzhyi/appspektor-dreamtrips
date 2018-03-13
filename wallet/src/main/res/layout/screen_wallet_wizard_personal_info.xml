@@ -241,7 +241,7 @@
                   tools:layout_editor_absoluteX="24dp"
                   />
 
-            <!--TODO: disable suffix functionality-->
+            <!--TODO: disable suffix functionality, keep code around as this feature might be enabled later -->
             <!--android:text="@={profile.suffix}"-->
             <!--TODO: ic_wallet_arrow_down_grey is item from DTL resources-->
             <TextView

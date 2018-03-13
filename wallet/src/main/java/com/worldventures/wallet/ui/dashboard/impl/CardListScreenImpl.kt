@@ -46,8 +46,8 @@ import com.worldventures.wallet.ui.dashboard.util.model.TransitionModel
 import com.worldventures.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder
 import com.worldventures.wallet.ui.dashboard.util.viewholder.CommonCardHolder
 import com.worldventures.wallet.ui.dialog.InstallFirmwareErrorDialog
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView
 import com.worldventures.wallet.ui.widget.SmartCardWidget
 import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.OperationView

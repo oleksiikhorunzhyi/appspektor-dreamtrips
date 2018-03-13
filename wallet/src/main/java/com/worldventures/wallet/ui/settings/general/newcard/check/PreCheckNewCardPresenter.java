@@ -10,4 +10,5 @@ public interface PreCheckNewCardPresenter extends WalletPresenter<PreCheckNewCar
 
    void prepareContinueAddCard();
 
+   void onFactoryResetFailed();
 }

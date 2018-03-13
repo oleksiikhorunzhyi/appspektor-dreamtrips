@@ -1,7 +1,7 @@
 package com.worldventures.wallet.service.nxt
 
 import com.worldventures.janet.injection.InjectableAction
-import com.worldventures.wallet.di.JanetNxtModule.JANET_NXT
+import com.worldventures.wallet.service.nxt.JanetNxtModule.JANET_NXT
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.service.nxt.model.MultiRequestBody
 import com.worldventures.wallet.service.nxt.model.MultiRequestElement

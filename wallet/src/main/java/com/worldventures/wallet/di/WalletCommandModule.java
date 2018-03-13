@@ -63,6 +63,7 @@ import com.worldventures.wallet.service.command.wizard.AddDummyRecordCommand;
 import com.worldventures.wallet.service.command.wizard.FetchAssociatedSmartCardCommand;
 import com.worldventures.wallet.service.command.wizard.ReAssignCardCommand;
 import com.worldventures.wallet.service.command.wizard.WizardCompleteCommand;
+import com.worldventures.wallet.service.nxt.NxtCommandsModule;
 import com.worldventures.wallet.service.profile.UpdateProfileModule;
 import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand;
 
@@ -70,6 +71,7 @@ import dagger.Module;
 
 @Module(
       includes = {
+            NxtCommandsModule.class,
             UpdateProfileModule.class
       },
       injects = {

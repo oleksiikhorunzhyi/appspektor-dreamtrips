@@ -66,13 +66,6 @@ class AssociateCardUserCommand(private val barcode: String,
       return SmartCard(
             smartCardId = source.scID().toString(),
             cardStatus = CardStatus.ACTIVE,
-            details = SmartCardDetails(
-                  deviceId = deviceId,
-                  serialNumber = source.serialNumber(),
-                  bleAddress = source.bleAddress(),
-                  wvOrderId = source.wvOrderId(),
-                  revVersion = source.revVersion(),
-                  nxtOrderId = source.nxtOrderId(),
-                  orderDate = source.orderDate()))
+            details = SmartCardDetails(deviceId = deviceId))
    }
 }

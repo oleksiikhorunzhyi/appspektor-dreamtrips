@@ -109,6 +109,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
          toolbarLandscape.setBackgroundColor(getResources().getColor(R.color.theme_main));
          toolbarLandscape.getBackground().setAlpha(255);
       }
+      subscribeToTripImagesClicks();
    }
 
    @Override
@@ -193,7 +194,6 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
          ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
       }
       tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), tripModel.getImageUrls());
-      subscribeToTripImagesClicks();
    }
 
    @Override

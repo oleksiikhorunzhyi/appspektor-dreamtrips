@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.view.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TripViewPagerBundle implements Parcelable {
@@ -24,6 +25,7 @@ public class TripViewPagerBundle implements Parcelable {
    }
 
    protected TripViewPagerBundle(Parcel in) {
+      tripImages = new ArrayList<>();
       in.readStringList(tripImages);
       position = in.readInt();
    }

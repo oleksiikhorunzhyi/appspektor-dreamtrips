@@ -81,6 +81,5 @@ public class UploadReceiptCommand extends Command<DtlTransaction> implements Inj
    }
 
    private class RuntimeCancelException extends RuntimeException {
-
    }
 }

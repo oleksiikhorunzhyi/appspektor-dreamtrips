@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
@@ -34,6 +35,8 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
    @InjectView(R.id.fab_progress) FabButton fabProgress;
    @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
 
+   private MaterialDialog progressDialog;
+
    @Override
    public void onActivityCreated(Bundle savedInstanceState) {
       super.onActivityCreated(savedInstanceState);
@@ -50,11 +53,6 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
       super.onResume();
       ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar)
             .setTitle(R.string.dtl_thrst_scan_receipt_screen_title);
-   }
-
-   @Override
-   public void onPause() {
-      super.onPause();
    }
 
    @Override
@@ -99,11 +97,44 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
 
    @Override
    public void showProgress() {
+      hideProgress();
+
+      progressDialog = new MaterialDialog.Builder(getContext()).progress(true, 0)
+            .content(R.string.loading)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .show();
+   }
+
+   @Override
+   public void hideProgress() {
+      if (progressDialog != null && progressDialog.isShowing()) {
+         progressDialog.dismiss();
+      }
+   }
+
+   @Override
+   public void showReceiptLoadingError(String filePath) {
+      hideProgress();
+
+      progressDialog = new MaterialDialog.Builder(getContext())
+            .content(R.string.receipt_upload_error_caption)
+            .negativeText(R.string.cancel)
+            .positiveText(R.string.retry)
+            .cancelable(false)
+            .canceledOnTouchOutside(false)
+            .onNegative((dialog, which) -> getActivity().onBackPressed())
+            .onPositive((dialog, which) -> getPresenter().retryPhotoUpload(filePath))
+            .show();
+   }
+
+   @Override
+   public void showThrstOpeningError() {
+      informUser(R.string.thrst_opening_error_caption);
    }
 
    @Override
    public void onApiError() {
-
    }
 
    @Override

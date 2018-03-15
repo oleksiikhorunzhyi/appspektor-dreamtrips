@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.ClearMerchantsSto
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetPayInAppVideoCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
@@ -33,6 +34,7 @@ import dagger.Provides;
             MerchantDetailsViewCommand.class,
             AttributesAction.class,
             FullMerchantAction.class,
+            GetPayInAppVideoCommand.class,
             ClearMerchantsStorageAction.class,
             MerchantsAction.class,
             NearbyLocationAction.class,

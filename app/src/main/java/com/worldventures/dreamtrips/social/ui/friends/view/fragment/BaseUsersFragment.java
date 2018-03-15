@@ -133,6 +133,7 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
       adapter.setItemsNoNotify((List<User>) users);
       result.dispatchUpdatesTo(adapter);
       statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreItems);
+      recyclerView.checkIfEmpty();
    }
 
    @Override

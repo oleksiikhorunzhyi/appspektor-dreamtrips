@@ -109,8 +109,8 @@ class TripListPresenter : Presenter<TripListPresenter.View>() {
 
    private fun subscribeToFilterEvents() {
       tripsInteractor.tripFiltersAppliedPipe
-            .observe()
-            .compose(bindViewToMainComposer())
+            .observeSuccess()
+            .compose(bindUntilPauseIoToMainComposer())
             .subscribe { reload(true) }
    }
 

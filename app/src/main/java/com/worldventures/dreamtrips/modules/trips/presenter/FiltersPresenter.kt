@@ -48,7 +48,6 @@ class FiltersPresenter : Presenter<FiltersPresenter.View>() {
                            data.allParentActivities = cachedFilters.activities.filter { it.isParent }
                            data.allRegions = cachedFilters.regions
                         }
-                        acceptFilters()
                      }
                      fillData()
                   }
@@ -63,7 +62,7 @@ class FiltersPresenter : Presenter<FiltersPresenter.View>() {
          view.fillData(mutableListOf<Any>().apply {
             add(DateFilterItem(it.startDate, it.endDate))
             add(FilterModel(it))
-            add(FilterSoldOutModel(it.isShowRecentlyAdded))
+            add(FilterSoldOutModel(it.isShowSoldOut))
             add(FilterFavoriteModel(it.isShowFavorites))
             add(FilterRecentlyAddedModel(it.isShowRecentlyAdded))
             add(RegionHeaderModel(regionsSelected))

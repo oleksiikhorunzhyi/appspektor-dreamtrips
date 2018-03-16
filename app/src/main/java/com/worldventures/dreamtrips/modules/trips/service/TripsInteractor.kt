@@ -5,8 +5,8 @@ import com.worldventures.dreamtrips.modules.trips.service.command.CheckTripsByUi
 import com.worldventures.dreamtrips.modules.trips.service.command.GetTripDetailsCommand
 import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsByUidCommand
 import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsCommand
-import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsLocationsCommand
 import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsFilterDataCommand
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsLocationsCommand
 import com.worldventures.dreamtrips.modules.trips.service.command.TripFiltersAppliedCommand
 import rx.schedulers.Schedulers
 
@@ -19,4 +19,8 @@ class TripsInteractor(pipeCreator: SessionActionPipeCreator) {
    val mapObjectsActionPipe = pipeCreator.createPipe(GetTripsLocationsCommand::class.java, Schedulers.io())
    val tripFiltersPipe = pipeCreator.createPipe(GetTripsFilterDataCommand::class.java, Schedulers.io())
    val tripFiltersAppliedPipe = pipeCreator.createPipe(TripFiltersAppliedCommand::class.java, Schedulers.io())
+
+   init {
+      tripFiltersAppliedPipe.send(TripFiltersAppliedCommand())
+   }
 }

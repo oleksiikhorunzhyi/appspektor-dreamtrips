@@ -48,7 +48,7 @@ class TripMapPresenter : Presenter<TripMapPresenter.View>() {
    private fun subscribeToFilterEvents() {
       tripsInteractor.tripFiltersAppliedPipe
             .observe()
-            .compose(bindViewToMainComposer())
+            .compose(bindUntilPauseIoToMainComposer())
             .subscribe { reloadMapObjects() }
    }
 

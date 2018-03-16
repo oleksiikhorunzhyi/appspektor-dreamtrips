@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.social.service.users.friend.delegate.MutualF
 import com.worldventures.dreamtrips.social.service.users.liker.delegate.LikersStorageDelegate;
 import com.worldventures.dreamtrips.social.service.users.request.delegate.RequestsStorageDelegate;
 import com.worldventures.dreamtrips.social.service.users.search.delegate.SearchedUsersStorageDelegate;
+import com.worldventures.dreamtrips.social.ui.profile.view.widgets.SmartAvatarView;
 
 import javax.inject.Singleton;
 
@@ -17,7 +18,12 @@ import dagger.Module;
 import dagger.Provides;
 
 @SuppressWarnings("WeakerAccess")
-@Module(library = true, complete = false, includes = UserActionStorageModule.class)
+@Module(library = true,
+        complete = false,
+        injects = {
+              SmartAvatarView.class,
+        },
+        includes = UserActionStorageModule.class)
 public class UserAppModule {
 
    @Singleton

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
@@ -29,6 +30,8 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.CurrentOpenTabEventDelegate;
+import com.worldventures.dreamtrips.social.util.UserStatusAdapter;
+import com.worldventures.dreamtrips.social.util.UserStatusDaoAdapter;
 
 import javax.inject.Singleton;
 
@@ -169,5 +172,11 @@ public class ManagerModule {
    @Singleton
    UserNotificationInteractor provideUserNotificationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new UserNotificationInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   UserStatusAdapter provideUserStatusAdapter(UsersDAO usersDao) {
+      return new UserStatusDaoAdapter(usersDao);
    }
 }

@@ -62,6 +62,7 @@ public abstract class FeedEntityCopyHelper {
       newBucketItem.setPhotos(bucketItem.getPhotos());
       newBucketItem.setCoverPhoto(bucketItem.getCoverPhoto());
       newBucketItem.setLocation(bucketItem.getLocation());
+      newBucketItem.setType(bucketItem.getType());
       newBucketItem.setLink(bucketItem.getUrl());
       newBucketItem.setDining(bucketItem.getDining());
       newBucketItem.setSelected(bucketItem.isSelected());

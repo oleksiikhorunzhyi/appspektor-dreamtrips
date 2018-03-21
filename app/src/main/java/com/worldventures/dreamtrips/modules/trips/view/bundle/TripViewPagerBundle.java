@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TripViewPagerBundle implements Parcelable {
 
-   private List<String> tripImages;
+   private final List<String> tripImages;
    private final int position;
 
    public TripViewPagerBundle(List<String> tripImages, int position) {

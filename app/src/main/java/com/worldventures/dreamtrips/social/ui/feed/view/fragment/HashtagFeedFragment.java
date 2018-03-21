@@ -96,9 +96,8 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
-            fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+            getPresenter().loadNext();
          }
       });
       if (ViewUtils.isTablet(getContext())) {
@@ -274,6 +273,12 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void updateItem(FeedItem feedItem) {
       fragmentWithFeedDelegate.notifyItemChanged(feedItem);
+   }
+
+   @Override
+   public void showLoading() {
+      fragmentWithFeedDelegate.addItem(new LoadMoreModel());
+      fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
    }
 
    @Override

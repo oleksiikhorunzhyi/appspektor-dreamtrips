@@ -167,7 +167,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
    }
 
    public void showPickerSkipPermission() {
-      view.showMediaPicker(getRemainingPhotosCount(), getRemainVideoCount(), videoLengthLimit);
+      view.showMediaPicker(getRemainingPhotosCount(), cachedCreationItems.isEmpty() ? getRemainVideoCount() : 0, videoLengthLimit);
    }
 
    public void recheckPermission(String[] permissions, boolean userAnswer) {

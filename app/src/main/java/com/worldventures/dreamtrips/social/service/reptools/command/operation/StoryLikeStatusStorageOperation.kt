@@ -5,9 +5,9 @@ import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory
 
 class StoryLikeStatusStorageOperation(val id: Int, val liked: Boolean) : ListStorageOperation<SuccessStory> {
    override fun perform(items: MutableList<SuccessStory>?) = items?.apply {
-      val index = indexOfFirst { id == id }
+      val index = indexOfFirst { it.id == id }
       if (index != -1) {
-         items[index] = first { id == id }.copy(isLiked = liked)
+         items[index] = first { it.id == id }.copy(isLiked = liked)
       }
    }
 }

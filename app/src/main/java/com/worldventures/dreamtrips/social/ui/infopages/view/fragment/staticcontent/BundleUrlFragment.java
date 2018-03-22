@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.social.ui.infopages.presenter.WebViewFragmen
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 @Layout(R.layout.fragment_webview)
-public class BundleUrlFragment<T extends WebViewFragmentPresenter> extends StaticInfoFragment<T, UrlBundle> {
+public abstract class BundleUrlFragment<T extends WebViewFragmentPresenter> extends StaticInfoFragment<T, UrlBundle> {
 
    @Override
    public void afterCreateView(View rootView) {

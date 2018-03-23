@@ -31,4 +31,8 @@ class HowToPayHintDelegate(private val snappyRepository: DtlSnappyRepository) {
       cachedShouldShow = false
       snappyRepository.setShouldShowHowToVideoHint(cachedShouldShow)
    }
+
+   fun reset() {
+      initialized = false
+   }
 }

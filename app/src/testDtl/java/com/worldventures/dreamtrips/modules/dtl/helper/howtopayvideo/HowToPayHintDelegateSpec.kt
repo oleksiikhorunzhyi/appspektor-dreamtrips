@@ -63,7 +63,7 @@ class HowToPayHintDelegateSpec : BaseSpec({
          assertFalse(delegate.shouldShowHowToPayHint())
       }
 
-      it("should use cached values properly") {
+      it("should use cached values properly and invalidate them") {
          whenever(repo.shouldShowHowToVideoHint()).thenReturn(true)
          val now = System.currentTimeMillis()
          val lessThanOneDayAgo = now - 16 * 3600 * 1000
@@ -78,6 +78,13 @@ class HowToPayHintDelegateSpec : BaseSpec({
 
          verify(repo, times(1)).shouldShowHowToVideoHint() // doesn't get called anymore
          verify(repo, times(1)).lastRemindMeLaterTimestamp() // doesn't get called anymore
+
+         delegate.reset()
+         delegate.shouldShowHowToPayHint()
+         repo.
+
+         verify(repo, times(2)).shouldShowHowToVideoHint() // gets called one more time, cache not used
+         verify(repo, times(2)).lastRemindMeLaterTimestamp() // gets called one more time, cache not used
       }
    }
 

@@ -115,12 +115,19 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+
+            if (adapter.getItem(oldItemPosition) instanceof User
+                  && items.get(newItemPosition) instanceof User) {
+               return false;
+            }
+
             if (adapter.getItem(oldItemPosition) instanceof FeedItem
                   && items.get(newItemPosition) instanceof FeedItem) {
                FeedItem oldItem = (FeedItem) adapter.getItem(oldItemPosition);
                FeedItem newItem = (FeedItem) items.get(newItemPosition);
                return oldItem.contentSame(newItem);
             }
+
             return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
          }
       });

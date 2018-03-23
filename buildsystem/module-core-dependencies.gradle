@@ -106,10 +106,9 @@ ext {
          // API
          mobileSdkApi             : [api: "com.worldventures.dreamtrips:mobilesdk-api:$mobileSdkVersion"],
          mobileSdkModel           : [p: "com.worldventures.dreamtrips:mobilesdk-commons-model:$mobileSdkVersion"],
-         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.42-SOCIAL-DEV-SNAPSHOT', config: {
+         apiMonolith              : [api: 'com.worldventures.dreamtrips:api-monolith:3.2.42-RELEASE-1.27-SNAPSHOT', config: {
             changing = true
          }],
-
    ]
 
    coreDependencies.util = [

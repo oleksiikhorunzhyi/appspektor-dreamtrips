@@ -93,7 +93,7 @@ class TripDetailsPresenter(var trip: TripModel) : Presenter<TripDetailsPresenter
                      analyticsInteractor.analyticsActionPipe().send(ViewDreamTripsApptentiveAnalyticAction())
                   }
                   .onFail { command, e ->
-                     if (command.cacheData == null || command.cacheData.content == null) view.setContent(null)
+                     if (command.cachedModel == null || command.cachedModel?.content == null) view.setContent(null)
                      handleError(command, e)
                   })
    }

@@ -22,7 +22,6 @@ import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.extension.ActivityKt;
@@ -76,12 +75,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    public static final String BLANK_PAGE = "about:blank";
    private static final String JS_STOP_PLAYBACK = "javascript:var x = document.getElementsByTagName(\"audio\");"
          + " var i; for (i = 0; i < x.length; i++) {x[i].pause();}";
-
-   @SuppressWarnings("unchecked")
-   @Override
-   protected T createPresenter(Bundle savedInstanceState) {
-      return (T) new Presenter();
-   }
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -270,7 +263,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
    }
 
    private boolean cantDisplayError() {
-      return getActivity().isDestroyed() || isDetached() || isRemoving() || getActivity() == null;
+      return getActivity() == null || getActivity().isDestroyed() || isDetached() || isRemoving();
    }
 
    private void noInternetConnection() {

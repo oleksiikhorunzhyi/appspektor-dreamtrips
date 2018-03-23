@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.social.ui.activity.presenter.VideoPlayerPres
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMerchantPresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollRepPresenter;
+import com.worldventures.dreamtrips.social.ui.infopages.presenter.PreviewTemplatePresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.WVAdvantagePresenter;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMemberFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollMerchantFragment;
@@ -67,6 +68,7 @@ import dagger.Provides;
             EnrollMerchantPresenter.class,
             EnrollRepPresenter.class,
             PreviewTemplateFragment.class,
+            PreviewTemplatePresenter.class,
             FilterLanguageDialogFragment.class,
             WVAdvantageFragment.class,
             WVAdvantagePresenter.class,

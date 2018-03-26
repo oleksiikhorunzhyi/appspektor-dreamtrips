@@ -19,8 +19,6 @@ public class PodcastsMapper implements Mapper<com.worldventures.dreamtrips.api.p
       podcast.setDuration(source.duration());
       podcast.setFileUrl(source.audioURL());
       podcast.setImageUrl(source.imageURL());
-      podcast.setSize(source.size());
-      podcast.setSpeaker(source.speaker());
       podcast.setCachedModel(cachedModel);
       return podcast;
    }

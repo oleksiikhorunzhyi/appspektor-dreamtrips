@@ -27,6 +27,10 @@ public class SessionActionPipeCreator {
       return actionPipe;
    }
 
+   public <A> ActionPipe<A> createPipeWithoutReply(Class<A> actionClass, Scheduler defaultSubscribeOn) {
+      return janet.createPipe(actionClass, defaultSubscribeOn);
+   }
+
    public void clearReplays() {
       for (ActionPipe actionPipe : actionPipes) {
          actionPipe.clearReplays();

@@ -80,7 +80,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
-import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.Flow;
 import flow.History;
@@ -113,7 +112,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @InjectView(R.id.btn_rate_and_review) TextView rateAndReviewBtn;
    @InjectView(R.id.order_from_menu_divider) View orderFromMenuDivider;
    @InjectView(R.id.order_from_menu) TextView orderFromMenuBtn;
-   @Optional @InjectView(R.id.dt_video_view) DTVideoViewImpl dtVideoView;
+   @InjectView(R.id.dt_video_view) DTVideoViewImpl dtVideoView;
 
    private MerchantOffersInflater merchantDataInflater;
    private MerchantWorkingHoursInflater merchantHoursInflater;
@@ -147,8 +146,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       showMessage();
 
       mContainerComments.loadFirstPage();
-
-      updateVideoHeight();
    }
 
    @Override
@@ -371,12 +368,15 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    private void updateVideoHeight() {
-      if (dtVideoView == null) {
-         return;
+      float pxWidth;
+
+      if (isTabletLandscape()) {
+         pxWidth = earnWrapper.getMeasuredWidth();
+      } else {
+         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+         pxWidth = displayMetrics.widthPixels;
       }
 
-      DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-      float pxWidth = displayMetrics.widthPixels;
       int height = (int) (pxWidth / 1.75); // video is FullHD, 1900 / 1080 = ~ 1.75
       ViewGroup.LayoutParams params = dtVideoView.getLayoutParams();
       params.height = height;
@@ -650,6 +650,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
    @Override
    public void openHowToPayVideo(String url) {
+      updateVideoHeight();
+
       dtVideoView.setClosePlayerFunction(() -> {
          dtVideoView.pauseVideo();
          dtVideoView.setVisibility(GONE);

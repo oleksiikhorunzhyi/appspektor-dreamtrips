@@ -33,6 +33,8 @@ import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcont
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -135,12 +137,13 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
                   .onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition()));
    }
 
+
    @Override
-   public void setContent(List<ContentItem> contentItems) {
+   public void setContent(@Nullable List<? extends ContentItem> contentItems) {
       if (isAdded()) {
          progressBarDetailLoading.setVisibility(View.GONE);
          if (contentItems != null) {
-            linearListView.setAdapter(new ContentAdapter(contentItems, getActivity()));
+            linearListView.setAdapter(new ContentAdapter((List<ContentItem>) contentItems, getActivity()));
          } else {
             textViewReloadTripDetails.setVisibility(View.VISIBLE);
          }

@@ -45,7 +45,7 @@ class GetPodcastsCommand(val refresh: Boolean = false) : CommandWithError<List<P
    }
 
    private fun initialProcessCache(callback: Command.CommandCallback<List<Podcast>>) {
-      if (cachedData.isEmpty()) {
+      if (!cachedData.isEmpty()) {
          Observable.from(cachedData)
                .toList()
                .doOnNext { callback.onProgress(0) }

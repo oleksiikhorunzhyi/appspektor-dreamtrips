@@ -302,12 +302,12 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
    ///////////////////////////////////////////////////////////////////////////
 
    @Override
-   public void moveTo(List<TripModel> trips) {
+   public void moveTo(@NotNull List<? extends TripModel> tripList) {
       router.moveTo(TripMapListFragment.class, NavigationConfigBuilder.forFragment()
             .containerId(R.id.container_info)
             .fragmentManager(getChildFragmentManager())
             .backStackEnabled(false)
-            .data(new TripMapListBundle(trips))
+            .data(new TripMapListBundle((List<TripModel>) tripList))
             .build());
    }
 

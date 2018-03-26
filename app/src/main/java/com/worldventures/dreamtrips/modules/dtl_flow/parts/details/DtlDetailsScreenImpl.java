@@ -668,10 +668,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    @Override
    public void onWindowFocusChanged(boolean hasWindowFocus) {
       super.onWindowFocusChanged(hasWindowFocus);
-      if (!hasWindowFocus) {
-         if (dtVideoView.isVideoInProgress() && !dtVideoView.isVideoFinished()) {
-            dtVideoView.pauseVideo();
-         }
+      if (!hasWindowFocus && dtVideoView.isVideoInProgress() && !dtVideoView.isVideoFinished()) {
+         dtVideoView.pauseVideo();
       }
    }
 

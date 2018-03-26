@@ -135,9 +135,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       super.onVisibilityChanged(visibility);
       if (visibility == View.VISIBLE) {
          getView().setupMap();
-      }
-      if (visibility == View.VISIBLE && merchant.asMerchantAttributes().hasOffers()) {
-         processTransaction();
+         if (merchant.asMerchantAttributes().hasOffers()) {
+            processTransaction();
+         }
       }
    }
 
@@ -423,6 +423,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                      .onFinish(getPayInAppVideoCommand -> getView().hideBlockingProgress())
                );
       } else {
+         getView().hideVideoIfNeeded();
          onCheckInClicked();
       }
    }

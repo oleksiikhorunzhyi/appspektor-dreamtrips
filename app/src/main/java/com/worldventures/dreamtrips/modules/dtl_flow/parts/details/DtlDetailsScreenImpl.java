@@ -665,6 +665,25 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
       dtVideoView.playVideo(new DTVideoConfig(null, false, qualities, 0));
    }
 
+   @Override
+   protected void onWindowVisibilityChanged(int visibility) {
+      super.onWindowVisibilityChanged(visibility);
+      if (visibility == VISIBLE) {
+         if (dtVideoView.getVisibility() == VISIBLE && !dtVideoView.isVideoFinished()) {
+            dtVideoView.getVideoHolder().resume();
+         }
+      } else if (visibility == GONE) {
+         if (dtVideoView.getVisibility() == VISIBLE && !dtVideoView.isVideoFinished()) {
+            dtVideoView.pauseVideo();
+         }
+      }
+   }
+
+   @Override
+   public void hideVideoIfNeeded() {
+      dtVideoView.setVisibility(GONE);
+   }
+
    ///////////////////////////////////////////////////////////////////////////
    // Boilerplate stuff
    ///////////////////////////////////////////////////////////////////////////

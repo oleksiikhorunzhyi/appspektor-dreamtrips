@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.core.repository;
 
 import com.worldventures.dreamtrips.modules.config.model.Configuration;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.filter.CachedTripFilters;
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,8 +28,6 @@ public interface SnappyRepository {
    String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
    String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count";
    String FRIEND_REQUEST_COUNT = "Friend-Requests-Count";
-
-   String CURRENT_VERSION = "CURRENT_VERSION";
 
    void clearAll();
 
@@ -100,8 +98,4 @@ public interface SnappyRepository {
    int getExclusiveNotificationsCount();
 
    int getFriendsRequestsCount();
-
-   void setCurrentVersion(int version);
-
-   int getCurrentVersion();
 }

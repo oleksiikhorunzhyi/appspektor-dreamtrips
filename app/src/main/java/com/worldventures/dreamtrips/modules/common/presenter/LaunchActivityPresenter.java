@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.messenger.synchmechanism.MessengerConnector;
+import com.worldventures.core.model.AppVersionHolder;
 import com.worldventures.core.modules.auth.api.command.LoginCommand;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.core.modules.auth.service.analytics.LoginAction;
@@ -40,6 +41,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject DtlLocationInteractor dtlLocationInteractor;
    @Inject InitializerInteractor initializerInteractor;
    @Inject HttpResponseSnifferDelegate httpResponseSnifferDelegate;
+   @Inject AppVersionHolder appVersionHolder;
 
    @State boolean dtlInitDone;
    @State boolean userAlreadyLoggedIn = true;
@@ -63,7 +65,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                   .onSuccess(loginCommand -> {
                      userAlreadyLoggedIn = false;
                      authInteractor.loginActionPipe().clearReplays();
-                     db.setCurrentVersion(BuildConfig.VERSION_CODE);
+                     appVersionHolder.put(BuildConfig.VERSION_CODE);
                      launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
@@ -92,7 +94,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    }
 
    private boolean isNewVersion() {
-      return BuildConfig.VERSION_CODE > db.getCurrentVersion();
+      return !appVersionHolder.get().isPresent() || BuildConfig.VERSION_CODE > appVersionHolder.get().get();
    }
 
    private void invalidateVersion() {

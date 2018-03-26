@@ -666,31 +666,21 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
    }
 
    @Override
-   protected void onWindowVisibilityChanged(int visibility) {
-      super.onWindowVisibilityChanged(visibility);
-      switch (visibility) {
-         case VISIBLE: {
-            if (dtVideoView.getVisibility() == VISIBLE && !dtVideoView.isVideoFinished()) {
-               dtVideoView.getVideoHolder().resume();
-            }
-            break;
-         }
-         case GONE: {
-            if (dtVideoView.getVisibility() == VISIBLE && !dtVideoView.isVideoFinished()) {
-               dtVideoView.pauseVideo();
-            }
-            break;
-         }
-         case INVISIBLE: // intentionally left blank
-         default: {
-            // intentionally left blank
+   public void onWindowFocusChanged(boolean hasWindowFocus) {
+      super.onWindowFocusChanged(hasWindowFocus);
+      if (!hasWindowFocus) {
+         if (dtVideoView.isVideoInProgress() && !dtVideoView.isVideoFinished()) {
+            dtVideoView.pauseVideo();
          }
       }
    }
 
    @Override
    public void hideVideoIfNeeded() {
-      dtVideoView.setVisibility(GONE);
+      if (dtVideoView.getVisibility() == VISIBLE && dtVideoView.isVideoInProgress() && !dtVideoView.isVideoFinished()) {
+         dtVideoView.pauseVideo();
+         dtVideoView.setVisibility(GONE);
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////

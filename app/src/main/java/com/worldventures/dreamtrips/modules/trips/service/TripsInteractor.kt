@@ -18,9 +18,14 @@ class TripsInteractor(pipeCreator: SessionActionPipeCreator) {
    val checkTripsByUidPipe = pipeCreator.createPipe(CheckTripsByUidCommand::class.java, Schedulers.io())
    val mapObjectsActionPipe = pipeCreator.createPipe(GetTripsLocationsCommand::class.java, Schedulers.io())
    val tripFiltersPipe = pipeCreator.createPipe(GetTripsFilterDataCommand::class.java, Schedulers.io())
-   val tripFiltersAppliedPipe = pipeCreator.createPipeWithoutReply(TripFiltersAppliedCommand::class.java, Schedulers.io())
+   val tripFiltersAppliedPipe = pipeCreator.createPipe(TripFiltersAppliedCommand::class.java, Schedulers.io())
 
    init {
+      initFilters()
+
+   }
+
+   fun initFilters() {
       tripFiltersAppliedPipe.send(TripFiltersAppliedCommand())
    }
 }

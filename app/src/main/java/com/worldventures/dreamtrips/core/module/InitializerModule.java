@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInter
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.FilterDataInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.Initializable;
+import com.worldventures.dreamtrips.modules.trips.service.TripFilterInitializable;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -110,6 +112,11 @@ public class InitializerModule {
    @Provides(type = Provides.Type.SET)
    public Initializable provideDtlLocationInteractor(DtlLocationInteractor dtlLocationInteractor) {
       return dtlLocationInteractor;
+   }
+
+   @Provides(type = Provides.Type.SET)
+   public Initializable provideTripFilterInitializable(TripsInteractor tripsInteractor) {
+      return new TripFilterInitializable(tripsInteractor);
    }
 
    @Provides(type = Provides.Type.SET)

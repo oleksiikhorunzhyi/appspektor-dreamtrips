@@ -284,17 +284,11 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void startLoading() {
       statePaginatedRecyclerViewManager.startLoading();
-      if (emptyView != null) {
-         emptyView.setVisibility(View.GONE);
-      }
    }
 
    @Override
    public void finishLoading() {
       statePaginatedRecyclerViewManager.finishLoading();
-      if (emptyView != null) {
-         emptyView.setVisibility(View.VISIBLE);
-      }
    }
 
    @Override

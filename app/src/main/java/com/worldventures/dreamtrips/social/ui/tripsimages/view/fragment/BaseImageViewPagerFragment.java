@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePager
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.BaseImageViewPagerPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -57,9 +58,9 @@ public abstract class BaseImageViewPagerFragment<PM extends BaseImageViewPagerPr
    }
 
    @Override
-   public void setItems(List<FragmentItem> fragmentItems) {
+   public void setItems(List<? extends FragmentItem> fragmentItems) {
       adapter.clear();
-      adapter.addItems(fragmentItems);
+      adapter.addItems(new ArrayList<>(fragmentItems));
       adapter.notifyDataSetChanged();
    }
 

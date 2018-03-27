@@ -26,7 +26,7 @@ public class PodcastPlayerPresenter extends ActivityPresenter {
    public void takeView(View view) {
       super.takeView(view);
       progressObservable
-            .flatMap(progressPair -> progressAnalyticInteractor.sendProgressAnalyticsIfNeedActionPipe()
+            .flatMap(progressPair -> progressAnalyticInteractor.getSendAnalyticsPipe()
                   .createObservableResult(new SendPodcastAnalyticsIfNeedAction(podcastName, expectedAnalyticStep, progressPair.first, progressPair.second)))
             .map(action -> (Integer) action.getResult())
             .subscribe(nextAnalyticStep -> expectedAnalyticStep = nextAnalyticStep);

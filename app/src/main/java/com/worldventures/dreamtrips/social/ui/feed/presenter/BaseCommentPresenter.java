@@ -5,7 +5,8 @@ import android.text.TextUtils;
 import com.worldventures.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.feed.service.analytics.CommentAction;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.users.liker.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedAction
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.social.ui.feed.service.analytics.CommentAction;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.CreateCommentCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.DeleteCommentCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.EditCommentCommand;
@@ -21,8 +23,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.GetCommentsCo
 import com.worldventures.dreamtrips.social.ui.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagDelegate;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetLikersCommand;
 
 import java.util.List;
 

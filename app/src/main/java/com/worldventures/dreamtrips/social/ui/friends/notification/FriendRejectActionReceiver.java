@@ -6,9 +6,9 @@ import android.content.Intent;
 
 import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.users.request.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ public class FriendRejectActionReceiver extends BroadcastReceiver {
       ((Injector) context.getApplicationContext()).inject(this);
       //
       UserBundle bundle = intent.getParcelableExtra(ComponentPresenter.EXTRA_DATA);
-      friendsInteractor.rejectRequestPipe().send(new ActOnFriendRequestCommand.Reject(bundle.getUser()));
+      friendsInteractor.getRejectRequestPipe().send(new ActOnFriendRequestCommand.Reject(bundle.getUser()));
       notifDelegate.cancel(bundle.getUser().getId());
    }
 }

@@ -22,7 +22,6 @@ class UpdateTrackingStatusCommand(private val enabled: Boolean) : Command<Boolea
    override fun run(callback: Command.CommandCallback<Boolean>) {
       settingsInteractor.settingsActionPipe()
             .createObservableResult(SettingsCommand(prepareTrackingStatus()))
-            .onErrorReturn { null }
             .flatMap { saveTrackingStatus() }
             .subscribe({ callback.onSuccess(it) }, { callback.onFail(it) })
    }

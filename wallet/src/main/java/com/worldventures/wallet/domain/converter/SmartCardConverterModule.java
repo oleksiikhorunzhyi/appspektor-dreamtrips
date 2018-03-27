@@ -14,16 +14,6 @@ public class SmartCardConverterModule {
    }
 
    @Provides(type = Provides.Type.SET)
-   Converter provideSmartCardDetailsConverter() {
-      return new SmartCardDetailsConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   Converter provideSmartCardInfoToSmartCardDetail() {
-      return new SmartCardInfoToSmartCardDetail();
-   }
-
-   @Provides(type = Provides.Type.SET)
    Converter provideSmartCardRecordToWalletRecordConverter() {
       return new SmartCardRecordToWalletRecordConverter();
    }

@@ -2,24 +2,22 @@ package com.worldventures.dreamtrips.social.ui.friends.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.innahema.collections.query.functions.Action1;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
+import com.worldventures.core.ui.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
-import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
-import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
+import com.worldventures.core.ui.view.recycler.StateRecyclerView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -32,69 +30,59 @@ import com.worldventures.dreamtrips.social.ui.friends.view.cell.FriendCell;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.UserActionDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import butterknife.InjectView;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B extends BaseUsersBundle> extends BaseFragmentWithArgs<T, B>
       implements BaseUserListPresenter.View, SwipeRefreshLayout.OnRefreshListener, UserActionDelegate {
 
    @InjectView(R.id.empty) protected RelativeLayout emptyView;
-   @InjectView(R.id.recyclerViewFriends) protected EmptyRecyclerView recyclerView;
+   @InjectView(R.id.recyclerViewFriends) protected StateRecyclerView recyclerView;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.caption) protected TextView caption;
 
    @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
 
-   private RecyclerViewStateDelegate stateDelegate;
-
    protected BaseDelegateAdapter<User> adapter;
-
-   protected WeakHandler weakHandler;
-   private LinearLayoutManager layoutManager;
-
    private MaterialDialog blockingProgressDialog;
+
+   private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+   private Bundle saveInstanceState;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      weakHandler = new WeakHandler();
-      stateDelegate = new RecyclerViewStateDelegate();
-      stateDelegate.onCreate(savedInstanceState);
-   }
-
-   @Override
-   public void onSaveInstanceState(Bundle outState) {
-      super.onSaveInstanceState(outState);
-      stateDelegate.saveStateIfNeeded(outState);
+      this.saveInstanceState = savedInstanceState;
    }
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      stateDelegate.setRecyclerView(recyclerView);
       adapter = new BaseDelegateAdapter<>(getActivity(), this);
       adapter.registerCell(User.class, FriendCell.class);
 
       recyclerView.setEmptyView(emptyView);
       recyclerView.setAdapter(adapter);
 
-      layoutManager = createLayoutManager();
-      recyclerView.setLayoutManager(layoutManager);
-      if (!ViewUtils.isLandscapeOrientation(getActivity())) {
-         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
-      }
-      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
-            checkScrolledItems();
-         }
-      });
-      refreshLayout.setOnRefreshListener(this);
+      statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(recyclerView, refreshLayout);
+      statePaginatedRecyclerViewManager.init(adapter, saveInstanceState, createLayoutManager());
+      statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+      statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+      if (!ViewUtils.isLandscapeOrientation(getActivity())) {
+         statePaginatedRecyclerViewManager.addItemDecoration(new SimpleListDividerDecorator(getResources().getDrawable(R.drawable.list_divider), true));
+      }
+
    }
 
    protected LinearLayoutManager createLayoutManager() {
@@ -104,7 +92,6 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
    @Override
    public void onDestroyView() {
       super.onDestroyView();
-      stateDelegate.onDestroyView();
    }
 
    @Override
@@ -114,23 +101,13 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    public void startLoading() {
-      // timeout was set according to the issue:
-      // https://code.google.com/p/android/issues/detail?id=77712
-      weakHandler.postDelayed(() -> {
-         if (refreshLayout != null) {
-            refreshLayout.setRefreshing(true);
-         }
-      }, 100);
+      statePaginatedRecyclerViewManager.startLoading();
    }
 
    @Override
    public void finishLoading() {
-      weakHandler.postDelayed(() -> {
-         if (refreshLayout != null) {
-            refreshLayout.setRefreshing(false);
-         }
-      }, 100);
-      stateDelegate.restoreStateIfNeeded();
+      statePaginatedRecyclerViewManager.finishLoading();
+      recyclerView.restoreStateIfNeeded();
    }
 
    @Override
@@ -149,16 +126,14 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public void refreshUsers(List<User> users) {
-      adapter.setItems(users);
-      checkScrolledItems();
-   }
-
-   private void checkScrolledItems() {
-      int itemCount = layoutManager.getItemCount();
-      int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-      getPresenter().scrolled(itemCount, lastVisibleItemPosition);
+   public void refreshUsers(@Nullable List<? extends User> users, boolean noMoreItems) {
+      DiffUtil.DiffResult result = DiffUtil.calculateDiff(new UsersDiffUtilCallback(adapter.getItems(), (List<User>) users));
+      adapter.setItemsNoNotify((List<User>) users);
+      result.dispatchUpdatesTo(adapter);
+      statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreItems);
+      recyclerView.checkIfEmpty();
    }
 
    @Override
@@ -169,14 +144,14 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
    }
 
    @Override
-   public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+   public void showAddFriendDialog(@Nullable List<? extends Circle> circles, @NotNull Function1<? super Circle, Unit> selectAction) {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
       builder.title(getString(R.string.profile_add_friend))
+            .dismissListener((dialogInterface) -> adapter.notifyItemRangeChanged(0, adapter.getItemCount()))
             .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles), (materialDialog, view, i, charSequence) -> {
-               selectedAction.apply(i);
+               selectAction.invoke(circles.get(i));
                materialDialog.dismiss();
-            })
-            .negativeText(R.string.action_cancel)
+            }).negativeText(R.string.action_cancel)
             .show();
    }
 
@@ -200,5 +175,40 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
    @Override
    protected abstract T createPresenter(Bundle savedInstanceState);
+
+   public class UsersDiffUtilCallback extends DiffUtil.Callback {
+
+      protected List<User> oldUsers;
+      protected List<User> newUsers;
+
+      public UsersDiffUtilCallback(List<User> oldUsers, List<User> newUsers) {
+         this.oldUsers = oldUsers;
+         this.newUsers = newUsers;
+      }
+
+      @Override
+      public int getOldListSize() {
+         return oldUsers.size();
+      }
+
+      @Override
+      public int getNewListSize() {
+         return newUsers.size();
+      }
+
+      @Override
+      public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+         return oldUsers.get(oldItemPosition).equals(newUsers.get(newItemPosition));
+      }
+
+      @Override
+      public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+         User oldUser = oldUsers.get(oldItemPosition);
+         User newUser = newUsers.get(newItemPosition);
+         return oldUser.getRelationship() == newUser.getRelationship()
+               && oldUser.getCircles().equals(newUser.getCircles());
+      }
+
+   }
 }
 

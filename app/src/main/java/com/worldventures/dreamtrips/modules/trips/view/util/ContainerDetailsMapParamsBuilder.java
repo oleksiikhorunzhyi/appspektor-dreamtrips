@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
+import com.worldventures.dreamtrips.modules.trips.model.map.TripMapDetailsAnchor;
 
 import static com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder.PointPosition.BOTTOM_LEFT;
 import static com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder.PointPosition.BOTTOM_RIGHT;

@@ -23,7 +23,9 @@ import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.FullscreenVideoPresenter;
-import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoConfig;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.DTVideoViewImpl;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import java.util.List;
 
@@ -38,14 +40,13 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVideoPresenter, Video>
       implements FullscreenVideoPresenter.View {
 
-   private static final long VIDEO_PLAY_DELAY = 500L;
-
    @Inject Router router;
+   @Inject VideoPlayerHolder videoPlayerHolder;
    @Inject @ForActivity Injector injector;
    @Inject @Named(FragmentClassProviderModule.PROFILE) FragmentClassProvider<Integer> fragmentClassProvider;
    @Inject SocialViewPagerState socialViewPagerState;
 
-   @InjectView(R.id.videoView) VideoView videoView;
+   @InjectView(R.id.videoView) DTVideoViewImpl dtVideoView;
    @InjectView(R.id.flag) FlagView flag;
 
    private WeakHandler handler = new WeakHandler(Looper.getMainLooper());
@@ -53,17 +54,23 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      videoView.setMute(false);
-      videoView.setLikeAction(getPresenter()::onLike);
-      videoView.setCommentAction(getPresenter()::onComment);
-      videoView.setLikesCountAction(getPresenter()::onComment);
-      videoView.setCommentsCountAction(getPresenter()::onComment);
-      videoView.setEditAction(this::onMore);
-      videoView.setFlagAction(() -> getPresenter().onFlag(this));
+      dtVideoView.setLikeAction(getPresenter()::onLike);
+      dtVideoView.setCommentAction(getPresenter()::onComment);
+      dtVideoView.setLikesCountAction(getPresenter()::onComment);
+      dtVideoView.setCommentsCountAction(getPresenter()::onComment);
+      dtVideoView.setEditAction(this::onMore);
+      dtVideoView.setFlagAction(() -> getPresenter().onFlag(this));
+      dtVideoView.hideFullscreenButton();
+      dtVideoView.setThumbnailAction(() -> getPresenter().playVideoRequired());
+      dtVideoView.setVideoFinishedFunction(() -> {
+         dtVideoView.pauseVideo();
+         dtVideoView.resetProgress();
+         return null;
+      });
    }
 
    private void onMore() {
-      FeedItemMenuBuilder.create(getActivity(), videoView.getEditButton(), R.menu.menu_feed_entity_delete)
+      FeedItemMenuBuilder.create(getActivity(), dtVideoView.getEditButton(), R.menu.menu_feed_entity_delete)
             .onDelete(this::onDelete)
             .show();
    }
@@ -87,7 +94,8 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
 
    @Override
    public void openUser(UserBundle bundle) {
-      router.moveTo(fragmentClassProvider.provideFragmentClass(bundle.getUser().getId()), NavigationConfigBuilder.forActivity()
+      router.moveTo(fragmentClassProvider.provideFragmentClass(bundle.getUser()
+            .getId()), NavigationConfigBuilder.forActivity()
             .data(bundle)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
             .build());
@@ -115,29 +123,42 @@ public class FullscreenVideoFragment extends BaseFragmentWithArgs<FullscreenVide
    }
 
    @Override
-   public void setVideo(Video video) {
-      videoView.setVideo(video);
+   public void setVideoThumbnail(String thumbnail) {
+      dtVideoView.setThumbnail(thumbnail);
+   }
+
+   @Override
+   public void playVideo(Video video) {
+      if (videoPlayerHolder.getCurrentVideoConfig() != null
+            && video.getUid().equals(videoPlayerHolder.getCurrentVideoConfig().getUid())) {
+         videoPlayerHolder.reattachVideoView(dtVideoView, false);
+      } else {
+         dtVideoView.playVideo(new DTVideoConfig(video.getUid(), false,
+               video.getQualities(), 0));
+      }
    }
 
    @Override
    public void setUserVisibleHint(boolean isVisibleToUser) {
       super.setUserVisibleHint(isVisibleToUser);
       if (isVisibleToUser) {
-         playVideo();
-      }
-   }
-
-   private void playVideo() {
-      if (videoView == null) {
-         handler.postDelayed(this::playVideo, VIDEO_PLAY_DELAY);
-      } else {
-         videoView.playVideo();
+         if (dtVideoView == null) {
+            handler.postDelayed(() -> getPresenter().playVideoRequired(), 500);
+         } else {
+            getPresenter().playVideoRequired();
+         }
       }
    }
 
    @Override
+   public void onPause() {
+      super.onPause();
+      dtVideoView.pauseVideo();
+   }
+
+   @Override
    public void setSocialInfo(Video video, boolean enableFlagging, boolean enableDelete) {
-      videoView.setSocialInfo(video, enableFlagging, enableDelete);
+      dtVideoView.setSocialInfo(video, enableFlagging, enableDelete);
    }
 
    @Override

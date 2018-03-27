@@ -133,6 +133,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem,
       items.add(new PhotoMediaEntity(getModelObject().getItem()));
 
       NavigationConfig config = NavigationConfigBuilder.forActivity()
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .mediaEntityList(items)
                   .build())

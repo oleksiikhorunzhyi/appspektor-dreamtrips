@@ -8,6 +8,7 @@ import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.modules.trips.model.filter.FilterModel;
+import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData;
 
 import butterknife.InjectView;
 
@@ -17,11 +18,6 @@ public class FilterRangeBarsCell extends BaseAbstractDelegateCell<FilterModel, F
    @InjectView(R.id.rangeBarDay) RangeBar rangeBarDay;
    @InjectView(R.id.rangeBarPrice) RangeBar rangeBarPrice;
 
-   private double maxPrice = Double.MAX_VALUE;
-   private double minPrice = 0.0d;
-   private int maxNights = Integer.MAX_VALUE;
-   private int minNights = 0;
-
    public FilterRangeBarsCell(View view) {
       super(view);
    }
@@ -29,18 +25,14 @@ public class FilterRangeBarsCell extends BaseAbstractDelegateCell<FilterModel, F
    @Override
    protected void syncUIStateWithModel() {
       rangeBarDay.setTickSkipDrawEvery(3);
-      rangeBarDay.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
-         minNights = Integer.valueOf(s);
-         maxNights = i2 == (rangeBarDay.getTickCount() - 1) ? Integer.MAX_VALUE : Integer.valueOf(s2);
-         getModelObject().setIndexLeftDuration(i);
-         getModelObject().setIndexRightDuration(i2);
+      rangeBarDay.setOnRangeBarChangeListener((rangeBar, indexLeft, indexRight, valueLeft, valueRight) -> {
+         int minNights = Integer.valueOf(valueLeft);
+         int maxNights = indexRight == (rangeBarDay.getTickCount() - 1) ? TripsFilterData.Companion.getMAX_NIGHTS() : Integer.valueOf(valueRight);
          cellDelegate.rangeBarDurationEvent(minNights, maxNights);
       });
-      rangeBarPrice.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
-         minPrice = Double.valueOf(s);
-         maxPrice = i2 == (rangeBarPrice.getTickCount() - 1) ? Double.MAX_VALUE : Double.valueOf(s2);
-         getModelObject().setIndexLeftPrice(i);
-         getModelObject().setIndexRightPrice(i2);
+      rangeBarPrice.setOnRangeBarChangeListener((rangeBar, indexLeft, indexRight, valueLeft, valueRight) -> {
+         double minPrice = Double.valueOf(valueLeft);
+         double maxPrice = indexRight == (rangeBarPrice.getTickCount() - 1) ? TripsFilterData.Companion.getMAX_PRICE() : Double.valueOf(valueRight);
          cellDelegate.rangeBarPriceEvent(minPrice, maxPrice);
       });
 

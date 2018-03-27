@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips;
 
-import com.worldventures.core.janet.cache.CacheResultWrapper;
+import com.worldventures.janet.cache.CacheResultWrapper;
 import com.worldventures.core.test.common.RxJavaSchedulerInitializer;
 
 import org.junit.Before;

@@ -2,14 +2,13 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.core.modules.settings.storage.SettingsStorage;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.common.delegate.ReplayEventDelegatesWiper;
@@ -30,6 +29,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.MerchantsFacadeInteracto
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsRequestSourceInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
+import com.worldventures.dreamtrips.social.ui.bucketlist.service.CurrentOpenTabEventDelegate;
+import com.worldventures.dreamtrips.social.util.UserStatusAdapter;
+import com.worldventures.dreamtrips.social.util.UserStatusDaoAdapter;
 
 import javax.inject.Singleton;
 
@@ -38,11 +40,6 @@ import dagger.Provides;
 
 @Module(library = true, complete = false)
 public class ManagerModule {
-
-   @Provides
-   public PhotoUploadingManagerS3 providePhotoUploadingManagerS3(@ForApplication Context context, TransferUtility transferUtility) {
-      return new PhotoUploadingManagerS3(context, transferUtility);
-   }
 
    @Singleton
    @Provides
@@ -137,6 +134,12 @@ public class ManagerModule {
 
    @Provides
    @Singleton
+   CurrentOpenTabEventDelegate provideCurrentOpenTabEventDelegate(ReplayEventDelegatesWiper wiper) {
+      return new CurrentOpenTabEventDelegate(wiper);
+   }
+
+   @Provides
+   @Singleton
    DialogNavigatorInteractor provideDialogNavigatorInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new DialogNavigatorInteractor(sessionActionPipeCreator);
    }
@@ -169,5 +172,11 @@ public class ManagerModule {
    @Singleton
    UserNotificationInteractor provideUserNotificationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new UserNotificationInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   @Singleton
+   UserStatusAdapter provideUserStatusAdapter(UsersDAO usersDao) {
+      return new UserStatusDaoAdapter(usersDao);
    }
 }

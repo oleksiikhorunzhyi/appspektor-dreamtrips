@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.core.janet.cache;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.core.modules.facebook.service.storage.FacebookAlbumsStorage;
 import com.worldventures.core.modules.facebook.service.storage.FacebookPhotosStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;

@@ -31,7 +31,7 @@ class PaymentFeedbackPresenterImpl(navigator: Navigator,
    private fun observeUpdateStateAttachments() {
       attachmentDelegate.attachmentsObservable
             .compose(view.bindUntilDetach())
-            .subscribe { view.changeAddPhotosButtonEnabled(attachmentDelegate.hasFailedOrPendingAttachments) }
+            .subscribe { view.changeAddPhotosButtonEnabled(!attachmentDelegate.hasFailedOrPendingAttachments) }
    }
 
    override fun goBack() {

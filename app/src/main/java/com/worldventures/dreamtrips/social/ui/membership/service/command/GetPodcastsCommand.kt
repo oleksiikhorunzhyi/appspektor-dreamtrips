@@ -1,16 +1,15 @@
 package com.worldventures.dreamtrips.social.ui.membership.service.command
 
 import com.worldventures.core.janet.CommandWithError
-import com.worldventures.core.janet.cache.CacheBundleImpl
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
-import com.worldventures.core.janet.cache.storage.PaginatedStorage
 import com.worldventures.core.modules.video.service.storage.MediaModelStorage
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.api.podcasts.GetPodcastsHttpAction
 import com.worldventures.dreamtrips.social.domain.mapping.PodcastsMapper
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast
+import com.worldventures.janet.cache.CacheBundleImpl
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
+import com.worldventures.janet.cache.storage.PaginatedStorage
 import com.worldventures.janet.injection.InjectableAction
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
@@ -23,12 +22,11 @@ import javax.inject.Inject
 private const val PAGE_SIZE = 10
 
 @CommandAction
-class GetPodcastsCommand (val refresh: Boolean = false) : CommandWithError<List<Podcast>>(),
-      InjectableAction, CachedAction<List<Podcast>> {
+class GetPodcastsCommand(val refresh: Boolean = false) : CommandWithError<List<Podcast>>(), InjectableAction, CachedAction<List<Podcast>> {
 
-   @field:Inject lateinit var janet: Janet
-   @field:Inject lateinit var podcastsMapper: PodcastsMapper
-   @field:Inject lateinit var db: MediaModelStorage
+   @Inject lateinit var janet: Janet
+   @Inject lateinit var podcastsMapper: PodcastsMapper
+   @Inject lateinit var db: MediaModelStorage
 
    private var cachedData = ArrayList<Podcast>()
 
@@ -47,8 +45,9 @@ class GetPodcastsCommand (val refresh: Boolean = false) : CommandWithError<List<
    }
 
    private fun initialProcessCache(callback: Command.CommandCallback<List<Podcast>>) {
-      if (cachedData.isEmpty()) {
+      if (!cachedData.isEmpty()) {
          Observable.from(cachedData)
+               .doOnNext { connectCachedEntity(it) }
                .toList()
                .doOnNext { callback.onProgress(0) }
                .subscribe()
@@ -86,11 +85,9 @@ class GetPodcastsCommand (val refresh: Boolean = false) : CommandWithError<List<
 
    override fun getCacheData() = ArrayList(result)
 
-   override fun getCacheOptions(): CacheOptions {
-      val cacheBundle = CacheBundleImpl()
-      cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, refresh)
-      return ImmutableCacheOptions.builder().params(cacheBundle).build()
-   }
+   override fun getCacheOptions() = CacheOptions(params = CacheBundleImpl().apply {
+      put(PaginatedStorage.BUNDLE_REFRESH, refresh)
+   })
 
    override fun getFallbackErrorMessage() = R.string.error_fail_to_load_podcast
 }

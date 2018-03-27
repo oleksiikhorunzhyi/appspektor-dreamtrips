@@ -2,10 +2,16 @@ package com.worldventures.dreamtrips.social.di;
 
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.model.session.SessionHolder;
+import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor;
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.social.service.InviteShareInteractor;
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor;
+import com.worldventures.dreamtrips.social.service.reptools.SuccessStoriesInteractor;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor;
+import com.worldventures.dreamtrips.social.ui.background_uploading.service.CancelAllCompoundOperationsCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.ActiveFeedRouteInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
@@ -16,14 +22,12 @@ import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.FeedStorag
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.HashtagFeedStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
 import com.worldventures.dreamtrips.social.ui.flags.service.FlagsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
 import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor;
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
-import com.worldventures.dreamtrips.social.ui.reptools.service.SuccessStoriesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.ProgressAnalyticInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
-import com.worldventures.dreamtrips.social.ui.video.service.ConfigurationInteractor;
+import com.worldventures.dreamtrips.social.ui.video.service.VideoHelperInteractor;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -126,12 +130,6 @@ class SocialInteractorModule {
 
    @Provides
    @Singleton
-   ConfigurationInteractor provideConfigurationInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      return new ConfigurationInteractor(sessionActionPipeCreator);
-   }
-
-   @Provides
-   @Singleton
    MediaMetadataInteractor provideMediaMetadataInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new MediaMetadataInteractor(sessionActionPipeCreator);
    }
@@ -157,5 +155,18 @@ class SocialInteractorModule {
    @Provides
    @Singleton PodcastsInteractor providePodcastInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
       return new PodcastsInteractor(sessionActionPipeCreator);
+   }
+
+   @Provides
+   VideoHelperInteractor provideLayoutManagerProvider(SessionActionPipeCreator sessionActionPipeCreator) {
+      return new VideoHelperInteractor(sessionActionPipeCreator);
+   }
+
+   @Named(LogoutAction.PRIORITY_HIGH)
+   @Provides(type = Provides.Type.SET)
+   LogoutAction provideCompoundOperationLogoutAction(BackgroundUploadingInteractor interactor) {
+      return interactor.cancelAllCompoundOperationsPipe()
+            .createObservableResult(new CancelAllCompoundOperationsCommand())
+            .toBlocking()::subscribe;
    }
 }

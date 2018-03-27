@@ -189,5 +189,5 @@
    <string name="transaction_review_merchant">评论商家</string>
    <string name="transaction_sub_total_amount_no_semicolon">小计金额</string>
    <string name="dtl_estimator_explanation_to_earn_points">点数计算是根据在商家的最低消费金额和一周的哪一天。要赢点数最小金额应为%1$s</string>
-   <string name="dtl_estimator_error_title">错误</string>
+   <string name="dtl_alert_title_error">错误</string>
 </resources>

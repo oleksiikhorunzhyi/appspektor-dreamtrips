@@ -26,6 +26,7 @@ import com.worldventures.wallet.service.command.settings.general.display.excepti
 import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
 import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
+import com.worldventures.wallet.ui.common.helper2.error.DetachableOperationView
 import com.worldventures.wallet.ui.common.helper2.error.DialogErrorView
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewProvider
@@ -40,7 +41,6 @@ import com.worldventures.wallet.ui.settings.general.display.DisplayOptionsSettin
 import com.worldventures.wallet.ui.settings.general.profile.common.ProfileViewModel
 import com.worldventures.wallet.ui.settings.general.profile.common.UpdateSmartCardUserOperationView
 import com.worldventures.wallet.ui.settings.general.profile.common.WalletProfileDelegate
-import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.ErrorView
 import io.techery.janet.operationsubscriber.view.OperationView
 import io.techery.janet.smartcard.action.settings.SetHomeDisplayTypeAction
@@ -57,6 +57,9 @@ private const val STATE_KEY_SELECTED_DISPLAY_TYPE = "DisplayOptionsSettingsScree
 private const val STATE_KEY_DISPLAY_ORIGIN_MODEL = "DisplayOptionsSettingsScreenImpl#STATE_KEY_DISPLAY_ORIGIN_MODEL"
 private const val STATE_KEY_DISPLAY_MODEL = "DisplayOptionsSettingsScreenImpl#STATE_KEY_DISPLAY_MODEL"
 
+private const val STATE_KEY_PHOTO_PICKER_SHOWING = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_SHOWING"
+private const val STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC"
+
 @Suppress("UnsafeCallOnNullableType")
 class DisplayOptionsSettingsScreenImpl(args: Bundle)
    : WalletBaseController<DisplayOptionsSettingsScreen, DisplayOptionsSettingsPresenter>(args),
@@ -72,6 +75,9 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
 
    private var originProfileModel: ProfileViewModel? = null
    private var profileModel: ProfileViewModel? = null
+
+   private var mediaPickerDialog: MediaPickerDialog? = null
+   private var originalPhotoPickerDialogPic: String? = null
 
    private val profileFromArgs: ProfileViewModel?
       get() = if (args.containsKey(PARAM_KEY_PROFILE_VIEW_MODEL))
@@ -97,6 +103,12 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    override fun onAttach(view: View) {
       super.onAttach(view)
       observeNewAvatar()
+   }
+
+   override fun onDestroyView(view: View) {
+      super.onDestroyView(view)
+      mediaPickerDialog?.dismiss()
+      mediaPickerDialog = null
    }
 
    override fun supportConnectionStatusLabel(): Boolean = true
@@ -181,7 +193,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun provideGetDisplayTypeOperationView(): OperationView<GetDisplayTypeCommand> {
-      return ComposableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_loading, false),
+      return DetachableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_loading, false),
             ErrorViewFactory.builder<GetDisplayTypeCommand>()
                   .addProvider(SmartCardErrorViewProvider(context,
                         { presenter.fetchDisplayType() }) { presenter.goBack() })
@@ -189,12 +201,13 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
                         { presenter.fetchDisplayType() }) { presenter.goBack() })
                   .defaultErrorView(RetryDialogErrorView(context, R.string.wallet_error_something_went_wrong,
                         { presenter.fetchDisplayType() }) { presenter.goBack() })
-                  .build()
+                  .build(),
+            this
       )
    }
 
    override fun provideSaveDisplayTypeOperationView(): OperationView<SaveDisplayTypeCommand> {
-      return ComposableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_updating, false),
+      return DetachableOperationView(SimpleDialogProgressView(context, R.string.wallet_settings_general_display_updating, false),
             SimpleToastSuccessView(context, R.string.wallet_settings_general_display_changes_saved),
             ErrorViewFactory.builder<SaveDisplayTypeCommand>()
                   .addProvider(getUserRequiredInfoMissingDialogProvider(MissingUserPhoneException::class.java,
@@ -206,7 +219,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
                   .addProvider(SCConnectionErrorViewProvider(context))
                   .addProvider(SmartCardErrorViewProvider(context) { saveCurrentChoice() })
                   .defaultErrorView(RetryDialogErrorView(context, R.string.wallet_error_something_went_wrong) { saveCurrentChoice() })
-                  .build()
+                  .build(),
+            this
       )
    }
 
@@ -231,6 +245,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun pickPhoto(initialPhotoUrl: String?) {
+      this.mediaPickerDialog?.dismiss()
+      originalPhotoPickerDialogPic = initialPhotoUrl
       val mediaPickerDialog = MediaPickerDialog(context)
       mediaPickerDialog.setOnDoneListener { result ->
          if (!result.isEmpty) {
@@ -242,6 +258,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       } else {
          mediaPickerDialog.show()
       }
+      mediaPickerDialog.setOnDismissListener { this.mediaPickerDialog = null }
+      this.mediaPickerDialog = mediaPickerDialog
    }
 
    override fun cropPhoto(photoPath: Uri) {
@@ -277,10 +295,10 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
    }
 
    override fun provideUpdateSmartCardOperation(delegate: WalletProfileDelegate): OperationView<UpdateSmartCardUserCommand> =
-         UpdateSmartCardUserOperationView.UpdateUser(context, delegate, null)
+         UpdateSmartCardUserOperationView.UpdateUser(context, delegate, null, this)
 
    override fun provideHttpUploadOperation(delegate: WalletProfileDelegate): OperationView<RetryHttpUploadUpdatingCommand> =
-         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate)
+         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate, this)
 
    private fun getUserRequiredInfoMissingDialogProvider(error: Class<out Throwable>, @StringRes title: Int, @StringRes message: Int):
          ErrorViewProvider<SaveDisplayTypeCommand> {
@@ -307,6 +325,8 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
       outState.putInt(STATE_KEY_SELECTED_DISPLAY_TYPE, DisplayOptionsPagerAdapter.DISPLAY_OPTIONS[viewPager.currentItem])
       outState.putParcelable(STATE_KEY_DISPLAY_MODEL, profileModel)
       outState.putParcelable(STATE_KEY_DISPLAY_ORIGIN_MODEL, originProfileModel)
+      outState.putBoolean(STATE_KEY_PHOTO_PICKER_SHOWING, mediaPickerDialog != null)
+      outState.putString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC, originalPhotoPickerDialogPic)
       super.onSaveViewState(view, outState)
    }
 
@@ -315,7 +335,17 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
             originProfile = savedViewState.getParcelable(STATE_KEY_DISPLAY_ORIGIN_MODEL),
             profileModel = savedViewState.getParcelable(STATE_KEY_DISPLAY_MODEL),
             type = savedViewState.getInt(STATE_KEY_SELECTED_DISPLAY_TYPE))
+      val mediaDialogShowing = savedViewState.getBoolean(STATE_KEY_PHOTO_PICKER_SHOWING)
+      if (mediaDialogShowing) {
+         pickPhoto(savedViewState.getString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC))
+      }
       super.onRestoreViewState(view, savedViewState)
+   }
+
+   override fun screenModule(): Any? = DisplayOptionsSettingsScreenModule()
+
+   override fun detachObservable(): Observable<Void> {
+      return detachStopper.asObservable()
    }
 
    companion object {

@@ -1,9 +1,8 @@
 package com.worldventures.wallet.service.command.settings.help
 
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
 import com.worldventures.dreamtrips.api.smart_card.documents.customer_support.GetCustomerSupportContactsHttpAction
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
 import com.worldventures.janet.injection.InjectableAction
 import com.worldventures.wallet.domain.entity.settings.customer_support.Contact
 import io.techery.janet.ActionHolder
@@ -53,9 +52,5 @@ class GetCustomerSupportContactCommand : Command<Contact>(), InjectableAction, C
       cachedResult = cache
    }
 
-   override fun getCacheOptions(): CacheOptions {
-      return ImmutableCacheOptions.builder()
-            .saveToCache(needApiRequest())
-            .build()
-   }
+   override fun getCacheOptions() = CacheOptions(saveToCache = needApiRequest())
 }

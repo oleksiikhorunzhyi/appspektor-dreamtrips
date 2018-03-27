@@ -70,14 +70,14 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
          @Override
          public boolean onQueryTextChange(String newText) {
-            getPresenter().setQuery(newText);
+            getPresenter().search(newText);
             enableRefreshLayout(!newText.isEmpty());
             return false;
          }
       });
 
-      if (getPresenter().getQuery().length() > 0) {
-         searchView.setQuery(getPresenter().getQuery(), true);
+      if (getPresenter().query.length() > 0) {
+         searchView.setQuery(getPresenter().query, true);
       } else {
          adapter.addItems(new ArrayList<>());
       }
@@ -111,7 +111,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
    @Override
    public void addUserRequest(User user) {
-      getPresenter().addUserRequest(user);
+      getPresenter().addUserRequest(user.copy());
    }
 
    private void enableRefreshLayout(boolean isEnable) {

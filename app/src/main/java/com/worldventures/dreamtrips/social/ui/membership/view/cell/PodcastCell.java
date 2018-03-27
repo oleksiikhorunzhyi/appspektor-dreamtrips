@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast;
 import com.worldventures.dreamtrips.social.ui.membership.view.cell.delegate.PodcastCellDelegate;
-import com.worldventures.dreamtrips.social.ui.video.cell.ProgressVideoCellHelper;
+import com.worldventures.dreamtrips.social.ui.video.cell.util.ProgressVideoCellHelper;
 
 import javax.inject.Inject;
 
@@ -81,7 +81,7 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
       }
 
       progressVideoCellHelper.setModelObject(podcast.getCachedModel());
-      progressVideoCellHelper.syncUIStateWithModel();
+      progressVideoCellHelper.updateButtonState();
    }
 
    @OnClick(R.id.play)
@@ -90,12 +90,12 @@ public class PodcastCell extends BaseAbstractDelegateCell<Podcast, PodcastCellDe
    }
 
    @OnClick(R.id.download_progress)
-   public void onDownloadClick() {
+   void onDownloadClick() {
       progressVideoCellHelper.onDownloadClick(cellDelegate, getModelObject());
    }
 
    @Override
    public void prepareForReuse() {
-      image.setImageResource(0);
+      image.setController(null);
    }
 }

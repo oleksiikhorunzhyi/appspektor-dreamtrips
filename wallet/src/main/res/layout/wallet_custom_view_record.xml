@@ -2,6 +2,7 @@
 
 <RelativeLayout android:id="@+id/bank_card"
       xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="@dimen/wallet_card_height"
@@ -28,10 +29,10 @@
    <RelativeLayout
          android:layout_width="wrap_content"
          android:layout_height="@dimen/wallet_bank_card_default_bank_info_container_height"
+         android:layout_alignParentStart="true"
+         android:layout_alignParentTop="true"
          android:gravity="center_vertical"
          tools:ignore="RelativeOverlap"
-         android:layout_alignParentTop="true"
-         android:layout_alignParentStart="true"
          >
 
       <!--todo use start drawable-->
@@ -47,8 +48,8 @@
                android:layout_width="12dp"
                android:layout_height="12dp"
                android:layout_gravity="center_vertical"
-               android:src="@drawable/ic_wallet_vector_check_circle_green"
                android:visibility="gone"
+               app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
                tools:ignore="ContentDescription"
                />
 
@@ -106,12 +107,12 @@
          android:id="@+id/tv_owner_name"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
+         android:layout_above="@+id/tv_card_number"
+         android:layout_alignParentStart="true"
          android:importantForAccessibility="no"
          android:textColor="@android:color/white"
          android:textSize="@dimen/font_normal"
          tools:text="Shirly A template"
-         android:layout_above="@+id/tv_card_number"
-         android:layout_alignParentStart="true"
          />
 
    <TextView

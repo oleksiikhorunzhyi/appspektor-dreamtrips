@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
@@ -8,128 +12,142 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.PopularBucketItem
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.CreateBucketItemCommand
-import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.BucketListCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetPopularBucketItemSuggestionsCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.GetPopularBucketItemsCommand
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.mockito.ArgumentMatchers
-import rx.observers.TestSubscriber
-import kotlin.test.assertEquals
 
-class BucketPopularPresenterSpec : PresenterBaseSpec({
+class BucketPopularPresenterSpec : PresenterBaseSpec(BucketListTestSuite()) {
 
-   describe("BucketTabsPresenter") {
-      describe("Lifecycle actions") {
-         it("should reload in onResume if items are empty") {
-            init(Contract.of(GetPopularBucketItemsCommand::class.java).result(emptyList<PopularBucketItem>()))
-            whenever(view.itemsCount).thenReturn(0)
+   class BucketListTestSuite : TestSuite<BucketPopularComponents>(BucketPopularComponents()) {
 
-            presenter.onResume()
+      override fun specs(): SpecBody.() -> Unit = {
 
-            verify(presenter).reload()
-         }
+         with(components) {
+            describe("BucketTabsPresenter") {
 
-         it("should not reload items are not empty") {
-            init()
-            whenever(view.itemsCount).thenReturn(5)
+               describe("Lifecycle actions") {
 
-            presenter.onResume()
+                  it("should reload in onResume if items are empty") {
+                     init(Contract.of(GetPopularBucketItemsCommand::class.java).result(emptyList<PopularBucketItem>()))
+                     linkPresenterAndView()
 
-            verify(presenter, never()).reload()
-         }
-      }
+                     whenever(view.itemsCount).thenReturn(0)
+                     presenter.onResume()
 
-      describe("Search actions") {
-         it("should not trigger search if search query is too short") {
-            init()
-            doNothing().whenever(presenter).searchPopularItems(any())
+                     verify(view).finishLoading()
+                     verify(view).setItems(any())
+                  }
 
-            presenter.onSearch("11")
+                  it("should not reload items are not empty") {
+                     init()
+                     linkPresenterAndView()
 
-            verify(presenter, never()).searchPopularItems(any())
-         }
+                     whenever(view.itemsCount).thenReturn(5)
+                     presenter.onResume()
 
-         it("should trigger search") {
-            presenter.onSearch("111")
-            doNothing().whenever(presenter).searchPopularItems(any())
+                     verify(view, never()).finishLoading()
+                     verify(view, never()).setItems(any())
+                  }
+               }
 
-            verify(presenter).searchPopularItems(any())
-         }
+               describe("Search actions") {
+                  it("should not trigger search if search query is too short") {
+                     init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java)
+                           .result(emptyList<PopularBucketItem>()))
+                     linkPresenterAndView()
 
-         it("should refresh view on search success") {
-            init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java).result(emptyList<PopularBucketItem>()))
+                     presenter.onSearch("11")
 
-            presenter.searchPopularItems("111")
+                     verify(view, never()).finishLoading()
+                     verify(view, never()).setFilteredItems(any())
+                  }
 
-            verify(view).finishLoading()
-            verify(view).setFilteredItems(any())
-         }
+                  it("should trigger search") {
+                     init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java)
+                           .result(emptyList<PopularBucketItem>()))
+                     linkPresenterAndView()
 
-         it("should process error if search failed") {
-            init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java).exception(Exception()))
+                     presenter.onSearch("111")
 
-            presenter.searchPopularItems("111")
+                     verify(view).finishLoading()
+                     verify(view).setFilteredItems(any())
+                  }
 
-            verify(presenter).handleError(any(), any())
-            verify(view).finishLoading()
-         }
+                  it("should refresh view on search success") {
+                     init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java).result(emptyList<PopularBucketItem>()))
+                     linkPresenterAndView()
 
-         it("should flush filter on search closed") {
-            init()
+                     presenter.searchPopularItems("111")
 
-            presenter.searchClosed()
+                     verify(view).finishLoading()
+                     verify(view).setFilteredItems(any())
+                  }
 
-            verify(view).flushFilter()
-         }
-      }
+                  it("should process error if search failed") {
+                     init(Contract.of(GetPopularBucketItemSuggestionsCommand::class.java).exception(Exception()))
+                     linkPresenterAndView()
 
-      describe("working with data actions") {
+                     presenter.searchPopularItems("111")
 
-         it("should refresh view on reloading") {
-            init(Contract.of(GetPopularBucketItemsCommand::class.java).result(emptyList<PopularBucketItem>()))
+                     verify(view).finishLoading()
+                  }
 
-            presenter.reload()
+                  it("should flush filter on search closed") {
+                     init()
+                     linkPresenterAndView()
 
-            verify(view).finishLoading()
-            verify(view).setItems(any())
-         }
+                     presenter.searchClosed()
 
-         it("should refresh view after adding bucket item from popular") {
-            val item: BucketItem = stubBucketItem()
-            init(Contract.of(CreateBucketItemCommand::class.java).result(item))
+                     verify(view).flushFilter()
+                  }
+               }
 
-            presenter.add(stubPopularBucketItem(), true)
+               describe("working with data actions") {
 
-            verify(view).notifyItemWasAddedToBucketList(any())
-            verify(view).removeItem(any())
-         }
+                  it("should refresh view on reloading") {
+                     init(Contract.of(GetPopularBucketItemsCommand::class.java).result(emptyList<PopularBucketItem>()))
+                     linkPresenterAndView()
 
-         it("should process error if adding bucket from popular failed") {
-            init(Contract.of(CreateBucketItemCommand::class.java).exception(Exception()))
+                     presenter.reload()
 
-            presenter.add(stubPopularBucketItem(), true)
+                     verify(view).finishLoading()
+                     verify(view).setItems(any())
+                  }
 
-            verify(presenter).handleError(any(), any())
-            verify(view).notifyItemsChanged()
+                  it("should refresh view after adding bucket item from popular") {
+                     init(Contract.of(CreateBucketItemCommand::class.java).result(stubBucketItem()))
+                     linkPresenterAndView()
+
+                     presenter.add(stubPopularBucketItem(), true)
+
+                     verify(view).notifyItemWasAddedToBucketList(any())
+                     verify(view).removeItem(any())
+                  }
+
+                  it("should process error if adding bucket from popular failed") {
+                     init(Contract.of(CreateBucketItemCommand::class.java).exception(Exception()))
+                     linkPresenterAndView()
+
+                     presenter.add(stubPopularBucketItem(), true)
+
+                     verify(view).notifyItemsChanged()
+                  }
+               }
+            }
          }
       }
    }
 
-}) {
-   companion object {
-      lateinit var bucketInteractor: BucketInteractor
-      lateinit var presenter: BucketPopularPresenter
-      lateinit var view: BucketPopularPresenter.View
-      val socialSnappy: SocialSnappyRepository = spy()
-      val bucketType = BucketItem.BucketType.ACTIVITY
+   class BucketPopularComponents : TestComponents<BucketPopularPresenter, BucketPopularPresenter.View>() {
 
       fun init(contract: Contract? = null) {
-         presenter = spy(BucketPopularPresenter(bucketType))
+         presenter = BucketPopularPresenter(BucketItem.BucketType.ACTIVITY)
          view = spy()
 
          val janetBuilder = Janet.Builder()
@@ -140,19 +158,17 @@ class BucketPopularPresenterSpec : PresenterBaseSpec({
          }
          val janet = janetBuilder.build()
          val actionPipeCreator = SessionActionPipeCreator(janet)
-         bucketInteractor = BucketInteractor(actionPipeCreator)
+         val bucketInteractor = BucketInteractor(actionPipeCreator)
 
          prepareInjector().apply {
             registerProvider(Janet::class.java, { janet })
             registerProvider(BucketInteractor::class.java, { bucketInteractor })
-            registerProvider(SocialSnappyRepository::class.java, { socialSnappy })
+            registerProvider(SocialSnappyRepository::class.java, { spy() })
             inject(presenter)
          }
-
-         presenter.takeView(view)
       }
 
-      private fun stubPopularBucketItem() : PopularBucketItem {
+      fun stubPopularBucketItem(): PopularBucketItem {
          val bucket = PopularBucketItem()
          bucket.id = 15
          bucket.name = "bucket"

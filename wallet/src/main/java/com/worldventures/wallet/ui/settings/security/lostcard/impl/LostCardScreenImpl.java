@@ -1,6 +1,8 @@
 package com.worldventures.wallet.ui.settings.security.lostcard.impl;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -10,9 +12,12 @@ import android.widget.FrameLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.worldventures.core.utils.HttpErrorHandlingUtil;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.service.lostcard.command.UpdateTrackingStatusCommand;
 import com.worldventures.wallet.ui.common.base.WalletBaseController;
+import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory;
+import com.worldventures.wallet.ui.common.helper2.error.http.HttpErrorViewProvider;
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.wallet.ui.settings.security.lostcard.LostCardPresenter;
 import com.worldventures.wallet.ui.settings.security.lostcard.LostCardScreen;
@@ -32,6 +37,7 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    private WalletSwitcher trackingEnableSwitcher;
 
    @Inject LostCardPresenter presenter;
+   @Inject HttpErrorHandlingUtil httpErrorHandlingUtil;
 
    private final LostCardControllerFlipper controllerFlipper = new LostCardControllerFlipperImpl();
 
@@ -56,6 +62,18 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
             trackingEnableSwitcher.setEnabled(true);
          }
       });
+   }
+
+   @Override
+   protected void onSaveInstanceState(@NonNull Bundle outState) {
+      super.onSaveInstanceState(outState);
+      controllerFlipper.onSaveState(outState);
+   }
+
+   @Override
+   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      controllerFlipper.onRestoreState(savedInstanceState);
    }
 
    protected void onNavigationClick() {
@@ -98,7 +116,11 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    @Override
    public OperationView<UpdateTrackingStatusCommand> provideOperationUpdateTrackingStatus() {
       return new ComposableOperationView<>(
-            new SimpleDialogProgressView<>(getContext(), R.string.wallet_update_tracking_status, false)
+            new SimpleDialogProgressView<>(getContext(), R.string.wallet_update_tracking_status, false),
+            ErrorViewFactory.<UpdateTrackingStatusCommand>builder()
+                  .addProvider(new HttpErrorViewProvider<>(getContext(), httpErrorHandlingUtil,
+                        command -> { /*nothing*/ }, command -> { /*nothing*/ }))
+                  .build()
       );
    }
 
@@ -153,5 +175,11 @@ public class LostCardScreenImpl extends WalletBaseController<LostCardScreen, Los
    protected void onDestroyView(@NonNull View view) {
       controllerFlipper.destroy();
       super.onDestroyView(view);
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new LostCardScreenModule();
    }
 }

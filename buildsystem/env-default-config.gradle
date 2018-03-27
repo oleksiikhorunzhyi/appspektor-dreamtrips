@@ -28,7 +28,10 @@ ext {
                SURVEY_API_TOKEN: [String: '"7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"'],
          ],
          util     : [
-               NEWRELIC_API_KEY: [String: '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"'],
+               NEWRELIC_API_KEY:      [String: '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"'],
+               GOOGLE_PLACES_API_KEY: [String: '"AIzaSyBKbegwehtwpCM_ezmKyn3rr3uR_JfMToM"']
+//             GOOGLE_PLACES_API_KEY: [String: '"AIzaSyC-u0O3Hyt7f_TodND7ge0aoYDFdjpp3Dc"']
+//             TODO: key for development. uncomment on prod key check will be completed
 
          ],
          //
@@ -45,7 +48,7 @@ ext {
                ANALYTICS_LOG_ENABLED     : [boolean: 'false'],
                NEWRELIC_ENABLED          : [boolean: 'false'],
                QA_AUTOMATION_MODE_ENABLED: [boolean: "${project.hasProperty("qa_automation_mode") ? project.getProperties().get("qa_automation_mode") : false}"],
-               WALLET_EMULATOR_MODE      : [boolean: "${project.hasProperty("wallet_emulator_mode") ? project.getProperties().get("wallet_emulator_mode") : false}"]
+               WALLET_EMULATOR_MODE      : [boolean: 'false']
          ],
    ]
    envConfig.resParams = [

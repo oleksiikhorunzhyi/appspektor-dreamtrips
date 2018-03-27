@@ -44,8 +44,8 @@ public abstract class RxBaseFragmentWithArgs<PM extends Presenter, P extends Par
       return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.DESTROY_VIEW);
    }
 
-   protected <T> Observable.Transformer<T, T> bindUntilResumeComposer() {
-      return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.RESUME);
+   protected <T> Observable.Transformer<T, T> bindUntilPauseComposer() {
+      return RxLifecycle.bindUntilEvent(lifecycle(), FragmentEvent.PAUSE);
    }
 
    @Override

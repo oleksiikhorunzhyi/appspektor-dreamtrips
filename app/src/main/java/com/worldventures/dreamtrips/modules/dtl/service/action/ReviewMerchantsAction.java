@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.GetReviewsMerchantsHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.ReviewsActionCreator;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.PaginatedStorage;
 import com.worldventures.janet.injection.InjectableAction;
 
 import javax.inject.Inject;
@@ -62,7 +61,7 @@ public class ReviewMerchantsAction extends CommandWithError<Reviews>
    public CacheOptions getCacheOptions() {
       CacheBundle cacheBundle = new CacheBundleImpl();
       cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, isRefresh);
-      return ImmutableCacheOptions.builder().params(cacheBundle).build();
+      return new CacheOptions(true, true, true, cacheBundle);
    }
 
    @Override

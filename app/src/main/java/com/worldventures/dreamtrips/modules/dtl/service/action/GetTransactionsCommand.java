@@ -1,18 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.cache.storage.PaginatedStorage;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.transactions.ThrstTransactionResponse;
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.TransactionDetailActionParams;
 import com.worldventures.dreamtrips.modules.dtl.service.action.http.GetTransactionsHttpAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.transactions.model.TransactionModel;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.PaginatedStorage;
 import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
@@ -99,10 +98,6 @@ public final class GetTransactionsCommand extends CommandWithError<List<Transact
    public CacheOptions getCacheOptions() {
       CacheBundle bundle = new CacheBundleImpl();
       bundle.put(PaginatedStorage.BUNDLE_REFRESH, refresh);
-      return ImmutableCacheOptions.builder()
-            .restoreFromCache(readFromCache)
-            .saveToCache(saveToCache)
-            .params(bundle)
-            .build();
+      return new CacheOptions(readFromCache, saveToCache, true, bundle);
    }
 }

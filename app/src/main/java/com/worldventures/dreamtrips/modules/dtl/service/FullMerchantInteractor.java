@@ -4,6 +4,7 @@ import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.dreamtrips.modules.dtl.helper.holder.FullMerchantParamsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.ReviewSummary;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetPayInAppVideoCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Command;
@@ -13,17 +14,23 @@ import rx.schedulers.Schedulers;
 public class FullMerchantInteractor {
 
    private final ActionPipe<FullMerchantAction> fullMerchantPipe;
+   private final ActionPipe<GetPayInAppVideoCommand> payInAppVideoPipe;
    private final DtlLocationInteractor dtlLocationInteractor;
 
    public FullMerchantInteractor(SessionActionPipeCreator sessionActionPipeCreator,
          DtlLocationInteractor dtlLocationInteractor) {
       fullMerchantPipe = sessionActionPipeCreator.createPipe(FullMerchantAction.class, Schedulers.io());
+      payInAppVideoPipe = sessionActionPipeCreator.createPipe(GetPayInAppVideoCommand.class, Schedulers.io());
 
       this.dtlLocationInteractor = dtlLocationInteractor;
    }
 
    public ReadActionPipe<FullMerchantAction> fullMerchantPipe() {
       return fullMerchantPipe.asReadOnly();
+   }
+
+   public ActionPipe<GetPayInAppVideoCommand> payInAppVideoPipe() {
+      return payInAppVideoPipe;
    }
 
    public void load(String merchantId) {

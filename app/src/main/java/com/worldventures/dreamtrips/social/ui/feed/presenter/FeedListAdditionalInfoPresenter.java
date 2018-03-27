@@ -8,12 +8,13 @@ import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository;
-import com.worldventures.dreamtrips.social.ui.friends.service.CirclesInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.FriendsInteractor;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetCirclesCommand;
-import com.worldventures.dreamtrips.social.ui.friends.service.command.GetFriendsCommand;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand;
+import com.worldventures.dreamtrips.social.service.users.friend.command.GetFriendsCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,13 +60,13 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
    }
 
    public void onCircleFilterClicked() {
-      circlesInteractor.pipe()
+      circlesInteractor.getPipe()
             .createObservable(new GetCirclesCommand())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .subscribe(new ActionStateSubscriber<GetCirclesCommand>().onStart(circlesCommand -> onCirclesStart())
-                  .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                  .onSuccess(circlesCommand -> onCirclesSuccess(new ArrayList<>(circlesCommand.getResult())))
                   .onFail(this::onCirclesError));
 
    }
@@ -111,9 +112,9 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
                   })
                   .onSuccess(getFriendsCommand -> {
                      if (nextPage == 1) {
-                        view.setFriends(getFriendsCommand.getResult());
+                        view.setFriends(new ArrayList<>(getFriendsCommand.getResult()));
                      } else {
-                        view.addFriends(getFriendsCommand.getResult());
+                        view.addFriends(new ArrayList<>(getFriendsCommand.getResult()));
                      }
                      canLoadMore = getFriendsCommand.getResult().size() > 0;
                      nextPage++;

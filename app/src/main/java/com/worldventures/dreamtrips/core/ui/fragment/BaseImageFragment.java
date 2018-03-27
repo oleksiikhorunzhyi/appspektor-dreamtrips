@@ -25,7 +25,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_image_details)
-public class BaseImageFragment<T extends ImagePathHolder> extends BaseFragmentWithArgs<BaseImagePresenter<T>, ImageBundle<T>> implements BaseImagePresenter.View {
+public class BaseImageFragment extends BaseFragmentWithArgs<BaseImagePresenter, ImageBundle<ImagePathHolder>> implements BaseImagePresenter.View {
 
    @InjectView(R.id.imageViewTripImage) protected SimpleDraweeView ivImage;
    @InjectView(R.id.progressBarImage) protected ProgressBar progressBar;
@@ -33,8 +33,8 @@ public class BaseImageFragment<T extends ImagePathHolder> extends BaseFragmentWi
    private ControllerListener controllerListener;
 
    @Override
-   protected BaseImagePresenter<T> createPresenter(Bundle savedInstanceState) {
-      return new BaseImagePresenter<>(getArgs());
+   protected BaseImagePresenter createPresenter(Bundle savedInstanceState) {
+      return new BaseImagePresenter(getArgs());
    }
 
    @Override

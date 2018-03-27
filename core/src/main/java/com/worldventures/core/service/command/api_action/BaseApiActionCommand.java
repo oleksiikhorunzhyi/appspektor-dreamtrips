@@ -1,5 +1,7 @@
 package com.worldventures.core.service.command.api_action;
 
+import android.support.annotation.NonNull;
+
 import com.worldventures.core.janet.CommandWithError;
 import com.worldventures.janet.injection.InjectableAction;
 
@@ -25,7 +27,7 @@ public abstract class BaseApiActionCommand<A extends com.worldventures.dreamtrip
       callback.onSuccess(t);
    }
 
-   protected abstract R mapHttpActionResult(A httpAction);
+   protected abstract R mapHttpActionResult(@NonNull A httpAction);
 
    protected T mapCommandResult(R httpCommandResult) {
       return (T) httpCommandResult;

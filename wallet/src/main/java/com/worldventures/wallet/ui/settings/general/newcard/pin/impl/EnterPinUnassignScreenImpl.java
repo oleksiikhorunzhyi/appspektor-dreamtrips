@@ -1,6 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.newcard.pin.impl;
 
-
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +11,8 @@ import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.wallet.ui.settings.general.newcard.pin.EnterPinUnassignPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.pin.EnterPinUnassignScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView;
 
 import javax.inject.Inject;
 
@@ -60,5 +60,11 @@ public class EnterPinUnassignScreenImpl extends WalletBaseController<EnterPinUna
    @Override
    public EnterPinUnassignPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new EnterPinUnassignScreenModule();
    }
 }

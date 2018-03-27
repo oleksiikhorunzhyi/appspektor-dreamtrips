@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.media_picker.model.VideoMetadata;
 import com.worldventures.dreamtrips.modules.media_picker.service.MediaMetadataInteractor;
 import com.worldventures.dreamtrips.modules.media_picker.service.command.GetVideoMetadataCommand;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.feed.model.ImmutableVideoCreationModel;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.VideoCreationModel;

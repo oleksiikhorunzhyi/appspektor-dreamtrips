@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.settings.general.newcard.check.impl;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,8 @@ import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.wallet.ui.common.base.WalletBaseController;
 import com.worldventures.wallet.ui.settings.general.newcard.check.PreCheckNewCardPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.check.PreCheckNewCardScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView;
 import com.worldventures.wallet.ui.widget.WalletCheckWidget;
 
 import javax.inject.Inject;
@@ -94,8 +95,7 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
    public OperationView<ResetSmartCardCommand> provideResetOperationView(FactoryResetDelegate factoryResetDelegate) {
       return FactoryResetOperationView.create(getContext(),
             factoryResetDelegate::factoryReset,
-            () -> {
-            },
+            getPresenter()::onFactoryResetFailed,
             R.string.wallet_error_enter_pin_title,
             R.string.wallet_error_enter_pin_msg,
             R.string.wallet_retry_label,
@@ -122,5 +122,11 @@ public class PreCheckNewCardScreenImpl extends WalletBaseController<PreCheckNewC
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new PreCheckNewCardScreenModule();
    }
 }

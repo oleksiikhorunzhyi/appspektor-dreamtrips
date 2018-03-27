@@ -36,9 +36,9 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
          deleteUserData();
       }
       walletStorage.deleteSmartCardFirmware();
-      walletStorage.deleteSmartCardDetails();
       walletStorage.deleteSmartCard();
       walletStorage.deleteTermsAndConditions();
+      walletStorage.deleteSmartCardAffidavit();
       walletStorage.deletePinOptionChoice();
       walletStorage.deleteSmartCardDisplayType();
       lostCardRepository.clear();
@@ -48,6 +48,7 @@ public class RemoveSmartCardDataCommand extends Command<Void> implements Injecta
    private void deletePaymentsData() {
       recordsStorage.deleteAllRecords();
       recordsStorage.deleteDefaultRecordId();
+      recordsStorage.saveOfflineModeState(false);
    }
 
    private void deleteUserData() {

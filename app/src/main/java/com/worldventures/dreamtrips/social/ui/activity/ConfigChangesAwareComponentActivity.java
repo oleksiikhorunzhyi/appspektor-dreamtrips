@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.activity.ToolbarActivity;
@@ -16,7 +15,7 @@ import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresen
 @Layout(R.layout.activity_component)
 public class ConfigChangesAwareComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
 
-   Bundle extras;
+   private Bundle extras;
 
    @Override
    protected int getToolbarTitle() {
@@ -37,7 +36,6 @@ public class ConfigChangesAwareComponentActivity extends ToolbarActivity<Compone
 
    private void initToolbar() {
       ToolbarConfig toolbarConfig = (ToolbarConfig) extras.getSerializable(ComponentPresenter.COMPONENT_TOOLBAR_CONFIG);
-
       if (toolbarConfig != null) {
          toolbar.setVisibility(toolbarConfig.isVisible() ? View.VISIBLE : View.GONE);
          toolbar.setAlpha(toolbarConfig.getAlpha());

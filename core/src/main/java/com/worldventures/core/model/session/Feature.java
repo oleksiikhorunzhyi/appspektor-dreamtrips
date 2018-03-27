@@ -19,6 +19,10 @@ public class Feature {
    public static final String WALLET_PROVISIONING = "wallet_provisioning";
    public static final String BUCKET_LIST = "bucketList";
    public static final String TRIP_IMAGES = "tripImages";
+   public static final String DLC = "dream_life_club";
+   public static final String SETTINGS = "settings";
+   public static final String SEND_FEED_BACK = "send_feedback";
+   public static final String INVITATIONS = "invitations";
    public static final String UNKNOWN = "unknown";
 
    @FeatureName public final String name;
@@ -29,6 +33,6 @@ public class Feature {
 
    @Retention(SOURCE)
    @StringDef({TRIPS, REP_TOOLS, SOCIAL, DTL, REP_SUGGEST_MERCHANT, BOOK_TRAVEL, BOOK_TRIP, MEMBERSHIP, WALLET,
-                    WALLET_PROVISIONING, BUCKET_LIST, TRIP_IMAGES})
+                    WALLET_PROVISIONING, BUCKET_LIST, TRIP_IMAGES, DLC, SETTINGS, SEND_FEED_BACK, INVITATIONS})
    public @interface FeatureName {}
 }

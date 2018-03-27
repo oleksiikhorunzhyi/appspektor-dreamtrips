@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import java.net.URLEncoder
-import java.util.*
+import java.util.HashMap
 import kotlin.test.assertEquals
 
 class StaticPageProviderSpec: BaseSpec({
@@ -54,12 +54,7 @@ class StaticPageProviderSpec: BaseSpec({
          val expectedUrl = "$API_URL/gateway/faq";
          assertEquals(expectedUrl, provider.faqUrl)
       }
-
-      it ("should provide correct terms of service url") {
-         val expectedUrl = "$API_URL/gateway/terms_of_use"
-         assertEquals(expectedUrl, provider.termsOfServiceUrl)
-      }
-
+      
       it ("should provide correct cookies policy url") {
          val expectedUrl = "$API_URL/gateway/cookies_policy"
          assertEquals(expectedUrl, provider.cookiesPolicyUrl)

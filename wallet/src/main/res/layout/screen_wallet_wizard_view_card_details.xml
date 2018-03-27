@@ -2,7 +2,6 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
       >
 
    <data>
@@ -32,8 +31,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:theme="@style/WalletTheme.ToolbarStyle"
-            app:theme="@style/WalletTheme.ToolbarStyle"
             app:title="@string/wallet_card_details_title"
             />
 
@@ -97,7 +94,7 @@
                         android:id="@+id/card_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_wallet_vector_pencil"
+                        android:drawableEnd="@drawable/ic_wallet_wrapper_pencil"
                         android:hint="@string/wallet_view_card_details_hint_nickname_card"
                         android:imeOptions="actionDone"
                         android:inputType="textCapSentences"
@@ -113,7 +110,6 @@
                      android:id="@+id/default_record_switcher"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:checked="@={recordDetails.defaultRecord}"
                      android:text="@string/wallet_add_card_details_option_set_as_default_card"
                      />
 
@@ -125,13 +121,10 @@
 
                <Button
                      android:id="@+id/delete_button"
+                     style="@style/RecordDetailDeleteButtonStyle"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:text="@string/wallet_card_details_button_delete_card"
-                     android:textColor="@color/wallet_card_details_delete_text_color"
-                     android:textSize="@dimen/wallet_details_screen_card_interact_button_text_size"
-                     app:backgroundTint="@color/white"
-                     tools:ignore="MissingPrefix"
                      />
 
             </LinearLayout>

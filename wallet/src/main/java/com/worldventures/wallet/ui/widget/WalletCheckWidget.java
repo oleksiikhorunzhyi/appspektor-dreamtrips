@@ -1,5 +1,6 @@
 package com.worldventures.wallet.ui.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.worldventures.wallet.R;
 
+@SuppressLint("RestrictedApi")
 public class WalletCheckWidget extends RelativeLayout {
 
    private final AppCompatDrawableManager appCompatDrawableManager = AppCompatDrawableManager.get();

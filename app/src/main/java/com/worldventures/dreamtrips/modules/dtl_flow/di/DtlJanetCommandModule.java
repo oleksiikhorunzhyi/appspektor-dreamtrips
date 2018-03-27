@@ -11,12 +11,16 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.ClearMerchantsSto
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FullMerchantAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetPayInAppVideoCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.MerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.NearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.SendEmailAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.TakeScreenshotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.UploadReceiptCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
 
 import dagger.Module;
@@ -30,6 +34,7 @@ import dagger.Provides;
             MerchantDetailsViewCommand.class,
             AttributesAction.class,
             FullMerchantAction.class,
+            GetPayInAppVideoCommand.class,
             ClearMerchantsStorageAction.class,
             MerchantsAction.class,
             NearbyLocationAction.class,
@@ -38,7 +43,10 @@ import dagger.Provides;
             FlaggingReviewAction.class,
             UrlTokenAction.class,
             TransactionPilotAction.class,
-            GetTransactionsCommand.class
+            GetTransactionsCommand.class,
+            UploadReceiptCommand.class,
+            SendEmailAction.class,
+            TakeScreenshotAction.class,
       },
       complete = false, library = true)
 public class DtlJanetCommandModule {

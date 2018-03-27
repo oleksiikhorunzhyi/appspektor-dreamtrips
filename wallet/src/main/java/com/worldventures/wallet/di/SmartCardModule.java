@@ -12,26 +12,24 @@ import com.worldventures.wallet.domain.session.NxtSessionHolder;
 import com.worldventures.wallet.domain.storage.WalletStorage;
 import com.worldventures.wallet.domain.storage.WalletStorageModule;
 import com.worldventures.wallet.domain.storage.action.PersistentDeviceStorage;
-import com.worldventures.wallet.service.RecordInteractor;
 import com.worldventures.wallet.service.WalletSocialInfoProvider;
 import com.worldventures.wallet.service.WalletSocialInfoProviderImpl;
 import com.worldventures.wallet.service.logout.WalletLogoutActionModule;
+import com.worldventures.wallet.service.nxt.JanetNxtModule;
 import com.worldventures.wallet.util.WalletBuildConfigHelper;
 import com.worldventures.wallet.util.WalletFeatureHelper;
-import com.worldventures.wallet.util.WalletFeatureHelperRelease;
+import com.worldventures.wallet.util.WalletFeatureHelperFull;
 
-import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.techery.janet.Janet;
 import io.techery.janet.smartcard.client.NxtSmartCardClient;
 import io.techery.janet.smartcard.client.SmartCardClient;
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient;
 
-import static com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET;
+import static com.worldventures.wallet.domain.WalletConstants.WALLET_COMPONENT;
 
 @Module(
       includes = {
@@ -46,12 +44,10 @@ import static com.worldventures.wallet.di.WalletJanetModule.JANET_WALLET;
 )
 public class SmartCardModule {
 
-   public static final String WALLET = "Wallet";
-
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideWalletComponent() {
       return new ComponentDescription.Builder()
-            .key(WALLET)
+            .key(WALLET_COMPONENT)
             .navMenuTitle(R.string.wallet)
             .toolbarTitle(R.string.wallet)
             .icon(R.drawable.ic_wallet)
@@ -78,9 +74,9 @@ public class SmartCardModule {
 
    @Singleton
    @Provides
-   WalletFeatureHelper featureHelper(@Named(JANET_WALLET) Janet janet, RecordInteractor recordInteractor) {
-            return new WalletFeatureHelperRelease(janet, recordInteractor);
-//      return new WalletFeatureHelperFull();
+   WalletFeatureHelper featureHelper() {
+      //      return new WalletFeatureHelperRelease();
+      return new WalletFeatureHelperFull();
    }
 
    @Provides

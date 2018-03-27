@@ -8,20 +8,14 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.EnrollMemberPresenter;
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
-import com.worldventures.dreamtrips.social.ui.membership.service.analytics.EnrollMemberViewedAction;
 
 @Layout(R.layout.fragment_webview)
 public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<EnrollMemberPresenter, UrlBundle>
       implements EnrollMemberPresenter.View {
 
    @Override
-   protected String getURL() {
-      return provider.getEnrollMemberUrl();
-   }
-
-   @Override
    protected EnrollMemberPresenter createPresenter(Bundle savedInstanceState) {
-      return new EnrollMemberPresenter(getURL());
+      return new EnrollMemberPresenter();
    }
 
    @Override
@@ -50,6 +44,6 @@ public class EnrollMemberFragment extends AuthorizedStaticInfoFragment<EnrollMem
 
    @Override
    protected void trackViewFromViewPagerIfNeeded() {
-      analyticsInteractor.analyticsActionPipe().send(new EnrollMemberViewedAction(getUserId()));
+      getPresenter().sendAnalyticsEnrollViewedAction();
    }
 }

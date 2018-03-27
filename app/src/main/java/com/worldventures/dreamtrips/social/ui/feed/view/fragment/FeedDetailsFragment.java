@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
-import android.content.res.Configuration;
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.ActiveFeedRou
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.util.FeedCellListWidthProvider;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoPlayerHolder;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
 
    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
    @Inject ActiveFeedRouteInteractor activeFeedRouteInteractor;
+   @Inject VideoPlayerHolder videoPlayerHolder;
 
    @State FeedItem feedItem;
 
@@ -75,13 +77,15 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
             recyclerView.scrollBy(0, 1);
          }
       });
+
+      removePreviousAdditionalFragment();
    }
 
-   @Override
-   public void onConfigurationChanged(Configuration newConfig) {
-      super.onConfigurationChanged(newConfig);
-      showAdditionalInfoIfNeeded();
-      updateStickyInputContainerState();
+   private void removePreviousAdditionalFragment() {
+      Fragment fragment = additionalInfoFragment();
+      if (!isTabletLandscape() && fragment != null) {
+         getChildFragmentManager().beginTransaction().remove(fragment).commitNow();
+      }
    }
 
    private void updateStickyInputContainerState() {
@@ -109,12 +113,18 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       super.onResume();
       activeFeedRouteInteractor.activeFeedRouteCommandActionPipe()
             .send(ActiveFeedRouteCommand.update(FeedCellListWidthProvider.FeedType.FEED_DETAILS));
+      adapter.notifyDataSetChanged();
+   }
+
+   @Override
+   public void onPause() {
+      super.onPause();
+      videoPlayerHolder.pause();
    }
 
    @Override
    public void onDestroyView() {
       FragmentHelper.resetChildFragmentManagerField(this);
-      //
       super.onDestroyView();
    }
 
@@ -168,7 +178,7 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
    private void showAdditionalInfoIfNeeded() {
       User user = feedItem.getItem().getOwner();
       showAdditionalContainerIfNeeded();
-      if (!isAdditionalInfoFragmentAttached() && isShowAdditionalInfo()) {
+      if (additionalInfoFragment() == null && isShowAdditionalInfo()) {
          router.moveTo(FeedItemAdditionalInfoFragment.class, NavigationConfigBuilder.forFragment()
                .backStackEnabled(false)
                .fragmentManager(getChildFragmentManager())
@@ -193,9 +203,8 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
       return getArgs().shouldShowAdditionalInfo() && !getPresenter().isTrip() && isTabletLandscape();
    }
 
-   private boolean isAdditionalInfoFragmentAttached() {
-      return getActivity().getSupportFragmentManager()
-            .findFragmentById(R.id.comments_additional_info_container) != null;
+   private Fragment additionalInfoFragment() {
+      return getChildFragmentManager().findFragmentById(R.id.comments_additional_info_container);
    }
 
    @Override

@@ -28,9 +28,6 @@ import flow.Flow;
 public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, DtlTransactionPresenter, DtlTransactionPath>
       implements DtlTransactionScreen {
 
-   private TransactionModel transaction;
-   private MaterialDialog progressDialog;
-
    @InjectView(R.id.toolbar_actionbar) Toolbar toolbar;
    @InjectView(R.id.tv_title) TextView tvTitle;
 
@@ -50,10 +47,14 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    @InjectView(R.id.tv_earned_points) TextView tvEarnedPoints;
    @InjectView(R.id.currentTime) TextView tvDate;
 
+   @InjectView(R.id.transaction_buttons_container) View transactionButtonsContainer;
    @InjectView(R.id.tv_review_merchant) TextView tvReview;
    @InjectView(R.id.tv_receipt) TextView tvReceipt;
 
    private TransactionStatusInjector transactionStatusInjector;
+   private TransactionModel transaction;
+
+   private MaterialDialog progressDialog;
 
    public DtlTransactionScreenImpl(Context context) {
       super(context);
@@ -80,13 +81,12 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
          toolbar.setBackgroundColor(Color.WHITE);
          tvTitle.setVisibility(View.VISIBLE);
          tvTitle.setText(transaction.getMerchantName());
+         toolbar.setNavigationIcon(R.drawable.back_icon_black);
       } else {
          toolbar.setTitle(transaction.getMerchantName());
-         toolbar.setNavigationIcon(ViewUtils.isTabletLandscape(getContext()) ? R.drawable.back_icon_black : R.drawable.back_icon);
-         toolbar.setNavigationOnClickListener(view -> {
-            Flow.get(getContext()).goBack();
-         });
+         toolbar.setNavigationIcon(R.drawable.back_icon);
       }
+      toolbar.setNavigationOnClickListener(view -> Flow.get(getContext()).goBack());
 
       transactionStatusInjector = new TransactionStatusInjector(getActivity(), this);
    }
@@ -175,6 +175,11 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
       getPresenter().reviewMerchant();
    }
 
+   @OnClick(R.id.tv_send)
+   void onSendReceiptToEmailClick() {
+      getPresenter().onSendEmailClick(getRootView());
+   }
+
    @Override
    public void showReceipt(String url) {
       Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -183,8 +188,8 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    }
 
    @Override
-   public void showLoadingMerchantDialog() {
-      progressDialog = new MaterialDialog.Builder(getActivity()).progress(true, 0)
+   public void showLoading() {
+      progressDialog = new MaterialDialog.Builder(getContext()).progress(true, 0)
             .content(R.string.loading)
             .cancelable(false)
             .canceledOnTouchOutside(false)
@@ -192,10 +197,36 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
    }
 
    @Override
-   public void hideLoadingMerchantDialog() {
+   public void hideLoading() {
       if (progressDialog != null && progressDialog.isShowing()) {
          progressDialog.dismiss();
       }
+   }
+
+   @Override
+   public void showSuccessEmailMessage() {
+      SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.SUCCESS_TYPE)
+            .setTitleText("")
+            .setContentText(getContext().getString(R.string.dtl_send_email_success))
+            .setConfirmText(getContext().getString(R.string.ok))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.dismissWithAnimation();
+            });
+      alertDialog.setCancelable(false);
+      alertDialog.show();
+   }
+
+   @Override
+   public void showErrorEmailMessage() {
+      SweetAlertDialog alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE)
+            .setTitleText("")
+            .setContentText(getContext().getString(R.string.dtl_send_email_error))
+            .setConfirmText(getContext().getString(R.string.ok))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.dismissWithAnimation();
+            });
+      alertDialog.setCancelable(false);
+      alertDialog.show();
    }
 
    @Override
@@ -207,5 +238,15 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
                sweetAlertDialog.dismissWithAnimation();
             })
             .setCancelClickListener(SweetAlertDialog::dismissWithAnimation);
+   }
+
+   @Override
+   public void showTransactionButtons() {
+      transactionButtonsContainer.setVisibility(View.VISIBLE);
+   }
+
+   @Override
+   public void hideTransactionButtons() {
+      transactionButtonsContainer.setVisibility(View.INVISIBLE);
    }
 }

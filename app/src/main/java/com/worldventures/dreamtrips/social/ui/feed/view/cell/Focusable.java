@@ -4,4 +4,6 @@ public interface Focusable {
    void onFocused();
 
    boolean canFocus();
+
+   void onUnfocused();
 }

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.worldventures.core.ui.annotations.Layout;
@@ -24,13 +23,17 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me.InspireMePresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.InspireMeViewPagerArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.InspirationPhotoCell;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.util.GridLayoutManagerPaginationDelegate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_images_list)
 public class InspireMeFragment extends BaseFragment<InspireMePresenter> implements InspireMePresenter.View, SelectablePagerFragment {
+
+   public static final int VISIBLE_THRESHOLD = 5;
 
    @InjectView(R.id.recyclerView) EmptyRecyclerView recyclerView;
    @InjectView(R.id.swipeLayout) SwipeRefreshLayout refreshLayout;
@@ -56,7 +59,8 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       initAdapter();
-      initRecyclerView();
+      recyclerView.addOnScrollListener(new GridLayoutManagerPaginationDelegate(getPresenter()::loadNext,
+            VISIBLE_THRESHOLD));
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
    }
@@ -85,24 +89,12 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
       return landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
    }
 
-   private void initRecyclerView() {
-      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int visibleCount = recyclerView.getChildCount();
-            int totalCount = layoutManager.getItemCount();
-            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-            getPresenter().scrolled(visibleCount, totalCount, firstVisibleItemPosition);
-         }
-      });
-   }
-
    @Override
    public void openFullscreen(List<Inspiration> photos, double randomSeed, boolean lastPageReached, int selectedItemIndex) {
       router.moveTo(InspireMeViewPagerFragment.class,
             NavigationConfigBuilder.forActivity()
                   .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                  .data(new InspireMeViewPagerArgs(photos, randomSeed, lastPageReached, selectedItemIndex))
+                  .data(new InspireMeViewPagerArgs(new ArrayList<>(photos), randomSeed, lastPageReached, selectedItemIndex))
                   .build());
    }
 
@@ -122,11 +114,7 @@ public class InspireMeFragment extends BaseFragment<InspireMePresenter> implemen
    }
 
    @Override
-   public void updatePhotos(List<Inspiration> items, boolean forceUpdate) {
-      if (forceUpdate) {
-         adapter.clear();
-      }
-
+   public void updatePhotos(List<Inspiration> items) {
       DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BaseDiffUtilCallback(adapter.getItems(), items));
       adapter.setItemsNoNotify(items);
       diffResult.dispatchUpdatesTo(adapter);

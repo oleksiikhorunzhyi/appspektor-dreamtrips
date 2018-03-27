@@ -8,34 +8,39 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.CacheResultWrapper
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.CacheResultWrapper
+import com.worldventures.janet.cache.storage.ActionStorage
+import com.worldventures.core.modules.legal.LegalInteractor
 import com.worldventures.core.modules.settings.service.SettingsInteractor
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.api.smart_card.terms_and_condition.model.TermsAndConditions
+import com.worldventures.dreamtrips.api.smart_card.user_association.model.ImmutableSmartCardDetails
 import com.worldventures.dreamtrips.api.smart_card.user_info.model.UpdateCardUserData
+import com.worldventures.dreamtrips.api.terms_and_conditions.model.BaseDocumentBody
+import com.worldventures.dreamtrips.api.terms_and_conditions.model.DocumentBodyWithUrl
 import com.worldventures.wallet.BaseSpec
-import com.worldventures.wallet.domain.converter.SmartCardDetailsConverter
 import com.worldventures.wallet.domain.converter.SmartCardRecordToWalletRecordConverter
 import com.worldventures.wallet.domain.converter.WalletRecordToSmartCardRecordConverter
-import com.worldventures.wallet.domain.entity.CardStatus
-import com.worldventures.wallet.domain.entity.SmartCard
-import com.worldventures.wallet.domain.entity.SmartCardDetails
+import com.worldventures.wallet.domain.entity.ConnectionStatus
+import com.worldventures.wallet.domain.entity.SmartCardAgreement
+import com.worldventures.wallet.domain.entity.SmartCardStatus
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.record.Record
 import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage
+import com.worldventures.wallet.domain.storage.action.DeviceStateActionStorage
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage
-import com.worldventures.wallet.model.TestApiSmartCardDetails
 import com.worldventures.wallet.model.TestApiUpdateCardUserData
-import com.worldventures.wallet.service.command.CreateAndConnectToCardCommand
+import com.worldventures.wallet.model.createTestSmartCard
 import com.worldventures.wallet.service.command.http.AssociateCardUserCommand
-import com.worldventures.wallet.service.command.http.FetchTermsAndConditionsCommand
+import com.worldventures.wallet.service.command.http.FetchSmartCardAgreementsCommand
 import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.wallet.service.lostcard.LostCardRepository
 import com.worldventures.wallet.util.CachedPhotoUtil
+import com.worldventures.wallet.util.WalletFeatureHelper
+import com.worldventures.wallet.util.WalletFeatureHelperFull
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -58,7 +63,7 @@ class WizardInteractorSpec : BaseSpec({
 
          mockDb = createMockDb()
          whenever(mockDb.smartCardUser).thenReturn(SmartCardUser("First Name"))
-         whenever(mockDb.smartCard).thenReturn(SmartCard("1", CardStatus.ACTIVE, "12212"))
+         whenever(mockDb.smartCard).thenReturn(createTestSmartCard("1"))
          recordsStorage = mock()
          mappery = createMappery()
          janet = createJanet()
@@ -67,6 +72,7 @@ class WizardInteractorSpec : BaseSpec({
          propertiesProvider = createPropertiesProvider()
          smartCardLocationInteractor = createSmartCardLocationInteractor(janet)
          settingsInteractor = createSettingsInteractor(janet)
+         legalInteractor = createLegalInteractor(janet)
 
          janet.connectToSmartCardSdk()
          mockedDebitCard = Record(id = null, number = "7777 7777 7777 7777", numberLastFourDigits = "7777", expDate = "00/00")
@@ -75,16 +81,6 @@ class WizardInteractorSpec : BaseSpec({
       context("SmartCard wizard flow") {
          beforeEachTest {
             lostCardStorage = mock()
-         }
-         it("should be to save of SmartCard") {
-            val testSubscriber: TestSubscriber<ActionState<CreateAndConnectToCardCommand>> = TestSubscriber()
-            janet.createPipe(CreateAndConnectToCardCommand::class.java)
-                  .createObservable(CreateAndConnectToCardCommand(MOCK_BARCODE))
-                  .subscribe(testSubscriber)
-
-            AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(mockDb, times(1)).saveSmartCard(any())
-            verify(propertiesProvider, times(1)).deviceId()
          }
 
          it("should be associate SmartCard and save SmartCardDetails to mediaModelStorage") {
@@ -95,20 +91,20 @@ class WizardInteractorSpec : BaseSpec({
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(mockDb, times(0)).saveSmartCardDetails(any())
+            verify(mockDb, times(1)).saveSmartCard(any())
             verify(propertiesProvider, times(1)).deviceId()
             verify(propertiesProvider, times(1)).deviceName()
             verify(propertiesProvider, times(1)).osVersion()
          }
 
          it("should be save TermsAndConditions to mediaModelStorage") {
-            val testSubscriber: TestSubscriber<ActionState<FetchTermsAndConditionsCommand>> = TestSubscriber()
-            janet.createPipe(FetchTermsAndConditionsCommand::class.java)
-                  .createObservable(FetchTermsAndConditionsCommand())
+            val testSubscriber: TestSubscriber<ActionState<FetchSmartCardAgreementsCommand>> = TestSubscriber()
+            janet.createPipe(FetchSmartCardAgreementsCommand::class.java)
+                  .createObservable(FetchSmartCardAgreementsCommand.termsAndConditions())
                   .subscribe(testSubscriber)
 
             AssertUtil.assertActionSuccess(testSubscriber, { true })
-            verify(mockDb, times(0)).saveWalletTermsAndConditions(any())
+            verify(mockDb, times(1)).saveWalletTermsAndConditions(any())
          }
 
          it("disassociates SmartCard") {
@@ -141,9 +137,15 @@ class WizardInteractorSpec : BaseSpec({
       lateinit var mockedDebitCard: Record
       lateinit var smartCardLocationInteractor: SmartCardLocationInteractor
       lateinit var settingsInteractor: SettingsInteractor
+      lateinit var legalInteractor: LegalInteractor
+      private val deviceStateActionStorage = DeviceStateActionStorage()
+
+      init {
+         deviceStateActionStorage.save(null, SmartCardStatus(connectionStatus = ConnectionStatus.CONNECTED))
+      }
 
       val setOfMultiplyStorage: () -> Set<ActionStorage<*>> = {
-         setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsActionStorage(recordsStorage))
+         setOf(DefaultRecordIdStorage(recordsStorage), SmartCardActionStorage(mockDb), WalletRecordsActionStorage(recordsStorage), deviceStateActionStorage)
       }
 
       fun createWizardInteractor(janet: Janet) = WizardInteractor(SessionActionPipeCreator(janet))
@@ -174,29 +176,31 @@ class WizardInteractorSpec : BaseSpec({
          daggerCommandActionService.registerProvider(CachedPhotoUtil::class.java, { mock() })
          daggerCommandActionService.registerProvider(SmartCardLocationInteractor::class.java) { smartCardLocationInteractor }
          daggerCommandActionService.registerProvider(SettingsInteractor::class.java, { settingsInteractor })
+         daggerCommandActionService.registerProvider(WalletFeatureHelper::class.java) { WalletFeatureHelperFull() }
+         daggerCommandActionService.registerProvider(LegalInteractor::class.java) { legalInteractor }
 
          return janet
       }
 
       fun createMockDb(): WalletStorage {
          val repository: WalletStorage = spy()
-         whenever(repository.walletTermsAndConditions).thenReturn(com.worldventures.wallet.domain.entity.TermsAndConditions("", "1"))
+         whenever(repository.walletTermsAndConditions).thenReturn(SmartCardAgreement("", "1"))
          return repository
       }
 
       fun createMappery(): MapperyContext = Mappery.Builder()
             .map(Record::class.java).to(io.techery.janet.smartcard.model.Record::class.java, WalletRecordToSmartCardRecordConverter())
             .map(io.techery.janet.smartcard.model.Record::class.java).to(Record::class.java, SmartCardRecordToWalletRecordConverter())
-            .map(com.worldventures.dreamtrips.api.smart_card.user_association.model.SmartCardDetails::class.java).to(SmartCardDetails::class.java, SmartCardDetailsConverter())
             .build()
 
       fun mockHttpService(): MockHttpActionService {
          val termsAndConditionsResponse = mockTermsAndConditionsResponse()
+         val fetchAgreementsResponse = mockAgreementsResponse()
          return MockHttpActionService.Builder()
                .bind(MockHttpActionService.Response(204)) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("delete", true)
                }
-               .bind(MockHttpActionService.Response(204).body(TestApiSmartCardDetails(MOCK_SMART_CARD_ID))) { request ->
+               .bind(MockHttpActionService.Response(204).body(ImmutableSmartCardDetails.builder().scID(MOCK_SMART_CARD_ID).build())) { request ->
                   request.url.contains("api/smartcard/provisioning/card_user") && request.method.equals("post", true)
                }
                .bind(MockHttpActionService.Response(200).body(termsAndConditionsResponse)) { request ->
@@ -204,6 +208,10 @@ class WizardInteractorSpec : BaseSpec({
                }
                .bind(MockHttpActionService.Response(204)) { request ->
                   request.url.endsWith("api/user/settings")
+               }
+               .bind(MockHttpActionService.Response(204).body(fetchAgreementsResponse)) { request ->
+                  request.url.endsWith("/api/documents/" + BaseDocumentBody.SC_BETA_AFFIDAVIT)
+                        || request.url.endsWith("/api/documents/" + BaseDocumentBody.SC_TERMS)
                }
                .build()
       }
@@ -213,6 +221,13 @@ class WizardInteractorSpec : BaseSpec({
          whenever(termsAndConditions.version()).thenReturn(1)
          whenever(termsAndConditions.url()).thenReturn("http://www.termsandconditions.test.com")
          return termsAndConditions
+      }
+
+      private fun mockAgreementsResponse(): DocumentBodyWithUrl {
+         val agreementDocument: DocumentBodyWithUrl = mock()
+         whenever(agreementDocument.url()).thenReturn("http://www.termsandconditions.test.com")
+         whenever(agreementDocument.version()).thenReturn("1.0")
+         return agreementDocument
       }
 
       fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {
@@ -235,5 +250,7 @@ class WizardInteractorSpec : BaseSpec({
          whenever(propertiesProvider.osVersion()).thenReturn("7.1.1")
          return propertiesProvider
       }
+
+      fun createLegalInteractor(janet: Janet) = LegalInteractor(SessionActionPipeCreator(janet))
    }
 }

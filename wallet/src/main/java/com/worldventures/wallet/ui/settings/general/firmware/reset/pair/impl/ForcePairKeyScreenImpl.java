@@ -1,6 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.firmware.reset.pair.impl;
 
-
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -79,5 +79,11 @@ public class ForcePairKeyScreenImpl extends WalletBaseController<ForcePairKeyScr
    @Override
    public ForcePairKeyPresenter getPresenter() {
       return presenter;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new ForcePairKeyScreenModule();
    }
 }

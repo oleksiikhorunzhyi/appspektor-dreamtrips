@@ -8,7 +8,7 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
+import com.worldventures.dreamtrips.social.service.profile.model.ReloadFeedModel;
 
 import butterknife.OnClick;
 

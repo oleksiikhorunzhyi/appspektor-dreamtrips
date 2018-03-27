@@ -33,4 +33,14 @@ public abstract class PostCompoundOperationModel<T extends PostBody> {
    public abstract PostBody.Type type();
 
    public abstract T body();
+
+   @Override
+   public boolean equals(Object obj) {
+      return (obj instanceof PostCompoundOperationModel) && (id() == ((PostCompoundOperationModel) obj).id());
+   }
+
+   @Override
+   public int hashCode() {
+      return id();
+   }
 }

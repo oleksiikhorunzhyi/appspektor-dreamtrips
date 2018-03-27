@@ -8,7 +8,7 @@ import com.worldventures.core.model.session.SessionHolder
 import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.janet.MockAnalyticsService
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.modules.trips.model.Location
+import com.worldventures.core.model.Location
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationMutator
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.BackgroundUploadingInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
@@ -25,7 +25,7 @@ import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
 import rx.schedulers.Schedulers
-import java.util.*
+import java.util.ArrayList
 
 abstract class BaseUploadingInteractorSpec(spekBody: SpecBody.() -> Unit) : BaseSpec(spekBody) {
    companion object {
@@ -63,8 +63,8 @@ abstract class BaseUploadingInteractorSpec(spekBody: SpecBody.() -> Unit) : Base
       }
 
       fun mockPhoto(): Photo {
-         val photo: Photo = mock()
-         whenever(photo.location).thenReturn(Location())
+         val photo = Photo()
+         photo.location = Location()
          return photo
       }
 

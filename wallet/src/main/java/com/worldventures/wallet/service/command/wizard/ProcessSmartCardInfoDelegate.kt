@@ -9,24 +9,22 @@ import com.worldventures.wallet.domain.entity.SmartCardDetails
 import com.worldventures.wallet.domain.entity.SmartCardUser
 import com.worldventures.wallet.domain.entity.SmartCardUserPhone
 import com.worldventures.wallet.domain.entity.SmartCardUserPhoto
-import com.worldventures.wallet.domain.storage.WalletStorage
 import com.worldventures.wallet.service.command.ActiveSmartCardCommand
+import com.worldventures.wallet.service.command.SmartCardUserCommand
 import io.techery.janet.Janet
 import io.techery.mappery.MapperyContext
 import rx.Observable
 
 @Suppress("UnsafeCallOnNullableType")
 internal class ProcessSmartCardInfoDelegate(
-      private val walletStorage: WalletStorage,
       private val janetWallet: Janet,
       private val mappery: MapperyContext) {
 
-   fun processSmartCardInfo(smartCardInfo: SmartCardInfo): Observable<Result> {
-      val details = mappery.convert(smartCardInfo, SmartCardDetails::class.java)
+   fun processSmartCardInfo(smartCardInfo: SmartCardInfo): Observable<Pair<SmartCard, SmartCardUser>> {
       val smartCard = createSmartCard(smartCardInfo)
 
       val user = createSmartCardUser(smartCardInfo.user())
-      val result = Result(smartCard, user, details)
+      val result = Pair(smartCard, user)
       return save(result).map { result }
    }
 
@@ -45,18 +43,17 @@ internal class ProcessSmartCardInfoDelegate(
    private fun createSmartCard(smartCardInfo: SmartCardInfo): SmartCard {
       return SmartCard(
             smartCardId = smartCardInfo.scId().toString(),
-            deviceId = smartCardInfo.deviceId(),
-            cardStatus = CardStatus.ACTIVE)
+            cardStatus = CardStatus.ACTIVE,
+            details = SmartCardDetails(deviceId = smartCardInfo.deviceId())
+      )
    }
 
-   private fun save(result: Result): Observable<Void> {
-      walletStorage.saveSmartCardDetails(result.details)
-      walletStorage.saveSmartCardUser(result.user)
-      //saving smart card
+   private fun save(result: Pair<SmartCard, SmartCardUser>): Observable<Void> {
       return janetWallet.createPipe(ActiveSmartCardCommand::class.java)
-            .createObservableResult(ActiveSmartCardCommand(result.smartCard))
+            .createObservableResult(ActiveSmartCardCommand(result.first))
+            .flatMap { janetWallet.createPipe(SmartCardUserCommand::class.java )
+                  .createObservableResult(SmartCardUserCommand.save(result.second)) }
             .map { null }
    }
 
-   internal class Result(val smartCard: SmartCard, val user: SmartCardUser, val details: SmartCardDetails)
 }

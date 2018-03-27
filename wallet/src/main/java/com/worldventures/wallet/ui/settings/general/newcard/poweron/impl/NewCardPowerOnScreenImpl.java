@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.settings.general.newcard.poweron.impl;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +19,8 @@ import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory;
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView;
 import com.worldventures.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnPresenter;
 import com.worldventures.wallet.ui.settings.general.newcard.poweron.NewCardPowerOnScreen;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView;
 import com.worldventures.wallet.ui.widget.WizardVideoView;
 
 import javax.inject.Inject;
@@ -117,5 +118,11 @@ public class NewCardPowerOnScreenImpl extends WalletBaseController<NewCardPowerO
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new NewCardPowerOnScreenModule();
    }
 }

@@ -20,12 +20,12 @@ public class StaticPageProvider {
    private static final String BOOKING_PAGE_URL = "/gateway/booking_page/%trip_id%";
    private static final String OTA_PAGE_URL = "/gateway/ota_page";
    private static final String FAQ_URL = "/gateway/faq";
-   private static final String TERMS_OF_SERVICE_URL = "/gateway/terms_of_use";
    private static final String PRIVACY_POLICY_URL = "/gateway/privacy_policy";
    private static final String COOKIES_POLICY_URL = "/gateway/cookies_policy";
    private static final String ENROLL_UPGRADE_URL = "/gateway/enroll_upgrade";
    private static final String WV_ADVANTAGE_URL = "/Account/Dispatch?url=";
    private static final String WV_ADVANTAGE_URL_TO_ENCODE = "/Marketing/WorldVenturesAdvantage";
+   private static final String DLC = "/gateway/dreamlifeclub";
 
    ///////////////////////////////////////////
    //// Query params
@@ -37,7 +37,6 @@ public class StaticPageProvider {
 
    private final SessionHolder appSessionHolder;
    private final DeviceInfoProvider deviceInfoProvider;
-
    private final String apiUrl;
    private final String backofficeUrl;
    private final String forgotPasswordUrl;
@@ -85,10 +84,6 @@ public class StaticPageProvider {
       return apiUrl + FAQ_URL;
    }
 
-   public String getTermsOfServiceUrl() {
-      return apiUrl + TERMS_OF_SERVICE_URL;
-   }
-
    public String getCookiesPolicyUrl() {
       return apiUrl + COOKIES_POLICY_URL;
    }
@@ -111,6 +106,10 @@ public class StaticPageProvider {
       } catch (UnsupportedEncodingException e) {
          return "about:blank";
       }
+   }
+
+   public String getDLCUrl() {
+      return apiUrl + DLC;
    }
 
    public String getForgotPasswordUrl() {

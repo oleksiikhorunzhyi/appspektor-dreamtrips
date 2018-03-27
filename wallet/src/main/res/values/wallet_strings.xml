@@ -16,7 +16,8 @@
    <string name="wallet_empty">Empty</string>
    <string name="wallet_settings">Settings</string>
    <string name="wallet_coming_soon">Coming Soon</string>
-
+   <string name="wallet_common_backend_error_message">We\'re Sorry there was an error communicating with the server. Please try again later</string>
+   <string name="wallet_common_security_provider_update_failed">Security provider update is failed</string>
    <string name="wallet">flye\u2122 smart card</string>
    <string name="wallet_dashboard_title">flye\u2122 smart card</string>
    <string name="wallet_wizard_title">flye\u2122 smart card</string>
@@ -27,6 +28,7 @@
    <string name="wallet_fail_disassociate">Fail of disassociate</string>
    <string name="wallet_smart_card_locked_disconnected_status">Smart Card is locked. Swipe the chip twice to unlock</string>
    <string name="wallet_long_operation_hint">This could take a few minutes…</string>
+   <string name="wallet_long_operation_hint_full">This could take a few minutes…\n\nKeep the flye smart card near your phone, and don’t turn it off.</string>
    <string name="wallet_sc_operation_could_not_be_completed">This operation could not be completed\n(%1$s)</string>
    <string name="wallet_error_internal_server">Internal Server Error</string>
    <string name="wallet_error_something_went_wrong">Something went wrong</string>
@@ -76,10 +78,17 @@
    <string name="wallet_wizard_finish_title">Finishing Set Up</string>
    <string name="wallet_wizard_setup_complete_label">Set up is almost complete. </string>
    <string name="wallet_wizard_finish_label">When finished you will be able to add credit and debit cards.</string>
+   <string name="wallet_wizard_finish_error_sample_cards">Failed to add Sample Card.</string>
 
-   <!--splash-->
-   <string name="wallet_wizard_splash_title2">Next, you must accept to\nthe User Agreement</string>
-   <string name="wallet_wizard_splash_accept_user_agreement">Please accept the user agreement.</string>
+   <!--agreements-->
+   <string name="wallet_terms_and_conditions_header">User Agreement</string>
+   <string name="wallet_affidavit_header">Beta Affidavit</string>
+   <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
+   <string name="wallet_wizard_agreements_load_failed">Failed to retrieve user %1$s</string>
+   <string name="wallet_wizard_splash_accept_head">Please accept the %1$s.</string>
+   <string name="wallet_wizard_splash_accept_tail_agreement">user agreement</string>
+   <string name="wallet_wizard_splash_accept_tail_affidavit">Affidavit\'s conditions</string>
+   <string name="wallet_wizard_acceptance_error">Agreements acceptance error</string>
 
    <string name="wallet_wizard_scan_proposal">Scan the barcode on the back of your Smart Card.</string>
    <string name="wallet_wizard_scan_start_btn">Scan Barcode</string>
@@ -245,9 +254,6 @@
    <string name="wallet_charging_swiping_screen_instruction">Plug Smart Card into the charger and swipe credit or debit cards.</string>
    <string name="wallet_charging_swiping_screen_notes">Be sure your Smart Card is turned on\nand the charger LED is on.</string>
    <string name="wallet_wizard_charging_swipe_error">Incorrect card reading. Try again</string>
-   <string name="wallet_terms_and_conditions_header">User Agreement</string>
-   <string name="wallet_wizard_terms_and_conditions_agree_btn">Accept</string>
-   <string name="wallet_terms_and_conditions_load_failed">Failed to retrieve user agreement</string>
    <string name="wallet_add_card_swipe_success">Successfully swipe. Loading&#8230;</string>
 
    <!--set up smart card-->
@@ -383,6 +389,7 @@
    <string name="wallet_wizard_pair_key_instruction">Check the front of your Smart Card and proceed to next step.</string>
    <string name="wallet_wizard_check_from_of_card">Check Front of Smart Card</string>
    <string name="wallet_wizard_assigning_msg">Assigning your Smart Card to this device in our system.</string>
+   <string name="wallet_wizard_pairing_screen_error">Try to turn on your Smart Card again.</string>
 
    <!-- Connection Error screen -->
    <string name="wallet_connection_error_message_label">Cannot Connect to Smart Card</string>
@@ -507,10 +514,14 @@
       <item>@string/wallet_settings_help_feedback_attachment_failed_item_remove</item>
    </string-array>
 
+   <!--Help Documents screen -->
+   <string name="wallet_settings_help_documents_load_failed">Failed to retrieve user agreement</string>
+
    <!-- Help Video screen -->
    <string name="wallet_settings_help_video_title_screen">Videos</string>
    <string name="wallet_settings_help_video_training_no_video">Videos coming soon</string>
    <string name="wallet_settings_help_video_action_title">Languages</string>
+   <string name="wallet_settings_help_video_language_dialog_title">Choose language</string>
    <string name="wallet_settings_help_video_loading">Load videos…</string>
    <string name="wallet_settings_help_video_locales_loading">Load locales…</string>
    <string name="wallet_settings_help_video_cancel_cached_video_text">Are you sure you want to cancel file download?</string>

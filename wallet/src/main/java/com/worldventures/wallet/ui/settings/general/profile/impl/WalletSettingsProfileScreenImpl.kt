@@ -35,6 +35,8 @@ import javax.inject.Inject
 
 private const val PROFILE_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_STATE_KEY"
 private const val PROFILE_ORIGIN_STATE_KEY = "WalletSettingsProfileScreen#PROFILE_ORIGIN_STATE_KEY"
+private const val STATE_KEY_PHOTO_PICKER_SHOWING = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_SHOWING"
+private const val STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC = "WalletSettingsProfileScreen#STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC"
 
 @Suppress("UnsafeCallOnNullableType")
 class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfileScreen, WalletSettingsProfilePresenter>(), WalletSettingsProfileScreen {
@@ -49,10 +51,13 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    private var photoActionDialog: WalletPhotoProposalDialog? = null
    private var suffixSelectingDialog: WalletSuffixSelectingDialog? = null
    private var scNonConnectionDialog: Dialog? = null
+   private var mediaPickerDialog: MediaPickerDialog? = null
 
    private val observeProfileViewModel = PublishSubject.create<ProfileViewModel>()
 
    private lateinit var actionDoneMenuItem: MenuItem
+
+   private var originalPhotoPickerDialogPic: String? = null
 
    private val profileViewModelCallback = object : android.databinding.Observable.OnPropertyChangedCallback() {
       override fun onPropertyChanged(observable: android.databinding.Observable, i: Int) {
@@ -109,7 +114,9 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    }
 
    private fun onChoosePhotoClick(initialPhotoUrl: String?) {
+      this.mediaPickerDialog?.dismiss()
       hideDialog()
+      originalPhotoPickerDialogPic = initialPhotoUrl
       val mediaPickerDialog = MediaPickerDialog(context)
       mediaPickerDialog.setOnDoneListener { result ->
          if (!result.isEmpty) {
@@ -121,6 +128,8 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       } else {
          mediaPickerDialog.show()
       }
+      mediaPickerDialog.setOnDismissListener { this.mediaPickerDialog = null }
+      this.mediaPickerDialog = mediaPickerDialog
    }
 
    override fun dropPhoto() {
@@ -176,11 +185,17 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    override fun onSaveViewState(view: View, outState: Bundle) {
       outState.putParcelable(PROFILE_STATE_KEY, binding.profile)
       outState.putParcelable(PROFILE_ORIGIN_STATE_KEY, originProfileModule)
+      outState.putBoolean(STATE_KEY_PHOTO_PICKER_SHOWING, mediaPickerDialog != null)
+      outState.putString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC, originalPhotoPickerDialogPic)
       super.onSaveViewState(view, outState)
    }
 
    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
       setProfileModel(savedViewState.getParcelable(PROFILE_ORIGIN_STATE_KEY), savedViewState.getParcelable(PROFILE_STATE_KEY))
+      val mediaDialogShowing = savedViewState.getBoolean(STATE_KEY_PHOTO_PICKER_SHOWING)
+      if (mediaDialogShowing) {
+         pickPhoto(savedViewState.getString(STATE_KEY_PHOTO_PICKER_ORIGINAL_PIC))
+      }
       super.onRestoreViewState(view, savedViewState)
    }
 
@@ -206,12 +221,12 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    }
 
    override fun provideUpdateSmartCardOperation(delegate: WalletProfileDelegate): OperationView<UpdateSmartCardUserCommand> {
-      return UpdateSmartCardUserOperationView.UpdateUser(context, delegate
-      ) { presenter.confirmDisplayTypeChange() }
+      return UpdateSmartCardUserOperationView.UpdateUser(context, delegate,
+            { presenter.confirmDisplayTypeChange() }, this)
    }
 
    override fun provideHttpUploadOperation(delegate: WalletProfileDelegate): OperationView<RetryHttpUploadUpdatingCommand> =
-         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate)
+         UpdateSmartCardUserOperationView.RetryHttpUpload(context, delegate, this)
 
    override fun showSCNonConnectionDialog() {
       if (scNonConnectionDialog == null) {
@@ -226,7 +241,7 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       }
    }
 
-   override fun pickPhoto(initialPhotoUrl: String) {
+   override fun pickPhoto(initialPhotoUrl: String?) {
       onChoosePhotoClick(initialPhotoUrl)
    }
 
@@ -249,6 +264,12 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
       super.onDetach(view)
    }
 
+   override fun onDestroyView(view: View) {
+      super.onDestroyView(view)
+      mediaPickerDialog?.dismiss()
+      mediaPickerDialog = null
+   }
+
    override fun getPresenter() = screenPresenter
 
    override fun inflateView(layoutInflater: LayoutInflater, viewGroup: ViewGroup) =
@@ -257,4 +278,10 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
    override fun supportConnectionStatusLabel() = true
 
    override fun supportHttpConnectionStatusLabel() = true
+
+   override fun screenModule(): Any? = WalletSettingsProfileScreenModule()
+
+   override fun detachObservable(): Observable<Void> {
+      return detachStopper.asObservable()
+   }
 }

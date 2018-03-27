@@ -46,8 +46,8 @@ import com.worldventures.wallet.ui.dashboard.util.model.TransitionModel
 import com.worldventures.wallet.ui.dashboard.util.viewholder.CardStackHeaderHolder
 import com.worldventures.wallet.ui.dashboard.util.viewholder.CommonCardHolder
 import com.worldventures.wallet.ui.dialog.InstallFirmwareErrorDialog
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView
 import com.worldventures.wallet.ui.widget.SmartCardWidget
 import io.techery.janet.operationsubscriber.view.ComposableOperationView
 import io.techery.janet.operationsubscriber.view.OperationView
@@ -275,15 +275,15 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    }
 
    private fun setupCardStackList() {
-      val dimension = resources?.getDimensionPixelSize(R.dimen.wallet_card_height) ?: 0
+      val listAnimator = DefaultItemAnimator()
+      val layout = WrapContentLinearLayoutManager(context)
+      val dimension = calculateOverlap(resources?.getDimensionPixelSize(R.dimen.wallet_card_height) ?: 0)
+      listAnimator.supportsChangeAnimations = false
+      layout.isAutoMeasureEnabled = true
       multiAdapter = DashboardHolderAdapter(ArrayList(), DashboardHolderFactoryImpl())
       bankCardList.adapter = multiAdapter
-      val listAnimator = DefaultItemAnimator()
-      listAnimator.supportsChangeAnimations = false
       bankCardList.itemAnimator = listAnimator
-      bankCardList.addItemDecoration(OverlapDecoration((dimension.toDouble() * VISIBLE_SCALE * -1.0).toInt()))
-      val layout = WrapContentLinearLayoutManager(context)
-      layout.isAutoMeasureEnabled = true
+      bankCardList.addItemDecoration(OverlapDecoration(dimension))
       bankCardList.layoutManager = layout
       bankCardList.addOnItemTouchListener(RecyclerItemClickListener(context,
             object : RecyclerItemClickListener.OnItemClickListener {
@@ -292,7 +292,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
                      return
                   }
                   if (multiAdapter.getItemViewType(position) == R.layout.item_wallet_record) {
-                     showDetails(view, (dimension.toDouble() * VISIBLE_SCALE * -1.0).toInt())
+                     showDetails(view, calculateOverlap(view.height))
                   }
                }
 
@@ -307,11 +307,13 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
       cardViewModels?.let { showRecordsInfo(it) }
    }
 
+   private fun calculateOverlap(dimen: Int) = (dimen.toDouble() * VISIBLE_SCALE).toInt().unaryMinus()
+
    @Suppress("UnsafeCast")
    private fun showDetails(view: View, overlap: Int) {
       val model = (bankCardList.getChildViewHolder(view) as CommonCardHolder).data
       val transitionModel = presenter.getCardPosition(view, overlap, model.cardBackGround,
-            model.isDefaultCard)
+            model.defaultCard)
       addTransitionView(model, transitionModel)
       presenter.cardClicked(model, transitionModel)
    }
@@ -421,6 +423,8 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
    override fun supportConnectionStatusLabel() = true
 
    override fun supportHttpConnectionStatusLabel() = true
+
+   override fun screenModule(): Any? = CardListScreenModule()
 
    companion object {
       private val KEY_SHOW_UPDATE_BUTTON_STATE = "CardListScreen#KEY_SHOW_UPDATE_BUTTON_STATE"

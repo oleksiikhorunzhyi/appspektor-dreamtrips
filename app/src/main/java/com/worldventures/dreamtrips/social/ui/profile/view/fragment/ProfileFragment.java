@@ -15,6 +15,7 @@ import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.social.service.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -37,7 +38,6 @@ import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityEditi
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.social.ui.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.ProfileCell;
@@ -90,7 +90,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    protected void startAutoplayVideos() {
-      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilPauseComposer());
    }
 
    @Override
@@ -149,11 +149,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    }
 
    @Override
-   public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged(statePaginatedRecyclerViewManager.findFocusedPosition());
-   }
-
-   @Override
    public void updateItem(FeedItem feedItem) {
       fragmentWithFeedDelegate.notifyItemChanged(feedItem);
    }
@@ -184,7 +179,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
       feedModels.add(user);
       feedModels.addAll(items);
       fragmentWithFeedDelegate.updateItems(feedModels, statePaginatedRecyclerViewManager.getStateRecyclerView());
-      startAutoplayVideos();
       ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
       profileToolbarTitle.setText(user.getFullName());
    }
@@ -232,7 +226,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
    protected abstract void initToolbar();
 
    private float calculateOffset() {
-      return Math.min(statePaginatedRecyclerViewManager.getStateRecyclerView().getScrollOffset() / (float) scrollArea, 1);
+      return Math.min(statePaginatedRecyclerViewManager.getStateRecyclerView()
+            .getScrollOffset() / (float) scrollArea, 1);
    }
 
    private void setToolbarAlpha(float percentage) {

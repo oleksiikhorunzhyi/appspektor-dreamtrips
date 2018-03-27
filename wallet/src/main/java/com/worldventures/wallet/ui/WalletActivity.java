@@ -4,11 +4,15 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.Conductor;
 import com.bluelinelabs.conductor.Router;
 import com.bluelinelabs.conductor.RouterTransaction;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.security.ProviderInstaller;
 import com.worldventures.core.ui.view.activity.BaseActivity;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.service.WalletCropImageService;
@@ -24,7 +28,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public abstract class WalletActivity extends BaseActivity implements WalletActivityView {
+public abstract class WalletActivity extends BaseActivity
+      implements WalletActivityView, ProviderInstaller.ProviderInstallListener {
 
    private static final int REQUEST_CODE_BLUETOOTH_ON = 0xF045;
 
@@ -57,6 +62,7 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
 
       navigationDelegate.init(findViewById(android.R.id.content));
       navigationDelegate.setOnLogoutAction(() -> presenter.logout());
+      ProviderInstaller.installIfNeededAsync(getBaseContext(), this);
    }
 
    @Override
@@ -88,7 +94,7 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
    public Object getSystemService(@NonNull String name) {
       if (WalletCropImageService.SERVICE_NAME.equals(name)) {
          return cropImageService;
-      } else if (LocationScreenComponent.COMPONENT_NAME.equals(name)) {
+      } else if (LocationScreenComponent.Companion.getCOMPONENT_NAME().equals(name)) {
          return locationSettingsService;
       }
       return super.getSystemService(name);
@@ -101,11 +107,11 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
    }
 
    @Override
-   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
       if (cropImageService.onActivityResult(requestCode, resultCode, data)) {
          return;
       }
-      if (locationSettingsService.onActivityResult(requestCode, resultCode, data)) {
+      if (locationSettingsService.onActivityResult(requestCode, resultCode)) {
          return;
       }
       super.onActivityResult(requestCode, resultCode, data);
@@ -125,5 +131,16 @@ public abstract class WalletActivity extends BaseActivity implements WalletActiv
    @Override
    public <T> Observable.Transformer<T, T> bindUntilDetach() {
       return tObservable -> tObservable.takeUntil(onDetachSubject.asObservable());
+   }
+
+   @Override
+   public void onProviderInstalled() {
+   }
+
+   @Override
+   public void onProviderInstallFailed(int i, Intent intent) {
+      //todo: I think we should turn on offline mode because nxt request will be failed
+      Toast.makeText(this, R.string.wallet_common_security_provider_update_failed, Toast.LENGTH_SHORT).show();
+      Crashlytics.log("Wallet :: Security provider update is failed. Code is " + i);
    }
 }

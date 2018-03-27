@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">Sorry, we couldn\'t send the email, please try later.</string>
+   <string name="dtl_send_email_success">The email has been sent successfully.</string>
+   <string name="dtl_send_email_text">Send to my email</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">Subtotal: %s</string>
    <string name="dtl_locations_title">Select location</string>
@@ -192,5 +195,13 @@
    <string name="transaction_review_merchant">Review Merchant</string>
    <string name="transaction_sub_total_amount_no_semicolon">Sub Total Amount</string>
    <string name="dtl_estimator_explanation_to_earn_points">Points are calculated based on minimum amount spent at merchant and day of the week. To earn points the minimum amount should be %s</string>
-   <string name="dtl_estimator_error_title">Error</string>
+   <string name="dtl_alert_title_error">Error</string>
+
+   <string name="receipt_upload_error_caption">Error uploading receipt. Retry?</string>
+   <string name="thrst_opening_error_caption">Something went wrong. Please try again in a while</string>
+
+   <string name="pay_in_app_hint_dialog_text">Would you like to watch a How to video on the new Pay in App process?</string>
+   <string name="pay_in_app_hint_positive">Watch now</string>
+   <string name="pay_in_app_hint_neutral">Remind me later</string>
+   <string name="pay_in_app_hint_negative">Do not show again</string>
 </resources>

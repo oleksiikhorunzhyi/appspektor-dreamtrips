@@ -14,10 +14,7 @@ public class UploadTask implements Parcelable, Serializable {
    private String filePath;
    private int progress;
    private Status status;
-   private String amazonTaskId;
-   private String bucketName;
    private String key;
-   private String purpose;
    private ArrayList<String> tags;
 
    private String title;
@@ -31,7 +28,6 @@ public class UploadTask implements Parcelable, Serializable {
 
    private String type;
 
-   private String linkedItemId;
    private long id;
 
    public UploadTask() {
@@ -60,22 +56,6 @@ public class UploadTask implements Parcelable, Serializable {
 
    public void setStatus(Status status) {
       this.status = status;
-   }
-
-   public String getAmazonTaskId() {
-      return amazonTaskId;
-   }
-
-   public void setAmazonTaskId(String amazonTaskId) {
-      this.amazonTaskId = amazonTaskId;
-   }
-
-   public String getBucketName() {
-      return bucketName;
-   }
-
-   public void setBucketName(String bucketName) {
-      this.bucketName = bucketName;
    }
 
    public String getKey() {
@@ -150,22 +130,6 @@ public class UploadTask implements Parcelable, Serializable {
       this.type = type;
    }
 
-   public String getLinkedItemId() {
-      return linkedItemId;
-   }
-
-   public void setLinkedItemId(String linkedItemId) {
-      this.linkedItemId = linkedItemId;
-   }
-
-   public String getPurpose() {
-      return purpose;
-   }
-
-   public void setPurpose(String purpose) {
-      this.purpose = purpose;
-   }
-
    public void setId(long id) {
       this.id = id;
    }
@@ -209,10 +173,7 @@ public class UploadTask implements Parcelable, Serializable {
       dest.writeString(this.filePath);
       dest.writeInt(this.progress);
       dest.writeInt(this.status == null ? -1 : this.status.ordinal());
-      dest.writeString(this.amazonTaskId);
-      dest.writeString(this.bucketName);
       dest.writeString(this.key);
-      dest.writeString(this.purpose);
       dest.writeStringList(this.tags);
       dest.writeString(this.title);
       dest.writeString(this.locationName);
@@ -221,7 +182,6 @@ public class UploadTask implements Parcelable, Serializable {
       dest.writeLong(shotAt != null ? shotAt.getTime() : -1);
       dest.writeString(this.originUrl);
       dest.writeString(this.type);
-      dest.writeString(this.linkedItemId);
       dest.writeLong(this.id);
    }
 
@@ -230,10 +190,7 @@ public class UploadTask implements Parcelable, Serializable {
       this.progress = in.readInt();
       int tmpStatus = in.readInt();
       this.status = tmpStatus == -1 ? null : Status.values()[tmpStatus];
-      this.amazonTaskId = in.readString();
-      this.bucketName = in.readString();
       this.key = in.readString();
-      this.purpose = in.readString();
       this.tags = in.createStringArrayList();
       this.title = in.readString();
       this.locationName = in.readString();
@@ -243,7 +200,6 @@ public class UploadTask implements Parcelable, Serializable {
       this.shotAt = tmpShotAt == -1 ? null : new Date(tmpShotAt);
       this.originUrl = in.readString();
       this.type = in.readString();
-      this.linkedItemId = in.readString();
       this.id = in.readLong();
    }
 

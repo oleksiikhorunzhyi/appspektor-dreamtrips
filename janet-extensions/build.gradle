@@ -2,15 +2,18 @@ apply from: "$rootProject.projectDir/buildsystem/plugin-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/module-core-dependencies.gradle"
 apply from: "$rootProject.projectDir/buildsystem/deps-utils.gradle"
 apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
+apply plugin: 'kotlin'
 apply plugin: 'java-library'
 
 def coreDeps = project.ext.coreDependencies
 
 repositories {
-    coreDeps.repos.each { it.call(owner) }
+   coreDeps.repos.each { it.call(owner) }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api provideDep(coreDeps.networking.janetCore)
+   implementation fileTree(dir: 'libs', include: ['*.jar'])
+   api provideDep(coreDeps.networking.janetCore)
+   compile provideDep(coreDeps.lang.kotlin)
 }
+

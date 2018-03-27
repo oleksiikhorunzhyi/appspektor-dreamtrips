@@ -15,7 +15,7 @@ public interface WalletBaseClearDelayScreen extends WalletScreen {
 
    int getSelectedPosition();
 
-   void setDelayWasChanged(boolean autoClearWasChanged);
+   void notifyDataIsSaved();
 
    <T> OperationView<T> provideOperationView();
 }

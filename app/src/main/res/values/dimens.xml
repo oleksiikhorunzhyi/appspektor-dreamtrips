@@ -133,9 +133,18 @@
    <dimen name="dtl_transaction_screen_item_transaction_status_icon_size">30dp</dimen>
 
    <dimen name="dtl_transaction_screen_margin">8dp</dimen>
+   <dimen name="dtl_transaction_screen_accept_payment_status_top_margin">2dp</dimen>
+   <dimen name="dtl_transaction_screen_show_to_server_text_top_margin">3dp</dimen>
    <dimen name="dtl_transaction_screen_margin_big">10dp</dimen>
+   <dimen name="dtl_transaction_screen_title_text_size">20sp</dimen>
+   <dimen name="dtl_transaction_screen_payment_status_text_size">14sp</dimen>
+   <dimen name="dtl_transaction_screen_subtotal_text_size">14sp</dimen>
+   <dimen name="dtl_transaction_screen_total_amount_card_horizontal_padding">20dp</dimen>
+   <dimen name="dtl_transaction_screen_total_amount_card_vertical_padding">8dp</dimen>
+   <dimen name="dtl_transaction_screen_total_amount_card_vertical_margin">4dp</dimen>
    <dimen name="dtl_transaction_screen_margin_extra_big">20dp</dimen>
-   <dimen name="dtl_transaction_screen_padding">33dp</dimen>
+   <dimen name="dtl_transaction_screen_vertical_padding">8dp</dimen>
+   <dimen name="dtl_transaction_screen_horizontal_padding">33dp</dimen>
    <dimen name="dtl_transaction_screen_icon">50dp</dimen>
    <dimen name="dtl_transaction_screen_margin_points_icon_margin">5dp</dimen>
    <dimen name="dtl_transaction_screen_card_radius">4dp</dimen>

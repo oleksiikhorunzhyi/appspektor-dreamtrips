@@ -1,6 +1,6 @@
 package com.worldventures.wallet.di;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.wallet.domain.storage.WalletStorage;
 import com.worldventures.wallet.domain.storage.action.AboutSmartCardDataActionStorage;
 import com.worldventures.wallet.domain.storage.action.AddressWithPlacesActionStorage;
@@ -8,11 +8,9 @@ import com.worldventures.wallet.domain.storage.action.DefaultRecordIdStorage;
 import com.worldventures.wallet.domain.storage.action.DeviceStateActionStorage;
 import com.worldventures.wallet.domain.storage.action.FirmwareUpdateActionStorage;
 import com.worldventures.wallet.domain.storage.action.SmartCardActionStorage;
-import com.worldventures.wallet.domain.storage.action.SmartCardDetailsActionStorage;
 import com.worldventures.wallet.domain.storage.action.SmartCardFirmwareActionStorage;
 import com.worldventures.wallet.domain.storage.action.SmartCardUserActionStorage;
 import com.worldventures.wallet.domain.storage.action.SyncRecordsStatusActionStorage;
-import com.worldventures.wallet.domain.storage.action.TermsAndConditionsActionStorage;
 import com.worldventures.wallet.domain.storage.action.WalletRecordsActionStorage;
 import com.worldventures.wallet.domain.storage.disk.FirmwareDataStorage;
 import com.worldventures.wallet.domain.storage.disk.RecordsStorage;
@@ -46,18 +44,6 @@ public class WalletActionStorageModule {
    @Named(JANET_WALLET)
    ActionStorage smartCardActionStorage(WalletStorage walletStorage) {
       return new SmartCardActionStorage(walletStorage);
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Named(JANET_WALLET)
-   ActionStorage smartCardDetailsActionStorage(WalletStorage walletStorage) {
-      return new SmartCardDetailsActionStorage(walletStorage);
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Named(JANET_WALLET)
-   ActionStorage termsAndConditionsActionStorage(WalletStorage walletStorage) {
-      return new TermsAndConditionsActionStorage(walletStorage);
    }
 
    @Provides(type = Provides.Type.SET)
@@ -97,6 +83,7 @@ public class WalletActionStorageModule {
    }
 
    @Provides(type = Provides.Type.SET)
+   @Named(JANET_WALLET)
    ActionStorage aboutSmartCardDataActionStorage(FirmwareDataStorage persistentStorage) {
       return new AboutSmartCardDataActionStorage(persistentStorage);
    }

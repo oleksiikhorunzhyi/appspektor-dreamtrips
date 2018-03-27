@@ -15,7 +15,7 @@ import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.ui.view.custom.BadgeView;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.social.ui.activity.FeedActivity;
+import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.uploading.UploadingPostsList;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.delegate.UploadingCellDelegate;
@@ -62,12 +62,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
    }
 
    @Override
-   public void onResume() {
-      super.onResume();
-      startAutoplayVideos();
-   }
-
-   @Override
    public void refreshFeedItems(List<FeedItem> items, UploadingPostsList uploadingPostsList, User user) {
       List newItems = new ArrayList();
       newItems.add(user);
@@ -76,7 +70,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
       }
       newItems.addAll(items);
       fragmentWithFeedDelegate.updateItems(newItems, statePaginatedRecyclerViewManager.getStateRecyclerView());
-      startAutoplayVideos();
    }
 
    @Override
@@ -125,9 +118,9 @@ public class AccountFragment extends ProfileFragment<AccountPresenter> implement
 
    @Override
    protected void initToolbar() {
-      if (getActivity() instanceof FeedActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
+      if (getActivity() instanceof SocialMainActivity && !ViewUtils.isLandscapeOrientation(getActivity())) {
          profileToolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-         profileToolbar.setNavigationOnClickListener(view -> ((FeedActivity) getActivity()).openLeftDrawer());
+         profileToolbar.setNavigationOnClickListener(view -> ((SocialMainActivity) getActivity()).openLeftDrawer());
       } else {
          profileToolbar.setNavigationIcon(R.drawable.back_icon);
          profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());

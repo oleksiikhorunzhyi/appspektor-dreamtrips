@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter;
 
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripDetailsCommand;
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
@@ -86,7 +86,7 @@ public abstract class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> 
    }
 
    private void subscribeForTripsDetails() {
-      tripsInteractor.detailsPipe()
+      tripsInteractor.getDetailsPipe()
             .observe()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()

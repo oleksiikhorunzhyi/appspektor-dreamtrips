@@ -3,6 +3,7 @@ package com.worldventures.core.ui.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.worldventures.core.modules.ActivityModule;
 import com.worldventures.core.modules.auth.api.command.LogoutCommand;
@@ -33,6 +34,10 @@ public abstract class BaseActivity extends InjectingActivity {
    @Inject PickImageDelegate pickImageDelegate;
 
    private Subscription logoutSubscription;
+
+   static {
+      AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+   }
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +131,9 @@ public abstract class BaseActivity extends InjectingActivity {
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      if (pickerFacebookService.onActivityResult(requestCode, resultCode, data)) { return; }
+      if (pickerFacebookService.onActivityResult(requestCode, resultCode, data)) {
+         return;
+      }
       pickImageDelegate.onActivityResult(requestCode, resultCode, data);
       super.onActivityResult(requestCode, resultCode, data);
    }

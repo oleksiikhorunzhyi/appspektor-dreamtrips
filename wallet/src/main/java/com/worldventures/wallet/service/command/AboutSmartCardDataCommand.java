@@ -1,8 +1,7 @@
 package com.worldventures.wallet.service.command;
 
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 import com.worldventures.wallet.domain.entity.AboutSmartCardData;
 
 import io.techery.janet.ActionHolder;
@@ -14,19 +13,20 @@ import rx.functions.Func1;
 public final class AboutSmartCardDataCommand extends Command<AboutSmartCardData> implements CachedAction<AboutSmartCardData> {
 
    private final Func1<AboutSmartCardData, AboutSmartCardData> func;
-
+   public final boolean update;
    private AboutSmartCardData cachedAboutSmartCardData;
 
-   private AboutSmartCardDataCommand(Func1<AboutSmartCardData, AboutSmartCardData> func) {
+   private AboutSmartCardDataCommand(boolean update, Func1<AboutSmartCardData, AboutSmartCardData> func) {
+      this.update = update;
       this.func = func;
    }
 
    public static AboutSmartCardDataCommand fetch() {
-      return new AboutSmartCardDataCommand(aboutSmartCardData -> aboutSmartCardData);
+      return new AboutSmartCardDataCommand(false, aboutSmartCardData -> aboutSmartCardData);
    }
 
    public static AboutSmartCardDataCommand save(AboutSmartCardData aboutSmartCardData) {
-      return new AboutSmartCardDataCommand(user -> aboutSmartCardData);
+      return new AboutSmartCardDataCommand(true, user -> aboutSmartCardData);
    }
 
    @Override
@@ -41,9 +41,7 @@ public final class AboutSmartCardDataCommand extends Command<AboutSmartCardData>
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder()
-            .saveToCache(true)
-            .build();
+      return new CacheOptions(!update, update, true, null);
    }
 
    @Override

@@ -4,11 +4,10 @@ import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.messenger.ui.fragment.PhotoAttachmentPagerFragment;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.worldventures.core.ui.util.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.modules.trips.presenter.TripImagePagerPresenter;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
+import com.worldventures.dreamtrips.core.ui.fragment.BaseImagePresenter;
 import com.worldventures.dreamtrips.social.ui.activity.Player360Activity;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketFullscreenPresenter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketPhotoFullscreenPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.EditPhotoTagsPresenter;
@@ -22,8 +21,8 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me.F
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me.InspireMePresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.inspire_me.InspireMeViewPagerPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.FullscreenYsbhPresenter;
-import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YouShouldBeHerePresenter;
-import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YsbhViewPagerPresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YSBHPresenter;
+import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.ysbh.YSBHViewPagerPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.delegate.DownloadImageDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.EditPhotoTagsFragment;
@@ -37,11 +36,10 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.inspire_
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.inspire_me.InspireMeFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.inspire_me.InspireMeViewPagerFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.FullscreenYsbhFragment;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.YouShouldBeHereFragment;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.YSBHFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.YsbhViewPagerFragment;
 import com.worldventures.dreamtrips.social.ui.video.presenter.ThreeSixtyVideosPresenter;
 import com.worldventures.dreamtrips.social.ui.video.view.ThreeSixtyVideosFragment;
-import com.worldventures.dreamtrips.social.ui.video.view.custom.VideoView;
 
 import javax.inject.Singleton;
 
@@ -74,28 +72,25 @@ import dagger.Provides;
             FullscreenInspireMeFragment.class,
             FullscreenInspireMePresenter.class,
 
-            YouShouldBeHereFragment.class,
-            YouShouldBeHerePresenter.class,
+            YSBHFragment.class,
+            YSBHPresenter.class,
             YsbhViewPagerFragment.class,
-            YsbhViewPagerPresenter.class,
+            YSBHViewPagerPresenter.class,
             FullscreenYsbhFragment.class,
             FullscreenYsbhPresenter.class,
 
-            TripImagePagerPresenter.class,
-            TripImagePagerFragment.class,
+            BaseImagePresenter.class,
+            BaseImageFragment.class,
 
             PhotoAttachmentPagerFragment.class,
             PhotoAttachmentPagerFragment.Presenter.class,
             MessageImageFullscreenFragment.class,
             MessageImageFullscreenPresenter.class,
 
-            BucketFullscreenPresenter.class,
+            BucketPhotoFullscreenPresenter.class,
             BucketPhotoFullscreenFragment.class,
-            TripPhotoFullscreenFragment.class,
             EditPhotoTagsPresenter.class,
             EditPhotoTagsFragment.class,
-
-            VideoView.class,
       },
       complete = false,
       library = true)

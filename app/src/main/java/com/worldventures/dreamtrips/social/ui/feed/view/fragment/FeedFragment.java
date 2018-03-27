@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.view.fragment;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,7 +28,7 @@ import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
-import com.worldventures.dreamtrips.social.ui.activity.ShowableComponent;
+import com.worldventures.dreamtrips.social.service.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
@@ -61,9 +59,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.util.CirclesFilterPopupW
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
-import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.social.ui.util.ActivityLifecycleHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,17 +102,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       this.savedInstanceState = savedInstanceState;
-   }
-
-   @Override
-   public void onConfigurationChanged(Configuration newConfig) {
-      super.onConfigurationChanged(newConfig);
-
-      if ((getActivity() instanceof ShowableComponent)) {
-         ActivityLifecycleHelper.runTaskAfterShown((Application) applicationContext, (ShowableComponent) getActivity(), this::setupUi);
-      } else {
-         throw new RuntimeException("You should use this fragment only with ShowableComponent");
-      }
    }
 
    @Override
@@ -190,7 +175,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    }
 
    private void startAutoplayVideos() {
-      recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
+      recyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilPauseComposer());
    }
 
    @Override
@@ -315,6 +300,9 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
    public void refreshFeedItems(@NonNull List<FeedItem> feedItems,
          @Nullable List<PostCompoundOperationModel> uploadingPostsList,
          boolean shouldShowSuggestions) {
+      if (isVisibleOnScreen()) {
+         recyclerViewManager.findFirstCompletelyVisibleItemPosition();
+      }
       List feedModels = new ArrayList();
       if (shouldShowSuggestions) {
          feedModels.add(new SuggestedPhotosCell.SuggestedPhotoModel());
@@ -324,14 +312,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
       }
       processFeedItems(feedItems, feedModels);
       fragmentWithFeedDelegate.updateItems(feedModels, recyclerViewManager.getStateRecyclerView());
-      startAutoplayVideos();
    }
-
-   @Override
-   public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged(recyclerViewManager.findFocusedPosition());
-   }
-
 
    private void processFeedItems(List<FeedItem> feedItems, List feedModels) {
       int feedItemsSize = feedItems == null ? 0 : feedItems.size();

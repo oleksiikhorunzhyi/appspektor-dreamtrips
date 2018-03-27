@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.worldventures.core.model.User;
+import com.worldventures.core.model.session.Feature;
 import com.worldventures.core.model.session.UserSession;
 import com.worldventures.core.modules.auth.api.command.LogoutCommand;
 import com.worldventures.core.modules.auth.api.command.UpdateUserCommand;
@@ -17,6 +18,13 @@ import com.worldventures.core.service.command.DownloadFileCommand;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.core.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor;
+import com.worldventures.dreamtrips.social.service.profile.analytics.ProfileUploadingAnalyticAction;
+import com.worldventures.dreamtrips.social.service.profile.analytics.ViewMyProfileAdobeAnalyticAction;
+import com.worldventures.dreamtrips.social.service.profile.analytics.ViewMyProfileApptentiveAnalyticAction;
+import com.worldventures.dreamtrips.social.service.profile.command.GetPrivateProfileCommand;
+import com.worldventures.dreamtrips.social.service.profile.command.UploadAvatarCommand;
+import com.worldventures.dreamtrips.social.service.profile.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor;
@@ -30,13 +38,6 @@ import com.worldventures.dreamtrips.social.ui.feed.presenter.UploadingListenerPr
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.UploadingPresenterDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.AccountTimelineStorageDelegate;
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
-import com.worldventures.dreamtrips.social.ui.profile.service.analytics.ProfileUploadingAnalyticAction;
-import com.worldventures.dreamtrips.social.ui.profile.service.analytics.ViewMyProfileAdobeAnalyticAction;
-import com.worldventures.dreamtrips.social.ui.profile.service.analytics.ViewMyProfileApptentiveAnalyticAction;
-import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPrivateProfileCommand;
-import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadAvatarCommand;
-import com.worldventures.dreamtrips.social.ui.profile.service.command.UploadBackgroundCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.social.ui.util.PermissionUIComponent;
 import com.worldventures.dreamtrips.util.Action;
@@ -116,7 +117,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    }
 
    void subscribeToAvatarUpdates() {
-      profileInteractor.uploadAvatarPipe()
+      profileInteractor.getUploadAvatarPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UploadAvatarCommand>()
@@ -131,7 +132,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    }
 
    void subscribeToBackgroundUpdates() {
-      profileInteractor.uploadBackgroundPipe()
+      profileInteractor.getUploadBackgroundPipe()
             .observeWithReplay()
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UploadBackgroundCommand>()
@@ -188,7 +189,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
 
    @Override
    public void refreshFeed() {
-      feedInteractor.getRefreshAccountTimelinePipe().send(new GetAccountTimelineCommand.Refresh());
+      featureManager.with(Feature.SOCIAL, () -> feedInteractor.getRefreshAccountTimelinePipe()
+            .send(new GetAccountTimelineCommand.Refresh()));
    }
 
    @Override
@@ -199,7 +201,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    @Override
    protected void loadProfile() {
       view.startLoading();
-      profileInteractor.privateProfilePipe().createObservable(new GetPrivateProfileCommand())
+      profileInteractor.getPrivateProfilePipe().createObservable(new GetPrivateProfileCommand())
             .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<GetPrivateProfileCommand>()
                   .onSuccess(command -> this.onProfileLoaded(command.getResult()))
@@ -243,9 +245,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
                } else {
                   onCoverCropped(fileNotification.getValue(), null);
                }
-            }, error -> {
-               Timber.e(error, "");
-            });
+            }, Timber::e);
    }
 
    @Override
@@ -288,7 +288,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
 
    private void uploadAvatar(String fileThumbnail) {
       analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
-      profileInteractor.uploadAvatarPipe().send(new UploadAvatarCommand(fileThumbnail));
+      profileInteractor.getUploadAvatarPipe().send(new UploadAvatarCommand(fileThumbnail));
       user.setAvatarUploadInProgress(true);
       refreshFeedItems();
       view.notifyDataSetChanged();
@@ -297,7 +297,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View> im
    private void onCoverCropped(File croppedFile, String errorMsg) {
       if (croppedFile != null) {
          analyticsInteractor.analyticsActionPipe().send(new ProfileUploadingAnalyticAction());
-         profileInteractor.uploadBackgroundPipe().send(new UploadBackgroundCommand(croppedFile.getPath()));
+         profileInteractor.getUploadBackgroundPipe().send(new UploadBackgroundCommand(croppedFile.getPath()));
          user.setCoverUploadInProgress(true);
          refreshFeedItems();
          view.notifyDataSetChanged();

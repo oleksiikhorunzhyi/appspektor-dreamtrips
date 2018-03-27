@@ -19,11 +19,9 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.ViewUtils;
-import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
@@ -49,6 +47,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.custom.SideMarginsItemDe
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FocusableStatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.social.ui.feed.view.util.HashtagSuggestionUtil;
+import com.worldventures.dreamtrips.social.ui.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
 
 import java.util.List;
@@ -97,9 +96,8 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
       statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
       statePaginatedRecyclerViewManager.setOnRefreshListener(this);
       statePaginatedRecyclerViewManager.setPaginationListener(() -> {
-         if (!statePaginatedRecyclerViewManager.isNoMoreElements() && getPresenter().loadNext()) {
-            fragmentWithFeedDelegate.addItem(new LoadMoreModel());
-            fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
+         if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+            getPresenter().loadNext();
          }
       });
       if (ViewUtils.isTablet(getContext())) {
@@ -141,7 +139,7 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    }
 
    private void startAutoplayVideos() {
-      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilResumeComposer());
+      statePaginatedRecyclerViewManager.startLookingForCompletelyVisibleItem(bindUntilPauseComposer());
    }
 
    private void onSuggestionClicked(String suggestion) {
@@ -265,12 +263,6 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    @Override
    public void refreshFeedItems(List feedItems) {
       fragmentWithFeedDelegate.updateItems(feedItems, statePaginatedRecyclerViewManager.getStateRecyclerView());
-      startAutoplayVideos();
-   }
-
-   @Override
-   public void dataSetChanged() {
-      fragmentWithFeedDelegate.notifyDataSetChanged(statePaginatedRecyclerViewManager.findFocusedPosition());
    }
 
    @Override
@@ -284,19 +276,19 @@ public class HashtagFeedFragment extends RxBaseFragmentWithArgs<HashtagFeedPrese
    }
 
    @Override
+   public void showLoading() {
+      fragmentWithFeedDelegate.addItem(new LoadMoreModel());
+      fragmentWithFeedDelegate.notifyItemInserted(fragmentWithFeedDelegate.getItems().size() - 1);
+   }
+
+   @Override
    public void startLoading() {
       statePaginatedRecyclerViewManager.startLoading();
-      if (emptyView != null) {
-         emptyView.setVisibility(View.GONE);
-      }
    }
 
    @Override
    public void finishLoading() {
       statePaginatedRecyclerViewManager.finishLoading();
-      if (emptyView != null) {
-         emptyView.setVisibility(View.VISIBLE);
-      }
    }
 
    @Override

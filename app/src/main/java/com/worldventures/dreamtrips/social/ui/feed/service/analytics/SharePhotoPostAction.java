@@ -11,7 +11,7 @@ import com.worldventures.janet.analytics.AnalyticsEvent;
 import com.worldventures.core.service.analytics.Attribute;
 import com.worldventures.core.service.analytics.AttributeMap;
 import com.worldventures.core.service.analytics.BaseAnalyticsAction;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PhotoAttachment;
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostWithPhotoAttachmentBody;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;

@@ -67,27 +67,27 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
    private WalletIncludeMapPopupInfoBinding popupInfoViewBinding;
 
    private PopupLastLocationViewModel lastLocationViewModel = new PopupLastLocationViewModel();
-   private LatLng lastPosition;
+   private LatLng pinLastPosition;
 
    @NonNull
    @Override
    protected View onCreateView(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup, @Nullable Bundle bundle) {
       final View view = layoutInflater.inflate(R.layout.subscreen_wallet_settings_lostcard_map, viewGroup, false);
       //noinspection all
-      final ObjectGraph objectGraph = (ObjectGraph) view.getContext()
-            .getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME);
+      final ObjectGraph objectGraph = ((ObjectGraph) view.getContext()
+            .getSystemService(Injector.OBJECT_GRAPH_SERVICE_NAME)).plus(new MapScreenModule());
       objectGraph.inject(this);
       mapView = view.findViewById(R.id.map_view);
+      emptyLocationsView = view.findViewById(R.id.empty_location_view);
+      noGoogleContainer = view.findViewById(R.id.noGoogleContainer);
+      final View popupInfoContainer = view.findViewById(R.id.ll_popup_info);
+      popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       if (MapsInitializer.initialize(view.getContext()) != ConnectionResult.SUCCESS) {
          noGoogleContainer.setVisibility(VISIBLE);
       } else {
          mapView.onCreate(bundle);
       }
       mapView.getMapAsync(this);
-      emptyLocationsView = view.findViewById(R.id.empty_location_view);
-      noGoogleContainer = view.findViewById(R.id.noGoogleContainer);
-      final View popupInfoContainer = view.findViewById(R.id.ll_popup_info);
-      popupInfoViewBinding = DataBindingUtil.bind(popupInfoContainer);
       return view;
    }
 
@@ -128,7 +128,7 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
    protected void onSaveViewState(@NonNull View view, @NonNull Bundle outState) {
       mapView.onSaveInstanceState(outState);
       outState.putParcelable(STATE_KEY_POPUP_MODEL, lastLocationViewModel);
-      outState.putParcelable(STATE_KEY_MAP_POSITION, lastPosition);
+      outState.putParcelable(STATE_KEY_MAP_POSITION, pinLastPosition);
       super.onSaveViewState(view, outState);
    }
 
@@ -136,7 +136,7 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
    protected void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
       super.onRestoreViewState(view, savedViewState);
       lastLocationViewModel = savedViewState.getParcelable(STATE_KEY_POPUP_MODEL);
-      lastPosition = savedViewState.getParcelable(STATE_KEY_MAP_POSITION);
+      pinLastPosition = savedViewState.getParcelable(STATE_KEY_MAP_POSITION);
    }
 
    @Override
@@ -171,13 +171,13 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
    public void setCoordinates(@Nullable WalletCoordinates position) {
       if (position != null) {
          final LatLng latLng = WalletLocationsUtil.INSTANCE.toLatLng(position);
-         lastPosition = latLng;
-         clearMapAndAttachMarker(latLng, true);
+         pinLastPosition = latLng;
+         clearMapAndAttachMarker(latLng);
       }
       emptyLocationsView.setVisibility(position == null ? VISIBLE : GONE);
    }
 
-   private void clearMapAndAttachMarker(LatLng position, boolean withAnimation) {
+   private void clearMapAndAttachMarker(LatLng position) {
       googleMap.clear();
       googleMap.addMarker(
             new MarkerOptions()
@@ -185,15 +185,16 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
                   .position(position)
       );
       position = new LatLng(position.latitude + 0.00045, position.longitude);
-      if (withAnimation) {
-         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17));
-      } else {
-         googleMap.animateCamera(CameraUpdateFactory.newLatLng(position));
-      }
+      googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17));
    }
 
    @Override
    public void onMapReady(GoogleMap googleMap) {
+      // Avoid crash when multiple views can be created during window resizing phase in multi window mode
+      // as this triggers callbacks on already recycled screens
+      if (isDestroyed()) {
+         return;
+      }
       this.googleMap = googleMap;
 
       final UiSettings uiSettings = googleMap.getUiSettings();
@@ -202,10 +203,8 @@ public class MapScreenImpl extends RestoreViewOnCreateController implements MapS
 
       googleMap.setMyLocationEnabled(true);
 
-      if (lastPosition == null) {
+      if (pinLastPosition == null) {
          getPresenter().fetchLastKnownLocation();
-      } else {
-         clearMapAndAttachMarker(lastPosition, false);
       }
    }
 

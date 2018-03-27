@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDele
 import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -88,25 +89,27 @@ public class DateCell extends BaseAbstractDelegateCell<DateFilterItem, DateCell.
    }
 
    private void processEndDate(Calendar calendar) {
+      Date date;
       if (validateEndDate(calendar)) {
-         textViewEnd.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
-         getModelObject().setEndDate(calendar.getTime());
+         date = calendar.getTime();
       } else {
-         textViewEnd.setText(DateTimeUtils.convertDateForFilters(getModelObject().getStartDate()));
-         getModelObject().setEndDate(getModelObject().getStartDate());
+         date = getModelObject().getStartDate();
       }
-      cellDelegate.onDatesChanged(getModelObject());
+
+      textViewEnd.setText(DateTimeUtils.convertDateForFilters(date));
+      cellDelegate.onEndDateChanged(date);
    }
 
    private void processStartDate(Calendar calendar) {
+      Date date;
       if (validateStartDate(calendar)) {
-         textViewStart.setText(DateTimeUtils.convertDateForFilters(calendar.getTime()));
-         getModelObject().setStartDate(calendar.getTime());
+         date = calendar.getTime();
       } else {
-         textViewStart.setText(DateTimeUtils.convertDateForFilters(getModelObject().getEndDate()));
-         getModelObject().setStartDate(getModelObject().getEndDate());
+         date = getModelObject().getEndDate();
       }
-      cellDelegate.onDatesChanged(getModelObject());
+
+      textViewStart.setText(DateTimeUtils.convertDateForFilters(date));
+      cellDelegate.onStartDateChanged(date);
    }
 
    private boolean validateEndDate(Calendar selectedEndDate) {
@@ -118,6 +121,8 @@ public class DateCell extends BaseAbstractDelegateCell<DateFilterItem, DateCell.
    }
 
    public interface Delegate extends CellDelegate<DateFilterItem> {
-      void onDatesChanged(DateFilterItem item);
+      void onEndDateChanged(Date date);
+
+      void onStartDateChanged(Date date);
    }
 }

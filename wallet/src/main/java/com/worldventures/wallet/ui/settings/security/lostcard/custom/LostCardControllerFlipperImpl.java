@@ -1,6 +1,7 @@
 package com.worldventures.wallet.ui.settings.security.lostcard.custom;
 
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
@@ -13,33 +14,37 @@ import com.bluelinelabs.conductor.changehandler.FadeChangeHandler;
 import com.worldventures.wallet.ui.settings.security.lostcard.impl.MapScreenImpl;
 
 public class LostCardControllerFlipperImpl implements LostCardControllerFlipper, ControllerChangeHandler.ControllerChangeListener {
+   private static final String MAP_ENABLED_KEY = "LostCardControllerFlipperImpl#MAP_ENABLED_KEY";
+
    private Router childRouter;
    private ControllerFlipListener controllerFlipListener;
-   private boolean enabled;
-   private boolean isUpdatedContainer;
-
-   @Override
-   public void init(Router childRouter) {
-      this.childRouter = childRouter;
-      setRoot(new DisabledTrackingController());
-   }
+   private boolean isMapEnabled;
 
    @Override
    public void init(Router childRouter, ControllerFlipListener flipListener) {
+      this.childRouter = childRouter;
       this.controllerFlipListener = flipListener;
-      init(childRouter);
+      if (!childRouter.hasRootController()) {
+         updateController(false);
+      }
    }
 
    @Override
    public void flip(boolean isMapEnabled) {
-      if (enabled != isMapEnabled) {
-         enabled = isMapEnabled;
-         final Controller targetController = isMapEnabled
-               ? new MapScreenImpl()
-               : new DisabledTrackingController();
-         setRoot(targetController);
+      if (this.isMapEnabled != isMapEnabled) {
+         this.isMapEnabled = isMapEnabled;
+         updateController(true);
       }
-      isUpdatedContainer = true;
+   }
+
+   @Override
+   public void onSaveState(@NonNull Bundle outState) {
+      outState.putBoolean(MAP_ENABLED_KEY, isMapEnabled);
+   }
+
+   @Override
+   public void onRestoreState(@NonNull Bundle savedViewState) {
+      isMapEnabled = savedViewState.getBoolean(MAP_ENABLED_KEY);
    }
 
    @Override
@@ -49,15 +54,16 @@ public class LostCardControllerFlipperImpl implements LostCardControllerFlipper,
       childRouter = null;
    }
 
-   @Override
-   public boolean isUpdated() {
-      return isUpdatedContainer;
-   }
-
-   private void setRoot(Controller controller) {
-      childRouter.setRoot(RouterTransaction.with(controller)
-            .pushChangeHandler(new FadeChangeHandler())
-            .popChangeHandler(new FadeChangeHandler()));
+   private void updateController(boolean animate) {
+      Controller controller = isMapEnabled
+            ? new MapScreenImpl()
+            : new DisabledTrackingController();
+      RouterTransaction routerTransaction = RouterTransaction.with(controller);
+      if (animate) {
+         routerTransaction = routerTransaction.pushChangeHandler(new FadeChangeHandler())
+               .popChangeHandler(new FadeChangeHandler());
+      }
+      childRouter.setRoot(routerTransaction);
    }
 
    @Override

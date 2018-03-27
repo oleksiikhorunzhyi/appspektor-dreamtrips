@@ -9,7 +9,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
+import com.worldventures.dreamtrips.modules.trips.model.map.TripClusterItem;
 
 public class TripClusterRenderer extends DefaultClusterRenderer<TripClusterItem> {
 

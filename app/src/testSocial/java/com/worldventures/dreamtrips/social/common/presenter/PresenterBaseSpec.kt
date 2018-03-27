@@ -16,37 +16,40 @@ import com.worldventures.core.test.common.Injector
 import com.worldventures.core.test.common.RxJavaSchedulerInitializer
 import com.worldventures.core.test.janet.MockAnalyticsService
 import com.worldventures.core.utils.HttpErrorHandlingUtil
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.OfflineWarningDelegate
 import io.techery.janet.Janet
 
 import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.Spec
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 
 @RunWith(JUnitPlatform::class)
-abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
+abstract class PresenterBaseSpec(spec: TestSuite<TestComponents<out Presenter<out Presenter.View>, out Presenter.View>>)
+   : Spek(spec.specs()) {
 
-   companion object {
+   init {
+      RxJavaSchedulerInitializer.init()
+      AndroidRxJavaSchedulerInitializer.init()
+      val apptentiveTracker = mock<Tracker>()
+      whenever(apptentiveTracker.key).thenReturn(ApptentiveTracker.TRACKER_KEY)
+      val adobeTracker = mock<Tracker>()
+      whenever(adobeTracker.key).thenReturn(AdobeTracker.TRACKER_KEY)
+   }
+
+   abstract class TestComponents<P : Presenter<V>, V : Presenter.View> {
+
+      lateinit var presenter: P
+      lateinit var view: V
 
       var context: Context = mock()
       var activityRouter: ActivityRouter = mock()
       var featureManager: FeatureManager = mock()
-      var photoUploadingManager: PhotoUploadingManagerS3 = mock()
       var offlineWarningDelegate: OfflineWarningDelegate = mock()
       var connectionInfoProvider: ConnectionInfoProvider = mock()
       var httpErrorHandlingUtil: HttpErrorHandlingUtil = mock()
-
-      init {
-         RxJavaSchedulerInitializer.init()
-         AndroidRxJavaSchedulerInitializer.init()
-         val apptentiveTracker = mock<Tracker>()
-         whenever(apptentiveTracker.key).thenReturn(ApptentiveTracker.TRACKER_KEY)
-         val adobeTracker = mock<Tracker>()
-         whenever(adobeTracker.key).thenReturn(AdobeTracker.TRACKER_KEY)
-      }
 
       fun prepareInjector(sessionHolder: SessionHolder = mock()): Injector {
          return Injector().apply {
@@ -58,11 +61,17 @@ abstract class PresenterBaseSpec(spekBody: Spec.() -> Unit) : Spek(spekBody) {
             registerProvider(SessionHolder::class.java, { sessionHolder })
             registerProvider(AnalyticsInteractor::class.java, { AnalyticsInteractor(pipeCreator) })
             registerProvider(FeatureManager::class.java, { featureManager })
-            registerProvider(PhotoUploadingManagerS3::class.java, { photoUploadingManager })
             registerProvider(OfflineWarningDelegate::class.java, { offlineWarningDelegate })
             registerProvider(ConnectionInfoProvider::class.java, { connectionInfoProvider })
             registerProvider(HttpErrorHandlingUtil::class.java, { httpErrorHandlingUtil })
          }
       }
+
+      fun linkPresenterAndView() = presenter.takeView(view)
+   }
+
+   abstract class TestSuite<out C : TestComponents<out Presenter<out Presenter.View>, out Presenter.View>>(val components: C) {
+
+      abstract fun specs(): SpecBody.() -> Unit
    }
 }

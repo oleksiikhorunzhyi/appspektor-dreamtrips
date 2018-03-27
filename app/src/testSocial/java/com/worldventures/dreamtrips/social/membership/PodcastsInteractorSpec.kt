@@ -115,11 +115,10 @@ class PodcastsInteractorSpec : BaseSpec({
             val mappedPodcast = responsePodcasts[i]
             assertEquals(apiPodcast.title(), mappedPodcast.title)
             assertEquals(apiPodcast.description(), mappedPodcast.description)
-            assertEquals(apiPodcast.speaker(), mappedPodcast.speaker)
             assertEquals(apiPodcast.audioURL(), mappedPodcast.fileUrl)
             assertEquals(apiPodcast.imageURL(), mappedPodcast.imageUrl)
             assertEquals(apiPodcast.date(), mappedPodcast.date)
-            assertEquals(apiPodcast.duration(), mappedPodcast.duration.toInt())
+            assertEquals(apiPodcast.duration(), mappedPodcast.duration)
          }
          return true
       }

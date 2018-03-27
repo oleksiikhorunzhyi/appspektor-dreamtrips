@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:gravity="center_vertical"
       android:orientation="horizontal"
       >
@@ -11,8 +12,10 @@
    <com.facebook.drawee.view.SimpleDraweeView
          android:id="@+id/iv_flag"
          android:layout_width="38dp"
-         android:layout_height="38dp"
+         android:layout_height="22dp"
          android:layout_margin="2dp"
+         android:background="@color/grey"
+         android:padding="1dp"
          app:actualImageScaleType="fitXY"
          app:placeholderImage="@drawable/ic_wallet_video_flag_placeholder"
          app:placeholderImageScaleType="fitXY"
@@ -25,6 +28,8 @@
          android:gravity="center_vertical"
          android:padding="@dimen/spacing_small"
          android:textAppearance="@style/WalletTheme.TextAppearanceMedium"
+         android:singleLine="true"
+         android:ellipsize="marquee"
          tools:text="United States"
          />
 </LinearLayout>

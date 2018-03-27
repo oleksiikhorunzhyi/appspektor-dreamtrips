@@ -3,18 +3,18 @@ package com.worldventures.core.modules.auth.api.command;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.worldventures.core.janet.SessionActionPipeCreator;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.core.service.NewDreamTripsHttpService;
 import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.utils.CrashlyticsTracker;
-import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
+import com.worldventures.janet.injection.InjectableAction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -30,13 +30,14 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Set<LogoutAction> logoutActions;
+   @Inject @Named(LogoutAction.PRIORITY_HIGH) Set<LogoutAction> highPriorityLogoutActions;
 
    private boolean userDataCleared;
 
    @Override
    protected void run(CommandCallback<Void> callback) throws Throwable {
       Observable.zip(clearSessionDependants(), args -> null)
-            .flatMap(o -> clearSession().doOnNext(o1 -> {
+            .flatMap(o -> deleteSession().doOnNext(o1 -> {
                userDataCleared = true;
                callback.onProgress(0);
             }))
@@ -59,8 +60,10 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private Observable executeLogoutActions() {
+      ArrayList<LogoutAction> logoutActionQueue = new ArrayList<>(highPriorityLogoutActions);
+      logoutActionQueue.addAll(logoutActions);
       return Observable.create(subscriber -> {
-         for (LogoutAction action : logoutActions) {
+         for (LogoutAction action : logoutActionQueue) {
             try {
                action.call();
             } catch (Exception e) {
@@ -72,18 +75,16 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
       });
    }
 
-   private Observable clearSession() {
-      String apiToken = appSessionHolder.get().get().apiToken();
-      //
-      return Observable.create(subscriber -> {
-         appSessionHolder.destroy();
-         sessionActionPipeCreator.clearReplays();
-         //
-         subscriber.onNext(null);
-         subscriber.onCompleted();
-      }).flatMap(o -> janet.createPipe(LogoutHttpAction.class)
-            .createObservableResult(authorize(new LogoutHttpAction(), apiToken))
-            .onErrorResumeNext(Observable.just(null)));
+   private Observable deleteSession() {
+      return janet.createPipe(LogoutHttpAction.class)
+            .createObservableResult(new LogoutHttpAction())
+            .onErrorResumeNext(Observable.just(null))
+            .doOnNext(action -> clearSessionHolder());
+   }
+
+   private void clearSessionHolder() {
+      appSessionHolder.destroy();
+      sessionActionPipeCreator.clearReplays();
    }
 
    private Observable clearUserData() {
@@ -102,10 +103,5 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    private void clearFrescoCaches() {
       ImagePipeline imagePipeline = Fresco.getImagePipeline();
       imagePipeline.clearCaches();
-   }
-
-   static <T extends AuthorizedHttpAction> T authorize(T action, String token) {
-      action.setAuthorizationHeader(NewDreamTripsHttpService.getAuthorizationHeader(token));
-      return action;
    }
 }

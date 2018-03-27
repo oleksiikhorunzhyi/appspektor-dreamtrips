@@ -1,6 +1,7 @@
 package com.worldventures.core.modules;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.worldventures.core.di.qualifier.ForActivity;
 import com.worldventures.core.janet.Injector;
@@ -27,7 +28,13 @@ public class ActivityModule {
    }
 
    @Provides
-   public Activity provideActivity() {
+   Activity provideActivity() {
+      return baseActivity;
+   }
+
+   @Provides
+   @ForActivity
+   Context provideContext() {
       return baseActivity;
    }
 

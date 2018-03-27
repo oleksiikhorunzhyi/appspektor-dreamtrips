@@ -3,7 +3,6 @@ ext {
    walletDependencies = [:]
 
    walletDependencies.repos = [
-         //TODO : add required repos
    ]
    coreDependencies.repos.each { walletDependencies.repos << it }
 
@@ -29,13 +28,13 @@ ext {
          //generate factory for custom requests
          janetHttpServiceProcessor: [a: "com.github.techery.janet-http:service-compiler:$janetHttpVersion"],
          // beacons
-         altBeacon                : [impl: 'org.altbeacon:android-beacon-library:2.12.2'],
+         altBeacon                : [impl: 'org.altbeacon:android-beacon-library:2.12.3'],
          slf4                     : [debugImpl: 'com.github.bright:slf4android:0.1.3'],
          reactivenetwork          : [impl: 'com.github.pwittchen:reactivenetwork:0.5.2'],
    ]
 
    walletDependencies.smartcard = [
-         service: [impl: 'io.techery.janet:smartcard:0.21.6.1-SNAPSHOT'],
+         service: [impl: 'io.techery.janet:smartcard:0.21.7.4'],
    ]
 
    walletDependencies.test = [

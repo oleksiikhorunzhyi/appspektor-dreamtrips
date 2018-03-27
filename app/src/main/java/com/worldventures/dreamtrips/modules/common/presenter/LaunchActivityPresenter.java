@@ -1,15 +1,16 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.messenger.synchmechanism.MessengerConnector;
+import com.worldventures.core.model.AppVersionHolder;
 import com.worldventures.core.modules.auth.api.command.LoginCommand;
 import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.core.modules.auth.service.analytics.LoginAction;
 import com.worldventures.core.modules.auth.service.analytics.LoginErrorAction;
 import com.worldventures.core.modules.auth.util.SessionUtil;
-import com.worldventures.core.service.analytics.AnalyticsInteractor;
 import com.worldventures.core.service.analytics.command.ClearHeadersCommand;
 import com.worldventures.core.service.analytics.command.SetUserIdsHeadersCommand;
 import com.worldventures.core.utils.ValidationUtils;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.command.CleanTempDirectoryCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.HttpResponseSnifferDelegate;
@@ -33,7 +34,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject ClearStoragesInteractor clearStoragesInteractor;
    @Inject SnappyRepository db;
 
-   @Inject AnalyticsInteractor analyticsInteractor;
    @Inject AuthInteractor authInteractor;
    @Inject MessengerConnector messengerConnector;
    @Inject BackgroundUploadingInteractor backgroundUploadingInteractor;
@@ -41,6 +41,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
    @Inject DtlLocationInteractor dtlLocationInteractor;
    @Inject InitializerInteractor initializerInteractor;
    @Inject HttpResponseSnifferDelegate httpResponseSnifferDelegate;
+   @Inject AppVersionHolder appVersionHolder;
 
    @State boolean dtlInitDone;
    @State boolean userAlreadyLoggedIn = true;
@@ -64,6 +65,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                   .onSuccess(loginCommand -> {
                      userAlreadyLoggedIn = false;
                      authInteractor.loginActionPipe().clearReplays();
+                     appVersionHolder.put(BuildConfig.VERSION_CODE);
                      launchModeBasedOnExistingSession();
                   })
                   .onFail((loginCommand, throwable) -> {
@@ -84,6 +86,22 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
    private void splashMode() {
       view.openSplash();
+      if (isNewVersion()) {
+         invalidateVersion();
+      } else {
+         clearStorage();
+      }
+   }
+
+   private boolean isNewVersion() {
+      return !appVersionHolder.get().isPresent() || BuildConfig.VERSION_CODE > appVersionHolder.get().get();
+   }
+
+   private void invalidateVersion() {
+      authInteractor.loginActionPipe().send(new LoginCommand());
+   }
+
+   private void clearStorage() {
       clearStoragesInteractor.cleanTempDirectoryPipe()
             .createObservable(new CleanTempDirectoryCommand())
             .compose(bindViewToMainComposer())

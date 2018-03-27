@@ -49,7 +49,7 @@ class RepToolsPresenter : Presenter<RepToolsPresenter.View>() {
       return list
    }
 
-   fun showInvite() = featureManager.available(Feature.REP_TOOLS)
+   fun showInvite() = featureManager.available(Feature.REP_TOOLS) && featureManager.available(Feature.INVITATIONS)
 
    fun trackState(position: Int) {
       val item = screens[position]

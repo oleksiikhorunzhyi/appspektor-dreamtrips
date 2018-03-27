@@ -5,6 +5,7 @@ import android.content.Context;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.janet.SessionActionPipeCreator;
 import com.worldventures.core.model.session.FeatureManager;
+import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.wallet.analytics.general.SmartCardAnalyticErrorHandler;
 import com.worldventures.wallet.service.FactoryResetInteractor;
 import com.worldventures.wallet.service.FirmwareInteractor;
@@ -144,8 +145,9 @@ public class WalletServiceModule {
    @Provides
    SmartCardSyncManager smartCardSyncManager(@Named(JANET_WALLET) Janet janet, SmartCardInteractor smartCardInteractor,
          FirmwareInteractor firmwareInteractor, RecordInteractor recordInteractor,
-         WalletFeatureHelper featureHelper) {
-      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor, featureHelper);
+         FactoryResetInteractor factoryResetInteractor, AuthInteractor authInteractor, WalletFeatureHelper featureHelper) {
+      return new SmartCardSyncManager(janet, smartCardInteractor, firmwareInteractor, recordInteractor,
+            factoryResetInteractor, authInteractor, featureHelper);
    }
 
    @Singleton

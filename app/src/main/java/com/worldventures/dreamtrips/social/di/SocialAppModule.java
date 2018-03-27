@@ -1,14 +1,10 @@
 package com.worldventures.dreamtrips.social.di;
 
-import android.support.annotation.DrawableRes;
-
 import com.worldventures.core.component.ComponentDescription;
-import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.modules.config.ConfigurationModule;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
+import com.worldventures.dreamtrips.modules.trips.TripsAppModule;
+import com.worldventures.dreamtrips.social.di.friends.UserAppModule;
 import com.worldventures.dreamtrips.social.ui.background_uploading.BackgroundUploadingModule;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketTabsFragment;
 import com.worldventures.dreamtrips.social.ui.feed.FeedAppModule;
@@ -17,6 +13,7 @@ import com.worldventures.dreamtrips.social.ui.feed.view.fragment.NotificationFra
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.LegalTermsFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.SendFeedbackFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.DreamLifeClubFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.social.ui.membership.view.fragment.MembershipFragment;
 import com.worldventures.dreamtrips.social.ui.profile.view.fragment.AccountFragment;
@@ -41,14 +38,13 @@ import dagger.Provides;
             SocialInitializerModule.class,
             SocialMappingModule.class,
             SocialSnappyModule.class,
+            UserAppModule.class,
+            TripsAppModule.class
       }
 )
 public class SocialAppModule {
-
    public static final String FEED = "FEED";
    public static final String NOTIFICATIONS = "NOTIFICATIONS";
-   public static final String TRIPS = "TRIPS";
-   public static final String MAP_TRIPS = "MAP_TRIPS";
    public static final String OTA = "OTA";
    public static final String TRIP_IMAGES = "TRIP_IMAGES";
    public static final String MEMBERSHIP = "MEMBERSHIP";
@@ -60,19 +56,7 @@ public class SocialAppModule {
    public static final String SEND_FEEDBACK = "SEND_FEEDBACK";
    public static final String REP_TOOLS = "REP_TOOLS";
    public static final String LOGOUT = "Logout";
-
-   public static final String MALAYSIYA_COUNTRY_CODE = "my";
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideTripsComponent(SessionHolder sessionHolder) {
-      return new ComponentDescription.Builder()
-            .key(TRIPS)
-            .toolbarLogo(getLogo(sessionHolder))
-            .navMenuTitle(R.string.trips)
-            .icon(R.drawable.ic_dreamtrips)
-            .fragmentClass(TripListFragment.class)
-            .build();
-   }
+   public static final String DLC = "DLC";
 
    @Provides(type = Provides.Type.SET)
    ComponentDescription provideMembershipComponent() {
@@ -127,19 +111,6 @@ public class SocialAppModule {
             .toolbarTitle(R.string.settings)
             .icon(R.drawable.ic_settings_menu)
             .fragmentClass(SettingsGroupFragment.class)
-            .build();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   ComponentDescription provideMapTripsComponent(SessionHolder sessionHolder) {
-      return new ComponentDescription.Builder()
-            .key(MAP_TRIPS)
-            .toolbarLogo(getLogo(sessionHolder))
-            .navMenuTitle(R.string.trips)
-            .icon(R.drawable.ic_dreamtrips)
-            .ignored(true)
-            .skipGeneralToolbar(true)
-            .fragmentClass(TripMapFragment.class)
             .build();
    }
 
@@ -205,7 +176,7 @@ public class SocialAppModule {
             .key(HELP)
             .navMenuTitle(R.string.help)
             .toolbarTitle(R.string.help)
-            .icon(R.drawable.ic_help)
+            .icon(R.drawable.ic_help_selector)
             .fragmentClass(HelpFragment.class)
             .build();
    }
@@ -230,13 +201,14 @@ public class SocialAppModule {
             .build();
    }
 
-   @DrawableRes
-   private int getLogo(SessionHolder sessionHolder) {
-      String countryCode = sessionHolder.get().get().user().getCountryCode();
-      if (MALAYSIYA_COUNTRY_CODE.equalsIgnoreCase(countryCode)) {
-         return R.drawable.dt_action_bar_logo_skyzone;
-      }
-      return R.drawable.dt_action_bar_logo;
+   @Provides(type = Provides.Type.SET)
+   ComponentDescription provideDreamLifeClubComponent() {
+      return new ComponentDescription.Builder()
+            .key(DLC)
+            .toolbarTitle(R.string.dlc)
+            .navMenuTitle(R.string.dlc)
+            .icon(R.drawable.ic_dreamtrips)
+            .fragmentClass(DreamLifeClubFragment.class)
+            .build();
    }
-
 }

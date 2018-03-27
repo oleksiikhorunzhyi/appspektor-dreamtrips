@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.help.documents.doc.impl;
 
-
 import android.net.Uri;
 
 import com.worldventures.wallet.ui.common.base.WalletDeviceConnectionDelegate;
@@ -17,15 +16,14 @@ public class HelpDocumentDetailPresenterImpl extends WalletPresenterImpl<HelpDoc
    }
 
    @Override
-   public void attachView(HelpDocumentDetailScreen view) {
-      super.attachView(view);
-      final WalletDocumentModel document = getView().getDocument();
-      getView().showDocument(document);
+   public void goBack() {
+      getNavigator().goBack();
    }
 
    @Override
-   public void goBack() {
-      getNavigator().goBack();
+   public void fetchDocument() {
+      final WalletDocumentModel document = getView().getDocument();
+      getView().showDocument(document);
    }
 
    @Override

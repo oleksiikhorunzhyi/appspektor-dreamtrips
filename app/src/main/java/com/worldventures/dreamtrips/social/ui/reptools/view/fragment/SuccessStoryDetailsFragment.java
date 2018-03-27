@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.reptools.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +20,8 @@ import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryDet
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -28,22 +31,19 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
    public static final String EXTRA_STORY = "STORY";
    public static final String EXTRA_SLAVE = "SLAVE";
 
-   private SuccessStory story;
-
-   @InjectView(R.id.iv_share) protected ImageView ivShare;
-   @InjectView(R.id.iv_like) protected ImageView ivLike;
-   @InjectView(R.id.iv_full_screen) protected ImageView ivFullscreen;
+   @InjectView(R.id.iv_like) protected ImageView likeIcon;
+   @InjectView(R.id.iv_full_screen) protected ImageView fullscreenIcon;
 
    private boolean slave = false;
 
    @OnClick(R.id.iv_like)
    public void onLike() {
-      getPresenter().like(story);
+      getPresenter().like();
    }
 
    @OnClick(R.id.iv_share)
    public void onShare() {
-      getPresenter().share();
+      new ShareDialog(getActivity(), type -> getPresenter().onShare(type)).show();
    }
 
    @OnClick(R.id.iv_full_screen)
@@ -51,22 +51,24 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
       if (!slave) {
          getActivity().finish();
       } else {
-         Bundle bundle = new Bundle();
-         bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, story);
-         router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forActivity().data(bundle).build());
+         getPresenter().onFullscreenPressed();
       }
    }
 
    @Override
+   public void openFullscreen(@NotNull SuccessStory story) {
+      Bundle bundle = new Bundle();
+      bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, story);
+      router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forActivity().data(bundle).build());
+   }
+
+   @Override
    public void afterCreateView(View rootView) {
-      slave = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getBoolean(EXTRA_SLAVE);
-
-      if (!ViewUtils.isTablet(getActivity())) {
-         ivFullscreen.setVisibility(View.GONE);
-      }
       super.afterCreateView(rootView);
-      updateStoryLike(story.isLiked());
-
+      slave = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getBoolean(EXTRA_SLAVE);
+      if (!ViewUtils.isTablet(getActivity())) {
+         fullscreenIcon.setVisibility(View.GONE);
+      }
       webView.getSettings().setUseWideViewPort(true);
    }
 
@@ -74,63 +76,41 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
    public void onResume() {
       super.onResume();
       if (!slave) {
-         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(story.getAuthor());
-         ivFullscreen.setImageResource(R.drawable.ic_fullscreen_collapse);
-
-         ivFullscreen.setVisibility(isTabletLandscape() ? View.VISIBLE : View.INVISIBLE);
+         getPresenter().onUpdateAuthorRequired();
+         fullscreenIcon.setImageResource(R.drawable.ic_fullscreen_collapse);
+         fullscreenIcon.setVisibility(isTabletLandscape() ? View.VISIBLE : View.INVISIBLE);
       } else {
-         ivFullscreen.setImageResource(R.drawable.ic_fullscreen_open);
+         fullscreenIcon.setImageResource(R.drawable.ic_fullscreen_open);
       }
    }
 
    @Override
-   protected String getURL() {
-      return story != null ? story.getUrl() : "";
+   public void updateStoryTitle(@NonNull String author) {
+      ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(author);
    }
 
    @Override
    protected SuccessStoryDetailsPresenter createPresenter(Bundle savedInstanceState) {
-      story = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getParcelable(EXTRA_STORY);
-      return new SuccessStoryDetailsPresenter(story, getURL());
+      SuccessStory story = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getParcelable(EXTRA_STORY);
+      return new SuccessStoryDetailsPresenter(story);
    }
 
    @Override
-   public void showShareDialog() {
-      new ShareDialog(getActivity(), type -> {
-         getPresenter().onShare(type, story);
-      }).show();
+   public void likeRequestSuccess(boolean isLiked) {
+      informUser(isLiked ? getString(R.string.ss_has_been_added_to_favorites) : getString(R.string.ss_has_been_removed_from_favorites));
    }
 
    @Override
-   public void likeRequestSuccess() {
-      boolean isLike = !story.isLiked();
-      story.setLiked(isLike);
-      ivLike.setImageResource(isLike ? R.drawable.ic_success_heart_selected : R.drawable.ic_success_heart_normal);
-      if (isLike) {
-         informUser(getString(R.string.ss_has_been_added_to_favorites));
-      } else {
-         informUser(getString(R.string.ss_has_been_removed_from_favorites));
-      }
-
-      getPresenter().onStoryLiked(story);
+   public void updateLikeStatus(boolean isLike) {
+      likeIcon.setImageResource(isLike ? R.drawable.ic_success_heart_selected : R.drawable.ic_success_heart_normal);
+      likeIcon.setContentDescription(isLike ? "selected" : "");
    }
 
    @Override
-   public void openShare(String url, @ShareType String type) {
+   public void openShare(@NonNull String url, @NonNull @ShareType String type) {
       ShareBundle data = new ShareBundle();
       data.setShareUrl(url);
       data.setShareType(type);
       router.moveTo(ShareFragment.class, NavigationConfigBuilder.forActivity().data(data).build());
-   }
-
-   @Override
-   public void updateStoryLike(boolean isLiked) {
-      if (isLiked) {
-         ivLike.setImageResource(R.drawable.ic_success_heart_selected);
-         ivLike.setContentDescription("selected");
-      } else {
-         ivLike.setImageResource(R.drawable.ic_success_heart_normal);
-         ivLike.setContentDescription("");
-      }
    }
 }

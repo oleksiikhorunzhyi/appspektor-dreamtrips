@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.DreamTripsCommandServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.AnalyticsInteractorProxy;
 import com.worldventures.dreamtrips.modules.common.delegate.GlobalAnalyticEventHandler;
+import com.worldventures.dreamtrips.qa.QaConfig;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -30,11 +31,19 @@ import dagger.Provides;
 })
 public class AnalyticsModule {
 
+   private static final String LABEL = "AnalyticsModuleLabel";
+
+   @Provides
+   @Named(LABEL)
+   boolean provideIsTrackerEnabled(QaConfig qaConfig) {
+      return qaConfig.getApp().getEnableAnalytics();
+   }
+
    @Singleton
    @Provides
    @Named(TrackerQualifier.ADOBE_TRACKER)
-   Tracker provideAdobeTracker(ConnectionInfoProvider connectionInfoProvider, DeviceInfoProvider deviceInfoProvider) {
-      return new AdobeTracker(deviceInfoProvider, connectionInfoProvider, BuildConfig.DEBUG);
+   Tracker provideAdobeTracker(ConnectionInfoProvider connectionInfoProvider, DeviceInfoProvider deviceInfoProvider, @Named(LABEL) boolean isTrackerEnabled) {
+      return new AdobeTracker(deviceInfoProvider, connectionInfoProvider, BuildConfig.DEBUG, isTrackerEnabled);
    }
 
    @Singleton
@@ -45,8 +54,8 @@ public class AnalyticsModule {
 
    @Singleton
    @Provides(type = Provides.Type.SET)
-   Tracker provideApptentiveTracker(Application application) {
-      return new ApptentiveTracker(application, BuildConfig.SURVEY_API_TOKEN, BuildConfig.QA_AUTOMATION_MODE_ENABLED);
+   Tracker provideApptentiveTracker(Application application, @Named(LABEL) boolean isTrackerEnabled) {
+      return new ApptentiveTracker(application, BuildConfig.SURVEY_API_TOKEN, isTrackerEnabled);
    }
 
    @Singleton

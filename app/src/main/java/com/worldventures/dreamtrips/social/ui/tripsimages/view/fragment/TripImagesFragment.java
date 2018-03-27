@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
@@ -44,6 +43,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.TripImageCel
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.TripImageTimestampCell;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.VideoMediaCell;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.VideoMediaTimestampCell;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.util.GridLayoutManagerPaginationDelegate;
 
 import java.util.List;
 
@@ -51,11 +51,14 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 
 @Layout(R.layout.fragment_trip_list_images)
 @ComponentPresenter.ComponentTitle(R.string.trip_images)
 public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFragmentWithArgs<T, TripImagesArgs>
       implements TripImagesPresenter.View, SelectablePagerFragment {
+
+   public static final int VISIBLE_THRESHOLD = 15;
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
 
    @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
@@ -66,9 +69,13 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @InjectView(R.id.new_images_button) Button newImagesButton;
    @InjectView(R.id.fab_photo) FloatingActionButton addNewPhotoButton;
 
-   protected BaseDelegateAdapter adapter;
+   @State protected int videoDuration;
+   @State protected boolean mediaPickerShown;
+
+   protected BaseDelegateAdapter<Object> adapter;
    protected GridLayoutManager layoutManager;
    private RecyclerViewStateDelegate stateDelegate;
+   private MediaPickerDialog mediaPickerDialog;
 
    @Override
    public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,10 +91,19 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
+      if (mediaPickerShown) {
+         openPicker(videoDuration);
+      }
+   }
+
+   @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       initAdapter();
-      initRecyclerView();
+      recyclerView.addOnScrollListener(new GridLayoutManagerPaginationDelegate(getPresenter()::loadNext,
+            VISIBLE_THRESHOLD));
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
    }
@@ -100,13 +116,13 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void scrollToTop() {
-      recyclerView.scrollToPosition(0);
+      recyclerView.smoothScrollToPosition(0);
    }
 
    private void initAdapter() {
       initLayoutManager(getSpanCount());
       stateDelegate.setRecyclerView(recyclerView);
-      adapter = new BaseDelegateAdapter(getContext(), this);
+      adapter = new BaseDelegateAdapter<>(getContext(), this);
       registerCellsAndDelegates();
       recyclerView.setAdapter(this.adapter);
    }
@@ -131,18 +147,6 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
       return landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
    }
 
-   private void initRecyclerView() {
-      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int visibleCount = recyclerView.getChildCount();
-            int totalCount = layoutManager.getItemCount();
-            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-            getPresenter().scrolled(visibleCount, totalCount, firstVisibleItemPosition);
-         }
-      });
-   }
-
    @Override
    public void hideCreateImageButton() {
       addNewPhotoButton.setVisibility(View.GONE);
@@ -151,8 +155,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @Override
    public void openFullscreen(boolean lastPageReached, int currentItemPosition) {
       router.moveTo(TripImagesFullscreenFragment.class, NavigationConfigBuilder.forActivity()
-            .manualOrientationActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+            .manualOrientationActivity(true)
             .data(TripImagesFullscreenArgs.builder()
                   .tripImagesArgs(getArgs())
                   .lastPageReached(lastPageReached)
@@ -182,9 +186,25 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void openPicker(int durationLimit) {
-      MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(getContext());
-      mediaPickerDialog.setOnDoneListener(getPresenter()::pickedAttachments);
+      mediaPickerShown = true;
+      videoDuration = durationLimit;
+
+      mediaPickerDialog = new MediaPickerDialog(getContext());
+      mediaPickerDialog.setOnCancelListener(dialogInterface -> mediaPickerShown = false);
+      mediaPickerDialog.setOnDoneListener(pickerAttachment -> {
+         mediaPickerShown = false;
+         getPresenter().pickedAttachments(pickerAttachment);
+      });
       mediaPickerDialog.show(MEDIA_PICKER_ITEMS_COUNT, durationLimit);
+   }
+
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
+      //fix memory leak after rotation
+      if (mediaPickerDialog != null) {
+         mediaPickerDialog.dismiss();
+      }
    }
 
    @Override
@@ -193,7 +213,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void updateItems(List items) {
+   public void updateItems(List items, boolean refreshTimeStamp) {
       layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
          @Override
          public int getSpanSize(int position) {
@@ -214,10 +234,11 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity && items.get(newItemPosition) instanceof PhotoMediaEntity) {
+            if (refreshTimeStamp && adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity
+                  && items.get(newItemPosition) instanceof PhotoMediaEntity) {
                return false;
             }
-            return true;
+            return super.areContentsTheSame(oldItemPosition, newItemPosition);
          }
       });
       adapter.setItemsNoNotify(items);

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.social.service.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.fragment.BucketItemEditFragment;
@@ -49,7 +50,6 @@ import com.worldventures.dreamtrips.social.ui.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.social.ui.friends.view.fragment.FriendSearchFragment;
 import com.worldventures.dreamtrips.social.ui.friends.view.fragment.FriendsMainFragment;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.social.ui.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.ReloadFeedCell;
 import com.worldventures.dreamtrips.social.ui.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo;
@@ -115,12 +115,19 @@ public class FragmentWithFeedDelegate {
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+
+            if (adapter.getItem(oldItemPosition) instanceof User
+                  && items.get(newItemPosition) instanceof User) {
+               return false;
+            }
+
             if (adapter.getItem(oldItemPosition) instanceof FeedItem
                   && items.get(newItemPosition) instanceof FeedItem) {
                FeedItem oldItem = (FeedItem) adapter.getItem(oldItemPosition);
                FeedItem newItem = (FeedItem) items.get(newItemPosition);
                return oldItem.contentSame(newItem);
             }
+
             return adapter.getItem(oldItemPosition).equals(items.get(newItemPosition));
          }
       });
@@ -146,23 +153,6 @@ public class FragmentWithFeedDelegate {
 
    public void notifyItemChanged(int index) {
       adapter.notifyItemChanged(index);
-   }
-
-   public void notifyDataSetChanged(int focusedItemIndex) {
-      if (focusedItemIndex != -1) {
-         int firstBunchSize = focusedItemIndex;
-         int lastBunchSize = adapter.getCount() - focusedItemIndex - 1;
-
-         if (firstBunchSize != 0) {
-            adapter.notifyItemRangeChanged(0, firstBunchSize);
-         }
-         adapter.notifyItemChanged(focusedItemIndex);
-         if (lastBunchSize != 0) {
-            adapter.notifyItemRangeChanged(focusedItemIndex + 1, lastBunchSize);
-         }
-      } else {
-         notifyDataSetChanged();
-      }
    }
 
    public void notifyItemChanged(FeedItem feedItem) {
@@ -274,7 +264,7 @@ public class FragmentWithFeedDelegate {
          if (isTabletLandscape) {
             bundleBuilder.slave(true);
          }
-         router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity().manualOrientationActivity(true)
+         router.moveTo(FeedItemDetailsFragment.class, NavigationConfigBuilder.forActivity()
                .data(bundleBuilder.build()).build());
       }
    }
@@ -330,7 +320,6 @@ public class FragmentWithFeedDelegate {
    public void openHashtagSearch() {
       router.moveTo(HashtagFeedFragment.class, NavigationConfigBuilder.forActivity()
             .data(null)
-            .manualOrientationActivity(true)
             .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
             .build());
    }

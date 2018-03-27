@@ -17,8 +17,6 @@
    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
    <uses-permission android:name="android.permission.READ_CONTACTS" />
    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-   <uses-permission android:name="android.permission.BLUETOOTH" />
-   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
    <uses-permission android:name="android.permission.WAKE_LOCK" />
    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -130,28 +128,14 @@
             android:name=".social.ui.activity.TransparentSocialComponentActivity"
             android:configChanges="layoutDirection|locale"
             android:hardwareAccelerated="true"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
             android:theme="@style/TransparentActivity"
-            android:parentActivityName=".social.ui.activity.SocialMainActivity"
             android:windowSoftInputMode="adjustResize"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
                android:value=".social.ui.activity.SocialMainActivity"
                />
-      </activity>
-
-      <activity
-            android:name=".social.ui.activity.ConfigChangesAwareComponentActivity"
-            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:parentActivityName=".social.ui.activity.SocialMainActivity"
-            android:windowSoftInputMode="adjustResize"
-            >
-         <meta-data
-               android:name="android.support.PARENT_ACTIVITY"
-               android:value=".social.ui.activity.SocialMainActivity"
-               />
-
       </activity>
 
       <activity
@@ -167,14 +151,7 @@
       <activity
             android:name=".social.ui.activity.PlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
-            android:screenOrientation="sensorLandscape"
             />
-
-      <activity
-            android:name=".social.ui.activity.FeedActivity"
-            android:launchMode="singleTop"
-            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
-            ></activity>
 
       <!--Chat activities-->
       <activity
@@ -202,8 +179,8 @@
       <activity
             android:name="com.worldventures.dreamtrips.wallet.DTWalletActivity"
             android:launchMode="singleTop"
-            android:theme="@style/WalletTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/WalletTheme"
             >
          <meta-data
                android:name="android.support.PARENT_ACTIVITY"
@@ -259,11 +236,24 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
-
-      <service
-            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
-            android:enabled="true"
+      <activity
+            android:name=".social.ui.video.view.custom.FullscreenViewActivity"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
             />
+      <activity
+            android:name=".social.ui.activity.ConfigChangesAwareComponentActivity"
+            android:configChanges="layoutDirection|locale|keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true"
+            android:parentActivityName=".social.ui.activity.SocialMainActivity"
+            android:windowSoftInputMode="adjustResize"
+            >
+         <meta-data
+               android:name="android.support.PARENT_ACTIVITY"
+               android:value=".social.ui.activity.SocialMainActivity"
+               />
+
+      </activity>
       <service
             android:name=".social.ui.podcast_player.playback.PodcastService"
             android:exported="false"

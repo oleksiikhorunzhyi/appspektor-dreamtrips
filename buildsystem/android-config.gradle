@@ -1,9 +1,9 @@
 ext {
    androidConfig = [
-         compileSdk: 26,
+         compileSdk: 27,
          minSdk    : 18,
          targetSdk : 22,
-         buildTools: '26.0.2',
+         buildTools: '27.0.3',
          //
          preDex    : !project.hasProperty('disablePreDex')
    ]

@@ -1,8 +1,8 @@
 package com.worldventures.wallet.ui.settings.general.reset.impl;
 
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.worldventures.wallet.R;
 import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand;
 import com.worldventures.wallet.ui.common.base.WalletBaseController;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetDelegate;
-import com.worldventures.wallet.ui.settings.general.reset.FactoryResetOperationView;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetDelegate;
+import com.worldventures.wallet.ui.settings.general.reset.delegate.FactoryResetOperationView;
 import com.worldventures.wallet.ui.settings.general.reset.FactoryResetPresenter;
 import com.worldventures.wallet.ui.settings.general.reset.FactoryResetScreen;
 
@@ -66,5 +66,11 @@ public class FactoryResetScreenImpl extends WalletBaseController<FactoryResetScr
    @Override
    public boolean supportHttpConnectionStatusLabel() {
       return false;
+   }
+
+   @Nullable
+   @Override
+   protected Object screenModule() {
+      return new FactoryResetScreenModule();
    }
 }

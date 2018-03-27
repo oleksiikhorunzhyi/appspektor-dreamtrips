@@ -2,6 +2,7 @@ package com.worldventures.wallet.ui.settings.security.clear.common;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.util.AttributeSet;
@@ -23,23 +24,26 @@ public class WalletDelayRadioGroup extends RadioGroup {
    private static final String CHECKED_ID_KEY = "WalletDelayRadioGroup#CHECKED_ID_KEY";
    private static final String ITEMS_KEY = "WalletDelayRadioGroup#ITEMS_KEY";
 
+   private final Handler handler = new Handler();
+
    private ArrayList<SettingsRadioModel> items;
    private Action1<SettingsRadioModel> onChosenListener;
    private int checkedId;
 
-   private final OnCheckedChangeListener onCheckedChangeListener = (group, checkedId) -> {
-      if (this.checkedId == checkedId) {
-         return;
-      }
-      this.checkedId = checkedId;
-      if (onChosenListener != null) {
-         onChosenListener.call(items.get(checkedId));
-      }
-   };
-
    public WalletDelayRadioGroup(Context context, AttributeSet attrs) {
       super(context, attrs);
-      super.setOnCheckedChangeListener(onCheckedChangeListener);
+      super.setOnCheckedChangeListener((group, checkedId) -> {
+         if (this.checkedId == checkedId) {
+            return;
+         }
+         handler.removeCallbacksAndMessages(null);
+         handler.postDelayed(() -> {
+            this.checkedId = checkedId;
+            if (onChosenListener != null) {
+               onChosenListener.call(items.get(checkedId));
+            }
+         }, 350);
+      });
    }
 
    public void setItems(ArrayList<SettingsRadioModel> items) {
@@ -53,6 +57,7 @@ public class WalletDelayRadioGroup extends RadioGroup {
       final RadioButton button = (RadioButton) from(getContext()).inflate(R.layout.item_wallet_radio_button, this, false);
       button.setText(radioModel.getText());
       button.setId(position);
+      button.setTag(radioModel);
       addView(button);
    }
 
@@ -78,6 +83,12 @@ public class WalletDelayRadioGroup extends RadioGroup {
       bundle.putInt(CHECKED_ID_KEY, checkedId);
       bundle.putParcelableArrayList(ITEMS_KEY, items);
       return bundle;
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      handler.removeCallbacksAndMessages(null);
+      super.onDetachedFromWindow();
    }
 
    @Override

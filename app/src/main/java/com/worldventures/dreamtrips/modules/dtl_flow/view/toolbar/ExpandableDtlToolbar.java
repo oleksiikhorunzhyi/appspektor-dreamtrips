@@ -138,7 +138,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
       RxDtlToolbar.merchantSearchTextChanges(this)
             .filter(s -> !isCollapsed())
             .compose(RxLifecycleAndroid.bindView(this))
-            .subscribe(searchQuery -> this.searchQuery = searchQuery);
+            .subscribe(searchQuery -> this.searchQuery = searchQuery.toString());
    }
 
    /**

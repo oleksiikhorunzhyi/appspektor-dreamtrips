@@ -5,7 +5,7 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.converter.Converter
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.storage.ActionStorage
 import com.worldventures.core.test.AssertUtil
 import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.api.entity.model.BaseEntityHolder

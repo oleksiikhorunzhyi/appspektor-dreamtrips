@@ -47,6 +47,7 @@ class GetPodcastsCommand(val refresh: Boolean = false) : CommandWithError<List<P
    private fun initialProcessCache(callback: Command.CommandCallback<List<Podcast>>) {
       if (!cachedData.isEmpty()) {
          Observable.from(cachedData)
+               .doOnNext { connectCachedEntity(it) }
                .toList()
                .doOnNext { callback.onProgress(0) }
                .subscribe()

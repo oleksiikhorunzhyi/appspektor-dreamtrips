@@ -141,8 +141,8 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
 
       final int pointsCaptionFormatResId;
 
-      if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED &&
-            transactionModel.getSubTotalAmount() < 0D) {
+      if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED
+            && transactionModel.getSubTotalAmount() < 0D) {
          pointsCaptionFormatResId = R.string.dtl_transaction_adjusted_points;
 
          final int highlightColor = ContextCompat.getColor(getContext(), R.color.transaction_amount_red_color);

@@ -174,8 +174,8 @@ public class PageableTransactionAdapter extends RecyclerView.Adapter<RecyclerVie
                transactionModel.getCurrenyCode(), transactionModel.getCurrencySymbol());
          final String subtotalCaption = context.getString(R.string.dtl_subtotal, subtotalValue);
 
-         if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED &&
-               transactionModel.getTotalAmount() < 0D) {
+         if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED
+               && transactionModel.getTotalAmount() < 0D) {
             final int spanStartPosition = subtotalCaption.indexOf(subtotalValue);
             final int spanEndPosition = subtotalCaption.length();
             final int color = ContextCompat.getColor(context, R.color.transaction_amount_red_color);

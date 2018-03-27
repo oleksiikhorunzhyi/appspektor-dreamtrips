@@ -82,15 +82,15 @@ class TripMapPresenter : Presenter<TripMapPresenter.View>() {
    fun onMapLoaded() = reloadMapObjects()
 
    fun onMarkerClicked(marker: Marker) {
-      val (_, tripUids) = pins.firstOrNull {
+      val pin = pins.firstOrNull {
          it.coordinates.lat == marker.position.latitude
                && it.coordinates.lng == marker.position.longitude
       } ?: return
 
       tripsInteractor.checkTripsByUidPipe
-            .createObservableResult(CheckTripsByUidCommand(tripUids))
+            .createObservableResult(CheckTripsByUidCommand(pin.tripUids))
             .compose(bindUntilPauseIoToMainComposer())
-            .subscribe { cacheIsChecked(marker, tripUids, it.result) }
+            .subscribe { cacheIsChecked(marker, pin.tripUids, it.result) }
    }
 
    private fun cacheIsChecked(marker: Marker, tripUids: List<String>, cacheExists: Boolean) {

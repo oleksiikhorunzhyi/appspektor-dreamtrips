@@ -12,7 +12,7 @@ ext {
          { o -> o.maven { url 'https://maven.fabric.io/public' } }
    ]
    pluginDependencies << [
-         androidDefault: '3.0.1',
+         androidDefault: '3.1.0',
          // gradle 2.3.3 uses proguard v5.3.2 (https://sourceforge.net/p/proguard/bugs/638/)
          proguard      : 'net.sf.proguard:proguard-gradle:5.2',
          kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$pluginDependencies.versions.kotlin",

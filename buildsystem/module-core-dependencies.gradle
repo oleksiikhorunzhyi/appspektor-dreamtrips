@@ -8,7 +8,6 @@ ext {
 
    def jodaTimeVersion = '2.9.9'
    def spekVersion = '1.1.2'
-   def dataBindingCompilerVersion = '3.0.1'
 
    coreDependencies = [:]
 
@@ -16,8 +15,8 @@ ext {
          { o -> o.jcenter() },
          { o -> o.google() },
          { o -> o.maven { url 'https://jitpack.io' } },
-         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/worldventures' } },
-         { o -> o.maven { url 'http://artifactory.techery.io:8081/artifactory/libs-snapshot' } },
+         { o -> o.maven { url 'https://artifactory.techery.io/artifactory/worldventures' } },
+         { o -> o.maven { url 'https://artifactory.techery.io/artifactory/libs-snapshot' } },
          { o -> o.maven { url 'https://maven.fabric.io/public' } },
          { o -> o.maven { url 'https://clojars.org/repo/' } }, // icepick
    ]
@@ -58,7 +57,7 @@ ext {
          icepickProcessor         : [a: 'frankiesardo:icepick-processor:3.2.0'],
 
          ucrop                    : [impl: 'com.yalantis:ucrop:2.2.0'],
-         databindingCompiler      : [a: "com.android.databinding:compiler:${dataBindingCompilerVersion}"],
+         databindingCompiler      : [a: "com.android.databinding:compiler:${project.ext.pluginDependencies.androidPluginVersion}"],
    ]
 
    // rx
@@ -114,7 +113,7 @@ ext {
    coreDependencies.util = [
          jodaTimeAndroidDebug  : [debugApi: "net.danlew:android.joda:$jodaTimeVersion"],
          jodaTimeAndroidRelease: [releaseApi: "net.danlew:android.joda:$jodaTimeVersion"],
-         timber                : [api: 'com.jakewharton.timber:timber:4.6.0'],
+         timber                : [api: 'com.jakewharton.timber:timber:4.7.0'],
          collectionsQuery      : [api: 'com.innahema:collections-query:0.2.9'],
          multidex              : [api: 'com.android.support:multidex:1.0.1'],
          jetbrainsAnnotations  : [p: 'org.jetbrains:annotations:13.0'],

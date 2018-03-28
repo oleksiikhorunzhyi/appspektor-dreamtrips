@@ -3,7 +3,8 @@ ext {
    pluginDependencies.versions = [
          java  : '1.8',
          kotlin: '1.2.10',
-         detekt: '1.0.0.RC6-2'
+         detekt: '1.0.0.RC6-2',
+         androidDefault: '3.1.0'
    ]
    pluginDependencies.repos = [
          { o -> o.jcenter() },
@@ -11,8 +12,20 @@ ext {
          { o -> o.maven { url 'https://plugins.gradle.org/m2' } },
          { o -> o.maven { url 'https://maven.fabric.io/public' } }
    ]
+   pluginDependencies.androidPluginVersion = {
+      androidPluginVersion = pluginDependencies.versions.androidDefault
+      def propsFile = rootProject.file('./buildscript.properties')
+      if (propsFile.exists()) {
+         Properties props = new Properties()
+         props.load(new FileInputStream(propsFile))
+         if (props.androidPluginVersion) {
+            androidPluginVersion = props.androidPluginVersion
+         }
+      }
+      logger.info("Android Plugin version: $androidPluginVersion")
+      return androidPluginVersion
+   }()
    pluginDependencies << [
-         androidDefault: '3.1.0',
          // gradle 2.3.3 uses proguard v5.3.2 (https://sourceforge.net/p/proguard/bugs/638/)
          proguard      : 'net.sf.proguard:proguard-gradle:5.2',
          kotlin        : "org.jetbrains.kotlin:kotlin-gradle-plugin:$pluginDependencies.versions.kotlin",
@@ -23,20 +36,7 @@ ext {
          versionChecker: 'com.github.ben-manes:gradle-versions-plugin:0.14.0',
 
          detekt        : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${pluginDependencies.versions.detekt}",
-         ktlint        : "gradle.plugin.org.jmailen.gradle:kotlinter-gradle:1.3.2"
+         ktlint        : "gradle.plugin.org.jmailen.gradle:kotlinter-gradle:1.3.2",
+         android       : "com.android.tools.build:gradle:${pluginDependencies.androidPluginVersion}"
    ]
-
-   pluginDependencies.android = {
-      androidPluginVersion = pluginDependencies.androidDefault
-      def propsFile = rootProject.file('./buildscript.properties')
-      if (propsFile.exists()) {
-         Properties props = new Properties()
-         props.load(new FileInputStream(propsFile))
-         if (props.androidPluginVersion) {
-            androidPluginVersion = props.androidPluginVersion
-         }
-      }
-      logger.info("Android Plugin version: $androidPluginVersion")
-      return "com.android.tools.build:gradle:$androidPluginVersion"
-   }()
 }

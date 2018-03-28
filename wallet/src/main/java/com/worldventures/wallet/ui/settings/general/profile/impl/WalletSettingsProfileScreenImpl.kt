@@ -1,7 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.profile.impl
 
 import android.app.Dialog
-import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +17,7 @@ import com.worldventures.wallet.service.WalletCropImageService
 import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
 import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
+import com.worldventures.wallet.ui.common.bindView
 import com.worldventures.wallet.ui.common.binding.LastPositionSelector
 import com.worldventures.wallet.ui.settings.general.profile.WalletSettingsProfilePresenter
 import com.worldventures.wallet.ui.settings.general.profile.WalletSettingsProfileScreen
@@ -74,7 +74,7 @@ class WalletSettingsProfileScreenImpl : WalletBaseController<WalletSettingsProfi
 
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
-      binding = DataBindingUtil.bind(view)
+      binding = bindView(view)
       binding.setOnAvatarClick { showDialog() }
       binding.profile = originProfileModule.copy()
       binding.onEditTextFocusChange = LastPositionSelector()

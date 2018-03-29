@@ -16,6 +16,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'de.mannodermaus.android-junit5'
 
 def deps = project.ext.moduleDependencies
 def coreDeps = project.ext.coreDependencies
@@ -261,6 +262,9 @@ dependencies {
    devImplementation provideDep(deps.util.leakcanary)
    devpremarshmallowImplementation provideDep(deps.util.leakcanary)
    externalImplementation provideDep(deps.util.leakcanaryNoOp)
+
+   testImplementation junit5.unitTests()
+   testRuntimeOnly    junit5.unitTestsRuntime()
 }
 
 bindModuleTestsToAppFlavor(":wallet", "Smartcardmock")

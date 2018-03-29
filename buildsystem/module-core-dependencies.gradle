@@ -7,7 +7,7 @@ ext {
    mosbyVersion = '2.0.0'
 
    def jodaTimeVersion = '2.9.9'
-   def spekVersion = '1.1.2'
+   def spekVersion = '1.1.5'
 
    coreDependencies = [:]
 
@@ -145,21 +145,19 @@ ext {
    ]
 
    coreDependencies.test = [
-         spekApi           : [testImpl: "org.jetbrains.spek:spek-api:$spekVersion"],
-         spekEngine        : [testImpl: "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"],
+         spekApi              : [testImpl: "org.jetbrains.spek:spek-api:$spekVersion"],
+         spekEngine           : [testImpl: "org.jetbrains.spek:spek-junit-platform-engine:$spekVersion"],
 
-         junit             : [testImpl: 'junit:junit:4.12'],
-         junitRunner       : [testImpl: 'org.junit.platform:junit-platform-runner:1.0.0-M4'],
-         junitRunnerJupiter: [testImpl: 'org.junit.jupiter:junit-jupiter-api:5.0.0-M4'],
+         junitRunner          : [testImpl: 'org.junit.platform:junit-platform-runner:1.1.0'],
 
-         assertj           : [testImpl: 'org.assertj:assertj-core:1.7.1'],
-         mockito           : [testImpl: 'org.mockito:mockito-core:2.7.22'],
+         assertj              : [testImpl: 'org.assertj:assertj-core:1.7.1'],
+         mockito              : [testImpl: 'org.mockito:mockito-core:2.7.22'],
 
-         kotlinReflect     : [testImpl: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.versions.kotlin"],
-         kotlinTest        : [testImpl: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.versions.kotlin"],
-         kotlinMockito     : [testImpl: 'com.nhaarman:mockito-kotlin:1.5.0'],
-         kotlinRx          : [testImpl: 'io.reactivex:rxkotlin:0.55.0'],
+         kotlinReflect        : [testImpl: "org.jetbrains.kotlin:kotlin-reflect:$project.ext.pluginDependencies.versions.kotlin"],
+         kotlinTest           : [testImpl: "org.jetbrains.kotlin:kotlin-test:$project.ext.pluginDependencies.versions.kotlin"],
+         kotlinMockito        : [testImpl: 'com.nhaarman:mockito-kotlin:1.5.0'],
+         kotlinRx             : [testImpl: 'io.reactivex:rxkotlin:0.55.0'],
 
-         jodaTime          : [testImpl: "joda-time:joda-time:$jodaTimeVersion"],
+         jodaTime             : [testImpl: "joda-time:joda-time:$jodaTimeVersion"],
    ]
 }

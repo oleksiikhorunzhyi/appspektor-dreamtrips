@@ -5,22 +5,18 @@ import com.worldventures.core.modules.video.service.command.ResetCachedModelsInP
 import com.worldventures.core.modules.video.service.command.UpdateStatusCachedEntityCommand;
 import com.worldventures.core.service.command.DeleteCachedModelCommand;
 import com.worldventures.core.service.command.DownloadCachedModelCommand;
-import com.worldventures.core.service.command.MigrateFromCachedEntityCommand;
 
 import io.techery.janet.ActionPipe;
 import rx.schedulers.Schedulers;
 
 public class CachedEntityInteractor {
 
-   private final ActionPipe<MigrateFromCachedEntityCommand> migrateFromCachedEntityPipe;
    private final ActionPipe<DownloadCachedModelCommand> downloadCachedModelPipe;
    private final ActionPipe<DeleteCachedModelCommand> deleteCachedModelPipe;
    private final ActionPipe<ResetCachedModelsInProgressCommand> resetCachedModelsInProgressPipe;
    private final ActionPipe<UpdateStatusCachedEntityCommand> updateStatusCachedEntityCommandPipe;
 
    public CachedEntityInteractor(SessionActionPipeCreator sessionActionPipeCreator) {
-      this.migrateFromCachedEntityPipe = sessionActionPipeCreator.createPipe(MigrateFromCachedEntityCommand.class, Schedulers
-            .io());
       this.downloadCachedModelPipe = sessionActionPipeCreator.createPipe(DownloadCachedModelCommand.class, Schedulers
             .io());
       this.deleteCachedModelPipe = sessionActionPipeCreator.createPipe(DeleteCachedModelCommand.class, Schedulers.io());
@@ -41,10 +37,6 @@ public class CachedEntityInteractor {
 
    public ActionPipe<ResetCachedModelsInProgressCommand> getResetCachedModelsInProgressPipe() {
       return resetCachedModelsInProgressPipe;
-   }
-
-   public ActionPipe<MigrateFromCachedEntityCommand> getMigrateFromCachedEntityPipe() {
-      return migrateFromCachedEntityPipe;
    }
 
    public ActionPipe<UpdateStatusCachedEntityCommand> updateStatusCachedEntityCommandPipe() {

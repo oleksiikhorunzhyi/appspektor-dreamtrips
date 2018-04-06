@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
-import com.worldventures.core.model.CachedEntity;
 import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.model.VideoLanguage;
 import com.worldventures.core.modules.video.model.VideoLocale;
@@ -19,7 +18,6 @@ import java.util.List;
 
 public class MediaModelStorageImpl extends BaseSnappyRepository implements MediaModelStorage {
 
-   final static String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
    final static String MEDIA_UPLOAD_MODEL = "MEDIA_UPLOAD_MODEL";
    final static String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
    final static String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
@@ -46,28 +44,6 @@ public class MediaModelStorageImpl extends BaseSnappyRepository implements Media
          }
          return entities;
       }).or(Collections.emptyList());
-   }
-
-   @Override
-   public List<CachedEntity> getDownloadMediaEntities() {
-      return actWithResult(db -> {
-         List<CachedEntity> entities = new ArrayList<>();
-         String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
-         for (String key : keys) {
-            entities.add(db.get(key, CachedEntity.class));
-         }
-         return entities;
-      }).or(Collections.emptyList());
-   }
-
-   @Override
-   public void deleteAllMediaEntities() {
-      act(db -> {
-         String[] keys = db.findKeys(MEDIA_UPLOAD_ENTITY);
-         for (String key : keys) {
-            db.del(key);
-         }
-      });
    }
 
    @Override

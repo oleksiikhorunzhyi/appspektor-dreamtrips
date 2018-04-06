@@ -15,7 +15,6 @@ import com.worldventures.core.modules.video.service.storage.MediaModelStorageImp
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.repository.DefaultSnappyOpenHelper;
 import com.worldventures.core.service.FilePathProvider;
-import com.worldventures.core.service.command.MigrateFromCachedEntityCommand;
 
 import javax.inject.Singleton;
 
@@ -26,7 +25,6 @@ import dagger.Provides;
       injects = {
             GetMemberVideosCommand.class,
             GetVideoLocalesCommand.class,
-            MigrateFromCachedEntityCommand.class,
             ResetCachedModelsInProgressCommand.class,
             UpdateStatusCachedEntityCommand.class,
             UpdateStatusCachedEntityCommand.class,

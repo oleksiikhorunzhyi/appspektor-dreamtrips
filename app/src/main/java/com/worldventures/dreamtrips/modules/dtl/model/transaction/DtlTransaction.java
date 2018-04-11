@@ -8,6 +8,8 @@ import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetUrlTokenResponse;
 
 import org.immutables.value.Value;
 
@@ -62,6 +64,12 @@ public abstract class DtlTransaction {
 
    @Nullable
    public abstract UploadTask getUploadTask();
+
+   @Nullable
+   public abstract GetUrlTokenResponse getUrlTokenResponse();
+
+   @Nullable
+   public abstract GetTransactionResponse getTransactionResponse();
 
    @Value.Derived
    public boolean isOutOfDate(long currentTimeInMillis) {

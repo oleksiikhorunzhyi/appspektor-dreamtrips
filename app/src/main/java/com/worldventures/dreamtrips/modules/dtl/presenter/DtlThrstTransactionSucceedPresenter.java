@@ -2,36 +2,22 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.core.model.ShareType;
 import com.worldventures.core.model.User;
-import com.worldventures.core.model.session.SessionHolder;
-import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionRatingEvent;
-import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentCompletedBundle;
-import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
-import com.worldventures.dreamtrips.modules.dtl.view.util.DtlApiErrorViewAdapter;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
 import javax.inject.Inject;
 
-import icepick.State;
+public class DtlThrstTransactionSucceedPresenter extends Presenter<DtlThrstTransactionSucceedPresenter.View> {
 
-public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTransactionSucceedPresenter.View> {
-
-   @Inject DtlTransactionInteractor transactionInteractor;
-   @Inject LocationDelegate locationDelegate;
-   @Inject SessionHolder appSessionHolder;
-   @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
-
-   @State int stars;
+   @Inject DtlTransactionInteractor dtlTransactionInteractor;
 
    private final Merchant merchant;
-   private User user;
    private String earnedPoints;
    private String totalPoints;
 
@@ -41,27 +27,25 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
       this.totalPoints = totalPoints;
    }
 
-   public void share() {
-      view.showShareDialog(earnedPoints, merchant);
-   }
-
-   public void init() {
+   @Override
+   public void takeView(View view) {
+      super.takeView(view);
       view.setTotalEarnedPoints(earnedPoints);
       view.setTotalPoints(totalPoints);
    }
 
+   public void share() {
+      view.showShareDialog(earnedPoints, merchant);
+   }
+
    public void continueAction() {
-      this.user = appSessionHolder.get().get().user();
+      User user = appSessionHolder.get().get().user();
       if (!ReviewStorage.exists(context, String.valueOf(user.getId()), merchant.id())) {
          view.sendToReview(merchant);
       }
+      dtlTransactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
       analyticsInteractor.analyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes(), stars)));
-   }
-
-   @Override
-   public void takeView(View view) {
-      super.takeView(view);
+            .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes())));
    }
 
    public void trackSharing(@ShareType String type) {
@@ -70,7 +54,13 @@ public class DtlThrstTransactionSucceedPresenter extends JobPresenter<DtlThrstTr
                   ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
    }
 
-   public interface View extends DtlApiErrorViewAdapter.ApiErrorView, RxView {
+   @Override
+   public void dropView() {
+      super.dropView();
+      dtlTransactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
+   }
+
+   public interface View extends Presenter.View  {
       void showShareDialog(String amount, Merchant merchant);
 
       void sendToReview(Merchant merchant);

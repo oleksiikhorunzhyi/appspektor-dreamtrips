@@ -35,17 +35,11 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    @Override
    public void onResume() {
       super.onResume();
-      getPresenter().init();
       if (isTabletLandscape()) {
          done.setText(R.string.done_pilot_button);
       } else {
          done.setText(R.string.continue_option);
       }
-   }
-
-   @Override
-   public void onApiError() {
-
    }
 
    @Override

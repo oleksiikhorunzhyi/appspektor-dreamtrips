@@ -19,9 +19,7 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstThankYouScreenPresenter;
 import com.worldventures.dreamtrips.modules.dtl.util.DtlDateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl.view.util.TransactionStatusInjector;
@@ -34,13 +32,12 @@ import java.util.concurrent.TimeUnit;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @Layout(R.layout.include_detail_transaction)
 public class DtlThankYouScreenFragment
-      extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, ThrstPaymentBundle>
+      extends RxBaseFragmentWithArgs<DtlThrstThankYouScreenPresenter, MerchantBundle>
       implements DtlThrstThankYouScreenPresenter.View {
    @InjectView(R.id.payment_done_button) Button mButtonDone;
    @InjectView(R.id.tv_total) TextView mMoneyCharged;
@@ -56,14 +53,11 @@ public class DtlThankYouScreenFragment
    private MaterialDialog progressDialog;
 
    private TransactionStatusInjector transactionStatusInjector;
-   private Merchant merchant;
 
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      ThrstPaymentBundle thrstPaymentBundle = getArgs();
-      merchant = thrstPaymentBundle.getMerchant();
-      ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(merchant.displayName());
+      ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(getArgs().getMerchant().displayName());
       transactionStatusInjector = new TransactionStatusInjector(getActivity(), rootView);
    }
 
@@ -78,7 +72,7 @@ public class DtlThankYouScreenFragment
 
    @Override
    protected DtlThrstThankYouScreenPresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlThrstThankYouScreenPresenter(getArgs());
+      return new DtlThrstThankYouScreenPresenter(getArgs().getMerchant());
    }
 
    @OnClick(R.id.tv_send)
@@ -102,10 +96,7 @@ public class DtlThankYouScreenFragment
    }
 
    @Override
-   public void goBack(boolean isPaid, String earnedPoints, String totalPoints) {
-      if (isPaid) {
-         EventBus.getDefault().postSticky(new DtlThrstTransactionSucceedEvent(earnedPoints, totalPoints));
-      }
+   public void goBack() {
       getActivity().onBackPressed();
    }
 

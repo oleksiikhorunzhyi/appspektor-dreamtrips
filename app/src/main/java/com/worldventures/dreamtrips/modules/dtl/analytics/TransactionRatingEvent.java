@@ -11,10 +11,7 @@ public class TransactionRatingEvent extends MerchantAnalyticsAction {
 
    @Attribute("rateexperience") final String attribute = "1";
 
-   @Attribute("ratedexperience") final String rating;
-
-   public TransactionRatingEvent(MerchantAttributes merchantAttributes, int rating) {
+   public TransactionRatingEvent(MerchantAttributes merchantAttributes) {
       super(merchantAttributes);
-      this.rating = String.valueOf(rating);
    }
 }

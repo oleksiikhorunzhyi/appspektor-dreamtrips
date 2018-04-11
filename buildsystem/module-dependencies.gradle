@@ -22,11 +22,6 @@ ext {
          wallet  : [impl: project(":wallet")],
    ]
 
-   // domain
-   moduleDependencies.domain = [
-         jobExecutor: [impl: 'com.github.techery:job-executor:0.1.1'],
-         eventbus   : [impl: 'de.greenrobot:eventbus:2.4.0'],
-   ]
    // data
    def dbflowVersion = '2.2.1'
    moduleDependencies.data = [

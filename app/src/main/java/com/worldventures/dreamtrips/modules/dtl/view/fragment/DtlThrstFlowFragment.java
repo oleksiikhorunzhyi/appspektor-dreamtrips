@@ -11,9 +11,8 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstFlowPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.webview.HttpErrorHandlerWebView;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.pilot.DtlThankYouScreenFragment;
@@ -22,19 +21,17 @@ import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_dtl_thrst_webview)
-public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPresenter, ThrstFlowBundle> implements DtlThrstFlowPresenter.View {
+public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPresenter, MerchantBundle> implements DtlThrstFlowPresenter.View {
 
    @InjectView(R.id.web_view) HttpErrorHandlerWebView webView;
-
-   private String merchantName;
 
    @Override
    public void onActivityCreated(Bundle savedInstanceState) {
       super.onActivityCreated(savedInstanceState);
-      ThrstFlowBundle thrstFlowBundle = getArgs();
-      String receiptUrl = thrstFlowBundle.getReceiptUrl();
-      String token = thrstFlowBundle.getToken();
-      merchantName = thrstFlowBundle.getMerchant().displayName();
+   }
+
+   @Override
+   public void setupThrstPage(String merchantName, String token, String receiptUrl) {
       ((SocialComponentActivity) getActivity()).getSupportActionBar().setTitle(merchantName);
       final String cookieString = "\"auth=" + token + "; Domain=.thrst.com; Path=/;\"";
 
@@ -63,29 +60,22 @@ public class DtlThrstFlowFragment extends RxBaseFragmentWithArgs<DtlThrstFlowPre
 
    @Override
    protected DtlThrstFlowPresenter createPresenter(Bundle savedInstanceState) {
-      return new DtlThrstFlowPresenter(getArgs());
+      return new DtlThrstFlowPresenter(getArgs().getMerchant());
    }
 
    @Override
-   public void openThankYouScreen(GetTransactionResponse response) {
-      goToDtlPaymentPath(true, response);
+   public void openThankYouScreen(Merchant merchant) {
+      goToDtlPaymentPath(merchant);
    }
 
-   @Override
-   public void openPaymentFailedScreen(GetTransactionResponse response) {
-      goToDtlPaymentPath(false, response);
-   }
-
-   private void goToDtlPaymentPath(boolean isPaid, GetTransactionResponse response) {
+   private void goToDtlPaymentPath(Merchant merchant) {
       router.moveTo(
             DtlThankYouScreenFragment.class,
             NavigationConfigBuilder.forFragment()
                   .containerId(R.id.container_main)
                   .backStackEnabled(true)
                   .clearBackStack(true)
-                  .data(new ThrstPaymentBundle(response.transactionId(), getArgs().getMerchant(), isPaid, response.billTotal(),
-                        response.pointsAmount(), response.totalPoints(), response.billImagePath(), response.subTotal(),
-                        response.tax(), response.tip()))
+                  .data(new MerchantBundle(merchant))
                   .build()
       );
    }

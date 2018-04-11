@@ -31,8 +31,6 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
-import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
 import com.worldventures.dreamtrips.modules.dtl.helper.howtopayvideo.HowToPayHintDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -40,6 +38,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
@@ -63,7 +62,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
 import flow.Flow;
 import flow.History;
 import flow.path.Path;
@@ -192,16 +190,12 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    }
 
    private void checkSucceedEvent(DtlTransaction transaction) {
-      DtlTransactionSucceedEvent event = EventBus.getDefault().getStickyEvent(DtlTransactionSucceedEvent.class);
-      if (event != null) {
-         EventBus.getDefault().removeStickyEvent(event);
+      GetTransactionResponse getTransactionResponse = transaction.getTransactionResponse();
+      if (transaction.getTransactionResponse() != null && transaction.getTransactionResponse().transactionStatus()
+            .contains(GetTransactionResponse.TRANSACTION_SUCCESSFUL)) {
+         getView().showThrstSucceed(merchant, getTransactionResponse.pointsAmount(), getTransactionResponse.totalPoints());
+      } else if (transaction.getDtlTransactionResult() != null) {
          getView().showSucceed(merchant, transaction);
-      }
-      DtlThrstTransactionSucceedEvent dtlThrstTransactionSucceedEvent = EventBus.getDefault()
-            .getStickyEvent(DtlThrstTransactionSucceedEvent.class);
-      if (dtlThrstTransactionSucceedEvent != null) {
-         EventBus.getDefault().removeStickyEvent(dtlThrstTransactionSucceedEvent);
-         getView().showThrstSucceed(merchant, dtlThrstTransactionSucceedEvent.earnedPoints, dtlThrstTransactionSucceedEvent.totalPoints);
       }
    }
 

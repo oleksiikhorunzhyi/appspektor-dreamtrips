@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.api.dtl.merchants.EstimatePointsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -33,7 +33,7 @@ import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
-public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
+public class DtlScanReceiptPresenter extends Presenter<DtlScanReceiptPresenter.View> {
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject PickImageDelegate pickImageDelegate;
@@ -62,7 +62,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(transaction -> {
                if (transaction.getUploadTask() != null) {
                   view.hideScanButton();
@@ -90,7 +90,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(this::checkVerification, apiErrorViewAdapter::handleError);
    }
 
@@ -106,7 +106,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       transactionInteractor.estimatePointsActionPipe()
             .observe()
             .takeUntil(state -> state.status == ActionState.Status.SUCCESS)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>()
                   .onStart(action -> view.showProgress())
                   .onSuccess(action -> attachDtPoints(action.estimatedPoints().points())));
@@ -125,7 +125,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                         .billTotal(transaction.getBillTotal())
                         .currencyCode(merchant.asMerchantAttributes().defaultCurrency().code())
                         .build())))
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(action -> {}, throwable -> apiErrorViewAdapter.showError(throwable));
    }
 
@@ -133,7 +133,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
       transactionInteractor.transactionActionPipe()
             .createObservable(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withPoints(points)))
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<DtlTransactionAction>().onFail(apiErrorViewAdapter::handleError)
                   .onSuccess(
                         action -> view.openVerify(action.getResult())
@@ -183,7 +183,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
             .filter(state -> state.status == ActionState.Status.PROGRESS ||
                state.status == ActionState.Status.FAIL)
             .take(1)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<UploadReceiptCommand>()
                .onProgress((uploadReceiptCommand, progress) -> checkVerification(uploadReceiptCommand.getTransaction()))
                .onFail(this::handleError));

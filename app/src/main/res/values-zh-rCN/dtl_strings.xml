@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">对不起，我们无法发送电子邮件，请稍后再试。</string>
+   <string name="dtl_send_email_success">邮件已成功发送。</string>
+   <string name="dtl_send_email_text">发送到我的电子邮件</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">小计：%1$s</string>
    <string name="dtl_locations_title">选择位置</string>
@@ -159,6 +162,8 @@
    <string name="dtl_thrst_text_button">应用内付款</string>
    <string name="dtl_all_locations">所有地点</string>
    <string name="dtl_earned_points">您已赚得%1$d点</string>
+   <string name="dtl_transaction_adjusted_points">您的账户我们已经做了%1$d点调整。</string>
+   <string name="dtl_transaction_refunded_caption">您的付款已经退还。</string>
    <string name="dtl_earned_points_on_item">+%1$d点</string>
 
    <!-- Pilot -->
@@ -190,4 +195,12 @@
    <string name="transaction_sub_total_amount_no_semicolon">小计金额</string>
    <string name="dtl_estimator_explanation_to_earn_points">点数计算是根据在商家的最低消费金额和一周的哪一天。要赢点数最小金额应为%1$s</string>
    <string name="dtl_alert_title_error">错误</string>
+
+   <string name="receipt_upload_error_caption">上传收据错误。重试？</string>
+   <string name="thrst_opening_error_caption">出了些问题。请稍后重试</string>
+
+   <string name="pay_in_app_hint_dialog_text">您想要观看关于如何在手机应用中付款这一新程序的视频吗？</string>
+   <string name="pay_in_app_hint_positive">现在观看</string>
+   <string name="pay_in_app_hint_neutral">稍后提醒我</string>
+   <string name="pay_in_app_hint_negative">不再显示</string>
 </resources>

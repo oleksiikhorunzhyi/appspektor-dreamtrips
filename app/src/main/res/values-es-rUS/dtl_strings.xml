@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">Lo sentimos, no pudimos enviar el correo electrónico, inténtalo más tarde.</string>
+   <string name="dtl_send_email_success">El correo electrónico ha sido enviado correctamente.</string>
+   <string name="dtl_send_email_text">Enviar a mi correo</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">Subtotal: %1$s</string>
    <string name="dtl_locations_title">Elegir ubicación</string>
@@ -159,6 +162,8 @@
    <string name="dtl_thrst_text_button">Pagar en la aplicación</string>
    <string name="dtl_all_locations">todas las ubicaciones</string>
    <string name="dtl_earned_points">Has ganado %1$d puntos</string>
+   <string name="dtl_transaction_adjusted_points">Su cuenta ha sido ajustado por %1$d puntos.</string>
+   <string name="dtl_transaction_refunded_caption">Tu pago ha sido reembolsado.</string>
    <string name="dtl_earned_points_on_item">+%1$dpt</string>
 
    <!-- Pilot -->
@@ -190,4 +195,12 @@
    <string name="transaction_sub_total_amount_no_semicolon">Cantidad subtotal:</string>
    <string name="dtl_estimator_explanation_to_earn_points">Los puntos se calculan en función de una cantidad mínima gastada en un establecimiento y del día de la semana. La cantidad mínima para ganar puntos debe ser de %1$s</string>
    <string name="dtl_alert_title_error">Error</string>
+
+   <string name="receipt_upload_error_caption">Se produjo un error al cargar el recibo. ¿Volver a intentarlo?</string>
+   <string name="thrst_opening_error_caption">Algo salió mal. Vuelve a intentarlo más tarde.</string>
+
+   <string name="pay_in_app_hint_dialog_text">¿Te gustaría ver un video de cómo hacer en el nuevo proceso de Pagar en la aplicación?</string>
+   <string name="pay_in_app_hint_positive">Míralo aquí</string>
+   <string name="pay_in_app_hint_neutral">Recordarme más tarde</string>
+   <string name="pay_in_app_hint_negative">No mostrar de nuevo</string>
 </resources>

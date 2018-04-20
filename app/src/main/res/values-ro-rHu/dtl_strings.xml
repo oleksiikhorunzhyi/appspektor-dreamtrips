@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">Ne pare rău, nu am putut trimite e-mailul, încercați mai târziu.</string>
+   <string name="dtl_send_email_success">E-mailul a fost trimis cu succes.</string>
+   <string name="dtl_send_email_text">Trimite către e-mailul meu</string>
    <string name="dtl_local">Local</string>
+   <string name="dtl_subtotal">Subtotal: %1$s</string>
    <string name="dtl_locations_title">Selectați locația</string>
    <string name="dtl_locations_try_search">Nu am putut localiza un oraș în apropierea dvs.\nÎncercați căutarea orașului</string>
    <string name="dtl_near_me_caption">În apropierea mea</string>
@@ -33,6 +37,7 @@
    <string name="dtl_barcode_title">Scanați codul QR</string>
    <string name="dtl_barcode_merchant">Scanați codul comerciantului</string>
    <string name="dtl_scan_receipt_screen_title">Introducere subtotal</string>
+   <string name="dtl_thrst_scan_receipt_screen_title">Scanați chitanța</string>
    <string name="dtl_scan_receipt_input_caption">Introducere subtotal (Sumă exclusiv TVA și bacșiș)</string>
    <string name="dtl_congrats">Felicitări!</string>
    <string name="dtl_you_earned">Ați câștigat</string>
@@ -43,6 +48,7 @@
    <string name="dtl_total_amount">Suma totală:</string>
    <string name="dtl_verify_earn_hint">Ați putea câștiga </string>
    <string name="dtl_check_in">Înregistrați-vă și câștigați</string>
+   <string name="dtl_pay">Plătiți și câștigați</string>
    <string name="dtl_earn">Câștigați</string>
    <string name="dtl_dt_points">%1$d puncte DreamTrips Points</string>
    <string name="suggest_merchant">Sugerați comerciant</string>
@@ -64,6 +70,9 @@
    <string name="everyday">Zilnic</string>
    <string name="perks_terms">Termeni și condiții</string>
    <string name="perks_formatted">%1$d Beneficii</string>
+   <string name="dtl_show_offers_only">Doar oferte</string>
+   <string name="dtl_show_transaction">Tranzacţii</string>
+   <string name="dtl_show_transaction_toolbar">Istoria plăților</string>
    <string name="dtl_earn_points">Câștigați puncte DreamTrips</string>
    <string name="dtl_details_share_title_without_points">Am descoperit %1$s în aplicația DreamTrips</string>
    <string name="details_collapsed_text_caption">Arătați mai multe</string>
@@ -146,16 +155,52 @@
 
    <string name="text_add_photos_and_videos">Adăugați fotografii</string>
 
+   <string name="dtl_no_transaction_message">Nu aveți nicio tranzacție până acum.</string>
+   <!-- DTL Transactions Screen strings -->
+   <string name="dtl_transaction_screen_sub_total_text">Suma subtotală: $</string>
    <string name="dtl_transaction_screen_earned_points_text">Ați câștigat</string>
    <string name="dtl_thrst_text_button">Plătiți în aplicație</string>
    <string name="dtl_all_locations">toate locațiile</string>
+   <string name="dtl_earned_points">Ați câștigat %1$d puncte</string>
+   <string name="dtl_transaction_adjusted_points">Contul dvs. a fost ajustat cu %1$d puncte.</string>
+   <string name="dtl_transaction_refunded_caption">Plata dvs. a fost rambursată.</string>
+   <string name="dtl_earned_points_on_item">+%1$dpt</string>
+
+   <!-- Pilot -->
    <string name="done_pilot_button">TERMINAT</string>
    <string name="thank_you_thrst_pilot">Mulțumim!</string>
+   <string name="first_failure_text_thrst_pilot">Vă mulțumim că ați încercat,</string>
+   <string name="second_failure_text_thrst_pilot">dar plata dvs. a fost refuzată.</string>
+   <string name="payment_success_status_pilot">Am acceptat plata.</string>
+   <string name="payment_error_status_pilot">Nu am reușit să acceptăm plata dvs. în acest moment.</string>
    <string name="btn_payment_done_pilot">TERMINAT</string>
+   <string name="payment_resume_success_pilot">Arătați acest ecran chelnerului dvs.</string>
+   <string name="payment_resume_failure_pilot">Vă rugăm plătiți chelnerul.</string>
    <string name="total_amount_charged_pilot">Suma totală plătită</string>
+   <string name="payment_amount_due_pilot">Suma totală refuzată</string>
+   <string name="payment_money_charged">$ %1$s </string>
+
+   <string name="dtl_thrst_flow_title">Thrst</string>
+   <string name="order_from_menu">Comandă din meniu</string>
+   <string name="open_order_from_menu_msg">Aceasta este o caracteristică pilot în afara DTL și nu veți câștiga puncte. Veți fi direcționat către un site extern care se deschide într-un browser separat în afara aplicației</string>
    <string name="dtl_merchant_earn_points">Câștigați puncte</string>
 
+   <string name="could_not_load_merchant_for_review">Nu s-au putut încărca detaliile comerciantului, încercați din nou mai târziu</string>
    <string name="transaction_total_amount_paid">Suma totală plătită</string>
+   <string name="transaction_tip_amount">Suma bacșiș:</string>
+   <string name="transaction_tax_amount">Taxă fiscală:</string>
+   <string name="transaction_sub_total_amount">Suma subtotală:</string>
+   <string name="transaction_view_your_receipt">Vizualizați chitanța</string>
+   <string name="transaction_review_merchant">Clasificați performanța comerciantului</string>
+   <string name="transaction_sub_total_amount_no_semicolon">Suma subtotală:</string>
    <string name="dtl_estimator_explanation_to_earn_points">Punctele se calculează în funcție de suma minimă cheltuită la comerciant și de ziua săptămânii. Pentru a câștiga puncte, suma minimă ar trebui să fie de %1$s</string>
    <string name="dtl_alert_title_error">Eroare</string>
+
+   <string name="receipt_upload_error_caption">Eroare la încărcarea chitanței. Reîncercați?</string>
+   <string name="thrst_opening_error_caption">Ceva n-a mers bine. Încearcă din nou.</string>
+
+   <string name="pay_in_app_hint_dialog_text">Doriți să vizionați un videoclip despre noul proces de plată în aplicație?</string>
+   <string name="pay_in_app_hint_positive">Privește acum</string>
+   <string name="pay_in_app_hint_neutral">Reamintiți-mi mai târziu</string>
+   <string name="pay_in_app_hint_negative">Nu mai afișa din nou</string>
 </resources>

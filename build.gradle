@@ -8,6 +8,7 @@ allprojects { // <-- it's needed for plugin detekt. there is specific condition 
 
       dependencies {
          classpath project.ext.pluginDependencies.android
+         classpath project.ext.pluginDependencies.junit5
          classpath(project.ext.pluginDependencies.proguard) {
             force = true
          }

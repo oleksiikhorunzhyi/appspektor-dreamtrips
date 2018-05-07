@@ -7,16 +7,12 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
-import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
-import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerActivityModule;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(
       includes = {
-            FacebookModule.class,
-            OldMediaPickerActivityModule.class,
             UiUtilModule.class,
       },
       injects = {

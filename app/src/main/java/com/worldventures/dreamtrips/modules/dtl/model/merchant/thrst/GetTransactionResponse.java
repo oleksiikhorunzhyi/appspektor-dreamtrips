@@ -12,6 +12,7 @@ import java.io.Serializable;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 @Value.Immutable
 public interface GetTransactionResponse extends Serializable {
+   String TRANSACTION_SUCCESSFUL = "THRST_TRANSACTION_SUCCESSFUL";
 
    @Nullable String transactionId();
    @Nullable String merchantId();

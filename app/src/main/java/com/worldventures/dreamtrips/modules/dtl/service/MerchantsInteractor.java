@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.ThinMerchant;
-import com.worldventures.dreamtrips.modules.dtl.service.action.AddReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.FlaggingReviewAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.GetTransactionsCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.LocationCommand;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.SendEmailAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TakeScreenshotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TransactionPilotAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.UrlTokenAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.http.PostReviewHttpCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -30,7 +30,7 @@ public class MerchantsInteractor {
 
    private final ActionPipe<MerchantsAction> thinMerchantsPipe;
    private final ActionPipe<ReviewMerchantsAction> reviewsMerchantsPipe;
-   private final ActionPipe<AddReviewAction> addReviewsPipe;
+   private final ActionPipe<PostReviewHttpCommand> postReviewPipe;
    private final ActionPipe<FlaggingReviewAction> addFlaggingPipe;
    private final ActionPipe<UrlTokenAction> addUrlTokenPipe;
    private final ActionPipe<TransactionPilotAction> addTransactionPipe;
@@ -46,7 +46,7 @@ public class MerchantsInteractor {
 
       this.thinMerchantsPipe = sessionActionPipeCreator.createPipe(MerchantsAction.class, Schedulers.io());
       this.reviewsMerchantsPipe = sessionActionPipeCreator.createPipe(ReviewMerchantsAction.class, Schedulers.io());
-      this.addReviewsPipe = sessionActionPipeCreator.createPipe(AddReviewAction.class, Schedulers.io());
+      this.postReviewPipe = sessionActionPipeCreator.createPipe(PostReviewHttpCommand.class, Schedulers.io());
       this.addFlaggingPipe = sessionActionPipeCreator.createPipe(FlaggingReviewAction.class, Schedulers.io());
       this.addUrlTokenPipe = sessionActionPipeCreator.createPipe(UrlTokenAction.class, Schedulers.io());
       this.addTransactionPipe = sessionActionPipeCreator.createPipe(TransactionPilotAction.class, Schedulers.io());
@@ -99,8 +99,8 @@ public class MerchantsInteractor {
       return reviewsMerchantsPipe;
    }
 
-   public ActionPipe<AddReviewAction> addReviewsHttpPipe() {
-      return addReviewsPipe;
+   public ActionPipe<PostReviewHttpCommand> reviewHttpPipe() {
+      return postReviewPipe;
    }
 
    public ActionPipe<FlaggingReviewAction> flaggingReviewHttpPipe() {

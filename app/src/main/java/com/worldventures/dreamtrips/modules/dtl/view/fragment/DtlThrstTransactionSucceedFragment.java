@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentCompletedBund
 import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstTransactionSucceedPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPath;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
 
@@ -35,7 +35,6 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    @Override
    public void onResume() {
       super.onResume();
-      getPresenter().init();
       if (isTabletLandscape()) {
          done.setText(R.string.done_pilot_button);
       } else {
@@ -44,13 +43,8 @@ public class DtlThrstTransactionSucceedFragment extends RxBaseFragmentWithArgs<D
    }
 
    @Override
-   public void onApiError() {
-
-   }
-
-   @Override
    public void sendToReview(Merchant merchant) {
-      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, false, true));
+      Flow.get(getContext()).set(new DtlReviewPath(merchant, true));
    }
 
    @Override

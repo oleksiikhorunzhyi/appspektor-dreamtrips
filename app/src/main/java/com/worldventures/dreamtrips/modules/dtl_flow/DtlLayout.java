@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Bundle;
@@ -152,6 +153,7 @@ public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?
       super.onDetachedFromWindow();
    }
 
+   @SuppressLint("ResourceType")
    protected boolean inflateToolbarMenu(Toolbar toolbar) {
       if (getPresenter().getToolbarMenuRes() <= 0) {
          return false;

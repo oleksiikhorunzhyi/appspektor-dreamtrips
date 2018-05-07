@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.worldventures.core.service.DeviceInfoProvider;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.service.DialogNavigatorInteractor;
 import com.worldventures.dreamtrips.core.navigation.service.command.CloseDialogCommand;
@@ -18,7 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.MerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPath;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.social.ui.share.bundle.ShareBundle;
 import com.worldventures.dreamtrips.social.ui.share.view.ShareFragment;
@@ -52,7 +51,7 @@ public class DtlTransactionSucceedFragment extends RxBaseFragmentWithArgs<DtlTra
    @Override
    public void sendToReview(Merchant merchant) {
       if (!deviceInfoProvider.isTablet()) {
-         Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, false, true));
+         Flow.get(getContext()).set(new DtlReviewPath(merchant, true));
       }
    }
 

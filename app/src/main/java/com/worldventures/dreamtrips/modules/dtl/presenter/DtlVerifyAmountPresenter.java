@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Currency;
@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.util.ProxyApiErrorView;
 
 import javax.inject.Inject;
 
-public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresenter.View> {
+public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter.View> {
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
@@ -35,7 +35,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(transaction -> {
                view.attachTransaction(transaction, merchant.asMerchantAttributes().defaultCurrency());
                view.attachDtPoints(Double.valueOf(transaction.getPoints()).intValue());
@@ -53,7 +53,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
                   .createObservableResult(DtlTransactionAction.save(merchant, ImmutableDtlTransaction.copyOf(transaction)
                         .withUploadTask(null)))
                   .map(DtlTransactionAction::getResult))
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(view::openScanReceipt, apiErrorViewAdapter::handleError);
    }
 
@@ -62,7 +62,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
             .createObservableResult(DtlTransactionAction.update(merchant, transaction -> ImmutableDtlTransaction.copyOf(transaction)
                   .withIsVerified(true)))
             .map(DtlTransactionAction::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(view::openScanQr, apiErrorViewAdapter::handleError);
    }
 

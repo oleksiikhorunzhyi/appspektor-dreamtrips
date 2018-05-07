@@ -1,58 +1,60 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import android.graphics.Bitmap;
-
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstPaymentBundle;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.thrst.GetTransactionResponse;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.SendEmailAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.TakeScreenshotAction;
 
-import java.io.File;
-
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-import github.nisrulz.screenshott.ScreenShott;
 import io.techery.janet.helper.ActionStateSubscriber;
-import timber.log.Timber;
 
-public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankYouScreenPresenter.View> {
+public class DtlThrstThankYouScreenPresenter extends Presenter<DtlThrstThankYouScreenPresenter.View> {
 
    @Inject MerchantsInteractor merchantInteractor;
+   @Inject DtlTransactionInteractor dtlTransactionInteractor;
 
-   private final ThrstPaymentBundle thrstPaymentBundle;
+   private final Merchant merchant;
 
-   public DtlThrstThankYouScreenPresenter(ThrstPaymentBundle thrstPaymentBundle) {
-      this.thrstPaymentBundle = thrstPaymentBundle;
+   public DtlThrstThankYouScreenPresenter(Merchant merchant) {
+      this.merchant = merchant;
    }
 
    @Override
    public void takeView(View view) {
       super.takeView(view);
-      init();
+      dtlTransactionInteractor.transactionActionPipe()
+            .createObservableResult(DtlTransactionAction.get(merchant))
+            .compose(bindViewToMainComposer())
+            .subscribe(dtlTransactionAction -> init(dtlTransactionAction.getResult()));
    }
 
-   private void init() {
-      if (thrstPaymentBundle.isPaid()) {
-         view.showTransactionSuccessfulMessage();
-      } else {
-         view.showTransactionFailedMessage();
+   private void init(DtlTransaction dtlTransaction) {
+      GetTransactionResponse response = dtlTransaction.getTransactionResponse();
+      if (response != null) {
+         boolean isPaid = response.transactionStatus().contains(GetTransactionResponse.TRANSACTION_SUCCESSFUL);
+         if (isPaid) {
+            view.showTransactionSuccessfulMessage();
+         } else {
+            view.showTransactionFailedMessage();
+         }
+         view.hideReviewMerchant();
+         view.setChargeMoney(Double.parseDouble(response.billTotal()), response.subTotal(), response.tax(), response.tip());
+         view.setEarnedPoints(Integer.valueOf(response.pointsAmount()));
+         view.setReceiptURL(response.billImagePath());
+         view.showDoneButton();
+         view.hideBackIcon();
       }
-      view.hideReviewMerchant();
-      view.setChargeMoney(Double.parseDouble(thrstPaymentBundle.getTotalAmount()),
-            thrstPaymentBundle.getSubTotalAmount(), thrstPaymentBundle.getTaxAmount(),
-            thrstPaymentBundle.getTipAmount());
-      view.setEarnedPoints(Integer.valueOf(thrstPaymentBundle.getEarnedPoints()));
-      view.setReceiptURL(thrstPaymentBundle.getReceiptURL());
-      view.showDoneButton();
-      view.hideBackIcon();
    }
 
    public void onDoneClick() {
-      view.goBack(thrstPaymentBundle.isPaid(), thrstPaymentBundle.getEarnedPoints(),
-            thrstPaymentBundle.getTotalPoints());
+      view.goBack();
    }
 
    public void onSendEmailClick(android.view.View screenshotView) {
@@ -67,17 +69,19 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
    }
 
    private void sendEmail(String path) {
-      merchantInteractor.sendEmailPipe().createObservable(
-            new SendEmailAction(
-                  thrstPaymentBundle.getMerchant().id(),
-                  thrstPaymentBundle.getTransactionId(),
-                  path))
-            .compose(bindUntilPauseIoToMainComposer())
-            .subscribe(new ActionStateSubscriber<SendEmailAction>()
-                  .onStart(sendEmailAction -> view.showLoadingDialog())
-                  .onSuccess(sendEmailAction -> view.showSuccessEmailMessage())
-                  .onFail((sendEmailAction, throwable) -> view.showErrorEmailMessage())
-                  .onFinish(sendEmailAction -> view.hideLoadingDialog()));
+      dtlTransactionInteractor.transactionActionPipe()
+            .createObservableResult(DtlTransactionAction.get(merchant))
+            .compose(bindViewToMainComposer())
+            .subscribe(dtlTransactionAction ->
+                  merchantInteractor.sendEmailPipe()
+                        .createObservable(new SendEmailAction(merchant.id(),
+                              dtlTransactionAction.getResult().getTransactionResponse().transactionId(), path))
+                        .compose(bindUntilPauseIoToMainComposer())
+                        .subscribe(new ActionStateSubscriber<SendEmailAction>()
+                              .onStart(sendEmailAction -> view.showLoadingDialog())
+                              .onSuccess(sendEmailAction -> view.showSuccessEmailMessage())
+                              .onFail((sendEmailAction, throwable) -> view.showErrorEmailMessage())
+                              .onFinish(sendEmailAction -> view.hideLoadingDialog())));
    }
 
    public interface View extends RxView {
@@ -95,7 +99,7 @@ public class DtlThrstThankYouScreenPresenter extends JobPresenter<DtlThrstThankY
 
       void setReceiptURL(String url);
 
-      void goBack(boolean isPaid, String earnedPoints, String totalPoints);
+      void goBack();
 
       void hideBackIcon();
 

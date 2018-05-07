@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.settings.help.feedback.payment.impl
 
-import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,6 +15,7 @@ import com.worldventures.core.utils.ProjectTextUtils.fromHtml
 import com.worldventures.wallet.R
 import com.worldventures.wallet.databinding.ScreenWalletSettingsHelpPaymentFeedbackBinding
 import com.worldventures.wallet.service.command.settings.help.SendWalletFeedbackCommand
+import com.worldventures.wallet.ui.common.bindView
 import com.worldventures.wallet.ui.common.helper2.error.SimpleErrorDialogView
 import com.worldventures.wallet.ui.common.helper2.progress.SimpleDialogProgressView
 import com.worldventures.wallet.ui.common.helper2.success.SimpleToastSuccessView
@@ -44,7 +44,7 @@ class PaymentFeedbackScreenImpl : BaseFeedbackScreenImpl<PaymentFeedbackScreen, 
 
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
-      binding = DataBindingUtil.bind(view)
+      binding = bindView(view)
       binding.paymentFeedbackViewModel = PaymentFeedbackViewModel()
       initToolbar()
       setupAsteriskColor()

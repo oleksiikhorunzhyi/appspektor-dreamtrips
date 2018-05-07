@@ -13,7 +13,6 @@ import dagger.Provides;
 @Module(
       includes = {
             // base helpers and drivers
-            EventBusModule.class,
             StorageModule.class},
       library = true,
       complete = false)

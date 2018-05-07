@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.api.dtl.merchants.EstimatePointsHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimationPresenter.View> {
+public class DtlPointsEstimationPresenter extends Presenter<DtlPointsEstimationPresenter.View> {
 
    public static final String BILL_TOTAL = "bill_total";
    private static final String NUMBER_REGEX = "[+-]?\\d*(\\.\\d+)?";
@@ -47,7 +47,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
    private void bindApiJob() {
       transactionInteractor.estimatePointsActionPipe()
             .observe()
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(new ActionStateSubscriber<EstimatePointsHttpAction>().onStart(action -> view.showProgress())
                   .onFail((action, exception) -> {
                      if (action.errorResponse() != null) {

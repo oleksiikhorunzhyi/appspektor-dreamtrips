@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.ThrstFlowBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlThrstScanReceiptPresenter;
 
@@ -138,12 +137,12 @@ public class DtlThrstScanReceiptFragment extends RxBaseFragmentWithArgs<DtlThrst
    }
 
    @Override
-   public void openThrstFlow(Merchant merchant, String receiptUrl, String token, String transactionId) {
+   public void openThrstFlow(Merchant merchant) {
       router.moveTo(DtlThrstFlowFragment.class, NavigationConfigBuilder.forFragment()
             .containerId(R.id.container_main)
             .backStackEnabled(true)
             .clearBackStack(false)
-            .data(new ThrstFlowBundle(merchant, receiptUrl, token, transactionId))
+            .data(new MerchantBundle(merchant))
             .fragmentManager(getFragmentManager())
             .build());
    }

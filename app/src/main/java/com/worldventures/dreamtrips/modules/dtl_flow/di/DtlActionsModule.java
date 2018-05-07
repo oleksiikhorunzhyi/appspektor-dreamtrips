@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
+import android.content.Context;
+
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.UserReviewInfoProvider;
+import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.UserReviewInfoProviderImpl;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.AttributesActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.CategoryHttpActionCreator;
 import com.worldventures.dreamtrips.modules.dtl.service.action.creator.FullMerchantActionCreator;
@@ -58,5 +62,11 @@ public class DtlActionsModule {
    @Singleton
    HttpActionCreator provideTransactionActionCreator() {
       return new TransactionThrstCreator();
+   }
+
+   @Provides
+   @Singleton
+   UserReviewInfoProvider provideUserReviewInfoProvider(Context context) {
+      return new UserReviewInfoProviderImpl(context.getApplicationContext());
    }
 }

@@ -17,7 +17,6 @@ import com.worldventures.core.service.analytics.MonitoringHelper;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.social.ui.podcast_player.delegate.PodcastPlayerDelegate;
 
 import java.util.List;
@@ -33,7 +32,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
    public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
    @Inject PodcastPlayerDelegate podcastPlayerDelegate;
-   @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
    @Inject PickLocationDelegate pickLocationDelegate;
    @Inject CropImageDelegate cropImageDelegate;
 
@@ -100,7 +98,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
       Intent resultIntent = new Intent(context, MessengerActivity.class);
       //set args to pending intent
       resultIntent.putExtra(MessengerActivity.EXTRA_CHAT_CONVERSATION_ID, conversationId);
-      //
       context.startActivity(resultIntent);
    }
 
@@ -111,8 +108,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
    @Override
    protected void doOnDispatch(Flow.Traversal traversal) {
-      if (!traversal.destination.top().equals(traversal.origin.top())) {
-         photoPickerLayoutDelegate.hidePicker();
-      }
+
    }
 }

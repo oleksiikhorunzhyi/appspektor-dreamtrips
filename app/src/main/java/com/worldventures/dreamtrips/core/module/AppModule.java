@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
 import com.worldventures.dreamtrips.modules.mapping.MappingModule;
-import com.worldventures.dreamtrips.modules.media_picker.OldMediaPickerModule;
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.dreamtrips.wallet.WalletDtAppModule;
 
@@ -75,7 +74,6 @@ import dagger.Provides;
             //
             DeviceModule.class,
             FacebookAppModule.class,
-            OldMediaPickerModule.class,
             SocialAppModule.class,
             //
             DtlAppModule.class,

@@ -62,6 +62,8 @@ public final class DtlTransactionAction extends Command<DtlTransaction> implemen
             .withMerchantToken(null)
             .withIsVerified(false)
             .withDtlTransactionResult(null)
+            .withUrlTokenResponse(null)
+            .withTransactionResponse(null)
             .withPoints(0d));
    }
 

@@ -6,7 +6,7 @@ import com.worldventures.core.model.ShareType;
 import com.worldventures.core.model.User;
 import com.worldventures.dreamtrips.api.dtl.merchants.AddRatingHttpAction;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.InformView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
@@ -23,16 +23,13 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.Revie
 
 import javax.inject.Inject;
 
-import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
+public class DtlTransactionSucceedPresenter extends Presenter<DtlTransactionSucceedPresenter.View> {
 
    @Inject DtlTransactionInteractor transactionInteractor;
    @Inject LocationDelegate locationDelegate;
    @Inject DtlApiErrorViewAdapter apiErrorViewAdapter;
-
-   @State int stars;
 
    private final Merchant merchant;
    private User user;
@@ -41,15 +38,11 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
       this.merchant = merchant;
    }
 
-   public void rate(int stars) {
-      this.stars = stars;
-   }
-
    public void share() {
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(transaction -> view.showShareDialog((int) transaction.getDtlTransactionResult()
                   .getEarnedPoints(), merchant), apiErrorViewAdapter::handleError);
    }
@@ -59,8 +52,9 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
       if (!ReviewStorage.exists(context, String.valueOf(user.getId()), merchant.id())) {
          view.sendToReview(merchant);
       }
+      transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
       analyticsInteractor.analyticsCommandPipe()
-            .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes(), stars)));
+            .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(merchant.asMerchantAttributes())));
    }
 
    @Override
@@ -71,11 +65,11 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
       transactionInteractor.transactionActionPipe()
             .createObservableResult(DtlTransactionAction.get(merchant))
             .map(DtlTransactionAction::getResult)
-            .compose(bindViewIoToMainComposer())
+            .compose(bindViewToMainComposer())
             .subscribe(transaction -> {
                view.setCongratulations(transaction.getDtlTransactionResult());
                locationDelegate.requestLocationUpdate()
-                     .compose(bindViewIoToMainComposer())
+                     .compose(bindViewToMainComposer())
                      .onErrorReturn(throwable -> new Location(""))
                      .subscribe(location -> {
                         analyticsInteractor.analyticsCommandPipe()
@@ -97,6 +91,12 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
       analyticsInteractor.analyticsCommandPipe()
             .send(DtlAnalyticsCommand.create(
                   ShareEventProvider.provideTransactionSuccessShareEvent(merchant.asMerchantAttributes(), type)));
+   }
+
+   @Override
+   public void dropView() {
+      super.dropView();
+      transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
    }
 
    public interface View extends InformView, RxView {

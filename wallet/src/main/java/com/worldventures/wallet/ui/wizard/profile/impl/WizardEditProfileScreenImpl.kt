@@ -1,6 +1,5 @@
 package com.worldventures.wallet.ui.wizard.profile.impl
 
-import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,6 +17,7 @@ import com.worldventures.wallet.service.WalletCropImageService
 import com.worldventures.wallet.service.command.SetupUserDataCommand
 import com.worldventures.wallet.service.provisioning.ProvisioningMode
 import com.worldventures.wallet.ui.common.base.WalletBaseController
+import com.worldventures.wallet.ui.common.bindView
 import com.worldventures.wallet.ui.common.binding.LastPositionSelector
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
 import com.worldventures.wallet.ui.common.helper2.error.SCConnectionErrorViewProvider
@@ -66,7 +66,7 @@ class WizardEditProfileScreenImpl(bundle: Bundle?) : WalletBaseController<Wizard
 
    override fun onFinishInflate(view: View) {
       super.onFinishInflate(view)
-      binding = DataBindingUtil.bind(view)
+      binding = bindView(view)
       binding.setOnAvatarClick { showDialog() }
       binding.setOnNextClick { getPresenter().setupUserData() }
       binding.onEditTextFocusChange = LastPositionSelector()

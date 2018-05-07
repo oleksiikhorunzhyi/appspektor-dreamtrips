@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.ReviewMerchantsAc
 import com.worldventures.dreamtrips.modules.dtl.service.action.bundle.ImmutableReviewsMerchantsActionParams;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.review.DtlReviewPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.model.ReviewObject;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.reviews.storage.ReviewStorage;
 
@@ -97,7 +97,7 @@ public class DtlReviewsPresenterImpl extends DtlPresenterImpl<DtlReviewsScreen, 
 
    @Override
    public void addNewComment() {
-      Flow.get(getContext()).set(new DtlCommentReviewPath(merchant, true, false));
+      Flow.get(getContext()).set(new DtlReviewPath(merchant, false));
    }
 
    @Override

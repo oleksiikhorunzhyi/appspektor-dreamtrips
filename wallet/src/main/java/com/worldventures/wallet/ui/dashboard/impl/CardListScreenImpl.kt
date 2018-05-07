@@ -3,7 +3,6 @@ package com.worldventures.wallet.ui.dashboard.impl
 import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.content.Context
-import android.databinding.DataBindingUtil
 import android.graphics.Point
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -30,6 +29,7 @@ import com.worldventures.wallet.service.command.reset.ResetSmartCardCommand
 import com.worldventures.wallet.ui.common.adapter.BaseViewModel
 import com.worldventures.wallet.ui.common.adapter.RecyclerItemClickListener
 import com.worldventures.wallet.ui.common.base.WalletBaseController
+import com.worldventures.wallet.ui.common.bindView
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
 import com.worldventures.wallet.ui.common.helper2.error.SimpleDialogErrorViewProvider
 import com.worldventures.wallet.ui.common.helper2.error.SmartCardErrorViewProvider
@@ -95,7 +95,7 @@ class CardListScreenImpl : WalletBaseController<CardListScreen, CardListPresente
       btnFirmwareAvailable = view.findViewById(R.id.firmware_available)
       btnFirmwareAvailable.setOnClickListener { presenter.navigateToFirmwareUpdate() }
       smartCardWidget = view.findViewById(R.id.widget_dashboard_smart_card)
-      binding = DataBindingUtil.bind(view)
+      binding = bindView(view)
       setupCardStackList()
    }
 

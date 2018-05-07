@@ -9,6 +9,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'de.mannodermaus.android-junit5'
 
 android {
    compileSdkVersion project.ext.androidConfig.compileSdk
@@ -67,4 +68,7 @@ dependencies {
    applyDependencies(owner, deps.util)
    applyDependencies(owner, deps.rx)
    applyDependencies(owner, deps.lang)
+
+   testImplementation junit5.unitTests()
+   testRuntimeOnly    junit5.unitTestsRuntime()
 }

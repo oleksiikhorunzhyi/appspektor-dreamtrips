@@ -35,7 +35,6 @@ import dagger.Provides;
             FeedAppModule.class,
             ConfigurationModule.class,
             EventDelegateModule.class,
-            SocialInitializerModule.class,
             SocialMappingModule.class,
             SocialSnappyModule.class,
             UserAppModule.class,

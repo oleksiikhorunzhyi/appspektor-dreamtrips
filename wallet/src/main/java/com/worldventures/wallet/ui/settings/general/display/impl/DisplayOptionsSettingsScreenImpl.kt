@@ -1,7 +1,6 @@
 package com.worldventures.wallet.ui.settings.general.display.impl
 
 import android.content.Context
-import android.databinding.DataBindingUtil
 import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
@@ -26,6 +25,7 @@ import com.worldventures.wallet.service.command.settings.general.display.excepti
 import com.worldventures.wallet.service.profile.RetryHttpUploadUpdatingCommand
 import com.worldventures.wallet.service.profile.UpdateSmartCardUserCommand
 import com.worldventures.wallet.ui.common.base.WalletBaseController
+import com.worldventures.wallet.ui.common.bindView
 import com.worldventures.wallet.ui.common.helper2.error.DetachableOperationView
 import com.worldventures.wallet.ui.common.helper2.error.DialogErrorView
 import com.worldventures.wallet.ui.common.helper2.error.ErrorViewFactory
@@ -226,7 +226,7 @@ class DisplayOptionsSettingsScreenImpl(args: Bundle)
 
    override fun showAddPhoneDialog() {
       val phoneView = View.inflate(context, R.layout.dialog_wallet_display_options_enter_user_phone, null)
-      val phoneBinding = DataBindingUtil.bind<DialogWalletDisplayOptionsEnterUserPhoneBinding>(phoneView)
+      val phoneBinding = bindView<DialogWalletDisplayOptionsEnterUserPhoneBinding>(phoneView)
       phoneBinding.profile = ProfileViewModel()
       val builder = MaterialDialog.Builder(context)
             .title(R.string.wallet_settings_general_display_photo_add_phone_label)

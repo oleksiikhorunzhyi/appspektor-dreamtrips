@@ -10,12 +10,14 @@ import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.social.service.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendPreferencesPresenter;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.social.ui.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.FriendPrefGroupCell;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.FriendPrefsCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.State;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -52,11 +54,11 @@ public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPrefere
 
    @Override
    public void onRelationChanged(FriendGroupRelation friendGroupRelation, State state) {
-      getPresenter().onRelationshipChanged(friendGroupRelation.circle(), state);
+      getPresenter().onRelationshipChanged(friendGroupRelation.getCircle(), state);
    }
 
    @Override
-   public void addItems(List<FriendGroupRelation> circles) {
+   public void addItems(@NotNull List<FriendGroupRelation> circles) {
       adapter.addItems(circles);
    }
 

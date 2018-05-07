@@ -6,8 +6,8 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
-import com.worldventures.core.janet.cache.CacheResultWrapper
-import com.worldventures.core.janet.cache.storage.ActionStorage
+import com.worldventures.janet.cache.CacheResultWrapper
+import com.worldventures.janet.cache.storage.ActionStorage
 import com.worldventures.core.modules.auth.service.AuthInteractor
 import com.worldventures.core.service.analytics.AnalyticsInteractor
 import com.worldventures.core.test.AssertUtil.assertActionFail

@@ -52,7 +52,7 @@ public class TripViewInjector {
       }
 
       if (textViewDate != null) {
-         textViewDate.setText(tripModel.hasMultipleDates() ? String.format(textViewDate.getResources()
+         textViewDate.setText(tripModel.getHasMultipleDates() ? String.format(textViewDate.getResources()
                      .getString(R.string.multiple_dates),
                tripModel.getAvailabilityDates().getStartDateString()) : tripModel.getAvailabilityDates().toString());
       }

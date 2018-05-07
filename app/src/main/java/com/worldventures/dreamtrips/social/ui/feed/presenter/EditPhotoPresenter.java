@@ -117,7 +117,7 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
       uploadTask.setLatitude((float) location.getLat());
       uploadTask.setLongitude((float) location.getLng());
       uploadTask.setShotAt(photo.getShotAt());
-      tripImagesInteractor.editPhotoWithTagsCommandActionPipe()
+      tripImagesInteractor.getEditPhotoWithTagsCommandActionPipe()
             .createObservable(new EditPhotoWithTagsCommand(photo.getUid(), uploadTask,
                   creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()))
             .compose(new IoToMainComposer<>())

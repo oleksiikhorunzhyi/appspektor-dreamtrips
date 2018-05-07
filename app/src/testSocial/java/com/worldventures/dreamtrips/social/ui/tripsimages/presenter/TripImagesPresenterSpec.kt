@@ -1,8 +1,15 @@
 package com.worldventures.dreamtrips.social.ui.tripsimages.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.User
+import com.worldventures.core.model.session.SessionHolder
+import com.worldventures.core.model.session.UserSession
+import com.worldventures.core.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
 import com.worldventures.dreamtrips.modules.common.service.OfflineErrorInteractor
 import com.worldventures.dreamtrips.modules.config.service.AppConfigurationInteractor
@@ -12,350 +19,330 @@ import com.worldventures.dreamtrips.social.ui.background_uploading.service.comma
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityHolder
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoFeedItem
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
-import com.worldventures.dreamtrips.social.ui.feed.presenter.FeedPresenterSpek.Companion.provideCompoundOperation
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.FeedEntityHolderDelegate
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.UploadingPresenterDelegate
+import com.worldventures.dreamtrips.social.ui.feed.presenter.provideCompoundOperation
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor
 import com.worldventures.dreamtrips.social.ui.feed.service.command.PostCreatedCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.PhotoMediaEntity
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor
-import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.*
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.BaseMediaCommand
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetMemberMediaCommand
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.GetUsersMediaCommand
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.ImmutablePaginationParams
+import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
+import kotlin.test.assertFalse
 
-class TripImagesPresenterSpec : PresenterBaseSpec({
-   describe("Trip images presenter") {
-      beforeEachTest { init() }
+class TripImagesPresenterSpec : PresenterBaseSpec(TripImagesTestSuite()) {
 
-      describe("View taken") {
-         it("Should subscribe to required pipes, init and refresh items") {
-            presenter.onViewTaken()
+   class TripImagesTestSuite : TestSuite<TripImagesComponents>(TripImagesComponents()) {
 
-            verify(presenter).initItems()
-            verify(presenter).initCreateMediaFlow()
-            verify(presenter).subscribeToTripImages()
-            verify(presenter).subscribeToPhotoDeletedEvents()
-            verify(presenter).subscribeToErrorUpdates()
-            verify(presenter).refreshImages()
-            verify(presenter).subscribeToNewItems()
-            verify(feedEntityHolderDelegate).subscribeToUpdates(any(), any(), any())
-         }
-      }
+      override fun specs(): SpecBody.() -> Unit = {
 
-      describe("Init items") {
-         it("Should create new array list if current items is null") {
-            presenter.currentItems = null
-            presenter.initItems()
+         with(components) {
+            describe("Trip images presenter") {
+               beforeEachTest {
+                  init()
+                  linkPresenterAndView()
+               }
 
-            assert(presenter.currentItems != null)
-         }
+               describe("Create button flow") {
+                  it("Route is member images, Should not hide create button and should subscribe to compound operations") {
+                     presenter.tripImagesArgs = memberImagesTripImagesArgs()
+                     presenter.initCreateMediaFlow()
 
-         it("Should not create new array list if current items is not null") {
-            presenter.currentItems = ArrayList()
-            presenter.currentItems.add(PhotoMediaEntity())
+                     verify(view, never()).hideCreateImageButton()
+                  }
 
-            presenter.initItems()
+                  it("Route is account images and user is current, Should not hide create button and should subscribe to compound operations") {
+                     presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
+                     presenter.initCreateMediaFlow()
 
-            assert(presenter.currentItems.size > 0)
+                     verify(view, never()).hideCreateImageButton()
+                  }
 
-         }
-      }
+                  it("Route is account images and user is different from current, Should hide create button and should not subscribe to compound operations") {
+                     presenter.tripImagesArgs = userTripImagesArgs(OTHER_USER_ID)
+                     presenter.initCreateMediaFlow()
 
-      describe("Create button flow") {
-         it("Route is member images, Should not hide create button and should subscribe to compound operations") {
-            presenter.tripImagesArgs = memberImagesTripImagesArgs()
-            presenter.initCreateMediaFlow()
+                     verify(view).hideCreateImageButton()
+                  }
+               }
 
-            verify(view, never()).hideCreateImageButton()
-            verify(presenter).subscribeToBackgroundUploadingOperations()
-         }
+               describe("Subscription to new images") {
+                  it("Refresh member images") {
+                     presenter.tripImagesArgs = memberImagesTripImagesArgs()
+                     val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
+                     tripImagesInteractor.baseTripImagesPipe.observe().subscribe(testSubscriber)
 
-         it("Route is account images and user is current, Should not hide create button and should subscribe to compound operations") {
-            presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
-            presenter.initCreateMediaFlow()
+                     presenter.refreshImages()
 
-            verify(view, never()).hideCreateImageButton()
-            verify(presenter).subscribeToBackgroundUploadingOperations()
-         }
+                     val actionState = testSubscriber.onNextEvents[0]
+                     assert(actionState.action is GetMemberMediaCommand)
+                     assert(actionState.action.isReload && !actionState.action.isLoadMore)
+                  }
 
-         it("Route is account images and user is different from current, Should hide create button and should not subscribe to compound operations") {
-            presenter.tripImagesArgs = userTripImagesArgs(OTHER_USER_ID)
-            presenter.initCreateMediaFlow()
+                  it("Refresh user images") {
+                     presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
+                     val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
+                     tripImagesInteractor.baseTripImagesPipe.observe().subscribe(testSubscriber)
 
-            verify(presenter, never()).subscribeToBackgroundUploadingOperations()
-            verify(view).hideCreateImageButton()
-         }
-      }
+                     presenter.refreshImages()
 
-      describe("Subscription to new images") {
-         it("Refresh member images") {
-            presenter.tripImagesArgs = memberImagesTripImagesArgs()
-            val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
-            tripImagesInteractor.baseTripImagesCommandActionPipe().observe().subscribe(testSubscriber)
+                     val actionState = testSubscriber.onNextEvents[0]
+                     assert(actionState.action is GetUsersMediaCommand)
+                     assert(actionState.action.isReload && !actionState.action.isLoadMore)
+                  }
 
-            presenter.refreshImages()
+                  it("Load more user images") {
+                     presenter.currentItems = ArrayList(stubMemberImagesResponse())
+                     presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
+                     val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
+                     tripImagesInteractor.baseTripImagesPipe.observe().subscribe(testSubscriber)
 
-            val actionState = testSubscriber.onNextEvents[0]
-            assert(actionState.action is GetMemberMediaCommand)
-            assert(actionState.action.isReload && !actionState.action.isLoadMore)
-         }
+                     presenter.loadNext()
 
-         it("Refresh user images") {
-            presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
-            val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
-            tripImagesInteractor.baseTripImagesCommandActionPipe().observe().subscribe(testSubscriber)
+                     val actionState = testSubscriber.onNextEvents[0]
+                     assert(actionState.action is GetUsersMediaCommand)
+                     assert(!actionState.action.isReload && actionState.action.isLoadMore)
+                  }
 
-            presenter.refreshImages()
+                  it("Load more member images") {
+                     presenter.currentItems = ArrayList(stubMemberImagesResponse())
+                     presenter.tripImagesArgs = memberImagesTripImagesArgs()
+                     val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
+                     tripImagesInteractor.baseTripImagesPipe.observe().subscribe(testSubscriber)
 
-            val actionState = testSubscriber.onNextEvents[0]
-            assert(actionState.action is GetUsersMediaCommand)
-            assert(actionState.action.isReload && !actionState.action.isLoadMore)
-         }
+                     presenter.loadNext()
 
-         it("Load more user images") {
-            presenter.currentItems = ArrayList(stubMemberImagesResponse())
-            presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
-            val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
-            tripImagesInteractor.baseTripImagesCommandActionPipe().observe().subscribe(testSubscriber)
+                     val actionState = testSubscriber.onNextEvents[0]
+                     assert(actionState.action is GetMemberMediaCommand)
+                     assert(!actionState.action.isReload && actionState.action.isLoadMore)
+                  }
 
-            presenter.loadNext()
+                  it("Get member images command fails") {
+                     presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
+                     presenter.subscribeToTripImages()
 
-            val actionState = testSubscriber.onNextEvents[0]
-            assert(actionState.action is GetUsersMediaCommand)
-            assert(!actionState.action.isReload && actionState.action.isLoadMore)
-         }
+                     tripImagesInteractor.baseTripImagesPipe
+                           .send(tripImagesCommandFactory
+                                 .provideCommand(userTripImagesArgs(ACCOUNT_USER_ID)))
 
-         it("Load more member images") {
-            presenter.currentItems = ArrayList(stubMemberImagesResponse())
-            presenter.tripImagesArgs = memberImagesTripImagesArgs()
-            val testSubscriber = TestSubscriber<ActionState<BaseMediaCommand>>()
-            tripImagesInteractor.baseTripImagesCommandActionPipe().observe().subscribe(testSubscriber)
+                     assert(presenter.loading == false)
+                     verify(view).finishLoading()
+                  }
 
-            presenter.loadNext()
+                  it("Items updated with reload command, last page is not reached") {
+                     val args = memberImagesTripImagesArgs()
+                     val stubMemberImagesResponse = stubMemberImagesResponse(PAGE_SIZE + 1)
+                     init(args, Contract.of(GetUsersMediaCommand::class.java).result(stubMemberImagesResponse))
+                     linkPresenterAndView()
 
-            val actionState = testSubscriber.onNextEvents[0]
-            assert(actionState.action is GetMemberMediaCommand)
-            assert(!actionState.action.isReload && actionState.action.isLoadMore)
-         }
+                     val presenter = presenter
+                     val view = view
+                     presenter.currentItems = ArrayList()
+                     presenter.subscribeToTripImages()
+                     tripImagesInteractor.baseTripImagesPipe.send(GetUsersMediaCommand(args, paginationParams)
+                           .apply { isReload = true })
 
-         it("Refresh trip images list. Should call presenter.itemsUpdated") {
-            presenter.currentItems = ArrayList()
-            presenter.tripImagesArgs = memberImagesTripImagesArgs()
-            presenter.subscribeToTripImages()
+                     assert(presenter.currentItems.isNotEmpty())
+                     assert(presenter.loading == false)
+                     assert(presenter.lastPageReached == false)
+                     verify(view).finishLoading()
+                     verify(view).updateItems(any(), any())
+                  }
 
-            tripImagesInteractor.baseTripImagesCommandActionPipe()
-                  .send(tripImagesCommandFactory.provideCommand(memberImagesTripImagesArgs()))
+                  it("Items updated with load more command, last page is not reached") {
+                     val args = memberImagesTripImagesArgs()
+                     val stubMemberImagesResponse = stubMemberImagesResponse(PAGE_SIZE + 1)
+                     init(args, Contract.of(GetUsersMediaCommand::class.java).result(stubMemberImagesResponse))
+                     linkPresenterAndView()
 
-            verify(presenter).itemsUpdated(any())
-         }
+                     val presenter = presenter
+                     val view = view
+                     presenter.currentItems = ArrayList()
+                     presenter.subscribeToTripImages()
 
-         it("Get member images command fails") {
-            presenter.tripImagesArgs = userTripImagesArgs(ACCOUNT_USER_ID)
-            presenter.subscribeToTripImages()
+                     tripImagesInteractor.baseTripImagesPipe.send(GetUsersMediaCommand(args, paginationParams)
+                           .apply { isLoadMore = true })
 
-            tripImagesInteractor.baseTripImagesCommandActionPipe()
-                  .send(tripImagesCommandFactory.provideCommand(userTripImagesArgs(ACCOUNT_USER_ID)))
+                     assert(presenter.currentItems.isNotEmpty())
+                     assertFalse(presenter.loading)
+                     assertFalse(presenter.lastPageReached)
+                     verify(view).finishLoading()
+                     verify(view).updateItems(any(), any())
+                  }
 
-            verify(presenter).handleError(any(), any())
-            assert(presenter.loading == false)
-            verify(view).finishLoading()
-         }
+                  it("Items updated with load more command, last page is reached") {
+                     val args = memberImagesTripImagesArgs()
+                     val stubMemberImagesResponse = stubMemberImagesResponse(PAGE_SIZE - 1)
+                     init(args, Contract.of(GetUsersMediaCommand::class.java).result(stubMemberImagesResponse))
+                     linkPresenterAndView()
 
-         it("Items updated with reload command, last page is not reached") {
-            presenter.currentItems = spy(ArrayList())
-            val mediaCommand: BaseMediaCommand = mock()
+                     val presenter = presenter
+                     val view = view
+                     presenter.currentItems = ArrayList()
+                     presenter.subscribeToTripImages()
+                     tripImagesInteractor.baseTripImagesPipe.send(GetUsersMediaCommand(args, paginationParams)
+                           .apply { isReload = false; isLoadMore = true })
 
-            doReturn(false).whenever(mediaCommand).lastPageReached()
-            doReturn(true).whenever(mediaCommand).isReload
-            doReturn(stubMemberImagesResponse()).whenever(mediaCommand).items
+                     assert(presenter.currentItems.isNotEmpty())
+                     assert(presenter.loading == false)
+                     assert(presenter.lastPageReached == true)
+                     verify(view).finishLoading()
+                     verify(view).updateItems(any(), any())
+                  }
+               }
 
-            presenter.itemsUpdated(mediaCommand)
+               describe("Item deletion") {
+                  it("Item should be removed from collection") {
+                     presenter.currentItems = ArrayList(stubMemberImagesResponse())
+                     presenter.subscribeToPhotoDeletedEvents()
+                     tripImagesInteractor.deletePhotoPipe.send(DeletePhotoCommand(stubPhoto))
 
-            verify(presenter.currentItems).clear()
-            verify(presenter.currentItems).addAll(stubMemberImagesResponse())
-            assert(presenter.loading == false)
-            assert(presenter.lastPageReached == false)
-            verify(view).finishLoading()
-            verify(presenter).updateItemsInView()
-         }
+                     assert(!presenter.currentItems.contains(stubPhotoMediaEntity))
+                  }
+               }
 
-         it("Items updated with load more command, last page is not reached") {
-            presenter.currentItems = spy(ArrayList())
-            val mediaCommand: BaseMediaCommand = mock()
+               describe("Reload items") {
+                  it("View should hide new images button and refresh images should be called") {
+                     val presenter = presenter
+                     val view = view
 
-            doReturn(false).whenever(mediaCommand).lastPageReached()
-            doReturn(false).whenever(mediaCommand).isReload
-            doReturn(stubMemberImagesResponse()).whenever(mediaCommand).items
+                     presenter.currentItems = ArrayList()
+                     presenter.subscribeToTripImages()
+                     presenter.reload()
 
-            presenter.itemsUpdated(mediaCommand)
+                     verify(view).hideNewImagesButton()
+                     verify(view).updateItems(any(), any())
+                  }
+               }
 
-            verify(presenter.currentItems, never()).clear()
-            verify(presenter.currentItems).addAll(stubMemberImagesResponse())
-            assert(presenter.loading == false)
-            assert(presenter.lastPageReached == false)
-            verify(view).finishLoading()
-            verify(presenter).updateItemsInView()
-         }
+               describe("Subscription to new items") {
+                  it("Should refresh view when new items added") {
+                     val presenter = presenter
+                     val view = view
 
-         it("Items updated with load more command, last page is reached") {
-            presenter.currentItems = spy(ArrayList())
-            val mediaCommand: BaseMediaCommand = mock()
+                     presenter.currentItems = ArrayList()
+                     presenter.subscribeToNewItems()
 
-            doReturn(true).whenever(mediaCommand).lastPageReached()
-            doReturn(false).whenever(mediaCommand).isReload
-            doReturn(stubMemberImagesResponse()).whenever(mediaCommand).items
+                     postsInteractor.postCreatedPipe().send(PostCreatedCommand(stubTextualPost))
 
-            presenter.itemsUpdated(mediaCommand)
+                     assert(presenter.currentItems.map { it.item }
+                           .count { it == stubTextualPost.attachments[0].item } > 0)
+                     verify(view).updateItems(any(), any())
+                     verify(view).scrollToTop()
+                  }
+               }
 
-            verify(presenter.currentItems, never()).clear()
-            verify(presenter.currentItems).addAll(stubMemberImagesResponse())
-            assert(presenter.loading == false)
-            assert(presenter.lastPageReached == true)
-            verify(view).finishLoading()
-            verify(presenter).updateItemsInView()
-         }
-      }
+               describe("Subscription to background uploading operations") {
+                  it("Should contain all postCompoundOperations and call updateItemsInView") {
+                     presenter.currentItems = ArrayList()
+                     presenter.subscribeToBackgroundUploadingOperations()
 
-      describe("Item deletion") {
-         it("Item should be removed from collection") {
-            presenter.currentItems = ArrayList(stubMemberImagesResponse())
-            presenter.subscribeToPhotoDeletedEvents()
-            tripImagesInteractor.deletePhotoPipe().send(DeletePhotoCommand(stubPhoto))
+                     compoundOperationsInteractor.compoundOperationsPipe().send(QueryCompoundOperationsCommand())
 
-            assert(!presenter.currentItems.contains(stubPhotoMediaEntity))
-         }
-      }
-
-      describe("Reload items") {
-         it("View should hide new images button and refresh images should be called") {
-            presenter.reload()
-
-            verify(view).hideNewImagesButton()
-            verify(presenter).refreshImages()
-         }
-      }
-
-      describe("Subscription to error updates") {
-         it("Should report no connection") {
-            presenter.subscribeToErrorUpdates()
-
-            offlineErrorInteractor.offlineErrorCommandPipe().send(OfflineErrorCommand())
-
-            verify(presenter).reportNoConnection()
-         }
-      }
-
-      describe("Subscription to new items") {
-         it("Should call presenter.onFeedItemAdded") {
-            presenter.subscribeToNewItems()
-
-            postsInteractor.postCreatedPipe().send(PostCreatedCommand(stubTextualPost))
-
-            verify(presenter).onFeedItemAdded(stubTextualPost)
-         }
-
-         it("Should call presenter.updateItemsInView, view.scrollToTop and items should contain stubPhotoMediaEntity") {
-            presenter.currentItems = ArrayList()
-            presenter.onFeedItemAdded(stubTextualPost)
-
-            verify(presenter).updateItemsInView()
-            verify(view).scrollToTop()
-            assert(presenter.currentItems.contains(stubPhotoMediaEntity))
-         }
-      }
-
-      describe("Subscription to background uploading operations") {
-         it("Should contain all postCompoundOperations and call updateItemsInView") {
-            presenter.currentItems = ArrayList()
-            presenter.subscribeToBackgroundUploadingOperations()
-
-            compoundOperationsInteractor.compoundOperationsPipe().send(QueryCompoundOperationsCommand())
-
-            verify(presenter).updateItemsInView()
-            assert(presenter.compoundOperationModels.containsAll(postCompoundOperations))
+                     assert(presenter.compoundOperationModels.containsAll(postCompoundOperations))
+                  }
+               }
+            }
          }
       }
    }
 
-}) {
-   companion object {
+   class TripImagesComponents : TestComponents<TripImagesPresenter, TripImagesPresenter.View>() {
+
       val ACCOUNT_USER_ID = 1
       val OTHER_USER_ID = 2
-      val UID = "Fasdfasdfasdf"
+      val PAGE_SIZE = 10
+      private val UID = "Fasdfasdfasdf"
       val stubPhoto = Photo(UID)
       val stubPhotoMediaEntity = PhotoMediaEntity(stubPhoto)
       val stubTextualPost = stubTextualPost()
-      val stubPostCompoundOperationModel = provideCompoundOperation()
+      private val stubPostCompoundOperationModel = provideCompoundOperation()
       val postCompoundOperations = listOf(stubPostCompoundOperationModel)
+      val paginationParams: GetMemberMediaCommand.PaginationParams = ImmutablePaginationParams.builder().before(Date()).perPage((PAGE_SIZE)).build()
 
-      lateinit var presenter: TripImagesPresenter
-      lateinit var view: TripImagesPresenter.View
-
-      lateinit var tripImagesInteractor: TripImagesInteractor
-      lateinit var postsInteractor: PostsInteractor
-      lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
-      lateinit var appConfigurationInteractor: AppConfigurationInteractor
-      lateinit var offlineErrorInteractor: OfflineErrorInteractor
-
-      val uploadingPresenterDelegate: UploadingPresenterDelegate = mock()
       val tripImagesCommandFactory: TripImagesCommandFactory = TripImagesCommandFactory()
-      val feedEntityHolderDelegate: FeedEntityHolderDelegate = mock()
 
-      fun init(args: TripImagesArgs = memberImagesTripImagesArgs()) {
-         presenter = spy(TripImagesPresenter(args))
+      lateinit var postsInteractor: PostsInteractor
+      lateinit var tripImagesInteractor: TripImagesInteractor
+      lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
+
+      fun init(args: TripImagesArgs = memberImagesTripImagesArgs(), userImagesContract: Contract? = null) {
+         presenter = TripImagesPresenter(args)
          view = mock()
 
          val service = MockCommandActionService.Builder().apply {
             actionService(CommandActionService())
             addContract(Contract.of(GetMemberMediaCommand::class.java).result(stubMemberImagesResponse()))
-            addContract(Contract.of(GetUsersMediaCommand::class.java).exception(IllegalStateException()))
+            val defaultUserImagesContract = Contract.of(GetUsersMediaCommand::class.java).exception(IllegalStateException())
+            addContract(userImagesContract ?: defaultUserImagesContract)
             addContract(Contract.of(DeletePhotoCommand::class.java).result(Photo(UID)))
             addContract(Contract.of(OfflineErrorCommand::class.java).result(RuntimeException("No Internet connection")))
             addContract(Contract.of(QueryCompoundOperationsCommand::class.java).result(postCompoundOperations))
          }.build()
 
-         doReturn(User(ACCOUNT_USER_ID)).whenever(presenter).account
-
          val janet = Janet.Builder().addService(service).build()
          val sessionPipeCreator = SessionActionPipeCreator(janet)
+         val appConfigurationInteractor = AppConfigurationInteractor(janet)
+         val offlineErrorInteractor = OfflineErrorInteractor(sessionPipeCreator)
+         postsInteractor = PostsInteractor(sessionPipeCreator)
          tripImagesInteractor = TripImagesInteractor(sessionPipeCreator)
          compoundOperationsInteractor = CompoundOperationsInteractor(sessionPipeCreator, Schedulers.immediate())
-         postsInteractor = PostsInteractor(sessionPipeCreator)
-         appConfigurationInteractor = AppConfigurationInteractor(janet)
-         offlineErrorInteractor = OfflineErrorInteractor(sessionPipeCreator)
 
-         prepareInjector().apply {
+         prepareInjector(makeSessionHolder()).apply {
             registerProvider(TripImagesInteractor::class.java, { tripImagesInteractor })
             registerProvider(PostsInteractor::class.java, { postsInteractor })
             registerProvider(CompoundOperationsInteractor::class.java, { compoundOperationsInteractor })
             registerProvider(AppConfigurationInteractor::class.java, { appConfigurationInteractor })
-            registerProvider(UploadingPresenterDelegate::class.java, { uploadingPresenterDelegate })
+            registerProvider(UploadingPresenterDelegate::class.java, { mock() })
             registerProvider(TripImagesCommandFactory::class.java, { tripImagesCommandFactory })
-            registerProvider(FeedEntityHolderDelegate::class.java, { feedEntityHolderDelegate })
+            registerProvider(FeedEntityHolderDelegate::class.java, { mock() })
             registerProvider(OfflineErrorInteractor::class.java, { offlineErrorInteractor })
 
             inject(presenter)
          }
-
-         presenter.takeView(view)
       }
 
-      private fun memberImagesTripImagesArgs() = TripImagesArgs.builder().type(TripImagesArgs.TripImageType.MEMBER_IMAGES).build()
+      fun memberImagesTripImagesArgs() = TripImagesArgs.builder()
+            .pageSize(PAGE_SIZE)
+            .type(TripImagesArgs.TripImageType.MEMBER_IMAGES)
+            .build()
 
-      private fun userTripImagesArgs(userId: Int) = TripImagesArgs.builder().type(TripImagesArgs.TripImageType.ACCOUNT_IMAGES).userId(userId).build()
+      fun userTripImagesArgs(userId: Int) = TripImagesArgs.builder().type(TripImagesArgs.TripImageType.ACCOUNT_IMAGES).userId(userId).build()
 
-      private fun stubMemberImagesResponse(): List<PhotoMediaEntity> {
-         return listOf(stubPhotoMediaEntity)
+      fun stubMemberImagesResponse(size: Int = 1): List<PhotoMediaEntity> {
+         val list = mutableListOf<PhotoMediaEntity>()
+         for (i in 1..size) {
+            list.add(stubPhotoMediaEntity)
+         }
+         return list
+      }
+
+      private fun makeSessionHolder(): SessionHolder {
+         val user: User = mock()
+         whenever(user.id).thenReturn(ACCOUNT_USER_ID)
+         val userSession: UserSession = mock()
+         whenever(userSession.user()).thenReturn(user)
+         val mockSessionHolder: SessionHolder = mock()
+         whenever(mockSessionHolder.get()).thenReturn(Optional.of(userSession))
+         return mockSessionHolder
       }
 
       private fun stubTextualPost(): TextualPost {

@@ -6,14 +6,8 @@ import com.worldventures.dreamtrips.social.ui.infopages.presenter.DreamLifeClubP
 import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
 
 public class DreamLifeClubFragment extends StaticInfoFragment<DreamLifeClubPresenter, UrlBundle> {
-
-   @Override
-   protected String getURL() {
-      return provider.getDLCUrl();
-   }
-
    @Override
    protected DreamLifeClubPresenter createPresenter(Bundle savedInstanceState) {
-      return new DreamLifeClubPresenter(getURL());
+      return new DreamLifeClubPresenter();
    }
 }

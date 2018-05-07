@@ -34,6 +34,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBun
 import com.worldventures.dreamtrips.modules.dtl.event.DtlThrstTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionAction;
+import com.worldventures.dreamtrips.modules.dtl.helper.howtopayvideo.HowToPayHintDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.Merchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantMedia;
@@ -42,10 +43,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.reviews.Reviews;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.FullMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.MerchantsInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.PresentationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.UploadReceiptInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.GetPayInAppVideoCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.comment.DtlCommentReviewPath;
@@ -75,8 +78,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
    @Inject UploadReceiptInteractor uploadReceiptInteractor;
    @Inject PresentationInteractor presentationInteractor;
    @Inject MerchantsInteractor merchantInteractor;
+   @Inject FullMerchantInteractor fullMerchantInteractor;
    @Inject DeviceInfoProvider deviceInfoProvider;
    @Inject SessionHolder appSessionHolder;
+   @Inject HowToPayHintDelegate howToPayHintDelegate;
 
    private final Merchant merchant;
    private final List<String> preExpandOffers;
@@ -130,9 +135,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
       super.onVisibilityChanged(visibility);
       if (visibility == View.VISIBLE) {
          getView().setupMap();
-      }
-      if (visibility == View.VISIBLE && merchant.asMerchantAttributes().hasOffers()) {
-         processTransaction();
+         if (merchant.asMerchantAttributes().hasOffers()) {
+            processTransaction();
+         }
       }
    }
 
@@ -407,7 +412,20 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
    @Override
    public void onClickPay() {
-      onCheckInClicked();
+      if (howToPayHintDelegate.shouldShowHowToPayHint()) {
+         fullMerchantInteractor.payInAppVideoPipe().createObservable(new GetPayInAppVideoCommand())
+               .compose(bindViewIoToMainComposer())
+               .subscribe(new ActionStateSubscriber<GetPayInAppVideoCommand>()
+                     .onStart(getPayInAppVideoCommand -> getView().showBlockingProgress())
+                     .onSuccess(getPayInAppVideoCommand ->
+                           getView().showHowToPayHint(getPayInAppVideoCommand.getResult().getVideoUrl()))
+                     .onFail((getPayInAppVideoCommand, throwable) -> onCheckInClicked())
+                     .onFinish(getPayInAppVideoCommand -> getView().hideBlockingProgress())
+               );
+      } else {
+         getView().hideVideoIfNeeded();
+         onCheckInClicked();
+      }
    }
 
    @Override
@@ -466,5 +484,21 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                .send(DtlAnalyticsCommand.create(new MerchantMapDestinationEvent(null, merchant)));
          getView().showMerchantMap(intent);
       });
+   }
+
+   @Override
+   public void onShowHowPayVideo(String url) {
+      howToPayHintDelegate.neverShowHintAgain();
+      getView().openHowToPayVideo(url);
+   }
+
+   @Override
+   public void onRemindLaterHowToPay() {
+      howToPayHintDelegate.remindLaterPressed();
+   }
+
+   @Override
+   public void onNeverShowHotToPay() {
+      howToPayHintDelegate.neverShowHintAgain();
    }
 }

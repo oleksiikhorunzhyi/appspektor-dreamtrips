@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedDiskStorag
 import rx.functions.Action1
 import rx.functions.Func0
 
-class PaginatedDiskStorageSpec() : PaginatedStorageSpec({
+class PaginatedDiskStorageSpec : PaginatedStorageSpec({
    FakeDiskStorage()
 }) {
    class FakeDiskStorage : PaginatedDiskStorage<Any>() {

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
@@ -44,6 +43,7 @@ import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.TripImageCel
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.TripImageTimestampCell;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.VideoMediaCell;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.cell.VideoMediaTimestampCell;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.util.GridLayoutManagerPaginationDelegate;
 
 import java.util.List;
 
@@ -58,6 +58,7 @@ import icepick.State;
 public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFragmentWithArgs<T, TripImagesArgs>
       implements TripImagesPresenter.View, SelectablePagerFragment {
 
+   public static final int VISIBLE_THRESHOLD = 15;
    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
 
    @Inject PickerPermissionUiHandler pickerPermissionUiHandler;
@@ -71,7 +72,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    @State protected int videoDuration;
    @State protected boolean mediaPickerShown;
 
-   protected BaseDelegateAdapter adapter;
+   protected BaseDelegateAdapter<Object> adapter;
    protected GridLayoutManager layoutManager;
    private RecyclerViewStateDelegate stateDelegate;
    private MediaPickerDialog mediaPickerDialog;
@@ -101,7 +102,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       initAdapter();
-      initRecyclerView();
+      recyclerView.addOnScrollListener(new GridLayoutManagerPaginationDelegate(getPresenter()::loadNext,
+            VISIBLE_THRESHOLD));
       refreshLayout.setOnRefreshListener(() -> getPresenter().reload());
       refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
    }
@@ -114,13 +116,13 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
    @Override
    public void scrollToTop() {
-      recyclerView.scrollToPosition(0);
+      recyclerView.smoothScrollToPosition(0);
    }
 
    private void initAdapter() {
       initLayoutManager(getSpanCount());
       stateDelegate.setRecyclerView(recyclerView);
-      adapter = new BaseDelegateAdapter(getContext(), this);
+      adapter = new BaseDelegateAdapter<>(getContext(), this);
       registerCellsAndDelegates();
       recyclerView.setAdapter(this.adapter);
    }
@@ -143,18 +145,6 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    protected int getSpanCount() {
       boolean landscape = ViewUtils.isLandscapeOrientation(getActivity());
       return landscape ? 4 : ViewUtils.isTablet(getActivity()) ? 3 : 2;
-   }
-
-   private void initRecyclerView() {
-      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-         @Override
-         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            int visibleCount = recyclerView.getChildCount();
-            int totalCount = layoutManager.getItemCount();
-            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-            getPresenter().scrolled(visibleCount, totalCount, firstVisibleItemPosition);
-         }
-      });
    }
 
    @Override
@@ -223,7 +213,7 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
    }
 
    @Override
-   public void updateItems(List items) {
+   public void updateItems(List items, boolean refreshTimeStamp) {
       layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
          @Override
          public int getSpanSize(int position) {
@@ -244,7 +234,8 @@ public class TripImagesFragment<T extends TripImagesPresenter> extends RxBaseFra
 
          @Override
          public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            if (adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity && items.get(newItemPosition) instanceof PhotoMediaEntity) {
+            if (refreshTimeStamp && adapter.getItem(oldItemPosition) instanceof PhotoMediaEntity
+                  && items.get(newItemPosition) instanceof PhotoMediaEntity) {
                return false;
             }
             return super.areContentsTheSame(oldItemPosition, newItemPosition);

@@ -1,9 +1,12 @@
 package com.worldventures.core.modules.video.service.command;
 
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.R;
 import com.worldventures.core.janet.CommandWithError;
+import com.worldventures.core.model.CachedModel;
 import com.worldventures.core.modules.video.model.VideoCategory;
+import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
 import com.worldventures.dreamtrips.api.member_videos.GetMemberVideosHttpAction;
 import com.worldventures.dreamtrips.api.member_videos.model.ImmutableVideoLanguage;
 import com.worldventures.dreamtrips.api.member_videos.model.VideoLanguage;
@@ -18,11 +21,13 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.mappery.MapperyContext;
 
+//todo move to social
 @CommandAction
 public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>> implements InjectableAction {
 
    @Inject Janet janet;
    @Inject MapperyContext mapperyContext;
+   @Inject MediaModelStorage mediaModelStorage;
 
    private VideoType videoType;
    private VideoLanguage videoLanguage;
@@ -49,7 +54,15 @@ public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>
                   : new GetMemberVideosHttpAction(videoType, videoLanguage))
             .map(GetMemberVideosHttpAction::response)
             .map(videoCategories -> mapperyContext.convert(videoCategories, VideoCategory.class))
+            .doOnNext(this::attachCacheToVideos)
             .subscribe(callback::onSuccess, callback::onFail);
+   }
+
+   private void attachCacheToVideos(List<VideoCategory> categories) {
+      Queryable.from(categories).forEachR(cat -> Queryable.from(cat.getVideos()).forEachR(video -> {
+         CachedModel e = mediaModelStorage.getDownloadMediaModel(video.getUid());
+         video.setCacheEntity(e);
+      }));
    }
 
    public static GetMemberVideosCommand forThreeSixtyVideos() {
@@ -64,10 +77,6 @@ public class GetMemberVideosCommand extends CommandWithError<List<VideoCategory>
             .title(videoLanguage.getTitle())
             .localeName(videoLanguage.getLocaleName())
             .build());
-   }
-
-   public static GetMemberVideosCommand forMemberVideos() {
-      return new GetMemberVideosCommand(VideoType.DTAPP);
    }
 
    public static GetMemberVideosCommand forHelpVideos(com.worldventures.core.modules.video.model.VideoLanguage videoLanguage) {

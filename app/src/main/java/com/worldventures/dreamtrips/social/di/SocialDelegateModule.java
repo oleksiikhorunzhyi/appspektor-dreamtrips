@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.social.di;
 import android.content.Context;
 
 import com.worldventures.core.di.qualifier.ForApplication;
+import com.worldventures.core.modules.video.service.storage.MediaModelStorage;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.delegate.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.social.ui.podcast_player.delegate.PodcastPlayerDelegate;
+import com.worldventures.dreamtrips.social.ui.reptools.delegate.LocaleVideoDelegate;
 import com.worldventures.dreamtrips.social.ui.tripsimages.delegate.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.TripImagesCommandFactory;
@@ -52,5 +54,10 @@ public class SocialDelegateModule {
    @Singleton
    PostLocationPickerCallback providePostLocationPickerCallback() {
       return new PostLocationPickerCallback();
+   }
+
+   @Provides
+   LocaleVideoDelegate provideLocalVideoHelper(MediaModelStorage mediaModelStorage) {
+      return new LocaleVideoDelegate(mediaModelStorage);
    }
 }

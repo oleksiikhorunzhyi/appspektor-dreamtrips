@@ -163,6 +163,8 @@
    <string name="dtl_thrst_text_button">Pay in app</string>
    <string name="dtl_all_locations">All locations</string>
    <string name="dtl_earned_points">You have earned %1$d points</string>
+   <string name="dtl_transaction_adjusted_points">Your account has been adjusted by %1$d points.</string>
+   <string name="dtl_transaction_refunded_caption">Your payment has been refunded.</string>
    <string name="dtl_earned_points_on_item">+%1$dpt</string>
 
    <!-- Pilot -->
@@ -194,4 +196,12 @@
    <string name="transaction_sub_total_amount_no_semicolon">Sub Total Amount</string>
    <string name="dtl_estimator_explanation_to_earn_points">Points are calculated based on minimum amount spent at merchant and day of the week. To earn points the minimum amount should be %s</string>
    <string name="dtl_alert_title_error">Error</string>
+
+   <string name="receipt_upload_error_caption">Error uploading receipt. Retry?</string>
+   <string name="thrst_opening_error_caption">Something went wrong. Please try again in a while</string>
+
+   <string name="pay_in_app_hint_dialog_text">Would you like to watch a How to video on the new Pay in App process?</string>
+   <string name="pay_in_app_hint_positive">Watch now</string>
+   <string name="pay_in_app_hint_neutral">Remind me later</string>
+   <string name="pay_in_app_hint_negative">Do not show again</string>
 </resources>

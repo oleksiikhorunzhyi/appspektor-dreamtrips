@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.common.janet.storage
 
-import com.worldventures.core.janet.cache.storage.MemoryStorage
+import com.worldventures.janet.cache.storage.MemoryStorage
 import com.worldventures.dreamtrips.BaseSpec
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it

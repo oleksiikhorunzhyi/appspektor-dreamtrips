@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.model;
 
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;

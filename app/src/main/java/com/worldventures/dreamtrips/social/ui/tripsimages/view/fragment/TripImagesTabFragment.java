@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.tripsimages.presenter.TripImagesTabPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.args.TripImagesArgs;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.inspire_me.InspireMeFragment;
-import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.YouShouldBeHereFragment;
+import com.worldventures.dreamtrips.social.ui.tripsimages.view.fragment.ysbh.YSBHFragment;
 import com.worldventures.dreamtrips.social.ui.video.view.ThreeSixtyVideosFragment;
 import com.worldventures.dreamtrips.util.PageSelectionDetector;
 
@@ -53,7 +53,7 @@ public class TripImagesTabFragment extends BaseFragment<TripImagesTabPresenter> 
                .build()));
          adapter.add(new FragmentItem(ThreeSixtyVideosFragment.class, getString(R.string.three_sixty)));
          adapter.add(new FragmentItem(InspireMeFragment.class, getString(R.string.inspire_me)));
-         adapter.add(new FragmentItem(YouShouldBeHereFragment.class, getString(R.string.trip_images_you_should_be_here)));
+         adapter.add(new FragmentItem(YSBHFragment.class, getString(R.string.trip_images_you_should_be_here)));
       }
 
       PageSelectionDetector.listenPageSelection(pager, pageNumber -> {

@@ -3,14 +3,13 @@ package com.worldventures.dreamtrips.social.ui.feed.storage.delegate;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.AddItemsStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.ListStorageOperation;
 import com.worldventures.dreamtrips.modules.common.list_storage.operation.RefreshStorageOperation;
-import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.service.PostsInteractor;
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.UserTimelineStorageCommand;
 import com.worldventures.dreamtrips.social.ui.feed.storage.interactor.UserTimelineStorageInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 
 import io.techery.janet.Command;
@@ -20,9 +19,9 @@ public class UserTimelineStorageDelegate extends BaseFeedStorageDelegate<UserTim
    private int userId;
 
    public UserTimelineStorageDelegate(UserTimelineStorageInteractor userTimelineStorageInteractor, FeedInteractor feedInteractor,
-         PostsInteractor postsInteractor, TripsInteractor tripsInteractor, TripImagesInteractor tripImagesInteractor,
+         PostsInteractor postsInteractor, TripImagesInteractor tripImagesInteractor,
          BucketInteractor bucketInteractor, FriendsInteractor friendsInteractor, CommentsInteractor commentsInteractor) {
-      super(userTimelineStorageInteractor, feedInteractor, postsInteractor, tripsInteractor,
+      super(userTimelineStorageInteractor, feedInteractor, postsInteractor,
             tripImagesInteractor, bucketInteractor, friendsInteractor, commentsInteractor);
    }
 

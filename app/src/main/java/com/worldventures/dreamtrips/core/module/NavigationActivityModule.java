@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.router.RouterImpl;
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.modules.trips.TripsAppModule;
 import com.worldventures.dreamtrips.social.di.SocialAppModule;
 import com.worldventures.wallet.domain.WalletConstants;
 
@@ -67,7 +68,7 @@ public class NavigationActivityModule {
    ComponentsConfig provideComponentsConfig(FeatureManager featureManager, @ForActivity Context context) {
       List<String> activeComponents = new ArrayList<>();
       featureManager.with(Feature.SOCIAL, () -> activeComponents.add(SocialAppModule.FEED));
-      featureManager.with(Feature.TRIPS, () -> activeComponents.add(SocialAppModule.TRIPS));
+      featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsAppModule.TRIPS));
       if (!ViewUtils.isTablet(context)) {
          featureManager.with(Feature.WALLET, () -> activeComponents.add(WalletConstants.WALLET_COMPONENT));
       }
@@ -85,7 +86,7 @@ public class NavigationActivityModule {
       featureManager.with(Feature.SEND_FEED_BACK, () -> activeComponents.add(SocialAppModule.SEND_FEEDBACK));
       activeComponents.add(SocialAppModule.HELP);
       activeComponents.add(SocialAppModule.TERMS);
-      activeComponents.add(SocialAppModule.MAP_TRIPS);
+      activeComponents.add(TripsAppModule.MAP_TRIPS);
       activeComponents.add(SocialAppModule.LOGOUT);
       return new ComponentsConfig(activeComponents);
    }

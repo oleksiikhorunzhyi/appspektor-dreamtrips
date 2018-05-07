@@ -18,20 +18,15 @@ import com.worldventures.dreamtrips.BaseSpec.Companion.anyString
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.common.command.NotificationCountChangedCommand
 import com.worldventures.dreamtrips.modules.common.service.UserNotificationInteractor
-import com.worldventures.dreamtrips.modules.trips.model.Location
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.CompoundOperationState
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutablePostCompoundOperationModel
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.ImmutableTextPostBody
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostBody
-import com.worldventures.dreamtrips.social.ui.background_uploading.model.PostCompoundOperationModel
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.CompoundOperationsInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.PingAssetStatusInteractor
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.QueryCompoundOperationsCommand
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.video.FeedItemsVideoProcessingStatusCommand
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem
-import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem
 import com.worldventures.dreamtrips.social.ui.feed.model.PostFeedItem
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost
@@ -44,14 +39,13 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.SuggestedPhot
 import com.worldventures.dreamtrips.social.ui.feed.storage.command.FeedStorageCommand
 import com.worldventures.dreamtrips.social.ui.feed.storage.delegate.FeedStorageDelegate
 import com.worldventures.dreamtrips.social.ui.feed.view.util.TranslationDelegate
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Photo
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.mockito.ArgumentMatchers
@@ -62,336 +56,346 @@ import rx.schedulers.Schedulers
 import java.util.ArrayList
 import java.util.Date
 
-class FeedPresenterSpek : PresenterBaseSpec({
-   describe("Feed Presenter") {
-      beforeEachTest {
-         init()
-      }
-
-      describe("Restore feed items") {
-         it("Should create new empty feed items list if first creation") {
-            presenter.restoreFeedItems(true)
-            assert(presenter.feedItems != null && presenter.feedItems.size == 0)
-         }
-
-         it("Should persist feed items list if non-first creation") {
-            presenter.restoreFeedItems(false)
-            presenter.feedItems = ArrayList(listOf(PostFeedItem()))
-            assert(presenter.feedItems != null && presenter.feedItems.size == 1)
-         }
-      }
-
-      describe("Restore filter circle") {
-         it("Should not be null if filter circle is not cached") {
-            doReturn(null).whenever(socialSnappy).filterCircle
-
-            presenter.restoreCircle()
-            assert(presenter.filterCircle != null)
-         }
-
-         it("Should be same as cached filter circle") {
-            val cachedCircle = Circle()
-            doReturn(cachedCircle).whenever(socialSnappy).filterCircle
-            presenter.restoreCircle()
-            assert(presenter.filterCircle == cachedCircle)
-         }
-      }
-
-      describe("Subscription to feed updates") {
-
-         it("Should update feed items, call refresh feed, notify data set changed and send FeedItemsVideoProcessingStatusCommand") {
-            val testSubscriber = TestSubscriber<ActionState<FeedItemsVideoProcessingStatusCommand>>()
-            assetStatusInteractor.feedItemsVideoProcessingPipe().observe().subscribe(testSubscriber)
-            presenter.feedItems = ArrayList()
-
-            val command = FeedStorageCommand.dummyCommand()
-            command.result = listOf(FeedItem.create(TextualPost()))
-            doReturn(Observable.just(command)).whenever(feedStorageDelegate).observeStorageCommand()
-
-            presenter.subscribeToStorage()
-
-            assert(presenter.feedItems.containsAll(command.result))
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(command.result, null, false)
-            verify(view, VerificationModeFactory.times(1)).dataSetChanged()
-            AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 1)
-         }
-
-         it("Should notify user that error happened") {
-            val command = FeedStorageCommand.dummyCommand()
-            command.result = listOf(FeedItem.create(TextualPost()))
-            doReturn(Observable.error<Any?>(IllegalStateException())).whenever(feedStorageDelegate).observeStorageCommand()
+class FeedPresenterSpek : PresenterBaseSpec(FeedTestSuite()) {
+
+   class FeedTestSuite : TestSuite<FeedComponents>(FeedComponents()) {
+
+      override fun specs(): SpecBody.() -> Unit = {
+
+         with(components) {
+            describe("Feed Presenter") {
+
+               beforeEachTest {
+                  init()
+                  linkPresenterAndView()
+               }
+
+               describe("Restore feed items") {
+                  it("Should create new empty feed items list if first creation") {
+                     val presenter = presenter
+                     presenter.restoreFeedItems(true)
+                     assert(presenter.feedItems != null && presenter.feedItems.size == 0)
+                  }
+
+                  it("Should persist feed items list if non-first creation") {
+                     val presenter = presenter
+                     presenter.restoreFeedItems(false)
+                     presenter.feedItems = ArrayList(listOf(PostFeedItem()))
+                     assert(presenter.feedItems != null && presenter.feedItems.size == 1)
+                  }
+               }
+
+               describe("Restore filter circle") {
+                  it("Should not be null if filter circle is not cached") {
+                     doReturn(null).whenever(socialSnappy).filterCircle
+
+                     presenter.restoreCircle()
+                     assert(presenter.filterCircle != null)
+                  }
 
-            presenter.subscribeToStorage()
+                  it("Should be same as cached filter circle") {
+                     val cachedCircle = Circle()
+                     doReturn(cachedCircle).whenever(socialSnappy).filterCircle
+                     presenter.restoreCircle()
+                     assert(presenter.filterCircle == cachedCircle)
+                  }
+               }
 
-            verify(view, VerificationModeFactory.times(1)).informUser(ArgumentMatchers.anyInt())
-         }
-      }
+               describe("Subscription to feed updates") {
 
-      describe("Circles") {
-         it("Should hide blocking progress and show filters with circles from response") {
-            presenter.actionFilter()
+                  it("Should update feed items, call refresh feed, notify data set changed and send FeedItemsVideoProcessingStatusCommand") {
+                     val testSubscriber = TestSubscriber<ActionState<FeedItemsVideoProcessingStatusCommand>>()
+                     assetStatusInteractor.feedItemsVideoProcessingPipe().observe().subscribe(testSubscriber)
+                     presenter.feedItems = ArrayList()
 
-            verify(view, VerificationModeFactory.times(1)).hideBlockingProgress()
-            verify(view, VerificationModeFactory.times(1)).showFilter(circles, null)
-         }
+                     val command = FeedStorageCommand.dummyCommand()
+                     command.result = listOf(FeedItem.create(TextualPost()))
+                     doReturn(Observable.just(command)).whenever(feedStorageDelegate).observeStorageCommand()
 
-         it("Should set filter circle, save this circle to snappy and send refresh feed command") {
-            val testSubscriber = TestSubscriber<ActionState<GetAccountFeedCommand.Refresh>>()
-            feedInteractor.refreshAccountFeedPipe.observe().subscribe(testSubscriber)
+                     presenter.subscribeToStorage()
 
-            presenter.applyFilter(circles[0])
+                     assert(presenter.feedItems.containsAll(command.result))
+                     AssertUtil.assertStatusCount(testSubscriber, ActionState.Status.START, 1)
+                  }
 
-            assert(presenter.filterCircle == circles[0])
-            verify(socialSnappy, VerificationModeFactory.times(1)).saveFilterCircle(presenter.filterCircle)
-            testSubscriber.assertValueCount(1)
-         }
+                  it("Should notify user that error happened") {
+                     val command = FeedStorageCommand.dummyCommand()
+                     command.result = listOf(FeedItem.create(TextualPost()))
+                     doReturn(Observable.error<Any?>(IllegalStateException())).whenever(feedStorageDelegate)
+                           .observeStorageCommand()
 
-         it("Should send GetCirclesCommand") {
-            val testSubscriber = TestSubscriber<ActionState<GetCirclesCommand>>()
-            circlesInteractor.pipe.observe().subscribe(testSubscriber)
+                     presenter.subscribeToStorage()
 
-            presenter.updateCircles()
+                     verify(view, VerificationModeFactory.times(1)).informUser(ArgumentMatchers.anyInt())
+                  }
+               }
 
-            testSubscriber.assertValueCount(1)
-         }
-      }
+               describe("Circles") {
+                  it("Should hide blocking progress and show filters with circles from response") {
+                     presenter.actionFilter()
 
-      describe("Refresh feed") {
-         it("Refresh feed succeeds, view should update loading status and finishLoading and check permission to suggest user's photos") {
-            var permissionObservable = Observable.just(PermissionsResult(-1, null, 1))
-            whenever(permissionDispatcher.requestPermission(anyArray(), ArgumentMatchers.anyBoolean())).thenReturn(permissionObservable)
+                     verify(view, VerificationModeFactory.times(1)).hideBlockingProgress()
+                     verify(view, VerificationModeFactory.times(1)).showFilter(circles, null)
+                  }
 
-            presenter.subscribeRefreshFeeds()
-            feedInteractor.refreshAccountFeedPipe.send(GetAccountFeedCommand.Refresh("circleId"))
+                  it("Should set filter circle, save this circle to snappy and send refresh feed command") {
+                     val testSubscriber = TestSubscriber<ActionState<GetAccountFeedCommand.Refresh>>()
+                     feedInteractor.refreshAccountFeedPipe.observe().subscribe(testSubscriber)
 
-            verify(view, VerificationModeFactory.times(1)).updateLoadingStatus(false)
-            verify(view, VerificationModeFactory.times(1)).finishLoading()
-            verify(permissionDispatcher, times(1)).requestPermission(anyArray(), ArgumentMatchers.anyBoolean())
-         }
-      }
+                     presenter.applyFilter(circles[0])
 
-      describe("Load more feed") {
-         it("Load more feed succeeds, view should update loading status") {
-            presenter.subscribeLoadNextFeeds()
-            feedInteractor.loadNextAccountFeedPipe.send(GetAccountFeedCommand.LoadNext("circleId", Date()))
+                     assert(presenter.filterCircle == circles[0])
+                     verify(socialSnappy, VerificationModeFactory.times(1))
+                           .saveFilterCircle(presenter.filterCircle)
+                     testSubscriber.assertValueCount(1)
+                  }
 
-            verify(view, VerificationModeFactory.times(1)).updateLoadingStatus(false)
-         }
+                  it("Should send GetCirclesCommand") {
+                     val testSubscriber = TestSubscriber<ActionState<GetCirclesCommand>>()
+                     circlesInteractor.pipe.observe().subscribe(testSubscriber)
 
-         it("Load next should return false if feedItems collection is empty") {
-            presenter.feedItems = ArrayList()
-            presenter.filterCircle = Circle.withTitle("dummy")
+                     presenter.updateCircles()
 
-            val loadNextStatus = presenter.loadNext()
+                     testSubscriber.assertValueCount(1)
+                  }
+               }
 
-            assert(loadNextStatus == false)
-         }
+               describe("Refresh feed") {
+                  it("Refresh feed succeeds, view should update loading status and finishLoading and check permission to suggest user's photos") {
+                     val permissionObservable = Observable.just(PermissionsResult(-1, null, 1))
+                     whenever(permissionDispatcher.requestPermission(anyArray(), ArgumentMatchers.anyBoolean()))
+                           .thenReturn(permissionObservable)
 
-         it("Load next should return true if feedItems collection is not empty and GetAccountFeedCommand.LoadNext should be sent") {
-            presenter.feedItems = ArrayList(feedItems)
-            presenter.filterCircle = Circle.withTitle("dummy")
+                     presenter.subscribeRefreshFeeds()
+                     feedInteractor.refreshAccountFeedPipe.send(GetAccountFeedCommand.Refresh("circleId"))
 
-            val testSubscriber = TestSubscriber<ActionState<GetAccountFeedCommand.LoadNext>>()
-            feedInteractor.loadNextAccountFeedPipe.observe().subscribe(testSubscriber)
+                     verify(view, VerificationModeFactory.times(1)).updateLoadingStatus(false)
+                     verify(view, VerificationModeFactory.times(1)).finishLoading()
+                     verify(permissionDispatcher, times(1)).requestPermission(anyArray(), ArgumentMatchers.anyBoolean())
+                  }
+               }
 
-            val loadNextStatus = presenter.loadNext()
+               describe("Load more feed") {
+                  it("Load more feed succeeds, view should update loading status") {
+                     presenter.subscribeLoadNextFeeds()
+                     feedInteractor.loadNextAccountFeedPipe.send(GetAccountFeedCommand.LoadNext("circleId", Date()))
 
-            assert(loadNextStatus == true)
-            testSubscriber.assertValueCount(1)
-         }
+                     verify(view, VerificationModeFactory.times(1)).updateLoadingStatus(false)
+                  }
 
-      }
+                  it("Load next should return false if feedItems collection is empty") {
+                     presenter.feedItems = ArrayList()
+                     presenter.filterCircle = Circle.withTitle("dummy")
 
-      describe("Feed user interactions") {
-         it("Should updateRequestCounts when menu inflated") {
-            presenter.subscribeFriendsNotificationsCount()
-            presenter.menuInflated()
+                     val loadNextStatus = presenter.loadNext()
 
-            verify(view, VerificationModeFactory.times(1)).setRequestsCount(1)
-            verify(view, VerificationModeFactory.times(1)).setUnreadConversationCount(0)
-         }
+                     assert(loadNextStatus == false)
+                  }
 
-         it("Should download image") {
-            presenter.onDownloadImage("url")
+                  it("Load next should return true if feedItems collection is not empty and GetAccountFeedCommand.LoadNext should be sent") {
+                     presenter.feedItems = ArrayList(feedItems)
+                     presenter.filterCircle = Circle.withTitle("dummy")
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDownloadImage(anyString(), any(), any())
-         }
+                     val testSubscriber = TestSubscriber<ActionState<GetAccountFeedCommand.LoadNext>>()
+                     feedInteractor.loadNextAccountFeedPipe.observe().subscribe(testSubscriber)
 
-         it("Should call like item") {
-            presenter.onLikeItem(PostFeedItem())
+                     val loadNextStatus = presenter.loadNext()
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onLikeItem(any())
-         }
+                     assert(loadNextStatus == true)
+                     testSubscriber.assertValueCount(1)
+                  }
 
-         it("Should open comments") {
-            presenter.onCommentItem(PostFeedItem())
+               }
 
-            verify(view, VerificationModeFactory.times(1)).openComments(any())
-         }
+               describe("Feed user interactions") {
+                  it("Should updateRequestCounts when menu inflated") {
+                     presenter.subscribeFriendsNotificationsCount()
+                     presenter.menuInflated()
 
-         it("Should translate item") {
-            presenter.onTranslateFeedEntity(TextualPost())
+                     verify(view, VerificationModeFactory.times(1)).setRequestsCount(1)
+                     verify(view, VerificationModeFactory.times(1)).setUnreadConversationCount(0)
+                  }
 
-            verify(translationDelegate, VerificationModeFactory.times(1)).translate(any())
-         }
+                  it("Should download image") {
+                     presenter.onDownloadImage("url")
 
-         it("Should show original text") {
-            presenter.onShowOriginal(TextualPost())
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDownloadImage(anyString(), any(), any())
+                  }
 
-            verify(translationDelegate, VerificationModeFactory.times(1)).showOriginal(any())
-         }
+                  it("Should call like item") {
+                     presenter.onLikeItem(PostFeedItem())
 
-         it("Should load flags") {
-            presenter.onLoadFlags(mock())
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onLikeItem(any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onLoadFlags(any(), any())
-         }
+                  it("Should open comments") {
+                     presenter.onCommentItem(PostFeedItem())
 
-         it("Should flag item") {
-            presenter.onFlagItem("uid", 0, "reason")
+                     verify(view, VerificationModeFactory.times(1)).openComments(any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onFlagItem(any(), any(), any())
-         }
+                  it("Should translate item") {
+                     presenter.onTranslateFeedEntity(TextualPost())
 
-         it("Should edit textual post") {
-            presenter.onEditTextualPost(TextualPost())
+                     verify(translationDelegate, VerificationModeFactory.times(1)).translate(any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onEditTextualPost(any())
-         }
+                  it("Should show original text") {
+                     presenter.onShowOriginal(TextualPost())
 
-         it("Should delete textual post") {
-            presenter.onDeleteTextualPost(TextualPost())
+                     verify(translationDelegate, VerificationModeFactory.times(1)).showOriginal(any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDeleteTextualPost(any())
-         }
+                  it("Should load flags") {
+                     presenter.onLoadFlags(mock())
 
-         it("Should edit photo") {
-            presenter.onEditPhoto(Photo())
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onLoadFlags(any(), any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onEditPhoto(any())
-         }
+                  it("Should flag item") {
+                     presenter.onFlagItem("uid", 0, "reason")
 
-         it("Should delete photo") {
-            presenter.onDeletePhoto(Photo())
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onFlagItem(any(), any(), any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDeletePhoto(any())
-         }
+                  it("Should edit textual post") {
+                     presenter.onEditTextualPost(TextualPost())
 
-         it("Should edit bucket item") {
-            presenter.onEditBucketItem(BucketItem(), BucketItem.BucketType.ACTIVITY)
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onEditTextualPost(any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onEditBucketItem(any(), any())
-         }
+                  it("Should delete textual post") {
+                     presenter.onDeleteTextualPost(TextualPost())
 
-         it("Should delete bucket item") {
-            presenter.onDeleteBucketItem(BucketItem())
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDeleteTextualPost(any())
+                  }
 
-            verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDeleteBucketItem(any())
-         }
-      }
+                  it("Should edit photo") {
+                     presenter.onEditPhoto(Photo())
 
-      describe("Photo suggestions") {
-         it("Should call takeView and subscribe to new photos notifications") {
-            presenter.takeSuggestionView(mock(), mock(), mock())
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onEditPhoto(any())
+                  }
 
-            verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).takeView(any(), any(), any())
-            verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).subscribeNewPhotoNotifications(any())
-         }
+                  it("Should delete photo") {
+                     presenter.onDeletePhoto(Photo())
 
-         it("Suggested photos collection should contain all photos from the command and call refreshFeedItems") {
-            presenter.subscribePhotoGalleryCheck()
-            suggestedPhotoInteractor.suggestedPhotoCommandActionPipe.send(SuggestedPhotoCommand())
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDeletePhoto(any())
+                  }
 
-            assert(presenter.shouldShowSuggestionItems == true)
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, null, true)
-         }
+                  it("Should edit bucket item") {
+                     presenter.onEditBucketItem(BucketItem(), BucketItem.BucketType.ACTIVITY)
 
-         it("Suggested photos collection should be clear, suggestedPhotoCellHelper should call reset and call refreshFeedItems") {
-            presenter.removeSuggestedPhotos()
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onEditBucketItem(any(), any())
+                  }
 
-            assert(presenter.shouldShowSuggestionItems == false)
-            verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).reset()
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, null, false)
-         }
+                  it("Should delete bucket item") {
+                     presenter.onDeleteBucketItem(BucketItem())
 
-         it("Should call sync of suggestedPhotoCellHelper") {
-            presenter.syncSuggestionViewState()
-            verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).sync()
-         }
+                     verify(feedActionHandlerDelegate, VerificationModeFactory.times(1)).onDeleteBucketItem(any())
+                  }
+               }
 
-         it("Should call selectPhoto of suggestedPhotoCellHelper") {
-            presenter.selectPhoto(PhotoPickerModel())
+               describe("Photo suggestions") {
+                  it("Should call takeView and subscribe to new photos notifications") {
+                     presenter.takeSuggestionView(mock(), mock(), mock())
 
-            verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).selectPhoto(any())
-         }
+                     verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).takeView(any(), any(), any())
+                     verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).subscribeNewPhotoNotifications(any())
+                  }
 
-      }
+                  it("Suggested photos collection should contain all photos from the command and call refreshFeedItems") {
+                     presenter.subscribePhotoGalleryCheck()
+                     suggestedPhotoInteractor.suggestedPhotoCommandActionPipe.send(SuggestedPhotoCommand())
 
-      describe("Counters") {
-         it("Should update unread converasation counter") {
-            doReturn(Observable.just(1)).whenever(unreadConversationObservable).getObservable()
-            presenter.subscribeUnreadConversationsCount()
+                     assert(presenter.shouldShowSuggestionItems == true)
+                     verify(view, VerificationModeFactory.times(1))
+                           .refreshFeedItems(presenter.feedItems, null, true)
+                  }
 
-            assert(presenter.unreadConversationCount == 1)
-            verify(view, VerificationModeFactory.times(1)).setUnreadConversationCount(1)
-         }
+                  it("Suggested photos collection should be clear, suggestedPhotoCellHelper should call reset and call refreshFeedItems") {
+                     presenter.removeSuggestedPhotos()
 
-         it("Should update friend reauests counter") {
-            presenter.subscribeFriendsNotificationsCount()
+                     assert(presenter.shouldShowSuggestionItems == false)
+                     verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).reset()
+                     verify(view, VerificationModeFactory.times(1))
+                           .refreshFeedItems(presenter.feedItems, null, false)
+                  }
 
-            userNotificationInteractor.notificationCountChangedPipe().send(NotificationCountChangedCommand())
+                  it("Should call sync of suggestedPhotoCellHelper") {
+                     presenter.syncSuggestionViewState()
+                     verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).sync()
+                  }
 
-            verify(view, VerificationModeFactory.times(1)).setRequestsCount(1)
-         }
-      }
+                  it("Should call selectPhoto of suggestedPhotoCellHelper") {
+                     presenter.selectPhoto(PhotoPickerModel())
 
-      describe("Uploading user actions") {
-         it("Should call onUploadResume in uploadingPresenterDelegate") {
-            presenter.onUploadResume(stubPostCompoundOperationModel)
-            verify(uploadingPresenterDelegate, VerificationModeFactory.times(1)).onUploadResume(stubPostCompoundOperationModel)
-         }
+                     verify(suggestedPhotoCellHelper, VerificationModeFactory.times(1)).selectPhoto(any())
+                  }
 
-         it("Should call onUploadPaused in uploadingPresenterDelegate") {
-            presenter.onUploadPaused(stubPostCompoundOperationModel)
-            verify(uploadingPresenterDelegate, VerificationModeFactory.times(1)).onUploadPaused(stubPostCompoundOperationModel)
-         }
+               }
 
-         it("Should call onUploadRetry in uploadingPresenterDelegate") {
-            presenter.onUploadRetry(stubPostCompoundOperationModel)
-            verify(uploadingPresenterDelegate, VerificationModeFactory.times(1)).onUploadRetry(stubPostCompoundOperationModel)
-         }
+               describe("Counters") {
+                  it("Should update unread converasation counter") {
+                     doReturn(Observable.just(1)).whenever(unreadConversationObservable).getObservable()
+                     presenter.subscribeUnreadConversationsCount()
 
-         it("Should call onUploadCancel in uploadingPresenterDelegate") {
-            presenter.onUploadCancel(stubPostCompoundOperationModel)
-            verify(uploadingPresenterDelegate, VerificationModeFactory.times(1)).onUploadCancel(stubPostCompoundOperationModel)
-         }
-      }
+                     assert(presenter.unreadConversationCount == 1)
+                     verify(view, VerificationModeFactory.times(1)).setUnreadConversationCount(1)
+                  }
 
-      describe("Compound operation") {
-         it("Should contain all postCompoundOperations and call refresh feeds") {
-            presenter.subscribeToBackgroundUploadingOperations()
+                  it("Should update friend reauests counter") {
+                     presenter.subscribeFriendsNotificationsCount()
 
-            compoundOperationsInteractor.compoundOperationsPipe().send(QueryCompoundOperationsCommand())
+                     userNotificationInteractor.notificationCountChangedPipe().send(NotificationCountChangedCommand())
 
-            assert(presenter.postUploads.containsAll(postCompoundOperations))
-            verify(view, VerificationModeFactory.times(1)).refreshFeedItems(presenter.feedItems, presenter.postUploads, false)
+                     verify(view, VerificationModeFactory.times(1)).setRequestsCount(1)
+                  }
+               }
+
+               describe("Uploading user actions") {
+                  it("Should call onUploadResume in uploadingPresenterDelegate") {
+                     presenter.onUploadResume(stubPostCompoundOperationModel)
+                     verify(uploadingPresenterDelegate, VerificationModeFactory.times(1))
+                           .onUploadResume(stubPostCompoundOperationModel)
+                  }
+
+                  it("Should call onUploadPaused in uploadingPresenterDelegate") {
+                     presenter.onUploadPaused(stubPostCompoundOperationModel)
+                     verify(uploadingPresenterDelegate, VerificationModeFactory.times(1))
+                           .onUploadPaused(stubPostCompoundOperationModel)
+                  }
+
+                  it("Should call onUploadRetry in uploadingPresenterDelegate") {
+                     presenter.onUploadRetry(stubPostCompoundOperationModel)
+                     verify(uploadingPresenterDelegate, VerificationModeFactory.times(1))
+                           .onUploadRetry(stubPostCompoundOperationModel)
+                  }
+
+                  it("Should call onUploadCancel in uploadingPresenterDelegate") {
+                     presenter.onUploadCancel(stubPostCompoundOperationModel)
+                     verify(uploadingPresenterDelegate, VerificationModeFactory.times(1))
+                           .onUploadCancel(stubPostCompoundOperationModel)
+                  }
+               }
+
+               describe("Compound operation") {
+                  it("Should contain all postCompoundOperations and call refresh feeds") {
+                     presenter.subscribeToBackgroundUploadingOperations()
+
+                     compoundOperationsInteractor.compoundOperationsPipe().send(QueryCompoundOperationsCommand())
+
+                     assert(presenter.postUploads.containsAll(postCompoundOperations))
+                     verify(view, VerificationModeFactory.times(1))
+                           .refreshFeedItems(presenter.feedItems, presenter.postUploads, false)
+                  }
+               }
+            }
          }
       }
    }
-}) {
-   companion object {
-      lateinit var presenter: FeedPresenter
-      lateinit var view: FeedPresenter.View
-      lateinit var feedInteractor: FeedInteractor
-      lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
-      lateinit var circlesInteractor: CirclesInteractor
-      lateinit var assetStatusInteractor: PingAssetStatusInteractor
-      lateinit var suggestedPhotoInteractor: SuggestedPhotoInteractor
-      lateinit var userNotificationInteractor: UserNotificationInteractor
-      lateinit var permissionDispatcher: PermissionDispatcher
 
+   class FeedComponents : TestComponents<FeedPresenter, FeedPresenter.View>() {
       val feedActionHandlerDelegate: FeedActionHandlerDelegate = mock()
-      val snappy: SnappyRepository = mock()
       val socialSnappy: SocialSnappyRepository = mock()
       val feedStorageDelegate: FeedStorageDelegate = mock()
       val translationDelegate: TranslationDelegate = mock()
@@ -403,6 +407,14 @@ class FeedPresenterSpek : PresenterBaseSpec({
       val feedItems = provideFeedItems()
       val stubPostCompoundOperationModel = provideCompoundOperation()
       val postCompoundOperations = listOf(stubPostCompoundOperationModel)
+
+      lateinit var feedInteractor: FeedInteractor
+      lateinit var compoundOperationsInteractor: CompoundOperationsInteractor
+      lateinit var circlesInteractor: CirclesInteractor
+      lateinit var assetStatusInteractor: PingAssetStatusInteractor
+      lateinit var suggestedPhotoInteractor: SuggestedPhotoInteractor
+      lateinit var userNotificationInteractor: UserNotificationInteractor
+      lateinit var permissionDispatcher: PermissionDispatcher
 
       fun init() {
          presenter = FeedPresenter()
@@ -429,7 +441,7 @@ class FeedPresenterSpek : PresenterBaseSpec({
          permissionDispatcher = mock()
 
          prepareInjector().apply {
-            registerProvider(SnappyRepository::class.java, { snappy })
+            registerProvider(SnappyRepository::class.java, { mock() })
             registerProvider(SocialSnappyRepository::class.java, { socialSnappy })
             registerProvider(FeedStorageDelegate::class.java, { feedStorageDelegate })
             registerProvider(FeedInteractor::class.java, { feedInteractor })
@@ -443,30 +455,14 @@ class FeedPresenterSpek : PresenterBaseSpec({
             registerProvider(UserNotificationInteractor::class.java, { userNotificationInteractor })
             registerProvider(UploadingPresenterDelegate::class.java, { uploadingPresenterDelegate })
             registerProvider(CompoundOperationsInteractor::class.java, { compoundOperationsInteractor })
-            registerProvider(PermissionDispatcher::class.java, { permissionDispatcher})
+            registerProvider(PermissionDispatcher::class.java, { permissionDispatcher })
 
             inject(presenter)
          }
-
-         presenter.takeView(view)
       }
 
-      fun provideCompoundOperation(): PostCompoundOperationModel<PostBody> {
-         return ImmutablePostCompoundOperationModel.builder<PostBody>()
-               .id(134)
-               .creationDate(Date())
-               .type(PostBody.Type.TEXT)
-               .state(CompoundOperationState.SCHEDULED)
-               .body(ImmutableTextPostBody.builder()
-                     .text("text")
-                     .origin(CreateEntityBundle.Origin.FEED)
-                     .location(Location())
-                     .build())
-               .build()!!
-      }
+      private fun provideCircles(): List<Circle> = mutableListOf(Circle.withTitle("Friends"), Circle.withTitle("Close friends"))
 
-      fun provideCircles(): List<Circle> = mutableListOf(Circle.withTitle("Friends"), Circle.withTitle("Close friends"))
-
-      fun provideFeedItems(): List<PostFeedItem> = mutableListOf(PostFeedItem(), PostFeedItem())
+      private fun provideFeedItems(): List<PostFeedItem> = mutableListOf(PostFeedItem(), PostFeedItem())
    }
 }

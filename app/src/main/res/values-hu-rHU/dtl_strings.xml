@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">Elnézést, de nem tudtuk elküldeni az e-mailt, kérjük, próbálja később.</string>
+   <string name="dtl_send_email_success">Az e-mailt elküldtük sikeresen.</string>
+   <string name="dtl_send_email_text">Elküldve az e-mail címemre</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">Részösszeg: %1$s</string>
    <string name="dtl_locations_title">Helyzet kiválasztása </string>
@@ -159,6 +162,8 @@
    <string name="dtl_thrst_text_button">Fizetés alkalmazásban</string>
    <string name="dtl_all_locations">minden helyszín</string>
    <string name="dtl_earned_points">%1$d pontot kaptál</string>
+   <string name="dtl_transaction_adjusted_points">A fiókjához hozzáadtunk %1$d pontot.</string>
+   <string name="dtl_transaction_refunded_caption">A befizetését visszautaltuk.</string>
    <string name="dtl_earned_points_on_item">+%1$dpt</string>
 
    <!-- Pilot -->
@@ -190,4 +195,12 @@
    <string name="transaction_sub_total_amount_no_semicolon">Részösszeg</string>
    <string name="dtl_estimator_explanation_to_earn_points">A pontok számolása az értékesítőnél elköltött minimális összeg és a hét napja alapján történik. Pontok gyűjtéséhez a minimum összeg %1$s</string>
    <string name="dtl_alert_title_error">Hiba</string>
+
+   <string name="receipt_upload_error_caption">Nyugta feltöltési hiba. Újra?</string>
+   <string name="thrst_opening_error_caption">Valamilyen hiba történt. Kérjük, próbálja újra egy kicsit később</string>
+
+   <string name="pay_in_app_hint_dialog_text">Szeretné megnézni a hogyan csináljuk videót az új alklamazáson belüli fizetés folyamatáról?</string>
+   <string name="pay_in_app_hint_positive">Nézd meg</string>
+   <string name="pay_in_app_hint_neutral">Emlékeztessen később</string>
+   <string name="pay_in_app_hint_negative">Ne jelenjen meg ismét</string>
 </resources>

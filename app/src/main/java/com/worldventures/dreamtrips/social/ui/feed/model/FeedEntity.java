@@ -47,5 +47,6 @@ public interface FeedEntity extends Serializable, UidItem, TranslatableItem {
 
    boolean contentSame(FeedEntity feedEntity);
 
+   @Nullable
    Date getCreatedAt();
 }

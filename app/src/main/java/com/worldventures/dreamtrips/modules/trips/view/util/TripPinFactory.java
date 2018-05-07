@@ -11,7 +11,7 @@ import android.graphics.Typeface;
 
 import com.worldventures.core.ui.util.ViewUtils;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.map.Pin;
 
 public final class TripPinFactory {
 

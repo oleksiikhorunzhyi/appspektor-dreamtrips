@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.worldventures.core.ui.util.StatePaginatedRecyclerViewManager;
-import com.worldventures.core.ui.view.cell.AbstractCell;
 import com.worldventures.core.ui.view.recycler.StateRecyclerView;
 import com.worldventures.dreamtrips.social.ui.feed.view.cell.Focusable;
 
@@ -111,15 +110,5 @@ public class FocusableStatePaginatedRecyclerViewManager extends StatePaginatedRe
       }
 
       return nearestFocusableViewHolder;
-   }
-
-   public int findFocusedPosition() {
-      Focusable focusableViewHolder = findNearestFocusableViewHolder();
-      if (focusableViewHolder != null) {
-         AbstractCell cell = (AbstractCell) focusableViewHolder;
-         return getStateRecyclerView().getChildAdapterPosition(cell.itemView);
-      } else {
-         return -1;
-      }
    }
 }

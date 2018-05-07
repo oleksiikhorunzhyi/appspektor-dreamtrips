@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.users.liker.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.action.UpdateBucketItemCommand;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.command.AddBucketItemPhotoCommand;
@@ -16,8 +18,6 @@ import com.worldventures.dreamtrips.social.ui.feed.service.command.DeletePostCom
 import com.worldventures.dreamtrips.social.ui.feed.service.command.EditCommentCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.EditPostCommand;
 import com.worldventures.dreamtrips.social.ui.feed.service.command.GetCommentsCommand;
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetLikersCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.TripImagesInteractor;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeletePhotoCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.service.command.DeleteVideoCommand;
@@ -80,14 +80,14 @@ public class FeedEntityHolderDelegate {
                   .onSuccess(deletePostCommand -> feedEntityHolder.deleteFeedEntity(deletePostCommand.getResult()))
                   .onFail(errorAction::call));
 
-      tripImagesInteractor.editPhotoWithTagsCommandActionPipe()
+      tripImagesInteractor.getEditPhotoWithTagsCommandActionPipe()
             .observeWithReplay()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<EditPhotoWithTagsCommand>()
                   .onSuccess(deletePhotoCommand -> feedEntityHolder.updateFeedEntity(deletePhotoCommand.getResult()))
                   .onFail(errorAction::call));
 
-      tripImagesInteractor.deletePhotoPipe()
+      tripImagesInteractor.getDeletePhotoPipe()
             .observe()
             .compose(bind(stopper))
             .subscribe(new ActionStateSubscriber<DeletePhotoCommand>()

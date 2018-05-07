@@ -15,7 +15,7 @@ import com.worldventures.dreamtrips.api.config.model.ImmutableConfiguration as A
 class ConfigurationConverterSpec : BaseSpec({
    describe("Configuration converter") {
 
-      xit("Configuration comes full") {
+      it("Configuration comes full") {
          setup()
          val convertedConfiguration = converter.convert(mapperyContext, apiConfiguration)
 

@@ -8,8 +8,8 @@ import com.worldventures.core.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor;
-import com.worldventures.dreamtrips.social.ui.profile.service.command.GetPublicProfileCommand;
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor;
+import com.worldventures.dreamtrips.social.service.profile.command.GetPublicProfileCommand;
 
 import javax.inject.Inject;
 
@@ -40,7 +40,7 @@ public class FeedItemAdditionalInfoPresenter<V extends FeedItemAdditionalInfoPre
       if (!TextUtils.isEmpty(user.getBackgroundPhotoUrl())) {
          view.setupView(user);
       } else {
-         profileInteractor.publicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
+         profileInteractor.getPublicProfilePipe().createObservable(new GetPublicProfileCommand(user.getId()))
                .compose(bindViewToMainComposer())
                .subscribe(new ActionStateSubscriber<GetPublicProfileCommand>()
                      .onSuccess(command -> view.setupView(command.getResult()))

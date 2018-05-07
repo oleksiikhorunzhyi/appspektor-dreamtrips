@@ -10,7 +10,9 @@ import dagger.Provides;
       includes = {
             DtlMappingModule.class,
             DtlActionsModule.class,
-            DtlDelegatesModule.class},
+            DtlDelegatesModule.class,
+            DtlSnappyStorageModule.class,
+      },
       complete = false, library = true)
 public class DtlModule {
 

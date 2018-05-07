@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:theme="@style/WalletTheme"
       android:orientation="vertical"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_wallet_vector_success"
+            app:srcCompat="@drawable/ic_wallet_vector_success"
             tools:ignore="ContentDescription"
             />
 

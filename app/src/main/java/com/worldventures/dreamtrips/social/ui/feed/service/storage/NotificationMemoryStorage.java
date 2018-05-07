@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.social.ui.feed.service.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 
 import java.util.ArrayList;

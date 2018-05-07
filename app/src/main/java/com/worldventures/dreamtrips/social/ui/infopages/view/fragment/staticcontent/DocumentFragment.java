@@ -13,14 +13,8 @@ import com.worldventures.dreamtrips.social.ui.infopages.presenter.DocumentPresen
 public class DocumentFragment extends StaticInfoFragment<DocumentPresenter, DocumentBundle> implements DocumentPresenter.View {
 
    @Override
-   protected String getURL() {
-      return getArgs().getDocument().getUrl();
-   }
-
-   @Override
    public void afterCreateView(View rootView) {
       ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getArgs().getDocument().getName());
-
       webView.getSettings().setDomStorageEnabled(true);
       super.afterCreateView(rootView);
    }

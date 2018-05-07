@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/white"
@@ -97,7 +98,7 @@
                android:layout_alignBottom="@id/earned_points_layout"
                android:layout_alignParentRight="true"
                android:layout_marginBottom="5dp"
-               android:text="@string/dtl_subtotal"
+               tools:text="Subtotal: $84.5"
                android:textSize="@dimen/dtl_transaction_screen_item_title_text_size"
                android:textStyle="bold"
                />

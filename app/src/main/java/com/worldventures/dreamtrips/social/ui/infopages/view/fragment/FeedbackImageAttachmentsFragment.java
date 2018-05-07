@@ -19,6 +19,8 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.OnPageChangedAdapter;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.FeedbackImageAttachmentsPresenter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import butterknife.InjectView;
@@ -67,7 +69,7 @@ public class FeedbackImageAttachmentsFragment extends RxBaseFragmentWithArgs<Fee
    }
 
    @Override
-   public void addItems(List<FeedbackImageAttachment> imageAttachments) {
+   public void addItems(@NotNull List<? extends FeedbackImageAttachment> imageAttachments) {
       Queryable.from(imageAttachments)
             .forEachR(item -> adapter.add(new FragmentItem(FeedbackImageAttachmentFullscreenFragment.class, "", item)));
       refreshToolbarTitle();

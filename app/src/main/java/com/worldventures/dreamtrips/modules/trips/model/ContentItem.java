@@ -1,9 +1,14 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
 import java.io.Serializable;
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class ContentItem implements Serializable {
+
    public static final long serialVersionUID = 138L;
 
    private String description;
@@ -14,7 +19,6 @@ public class ContentItem implements Serializable {
    public String getDescription() {
       return description != null ? description.replaceAll("\n", "").replaceAll("\t", "") : "";
    }
-
    public void setDescription(String description) {
       this.description = description;
    }

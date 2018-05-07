@@ -10,13 +10,14 @@ import com.worldventures.dreamtrips.api.trip.model.Trip
 import com.worldventures.dreamtrips.api.trip.model.TripWithDetails
 import com.worldventures.dreamtrips.core.janet.cache.storage.PaginatedMemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand
-import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripDetailsCommand
+import com.worldventures.dreamtrips.modules.trips.service.command.GetTripsCommand
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
+import com.worldventures.dreamtrips.modules.trips.model.filter.TripsFilterData
 import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor
-import com.worldventures.dreamtrips.modules.trips.storage.TripDetailsStorage
-import com.worldventures.dreamtrips.modules.trips.storage.TripsDiskStorage
-import com.worldventures.dreamtrips.modules.trips.storage.TripsStorage
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripDetailsStorage
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripsDiskStorage
+import com.worldventures.dreamtrips.modules.trips.service.storage.TripsStorage
 import io.techery.janet.ActionService
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -40,8 +41,8 @@ class TripInteractorSpec : BaseSpec({
             whenever(tripsMemoryStorage.get(any())).thenReturn(null)
             whenever(tripsDiscStorage.get(any())).thenReturn(emptyList())
 
-            tripsInteractor.tripsPipe()
-                  .createObservable(GetTripsCommand("", any(), true))
+            tripsInteractor.tripsPipe
+                  .createObservable(GetTripsCommand("", TripsFilterData(), true))
                   .subscribe(testSubscriber)
 
 
@@ -58,8 +59,8 @@ class TripInteractorSpec : BaseSpec({
 
             whenever(tripsMemoryStorage.get(any())).thenReturn(storedTrips)
 
-            tripsInteractor.tripsPipe()
-                  .createObservable(GetTripsCommand("", any(), true))
+            tripsInteractor.tripsPipe
+                  .createObservable(GetTripsCommand("", TripsFilterData(), true))
                   .subscribe(testSubscriber)
 
             it("Should call onProgress") {
@@ -79,8 +80,8 @@ class TripInteractorSpec : BaseSpec({
 
             whenever(tripsMemoryStorage.get(any())).thenReturn(storedTrips)
 
-            tripsInteractor.tripsPipe()
-                  .createObservable(GetTripsCommand("", any(), false))
+            tripsInteractor.tripsPipe
+                  .createObservable(GetTripsCommand("", TripsFilterData(), false))
                   .subscribe(testSubscriber)
 
 
@@ -106,7 +107,7 @@ class TripInteractorSpec : BaseSpec({
 
          whenever(snappy.getTripDetail(any())).thenReturn(cachedTrip)
 
-         tripsInteractor.detailsPipe()
+         tripsInteractor.detailsPipe
                .createObservable(GetTripDetailsCommand("1234"))
                .subscribe(testSubscriber)
 

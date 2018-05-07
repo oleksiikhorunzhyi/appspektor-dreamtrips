@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntityCopyHelper;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.model.TextualPost;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.HashtagSuggestion;
@@ -47,6 +48,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
    @State String query;
    @State ArrayList<FeedItem> feedItems = new ArrayList<>();
    @State ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
+   @State boolean loading;
    private Subscription storageSubscription;
 
    @Inject HashtagInteractor interactor;
@@ -63,6 +65,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
          refreshFeedItems();
       }
       view.onSuggestionsReceived(query, hashtagSuggestions);
+      view.updateLoadingStatus(loading, false);
 
       feedActionHandlerDelegate.setFeedEntityEditingView(view);
       subscribeToStorage();
@@ -120,19 +123,20 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
 
    public boolean loadNext() {
       if (feedItems.isEmpty() || TextUtils.isEmpty(query)) {
-         return false;
+         loading = false;
       }
       interactor.getLoadNextFeedsByHashtagsPipe()
             .send(new FeedByHashtagCommand.LoadNext(query, FEEDS_PER_PAGE, feedItems.get(feedItems.size() - 1)
                   .getCreatedAt()));
-      return true;
+      view.showLoading();
+      loading = true;
+      return loading;
    }
 
    private void feedUpdated(List<FeedItem> newFeedItems) {
       feedItems.clear();
       feedItems.addAll(newFeedItems);
       refreshFeedItems();
-      view.dataSetChanged();
    }
 
    private void subscribeRefreshFeeds() {
@@ -152,11 +156,13 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
 
    private void refreshFeedSucceed(List<FeedItem> freshItems) {
       boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
+      loading = false;
       view.updateLoadingStatus(false, noMoreFeeds);
       view.finishLoading();
    }
 
    private void refreshFeedError() {
+      loading = false;
       view.updateLoadingStatus(false, false);
       view.finishLoading();
    }
@@ -176,10 +182,12 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
    private void addFeedItems(List<FeedItem> newItems) {
       // server signals about end of pagination with empty page, NOT with items < page size
       boolean noMoreFeeds = newItems == null || newItems.size() == 0;
+      loading = false;
       view.updateLoadingStatus(false, noMoreFeeds);
    }
 
    private void loadMoreItemsError() {
+      loading = false;
       view.updateLoadingStatus(false, true);
    }
 
@@ -202,7 +210,7 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
    }
 
    public void refreshFeedItems() {
-      view.refreshFeedItems(feedItems);
+      view.refreshFeedItems(FeedEntityCopyHelper.copyFeedItems(feedItems));
    }
 
    @Override
@@ -303,8 +311,8 @@ public class HashtagFeedPresenter<T extends HashtagFeedPresenter.View> extends P
 
       void hideSuggestionProgress();
 
-      void showComments(FeedItem feedItem);
+      void showLoading();
 
-      void dataSetChanged();
+      void showComments(FeedItem feedItem);
    }
 }

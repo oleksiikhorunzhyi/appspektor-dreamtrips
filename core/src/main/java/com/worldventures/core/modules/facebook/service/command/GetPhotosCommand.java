@@ -6,16 +6,15 @@ import com.facebook.GraphResponse;
 import com.google.gson.reflect.TypeToken;
 import com.worldventures.core.R;
 import com.worldventures.core.janet.CommandWithError;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.core.janet.cache.storage.PaginatedStorage;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.modules.facebook.FacebookHelper;
 import com.worldventures.core.modules.facebook.model.FacebookPhoto;
 import com.worldventures.core.modules.facebook.model.FacebookPhotosGraph;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.PaginatedStorage;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,7 @@ public class GetPhotosCommand extends CommandWithError<List<FacebookPhoto>> impl
    public CacheOptions getCacheOptions() {
       CacheBundle cacheBundle = new CacheBundleImpl();
       cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, refresh);
-      return ImmutableCacheOptions.builder().params(cacheBundle).build();
+      return new CacheOptions(true, true, true, cacheBundle);
    }
 
    @Override

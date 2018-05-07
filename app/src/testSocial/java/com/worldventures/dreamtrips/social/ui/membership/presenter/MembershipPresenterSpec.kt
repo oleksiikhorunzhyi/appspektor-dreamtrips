@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.membership.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.session.Feature
 import com.worldventures.dreamtrips.modules.common.command.OfflineErrorCommand
@@ -13,64 +17,74 @@ import com.worldventures.dreamtrips.social.ui.membership.view.fragment.InviteFra
 import com.worldventures.dreamtrips.social.ui.membership.view.fragment.PodcastsFragment
 import com.worldventures.dreamtrips.social.ui.video.view.PresentationVideosFragment
 import io.techery.janet.Janet
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import kotlin.test.assertTrue
 
-class MembershipPresenterSpec: PresenterBaseSpec({
+class MembershipPresenterSpec : PresenterBaseSpec(MembershipTestSuite()) {
 
-   describe("Membership Presenter") {
+   class MembershipTestSuite : TestSuite<MembershipComponents>(MembershipComponents()) {
 
-      init()
+      override fun specs(): SpecBody.() -> Unit = {
 
-      describe("take view") {
-         presenter.takeView(view)
+         with(components) {
+            describe("Membership Presenter") {
 
-         it("should set screens on take view") {
-            verify(view).setScreens(any())
-         }
+               init()
 
-         it ("should subscribe to offline error pipe") {
-            verify(offlineErrorInteractor).offlineErrorCommandPipe()
+               describe("take view") {
+                  presenter.takeView(view)
+
+                  it("should set screens on take view") {
+                     verify(view).setScreens(any())
+                  }
+
+                  it("should subscribe to offline error pipe") {
+                     verify(offlineErrorInteractor).offlineErrorCommandPipe()
+                  }
+               }
+
+               describe("screens list") {
+
+                  val featureManager = featureManager
+
+                  it("should contain all screens: presentation videos, enroll member, enroll merchant, invite and share, podcasts") {
+                     whenever(featureManager.available(Feature.REP_SUGGEST_MERCHANT)).thenReturn(true)
+                     whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(false)
+                     whenever(featureManager.available(Feature.MEMBERSHIP)).thenReturn(true)
+                     whenever(featureManager.available(Feature.INVITATIONS)).thenReturn(true)
+
+                     val screens = presenter.provideScreens()
+                     assertTrue { screens.contains(PresentationVideosFragment::class.java) }
+                     assertTrue { screens.contains(EnrollMemberFragment::class.java) }
+                     assertTrue { screens.contains(EnrollMerchantFragment::class.java) }
+                     assertTrue { screens.contains(InviteFragment::class.java) }
+                     assertTrue { screens.contains(PodcastsFragment::class.java) }
+                  }
+
+                  it("should contain only presentation videos, enroll member screens") {
+                     whenever(featureManager.available(Feature.REP_SUGGEST_MERCHANT)).thenReturn(false)
+                     whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(true)
+                     whenever(featureManager.available(Feature.MEMBERSHIP)).thenReturn(false)
+
+                     val screens = presenter.provideScreens()
+                     assertTrue { screens.contains(PresentationVideosFragment::class.java) }
+                     assertTrue { screens.contains(EnrollMemberFragment::class.java) }
+                     assertTrue { !screens.contains(EnrollMerchantFragment::class.java) }
+                     assertTrue { !screens.contains(InviteFragment::class.java) }
+                     assertTrue { !screens.contains(PodcastsFragment::class.java) }
+                  }
+               }
+            }
          }
       }
 
-      describe("screens list") {
-
-         it("should contain all screens: presentation videos, enroll member, enroll merchant, invite and share, podcasts") {
-            whenever(featureManager.available(Feature.REP_SUGGEST_MERCHANT)).thenReturn(true)
-            whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(false)
-            whenever(featureManager.available(Feature.MEMBERSHIP)).thenReturn(true)
-            whenever(featureManager.available(Feature.INVITATIONS)).thenReturn(true)
-
-            val screens = presenter.provideScreens()
-            assertTrue { screens.contains(PresentationVideosFragment::class.java) }
-            assertTrue { screens.contains(EnrollMemberFragment::class.java) }
-            assertTrue { screens.contains(EnrollMerchantFragment::class.java ) }
-            assertTrue { screens.contains(InviteFragment::class.java) }
-            assertTrue { screens.contains(PodcastsFragment::class.java) }
-         }
-
-         it("should contain only presentation videos, enroll member screens") {
-            whenever(featureManager.available(Feature.REP_SUGGEST_MERCHANT)).thenReturn(false)
-            whenever(featureManager.available(Feature.REP_TOOLS)).thenReturn(true)
-            whenever(featureManager.available(Feature.MEMBERSHIP)).thenReturn(false)
-
-            val screens = presenter.provideScreens()
-            assertTrue { screens.contains(PresentationVideosFragment::class.java) }
-            assertTrue { screens.contains(EnrollMemberFragment::class.java) }
-            assertTrue { !screens.contains(EnrollMerchantFragment::class.java ) }
-            assertTrue { !screens.contains(InviteFragment::class.java) }
-            assertTrue { !screens.contains(PodcastsFragment::class.java) }
-
-         }
-      }
+      fun <T> List<FragmentItem>.contains(clazz: Class<T>) = this.any { it.fragmentClazz == clazz }
    }
 
-}) {
-   companion object {
-      lateinit var presenter: MembershipPresenter
-      lateinit var view: MembershipPresenter.View
+   class MembershipComponents : PresenterBaseSpec.TestComponents<MembershipPresenter, MembershipPresenter.View>() {
+
       lateinit var offlineErrorInteractor: OfflineErrorInteractor
 
       fun init() {
@@ -86,7 +100,5 @@ class MembershipPresenterSpec: PresenterBaseSpec({
             inject(presenter)
          }
       }
-
-      fun <T> List<FragmentItem>.contains(clazz: Class<T>) = this.any{ it.fragmentClazz == clazz }
    }
 }

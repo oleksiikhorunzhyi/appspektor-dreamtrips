@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.feed.presenter.delegate;
 
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;

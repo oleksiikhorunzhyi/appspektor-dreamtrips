@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -18,64 +16,76 @@ public class Schedule implements Serializable {
    private static final String PATTERN_YEAR_AND_DAY = "d, yyyy";
    private static final String TIMEZONE_UTC = "UTC";
 
-   private final static SimpleDateFormat SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY;
-   private final static SimpleDateFormat SIMPLE_DATE_FORMAT_MONTH_DAY;
-   private final static SimpleDateFormat SIMPLE_DATE_FORMAT_DAY;
-   private final static SimpleDateFormat SIMPLE_DATE_FORMAT_YEAR_DAY;
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY = new SimpleDateFormat(PATTERN_YEAR_MONTH_AND_DAY,
+         LocaleHelper.getDefaultLocale());
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT_MONTH_DAY = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, LocaleHelper
+         .getDefaultLocale());
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT_DAY = new SimpleDateFormat(PATTERN_DAY, LocaleHelper.getDefaultLocale());
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT_YEAR_DAY = new SimpleDateFormat(PATTERN_YEAR_AND_DAY, LocaleHelper
+         .getDefaultLocale());
 
    static {
-      SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY = new SimpleDateFormat(PATTERN_YEAR_MONTH_AND_DAY, LocaleHelper.getDefaultLocale());
       SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
-      SIMPLE_DATE_FORMAT_MONTH_DAY = new SimpleDateFormat(PATTERN_MONTH_AND_DAY, LocaleHelper.getDefaultLocale());
       SIMPLE_DATE_FORMAT_MONTH_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
-      SIMPLE_DATE_FORMAT_DAY = new SimpleDateFormat(PATTERN_DAY, LocaleHelper.getDefaultLocale());
       SIMPLE_DATE_FORMAT_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
-      SIMPLE_DATE_FORMAT_YEAR_DAY = new SimpleDateFormat(PATTERN_YEAR_AND_DAY, LocaleHelper.getDefaultLocale());
       SIMPLE_DATE_FORMAT_YEAR_DAY.setTimeZone(TimeZone.getTimeZone(TIMEZONE_UTC));
    }
 
+   private Date startDate;
+   private Date endDate;
 
-   @SerializedName("start_on") private Date startOn;
-   @SerializedName("end_on") private Date endOn;
 
-   public Date getStartDate() {
-      return startOn;
+   public Schedule(Date startDate, Date endDate) {
+      this.startDate = startDate;
+      this.endDate = endDate;
    }
 
-   public void setStartDate(Date startOn) {
-      this.startOn = startOn;
-   }
-
-   public Date getEndDate() {
-      return endOn;
-   }
-
-   public void setEndDate(Date endDate) {
-      this.endOn = endDate;
-   }
-
-   public boolean check(DateFilterItem dateFilterItem) {
-      return (startOn.equals(dateFilterItem.getStartDate()) || startOn.after(dateFilterItem.getStartDate())) && (endOn.equals(dateFilterItem
-            .getEndDate()) || endOn.before(dateFilterItem.getEndDate()));
+   public Schedule() {
+      // This constructor is intentionally empty. Nothing special is needed here.
    }
 
    public synchronized String getStartDateString() {
-      return SIMPLE_DATE_FORMAT_MONTH_DAY.format(getStartDate());
+      return SIMPLE_DATE_FORMAT_MONTH_DAY.format(startDate);
+   }
+
+   public Date getStartDate() {
+      return startDate;
+   }
+
+   public void setStartDate(Date startDate) {
+      this.startDate = startDate;
+   }
+
+   public Date getEndDate() {
+      return endDate;
+   }
+
+   public void setEndDate(Date endDate) {
+      this.endDate = endDate;
    }
 
    @Override
    public synchronized String toString() {
       Calendar calendarStart = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC));
-      calendarStart.setTimeInMillis(startOn.getTime());
+      calendarStart.setTimeInMillis(startDate.getTime());
       Calendar calendarEnd = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC));
-      calendarEnd.setTimeInMillis(endOn.getTime());
+      calendarEnd.setTimeInMillis(endDate.getTime());
 
-      return new StringBuilder().append(calendarStart.get(Calendar.YEAR) != calendarEnd.get(Calendar.YEAR) ? SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY
-            .format(getStartDate()) : SIMPLE_DATE_FORMAT_MONTH_DAY.format(getStartDate()))
-            .append(" - ")
-            .append(calendarEnd.get(Calendar.MONTH) != calendarStart.get(Calendar.MONTH) ? SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY
-                  .format(getEndDate()) : SIMPLE_DATE_FORMAT_YEAR_DAY
-                  .format(getEndDate()))
-            .toString();
+      String startDateString;
+
+      if (calendarStart.get(Calendar.YEAR) != calendarEnd.get(Calendar.YEAR)) {
+         startDateString = SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY.format(startDate);
+      } else {
+         startDateString = SIMPLE_DATE_FORMAT_MONTH_DAY.format(startDate);
+      }
+
+      String endDateString;
+      if (calendarEnd.get(Calendar.MONTH) != calendarStart.get(Calendar.MONTH)) {
+         endDateString = SIMPLE_DATE_FORMAT_YEAR_MONTH_DAY.format(endDate);
+      } else {
+         endDateString = SIMPLE_DATE_FORMAT_YEAR_DAY.format(endDate);
+      }
+
+      return startDateString + " - " + endDateString;
    }
 }

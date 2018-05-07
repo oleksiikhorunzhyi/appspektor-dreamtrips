@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.social.background_uploading.spec
 
 import com.worldventures.core.modules.picker.model.MediaPickerAttachment
-import com.worldventures.dreamtrips.modules.trips.model.Location
+import com.worldventures.core.model.Location
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.listOfMockPhotos
 import com.worldventures.dreamtrips.social.background_uploading.spec.BaseUploadingInteractorSpec.Companion.mockCreatedPost
 import com.worldventures.dreamtrips.social.ui.background_uploading.model.*

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.social.ui.friends.presenter
 
 import com.messenger.delegate.StartChatDelegate
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.Circle
@@ -15,69 +14,51 @@ import com.worldventures.dreamtrips.api.friends.model.FriendCandidate
 import com.worldventures.dreamtrips.api.friends.model.ImmutableFriendCandidate
 import com.worldventures.dreamtrips.api.session.model.ImmutableAvatar
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
-import com.worldventures.dreamtrips.social.ui.friends.presenter.AbstractPresenterSpec.TestBody
-import com.worldventures.dreamtrips.social.service.friends.interactor.CirclesInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.AddFriendCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetCirclesCommand
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.RemoveFriendCommand
-import com.worldventures.dreamtrips.social.ui.profile.service.ProfileInteractor
+import com.worldventures.dreamtrips.social.service.profile.ProfileInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.CirclesInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsStorageInteractor
+import com.worldventures.dreamtrips.social.service.users.circle.command.GetCirclesCommand
+import com.worldventures.dreamtrips.social.service.users.friend.command.RemoveFriendCommand
+import com.worldventures.dreamtrips.social.service.users.search.command.AddFriendCommand
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
-import org.jetbrains.spek.api.dsl.Spec
-import org.jetbrains.spek.api.dsl.SpecBody
-import org.jetbrains.spek.api.dsl.describe
 
-@Suppress("LeakingThis")
-abstract class AbstractUserListPresenterSpec(testBody: TestBody<*, *>) : PresenterBaseSpec(testBody.createTestBody()) {
+abstract class AbstractUserListPresenterSpec(testSuite: TestSuite<AbstractUserListComponents
+<out BaseUserListPresenter<out BaseUserListPresenter.View>, out BaseUserListPresenter.View>>) : PresenterBaseSpec(testSuite) {
 
-   abstract class AbstractUserListPresenterTestBody<View : BaseUserListPresenter.View, Presenter : BaseUserListPresenter<View>>
-      : TestBody<View, Presenter> {
-      protected lateinit var presenter: Presenter
-      protected lateinit var view: View
+   abstract class AbstractUserListComponents<P : BaseUserListPresenter<V>, V : BaseUserListPresenter.View> : TestComponents<P, V>() {
+
+      val user = mockUser(1)
+      val circles = mockCircles()
+      val friends = (1..getUsersPerPage()).map { mockFriendsCandidate(it) }.toList()
+
+      protected lateinit var friendStorageInteractor: FriendsStorageInteractor
       protected lateinit var friendInteractor: FriendsInteractor
       protected lateinit var circleInteractor: CirclesInteractor
       protected lateinit var profileInteractor: ProfileInteractor
-      protected val startChatDelegate: StartChatDelegate = mock()
-      protected val user = mockUser(100500)
-      protected val circles = mockCircles()
-      protected val friends = (1..getUsersPerPage()).map { mockFriendsCandidate(it) }.toList()
-      protected val users = (1..getUsersPerPage()).map { mockUser(it) }.toList()
-      protected val sessionHolder: SessionHolder = mockSessionHolder()
 
-      override fun createTestBody(): Spec.() -> Unit = {
-         describe(getMainDescription()) {
-            beforeEachTest { init() }
-            createTestSuits().forEach { it.invoke(this) }
+      fun init() {
+         val janet = Janet.Builder().addService(mockActionService().build()).build()
+         val pipeCreator = SessionActionPipeCreator(janet)
+         val sessionHolder: SessionHolder = mockSessionHolder()
+
+         friendInteractor = FriendsInteractor(pipeCreator)
+         circleInteractor = CirclesInteractor(pipeCreator)
+         profileInteractor = ProfileInteractor(pipeCreator, sessionHolder)
+         friendStorageInteractor = FriendsStorageInteractor(SessionActionPipeCreator(janet))
+
+         val injector = prepareInjector(sessionHolder).apply {
+            registerProvider(FriendsInteractor::class.java, { friendInteractor })
+            registerProvider(CirclesInteractor::class.java, { circleInteractor })
+            registerProvider(ProfileInteractor::class.java, { profileInteractor })
+            registerProvider(StartChatDelegate::class.java, { mock() })
          }
+
+         onInit(injector, pipeCreator)
       }
-
-      override fun init() {
-         presenter = mockPresenter()
-         view = mockView()
-         mockInteractors(Janet.Builder().addService(mockActionService().build()).build())
-         prepareInjection(presenter)
-         presenter.takeView(view)
-      }
-
-      override fun prepareInjection(presenter: Presenter): Injector
-            = PresenterBaseSpec.prepareInjector(sessionHolder).apply {
-         registerProvider(FriendsInteractor::class.java, { friendInteractor })
-         registerProvider(CirclesInteractor::class.java, { circleInteractor })
-         registerProvider(ProfileInteractor::class.java, { profileInteractor })
-         registerProvider(StartChatDelegate::class.java, { startChatDelegate })
-         inject(presenter)
-      }
-
-      protected abstract fun getMainDescription(): String
-
-      override abstract fun createTestSuits(): List<SpecBody.() -> Unit>
-
-      override abstract fun mockPresenter(): Presenter
-
-      override abstract fun mockView(): View
 
       protected open fun mockActionService(): MockCommandActionService.Builder {
          return MockCommandActionService.Builder().apply {
@@ -88,19 +69,15 @@ abstract class AbstractUserListPresenterSpec(testBody: TestBody<*, *>) : Present
          }
       }
 
-      protected open fun mockInteractors(janet: Janet) {
-         friendInteractor = FriendsInteractor(SessionActionPipeCreator(janet))
-         circleInteractor = CirclesInteractor(SessionActionPipeCreator(janet))
-         profileInteractor = ProfileInteractor(SessionActionPipeCreator(janet), sessionHolder)
-      }
+      protected abstract fun onInit(injector: Injector, pipeCreator: SessionActionPipeCreator)
 
-      protected open fun mockUser(userId: Int): User = User().apply {
+      private fun mockUser(userId: Int): User = User().apply {
          firstName = "Name"
          lastName = "LastName"
          id = userId
       }
 
-      protected open fun mockCircles(): List<Circle> {
+      private fun mockCircles(): List<Circle> {
          val circleFriends = Circle.withTitle("Friends")
          circleFriends.id = "testFriendsCircleId"
          val circleCloseFriends = Circle.withTitle("Close friends")
@@ -135,6 +112,6 @@ abstract class AbstractUserListPresenterSpec(testBody: TestBody<*, *>) : Present
                .build()
       }
 
-      protected open fun getUsersPerPage(): Int = 100
+      private fun getUsersPerPage(): Int = 100
    }
 }

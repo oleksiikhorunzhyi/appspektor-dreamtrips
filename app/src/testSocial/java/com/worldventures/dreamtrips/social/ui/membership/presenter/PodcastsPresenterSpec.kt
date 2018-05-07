@@ -1,7 +1,13 @@
 package com.worldventures.dreamtrips.social.ui.membership.presenter
 
 import android.content.pm.PackageManager
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.anyOrNull
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.core.model.CachedModel
 import com.worldventures.core.modules.video.utils.CachedModelHelper
@@ -19,105 +25,111 @@ import io.techery.janet.Janet
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.mockito.ArgumentMatchers.anyBoolean
 import rx.Observable
 
-class PodcastsPresenterSpec : PresenterBaseSpec({
+class PodcastsPresenterSpec : PresenterBaseSpec(PodcastTestSuite()) {
 
-   describe("Podcasts Presenter") {
+   class PodcastTestSuite : TestSuite<PodcastsComponents>(PodcastsComponents()) {
 
-      describe("load podcasts") {
+      override fun specs(): SpecBody.() -> Unit = {
 
-         it("successfully") {
-            init()
-            presenter.takeView(view)
+         with(components) {
+            describe("Podcasts Presenter") {
 
-            verify(view).finishLoading(any())
-            verify(view).setItems(any())
-            verify(view, times(0)).informUser(anyOrNull<String>())
-         }
+               describe("load podcasts") {
 
-         it("not successfully") {
-            init(fetchPodcastsContract = podcastNotSuccessContract())
-            presenter.takeView(view)
+                  it("successfully") {
+                     init()
+                     linkPresenterAndView()
 
-            verify(view).finishLoading(any())
-            verify(view, times(0)).setItems(any())
-            verify(view).informUser(anyOrNull<String>())
-         }
-      }
+                     val view = view
+                     verify(view).finishLoading(any())
+                     verify(view).setItems(any())
+                     verify(view, times(0)).informUser(anyOrNull<String>())
+                  }
 
-      describe("download podcast") {
+                  it("not successfully") {
+                     init(fetchPodcastsContract = podcastNotSuccessContract())
+                     linkPresenterAndView()
 
-         it("with permission") {
-            init()
-            val podcast = testPodcast()
+                     val view = view
+                     verify(view).finishLoading(any())
+                     verify(view, times(0)).setItems(any())
+                     verify(view).informUser(anyOrNull<String>())
+                  }
+               }
 
-            presenter.onDownloadPodcastRequired(podcast)
+               describe("download podcast") {
 
-            verify(permissionDispatcher).requestPermission(any(), anyBoolean())
-            verify(cachedEntityDelegate).startCaching(any(), any())
-         }
+                  it("with permission") {
+                     init()
+                     val podcast = testPodcast()
 
-         it("without permission") {
-            init(permissionGranted = false)
-            val podcast = testPodcast()
+                     presenter.onDownloadPodcastRequired(podcast)
 
-            presenter.onDownloadPodcastRequired(podcast)
+                     verify(permissionDispatcher).requestPermission(any(), anyBoolean())
+                     verify(cachedEntityDelegate).startCaching(any(), any())
+                  }
 
-            verify(permissionDispatcher).requestPermission(any(), anyBoolean())
-            verify(cachedEntityDelegate, times(0)).startCaching(any(), any())
-         }
-      }
+                  it("without permission") {
+                     init(permissionGranted = false)
+                     val podcast = testPodcast()
 
-      describe("manage podcast") {
-         init()
-         val podcast = testPodcast()
+                     presenter.onDownloadPodcastRequired(podcast)
 
-         it ("cancel download podcast") {
-            presenter.takeView(view)
+                     verify(permissionDispatcher).requestPermission(any(), anyBoolean())
+                     verify(cachedEntityDelegate, times(0)).startCaching(any(), any())
+                  }
+               }
 
-            presenter.onCancelPodcastRequired(podcast)
-            presenter.onCancelPodcastAccepted(podcast)
+               describe("manage podcast") {
 
-            verify(view).onCancelDialog(podcast)
-            verify(cachedEntityDelegate).cancelCaching(any(), any())
-         }
+                  beforeEachTest {
+                     init()
+                     linkPresenterAndView()
+                  }
 
-         it ("delete podcast") {
-            presenter.takeView(view)
+                  val podcast = testPodcast()
 
-            presenter.onDeletePodcastRequired(podcast)
-            presenter.onDeletePodcastAccepted(podcast)
+                  it("cancel download podcast") {
+                     presenter.onCancelPodcastRequired(podcast)
+                     presenter.onCancelPodcastAccepted(podcast)
 
-            verify(view).showDeleteDialog(podcast)
-            verify(cachedEntityDelegate).deleteCache(any(), any())
-         }
+                     verify(view).onCancelDialog(podcast)
+                     verify(cachedEntityDelegate).cancelCaching(any(), any())
+                  }
 
-         it ("play podcast") {
-            presenter.play(podcast)
+                  it("delete podcast") {
+                     presenter.onDeletePodcastRequired(podcast)
+                     presenter.onDeletePodcastAccepted(podcast)
 
-            verify(activityRouter).openPodcastPlayer(any(), anyOrNull())
+                     verify(view).showDeleteDialog(podcast)
+                     verify(cachedEntityDelegate).deleteCache(any(), any())
+                  }
+
+                  it("play podcast") {
+                     presenter.play(podcast)
+
+                     verify(activityRouter).openPodcastPlayer(any(), anyOrNull())
+                  }
+               }
+            }
          }
       }
    }
 
-}) {
-   companion object {
-      lateinit var presenter: PodcastsPresenter<PodcastsPresenter.View>
-      lateinit var view: PodcastsPresenter.View
+   class PodcastsComponents : TestComponents<PodcastsPresenter<PodcastsPresenter.View>, PodcastsPresenter.View>() {
 
-      lateinit var podcastsInteractor: PodcastsInteractor
-      lateinit var cachedEntityInteractor: CachedEntityInteractor
       lateinit var cachedEntityDelegate: CachedEntityDelegate
-      lateinit var cachedModelHelper: CachedModelHelper
       lateinit var permissionDispatcher: PermissionDispatcher
 
       fun init(fetchPodcastsContract: Contract = podcastSuccessContract(), permissionGranted: Boolean = true) {
-         presenter = PodcastsPresenter()
          view = spy()
+         presenter = PodcastsPresenter()
          cachedEntityDelegate = mock()
 
          val service = MockCommandActionService.Builder().apply {
@@ -126,10 +138,10 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
          }.build()
          val janet = Janet.Builder().addService(service).build()
          val sessionPipeCreator = SessionActionPipeCreator(janet)
-         podcastsInteractor = PodcastsInteractor(sessionPipeCreator)
-         cachedEntityInteractor = CachedEntityInteractor(sessionPipeCreator)
+         val podcastsInteractor = PodcastsInteractor(sessionPipeCreator)
+         val cachedEntityInteractor = CachedEntityInteractor(sessionPipeCreator)
 
-         cachedModelHelper = mock()
+         val cachedModelHelper = mock<CachedModelHelper>()
          whenever(cachedModelHelper.isCachedPodcast(any())).thenReturn(true)
          whenever(cachedModelHelper.getPodcastPath(any())).thenReturn("testPath")
 
@@ -157,9 +169,8 @@ class PodcastsPresenterSpec : PresenterBaseSpec({
          return podcast
       }
 
-      fun podcastSuccessContract() = BaseContract.of(GetPodcastsCommand::class.java).result(listOf(testPodcast()))
-
       fun podcastNotSuccessContract() = BaseContract.of(GetPodcastsCommand::class.java).exception(RuntimeException())
 
+      private fun podcastSuccessContract() = BaseContract.of(GetPodcastsCommand::class.java).result(listOf(testPodcast()))
    }
 }

@@ -52,7 +52,7 @@ public class BucketPhotoViewPagerFragment extends BaseImageViewPagerFragment<Buc
       }
 
       @Override
-      protected List<FragmentItem> getItems() {
+      protected List<FragmentItem> makeFragmentItems() {
          return Queryable.from(bucketPhotos)
                .map(photo -> new FragmentItem(BucketPhotoFullscreenFragment.class, "", new BucketFullscreenBundle(bucketItem, photo)))
                .toList();

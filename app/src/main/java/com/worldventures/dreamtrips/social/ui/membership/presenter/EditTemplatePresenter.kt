@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 class EditTemplatePresenter(templateBundle: TemplateBundle) : Presenter<EditTemplatePresenter.View>() {
 
-   @field:Inject lateinit var inviteShareInteractor: InviteShareInteractor
+   @Inject lateinit var inviteShareInteractor: InviteShareInteractor
 
    private var template: InviteTemplate
    private val inviteType: InviteType
@@ -69,14 +69,15 @@ class EditTemplatePresenter(templateBundle: TemplateBundle) : Presenter<EditTemp
       if (inviteTemplate != null) {
          view.setWebViewContent(inviteTemplate.content)
          template = inviteTemplate
-         if (preview) {
-            preview = false
-            view.openPreviewTemplate(UrlBundle(inviteTemplate.link))
-         }
+         view.openPreviewTemplate(UrlBundle(inviteTemplate.link))
       }
    }
 
    fun shareRequest(message: String) {
+      if (preview) {
+         createInviteSuccess(message)
+         return
+      }
       createFilledInviteObservable(message)
             .subscribe(ActionStateSubscriber<CreateFilledInviteCommand>()
                   .onSuccess {

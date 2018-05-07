@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">對不起，我們無法發送郵件，請稍後再試。</string>
+   <string name="dtl_send_email_success">邮件已成功发送。</string>
+   <string name="dtl_send_email_text">发送到我的电子邮件</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">小記：%1$s</string>
    <string name="dtl_locations_title">選擇位置</string>
@@ -159,6 +162,8 @@
    <string name="dtl_thrst_text_button">應用內付款</string>
    <string name="dtl_all_locations">所有地點</string>
    <string name="dtl_earned_points">您已經贏得%1$d點</string>
+   <string name="dtl_transaction_adjusted_points">您的賬戶我們已經調整%1$d點。</string>
+   <string name="dtl_transaction_refunded_caption">您的付款已經退還。</string>
    <string name="dtl_earned_points_on_item">+%1$d點</string>
 
    <!-- Pilot -->
@@ -190,4 +195,12 @@
    <string name="transaction_sub_total_amount_no_semicolon">小計金額</string>
    <string name="dtl_estimator_explanation_to_earn_points">點數根據在商家最低消費金額以及一周哪一天來計算。要贏點數最低金額應為%1$s</string>
    <string name="dtl_alert_title_error">錯誤</string>
+
+   <string name="receipt_upload_error_caption">上传收据出错。重试？</string>
+   <string name="thrst_opening_error_caption">出了些問題。请稍后重试。</string>
+
+   <string name="pay_in_app_hint_dialog_text">您想要觀看關於如何在手機應用中付款這一新程序的視頻嗎？</string>
+   <string name="pay_in_app_hint_positive">現在觀看</string>
+   <string name="pay_in_app_hint_neutral">稍後提醒我</string>
+   <string name="pay_in_app_hint_negative">不再顯示</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.worldventures.core.modules.infopages.service.storage;
 
-import com.worldventures.core.janet.cache.storage.KeyValuePaginatedDiskStorage;
+import com.worldventures.janet.cache.storage.KeyValuePaginatedDiskStorage;
 import com.worldventures.core.modules.infopages.model.Document;
 
 import java.util.List;

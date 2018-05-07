@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.social.service.friends.model.RequestHeaderModel;
+import com.worldventures.dreamtrips.social.service.users.base.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.RequestHeaderCellDelegate;
 
 import butterknife.InjectView;

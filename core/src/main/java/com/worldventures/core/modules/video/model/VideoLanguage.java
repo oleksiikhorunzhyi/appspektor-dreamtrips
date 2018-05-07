@@ -10,6 +10,11 @@ public class VideoLanguage implements Serializable, Filterable {
    private final String title;
    private final String localeName;
 
+   public VideoLanguage() {
+      this.title = null;
+      this.localeName = null;
+   }
+
    public VideoLanguage(String title, String localeName) {
       this.title = title;
       this.localeName = localeName;
@@ -25,6 +30,6 @@ public class VideoLanguage implements Serializable, Filterable {
 
    @Override
    public boolean containsQuery(String query) {
-      return title.toLowerCase().contains(query.toLowerCase());
+      return title != null && title.toLowerCase().contains(query.toLowerCase());
    }
 }

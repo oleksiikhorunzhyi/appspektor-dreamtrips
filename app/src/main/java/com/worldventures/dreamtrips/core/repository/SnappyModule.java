@@ -5,6 +5,8 @@ import android.content.Context;
 import com.worldventures.core.di.qualifier.ForApplication;
 import com.worldventures.core.modules.auth.api.command.LogoutAction;
 import com.worldventures.core.repository.DefaultSnappyOpenHelper;
+import com.worldventures.dreamtrips.modules.dtl.domain.storage.snappy.DtlSnappyRepository;
+import com.worldventures.dreamtrips.modules.dtl.helper.howtopayvideo.HowToPayHintDelegate;
 
 import javax.inject.Singleton;
 
@@ -29,5 +31,10 @@ public class SnappyModule {
    @Provides(type = Provides.Type.SET)
    LogoutAction provideSnappyRepositoryLogoutAction(SnappyRepository snappyRepository) {
       return snappyRepository::clearAll;
+   }
+
+   @Provides(type = Provides.Type.SET)
+   LogoutAction provideDtlSnappyRepositoryLogoutAction(HowToPayHintDelegate howToPayHintDelegate) {
+      return howToPayHintDelegate::reset;
    }
 }

@@ -13,19 +13,13 @@ import com.worldventures.dreamtrips.modules.config.model.converter.Configuration
 import com.worldventures.dreamtrips.modules.mapping.converter.LocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.ReverseLocationConverter;
 import com.worldventures.dreamtrips.modules.mapping.converter.UserAvatarConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.ActivityConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.ContentItemConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.RegionConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripImageConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripPinToPinConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithDetailsToTripConverter;
-import com.worldventures.dreamtrips.modules.trips.model.converter.TripWithoutDetailsToTripConverter;
+import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateConverter;
+import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateFromInvitationPreviewConverter;
+import com.worldventures.dreamtrips.social.domain.converter.SentInviteConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.CircleConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FeedMetaDataConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.FlagConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.ImageConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.InspirationModelsConverter;
-import com.worldventures.dreamtrips.social.domain.mapping.MemberImageConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.PhotoTagsParamsConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.PhotoUpdateParamsConverter;
@@ -41,6 +35,10 @@ import com.worldventures.dreamtrips.social.domain.mapping.ReverseBucketUpdateBod
 import com.worldventures.dreamtrips.social.domain.mapping.ShortProfilesConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.TaggedUserConverter;
 import com.worldventures.dreamtrips.social.domain.mapping.YSBHPhotoConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.ApiUserToUserConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.FriendCandidateToUserConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.FriendProfileToUserConverter;
+import com.worldventures.dreamtrips.social.service.users.base.model.converter.MutualsConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketCategoryConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketCoverPhotoConverter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.converter.BucketDiningItemConverter;
@@ -68,13 +66,6 @@ import com.worldventures.dreamtrips.social.ui.feed.converter.ReversePostAttachme
 import com.worldventures.dreamtrips.social.ui.feed.converter.ReversePostDataConverter;
 import com.worldventures.dreamtrips.social.ui.feed.converter.SimplePostConverter;
 import com.worldventures.dreamtrips.social.ui.feed.converter.VideoAttachmentConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.ApiUserToUserConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.FriendCandidateToUserConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.FriendProfileToUserConverter;
-import com.worldventures.dreamtrips.social.service.friends.model.converter.MutualsConverter;
-import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateConverter;
-import com.worldventures.dreamtrips.social.domain.converter.InviteTemplateFromInvitationPreviewConverter;
-import com.worldventures.dreamtrips.social.domain.converter.SentInviteConverter;
 import com.worldventures.dreamtrips.social.ui.reptools.model.converter.SuccessStoryConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.MediaEntityConverter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.converter.VideoSocializedConverter;
@@ -95,56 +86,8 @@ public class SocialMappingModule {
 
    @Provides(type = Provides.Type.SET)
    @Singleton
-   Converter providePinConverter() {
-      return new TripPinToPinConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideTripConverter() {
-      return new TripWithoutDetailsToTripConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideTripWithDetailsConverter() {
-      return new TripWithDetailsToTripConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
    Converter provideShortProfilesConverter() {
       return new ShortProfilesConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideActivityConverter() {
-      return new ActivityConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideRegionConverter() {
-      return new RegionConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideTripImageConverter() {
-      return new TripImageConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideMemberImageConverter() {
-      return new MemberImageConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideContentItemConverter() {
-      return new ContentItemConverter();
    }
 
    @Provides
@@ -404,12 +347,6 @@ public class SocialMappingModule {
    @Singleton
    Converter provideSuccessStoryConverter() {
       return new SuccessStoryConverter();
-   }
-
-   @Provides(type = Provides.Type.SET)
-   @Singleton
-   Converter provideImageConverter() {
-      return new ImageConverter();
    }
 
    @Provides(type = Provides.Type.SET)

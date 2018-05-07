@@ -4,27 +4,23 @@ import com.worldventures.core.modules.video.utils.CachedModelHelper
 import com.worldventures.core.service.CachedEntityDelegate
 import com.worldventures.core.service.CachedEntityInteractor
 import com.worldventures.core.service.command.CachedEntityCommand
+import com.worldventures.core.ui.util.permission.PermissionConstants.WRITE_EXTERNAL_STORAGE
 import com.worldventures.core.ui.util.permission.PermissionDispatcher
 import com.worldventures.core.ui.util.permission.PermissionSubscriber
 import com.worldventures.dreamtrips.R
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter
+import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader
 import com.worldventures.dreamtrips.social.ui.membership.model.Podcast
 import com.worldventures.dreamtrips.social.ui.membership.service.PodcastsInteractor
 import com.worldventures.dreamtrips.social.ui.membership.service.command.GetPodcastsCommand
 import com.worldventures.dreamtrips.social.ui.podcast_player.service.ViewPodcastAnalyticsAction
-
-import java.util.ArrayList
-
-import javax.inject.Inject
-
+import io.techery.janet.ActionState
 import io.techery.janet.helper.ActionStateSubscriber
+import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
-
-import com.worldventures.core.ui.util.permission.PermissionConstants.WRITE_EXTERNAL_STORAGE
-import com.worldventures.dreamtrips.social.ui.membership.model.MediaHeader
-import io.techery.janet.ActionState
-import org.jetbrains.annotations.NotNull
+import java.util.ArrayList
+import javax.inject.Inject
 
 class PodcastsPresenter<T : PodcastsPresenter.View> : Presenter<T>() {
 
@@ -83,7 +79,11 @@ class PodcastsPresenter<T : PodcastsPresenter.View> : Presenter<T>() {
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindView())
             .map { it.action.getCachedModel() }
-            .subscribe { view.notifyItemChanged(Podcast(fileUrl = it.uuid)) }
+            .subscribe {
+               val podcast = Podcast()
+               podcast.fileUrl = it.uuid
+               view.notifyItemChanged(podcast)
+            }
    }
 
    fun onDownloadPodcastRequired(podcast: Podcast) {

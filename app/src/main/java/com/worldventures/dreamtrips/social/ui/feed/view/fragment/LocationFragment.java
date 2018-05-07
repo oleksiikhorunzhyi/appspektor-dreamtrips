@@ -18,7 +18,7 @@ import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.feed.presenter.LocationPresenter;
 
 import javax.inject.Inject;

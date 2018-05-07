@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.social.domain.storage.action
 
-import com.worldventures.core.janet.cache.storage.MemoryStorage
+import com.worldventures.janet.cache.storage.MemoryStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage
 import com.worldventures.dreamtrips.social.domain.entity.Contact
 import com.worldventures.dreamtrips.social.service.invites.AddContactToStorageCommand

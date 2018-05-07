@@ -1,55 +1,34 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import android.content.res.Resources;
-
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.trips.model.filter.DateFilterItem;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.feed.model.BaseFeedEntity;
-import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.List;
 
-@SuppressWarnings("PMD.GodClass") //TODO: Resolve PMD error
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class TripModel extends BaseFeedEntity {
+public class TripModel extends BaseFeedEntity implements Serializable {
+   public static final String  PATTERN = "?width=%d&height=%d";
+   private static final long serialVersionUID = 123L;
 
-   public static final String RETINA = "RETINA";
-   public static final String NORMAL = "NORMAL";
-   public static final String THUMB = "THUMB";
-   public static final String PATTERN = "?width=%d&height=%d";
-
-   public static final long serialVersionUID = 123L;
-
-   private String tripId;
-   private String name;
-   private String description;
-   private boolean featured;
-   private boolean rewarded;
-   private int duration;
-   private boolean available;
+   private String tripId = "";
+   private String name = "";
+   private String description = "";
+   private String thumbnailUrl;
+   private List<String> imageUrls;
+   private int duration = 0;
    private boolean hasMultipleDates;
-   private boolean soldOut;
-   private long rewardsLimit;
+   private boolean isSoldOut;
+   private boolean isFeatured;
+   private boolean isPlatinum;
+   private boolean isInBucketList;
+   private long rewardsLimit = 0L;
    private Price price;
    private Location location;
-   private Schedule dates;
-   private RegionModel region;
-   private List<TripImage> images;
-   private List<ActivityModel> activities;
-   private boolean platinum;
-   private boolean recent;
-   private boolean inBucketList;
+   private Schedule availabilityDates;
    private List<ContentItem> content;
-
-   @Override
-   public String place() {
-      return location != null ? location.getName() : null;
-   }
 
    public String getTripId() {
       return tripId;
@@ -75,36 +54,20 @@ public class TripModel extends BaseFeedEntity {
       this.description = description;
    }
 
-   public boolean isFeatured() {
-      return featured;
+   public String getThumbnailUrl() {
+      return thumbnailUrl;
    }
 
-   public void setFeatured(boolean featured) {
-      this.featured = featured;
+   public void setThumbnailUrl(String thumbnailUrl) {
+      this.thumbnailUrl = thumbnailUrl;
    }
 
-   public void setLocation(Location location) {
-      this.location = location;
+   public List<String> getImageUrls() {
+      return imageUrls;
    }
 
-   public void setDates(Schedule dates) {
-      this.dates = dates;
-   }
-
-   public boolean isRewarded() {
-      return rewarded;
-   }
-
-   public void setRewarded(boolean rewarded) {
-      this.rewarded = rewarded;
-   }
-
-   public boolean isSoldOut() {
-      return soldOut;
-   }
-
-   public void setSoldOut(boolean soldOut) {
-      this.soldOut = soldOut;
+   public void setImageUrls(List<String> imageUrls) {
+      this.imageUrls = imageUrls;
    }
 
    public int getDuration() {
@@ -115,20 +78,44 @@ public class TripModel extends BaseFeedEntity {
       this.duration = duration;
    }
 
-   public boolean isAvailable() {
-      return available;
-   }
-
-   public void setAvailable(boolean available) {
-      this.available = available;
-   }
-
-   public boolean hasMultipleDates() {
+   public boolean getHasMultipleDates() {
       return hasMultipleDates;
    }
 
    public void setHasMultipleDates(boolean hasMultipleDates) {
       this.hasMultipleDates = hasMultipleDates;
+   }
+
+   public boolean isSoldOut() {
+      return isSoldOut;
+   }
+
+   public void setSoldOut(boolean soldOut) {
+      isSoldOut = soldOut;
+   }
+
+   public boolean isFeatured() {
+      return isFeatured;
+   }
+
+   public void setFeatured(boolean featured) {
+      isFeatured = featured;
+   }
+
+   public boolean isPlatinum() {
+      return isPlatinum;
+   }
+
+   public void setPlatinum(boolean platinum) {
+      isPlatinum = platinum;
+   }
+
+   public boolean isInBucketList() {
+      return isInBucketList;
+   }
+
+   public void setInBucketList(boolean inBucketList) {
+      isInBucketList = inBucketList;
    }
 
    public long getRewardsLimit() {
@@ -151,24 +138,16 @@ public class TripModel extends BaseFeedEntity {
       return location;
    }
 
+   public void setLocation(Location location) {
+      this.location = location;
+   }
+
    public Schedule getAvailabilityDates() {
-      return dates;
+      return availabilityDates;
    }
 
-   public RegionModel getRegion() {
-      return region;
-   }
-
-   public void setRegion(RegionModel region) {
-      this.region = region;
-   }
-
-   public boolean isRecentlyAdded() {
-      return recent;
-   }
-
-   public void setRecentlyAdded(boolean recentlyAdded) {
-      this.recent = recentlyAdded;
+   public void setAvailabilityDates(Schedule availabilityDates) {
+      this.availabilityDates = availabilityDates;
    }
 
    public List<ContentItem> getContent() {
@@ -179,107 +158,16 @@ public class TripModel extends BaseFeedEntity {
       this.content = content;
    }
 
-   public String getImageUrl(String type) {
-      String url = "";
-      if (images != null) {
-         for (TripImage image : images) {
-            if (image.getType().equals(type)) {
-               url = image.getUrl();
-            }
-         }
-      }
-      return url;
+   @Override
+   public String place() {
+      return location.getName();
    }
 
-   public String getThumb(Resources resources) {
-      String url = getImageUrl(THUMB);
-      int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.tripImageHeight);
-      return url + String.format(PATTERN, dimensionPixelSize, dimensionPixelSize);
+   public String getThumb(int size) {
+      return getThumb(size, size);
    }
 
    public String getThumb(int width, int height) {
-      return getImageUrl(THUMB) + String.format(PATTERN, width, height);
-   }
-
-   public List<ActivityModel> getActivities() {
-      return activities;
-   }
-
-   public void setActivities(List<ActivityModel> activities) {
-      this.activities = activities;
-   }
-
-   public List<TripImage> getImages() {
-      return images;
-   }
-
-   public void setImages(List<TripImage> images) {
-      this.images = images;
-   }
-
-   public List<TripImage> getFilteredImages() {
-      List<TripImage> filteredImages = new ArrayList<>();
-      filteredImages.addAll(getFilteredImagesByTag(RETINA));
-
-      if (filteredImages.isEmpty()) {
-         filteredImages.addAll(getFilteredImagesByTag(NORMAL));
-      }
-
-      return filteredImages;
-   }
-
-   private List<TripImage> getFilteredImagesByTag(String tag) {
-      return Queryable.from(images).filter(input -> tag.equals(input.getType())).toList();
-   }
-
-   public long getStartDateMillis() {
-      return dates.getStartDate().getTime();
-   }
-
-   public boolean isPriceAccepted(double maxPrice, double minPrice) {
-      return price.getAmount() <= maxPrice && price.getAmount() >= minPrice;
-   }
-
-   public boolean isDurationAccepted(int maxNights, int minNights, DateFilterItem dateFilterItem) {
-      return duration <= maxNights
-            && duration >= minNights
-            && getAvailabilityDates().check(dateFilterItem);
-   }
-
-   public boolean isCategoriesAccepted(List<ActivityModel> acceptedThemes, List<Integer> acceptedRegions) {
-      return themesAccepted(acceptedThemes) && regionsAccepted(acceptedRegions);
-   }
-
-   private boolean themesAccepted(List<ActivityModel> acceptedThemes) {
-      return acceptedThemes == null || !isActivitiesEmpty() && !Collections.disjoint(acceptedThemes, getActivities());
-   }
-
-   private boolean regionsAccepted(List<Integer> acceptedRegions) {
-      return acceptedRegions == null || getRegion() != null && acceptedRegions.contains(getRegion().getId());
-   }
-
-   private boolean isActivitiesEmpty() {
-      return getActivities().isEmpty();
-   }
-
-   public boolean isPlatinum() {
-      return platinum;
-   }
-
-   public void setPlatinum(boolean platinum) {
-      this.platinum = platinum;
-   }
-
-   public boolean isInBucketList() {
-      return inBucketList;
-   }
-
-   public void setInBucketList(boolean inBucketList) {
-      this.inBucketList = inBucketList;
-   }
-
-   @Override
-   public String toString() {
-      return tripId;
+      return thumbnailUrl + String.format(PATTERN, width, height);
    }
 }

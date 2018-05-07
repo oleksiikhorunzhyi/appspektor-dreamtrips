@@ -37,7 +37,6 @@ public class StaticPageProvider {
 
    private final SessionHolder appSessionHolder;
    private final DeviceInfoProvider deviceInfoProvider;
-
    private final String apiUrl;
    private final String backofficeUrl;
    private final String forgotPasswordUrl;

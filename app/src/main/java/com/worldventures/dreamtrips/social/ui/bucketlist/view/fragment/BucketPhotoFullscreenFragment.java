@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketFullscreenBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketFullscreenPresenter;
+import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketPhotoFullscreenPresenter;
 import com.worldventures.dreamtrips.social.ui.tripsimages.view.custom.ImageryView;
 
 import butterknife.InjectView;
@@ -20,7 +20,7 @@ import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.fragment_fullscreen_bucket_photo)
-public class BucketPhotoFullscreenFragment extends BaseFragmentWithArgs<BucketFullscreenPresenter, BucketFullscreenBundle> implements BucketFullscreenPresenter.View {
+public class BucketPhotoFullscreenFragment extends BaseFragmentWithArgs<BucketPhotoFullscreenPresenter, BucketFullscreenBundle> implements BucketPhotoFullscreenPresenter.View {
 
    @InjectView(R.id.checkBox) CheckBox checkBox;
    @InjectView(R.id.delete) ImageView delete;
@@ -29,8 +29,19 @@ public class BucketPhotoFullscreenFragment extends BaseFragmentWithArgs<BucketFu
    private SweetAlertDialog progressDialog;
 
    @Override
-   protected BucketFullscreenPresenter createPresenter(Bundle savedInstanceState) {
-      return new BucketFullscreenPresenter(getArgs().getBucketPhoto(), getArgs().getBucketItem());
+   public void onViewCreated(View view, Bundle savedInstanceState) {
+      super.onViewCreated(view, savedInstanceState);
+
+      checkBox.setOnCheckedChangeListener((v, checked) -> {
+         if (checked) {
+            getPresenter().onChangeCoverChosen();
+         }
+      });
+   }
+
+   @Override
+   protected BucketPhotoFullscreenPresenter createPresenter(Bundle savedInstanceState) {
+      return new BucketPhotoFullscreenPresenter(getArgs().getBucketPhoto(), getArgs().getBucketItem());
    }
 
    @Override
@@ -70,25 +81,16 @@ public class BucketPhotoFullscreenFragment extends BaseFragmentWithArgs<BucketFu
    }
 
    @Override
-   public void hideCheckBox() {
+   public void hideCoverCheckBox() {
       checkBox.setVisibility(View.GONE);
    }
 
    @Override
-   public void showCheckbox(boolean currentCover) {
+   public void updateCoverCheckbox(boolean currentCover) {
       checkBox.setText(currentCover ? R.string.bucket_current_cover : R.string.bucket_photo_cover);
       checkBox.setClickable(!currentCover);
       checkBox.setVisibility(View.VISIBLE);
       checkBox.setChecked(currentCover);
-   }
-
-   @Override
-   public void onResume() {
-      super.onResume();
-      checkBox.setOnCheckedChangeListener((cb, b) -> {
-         checkBox.setClickable(!b);
-         getPresenter().onCheckboxPressed(b);
-      });
    }
 
    private void deletePhoto() {
@@ -97,7 +99,7 @@ public class BucketPhotoFullscreenFragment extends BaseFragmentWithArgs<BucketFu
             .setConfirmText(getResources().getString(R.string.post_delete_confirm))
             .setConfirmClickListener(sDialog -> {
                sDialog.dismissWithAnimation();
-               getPresenter().onDeleteAction();
+               getPresenter().onDeletePhoto();
             });
       dialog.setCanceledOnTouchOutside(true);
       dialog.show();

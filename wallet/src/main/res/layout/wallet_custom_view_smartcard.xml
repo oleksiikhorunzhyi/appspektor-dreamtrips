@@ -13,10 +13,10 @@
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
          android:layout_marginBottom="@dimen/spacing_normal"
-         android:src="@drawable/ic_wallet_vector_green_dot"
          app:layout_constraintBottom_toTopOf="@+id/photo_container"
          app:layout_constraintEnd_toEndOf="@+id/photo_container"
          app:layout_constraintStart_toStartOf="@+id/photo_container"
+         app:srcCompat="@drawable/ic_wallet_vector_green_dot"
          tools:ignore="ContentDescription"
          />
 
@@ -107,8 +107,8 @@
             android:layout_width="17dp"
             android:layout_height="11dp"
             android:layout_marginEnd="9dp"
-            android:src="@drawable/ic_wallet_vector_stealth_indicator"
             android:visibility="gone"
+            app:srcCompat="@drawable/ic_wallet_vector_stealth_indicator"
             tools:ignore="ContentDescription"
             tools:visibility="visible"
             />

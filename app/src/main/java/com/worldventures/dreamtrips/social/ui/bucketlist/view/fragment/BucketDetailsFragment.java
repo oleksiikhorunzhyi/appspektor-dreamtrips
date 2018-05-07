@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.core.ui.annotations.Layout;
@@ -24,11 +23,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.social.ui.activity.SocialComponentActivity;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketBundle;
 import com.worldventures.dreamtrips.social.ui.bucketlist.bundle.BucketViewPagerBundle;
@@ -37,6 +36,7 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.util.TranslateBucketItemViewInjector;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +100,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
          @Override
          public void setArgs(int position, Fragment fragment) {
             BucketPhoto photo = photos.get(position);
-            ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+            ((BaseImageFragment) fragment).setArgs(new ImageBundle<>(photo));
          }
 
          @Override
@@ -284,11 +284,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
    }
 
    @Override
-   public void setImages(List<BucketPhoto> newPhotos) {
+   public void setImages(List<? extends BucketPhoto> newPhotos) {
       this.photos.clear();
       this.photos.addAll(newPhotos);
       adapter.clear();
-      Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(TripImagePagerFragment.class)));
+      Queryable.from(photos).forEachR(photo -> adapter.add(new FragmentItem(BaseImageFragment.class)));
 
       // initialize once, initializing with empty list in view pager causes crash
       if (!photos.isEmpty() && !viewPagerIndicatorInitialized) {

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.worldventures.core.modules.video.utils.CachedModelHelper;
 import com.worldventures.core.ui.view.custom.PinProgressButton;
-import com.worldventures.dreamtrips.social.ui.video.cell.ProgressVideoCellHelper;
+import com.worldventures.dreamtrips.social.ui.video.cell.util.ProgressVideoCellHelper;
 import com.worldventures.wallet.ui.settings.help.video.delegate.WalletVideoCallback;
 import com.worldventures.wallet.ui.settings.help.video.holder.WalletVideoHolderDelegate;
 import com.worldventures.wallet.ui.settings.help.video.model.WalletVideoModel;
@@ -53,7 +53,7 @@ class WalletVideoHolderDelegateImpl extends WalletVideoHolderDelegate {
 
       @Override
       public void syncUIStateWithModel() {
-         progressVideoCellHelper.syncUIStateWithModel();
+         progressVideoCellHelper.updateButtonState();
       }
    }
 }

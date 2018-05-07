@@ -1,78 +1,78 @@
 package com.worldventures.dreamtrips.social.ui.friends.presenter
 
-import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.social.friends.util.MockUtil
-import com.worldventures.dreamtrips.social.ui.friends.presenter.FriendSearchPresenter.View
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.GetSearchUsersCommand
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argWhere
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.test.common.Injector
+import com.worldventures.dreamtrips.social.service.users.search.command.GetSearchUsersCommand
+import com.worldventures.dreamtrips.social.service.users.search.delegate.SearchedUsersStorageDelegate
 import io.techery.janet.command.test.BaseContract
 import io.techery.janet.command.test.MockCommandActionService
 import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.mockito.ArgumentMatchers
-import kotlin.test.assertTrue
+import org.mockito.internal.verification.VerificationModeFactory
 
-class FriendSearchPresenterSpec : AbstractUserListPresenterSpec(FriendSearchPresenterTestBody()) {
+class FriendSearchPresenterSpec : AbstractUserListPresenterSpec(FriendSearchTestSuite()) {
 
-   class FriendSearchPresenterTestBody : AbstractUserListPresenterTestBody<View, FriendSearchPresenter>() {
-      private fun createTestSuit(): SpecBody.() -> Unit = {
-         describe("Search users") {
-            it("Invoking setQuery() valid query and" +
-                  " save input query and notify view with new user data") {
-               val query = "friends name"
-               presenter.setQuery(query)
-               verify(presenter).reload()
-               verify(view).refreshUsers(argWhere { friends.size == it.size })
-               assertTrue { presenter.query == query }
-            }
+   class FriendSearchTestSuite : TestSuite<FriendSearchComponents>(FriendSearchComponents()) {
 
-            it("Invoke setQuery() with query with size < 3 " +
-                  "should notify view with empty user data and show empty view") {
-               presenter.users = (1..getUsersPerPage()).map { MockUtil.mockUser(it) }.toList()
-               presenter.setQuery("")
-               verify(view).refreshUsers(argWhere { it.isEmpty() })
-               verify(view).updateEmptyCaption(ArgumentMatchers.anyInt())
-            }
-         }
+      override fun specs(): SpecBody.() -> Unit = {
 
-         describe("Page counter") {
-            val query = "friend name"
+         with(components) {
+            describe("Friend Search Presenter") {
 
-            it("Should increment nexPage from 1 to 2") {
-               assertTrue { presenter.nextPage == 1 }
-               presenter.setQuery(query)
-               assertTrue { presenter.nextPage == 2 }
-            }
+               describe("Refresh data") {
 
-            it("Should scroll and increment nexPage from 2 to 3") {
-               presenter.setQuery(query)
-               assertTrue { presenter.nextPage == 2 }
-               presenter.scrolled(friends.size, friends.size - 1)
-               assertTrue { presenter.nextPage == 3 }
-            }
+                  beforeEachTest {
+                     init()
+                     linkPresenterAndView()
+                  }
 
-            it("Error while receiving user data should decrement nexPage") {
-               val command = GetSearchUsersCommand(query, 2, getUsersPerPage())
-               presenter.setQuery(query)
-               assertTrue { presenter.nextPage == 2 }
-               presenter.onError(command, Throwable())
-               assertTrue { presenter.nextPage == 1 }
+                  it("Search should notify view with new user data") {
+                     val query = "friend name"
+                     presenter.search(query)
+                     verify(view).refreshUsers(argWhere { it.size == friends.size }, any())
+                  }
+
+                  it("Empty query should notify view with empty list of data") {
+                     val query = ""
+                     presenter.search(query)
+                     verify(view).refreshUsers(argWhere { it.isEmpty() }, any())
+                  }
+
+                  it("Should notify view open circle selector alert") {
+                     presenter.addUserRequest(user)
+                     verify(view, VerificationModeFactory.atLeastOnce())
+                           .showAddFriendDialog(argWhere { circles.size == it.size }, argWhere { true })
+                  }
+               }
             }
          }
       }
+   }
 
-      override fun createTestSuits(): List<SpecBody.() -> Unit> = listOf(createTestSuit())
+   class FriendSearchComponents : AbstractUserListComponents<FriendSearchPresenter, FriendSearchPresenter.View>() {
 
-      override fun mockPresenter(): FriendSearchPresenter = spy(FriendSearchPresenter(""))
+      override fun onInit(injector: Injector, pipeCreator: SessionActionPipeCreator) {
+         presenter = spy(FriendSearchPresenter(""))
+         view = mock()
 
-      override fun mockView(): View = mock()
+         injector.apply {
+            registerProvider(SearchedUsersStorageDelegate::class.java, {
+               SearchedUsersStorageDelegate(friendInteractor, friendStorageInteractor, circleInteractor, profileInteractor)
+            })
+            inject(presenter)
+         }
+      }
 
       override fun mockActionService(): MockCommandActionService.Builder {
          return super.mockActionService().apply {
             addContract(BaseContract.of(GetSearchUsersCommand::class.java).result(friends))
          }
       }
-
-      override fun getMainDescription() = "FriendSearchPresenter"
    }
 }

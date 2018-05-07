@@ -26,10 +26,11 @@ import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.BucketPopularTabsPresenter;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.util.SweetDialogHelper;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.social.ui.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -55,7 +56,8 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
 
    @Override
    protected BucketPopularPresenter createPresenter(Bundle savedInstanceState) {
-      BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BucketPopularTabsPresenter.EXTRA_TYPE);
+      BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BucketPopularTabsPresenter.Companion
+            .getEXTRA_TYPE());
       return new BucketPopularPresenter(type);
    }
 
@@ -143,15 +145,13 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
    }
 
    @Override
-   public void setItems(List<PopularBucketItem> items) {
-      adapter.clear();
-      adapter.setItems(items);
-      adapter.notifyDataSetChanged();
+   public void setItems(List<? extends PopularBucketItem> items) {
+      adapter.setItems(new ArrayList(items));
    }
 
    @Override
-   public void setFilteredItems(List<PopularBucketItem> items) {
-      adapter.setFilteredItems(items);
+   public void setFilteredItems(List<? extends PopularBucketItem> items) {
+      adapter.setFilteredItems(new ArrayList<>(items));
    }
 
    @Override

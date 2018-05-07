@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.config.service.command
 
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.ImmutableCacheOptions
 import com.worldventures.dreamtrips.modules.config.model.Configuration
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
 import io.techery.janet.ActionHolder
 import io.techery.janet.Command
 import io.techery.janet.command.annotations.CommandAction
@@ -26,5 +26,5 @@ class ConfigurationCommand(private var configuration: Configuration? = null, pri
       if (configuration == null) configuration = cache
    }
 
-   override fun getCacheOptions() = ImmutableCacheOptions.builder().build()
+   override fun getCacheOptions() = CacheOptions()
 }

@@ -4,8 +4,8 @@
       xmlns:tools="http://schemas.android.com/tools"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:theme="@style/WalletTheme"
       android:orientation="vertical"
+      android:theme="@style/WalletTheme"
       >
 
    <android.support.v7.widget.Toolbar
@@ -56,7 +56,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
             tools:alpha="1"
-            tools:background="@color/platinum_user"
             >
 
          <android.support.v4.view.ViewPager
@@ -85,9 +84,9 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_margin="@dimen/spacing_tiny"
-               android:src="@drawable/ic_wallet_vector_check_circle_green"
                app:layout_constraintEnd_toEndOf="@+id/iv_pager_frame"
                app:layout_constraintTop_toTopOf="@+id/iv_pager_frame"
+               app:srcCompat="@drawable/ic_wallet_vector_check_circle_green"
                tools:ignore="ContentDescription"
                />
 
@@ -106,7 +105,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:background="@color/golden_user"
             tools:layout_height="6dp"
             tools:layout_width="50dp"
             />

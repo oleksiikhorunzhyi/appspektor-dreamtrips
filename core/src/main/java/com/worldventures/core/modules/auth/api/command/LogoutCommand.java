@@ -9,10 +9,12 @@ import com.worldventures.core.utils.CrashlyticsTracker;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.janet.injection.InjectableAction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
@@ -28,6 +30,7 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    @Inject SessionActionPipeCreator sessionActionPipeCreator;
    @Inject AnalyticsInteractor analyticsInteractor;
    @Inject Set<LogoutAction> logoutActions;
+   @Inject @Named(LogoutAction.PRIORITY_HIGH) Set<LogoutAction> highPriorityLogoutActions;
 
    private boolean userDataCleared;
 
@@ -57,8 +60,10 @@ public class LogoutCommand extends Command<Void> implements InjectableAction {
    }
 
    private Observable executeLogoutActions() {
+      ArrayList<LogoutAction> logoutActionQueue = new ArrayList<>(highPriorityLogoutActions);
+      logoutActionQueue.addAll(logoutActions);
       return Observable.create(subscriber -> {
-         for (LogoutAction action : logoutActions) {
+         for (LogoutAction action : logoutActionQueue) {
             try {
                action.call();
             } catch (Exception e) {

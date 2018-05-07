@@ -1,3 +1,5 @@
 package com.worldventures.dreamtrips.social.ui.infopages.presenter
 
-class DreamLifeClubPresenter(url: String) : WebViewFragmentPresenter<WebViewFragmentPresenter.View>(url)
+class DreamLifeClubPresenter : WebViewFragmentPresenter<WebViewFragmentPresenter.View>() {
+   override fun initUrl() = provider.dlcUrl
+}

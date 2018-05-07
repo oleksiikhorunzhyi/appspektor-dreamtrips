@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.social.ui.feed.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.feed.model.feed.hashtag.Hashtag;
 
 import org.jetbrains.annotations.NotNull;
@@ -70,6 +70,10 @@ public class TextualPost extends BaseFeedEntity {
          return false;
       }
       if (!super.equals(feedEntity)) {
+         return false;
+      }
+
+      if (!super.contentSame(feedEntity)) {
          return false;
       }
 

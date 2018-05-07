@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -116,7 +117,11 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
             transactionStatusInjector.showSuccessMessage();
             break;
          case REFUNDED:
-            transactionStatusInjector.showRefundedMessage();
+            if (transactionModel.getSubTotalAmount() < 0D) {
+               transactionStatusInjector.showRefundedMessage();
+            } else {
+               transactionStatusInjector.showSuccessMessage();
+            }
             break;
          default:
             transactionStatusInjector.showFailureMessage();
@@ -131,8 +136,25 @@ public class DtlTransactionScreenImpl extends DtlLayout<DtlTransactionScreen, Dt
             transactionModel.getCurrencySymbol()));
       tvTip.setText(CurrencyUtils.toCurrency(transaction.getTip(), transactionModel.getCurrenyCode(),
             transactionModel.getCurrencySymbol()));
-      tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(), DateTimeUtils.TRANSACTION_DATE_FORMAT));
-      tvEarnedPoints.setText(getContext().getString(R.string.dtl_earned_points, transaction.getEarnedPoints()));
+      tvDate.setText(DateTimeUtils.convertDateToString(transaction.getTransactionDate(),
+            DateTimeUtils.TRANSACTION_DATE_FORMAT));
+
+      final int pointsCaptionFormatResId;
+
+      if (transactionModel.getThrstPaymentStatus() == TransactionModel.ThrstPaymentStatus.REFUNDED
+            && transactionModel.getSubTotalAmount() < 0D) {
+         pointsCaptionFormatResId = R.string.dtl_transaction_adjusted_points;
+
+         final int highlightColor = ContextCompat.getColor(getContext(), R.color.transaction_amount_red_color);
+         tvTotal.setTextColor(highlightColor);
+         tvSubTotal.setTextColor(highlightColor);
+         tvTax.setTextColor(highlightColor);
+         tvTip.setTextColor(highlightColor);
+      } else {
+         pointsCaptionFormatResId = R.string.dtl_earned_points;
+      }
+
+      tvEarnedPoints.setText(getContext().getString(pointsCaptionFormatResId, transaction.getEarnedPoints()));
 
       hideReviewsOnTablets();
    }

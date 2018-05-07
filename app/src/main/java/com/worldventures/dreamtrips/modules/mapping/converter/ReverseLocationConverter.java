@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.mapping.converter;
 
 import com.worldventures.core.converter.Converter;
 import com.worldventures.dreamtrips.api.post.model.response.ImmutableLocation;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 
 import io.techery.mappery.MapperyContext;
 

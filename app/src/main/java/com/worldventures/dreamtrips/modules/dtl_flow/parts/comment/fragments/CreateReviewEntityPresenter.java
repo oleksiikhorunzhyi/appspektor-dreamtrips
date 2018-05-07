@@ -99,7 +99,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    @Override
    public void post() {
       Observable.from(cachedCreationItems)
-            .concatMap(item -> tripImagesInteractor.fetchLocationFromExifPipe()
+            .concatMap(item -> tripImagesInteractor.getFetchLocationFromExifPipe()
                   .createObservableResult(new FetchLocationFromExifCommand(item.getFilePath()))
                   .map(command -> {
                      item.setLocationFromExif(command.getResult());
@@ -196,7 +196,7 @@ public class CreateReviewEntityPresenter<V extends CreateReviewEntityPresenter.V
    }
 
    private Observable<PhotoReviewCreationItem> convertPhotoCreationItem(PhotoPickerModel photoGalleryModel) {
-      return tripImagesInteractor.createReviewPhotoCreationItemPipe()
+      return tripImagesInteractor.getCreateReviewPhotoCreationItemPipe()
             .createObservableResult(new CreateReviewPhotoCreationItemCommand(photoGalleryModel))
             .map(Command::getResult);
    }

@@ -23,7 +23,7 @@ public class MerchantsFacadeInteractor {
    private final MerchantsInteractor merchantsInteractor;
    private final MerchantsRequestSourceInteractor merchantsRequestSourceInteractor;
 
-   private RequestSourceType requestSourceType;
+   private RequestSourceType requestSourceType = RequestSourceType.LIST;
 
    public MerchantsFacadeInteractor(MerchantsRequestSourceInteractor merchantsRequestSourceInteractor,
          FilterDataInteractor filterDataInteractor, MerchantsInteractor merchantsInteractor, DtlLocationInteractor locationInteractor) {
@@ -33,8 +33,8 @@ public class MerchantsFacadeInteractor {
       this.locationInteractor = locationInteractor;
       this.merchantsInteractor = merchantsInteractor;
 
-      this.connectFilterData();
       this.connectRequestSource();
+      this.connectFilterData();
    }
 
    private void connectFilterData() {

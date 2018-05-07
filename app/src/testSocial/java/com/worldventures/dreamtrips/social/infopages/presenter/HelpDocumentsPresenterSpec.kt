@@ -1,18 +1,33 @@
 package com.worldventures.dreamtrips.social.infopages.presenter
 
-import com.worldventures.core.modules.infopages.service.command.GetDocumentsCommand
+import com.nhaarman.mockito_kotlin.mock
+import com.worldventures.core.janet.SessionActionPipeCreator
+import com.worldventures.core.test.common.Injector
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.HelpDocumentListPresenter
+import org.jetbrains.spek.api.dsl.SpecBody
+import org.jetbrains.spek.api.dsl.describe
 
-class HelpDocumentsPresenterSpec: DocumentListPresenterSpec<HelpDocumentsPresenterSpec.HelpDocumentsPresenterSpecBody,
-      HelpDocumentListPresenter>({ HelpDocumentsPresenterSpecBody() }) {
+class HelpDocumentsPresenterSpec : DocumentListPresenterSpec(HelpDocumentsTestSuite()) {
 
-   class HelpDocumentsPresenterSpecBody: DocumentListPresenterSpec.TestBody<HelpDocumentListPresenter>() {
+   class HelpDocumentsTestSuite : DocumentListTestSuite<HelpDocumentsComponents>(HelpDocumentsComponents()) {
 
-      override fun describeTest(): String = "Help Documents Presenter"
+      override fun specs(): SpecBody.() -> Unit = {
 
-      override fun createPresenter(): HelpDocumentListPresenter = HelpDocumentListPresenter()
+         describe("Help Documents Presenter") {
 
-      override fun getExpectedDocumentType(): GetDocumentsCommand.DocumentType = GetDocumentsCommand.DocumentType.HELP
+            super.specs().invoke(this)
+         }
+      }
+   }
+
+   class HelpDocumentsComponents : DocumentListComponents<HelpDocumentListPresenter>() {
+
+      override fun onInit(injector: Injector, pipeCreator: SessionActionPipeCreator) {
+         presenter = HelpDocumentListPresenter()
+         view = mock()
+
+         injector.inject(presenter)
+      }
    }
 }
 

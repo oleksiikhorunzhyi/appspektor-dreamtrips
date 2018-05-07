@@ -10,8 +10,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.linearlistview.LinearListView;
-import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
-import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
 import com.worldventures.core.ui.util.ViewUtils;
@@ -29,8 +27,13 @@ import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripViewPagerBundle;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
-import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.util.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.BookItFragment;
+import com.worldventures.dreamtrips.social.ui.infopages.view.fragment.staticcontent.EnrollUpgradeFragment;
+import com.worldventures.dreamtrips.social.ui.membership.bundle.UrlBundle;
+import com.worldventures.dreamtrips.social.util.event_delegate.ImagePresenterClickEventDelegate;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -93,7 +96,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       sweetDialogHelper = new SweetDialogHelper();
-      signUp.setMovementMethod(new TextViewLinkHandler(url -> router.moveTo(StaticInfoFragment.EnrollUpgradeFragment.class,
+      signUp.setMovementMethod(new TextViewLinkHandler(url -> router.moveTo(EnrollUpgradeFragment.class,
             NavigationConfigBuilder.forActivity().build())));
 
       tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
@@ -108,9 +111,6 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
          toolbarLandscape.setBackgroundColor(getResources().getColor(R.color.theme_main));
          toolbarLandscape.getBackground().setAlpha(255);
       }
-
-      tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
-
       subscribeToTripImagesClicks();
    }
 
@@ -131,17 +131,19 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
    }
 
    private void subscribeToTripImagesClicks() {
-      imagePresenterClickEventDelegate.getObservable().compose(bindUntilDropViewComposer())
+      imagePresenterClickEventDelegate.getObservable()
+            .compose(bindUntilDropViewComposer())
             .subscribe(imagePathHolder -> getPresenter()
                   .onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition()));
    }
 
+
    @Override
-   public void setContent(List<ContentItem> contentItems) {
+   public void setContent(@Nullable List<? extends ContentItem> contentItems) {
       if (isAdded()) {
          progressBarDetailLoading.setVisibility(View.GONE);
          if (contentItems != null) {
-            linearListView.setAdapter(new ContentAdapter(contentItems, getActivity()));
+            linearListView.setAdapter(new ContentAdapter((List<ContentItem>) contentItems, getActivity()));
          } else {
             textViewReloadTripDetails.setVisibility(View.VISIBLE);
          }
@@ -183,7 +185,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
 
    @Override
    public void openBookIt(String url) {
-      router.moveTo(StaticInfoFragment.BookItFragment.class, NavigationConfigBuilder.forActivity()
+      router.moveTo(BookItFragment.class, NavigationConfigBuilder.forActivity()
             .data(new UrlBundle(url))
             .build());
    }
@@ -194,6 +196,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
       if (toolbarLandscape != null) {
          ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
       }
+      tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), tripModel.getImageUrls());
    }
 
    @Override
@@ -203,7 +206,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
 
    @Override
    public void tripLiked(TripModel tripModel) {
-      sweetDialogHelper.notifyTripLiked(getActivity(), tripModel);
+      sweetDialogHelper.notifyTripLiked(getActivity(), tripModel.getName(), tripModel.isLiked());
    }
 
    @Override

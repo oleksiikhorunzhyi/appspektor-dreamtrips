@@ -222,5 +222,4 @@ public class TransactionModel implements Parcelable {
          return new TransactionModel[size];
       }
    };
-
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,8 +15,11 @@ import butterknife.InjectView;
 
 public class TransactionStatusInjector {
 
-   private Context context;
+   private final Context context;
 
+   @InjectView(R.id.thrst_status_labels_container) ViewGroup statusLabelsLayout;
+   @InjectView(R.id.refunded_thrst_status_container) ViewGroup refundedLabelLayout;
+   @InjectView(R.id.refunded_transaction_caption) TextView refundedTransactionCaption;
    @InjectView(R.id.tv_transaction_status_title) TextView titleStatusLineTextView;
    @InjectView(R.id.tv_transaction_status_error_secondary_title) TextView titleStatusSecondaryErrorView;
    @InjectView(R.id.tv_accept_payment_status) TextView acceptStatusPaymentView;
@@ -47,12 +51,13 @@ public class TransactionStatusInjector {
    }
 
    public void showRefundedMessage() {
-      showFailureMessage();
+      statusLabelsLayout.setVisibility(View.GONE);
+      refundedLabelLayout.setVisibility(View.VISIBLE);
+      refundedTransactionCaption.setText(getTextFromResource(R.string.dtl_transaction_refunded_caption));
       statusImage.setImageDrawable(getDrawableFromResource(R.drawable.check_refund_pilot));
    }
 
    private String getTextFromResource(int id) { return context.getString(id); }
 
    private Drawable getDrawableFromResource(int id) { return ContextCompat.getDrawable(context, id); }
-
 }

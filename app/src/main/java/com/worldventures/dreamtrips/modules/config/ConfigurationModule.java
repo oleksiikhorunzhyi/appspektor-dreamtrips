@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.config;
 
-import com.worldventures.core.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.config.service.storage.UpdateRequirementStorage;
 import com.worldventures.dreamtrips.modules.config.util.VersionComparator;

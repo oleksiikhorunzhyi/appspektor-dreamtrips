@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 abstract class DocumentListPresenter : Presenter<DocumentListPresenter.View>() {
 
-   @field:Inject lateinit var documentsInteractor: DocumentsInteractor
+   @Inject lateinit var documentsInteractor: DocumentsInteractor
 
    override fun takeView(view: View?) {
       super.takeView(view)
@@ -25,7 +25,7 @@ abstract class DocumentListPresenter : Presenter<DocumentListPresenter.View>() {
                   .onStart(this::onDocumentsReloadingStarted)
                   .onSuccess(this::onDocumentsLoadSuccess)
                   .onFail(this::onDocumentsLoadError)
-                  .onFinish { _ -> view.hideProgress() })
+                  .onFinish { view.hideProgress() })
    }
 
    fun refreshDocuments() {
@@ -39,9 +39,9 @@ abstract class DocumentListPresenter : Presenter<DocumentListPresenter.View>() {
    private fun onDocumentsReloadingStarted(getDocumentsCommand: GetDocumentsCommand) {
       if (getDocumentsCommand.isRefresh) {
          view.showProgress()
-
-         val items = getDocumentsCommand.items()
-         if (view.isAdapterEmpty() && !items.isEmpty()) view.setDocumentList(items)
+         getDocumentsCommand.items().apply {
+            if (view.isAdapterEmpty() && !isEmpty()) view.setDocumentList(this)
+         }
       }
    }
 
@@ -52,7 +52,6 @@ abstract class DocumentListPresenter : Presenter<DocumentListPresenter.View>() {
 
    private fun onDocumentsLoadError(getDocumentsCommand: GetDocumentsCommand, throwable: Throwable) {
       view.setDocumentList(getDocumentsCommand.items())
-
       handleError(getDocumentsCommand, throwable)
    }
 

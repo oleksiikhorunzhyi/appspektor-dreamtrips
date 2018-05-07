@@ -2,12 +2,11 @@ package com.worldventures.core.modules.infopages.service.command
 
 import com.facebook.common.internal.ImmutableList
 import com.worldventures.core.R
-import com.worldventures.core.janet.cache.CacheBundleImpl
-import com.worldventures.core.janet.cache.CacheOptions
-import com.worldventures.core.janet.cache.CacheOptionsImpl
-import com.worldventures.core.janet.cache.CachedAction
-import com.worldventures.core.janet.cache.storage.KeyValueStorage
-import com.worldventures.core.janet.cache.storage.PaginatedStorage
+import com.worldventures.janet.cache.CacheBundleImpl
+import com.worldventures.janet.cache.CacheOptions
+import com.worldventures.janet.cache.CachedAction
+import com.worldventures.janet.cache.storage.KeyValueStorage
+import com.worldventures.janet.cache.storage.PaginatedStorage
 import com.worldventures.core.modules.infopages.model.Document
 import com.worldventures.core.service.command.api_action.MappableApiActionCommand
 import com.worldventures.dreamtrips.api.documents.GetDocumentsHttpAction
@@ -53,7 +52,7 @@ class GetDocumentsCommand(private val documentType: DocumentType, val isRefresh:
       val cacheBundle = CacheBundleImpl()
       cacheBundle.put(PaginatedStorage.BUNDLE_REFRESH, isRefresh)
       cacheBundle.put(KeyValueStorage.BUNDLE_KEY_VALUE, documentType.toString())
-      return CacheOptionsImpl(params = cacheBundle)
+      return CacheOptions(params = cacheBundle)
    }
 
    fun items(): List<Document> {

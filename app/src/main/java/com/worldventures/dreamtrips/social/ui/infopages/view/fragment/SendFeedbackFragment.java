@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.social.ui.infopages.view.fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,8 +13,8 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.model.EntityStateHolder;
+import com.worldventures.core.modules.infopages.bundle.FeedbackImageAttachmentsBundle;
 import com.worldventures.core.modules.infopages.custom.AttachmentImagesHorizontalView;
 import com.worldventures.core.modules.infopages.model.FeedbackImageAttachment;
 import com.worldventures.core.modules.infopages.model.FeedbackType;
@@ -22,10 +23,16 @@ import com.worldventures.core.modules.picker.helper.PickerPermissionUiHandler;
 import com.worldventures.core.modules.picker.view.dialog.MediaPickerDialog;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.core.ui.annotations.MenuResource;
+import com.worldventures.core.ui.util.SoftInputUtil;
 import com.worldventures.core.ui.util.permission.PermissionUtils;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.social.ui.infopages.presenter.SendFeedbackPresenter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +41,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -51,7 +59,7 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    @InjectView(R.id.progressBar) ProgressBar progressBar;
    @InjectView(R.id.feedback_attachments) AttachmentImagesHorizontalView attachmentImagesHorizontalView;
    @InjectView(R.id.feedback_add_photos) View addPhotosButton;
-
+   @Inject Router router;
    private MenuItem doneButtonMenuItem;
    private Observable<CharSequence> messageObservable;
    private PublishSubject<FeedbackType> feedbackTypeObservable = PublishSubject.create();
@@ -127,15 +135,23 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       return super.onOptionsItemSelected(item);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public void setFeedbackTypes(List<FeedbackType> feedbackTypes) {
-      setupSpinner(feedbackTypes, true);
+   public void setFeedbackTypes(@NotNull List<? extends FeedbackType> feedbackTypes) {
+      setupSpinner((List<FeedbackType>) feedbackTypes, true);
    }
 
    @Override
    public void feedbackSent() {
-      informUser(R.string.feedback_has_been_sent);
-      router.back();
+      Dialog dialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+            .setTitleText(getString(R.string.congrats))
+            .setContentText(getString(R.string.feedback_has_been_sent))
+            .setConfirmClickListener(sweetAlertDialog -> {
+               sweetAlertDialog.cancel();
+               router.back();
+            });
+      dialog.setCanceledOnTouchOutside(false);
+      dialog.show();
    }
 
    @Override
@@ -180,14 +196,6 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
       addPhotosButton.setEnabled(enable);
    }
 
-   private void clearMessageFocus() {
-      // because clearFocus() method does not work
-      message.setFocusable(false);
-      message.setFocusableInTouchMode(false);
-      message.setFocusable(true);
-      message.setFocusableInTouchMode(true);
-   }
-
    ///////////////////////////////////////////////////////////////////////////
    // Attachments
    ///////////////////////////////////////////////////////////////////////////
@@ -195,6 +203,23 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
    private void initAttachments() {
       attachmentImagesHorizontalView.setPhotoCellDelegate(getPresenter()::onFeedbackAttachmentClicked);
       attachmentImagesHorizontalView.init(this);
+   }
+
+   @Override
+   public void showAttachments(@NotNull EntityStateHolder<FeedbackImageAttachment> holder, @NotNull FeedbackImageAttachmentsBundle bundle) {
+      switch (holder.state()) {
+         case DONE:
+         case PROGRESS:
+            router.moveTo(FeedbackImageAttachmentsFragment.class, NavigationConfigBuilder.forActivity()
+                  .data(bundle).toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                  .build());
+            break;
+         case FAIL:
+            showRetryUploadingUiForAttachment(holder);
+            break;
+         default:
+            //do nothing
+      }
    }
 
    @OnClick(R.id.feedback_add_photos)

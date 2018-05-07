@@ -20,7 +20,7 @@ public class TripPhotoFullscreenFragment extends BaseFragmentWithArgs<Presenter,
    @Override
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
-      imageryView.loadImage(getArgs().getUrl());
+      imageryView.loadImage(getArgs().getImagePath());
    }
 
    @Override

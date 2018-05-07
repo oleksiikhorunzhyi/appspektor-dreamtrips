@@ -20,6 +20,8 @@ import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundl
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import butterknife.InjectView;
@@ -49,7 +51,7 @@ public class TripMapListFragment extends BaseFragmentWithArgs<TripMapListPresent
    }
 
    @Override
-   public void updateItems(List<TripModel> trips) {
+   public void updateItems(@NotNull List<? extends TripModel> trips) {
       adapter.setItems(trips);
    }
 

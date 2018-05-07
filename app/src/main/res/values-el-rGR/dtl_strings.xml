@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">Λυπούμαστε, δεν μπορέσαμε να στείλουμε το μήνυμα, παρακαλούμε δοκιμάστε αργότερα.</string>
+   <string name="dtl_send_email_success">Το μήνυμα έχει σταλεί με επιτυχία.</string>
+   <string name="dtl_send_email_text">Στείλτε στο email μου</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">Υποσύνολο: %1$s</string>
    <string name="dtl_locations_title">Επιλέξτε την τοποθεσία</string>
@@ -159,6 +162,8 @@
    <string name="dtl_thrst_text_button">Πληρωμή στην Εφαρμογή</string>
    <string name="dtl_all_locations">όλες οι τοποθεσίες</string>
    <string name="dtl_earned_points">Έχετε κερδίσει %1$d πόντους</string>
+   <string name="dtl_transaction_adjusted_points">Ο λογαριασμός σας έχει προσαρμοστεί κατά %1$d πόντους.</string>
+   <string name="dtl_transaction_refunded_caption">Η πληρωμή σας έχει επιστραφεί.</string>
    <string name="dtl_earned_points_on_item">+%1$dpt</string>
 
    <!-- Pilot -->
@@ -190,4 +195,12 @@
    <string name="transaction_sub_total_amount_no_semicolon">Ποσό Υποσυνόλου</string>
    <string name="dtl_estimator_explanation_to_earn_points">Οι πόντοι υπολογίζονται βάσει ενός ελάχιστου ποσού που έχει δαπανηθεί στον έμπορο και της ημέρας της εβδομάδας. Για να κερδίσετε πόντους το ελάχιστο ποσό πρέπει να είναι %1$s</string>
    <string name="dtl_alert_title_error">Σφάλμα</string>
+
+   <string name="receipt_upload_error_caption">Σφάλμα κατά το ανέβασμα της απόδειξης. Επανάληψη;</string>
+   <string name="thrst_opening_error_caption">Κάτι πήγε στραβά. Παρακαλούμε δοκιμάστε ξανά σε λίγο.</string>
+
+   <string name="pay_in_app_hint_dialog_text">Θα θέλατε να παρακολουθήσετε ένα βίντεο για τη λειτουργία της νέας διαδικασίας Πληρωμή μέσω Εφαρμογής;</string>
+   <string name="pay_in_app_hint_positive">ΔΕΙΤΕ ΤΩΡΑ</string>
+   <string name="pay_in_app_hint_neutral">Υπενθύμιση αργότερα</string>
+   <string name="pay_in_app_hint_negative">Να μην εμφανιστεί ξανά</string>
 </resources>

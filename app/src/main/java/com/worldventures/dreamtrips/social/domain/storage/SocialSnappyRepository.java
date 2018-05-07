@@ -18,10 +18,6 @@ public interface SocialSnappyRepository {
 
    List<BucketItem> readBucketList(int userId);
 
-   void saveOpenBucketTabType(String type);
-
-   String getOpenBucketTabType();
-
    void saveLastSuggestedPhotosSyncTime(long time);
 
    long getLastSuggestedPhotosSyncTime();

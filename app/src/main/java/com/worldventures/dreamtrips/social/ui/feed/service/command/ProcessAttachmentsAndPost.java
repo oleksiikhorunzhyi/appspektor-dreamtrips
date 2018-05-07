@@ -5,7 +5,7 @@ import android.util.Pair;
 
 import com.worldventures.core.modules.picker.util.CapturedRowMediaHelper;
 import com.worldventures.core.utils.Size;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.core.model.Location;
 import com.worldventures.dreamtrips.social.ui.background_uploading.service.command.CreatePostCompoundOperationCommand;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.PhotoCreationItem;
@@ -54,7 +54,7 @@ public class ProcessAttachmentsAndPost extends Command<List<PhotoCreationItem>> 
                image.setFilePath(pair.first);
                return image;
             })
-            .concatMap(item -> tripImagesInteractor.fetchLocationFromExifPipe()
+            .concatMap(item -> tripImagesInteractor.getFetchLocationFromExifPipe()
                   .createObservableResult(new FetchLocationFromExifCommand(item.getFilePath()))
                   .map(command -> {
                      item.setLocationFromExif(command.getResult());

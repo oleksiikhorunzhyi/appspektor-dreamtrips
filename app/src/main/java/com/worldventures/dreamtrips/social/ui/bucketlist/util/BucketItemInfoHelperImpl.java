@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.util;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.R;
@@ -28,7 +29,7 @@ public class BucketItemInfoHelperImpl implements BucketItemInfoHelper {
    }
 
    @Override
-   public String getPlace(BucketItem bucketItem) {
+   public @Nullable String getPlace(BucketItem bucketItem) {
       String place = null;
       if (bucketItem.getLocation() != null) {
          place = bucketItem.getLocation().getName();

@@ -85,7 +85,7 @@ public class FeedActionHandlerDelegate {
    public void onDownloadImage(String url, Observable.Transformer stopper, Action2<Command, Throwable> errorAction) {
       permissionDispatcher.requestPermission(PermissionConstants.WRITE_EXTERNAL_STORAGE, false)
             .filter(permissionResult -> PermissionUtils.verifyPermissions(permissionResult.grantResults))
-            .flatMap(o -> tripImagesInteractor.downloadImageActionPipe().createObservable(new DownloadImageCommand(url)))
+            .flatMap(o -> tripImagesInteractor.getDownloadImageActionPipe().createObservable(new DownloadImageCommand(url)))
             .compose(stopper)
             .subscribe(new ActionStateSubscriber<DownloadImageCommand>()
                   .onFail(errorAction::call));
@@ -104,7 +104,7 @@ public class FeedActionHandlerDelegate {
    }
 
    public void onDeletePhoto(Photo photo) {
-      tripImagesInteractor.deletePhotoPipe().send(new DeletePhotoCommand(photo));
+      tripImagesInteractor.getDeletePhotoPipe().send(new DeletePhotoCommand(photo));
    }
 
    public void onEditBucketItem(BucketItem bucketItem, BucketItem.BucketType bucketType) {

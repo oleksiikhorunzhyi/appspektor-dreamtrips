@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.TripImage;
 
 import java.util.List;
@@ -42,16 +42,16 @@ public class TripDetailsViewInjector extends TripViewInjector {
       addToBucketItem = menu.findItem(R.id.action_add_to_bucket);
    }
 
-   public void initGalleryData(FragmentManager fragmentManager, List<TripImage> filteredImages) {
+   public void initGalleryData(FragmentManager fragmentManager, List<String> filteredImages) {
       BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(fragmentManager) {
          @Override
          public void setArgs(int position, Fragment fragment) {
-            TripImage photo = filteredImages.get(position);
-            ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+            String photo = filteredImages.get(position);
+            ((BaseImageFragment) fragment).setArgs(new ImageBundle<>(new TripImage(photo)));
          }
       };
 
-      Queryable.from(filteredImages).forEachR(photo -> adapter.add(new FragmentItem(TripImagePagerFragment.class)));
+      Queryable.from(filteredImages).forEachR(photo -> adapter.add(new FragmentItem(BaseImageFragment.class)));
 
       if (viewPagerGallery != null) {
          viewPagerGallery.setAdapter(adapter);

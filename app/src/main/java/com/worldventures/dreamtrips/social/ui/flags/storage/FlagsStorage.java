@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.social.ui.flags.storage;
 
 import android.support.annotation.Nullable;
 
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.storage.ActionStorage;
-import com.worldventures.core.janet.cache.storage.ClearableStorage;
-import com.worldventures.core.janet.cache.storage.MemoryStorage;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.cache.storage.ActionStorage;
+import com.worldventures.janet.cache.storage.ClearableStorage;
+import com.worldventures.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.social.ui.flags.command.GetFlagsCommand;
 import com.worldventures.dreamtrips.social.ui.tripsimages.model.Flag;
 

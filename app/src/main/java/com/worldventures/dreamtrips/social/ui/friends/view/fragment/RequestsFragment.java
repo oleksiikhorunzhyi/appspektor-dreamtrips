@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.social.ui.friends.view.fragment;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
@@ -10,7 +11,6 @@ import android.widget.ArrayAdapter;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
-import com.innahema.collections.query.functions.Action1;
 import com.worldventures.core.model.Circle;
 import com.worldventures.core.model.User;
 import com.worldventures.core.ui.annotations.Layout;
@@ -24,9 +24,10 @@ import com.worldventures.dreamtrips.core.module.FragmentClassProviderModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.FragmentClassProvider;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.view.adapter.BaseDiffUtilCallback;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.social.service.friends.model.AcceptanceHeaderModel;
-import com.worldventures.dreamtrips.social.service.friends.model.RequestHeaderModel;
+import com.worldventures.dreamtrips.social.service.users.base.model.AcceptanceHeaderModel;
+import com.worldventures.dreamtrips.social.service.users.base.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.social.ui.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.AcceptanceHeaderCell;
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.RequestCell;
@@ -35,10 +36,15 @@ import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.Request
 import com.worldventures.dreamtrips.social.ui.friends.view.cell.delegate.RequestHeaderCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 @Layout(R.layout.fragment_requests)
 @MenuResource(R.menu.menu_friend)
@@ -166,48 +172,58 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter> implements
    }
 
    @Override
-   public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+   public void showAddFriendDialog(@NotNull List<? extends Circle> circles, @NotNull Function1<? super Circle, Unit> selectAction) {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
       builder.title(getString(R.string.friend_add_to))
+            .dismissListener(dialog -> notifyItemsStateChanged())
             .adapter(new ArrayAdapter<>(getActivity(), R.layout.simple_list_item_circle, circles), (materialDialog, view, i, charSequence) -> {
-               selectedAction.apply(i);
+               selectAction.invoke(circles.get(i));
                materialDialog.dismiss();
             })
             .negativeText(R.string.action_cancel)
             .show();
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public void itemsLoaded(List<Object> sortedItems, boolean noMoreElements) {
-      getAdapter().setItems(sortedItems);
+   public void itemsLoaded(@NotNull List<?> sortedItems, boolean noMoreElements) {
+      DiffUtil.DiffResult result = DiffUtil.calculateDiff(new BaseDiffUtilCallback(getAdapter().getItems(),
+            sortedItems));
+      getAdapter().setItemsNoNotify((List<Object>) sortedItems);
+      result.dispatchUpdatesTo(getAdapter());
       statePaginatedRecyclerViewManager.updateLoadingStatus(false, noMoreElements);
    }
 
    @Override
    public void acceptRequest(User user) {
-      getPresenter().acceptRequest(user);
+      getPresenter().acceptRequest(user.copy());
    }
 
    @Override
    public void rejectRequest(User user) {
-      getPresenter().rejectRequest(user);
+      getPresenter().rejectRequest(user.copy());
    }
 
    @Override
    public void hideRequest(User user) {
-      getPresenter().hideRequest(user);
+      getPresenter().hideRequest(user.copy());
    }
 
    @Override
    public void cancelRequest(User user) {
-      getPresenter().cancelRequest(user);
+      getPresenter().cancelRequest(user.copy());
    }
 
    @Override
    public void userClicked(User user) {
-      getPresenter().userClicked(user);
+      getPresenter().userClicked(user.copy());
    }
 
    @Override
    public void onCellClicked(User model) { }
+
+   @Override
+   public void notifyItemsStateChanged() {
+      adapter.notifyItemRangeChanged(0, getAdapter().getItemCount());
+   }
 }

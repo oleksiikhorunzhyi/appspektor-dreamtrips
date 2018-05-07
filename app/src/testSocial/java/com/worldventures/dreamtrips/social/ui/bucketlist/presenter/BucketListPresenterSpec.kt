@@ -1,6 +1,10 @@
 package com.worldventures.dreamtrips.social.ui.bucketlist.presenter
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.core.janet.SessionActionPipeCreator
 import com.worldventures.dreamtrips.social.common.presenter.PresenterBaseSpec
 import com.worldventures.dreamtrips.social.domain.storage.SocialSnappyRepository
@@ -11,115 +15,126 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.command.test.Contract
 import io.techery.janet.command.test.MockCommandActionService
+import org.jetbrains.spek.api.dsl.SpecBody
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xit
 import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.internal.verification.VerificationModeFactory
 import kotlin.test.assertEquals
 
-class BucketListPresenterSpec : PresenterBaseSpec({
+class BucketListPresenterSpec : PresenterBaseSpec(BucketListTestSuite()) {
 
-   describe("BucketTabsPresenter") {
+   class BucketListTestSuite : TestSuite<BucketListComponents>(BucketListComponents()) {
 
-      it("should show loading in onStart") {
-         init()
+      override fun specs(): SpecBody.() -> Unit = {
 
-         presenter.onStart()
+         with(components) {
 
-         verify(view).startLoading()
-      }
+            describe("BucketTabsPresenter") {
 
-      it("should load bucket items in onResume") {
-         val bucketList = listOf<BucketItem>(stubBucketItem())
-         init(Contract.of(BucketListCommand::class.java).result(bucketList))
+               it("should show loading in onStart") {
+                  init()
+                  linkPresenterAndView()
 
-         presenter.onResume()
-         bucketInteractor.bucketListActionPipe().send(BucketListCommand.fetch(true))
+                  presenter.onStart()
 
-         assertEquals(bucketList, presenter.bucketItems)
-         verify(view).finishLoading()
-         verify(view).setItems(any())
-         verify(view).hideEmptyView()
-      }
+                  verify(view).startLoading()
+               }
 
-      describe("should correctly set items") {
-         beforeEachTest { init() }
+               it("should load bucket items in onResume") {
+                  val bucketList = listOf(stubBucketItem())
+                  init(Contract.of(BucketListCommand::class.java).result(bucketList))
+                  linkPresenterAndView()
 
-         it("on empty items it should hide detail container") {
-            presenter.bucketItems = emptyList()
+                  presenter.onResume()
+                  bucketInteractor.bucketListActionPipe().send(BucketListCommand.fetch(true))
 
-            presenter.refresh()
+                  assertEquals(bucketList, presenter.bucketItems)
+                  verify(view).finishLoading()
+                  verify(view).setItems(any())
+                  verify(view).hideEmptyView()
+               }
 
-            verify(view).hideDetailContainer()
-            verify(view).setItems(any())
-            verify(view, never()).hideEmptyView()
-         }
+               describe("should correctly set items") {
 
-         it("on non empty items it should set items and hide empty view") {
-            presenter.bucketItems = listOf(stubBucketItem())
+                  beforeEachTest {
+                     init()
+                     linkPresenterAndView()
+                  }
 
-            presenter.refresh()
+                  it("on empty items it should hide detail container") {
+                     presenter.bucketItems = emptyList()
 
-            verify(view).setItems(any())
-            verify(view).putCategoryMarker(anyInt())
-            verify(view).hideEmptyView()
-         }
+                     presenter.refresh()
 
-         it("should filter out done items correctly") {
-            presenter.bucketItems = listOf(stubBucketItem(isDone = true))
+                     verify(view).hideDetailContainer()
+                     verify(view).setItems(any())
+                     verify(view, never()).hideEmptyView()
+                  }
 
-            presenter.showCompleted = false
-            presenter.refresh()
+                  it("on non empty items it should set items and hide empty view") {
+                     presenter.bucketItems = listOf(stubBucketItem())
 
-            assert(presenter.filteredItems.isEmpty())
-            verify(view, never()).hideEmptyView()
-         }
+                     presenter.refresh()
 
-         it("should filter out todo items correctly") {
-            presenter.bucketItems = listOf(stubBucketItem(isDone = false))
+                     verify(view).setItems(any())
+                     verify(view).putCategoryMarker(anyInt())
+                     verify(view).hideEmptyView()
+                  }
 
-            presenter.showToDO = false
-            presenter.refresh()
+                  it("should filter out done items correctly") {
+                     presenter.bucketItems = listOf(stubBucketItem(isDone = true))
 
-            assert(presenter.filteredItems.isEmpty())
-            verify(view, never()).hideEmptyView()
-         }
+                     presenter.showCompleted = false
+                     presenter.refresh()
 
-         it("should open last opened bucket item details") {
-            val bucket = stubBucketItem()
-            presenter.bucketItems = listOf(stubBucketItem(), bucket)
-            presenter.lastOpenedBucketItem = bucket
-            whenever(view.isTabletLandscape).thenReturn(true)
+                     assert(presenter.filteredItems.isEmpty())
+                     verify(view, never()).hideEmptyView()
+                  }
 
-            presenter.refresh()
+                  it("should filter out todo items correctly") {
+                     val presenter = presenter
+                     presenter.bucketItems = listOf(stubBucketItem(isDone = false))
 
-            verify(view).openDetails(any())
-         }
+                     presenter.showToDo = false
+                     presenter.refresh()
 
-         it("should not open last opened bucket item details") {
-            val bucket = stubBucketItem()
-            presenter.lastOpenedBucketItem = bucket
-            presenter.bucketItems = listOf(stubBucketItem(), bucket)
-            whenever(view.isTabletLandscape).thenReturn(false)
+                     assert(presenter.filteredItems.isEmpty())
+                     verify(view, never()).hideEmptyView()
+                  }
 
-            presenter.refresh()
+                  it("should open last opened bucket item details") {
+                     val bucket = stubBucketItem()
+                     presenter.bucketItems = listOf(stubBucketItem(), bucket)
+                     presenter.lastOpenedBucketItem = bucket
+                     whenever(view.isTabletLandscape).thenReturn(true)
 
-            verify(view, never()).openDetails(any())
+                     presenter.refresh()
+
+                     verify(view).openDetails(any())
+                  }
+
+                  it("should not open last opened bucket item details") {
+                     val bucket = stubBucketItem()
+                     presenter.lastOpenedBucketItem = bucket
+                     presenter.bucketItems = listOf(stubBucketItem(), bucket)
+                     whenever(view.isTabletLandscape).thenReturn(false)
+
+                     presenter.refresh()
+
+                     verify(view, never()).openDetails(any())
+                  }
+               }
+            }
          }
       }
    }
 
-}) {
-   companion object {
+   class BucketListComponents : TestComponents<BucketListPresenter, BucketListPresenter.View>() {
+
       lateinit var bucketInteractor: BucketInteractor
-      lateinit var presenter: BucketListPresenter
-      lateinit var view: BucketListPresenter.View
-      val socialSnappy: SocialSnappyRepository = spy()
-      val bucketType = BucketItem.BucketType.ACTIVITY
 
       fun init(contract: Contract? = null) {
-         presenter = spy(BucketListPresenter(bucketType))
+         presenter = spy(BucketListPresenter(BucketItem.BucketType.ACTIVITY))
          view = spy()
 
          val janetBuilder = Janet.Builder()
@@ -135,11 +150,9 @@ class BucketListPresenterSpec : PresenterBaseSpec({
          prepareInjector().apply {
             registerProvider(Janet::class.java, { janet })
             registerProvider(BucketInteractor::class.java, { bucketInteractor })
-            registerProvider(SocialSnappyRepository::class.java, { socialSnappy })
+            registerProvider(SocialSnappyRepository::class.java, { spy() })
             inject(presenter)
          }
-
-         presenter.takeView(view)
       }
    }
 }

@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.worldventures.core.ui.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.BaseAbstractDelegateCell;
-import com.worldventures.dreamtrips.social.ui.profile.model.FriendGroupRelation;
+import com.worldventures.dreamtrips.social.service.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.FriendPrefsCellDelegate;
 import com.worldventures.dreamtrips.social.ui.profile.view.cell.delegate.State;
 
@@ -25,7 +25,7 @@ public class FriendPrefGroupCell extends BaseAbstractDelegateCell<FriendGroupRel
 
    @Override
    protected void syncUIStateWithModel() {
-      title.setText(getModelObject().circle().getName());
+      title.setText(getModelObject().getCircle().getName());
       itemView.setOnClickListener(v -> cb.setChecked(!cb.isChecked()));
       cb.setOnCheckedChangeListener(null);
       cb.setChecked(getModelObject().isFriendInCircle());

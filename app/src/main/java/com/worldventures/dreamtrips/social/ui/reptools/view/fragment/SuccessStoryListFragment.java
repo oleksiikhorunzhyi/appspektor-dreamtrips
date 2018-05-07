@@ -1,26 +1,23 @@
 package com.worldventures.dreamtrips.social.ui.reptools.view.fragment;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.core.ui.annotations.Layout;
+import com.worldventures.core.ui.view.adapter.BaseDelegateAdapter;
 import com.worldventures.core.ui.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.social.ui.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.social.ui.reptools.presenter.SuccessStoryListPresenter;
@@ -43,27 +40,14 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
    @InjectView(R.id.detail_container) protected FrameLayout flDetailContainer;
    @InjectView(R.id.search) protected SearchView search;
-   @InjectView(R.id.iv_filter) protected ImageView ivFilter;
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
 
-   private FilterableArrayListAdapter<SuccessStory> adapter;
+   private BaseDelegateAdapter<SuccessStory> adapter;
    private final WeakHandler weakHandler = new WeakHandler();
 
    @Override
    protected SuccessStoryListPresenter createPresenter(Bundle savedInstanceState) {
       return new SuccessStoryListPresenter();
-   }
-
-   @Override
-   public void onConfigurationChanged(Configuration newConfig) {
-      super.onConfigurationChanged(newConfig);
-      flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
-      recyclerView.postDelayed(() -> {
-         if (recyclerView != null) {
-            adapter.notifyDataSetChanged();
-         }
-      }, 100);
-      openFirst();
    }
 
    @OnClick(R.id.iv_filter)
@@ -80,10 +64,10 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
       popupMenu.setOnMenuItemClickListener((menuItem) -> {
          switch (menuItem.getItemId()) {
             case R.id.action_show_all:
-               getPresenter().reloadWithFilter(false);
+               getPresenter().filterFavorites(false);
                break;
             case R.id.action_show_favorites:
-               getPresenter().reloadWithFilter(true);
+               getPresenter().filterFavorites(true);
                break;
             default:
                break;
@@ -119,38 +103,36 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    public void afterCreateView(View rootView) {
       super.afterCreateView(rootView);
       flDetailContainer.setVisibility(isTabletLandscape() ? View.VISIBLE : View.GONE);
-
-      this.adapter = new FilterableArrayListAdapter<>(getActivity(), this);
-      this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
-      this.adapter.registerDelegate(SuccessStory.class, new SuccessStoryCell.Delegate() {
+      adapter = new BaseDelegateAdapter<>(getActivity(), this);
+      adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
+      adapter.registerDelegate(SuccessStory.class, new SuccessStoryCell.Delegate() {
          @Override
          public void onCellClicked(SuccessStory model, int position) {
+            search.clearFocus();
             getPresenter().onSuccessStoryCellClick(model, position);
          }
       });
-      this.adapter.setHasStableIds(true);
-      this.recyclerView.setEmptyView(emptyView);
-      this.recyclerView.setAdapter(adapter);
-      this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-      this.refreshLayout.setOnRefreshListener(this);
-      this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+      adapter.setHasStableIds(true);
+      recyclerView.setEmptyView(emptyView);
+      recyclerView.setAdapter(adapter);
+      recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+      refreshLayout.setOnRefreshListener(this);
+      refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
       StickyHeadersItemDecoration decoration = new StickyHeadersBuilder().setAdapter(adapter)
             .setRecyclerView(recyclerView)
             .setStickyHeadersAdapter(new SuccessStoryHeaderAdapter(adapter.getItems(), R.layout.adapter_item_succes_story_header), false)
             .build();
-
       recyclerView.addItemDecoration(decoration);
-
       search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
          @Override
-         public boolean onQueryTextSubmit(String s) {
+         public boolean onQueryTextSubmit(String query) {
             return false;
          }
 
          @Override
-         public boolean onQueryTextChange(String s) {
-            adapter.setFilter(s);
+         public boolean onQueryTextChange(String query) {
+            getPresenter().filterByQuery(query);
             return false;
          }
       });
@@ -170,25 +152,10 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    }
 
    @Override
-   public void setItems(List<SuccessStory> items) {
+   public void setItems(@NonNull List<SuccessStory> items) {
       adapter.clear();
       adapter.addItems(new ArrayList<>(items));
       adapter.notifyDataSetChanged();
-   }
-
-   @Override
-   public void updateItem(SuccessStory successStory) {
-      List<SuccessStory> items = adapter.getItems();
-      SuccessStory updatedStory = Queryable.from(items)
-            .filter(story -> story.getUrl().equals(successStory.getUrl())).firstOrDefault();
-      int storyIndex = items.indexOf(updatedStory);
-      items.set(storyIndex, successStory);
-      adapter.notifyItemChanged(storyIndex);
-   }
-
-   @Override
-   public int getItemsCount() {
-      return adapter.getCount();
    }
 
    @Override
@@ -199,11 +166,6 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
          }
          openFirst();
       });
-   }
-
-   @Override
-   public FragmentManager getSupportFragmentManager() {
-      return getChildFragmentManager();
    }
 
    private void openFirst() {
@@ -226,12 +188,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
    }
 
    @Override
-   public void onStoryClicked() {
-      search.clearFocus();
-   }
-
-   @Override
-   public void openStory(Bundle bundle) {
+   public void openStory(@NonNull Bundle bundle) {
       if (isTabletLandscape()) {
          bundle.putBoolean(SuccessStoryDetailsFragment.EXTRA_SLAVE, true);
          router.moveTo(SuccessStoryDetailsFragment.class, NavigationConfigBuilder.forFragment()

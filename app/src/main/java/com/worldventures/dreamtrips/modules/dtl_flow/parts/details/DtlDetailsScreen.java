@@ -78,4 +78,10 @@ public interface DtlDetailsScreen extends DtlScreen {
    void hideEarnFlowButton();
 
    boolean isTablet();
+
+   void showHowToPayHint(String url);
+
+   void openHowToPayVideo(String url);
+
+   void hideVideoIfNeeded();
 }

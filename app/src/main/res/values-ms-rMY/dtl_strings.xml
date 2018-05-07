@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+   <string name="dtl_send_email_error">Maaf, kami tidak dapat menghantar e-mel, sila cuba sebentar lagi.</string>
+   <string name="dtl_send_email_success">E-mel telah berjaya dihantar.</string>
+   <string name="dtl_send_email_text">Sila hantar ke e-mel saya</string>
    <string name="dtl_local">Local</string>
    <string name="dtl_subtotal">Jumlah kecil bayaran: %1$s</string>
    <string name="dtl_locations_title">Pilih lokasi</string>
@@ -159,6 +162,8 @@
    <string name="dtl_thrst_text_button">Aplikasi Bayar Masuk</string>
    <string name="dtl_all_locations">semua lokasi</string>
    <string name="dtl_earned_points">Anda telah memperoleh %1$d mata</string>
+   <string name="dtl_transaction_adjusted_points">Akaun anda telah diselaraskan %1$d mata.</string>
+   <string name="dtl_transaction_refunded_caption">Pembayaran anda telah dikembalikan.</string>
    <string name="dtl_earned_points_on_item">+%1$dmata</string>
 
    <!-- Pilot -->
@@ -190,4 +195,12 @@
    <string name="transaction_sub_total_amount_no_semicolon">Amaun Subjumlah</string>
    <string name="dtl_estimator_explanation_to_earn_points">Mata dikira berdasarkan amaun minimum dibelanjakan di saudagar dan hari minggu tersebut. Untuk mendapatkan mata jumlah minimum seharusnya %1$s</string>
    <string name="dtl_alert_title_error">Ralat</string>
+
+   <string name="receipt_upload_error_caption">Ralat memuat naik resit. Cuba sekali lagi?</string>
+   <string name="thrst_opening_error_caption">Sistem tidak dapat berfungsi pada masa ini. Sila cuba sebentar lagi.</string>
+
+   <string name="pay_in_app_hint_dialog_text">Adakah anda ingin melihat video pengajaran tentang cara menggunakan Pembayaran dalam Aplikasi yang baru?</string>
+   <string name="pay_in_app_hint_positive">Menonton Kini</string>
+   <string name="pay_in_app_hint_neutral">Ingatkan Saya Kemudian</string>
+   <string name="pay_in_app_hint_negative">Jangan tunjukkan lagi</string>
 </resources>

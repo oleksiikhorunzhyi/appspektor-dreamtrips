@@ -31,6 +31,7 @@ public class TripFeedViewInjector extends TripViewInjector {
 
       PointF pointF = new PointF(0.5f, 0.0f);
       imageViewTripImage.getHierarchy().setActualImageFocusPoint(pointF);
-      imageViewTripImage.setImageURI(Uri.parse(tripModel.getThumb(imageViewTripImage.getResources())));
+      imageViewTripImage.setImageURI(Uri.parse(tripModel.getThumb(imageViewTripImage.getResources()
+            .getDimensionPixelSize(R.dimen.tripImageHeight))));
    }
 }

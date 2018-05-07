@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -38,11 +39,13 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCellDelegate;
 import com.worldventures.dreamtrips.social.ui.activity.SocialMainActivity;
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.social.ui.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.social.ui.bucketlist.view.util.SweetDialogHelper;
 import com.worldventures.dreamtrips.social.ui.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.social.ui.feed.model.FeedItem;
 import com.worldventures.dreamtrips.social.ui.feed.view.fragment.FeedEntityDetailsFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +62,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @InjectView(R.id.recyclerViewTrips) protected EmptyRecyclerView recyclerView;
    @InjectView(R.id.ll_empty_view) protected ViewGroup emptyView;
+   @InjectView(R.id.empty_search_travel_banner) protected View emptySearchTravelBanner;
    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
 
    private BaseDelegateAdapter<Object> adapter;
@@ -68,6 +72,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    private WeakHandler weakHandler;
    private GridLayoutManager layoutManager;
+   private BannerCell emptySearchBannerCell;
 
    @State boolean searchOpened;
 
@@ -93,11 +98,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
       recyclerView.setLayoutManager(layoutManager);
       recyclerView.setEmptyView(emptyView);
 
-      adapter = new BaseDelegateAdapter<>(getActivity(), this);
-      adapter.registerCell(TripModel.class, TripCell.class);
-      adapter.registerCell(TravelBannerRequirement.class, BannerCell.class);
-      adapter.registerDelegate(TripModel.class, this);
-      adapter.registerDelegate(TravelBannerRequirement.class, new BannerCellDelegate() {
+      BannerCellDelegate delegate = new BannerCellDelegate() {
          @Override
          public void onCellClicked(TravelBannerRequirement model) {
             Intent intent = IntentUtils.browserIntent(model.getUrl());
@@ -108,7 +109,15 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          public void onCancelClicked() {
             getPresenter().hideTripRequirement();
          }
-      });
+      };
+
+      adapter = new BaseDelegateAdapter<>(getActivity(), this);
+      adapter.registerCell(TripModel.class, TripCell.class);
+      adapter.registerCell(TravelBannerRequirement.class, BannerCell.class);
+      adapter.registerDelegate(TripModel.class, this);
+      adapter.registerDelegate(TravelBannerRequirement.class, delegate);
+      emptySearchBannerCell = new BannerCell(emptySearchTravelBanner);
+      emptySearchBannerCell.setCellDelegate(delegate);
 
       recyclerView.setAdapter(adapter);
 
@@ -173,7 +182,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
       MenuItem searchItem = menu.findItem(R.id.action_search);
       if (searchItem != null) {
          if (searchOpened) {
-            getView().post(() -> searchItem.expandActionView());
+            getView().post(searchItem::expandActionView);
          }
          MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -190,8 +199,14 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          });
          searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
          searchView.setQueryHint(getString(R.string.search_trips));
-         searchView.setQuery(getPresenter().getQuery(), false);
          getPresenter().onMenuInflated();
+      }
+   }
+
+   @Override
+   public void setQuery(@NotNull String query) {
+      if (searchView != null) {
+         searchView.setQuery(query, false);
       }
    }
 
@@ -235,7 +250,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @Override
    public void onRefresh() {
-      getPresenter().reload();
+      getPresenter().reload(true);
    }
 
    @Override
@@ -263,7 +278,7 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
    }
 
    @Override
-   public void itemsChanged(List<Object> items) {
+   public void itemsChanged(@NonNull List items) {
       layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
          @Override
          public int getSpanSize(int position) {
@@ -273,11 +288,19 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
             return 1;
          }
       });
-      adapter.clearAndUpdateItems(items);
+
+      if (items.size() == 1 && items.get(0) instanceof TravelBannerRequirement) {
+         adapter.clear();
+         emptySearchBannerCell.fillWithItem((TravelBannerRequirement) items.get(0));
+         emptySearchTravelBanner.setVisibility(View.VISIBLE);
+      } else {
+         adapter.clearAndUpdateItems(items);
+         emptySearchTravelBanner.setVisibility(View.GONE);
+      }
    }
 
    @Override
-   public void itemLiked(FeedEntity feedEntity) {
+   public void itemLiked(@NonNull FeedEntity feedEntity) {
       TripModel trip = Queryable.from(adapter.getItems())
             .filter(element -> element instanceof TripModel)
             .cast(TripModel.class)
@@ -287,19 +310,14 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
          trip.syncLikeState(feedEntity);
          dataSetChanged();
          if (isVisibleOnScreen()) {
-            new SweetDialogHelper().notifyTripLiked(getActivity(), trip);
+            new SweetDialogHelper().notifyTripLiked(getActivity(), trip.getName(), trip.isLiked());
          }
       }
    }
 
    @Override
-   public void showItemAddedToBucketList(BucketItem bucketItem) {
+   public void showItemAddedToBucketList(@NonNull BucketItem bucketItem) {
       new SweetDialogHelper().notifyItemAddedToBucket(getActivity(), bucketItem);
-   }
-
-   @Override
-   public boolean isSearchOpened() {
-      return searchOpened;
    }
 
    public void clearSearch() {
@@ -330,11 +348,11 @@ public class TripListFragment extends RxBaseFragment<TripListPresenter> implemen
 
    @Override
    public void onCellClicked(TripModel model) {
-      getPresenter().openTrip(model);
+      getPresenter().openTrip(model, searchOpened);
    }
 
    @Override
-   public void moveToTripDetails(TripModel model) {
+   public void moveToTripDetails(@NonNull TripModel model) {
       router.moveTo(FeedEntityDetailsFragment.class, NavigationConfigBuilder.forActivity()
             .toolbarConfig(ToolbarConfig.Builder.create()
                   .visible(false)

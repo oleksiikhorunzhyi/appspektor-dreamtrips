@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.command;
 
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
@@ -55,9 +54,7 @@ public class NotificationCountChangedCommand extends Command<NotificationCountCh
 
    @Override
    public CacheOptions getCacheOptions() {
-      return ImmutableCacheOptions.builder()
-            .restoreFromCache(restoreFromCache)
-            .build();
+      return new CacheOptions(restoreFromCache, true, true, null);
    }
 
    public static class NotificationCounterResult {

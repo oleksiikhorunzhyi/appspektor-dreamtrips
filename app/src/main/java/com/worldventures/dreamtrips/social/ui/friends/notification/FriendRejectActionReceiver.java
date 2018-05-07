@@ -6,9 +6,9 @@ import android.content.Intent;
 
 import com.worldventures.core.janet.Injector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+import com.worldventures.dreamtrips.social.service.users.base.interactor.FriendsInteractor;
+import com.worldventures.dreamtrips.social.service.users.request.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.activity.presenter.ComponentPresenter;
-import com.worldventures.dreamtrips.social.service.friends.interactor.FriendsInteractor;
-import com.worldventures.dreamtrips.social.service.friends.interactor.command.ActOnFriendRequestCommand;
 import com.worldventures.dreamtrips.social.ui.profile.bundle.UserBundle;
 
 import javax.inject.Inject;

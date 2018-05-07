@@ -5,12 +5,6 @@ import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.core.janet.cache.CacheBundle;
-import com.worldventures.core.janet.cache.CacheBundleImpl;
-import com.worldventures.core.janet.cache.CacheOptions;
-import com.worldventures.core.janet.cache.CachedAction;
-import com.worldventures.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.janet.injection.InjectableAction;
 import com.worldventures.core.model.User;
 import com.worldventures.core.model.session.SessionHolder;
 import com.worldventures.dreamtrips.api.bucketlist.GetBucketItemsForUserHttpAction;
@@ -18,6 +12,11 @@ import com.worldventures.dreamtrips.api.bucketlist.ImmutableGetBucketItemsForUse
 import com.worldventures.dreamtrips.social.ui.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.social.ui.bucketlist.service.common.BucketUtility;
+import com.worldventures.janet.cache.CacheBundle;
+import com.worldventures.janet.cache.CacheBundleImpl;
+import com.worldventures.janet.cache.CacheOptions;
+import com.worldventures.janet.cache.CachedAction;
+import com.worldventures.janet.injection.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +125,7 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
       CacheBundle bundle = new CacheBundleImpl();
       bundle.put(USER_ID_EXTRA, userId());
 
-      return ImmutableCacheOptions.builder().params(bundle).build();
+      return new CacheOptions(true, true, true, bundle);
    }
 
    public boolean isFromCache() {

@@ -1,5 +1,6 @@
 package com.messenger.ui.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.view.SupportMenuInflater;
 import android.support.v7.view.menu.MenuBuilder;
@@ -49,6 +50,7 @@ public class ChatContextualMenuProvider {
       this.attachmentDAO = attachmentDAO;
    }
 
+   @SuppressLint("RestrictedApi")
    public Observable<Menu> provideMenu(DataMessage message, String conversationId) {
       return Observable.combineLatest(conversationsDAO.getConversation(conversationId)
             .take(1), attachmentDAO.getAttachmentByMessageId(message.getId())

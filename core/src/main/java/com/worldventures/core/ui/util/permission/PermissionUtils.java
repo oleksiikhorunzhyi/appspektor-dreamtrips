@@ -37,7 +37,7 @@ public final class PermissionUtils {
    }
 
    public static boolean verifyPermissions(@Nullable int[] grantResults) {
-      if (grantResults == null) {
+      if (grantResults == null || grantResults.length == 0) {
          return false;
       }
       for (int result : grantResults) {

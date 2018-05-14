@@ -14,6 +14,7 @@ allprojects { // <-- it's needed for plugin detekt. there is specific condition 
          }
          classpath project.ext.pluginDependencies.kotlin
          //
+         classpath project.ext.pluginDependencies.appspector
          classpath project.ext.pluginDependencies.fabric
          classpath project.ext.pluginDependencies.newrelic
          //

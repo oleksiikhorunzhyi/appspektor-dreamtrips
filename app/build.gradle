@@ -10,6 +10,7 @@ apply from: "$rootProject.projectDir/buildsystem/module-utils.gradle"
 apply from: "$rootProject.projectDir/buildsystem/code-analysis.gradle"
 //
 apply plugin: 'com.android.application'
+apply plugin: 'com.appspector.sdk'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'

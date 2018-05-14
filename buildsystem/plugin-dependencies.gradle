@@ -8,10 +8,11 @@ ext {
          junit5Plugin: '1.0.31'
    ]
    pluginDependencies.repos = [
-         { o -> o.jcenter() },
-         { o -> o.google() },
          { o -> o.maven { url 'https://plugins.gradle.org/m2' } },
-         { o -> o.maven { url 'https://maven.fabric.io/public' } }
+         { o -> o.maven { url 'https://maven.fabric.io/public' } },
+         { o -> o.maven { url System.getenv('APPSPECTOR_MAVEN_URL') ?: "https://maven.appspector.com/artifactory/android-sdk" } },
+         { o -> o.jcenter() },
+         { o -> o.google() }
    ]
    pluginDependencies.androidPluginVersion = {
       androidPluginVersion = pluginDependencies.versions.androidDefault
@@ -39,6 +40,7 @@ ext {
 
          detekt        : "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:${pluginDependencies.versions.detekt}",
          ktlint        : "gradle.plugin.org.jmailen.gradle:kotlinter-gradle:1.3.2",
+         appspector    : "com.appspector:android-sdk-plugin:+",
          android       : "com.android.tools.build:gradle:${pluginDependencies.androidPluginVersion}"
    ]
 }

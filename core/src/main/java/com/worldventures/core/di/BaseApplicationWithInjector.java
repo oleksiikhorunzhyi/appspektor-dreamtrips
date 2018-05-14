@@ -2,6 +2,8 @@ package com.worldventures.core.di;
 
 import android.support.multidex.MultiDexApplication;
 
+import com.appspector.sdk.AppSpector;
+import com.worldventures.core.BuildConfig;
 import com.worldventures.core.janet.Injector;
 
 import java.util.Set;
@@ -19,6 +21,15 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
    @Override
    public void onCreate() {
       super.onCreate();
+
+      AppSpector
+            .build(this)
+            .addPerformanceMonitor()
+            .addHttpMonitor()
+            .addLogMonitor()
+            .addScreenshotMonitor()
+            .addSQLMonitor()
+            .run(BuildConfig.APPSPECTOR_API_KEY);
 
       injector = createInjector();
       injector.inject(this);

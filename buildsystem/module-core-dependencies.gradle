@@ -19,6 +19,8 @@ ext {
          { o -> o.maven { url 'https://artifactory.techery.io/artifactory/libs-snapshot' } },
          { o -> o.maven { url 'https://maven.fabric.io/public' } },
          { o -> o.maven { url 'https://clojars.org/repo/' } }, // icepick
+
+         { o -> o.maven { url System.getenv('APPSPECTOR_MAVEN_URL') ?: "https://maven.appspector.com/artifactory/android-sdk" } },
    ]
 
    //modules
@@ -133,6 +135,7 @@ ext {
          apptentive : [impl: 'com.apptentive:apptentive-android:3.4.0@aar'],
          crashlytics: [api: 'com.crashlytics.sdk.android:crashlytics:2.7.0@aar', config: { transitive = true }],
          newrelic   : [api: 'com.newrelic.agent.android:android-agent:5.8.4'],
+         appspector : [impl: 'com.appspector:android-sdk:+'],
    ]
 
    def daggerVersion = '1.2.2'

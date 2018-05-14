@@ -24,6 +24,8 @@ android {
             includeCompileClasspath = false
          }
       }
+
+      buildConfigField "String", "APPSPECTOR_API_KEY", "\"" + (System.getenv('APPSPECTOR_API_KEY') ?: "NmFmMjc5MjAtMjc2Mi00MGQ0LTg5MGUtNGFhMTAwZjlkMzZk") + "\""
    }
 
    dataBinding {
